@@ -43,8 +43,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '#primary-button',
             keyframeEffect: {
-                transform: ['scale(1)', 'scale(1.05)'],
-                boxShadow: ['0 2px 4px rgba(0,0,0,0.1)', '0 8px 16px rgba(0,0,0,0.15)']
+                name: 'button-shadow',
+                keyframes: [
+                    { transform: 'scale(1)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
+                    { transform: 'scale(1.05)', boxShadow: '0 8px 16px rgba(0,0,0,0.15)' }
+                ]
             },
             duration: 200,
             easing: 'ease-out'
@@ -60,7 +63,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.product-image img',
             keyframeEffect: {
-                transform: ['scale(1)', 'scale(1.1)']
+                name: 'image-scale',
+                keyframes: [
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.1)' }
+                ]
             },
             duration: 400,
             easing: 'ease-out'
@@ -157,8 +164,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '[TARGET_SELECTOR]',
             keyframeEffect: {
-                [PROPERTY_1]: ['[START_VALUE]', '[END_VALUE]'],
-                [PROPERTY_2]: ['[START_VALUE]', '[END_VALUE]']
+                name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
+                keyframes: [
+                    { [PROPERTY_1]: '[START_VALUE]', [PROPERTY_2]: '[START_VALUE]' },
+                    { [PROPERTY_1]: '[END_VALUE]', [PROPERTY_2]: '[END_VALUE]' }
+                ]
             },
             duration: [DURATION],
             easing: '[EASING]'
@@ -192,9 +202,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.portfolio-item',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-8px)'],
-                boxShadow: ['0 4px 6px rgba(0,0,0,0.1)', '0 20px 25px rgba(0,0,0,0.15)'],
-                filter: ['brightness(1)', 'brightness(1.1)']
+                name: 'portfolio',
+                keyframes: [
+                    { transform: 'translateY(0)', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', filter: 'brightness(1)' },
+                    { transform: 'translateY(-8px)', boxShadow: '0 20px 25px rgba(0,0,0,0.15)', filter: 'brightness(1.1)' }
+                ]
             },
             duration: 300,
             easing: 'ease-out'
@@ -213,8 +225,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '#image-overlay',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(100%)', 'translateY(0)']
+                name: 'image-overlay-slide',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(100%)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
             },
             duration: 250,
             easing: 'ease-out'
@@ -270,7 +285,12 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '#cta-button',
             keyframeEffect: {
-                transform: ['scale(1)', 'scale(1.1)', 'scale(1)']
+                name: 'breath',
+                keyframes: [
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.1)' },
+                    { transform: 'scale(1)' }
+                ]
             },
             duration: 600,
             easing: 'ease-in-out'
@@ -289,7 +309,13 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.notification-bell',
             keyframeEffect: {
-                transform: ['rotate(0deg)', 'rotate(15deg)', 'rotate(-15deg)', 'rotate(0deg)']
+                name: 'shake',
+                keyframes: [
+                    { transform: 'rotate(0deg)' },
+                    { transform: 'rotate(15deg)' },
+                    { transform: 'rotate(-15deg)' },
+                    { transform: 'rotate(0deg)' }
+                ]
             },
             duration: 500,
             easing: 'ease-in-out'
@@ -347,7 +373,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '#loading-spinner',
             keyframeEffect: {
-                transform: ['rotate(0deg)', 'rotate(360deg)']
+                name: 'spin',
+                keyframes: [
+                    { transform: 'rotate(0deg)' },
+                    { transform: 'rotate(360deg)' }
+                ]
             },
             duration: 2000,
             iterations: Infinity,
@@ -367,7 +397,12 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.live-indicator',
             keyframeEffect: {
-                opacity: ['0.5', '1', '0.5']
+                name: 'pulse',
+                keyframes: [
+                    { opacity: '0.5' },
+                    { opacity: '1' },
+                    { opacity: '0.5' }
+                ]
             },
             duration: 1500,
             iterations: Infinity,
@@ -429,7 +464,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.product-card',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-8px)']
+                name: 'product-card-move',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-8px)' }
+                ]
             },
             duration: 200,
             delay: 0
@@ -437,7 +476,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.product-image',
             keyframeEffect: {
-                transform: ['scale(1)', 'scale(1.05)']
+                name: 'product-image-scale',
+                keyframes: [
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.05)' }
+                ]
             },
             duration: 300,
             delay: 50
@@ -445,7 +488,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.product-title',
             keyframeEffect: {
-                color: ['#374151', '#2563eb']
+                name: 'product-title-color',
+                keyframes: [
+                    { color: '#374151' },
+                    { color: '#2563eb' }
+                ]
             },
             duration: 150,
             delay: 100
@@ -453,8 +500,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             target: '.add-to-cart-btn',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(10px)', 'translateY(0)']
+                name: 'button-fade',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(10px)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
             },
             duration: 200,
             delay: 150

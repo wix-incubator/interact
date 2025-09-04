@@ -61,11 +61,15 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
         {
             target: '#hero-section',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(60px) scale(0.95)', 'translateY(0) scale(1)']
+                name: 'hero-entrance',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(60px) scale(0.95)' },
+                    { opacity: '1', transform: 'translateY(0) scale(1)' }
+                ]
             },
             duration: 1000,
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            fill: 'backwards',
             effectId: 'hero-entrance'
         }
     ]
@@ -146,11 +150,15 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
         {
             target: '#background-image',
             keyframeEffect: {
-                filter: ['blur(20px) brightness(0.7)', 'blur(0) brightness(1)'],
-                transform: ['scale(1.1)', 'scale(1)']
+                name: 'image-reveal',
+                keyframes: [
+                    { filter: 'blur(20px) brightness(0.7)', transform: 'scale(1.1)' },
+                    { filter: 'blur(0) brightness(1)', transform: 'scale(1)' }
+                ]
             },
             duration: 600,
-            easing: 'ease-out'
+            easing: 'ease-out',
+            fill: 'backwards'
         }
     ]
 }
@@ -232,11 +240,15 @@ Same as Rule 2
         {
             target: '#sidebar-content',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateX(-50px)', 'translateX(0)']
+                name: 'content-reveal-hide',
+                keyframes: [
+                    { opacity: '0', transform: 'translateX(-50px)' },
+                    { opacity: '1', transform: 'translateX(0)' }
+                ]
             },
             duration: 400,
-            easing: 'ease-in-out'
+            easing: 'ease-in-out',
+            fill: 'backwards'
         }
     ]
 }
@@ -255,11 +267,15 @@ Same as Rule 2
         {
             target: '#floating-nav',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(-100%)', 'translateY(0)']
+                name: 'nav-reveal',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(-100%)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
             },
             duration: 300,
             easing: 'ease-out',
+            fill: 'backwards',
             effectId: 'nav-reveal'
         }
     ]
@@ -320,7 +336,12 @@ Same as Rule 2
         {
             target: '.floating-icon',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-20px)', 'translateY(0)']
+                name: 'floating-loop',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-20px)' },
+                    { transform: 'translateY(0)' }
+                ]
             },
             duration: 3000,
             easing: 'ease-in-out',
@@ -429,11 +450,15 @@ Same as Rule 2
         {
             target: '#precision-content',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                filter: ['blur(5px)', 'blur(0)']
+                name: 'blur',
+                keyframes: [
+                    { opacity: '0', filter: 'blur(5px)' },
+                    { opacity: '1', filter: 'blur(0)' }
+                ]
             },
             duration: 600,
-            easing: 'ease-out'
+            easing: 'ease-out',
+            fill: 'backwards'
         }
     ]
 }
@@ -586,11 +611,15 @@ Same as Rule 2
         effects: [
             {
                 keyframeEffect: {
-                    opacity: ['0', '1'],
-                    transform: ['translateX(-30px)', 'translateX(0)']
+                    name: 'item-kf-1',
+                    keyframes: [
+                        { opacity: '0', transform: 'translateX(-30px)' },
+                        { opacity: '1', transform: 'translateX(0)' }
+                    ]
                 },
                 duration: 500,
                 easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                fill: 'backwards',
                 delay: 0
             }
         ]
@@ -605,11 +634,15 @@ Same as Rule 2
         effects: [
             {
                 keyframeEffect: {
-                    opacity: ['0', '1'],
-                    transform: ['translateX(-30px)', 'translateX(0)']
+                    name: 'item-kf-2',
+                    keyframes: [
+                        { opacity: '0', transform: 'translateX(-30px)' },
+                        { opacity: '1', transform: 'translateX(0)' }
+                    ]
                 },
                 duration: 500,
                 easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                fill: 'backwards',
                 delay: 100
             }
         ]
@@ -624,11 +657,15 @@ Same as Rule 2
         effects: [
             {
                 keyframeEffect: {
-                    opacity: ['0', '1'],
-                    transform: ['translateX(-30px)', 'translateX(0)']
+                    name: 'item-kf-3',
+                    keyframes: [
+                        { opacity: '0', transform: 'translateX(-30px)' },
+                        { opacity: '1', transform: 'translateX(0)' }
+                    ]
                 },
                 duration: 500,
                 easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                fill: 'backwards',
                 delay: 200
             }
         ]
@@ -694,11 +731,15 @@ Animating multiple targets from single viewport trigger:
         {
             target: '#hero-background',
             keyframeEffect: {
-                filter: ['blur(20px)', 'blur(0)'],
-                transform: ['scale(1.1)', 'scale(1)']
+                name: 'blur-bg',
+                keyframes: [
+                    { filter: 'blur(20px)', transform: 'scale(1.1)' },
+                    { filter: 'blur(0)', transform: 'scale(1)' }
+                ]
             },
             duration: 1200,
-            easing: 'ease-out'
+            easing: 'ease-out',
+            fill: 'backwards'
         },
         {
             target: '#hero-title',
@@ -709,10 +750,14 @@ Animating multiple targets from single viewport trigger:
         {
             target: '#hero-subtitle',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(30px)', 'translateY(0)']
+                name: 'subtitle-slide',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(30px)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
             },
             duration: 600,
+            fill: 'backwards',
             delay: 600
         },
         {

@@ -53,8 +53,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
         {
             target: '#mobile-nav',
             keyframeEffect: {
-                transform: ['translateX(-100%)', 'translateX(0)'],
-                opacity: ['0', '1']
+                name: 'menu-toggle',
+                keyframes: [
+                    { transform: 'translateX(-100%)', opacity: '0' },
+                    { transform: 'translateX(0)', opacity: '1' }
+                ]
             },
             duration: 300,
             easing: 'ease-out',
@@ -76,8 +79,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
         {
             target: '.accordion-content',
             keyframeEffect: {
-                clipPath: ['inset(0 0 100% 0)', 'inset(0 0 0 0)'],
-                opacity: ['0', '1']
+                name: 'accordion',
+                keyframes: [
+                    { clipPath: 'inset(0 0 100% 0)', opacity: '0' },
+                    { clipPath: 'inset(0 0 0 0)', opacity: '1' }
+                ]
             },
             duration: 400,
             easing: 'ease-in-out'
@@ -135,7 +141,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
         {
             target: '#spinner',
             keyframeEffect: {
-                transform: ['rotate(0deg)', 'rotate(360deg)']
+                name: 'spin',
+                keyframes: [
+                    { transform: 'rotate(0deg)' },
+                    { transform: 'rotate(360deg)' }
+                ]
             },
             duration: 1000,
             easing: 'linear',
@@ -216,11 +226,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
         {
             target: '#action-button',
             keyframeEffect: {
-                transform: ['scale(1)', 'scale(1.1)', 'scale(1)'],
-                boxShadow: [
-                    '0 2px 4px rgba(0,0,0,0.1)', 
-                    '0 8px 16px rgba(0,0,0,0.2)', 
-                    '0 2px 4px rgba(0,0,0,0.1)'
+                name: 'button-shadow',
+                keyframes: [
+                    { transform: 'scale(1)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
+                    { transform: 'scale(1.1)', boxShadow: '0 8px 16px rgba(0,0,0,0.2)' },
+                    { transform: 'scale(1)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }
                 ]
             },
             duration: 300,

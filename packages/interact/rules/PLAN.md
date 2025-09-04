@@ -84,9 +84,13 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 - Rule for range-based exit animation control with customEffects pattern
 
 #### Stage 1.5: PointerMove Trigger Rules (`pointermove-rules.md`)
-- Rule for mouse tracking interactions
-- Rule for hit area configuration (root/self)
-- Rule for pointer-based scrub effects
+- Consider hit area configuration (`root`/`self`)
+- Consider centering range to animation target using `centeredToTarget` configuration
+- Make effects using keyframeEffect or customEffect to be either symmetric or inversed symmetric
+- Rules for pointer-based effects of single elements with namedEffect
+- Rules for pointer-based effects of single elements with customEffect
+- Rules for pointer-based parallax effects of a group of elements with namedEffect
+- Rules for pointer-based parallax effects of a group of elements with customEffect
 
 #### Stage 1.6: AnimationEnd Trigger Rules (`animationend-rules.md`)
 - Rule for configuration of entrance and loop animations chaining pattern

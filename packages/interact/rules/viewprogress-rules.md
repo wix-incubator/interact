@@ -23,8 +23,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
               type: '[NAMED_EFFECT]',
             },
-            rangeStart: { name: '[RANGE_NAME]', offset: { value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_NAME]', offset: { value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -53,8 +53,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'BgParallax'
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
             easing: 'linear'
         }
     ]
@@ -72,8 +72,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'MoveScroll'
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 100 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
             easing: 'linear',
             effectId: 'decoration-float'
         }
@@ -104,8 +104,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: '[ENTRANCE_EFFECT]'
             },
-            rangeStart: { name: 'entry', offset: { value: [ENTRY_START] } },
-            rangeEnd: { name: 'entry', offset: { value: [ENTRY_END] } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_START] } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_END] } },
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -130,8 +130,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'RevealScroll'
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'entry', offset: { value: 60 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
             easing: 'ease-out'
         }
     ]
@@ -149,8 +149,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'FadeScroll'
             },
-            rangeStart: { name: 'entry', offset: { value: 20 } },
-            rangeEnd: { name: 'entry', offset: { value: 80 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 20 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             effectId: 'image-reveal'
         }
@@ -181,8 +181,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: '[EXIT_EFFECT]'
             },
-            rangeStart: { name: 'exit', offset: { value: [EXIT_START] } },
-            rangeEnd: { name: 'exit', offset: { value: [EXIT_END] } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: [EXIT_START] } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: [EXIT_END] } },
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -207,8 +207,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'FadeScroll'
             },
-            rangeStart: { name: 'exit', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 50 } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 50 } },
             easing: 'ease-in'
         }
     ]
@@ -226,8 +226,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             namedEffect: {
                 type: 'SlideScroll'
             },
-            rangeStart: { name: 'exit', offset: { value: 20 } },
-            rangeEnd: { name: 'exit', offset: { value: 80 } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 20 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 80 } },
             easing: 'ease-in-out',
             effectId: 'nav-hide'
         }
@@ -256,13 +256,16 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             target: '[TARGET_SELECTOR]',
             keyframeEffect: {
-                [CSS_PROPERTY_1]: ['[START_VALUE_1]', '[END_VALUE_1]'],
-                [CSS_PROPERTY_2]: ['[START_VALUE_2]', '[END_VALUE_2]'],
-                [CSS_PROPERTY_3]: ['[START_VALUE_3]', '[END_VALUE_3]']
+                name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
+                keyframes: [
+                    { [CSS_PROPERTY_1]: '[START_VALUE_1]', [CSS_PROPERTY_2]: '[START_VALUE_2]', [CSS_PROPERTY_3]: '[START_VALUE_3]' },
+                    { [CSS_PROPERTY_1]: '[END_VALUE_1]', [CSS_PROPERTY_2]: '[END_VALUE_2]', [CSS_PROPERTY_3]: '[END_VALUE_3]' }
+                ]
             },
-            rangeStart: { name: '[RANGE_NAME]', offset: { value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_NAME]', offset: { value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -270,6 +273,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 ```
 
 **Variables**:
+- `[UNIQUE_KEYFRAME_EFFECT_NAME]`: unique name for the CSS keyframe effect (can equal `[UNIQUE_EFFECT_ID]` if provided)
 - `[CSS_PROPERTY_N]`: CSS property names (e.g., 'transform', 'opacity', 'filter')
 - `[START_VALUE_N]`: Starting value for the property
 - `[END_VALUE_N]`: Ending value for the property
@@ -284,13 +288,17 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             target: '#parallax-bg',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-200px)'],
-                filter: ['brightness(1)', 'brightness(0.8)'],
-                opacity: ['0.9', '1', '0.9']
+                name: 'parallax-bg',
+                keyframes: [
+                    { transform: 'translateY(0)', filter: 'brightness(1)', opacity: '0.9' },
+                    { opacity: '1' },
+                    { transform: 'translateY(-200px)', filter: 'brightness(0.8)', opacity: '0.9' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         }
     ]
 }
@@ -305,12 +313,16 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             target: '#background-layer',
             keyframeEffect: {
-                transform: ['scale(1.1) translateY(0)', 'scale(1) translateY(-100px)'],
-                filter: ['blur(0)', 'blur(2px)']
+                name: 'bg-scroll',
+                keyframes: [
+                    { transform: 'scale(1.1) translateY(0)', filter: 'blur(0)' },
+                    { transform: 'scale(1) translateY(-100px)', filter: 'blur(2px)' }
+                ]
             },
-            rangeStart: { name: 'enter', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 100 } },
+            rangeStart: { name: 'enter', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
             easing: 'linear',
+            fill: 'both',
             effectId: 'bg-scroll'
         }
     ]
@@ -338,12 +350,16 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             target: '[TARGET_SELECTOR]',
             keyframeEffect: {
-                [CSS_PROPERTY_1]: ['[START_VALUE_1]', '[END_VALUE_1]'],
-                [CSS_PROPERTY_2]: ['[START_VALUE_2]', '[END_VALUE_2]']
+                name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
+                keyframes: [
+                    { [CSS_PROPERTY_1]: '[START_VALUE_1]', [CSS_PROPERTY_2]: '[START_VALUE_2]' },
+                    { [CSS_PROPERTY_1]: '[END_VALUE_1]', [CSS_PROPERTY_2]: '[END_VALUE_2]' }
+                ]
             },
-            rangeStart: { name: 'entry', offset: { value: [ENTRY_START] } },
-            rangeEnd: { name: 'entry', offset: { value: [ENTRY_END] } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_START] } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_END] } },
             easing: '[EASING_FUNCTION]',
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -362,13 +378,16 @@ Same as Rule 4, with focus on entry range
         {
             target: '.product-card',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(80px) scale(0.9)', 'translateY(0) scale(1)'],
-                filter: ['blur(5px)', 'blur(0)']
+                name: 'card-entrance',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(80px) scale(0.9)', filter: 'blur(5px)' },
+                    { opacity: '1', transform: 'translateY(0) scale(1)', filter: 'blur(0)' }
+                ]
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'entry', offset: { value: 70 } },
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 70 } },
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            fill: 'both'
         }
     ]
 }
@@ -383,13 +402,16 @@ Same as Rule 4, with focus on entry range
         {
             target: '#main-heading',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateX(-50px)', 'translateX(0)'],
-                color: ['rgba(0,0,0,0.3)', 'rgba(0,0,0,1)']
+                name: 'heading-reveal',
+                keyframes: [
+                    { opacity: '0', transform: 'translateX(-50px)', color: 'rgba(0,0,0,0.3)' },
+                    { opacity: '1', transform: 'translateX(0)', color: 'rgba(0,0,0,1)' }
+                ]
             },
-            rangeStart: { name: 'entry', offset: { value: 10 } },
-            rangeEnd: { name: 'entry', offset: { value: 60 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 10 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
             easing: 'ease-out',
+            fill: 'both',
             effectId: 'heading-reveal'
         }
     ]
@@ -417,12 +439,16 @@ Same as Rule 4, with focus on entry range
         {
             target: '[TARGET_SELECTOR]',
             keyframeEffect: {
-                [CSS_PROPERTY_1]: ['[START_VALUE_1]', '[END_VALUE_1]'],
-                [CSS_PROPERTY_2]: ['[START_VALUE_2]', '[END_VALUE_2]']
+                name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
+                keyframes: [
+                    { [CSS_PROPERTY_1]: '[START_VALUE_1]', [CSS_PROPERTY_2]: '[START_VALUE_2]' },
+                    { [CSS_PROPERTY_1]: '[END_VALUE_1]', [CSS_PROPERTY_2]: '[END_VALUE_2]' }
+                ]
             },
-            rangeStart: { name: 'exit', offset: { value: [EXIT_START] } },
-            rangeEnd: { name: 'exit', offset: { value: [EXIT_END] } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: [EXIT_START] } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: [EXIT_END] } },
             easing: '[EASING_FUNCTION]',
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -441,13 +467,16 @@ Same as Rule 4, with focus on exit range
         {
             target: '#hero-content',
             keyframeEffect: {
-                opacity: ['1', '0'],
-                transform: ['translateY(0) scale(1)', 'translateY(-50px) scale(0.95)'],
-                filter: ['blur(0)', 'blur(3px)']
+                name: 'hero-content-animation',
+                keyframes: [
+                    { opacity: '1', transform: 'translateY(0) scale(1)', filter: 'blur(0)' },
+                    { opacity: '0', transform: 'translateY(-50px) scale(0.95)', filter: 'blur(3px)' }
+                ]
             },
-            rangeStart: { name: 'exit', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 60 } },
-            easing: 'ease-in'
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 60 } },
+            easing: 'ease-in',
+            fill: 'both'
         }
     ]
 }
@@ -462,13 +491,16 @@ Same as Rule 4, with focus on exit range
         {
             target: '#sticky-nav',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-100%)'],
-                opacity: ['1', '0.7'],
-                backdropFilter: ['blur(10px)', 'blur(0)']
+                name: 'nav-hide',
+                keyframes: [
+                    { transform: 'translateY(0)', opacity: '1', backdropFilter: 'blur(10px)' },
+                    { transform: 'translateY(-100%)', opacity: '0.7', backdropFilter: 'blur(0)' }
+                ]
             },
-            rangeStart: { name: 'exit', offset: { value: 20 } },
-            rangeEnd: { name: 'exit', offset: { value: 80 } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 20 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 80 } },
             easing: 'ease-in-out',
+            fill: 'both',
             effectId: 'nav-hide'
         }
     ]
@@ -499,8 +531,9 @@ Same as Rule 4, with focus on exit range
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_ANIMATION_LOGIC]
             },
-            rangeStart: { name: '[RANGE_NAME]', offset: { value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_NAME]', offset: { value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -524,8 +557,9 @@ Same as Rule 4, with focus on exit range
                 element.textContent = `${currentValue}%`;
                 element.style.color = `hsl(${progress * 120}, 70%, 50%)`;
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            fill: 'both',
             effectId: 'progress-counter'
         }
     ]
@@ -557,8 +591,9 @@ Same as Rule 4, with focus on exit range
                     particle.style.opacity = adjustedProgress;
                 });
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 100 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            fill: 'both',
             effectId: 'particle-scroll'
         }
     ]
@@ -589,8 +624,9 @@ Same as Rule 4, with focus on exit range
                 // progress is 0-1 representing entry progress
                 [ENTRY_ANIMATION_LOGIC]
             },
-            rangeStart: { name: 'entry', offset: { value: [ENTRY_START] } },
-            rangeEnd: { name: 'entry', offset: { value: [ENTRY_END] } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_START] } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: [ENTRY_END] } },
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -618,8 +654,9 @@ Same as Rule 4, with focus on exit range
                 element.style.opacity = Math.min(1, progress * 2);
                 element.style.transform = `translateY(${(1 - progress) * 30}px)`;
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'entry', offset: { value: 80 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
+            fill: 'both',
             effectId: 'text-reveal'
         }
     ]
@@ -643,8 +680,9 @@ Same as Rule 4, with focus on exit range
                 element.style.backgroundColor = `rgb(${255 - colorIntensity}, ${colorIntensity}, 100)`;
                 element.style.boxShadow = `0 0 ${progress * 20}px rgba(0, ${colorIntensity}, 255, 0.5)`;
             },
-            rangeStart: { name: 'entry', offset: { value: 20 } },
-            rangeEnd: { name: 'entry', offset: { value: 90 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 20 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 90 } },
+            fill: 'both',
             effectId: 'chart-fill'
         }
     ]
@@ -675,8 +713,9 @@ Same as Rule 4, with focus on exit range
                 // progress is 0-1 representing exit progress
                 [EXIT_ANIMATION_LOGIC]
             },
-            rangeStart: { name: 'exit', offset: { value: [EXIT_START] } },
-            rangeEnd: { name: 'exit', offset: { value: [EXIT_END] } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: [EXIT_START] } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: [EXIT_END] } },
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -711,8 +750,9 @@ Same as Rule 4, with focus on exit range
                     `;
                 });
             },
-            rangeStart: { name: 'exit', offset: { value: 10 } },
-            rangeEnd: { name: 'exit', offset: { value: 90 } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 10 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 90 } },
+            fill: 'both',
             effectId: 'dissolve-exit'
         }
     ]
@@ -744,8 +784,9 @@ Same as Rule 4, with focus on exit range
                 element.style.opacity = opacity;
                 element.style.filter = `blur(${adjustedProgress * 10}px)`;
             },
-            rangeStart: { name: 'exit', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 80 } },
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 80 } },
+            fill: 'both',
             effectId: 'data-exit'
         }
     ]
@@ -768,34 +809,46 @@ Combining different ranges for complex scroll animations:
         {
             target: '#section-content',
             keyframeEffect: {
-                opacity: ['0', '1'],
-                transform: ['translateY(50px)', 'translateY(0)']
+                name: 'content-entrance',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(50px)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
             },
-            rangeStart: { name: 'entry', offset: { value: 0 } },
-            rangeEnd: { name: 'entry', offset: { value: 50 } },
-            easing: 'ease-out'
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 50 } },
+            easing: 'ease-out',
+            fill: 'both'
         },
         // Cover phase
         {
             target: '#background-element',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-100px)'],
-                filter: ['hue-rotate(0deg)', 'hue-rotate(180deg)']
+                name: 'background-parallax-hue',
+                keyframes: [
+                    { transform: 'translateY(0)', filter: 'hue-rotate(0deg)' },
+                    { transform: 'translateY(-100px)', filter: 'hue-rotate(180deg)' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         },
         // Exit phase
         {
             target: '#section-content',
             keyframeEffect: {
-                opacity: ['1', '0'],
-                transform: ['scale(1)', 'scale(0.8)']
+                name: 'content-exit',
+                keyframes: [
+                    { opacity: '1', transform: 'scale(1)' },
+                    { opacity: '0', transform: 'scale(0.8)' }
+                ]
             },
-            rangeStart: { name: 'exit', offset: { value: 50 } },
-            rangeEnd: { name: 'exit', offset: { value: 100 } },
-            easing: 'ease-in'
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 50 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            easing: 'ease-in',
+            fill: 'both'
         }
     ]
 }
@@ -813,11 +866,16 @@ Responsive scroll animations:
         {
             target: '#parallax-bg',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-300px)']
+                name: 'parallax-bg',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-300px)' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         }
     ]
 },
@@ -830,11 +888,16 @@ Responsive scroll animations:
         {
             target: '#parallax-bg',
             keyframeEffect: {
-                opacity: ['1', '0.7']
+                name: 'fade-out-bg',
+                keyframes: [
+                    { opacity: '1' },
+                    { opacity: '0.7' }
+                ]
             },
-            rangeStart: { name: 'exit', offset: { value: 0 } },
-            rangeEnd: { name: 'exit', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         }
     ]
 }
@@ -851,29 +914,44 @@ Orchestrating multiple elements with viewProgress:
         {
             target: '#bg-layer-1',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-50px)']
+                name: 'layer-1-parallax',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-50px)' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         },
         {
             target: '#bg-layer-2',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-100px)']
+                name: 'layer-2-parallax',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-100px)' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         },
         {
             target: '#fg-content',
             keyframeEffect: {
-                transform: ['translateY(0)', 'translateY(-150px)']
+                name: 'layer-3-parallax',
+                keyframes: [
+                    { transform: 'translateY(0)' },
+                    { transform: 'translateY(-150px)' }
+                ]
             },
-            rangeStart: { name: 'cover', offset: { value: 0 } },
-            rangeEnd: { name: 'cover', offset: { value: 100 } },
-            easing: 'linear'
+            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            easing: 'linear',
+            fill: 'both'
         }
     ]
 }
