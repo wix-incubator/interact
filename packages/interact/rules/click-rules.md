@@ -15,15 +15,17 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Pattern**:
 ```typescript
 {
-    source: '[TRIGGER_SELECTOR]',
+    source: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            target: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
+            fill: 'both',
+            reversed: [INITIAL_REVERSED_BOOL],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
@@ -33,10 +35,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
-- `[TRIGGER_SELECTOR]`: CSS selector for clickable element (e.g., '#menu-button', '.toggle-btn', '#accordion-header')
-- `[TARGET_SELECTOR]`: CSS selector for animated element (can be same as trigger or different)
+- `[SOURCE_IDENTIFIER]`: Unique identifier for clickable element (e.g., '#menu-button', '#accordion-header'). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
+- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
-- `[EFFECT_DEFINITION]`: Named effect string (e.g., 'SlideIn', 'FadeIn') or keyframe object
+- `[EFFECT_DEFINITION]`: Named effect object (e.g., { type: 'SlideIn', ...params }, { type: 'FadeIn', ...params }) or keyframe object (e.g., { name: 'custom-fade', keyframes: [{ opacity: 0 }, { opacity: 1 }] }, { name: 'custom-slide', keyframes: [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }] })
+- `[INITIAL_REVERSED_BOOL]`: Optional boolean value indicating whether the first toggle should play the reversed animation.
 - `[DURATION_MS]`: Animation duration in milliseconds (typically 200-500ms for clicks)
 - `[EASING_FUNCTION]`: Timing function ('ease-out', 'ease-in-out', or cubic-bezier)
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier for animation chaining
@@ -52,13 +55,12 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     effects: [
         {
             target: '#mobile-nav',
-            keyframeEffect: {
-                name: 'menu-toggle',
-                keyframes: [
-                    { transform: 'translateX(-100%)', opacity: '0' },
-                    { transform: 'translateX(0)', opacity: '1' }
-                ]
+            namedEffect: {
+                type: 'SlideIn',
+                direction: 'left'
             },
+            fill: 'both',
+            reversed: true,
             duration: 300,
             easing: 'ease-out',
             effectId: 'mobile-nav-toggle'
@@ -70,14 +72,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Example - Accordion Expand**:
 ```typescript
 {
-    source: '.accordion-header',
+    source: '#accordion-header',
     trigger: 'click',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '.accordion-content',
+            target: '#accordion-content',
             keyframeEffect: {
                 name: 'accordion',
                 keyframes: [
@@ -85,6 +87,8 @@ These rules help generate click-based interactions using the `@wix/interact` lib
                     { clipPath: 'inset(0 0 0 0)', opacity: '1' }
                 ]
             },
+            fill: 'both',
+            reversed: true,
             duration: 400,
             easing: 'ease-in-out'
         }
@@ -107,18 +111,21 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Pattern**:
 ```typescript
 {
-    source: '[TRIGGER_SELECTOR]',
+    source: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
         type: 'state'
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            target: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
+            fill: 'both',
+            reversed: [INITIAL_REVERSED_BOOL],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
             iterations: [ITERATION_COUNT],
+            alternate: [ALTERNATE_BOOL],
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -126,7 +133,8 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
-- `[ITERATION_COUNT]`: Number of iterations or Infinity for looping animations
+- `[ITERATION_COUNT]`: Number of iterations or Infinity for infinite looping animations
+- `[ALTERNATE_BOOL]`: Optional boolean value indicating whether to alternate/toggle the playing direction of the animation on each iterations. Relevant only if `[ITERATION_COUNT]` is not 1.
 - Other variables same as Rule 1
 
 **Example - Loading Spinner Control**:
@@ -167,9 +175,9 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     effects: [
         {
             target: '#slideshow-container',
-            namedEffect: 'SlideIn',
+            namedEffect: { type: 'ShuttersIn' },
             duration: 3000,
-            iterations: Infinity,
+            iterations: 10,
             alternate: true,
             effectId: 'slideshow-animation'
         }
@@ -192,14 +200,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Pattern**:
 ```typescript
 {
-    source: '[TRIGGER_SELECTOR]',
+    source: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
         type: 'repeat'
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            target: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -251,9 +259,10 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     effects: [
         {
             target: '#success-badge',
-            namedEffect: 'BounceIn',
+            namedEffect: { type: 'BounceIn' },
             duration: 600,
             easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+            delay: 300,
             effectId: 'success-feedback'
         }
     ]
@@ -275,14 +284,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Pattern**:
 ```typescript
 {
-    source: '[TRIGGER_SELECTOR]',
+    source: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            target: '[TARGET_IDENTIFIER]',
             transition: {
                 duration: [DURATION_MS],
                 delay: [DELAY_MS],
@@ -299,7 +308,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
-- `[CSS_PROPERTY_N]`: CSS property name (e.g., 'backgroundColor', 'color', 'borderRadius')
+- `[CSS_PROPERTY_N]`: CSS property name (e.g., 'background-color', 'color', 'border-radius')
 - `[VALUE_N]`: CSS property value (e.g., '#2563eb', 'white', '12px')
 - Other variables same as previous rules
 
@@ -313,15 +322,15 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     },
     effects: [
         {
-            target: 'body',
+            target: '#body',
             transition: {
                 duration: 400,
                 easing: 'ease-in-out',
                 styleProperties: [
-                    { name: '--bg-color', value: '#1a1a1a' },
-                    { name: '--text-color', value: '#ffffff' },
-                    { name: '--accent-color', value: '#3b82f6' },
-                    { name: '--border-color', value: '#374151' }
+                    { name: 'background-color', value: '#1a1a1a' },
+                    { name: 'color', value: '#ffffff' },
+                    { name: 'border-color', value: '#374151' }
+                    { name: '--accent-color', value: '#475137ff' } // custom CSS properties are also supported
                 ]
             },
             effectId: 'theme-switch'
@@ -345,9 +354,9 @@ These rules help generate click-based interactions using the `@wix/interact` lib
                 duration: 300,
                 easing: 'ease-out',
                 styleProperties: [
-                    { name: 'backgroundColor', value: '#ef4444' },
+                    { name: 'background-color', value: '#ef4444' },
                     { name: 'color', value: '#ffffff' },
-                    { name: 'borderRadius', value: '24px' },
+                    { name: 'border-radius', value: '24px' },
                     { name: 'transform', value: 'scale(1.05)' }
                 ]
             }
@@ -359,21 +368,21 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Example - Card State Toggle**:
 ```typescript
 {
-    source: '.interactive-card',
+    source: '#interactive-card',
     trigger: 'click',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '.interactive-card',
+            target: '#interactive-card',
             transition: {
                 duration: 250,
                 easing: 'ease-in-out',
                 styleProperties: [
-                    { name: 'backgroundColor', value: '#f3f4f6' },
-                    { name: 'borderColor', value: '#2563eb' },
-                    { name: 'boxShadow', value: '0 20px 25px rgba(0,0,0,0.15)' }
+                    { name: 'background-color', value: '#f3f4f6' },
+                    { name: 'border-color', value: '#2563eb' },
+                    { name: 'box-shadow', value: '0 20px 25px rgba(0,0,0,0.15)' }
                 ]
             }
         }
@@ -398,15 +407,17 @@ When one click should animate multiple elements:
     effects: [
         {
             target: '#element-1',
-            namedEffect: 'FadeIn',
+            namedEffect: { type: 'FadeIn' },
             duration: 300,
-            delay: 0
+            delay: 0,
+            fill: 'both'
         },
         {
             target: '#element-2',
-            namedEffect: 'SlideIn',
+            namedEffect: { type: 'SlideIn' },
             duration: 400,
-            delay: 100
+            delay: 100,
+            fill: 'both'
         },
         {
             target: '#element-3',
@@ -414,7 +425,7 @@ When one click should animate multiple elements:
                 duration: 200,
                 delay: 200,
                 styleProperties: [
-                    { name: 'opacity', value: '1' }
+                    { name: 'box-shadow', value: '0 20px 25px rgba(0.2,0,0,0.15)' }
                 ]
             }
         }
@@ -436,7 +447,7 @@ Using effectId for sequential animations:
     effects: [
         {
             target: '#first-element',
-            namedEffect: 'FadeIn',
+            namedEffect: { type: 'FadeIn' },
             duration: 500,
             effectId: 'first-fade'
         }
@@ -452,7 +463,7 @@ Using effectId for sequential animations:
     effects: [
         {
             target: '#second-element',
-            namedEffect: 'SlideIn',
+            namedEffect: { type: 'SlideIn' },
             duration: 400,
             effectId: 'second-slide'
         }
