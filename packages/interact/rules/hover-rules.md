@@ -9,11 +9,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             fill: 'both',
             duration: [DURATION_MS],
@@ -35,7 +35,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Default Values**:
 - `DURATION_MS`: 300 (for micro-interactions)
 - `EASING_FUNCTION`: 'ease-out' (for smooth feel)
-- `TARGET_IDENTIFIER`: Same as source selector (self-targeting)
+- `TARGET_IDENTIFIER`: Same as source key (self-targeting)
 
 **Common Use Cases**:
 - Button hover states
@@ -47,11 +47,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Button hover
 {
-    source: '#primary-button',
+    key: 'primary-button',
     trigger: 'hover',
     effects: [
         {
-            target: '#primary-button',
+            key: 'primary-button',
             keyframeEffect: {
                 name: 'button-shadow',
                 keyframes: [
@@ -68,11 +68,11 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 // Image hover zoom
 {
-    source: '#product-image',
+    key: 'product-image',
     trigger: 'hover',
     effects: [
         {
-            target: '#product-image-media',
+            key: 'product-image-media',
             keyframeEffect: {
                 name: 'image-scale',
                 keyframes: [
@@ -95,14 +95,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             namedEffect: {
                 type: '[NAMED_EFFECT_TYPE]',
                 [EFFECT_PROPERTIES]
@@ -139,14 +139,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Card scale effect
 {
-    source: '#feature-card',
+    key: 'feature-card',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '#feature-card',
+            key: 'feature-card',
             namedEffect: { type: 'Pulse' },
             duration: 250,
             easing: 'ease-out'
@@ -156,14 +156,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 // Icon tilt effect
 {
-    source: '#button',
+    key: 'button',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '#button-icon',
+            key: 'button-icon',
             namedEffect: { type: 'TiltIn' },
             fill: 'both',
             duration: 200,
@@ -180,14 +180,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -226,14 +226,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Card hover with multiple properties
 {
-    source: '#portfolio-item',
+    key: 'portfolio-item',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '#portfolio-item',
+            key: 'portfolio-item',
             keyframeEffect: {
                 name: 'portfolio',
                 keyframes: [
@@ -250,14 +250,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 // Image overlay reveal
 {
-    source: '#gallery-image',
+    key: 'gallery-image',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '#image-overlay',
+            key: 'image-overlay',
             keyframeEffect: {
                 name: 'image-overlay-slide',
                 keyframes: [
@@ -280,14 +280,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     params: {
         type: 'repeat'
     },
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]'
@@ -314,14 +314,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Button pulse effect
 {
-    source: '#cta-button',
+    key: 'cta-button',
     trigger: 'hover',
     params: {
         type: 'repeat'
     },
     effects: [
         {
-            target: '#cta-button',
+            key: 'cta-button',
             namedEffect: {
                 type: 'Breath'
             },
@@ -333,14 +333,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 // Icon shake effect
 {
-    source: '#notification-bell',
+    key: 'notification-bell',
     trigger: 'hover',
     params: {
         type: 'repeat'
     },
     effects: [
         {
-            target: '#notification-bell',
+            key: 'notification-bell',
             keyframeEffect: {
                 name: 'shake',
                 keyframes: [
@@ -364,14 +364,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     params: {
         type: 'state'
     },
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             iterations: Infinity,
@@ -400,14 +400,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Rotating loader that plays on hover and pauses on mouse leave
 {
-    source: '#loading-spinner',
+    key: 'loading-spinner',
     trigger: 'hover',
     params: {
         type: 'state'
     },
     effects: [
         {
-            target: '#loading-spinner',
+            key: 'loading-spinner',
             keyframeEffect: {
                 name: 'spin',
                 keyframes: [
@@ -424,14 +424,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 // Pulsing element that plays on hover and pauses on mouse leave
 {
-    source: '#live-indicator',
+    key: 'live-indicator',
     trigger: 'hover',
     params: {
         type: 'state'
     },
     effects: [
         {
-            target: '#live-indicator',
+            key: 'live-indicator',
             namedEffect: {
                 type: 'Pulse'
             },
@@ -450,14 +450,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'hover',
     params: {
         type: '[BEHAVIOR_TYPE]'
     },
     effects: [
         {
-            target: '[TARGET_1]',
+            key: '[TARGET_1]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION_1],
             fill: [FILL_1],
             reversed: [REVERSED_BOOL_1],
@@ -465,7 +465,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             delay: [DELAY_1]
         },
         {
-            target: '[TARGET_2]',
+            key: '[TARGET_2]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION_2],
             fill: [FILL_2],
             reversed: [REVERSED_BOOL_2],
@@ -497,14 +497,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```typescript
 // Product card with multiple targets
 {
-    source: '#product-card',
+    key: 'product-card',
     trigger: 'hover',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            target: '#product-card',
+            key: 'product-card',
             keyframeEffect: {
                 name: 'product-card-move',
                 keyframes: [
@@ -517,7 +517,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             delay: 0
         },
         {
-            target: '#product-image',
+            key: 'product-image',
             keyframeEffect: {
                 name: 'product-image-scale',
                 keyframes: [
@@ -530,7 +530,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             delay: 50
         },
         {
-            target: '#product-title',
+            key: 'product-title',
             keyframeEffect: {
                 name: 'product-title-color',
                 keyframes: [
@@ -543,7 +543,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             delay: 100
         },
         {
-            target: '#add-to-cart-btn',
+            key: 'add-to-cart-btn',
             keyframeEffect: {
                 name: 'button-fade',
                 keyframes: [

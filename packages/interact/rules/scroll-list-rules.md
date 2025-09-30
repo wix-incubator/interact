@@ -15,11 +15,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[CONTAINER_SELECTOR]',
+            key: '[CONTAINER_KEY]',
             namedEffect: {
                 type: '[CONTAINER_NAMED_EFFECT]'
             },
@@ -33,7 +33,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
-- `[CONTAINER_SELECTOR]`: CSS selector for sticky list container
+- `[CONTAINER_KEY]`: Unique identifier for sticky list container
 - `[CONTAINER_NAMED_EFFECT]`: Container-level effects ('BgParallax', 'PanScroll', 'BgPan', 'BgReveal')
 - `[START_PERCENTAGE]`: Start point in contain range (typically 0)
 - `[END_PERCENTAGE]`: End point in contain range (typically 100)
@@ -42,11 +42,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Horizontal Sliding Gallery Container**:
 ```typescript
 {
-    source: '#gallery-container',
+    key: 'gallery-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#gallery-container',
+            key: 'gallery-container',
             namedEffect: {
                 type: 'PanScroll'
             },
@@ -62,11 +62,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Parallax Container Background**:
 ```typescript
 {
-    source: '#sticky-list-wrapper',
+    key: 'sticky-list-wrapper',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#list-background',
+            key: 'list-background',
             namedEffect: {
                 type: 'BgParallax'
             },
@@ -94,11 +94,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[ITEM_SELECTOR]',
+    key: '[ITEM_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[ITEM_SELECTOR]',
+            key: '[ITEM_KEY]',
             namedEffect: {
                 type: '[ITEM_NAMED_EFFECT]'
             },
@@ -112,7 +112,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
-- `[ITEM_SELECTOR]`: CSS selector for individual list items
+- `[ITEM_KEY]`: Unique identifier for individual list items
 - `[ITEM_NAMED_EFFECT]`: Item-level effects ('FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll', 'MoveScroll', 'ShuttersScroll', 'GrowScroll', 'ShrinkScroll', 'SpinScroll', 'ArcScroll')
 - `[RANGE_TYPE]`: 'entry' for entrance, 'exit' for exit, 'contain' for during sticky
 - `[START_PERCENTAGE]`: Range start percentage (0-100)
@@ -122,11 +122,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Item Entrance Reveal**:
 ```typescript
 {
-    source: '.list-item',
+    key: 'list-item',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.list-item',
+            key: 'list-item',
             namedEffect: {
                 type: 'RevealScroll'
             },
@@ -142,11 +142,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Item Scale During Sticky**:
 ```typescript
 {
-    source: '.sticky-list-item',
+    key: 'sticky-list-item',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.sticky-list-item',
+            key: 'sticky-list-item',
             namedEffect: {
                 type: 'GrowScroll'
             },
@@ -174,11 +174,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[ITEM_CONTAINER_SELECTOR]',
+    key: '[ITEM_CONTAINER_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[CONTENT_SELECTOR]',
+            key: '[CONTENT_SELECTOR]',
             namedEffect: {
                 type: '[CONTENT_NAMED_EFFECT]'
             },
@@ -200,11 +200,12 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Staggered Text Content Reveal**:
 ```typescript
 {
-    source: '#list-item-1',
+    key: 'list-item-1',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#list-item-1 .content-text',
+            key: 'list-item-1',
+            selector: '.content-text',
             namedEffect: {
                 type: 'FadeScroll'
             },
@@ -216,11 +217,12 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     ]
 },
 {
-    source: '#list-item-2',
+    key: 'list-item-2',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#list-item-2 .content-text',
+            key: 'list-item-2',
+            selector: '.content-text',
             namedEffect: {
                 type: 'FadeScroll'
             },
@@ -236,11 +238,12 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Image Animation Within List Item**:
 ```typescript
 {
-    source: '.product-card',
+    key: 'product-card',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.product-card .hero-image',
+            key: 'product-card',
+            selector: ' .hero-image',
             namedEffect: {
                 type: 'RevealScroll'
             },
@@ -268,11 +271,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[CONTAINER_SELECTOR]',
+            key: '[CONTAINER_KEY]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -292,7 +295,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
-- `[CONTAINER_SELECTOR]`: CSS selector for list container
+- `[CONTAINER_KEY]`: Unique identifier for list container
 - `[UNIQUE_KEYFRAME_EFFECT_NAME]`: unique name for the CSS keyframe effect (can equal `[UNIQUE_EFFECT_ID]` if provided)
 - `[CSS_PROPERTY_N]`: CSS property names ('transform', 'filter', 'opacity', 'backgroundColor')
 - `[START/MID/END_VALUE_N]`: Keyframe values for each property
@@ -301,11 +304,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Multi-Property Container Animation**:
 ```typescript
 {
-    source: '#feature-list-container',
+    key: 'feature-list-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#feature-list-container',
+            key: 'feature-list-container',
             keyframeEffect: {
                 name: 'container-slide',
                 keyframes: [
@@ -327,11 +330,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Container Background Transformation**:
 ```typescript
 {
-    source: '#gallery-wrapper',
+    key: 'gallery-wrapper',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#gallery-background',
+            key: 'gallery-background',
             keyframeEffect: {
                 name: 'bg-transform',
                 keyframes: [
@@ -364,11 +367,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[ITEM_SELECTOR]',
+    key: '[ITEM_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[ITEM_SELECTOR]',
+            key: '[ITEM_KEY]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -388,7 +391,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
-- `[ITEM_SELECTOR]`: CSS selector for individual list items
+- `[ITEM_KEY]`: Unique identifier for individual list items
 - `[RANGE_TYPE]`: 'entry', 'exit', or 'contain' depending on animation phase
 - `[EASING_FUNCTION]`: Easing function to use
 - Other variables same as Rule 4
@@ -396,11 +399,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Complex Item Entrance**:
 ```typescript
 {
-    source: '.timeline-item',
+    key: 'timeline-item',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.timeline-item',
+            key: 'timeline-item',
             keyframeEffect: {
                 name: 'timeline-entrance',
                 keyframes: [
@@ -422,11 +425,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Item Exit Sequence**:
 ```typescript
 {
-    source: '.card-item',
+    key: 'card-item',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.card-item',
+            key: 'card-item',
             keyframeEffect: {
                 name: 'card-exit-6',
                 keyframes: [
@@ -469,7 +472,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     },
     interactions: [
         {
-            source: '[ITEM_SELECTOR_N]',
+            key: '[ITEM_SELECTOR_N]',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -497,7 +500,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     },
     interactions: [
         {
-            source: '#card-1',
+            key: 'card-1',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -506,7 +509,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             ]
         },
         {
-            source: '#card-2',
+            key: 'card-2',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -515,7 +518,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             ]
         },
         {
-            source: '#card-3',
+            key: 'card-3',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -547,7 +550,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     },
     interactions: [
         {
-            source: '#feature-1',
+            key: 'feature-1',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -556,7 +559,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             ]
         },
         {
-            source: '#feature-2',
+            key: 'feature-2',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -565,7 +568,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             ]
         },
         {
-            source: '#feature-3',
+            key: 'feature-3',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -592,11 +595,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Pattern**:
 ```typescript
 {
-    source: '[LIST_CONTAINER_SELECTOR]',
+    key: '[LIST_CONTAINER_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[DYNAMIC_CONTENT_SELECTOR]',
+            key: '[DYNAMIC_CONTENT_SELECTOR]',
             customEffect: (element, progress, params) => {
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_CALCULATION_LOGIC]
@@ -613,8 +616,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
-- `[LIST_CONTAINER_SELECTOR]`: CSS selector for list or section containing dynamic content
-- `[DYNAMIC_CONTENT_SELECTOR]`: CSS selector for elements that will be dynamically updated
+- `[LIST_CONTAINER_KEY]`: Unique identifier for list or section containing dynamic content
+- `[DYNAMIC_CONTENT_KEY]`: Unique identifier for elements that will be dynamically updated
 - `[CUSTOM_CALCULATION_LOGIC]`: JavaScript calculations based on progress
 - `[DYNAMIC_CONTENT_UPDATE]`: Code to update element content
 - `[VISUAL_PROPERTY_UPDATES]`: Code to update visual properties
@@ -622,11 +625,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Scroll-Driven Counter in List**:
 ```typescript
 {
-    source: '#stats-list-container',
+    key: 'stats-list-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.stat-counter',
+            key: 'stat-counter',
             customEffect: (element, progress) => {
                 const targetValue = parseInt(element.dataset.targetValue) || 100;
                 const currentValue = Math.floor(targetValue * progress);
@@ -657,13 +660,13 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Example - Interactive List Progress Tracking**:
 ```typescript
 {
-    source: '#task-list',
+    key: 'task-list',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.task-item',
+            key: 'task-item',
             customEffect: (element, progress) => {
-                const items = element.parentElement.querySelectorAll('.task-item');
+                const items = element.closest('wix-interact-element')?.querySelectorAll('.task-item') || [];
                 const totalItems = items.length;
                 const elementIndex = Array.from(items).indexOf(element);
                 
@@ -718,12 +721,12 @@ Coordinating container, items, and content simultaneously:
 
 ```typescript
 {
-    source: '#complex-list-section',
+    key: 'complex-list-section',
     trigger: 'viewProgress',
     effects: [
         // Background layer
         {
-            target: '#list-background',
+            key: 'list-background',
             keyframeEffect: {
                 name: 'background-parallax',
                 keyframes: [
@@ -738,7 +741,7 @@ Coordinating container, items, and content simultaneously:
         },
         // Container layer
         {
-            target: '#list-container',
+            key: 'list-container',
             keyframeEffect: {
                 name: 'container-slide',
                 keyframes: [
@@ -753,7 +756,7 @@ Coordinating container, items, and content simultaneously:
         },
         // Foreground decorations
         {
-            target: '#list-decorations',
+            key: 'list-decorations',
             keyframeEffect: {
                 name: 'decorations-parallax',
                 keyframes: [
@@ -776,12 +779,12 @@ Adaptive patterns based on screen size and device capabilities:
 ```typescript
 // Desktop version with complex effects
 {
-    source: '#responsive-list',
+    key: 'responsive-list',
     trigger: 'viewProgress',
     conditions: ['desktop-only', 'prefers-motion'],
     effects: [
         {
-            target: '.list-item',
+            key: 'list-item',
             keyframeEffect: {
                 name: 'list-item-complex',
                 keyframes: [
@@ -798,12 +801,12 @@ Adaptive patterns based on screen size and device capabilities:
 },
 // Mobile version with simplified effects
 {
-    source: '#responsive-list',
+    key: 'responsive-list',
     trigger: 'viewProgress',
     conditions: ['mobile-only'],
     effects: [
         {
-            target: '.list-item',
+            key: 'list-item',
             keyframeEffect: {
                 name: 'list-item-simple',
                 keyframes: [

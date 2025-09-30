@@ -10,7 +10,7 @@
 1. **Core API**: `Interact` class with static `create()` method, `InteractConfig` as main configuration object
 2. **Core Types**: 
    - `InteractConfig` structure: `{effects, conditions?, interactions}`
-   - `Interaction`: `{source, trigger, params?, conditions?, effects}`
+   - `Interaction`: `{key, selector? listContainer?, trigger, params?, conditions?, effects}`
    - Effect types: `TimeEffect`, `ScrubEffect`, `TransitionEffect` with union `Effect`
    - `TriggerType`: 7 types (`hover`, `click`, `viewEnter`, `pageVisible`, `animationEnd`, `viewProgress`, `pointerMove`)
 3. **Custom Element**: `<wix-interact-element>` with required `data-wix-path` attribute
@@ -35,7 +35,7 @@
 - Multiple effect types (Time/Scrub/Transition) need different generation strategies
 - Handler registration lifecycle and cleanup patterns must be preserved
 - Integration with motion library's NamedEffect types needs consideration for effect selection
-- Custom element path matching requirements between configuration and DOM
+- Custom element key matching requirements between configuration and DOM
 
 ---
 
@@ -86,7 +86,7 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 #### Stage 1.5: PointerMove Trigger Rules (`pointermove-rules.md`)
 - Consider hit area configuration (`root`/`self`)
 - Consider centering range to animation target using `centeredToTarget` configuration
-- Make effects using keyframeEffect or customEffect to be either symmetric or inversed symmetric
+- Make effects using keyframeEffect or customEffect to be either symmetric or inverse symmetric
 - Rules for pointer-based effects of single elements with namedEffect
 - Rules for pointer-based effects of single elements with customEffect
 - Rules for pointer-based parallax effects of a group of elements with namedEffect
@@ -103,7 +103,7 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 
 **Common Deliverables:**
 - Template for base `InteractConfig` structure validation
-- Shared utilities for path generation and validation
+- Shared utilities for key generation and validation
 - Common effect pattern templates
 
 ### Stage 2: Effect Generation Rules
@@ -119,18 +119,18 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 - Effect selection helper based on trigger type
 
 ### Stage 3: Custom Element and DOM Integration Rules
-**What**: Rules for generating proper `<wix-interact-element>` markup and path management
+**What**: Rules for generating proper `<wix-interact-element>` markup and key management
 **Where**: HTML/JSX generation with proper `data-wix-path` attributes
 **Why**: Required for library function and common source of integration errors
 
 **Deliverables:**
 - Rule for custom element wrapper generation
-- Rule for path selector generation and validation
+- Rule for element key generation and validation
 - Rule for React/JSX integration patterns
 
 ### Stage 4: Advanced Configuration Rules  
 **What**: Rules for conditions, effect references, and complex patterns
-**Where**: Responsive interactions, reusable effects, multi-step animations
+**Where**: Responsive interactions, reusable effects, multistep animations
 **Why**: Enables scaling beyond basic use cases
 
 **Deliverables:**

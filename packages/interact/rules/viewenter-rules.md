@@ -15,7 +15,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -24,7 +24,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -36,8 +36,8 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 ```
 
 **Variables**:
-- `[SOURCE_SELECTOR]`: CSS selector for element that triggers when visible (often same as target)
-- `[TARGET_SELECTOR]`: CSS selector for element to animate (can be same as source or different)
+- `[SOURCE_SELECTOR]`: Unique identifier for element that triggers when visible (often same as target key)
+- `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
 - `[VISIBILITY_THRESHOLD]`: Number between 0-1 indicating how much of element must be visible (e.g., 0.3 = 30%)
 - `[VIEWPORT_INSETS]`: String insets around viewport (e.g., '50px', '10%', '-100px')
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
@@ -50,7 +50,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Example - Hero Section Entrance**:
 ```typescript
 {
-    source: '#hero-section',
+    key: 'hero-section',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -59,7 +59,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '#hero-section',
+            key: 'hero-section',
             keyframeEffect: {
                 name: 'hero-entrance',
                 keyframes: [
@@ -79,7 +79,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Example - Content Block Fade In**:
 ```typescript
 {
-    source: '.content-block',
+    key: 'content-block',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -87,7 +87,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '.content-block',
+            key: 'content-block',
             namedEffect: 'FadeIn',
             duration: 800,
             easing: 'ease-out'
@@ -111,7 +111,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Pattern**:
 ```typescript
 {
-    source: '[OBSERVER_SELECTOR]',
+    key: '[OBSERVER_SELECTOR]',
     trigger: 'viewEnter',
     params: {
         type: 'repeat',
@@ -120,7 +120,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '[ANIMATION_TARGET_SELECTOR]',
+            key: '[ANIMATION_TARGET_SELECTOR]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -139,7 +139,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Example - Image Reveal on Scroll**:
 ```typescript
 {
-    source: '#image-trigger-zone',
+    key: 'image-trigger-zone',
     trigger: 'viewEnter',
     params: {
         type: 'repeat',
@@ -148,7 +148,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '#background-image',
+            key: 'background-image',
             keyframeEffect: {
                 name: 'image-reveal',
                 keyframes: [
@@ -167,7 +167,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Example - Counter Animation Repeat**:
 ```typescript
 {
-    source: '#stats-section',
+    key: 'stats-section',
     trigger: 'viewEnter',
     params: {
         type: 'repeat',
@@ -175,7 +175,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '#counter-display',
+            key: 'counter-display',
             customEffect: (element, progress) => {
                 const targetValue = 1000;
                 const currentValue = Math.floor(targetValue * progress);
@@ -204,7 +204,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Pattern**:
 ```typescript
 {
-    source: '[OBSERVER_SELECTOR]',
+    key: '[OBSERVER_SELECTOR]',
     trigger: 'viewEnter',
     params: {
         type: 'alternate',
@@ -213,7 +213,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            target: '[ANIMATION_TARGET_SELECTOR]',
+            key: '[ANIMATION_TARGET_SELECTOR]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -229,7 +229,7 @@ Same as Rule 2
 **Example - Content Reveal with Hide**:
 ```typescript
 {
-    source: '#content-trigger',
+    key: 'content-trigger',
     trigger: 'viewEnter',
     params: {
         type: 'alternate',
@@ -238,7 +238,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '#sidebar-content',
+            key: 'sidebar-content',
             keyframeEffect: {
                 name: 'content-reveal-hide',
                 keyframes: [
@@ -257,7 +257,7 @@ Same as Rule 2
 **Example - Navigation Bar Reveal**:
 ```typescript
 {
-    source: '#page-content',
+    key: 'page-content',
     trigger: 'viewEnter',
     params: {
         type: 'alternate',
@@ -265,7 +265,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '#floating-nav',
+            key: 'floating-nav',
             keyframeEffect: {
                 name: 'nav-reveal',
                 keyframes: [
@@ -297,7 +297,7 @@ Same as Rule 2
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewEnter',
     params: {
         type: 'state',
@@ -306,7 +306,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -326,7 +326,7 @@ Same as Rule 2
 **Example - Floating Animation Loop**:
 ```typescript
 {
-    source: '#floating-elements',
+    key: 'floating-elements',
     trigger: 'viewEnter',
     params: {
         type: 'state',
@@ -334,7 +334,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '.floating-icon',
+            key: 'floating-icon',
             keyframeEffect: {
                 name: 'floating-loop',
                 keyframes: [
@@ -356,7 +356,7 @@ Same as Rule 2
 **Example - Breathing Light Effect**:
 ```typescript
 {
-    source: '#ambient-section',
+    key: 'ambient-section',
     trigger: 'viewEnter',
     params: {
         type: 'state',
@@ -364,8 +364,10 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '#light-orb',
-            namedEffect: 'Pulse',
+            key: 'light-orb',
+            namedEffect: {
+                type: 'Pulse'
+            },
             duration: 2000,
             easing: 'ease-in-out',
             iterations: Infinity,
@@ -391,7 +393,7 @@ Same as Rule 2
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewEnter',
     params: {
         type: '[BEHAVIOR_TYPE]',
@@ -400,7 +402,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]'
@@ -418,7 +420,7 @@ Same as Rule 2
 **Example - Early Trigger for Tall Elements**:
 ```typescript
 {
-    source: '#tall-hero-section',
+    key: 'tall-hero-section',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -427,8 +429,10 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '#tall-hero-section',
-            namedEffect: 'SlideIn',
+            key: 'tall-hero-section',
+            namedEffect: {
+                type: 'SlideIn'
+            },
             duration: 1200,
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
         }
@@ -439,7 +443,7 @@ Same as Rule 2
 **Example - Late Trigger for Precise Timing**:
 ```typescript
 {
-    source: '#precision-content',
+    key: 'precision-content',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -448,7 +452,7 @@ Same as Rule 2
     },
     effects: [
         {
-            target: '#precision-content',
+            key: 'precision-content',
             keyframeEffect: {
                 name: 'blur',
                 keyframes: [
@@ -467,7 +471,7 @@ Same as Rule 2
 **Example - Mobile vs Desktop Thresholds**:
 ```typescript
 {
-    source: '#responsive-element',
+    key: 'responsive-element',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -477,8 +481,10 @@ Same as Rule 2
     conditions: ['desktop-only'],
     effects: [
         {
-            target: '#responsive-element',
-            namedEffect: 'FadeIn',
+            key: 'responsive-element',
+            namedEffect: {
+                type: 'FadeIn'
+            },
             duration: 800
         }
     ]
@@ -501,7 +507,7 @@ Same as Rule 2
 ```typescript
 [
     {
-        source: '[ELEMENT_1_SELECTOR]',
+        key: '[ELEMENT_1_SELECTOR]',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -518,7 +524,7 @@ Same as Rule 2
         ]
     },
     {
-        source: '[ELEMENT_2_SELECTOR]',
+        key: '[ELEMENT_2_SELECTOR]',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -548,7 +554,7 @@ Same as Rule 2
 ```typescript
 [
     {
-        source: '#card-1',
+        key: 'card-1',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -564,7 +570,7 @@ Same as Rule 2
         ]
     },
     {
-        source: '#card-2',
+        key: 'card-2',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -580,7 +586,7 @@ Same as Rule 2
         ]
     },
     {
-        source: '#card-3',
+        key: 'card-3',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -602,7 +608,7 @@ Same as Rule 2
 ```typescript
 [
     {
-        source: '.feature-item:nth-child(1)',
+        key: 'feature-item:nth-child(1)',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -625,7 +631,7 @@ Same as Rule 2
         ]
     },
     {
-        source: '.feature-item:nth-child(2)',
+        key: 'feature-item:nth-child(2)',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -648,7 +654,7 @@ Same as Rule 2
         ]
     },
     {
-        source: '.feature-item:nth-child(3)',
+        key: 'feature-item:nth-child(3)',
         trigger: 'viewEnter',
         params: {
             type: 'once',
@@ -683,7 +689,7 @@ Using effectId to trigger subsequent animations:
 ```typescript
 // Primary entrance
 {
-    source: '#section-container',
+    key: 'section-container',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -691,8 +697,10 @@ Using effectId to trigger subsequent animations:
     },
     effects: [
         {
-            target: '#section-title',
-            namedEffect: 'FadeIn',
+            key: 'section-title',
+            namedEffect: {
+                type: 'FadeIn'
+            },
             duration: 600,
             effectId: 'title-entrance'
         }
@@ -700,15 +708,17 @@ Using effectId to trigger subsequent animations:
 },
 // Chained content animation
 {
-    source: '#section-title',
+    key: 'section-title',
     trigger: 'animationEnd',
     params: {
         effectId: 'title-entrance'
     },
     effects: [
         {
-            target: '#section-content',
-            namedEffect: 'SlideIn',
+            key: 'section-content',
+            namedEffect: {
+                type: 'SlideIn'
+            },
             duration: 500,
             delay: 100
         }
@@ -721,7 +731,7 @@ Animating multiple targets from single viewport trigger:
 
 ```typescript
 {
-    source: '#hero-trigger',
+    key: 'hero-trigger',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -729,7 +739,7 @@ Animating multiple targets from single viewport trigger:
     },
     effects: [
         {
-            target: '#hero-background',
+            key: 'hero-background',
             keyframeEffect: {
                 name: 'blur-bg',
                 keyframes: [
@@ -742,13 +752,15 @@ Animating multiple targets from single viewport trigger:
             fill: 'backwards'
         },
         {
-            target: '#hero-title',
-            namedEffect: 'SlideIn',
+            key: 'hero-title',
+            namedEffect: {
+                type: 'SlideIn'
+            },
             duration: 800,
             delay: 300
         },
         {
-            target: '#hero-subtitle',
+            key: 'hero-subtitle',
             keyframeEffect: {
                 name: 'subtitle-slide',
                 keyframes: [
@@ -761,7 +773,7 @@ Animating multiple targets from single viewport trigger:
             delay: 600
         },
         {
-            target: '#hero-cta',
+            key: 'hero-cta',
             transition: {
                 duration: 400,
                 delay: 900,
@@ -780,7 +792,7 @@ Combining with conditions for responsive behavior:
 
 ```typescript
 {
-    source: '#responsive-section',
+    key: 'responsive-section',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -789,15 +801,17 @@ Combining with conditions for responsive behavior:
     conditions: ['desktop-only', 'prefers-motion'],
     effects: [
         {
-            target: '#responsive-section',
-            namedEffect: 'ComplexEntrance',
+            key: 'responsive-section',
+            namedEffect: {
+                type: 'ComplexEntrance'
+            },
             duration: 1000
         }
     ]
 },
 // Simplified version for mobile/reduced motion
 {
-    source: '#responsive-section',
+    key: 'responsive-section',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -806,8 +820,10 @@ Combining with conditions for responsive behavior:
     conditions: ['mobile-only'],
     effects: [
         {
-            target: '#responsive-section',
-            namedEffect: 'FadeIn',
+            key: 'responsive-section',
+            namedEffect: {
+                type: 'FadeIn'
+            },
             duration: 400
         }
     ]
@@ -819,7 +835,7 @@ Combining with conditions for responsive behavior:
 ## Best Practices for ViewEnter Interactions
 
 ### Behavior Guildelines
-1. **Use `alternate` and `repeat` types only with a separate `source` and `target`** to avoid re-triggering when animation starts or not triggering at all if animated target is out of viewport or clipped
+1. **Use `alternate` and `repeat` types only with a separate source `key` and target `key`** to avoid re-triggering when animation starts or not triggering at all if animated target is out of viewport or clipped
 
 ### Performance Guidelines
 1. **Use `once` type for entrance animations** to avoid repeated triggers

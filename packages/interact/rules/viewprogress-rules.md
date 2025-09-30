@@ -15,11 +15,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             namedEffect: {
               type: '[NAMED_EFFECT]',
             },
@@ -33,8 +33,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 ```
 
 **Variables**:
-- `[SOURCE_SELECTOR]`: CSS selector for element that tracks scroll progress
-- `[TARGET_SELECTOR]`: CSS selector for element to animate (can be same as source or different)
+- `[SOURCE_SELECTOR]`: Unique identifier for element that tracks scroll progress
+- `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
 - `[NAMED_EFFECT]`: Pre-built effect name (e.g., 'ParallaxScroll', 'PanScroll', 'FlipScroll')
 - `[RANGE_NAME]`: 'cover', 'contain', 'entry', 'exit', 'entry-crossing', or 'exit-crossing'
 - `[START_PERCENTAGE]`: Start point as percentage (0-100)
@@ -45,11 +45,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Background Parallax**:
 ```typescript
 {
-    source: '#hero-section',
+    key: 'hero-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#hero-background',
+            key: 'hero-background',
             namedEffect: {
                 type: 'BgParallax'
             },
@@ -64,11 +64,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Floating Element Scroll Response**:
 ```typescript
 {
-    source: '#content-section',
+    key: 'content-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.floating-decoration',
+            key: 'floating-decoration',
             namedEffect: {
                 type: 'MoveScroll'
             },
@@ -96,11 +96,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             namedEffect: {
                 type: '[ENTRANCE_EFFECT]'
             },
@@ -122,11 +122,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Content Reveal on Entry**:
 ```typescript
 {
-    source: '#content-block',
+    key: 'content-block',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#content-block',
+            key: 'content-block',
             namedEffect: {
                 type: 'RevealScroll'
             },
@@ -141,11 +141,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Progressive Image Reveal**:
 ```typescript
 {
-    source: '#image-container',
+    key: 'image-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#feature-image',
+            key: 'feature-image',
             namedEffect: {
                 type: 'FadeScroll'
             },
@@ -173,11 +173,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             namedEffect: {
                 type: '[EXIT_EFFECT]'
             },
@@ -199,11 +199,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Content Fade Out on Exit**:
 ```typescript
 {
-    source: '#hero-content',
+    key: 'hero-content',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#hero-text',
+            key: 'hero-text',
             namedEffect: {
                 type: 'FadeScroll'
             },
@@ -218,11 +218,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Navigation Hide on Scroll Out**:
 ```typescript
 {
-    source: '#main-content',
+    key: 'main-content',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#floating-nav',
+            key: 'floating-nav',
             namedEffect: {
                 type: 'SlideScroll'
             },
@@ -250,11 +250,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -282,11 +282,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Custom Background Parallax**:
 ```typescript
 {
-    source: '#parallax-section',
+    key: 'parallax-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#parallax-bg',
+            key: 'parallax-bg',
             keyframeEffect: {
                 name: 'parallax-bg',
                 keyframes: [
@@ -307,11 +307,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Example - Multi-Layer Scroll Effect**:
 ```typescript
 {
-    source: '#complex-section',
+    key: 'complex-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#background-layer',
+            key: 'background-layer',
             keyframeEffect: {
                 name: 'bg-scroll',
                 keyframes: [
@@ -344,11 +344,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -372,11 +372,11 @@ Same as Rule 4, with focus on entry range
 **Example - Custom Card Entrance**:
 ```typescript
 {
-    source: '#card-section',
+    key: 'card-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.product-card',
+            key: 'product-card',
             keyframeEffect: {
                 name: 'card-entrance',
                 keyframes: [
@@ -396,11 +396,11 @@ Same as Rule 4, with focus on entry range
 **Example - Text Progressive Reveal**:
 ```typescript
 {
-    source: '#text-container',
+    key: 'text-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#main-heading',
+            key: 'main-heading',
             keyframeEffect: {
                 name: 'heading-reveal',
                 keyframes: [
@@ -433,11 +433,11 @@ Same as Rule 4, with focus on entry range
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -461,11 +461,11 @@ Same as Rule 4, with focus on exit range
 **Example - Hero Content Exit**:
 ```typescript
 {
-    source: '#hero-section',
+    key: 'hero-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#hero-content',
+            key: 'hero-content',
             keyframeEffect: {
                 name: 'hero-content-animation',
                 keyframes: [
@@ -485,11 +485,11 @@ Same as Rule 4, with focus on exit range
 **Example - Navigation Scroll Hide**:
 ```typescript
 {
-    source: '#main-header',
+    key: 'main-header',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#sticky-nav',
+            key: 'sticky-nav',
             keyframeEffect: {
                 name: 'nav-hide',
                 keyframes: [
@@ -522,11 +522,11 @@ Same as Rule 4, with focus on exit range
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             customEffect: (element, progress, params) => {
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_ANIMATION_LOGIC]
@@ -547,11 +547,11 @@ Same as Rule 4, with focus on exit range
 **Example - Scroll Counter Update**:
 ```typescript
 {
-    source: '#stats-section',
+    key: 'stats-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#progress-counter',
+            key: 'progress-counter',
             customEffect: (element, progress) => {
                 const currentValue = Math.floor(progress * 100);
                 element.textContent = `${currentValue}%`;
@@ -569,11 +569,11 @@ Same as Rule 4, with focus on exit range
 **Example - Complex Particle Animation**:
 ```typescript
 {
-    source: '#particle-container',
+    key: 'particle-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#particle-canvas',
+            key: 'particle-canvas',
             customEffect: (element, progress) => {
                 const particles = element.querySelectorAll('.particle');
                 particles.forEach((particle, index) => {
@@ -615,11 +615,11 @@ Same as Rule 4, with focus on exit range
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             customEffect: (element, progress, params) => {
                 // progress is 0-1 representing entry progress
                 [ENTRY_ANIMATION_LOGIC]
@@ -640,11 +640,11 @@ Same as Rule 4, with focus on exit range
 **Example - Dynamic Text Reveal**:
 ```typescript
 {
-    source: '#text-section',
+    key: 'text-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#animated-text',
+            key: 'animated-text',
             customEffect: (element, progress) => {
                 const text = element.dataset.fullText || element.textContent;
                 const visibleLength = Math.floor(text.length * progress);
@@ -666,11 +666,11 @@ Same as Rule 4, with focus on exit range
 **Example - Progressive Chart Fill**:
 ```typescript
 {
-    source: '#chart-container',
+    key: 'chart-container',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.chart-bar',
+            key: 'chart-bar',
             customEffect: (element, progress) => {
                 const targetHeight = element.dataset.targetHeight || 100;
                 const currentHeight = targetHeight * progress;
@@ -704,11 +704,11 @@ Same as Rule 4, with focus on exit range
 **Pattern**:
 ```typescript
 {
-    source: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_SELECTOR]',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '[TARGET_SELECTOR]',
+            key: '[TARGET_SELECTOR]',
             customEffect: (element, progress, params) => {
                 // progress is 0-1 representing exit progress
                 [EXIT_ANIMATION_LOGIC]
@@ -729,11 +729,11 @@ Same as Rule 4, with focus on exit range
 **Example - Dissolve Effect Exit**:
 ```typescript
 {
-    source: '#content-section',
+    key: 'content-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#dissolving-content',
+            key: 'dissolving-content',
             customEffect: (element, progress) => {
                 const particles = element.querySelectorAll('.content-particle');
                 const dissolveProgress = progress;
@@ -762,13 +762,13 @@ Same as Rule 4, with focus on exit range
 **Example - Data Visualization Exit**:
 ```typescript
 {
-    source: '#data-visualization',
+    key: 'data-visualization',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '.data-point',
+            key: 'data-point',
             customEffect: (element, progress) => {
-                const dataPoints = element.parentElement.querySelectorAll('.data-point');
+                const dataPoints = element.closest('wix-interact-element')?.querySelectorAll('.data-point') || [];
                 const totalPoints = dataPoints.length;
                 const elementIndex = Array.from(dataPoints).indexOf(element);
                 
@@ -802,12 +802,12 @@ Combining different ranges for complex scroll animations:
 
 ```typescript
 {
-    source: '#complex-section',
+    key: 'complex-section',
     trigger: 'viewProgress',
     effects: [
         // Entry phase
         {
-            target: '#section-content',
+            key: 'section-content',
             keyframeEffect: {
                 name: 'content-entrance',
                 keyframes: [
@@ -822,7 +822,7 @@ Combining different ranges for complex scroll animations:
         },
         // Cover phase
         {
-            target: '#background-element',
+            key: 'background-element',
             keyframeEffect: {
                 name: 'background-parallax-hue',
                 keyframes: [
@@ -837,7 +837,7 @@ Combining different ranges for complex scroll animations:
         },
         // Exit phase
         {
-            target: '#section-content',
+            key: 'section-content',
             keyframeEffect: {
                 name: 'content-exit',
                 keyframes: [
@@ -859,12 +859,12 @@ Responsive scroll animations:
 
 ```typescript
 {
-    source: '#responsive-parallax',
+    key: 'responsive-parallax',
     trigger: 'viewProgress',
     conditions: ['desktop-only', 'prefers-motion'],
     effects: [
         {
-            target: '#parallax-bg',
+            key: 'parallax-bg',
             keyframeEffect: {
                 name: 'parallax-bg',
                 keyframes: [
@@ -881,12 +881,12 @@ Responsive scroll animations:
 },
 // Simplified version for mobile
 {
-    source: '#responsive-parallax',
+    key: 'responsive-parallax',
     trigger: 'viewProgress',
     conditions: ['mobile-only'],
     effects: [
         {
-            target: '#parallax-bg',
+            key: 'parallax-bg',
             keyframeEffect: {
                 name: 'fade-out-bg',
                 keyframes: [
@@ -908,11 +908,11 @@ Orchestrating multiple elements with viewProgress:
 
 ```typescript
 {
-    source: '#orchestrated-section',
+    key: 'orchestrated-section',
     trigger: 'viewProgress',
     effects: [
         {
-            target: '#bg-layer-1',
+            key: 'bg-layer-1',
             keyframeEffect: {
                 name: 'layer-1-parallax',
                 keyframes: [
@@ -926,7 +926,7 @@ Orchestrating multiple elements with viewProgress:
             fill: 'both'
         },
         {
-            target: '#bg-layer-2',
+            key: 'bg-layer-2',
             keyframeEffect: {
                 name: 'layer-2-parallax',
                 keyframes: [
@@ -940,7 +940,7 @@ Orchestrating multiple elements with viewProgress:
             fill: 'both'
         },
         {
-            target: '#fg-content',
+            key: 'fg-content',
             keyframeEffect: {
                 name: 'layer-3-parallax',
                 keyframes: [
