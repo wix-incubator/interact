@@ -123,12 +123,13 @@ This document contains rules for generating hover trigger interactions in `@wix/
 - Other variables same as Rule 1
 
 **Available Named Effects for Hover**:
-- `ExpandIn`, `Pulse` - Size changes
-- `FadeIn`, `Flash` - Opacity changes
-- `BlurIn` - Blur effects
-- `GlitchIn`, `SlideIn`, `BounceIn`, `Bounce`, `Cross` - Translation effects
-- `TiltIn`, `ArcIn`, `SpinIn`, `TurnIn`, `Spin`, `Swing` - Rotation effects
-- Spatial effects that change the hit-area of the animated element considerably (e.g. Translation effects, Rotation effects, etc.) should have different source and target to avoid unwanted flickering.
+- **Size Changes**: `ExpandIn`, `Pulse`, `GrowIn`
+- **Opacity/Blur Changes**: `FadeIn`, `Flash`, `BlurIn`
+- **Translation Effects**: `SlideIn`, `GlideIn`, `FloatIn`, `BounceIn`, `GlitchIn`
+- **Rotation Effects**: `SpinIn`, `TiltIn`, `ArcIn`, `TurnIn`, `FlipIn`, `Spin`, `Swing`
+- **Special Attention Effects**: `Bounce`, `DropIn`, `Rubber`, `Jello`, `Cross`, `Wiggle`, `Poke`
+
+**Important**: Spatial effects that change the hit-area considerably (translation, rotation) should use different source and target keys to avoid unwanted flickering on hover enter/leave.
 
 **Default Values**:
 - `type`: 'alternate' (plays forward on enter, reverses on leave)
@@ -147,14 +148,18 @@ This document contains rules for generating hover trigger interactions in `@wix/
     effects: [
         {
             key: 'feature-card',
-            namedEffect: { type: 'Pulse' },
+            namedEffect: { 
+                type: 'Pulse',
+                power: 'soft'
+            },
+            fill: 'both',
             duration: 250,
             easing: 'ease-out'
         }
     ]
 }
 
-// Icon tilt effect
+// Icon rotation effect (different source/target to avoid flickering)
 {
     key: 'button',
     trigger: 'hover',
@@ -164,10 +169,14 @@ This document contains rules for generating hover trigger interactions in `@wix/
     effects: [
         {
             key: 'button-icon',
-            namedEffect: { type: 'TiltIn' },
+            namedEffect: { 
+                type: 'SpinIn',
+                direction: 'clockwise',
+                power: 'soft'
+            },
             fill: 'both',
             duration: 200,
-            easing: 'ease-in-out'
+            easing: 'ease-out'
         }
     ]
 }

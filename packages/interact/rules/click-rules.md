@@ -57,7 +57,8 @@ These rules help generate click-based interactions using the `@wix/interact` lib
             key: 'mobile-nav',
             namedEffect: {
                 type: 'SlideIn',
-                direction: 'left'
+                direction: 'left',
+                power: 'medium'
             },
             fill: 'both',
             reversed: true,
@@ -259,7 +260,11 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     effects: [
         {
             key: 'success-badge',
-            namedEffect: { type: 'BounceIn' },
+            namedEffect: { 
+                type: 'BounceIn',
+                direction: 'center',
+                power: 'medium'
+            },
             duration: 600,
             easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             delay: 300,

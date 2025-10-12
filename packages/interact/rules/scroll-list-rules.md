@@ -34,7 +34,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 **Variables**:
 - `[CONTAINER_KEY]`: Unique identifier for sticky list container
-- `[CONTAINER_NAMED_EFFECT]`: Container-level effects ('BgParallax', 'PanScroll', 'BgPan', 'BgReveal')
+- `[CONTAINER_NAMED_EFFECT]`: Container-level scroll effects ('BgParallax', 'PanScroll', 'MoveScroll', 'ParallaxScroll') or background effects ('BgPan', 'BgZoom', 'BgFade', 'BgReveal')
 - `[START_PERCENTAGE]`: Start point in contain range (typically 0)
 - `[END_PERCENTAGE]`: End point in contain range (typically 100)
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier
@@ -113,8 +113,13 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 **Variables**:
 - `[ITEM_KEY]`: Unique identifier for individual list items
-- `[ITEM_NAMED_EFFECT]`: Item-level effects ('FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll', 'MoveScroll', 'ShuttersScroll', 'GrowScroll', 'ShrinkScroll', 'SpinScroll', 'ArcScroll')
-- `[RANGE_TYPE]`: 'entry' for entrance, 'exit' for exit, 'contain' for during sticky
+- `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion scroll animations:
+  - **Reveal/Fade**: 'FadeScroll', 'BlurScroll', 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
+  - **Movement**: 'MoveScroll', 'SlideScroll', 'PanScroll', 'SkewPanScroll'
+  - **Scale**: 'GrowScroll', 'ShrinkScroll', 'StretchScroll'
+  - **Rotation**: 'SpinScroll', 'FlipScroll', 'TiltScroll', 'TurnScroll'
+  - **3D**: 'ArcScroll', 'Spin3dScroll'
+- `[RANGE_TYPE]`: 'entry' for entrance, 'exit' for exit, 'contain' for during sticky, 'cover' for full scroll range
 - `[START_PERCENTAGE]`: Range start percentage (0-100)
 - `[END_PERCENTAGE]`: Range end percentage (0-100)
 - `[EASING_FUNCTION]`: Timing function
@@ -128,7 +133,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
         {
             key: 'list-item',
             namedEffect: {
-                type: 'RevealScroll'
+                type: 'RevealScroll',
+                direction: 'bottom'
             },
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
@@ -194,7 +200,12 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Variables**:
 - `[ITEM_CONTAINER_SELECTOR]`: CSS selector for the containing list item
 - `[CONTENT_SELECTOR]`: CSS selector for content within the item
-- `[CONTENT_NAMED_EFFECT]`: Content-level effects ('FadeScroll', 'RevealScroll', 'TiltScroll', 'FlipScroll', 'BlurScroll')
+- `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion:
+  - **Opacity/Visibility**: 'FadeScroll', 'BlurScroll'
+  - **Reveal**: 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
+  - **3D Transforms**: 'TiltScroll', 'FlipScroll', 'ArcScroll', 'TurnScroll', 'Spin3dScroll'
+  - **Movement**: 'MoveScroll', 'SlideScroll'
+  - **Scale**: 'GrowScroll', 'ShrinkScroll'
 - Other variables same as Rule 2
 
 **Example - Staggered Text Content Reveal**:

@@ -35,7 +35,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Variables**:
 - `[SOURCE_SELECTOR]`: Unique identifier for element that tracks scroll progress
 - `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
-- `[NAMED_EFFECT]`: Pre-built effect name (e.g., 'ParallaxScroll', 'PanScroll', 'FlipScroll')
+- `[NAMED_EFFECT]`: Pre-built scroll effect name from @wix/motion (e.g., 'ParallaxScroll', 'MoveScroll', 'FadeScroll', 'RevealScroll', 'GrowScroll', 'SlideScroll', 'SpinScroll', 'PanScroll', 'BlurScroll', 'ArcScroll', 'FlipScroll', 'Spin3dScroll', 'TiltScroll', 'TurnScroll', 'ShapeScroll', 'ShuttersScroll', 'ShrinkScroll', 'SkewPanScroll', 'StretchScroll')
 - `[RANGE_NAME]`: 'cover', 'contain', 'entry', 'exit', 'entry-crossing', or 'exit-crossing'
 - `[START_PERCENTAGE]`: Start point as percentage (0-100)
 - `[END_PERCENTAGE]`: End point as percentage (0-100)
@@ -70,7 +70,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'floating-decoration',
             namedEffect: {
-                type: 'MoveScroll'
+                type: 'MoveScroll',
+                direction: 45  // 45-degree angle movement
             },
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
@@ -114,7 +115,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 ```
 
 **Variables**:
-- `[ENTRANCE_EFFECT]`: Named entrance effect (e.g., 'FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll')
+- `[ENTRANCE_EFFECT]`: Named entrance effect from @wix/motion scroll animations (e.g., 'FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll', 'GrowScroll', 'MoveScroll', 'BlurScroll')
 - `[ENTRY_START]`: Entry animation start percentage (typically 0-30)
 - `[ENTRY_END]`: Entry animation end percentage (typically 70-100)
 - Other variables same as Rule 1
@@ -128,7 +129,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'content-block',
             namedEffect: {
-                type: 'RevealScroll'
+                type: 'RevealScroll',
+                direction: 'bottom'
             },
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },

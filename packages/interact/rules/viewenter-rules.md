@@ -88,9 +88,12 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     effects: [
         {
             key: 'content-block',
-            namedEffect: 'FadeIn',
+            namedEffect: {
+                type: 'FadeIn'
+            },
             duration: 800,
-            easing: 'ease-out'
+            easing: 'ease-out',
+            fill: 'backwards'
         }
     ]
 }
@@ -562,9 +565,14 @@ Same as Rule 2
         },
         effects: [
             {
-                namedEffect: 'SlideIn',
+                namedEffect: {
+                    type: 'SlideIn',
+                    direction: 'bottom',
+                    power: 'medium'
+                },
                 duration: 600,
                 easing: 'ease-out',
+                fill: 'backwards',
                 delay: 0
             }
         ]
@@ -578,9 +586,14 @@ Same as Rule 2
         },
         effects: [
             {
-                namedEffect: 'SlideIn',
+                namedEffect: {
+                    type: 'SlideIn',
+                    direction: 'bottom',
+                    power: 'medium'
+                },
                 duration: 600,
                 easing: 'ease-out',
+                fill: 'backwards',
                 delay: 150
             }
         ]
@@ -594,9 +607,14 @@ Same as Rule 2
         },
         effects: [
             {
-                namedEffect: 'SlideIn',
+                namedEffect: {
+                    type: 'SlideIn',
+                    direction: 'bottom',
+                    power: 'medium'
+                },
                 duration: 600,
                 easing: 'ease-out',
+                fill: 'backwards',
                 delay: 300
             }
         ]
