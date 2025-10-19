@@ -104,7 +104,7 @@ These rules help generate pointer-driven interactions using the `@wix/interact` 
 **Variables**:
 - `[MOVEMENT_EFFECT_TYPE]`: 'TrackMouse', 'AiryMouse', 'BounceMouse'
 - `[DISTANCE_VALUE]`: Numeric value for movement distance
-- `[DISTANCE_UNIT]`: 'px', '%', 'vw', 'vh'
+- `[DISTANCE_UNIT]`: 'px', 'percentage', 'vw', 'vh'
 - `[AXIS_CONSTRAINT]`: 'both', 'horizontal', 'vertical'
 - `[POWER_LEVEL]`: 'soft', 'medium', 'hard'
 - Other variables same as Rule 1

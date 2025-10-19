@@ -51,7 +51,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'hero-background',
             namedEffect: {
-                type: 'BgParallax'
+                type: 'ParallaxScroll'
             },
             rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
@@ -71,7 +71,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             key: 'floating-decoration',
             namedEffect: {
                 type: 'MoveScroll',
-                direction: 45  // 45-degree angle movement
+                angle: 45  // 45-degree angle movement
             },
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
@@ -130,7 +130,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             key: 'content-block',
             namedEffect: {
                 type: 'RevealScroll',
-                direction: 'bottom'
+                direction: 'left'
             },
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
@@ -181,7 +181,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: '[TARGET_SELECTOR]',
             namedEffect: {
-                type: '[EXIT_EFFECT]'
+                type: '[EXIT_EFFECT]',
+                range: 'out'
             },
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: [EXIT_START] } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: [EXIT_END] } },
@@ -207,7 +208,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'hero-text',
             namedEffect: {
-                type: 'FadeScroll'
+                type: 'FadeScroll',
+                range: 'out'
             },
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 50 } },
@@ -226,7 +228,9 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'floating-nav',
             namedEffect: {
-                type: 'SlideScroll'
+                type: 'SlideScroll',
+                direction: 'top',
+                range: 'out'
             },
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: 20 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 80 } },
@@ -820,7 +824,7 @@ Combining different ranges for complex scroll animations:
             rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 50 } },
             easing: 'ease-out',
-            fill: 'both'
+            fill: 'backwards'
         },
         // Cover phase
         {
@@ -850,7 +854,7 @@ Combining different ranges for complex scroll animations:
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: 50 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
             easing: 'ease-in',
-            fill: 'both'
+            fill: 'forwards'
         }
     ]
 }
@@ -970,9 +974,9 @@ Orchestrating multiple elements with viewProgress:
 ### Range Configuration Guidelines
 1. **Use appropriate range names**:
    - `entry`: For animations that happen as element enters viewport
-   - `cover`: For animations while element is crossing viewport  
+   - `cover`: For animations while element is intersecting viewport  
    - `exit`: For animations as element leaves viewport
-   - `contain`: For animations while element contains viewport
+   - `contain`: For animations while element is contained within viewport
 
 2. **Offset Guidelines**:
    - **0-100 values**: Represent percentage of the range
