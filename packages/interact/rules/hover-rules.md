@@ -24,8 +24,8 @@ This document contains rules for generating hover trigger interactions in `@wix/
 ```
 
 **Variables**:
-- `[SOURCE_IDENTIFIER]`: Unique identifier for hoverable element (e.g., '#menu-button', '#accordion-header'). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
-- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
+- `[SOURCE_IDENTIFIER]`: Unique identifier for hoverable element (e.g., '#menu-button', '#accordion-header'). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
+- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
 - `[EFFECT_DEFINITION]`: Named effect object (e.g., { type: 'SlideIn', ...params }, { type: 'FadeIn', ...params }) or keyframe object (e.g., { name: 'custom-fade', keyframes: [{ opacity: 0 }, { opacity: 1 }] }, { name: 'custom-slide', keyframes: [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }] })
 - `[DURATION_MS]`: Animation duration in milliseconds (typically 200-500ms for micro-interactions)

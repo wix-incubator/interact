@@ -1,7 +1,7 @@
 ## Phase 1: Context Summary
 
 **Tools Utilized & Key Discoveries:**
-- Used `read_file` on core files (`interact.ts`, `types.ts`, `WixInteractElement.ts`, `utils.ts`) to understand the main API structure and configuration patterns
+- Used `read_file` on core files (`interact.ts`, `types.ts`, `InteractElement.ts`, `utils.ts`) to understand the main API structure and configuration patterns
 - Used `list_dir` to explore package structure and handlers organization, discovering modular trigger system
 - Used `file_search` to find examples documentation with common usage patterns
 - Used `read_file` on motion types and handler implementations to understand effect integration patterns
@@ -13,7 +13,7 @@
    - `Interaction`: `{key, selector? listContainer?, trigger, params?, conditions?, effects}`
    - Effect types: `TimeEffect`, `ScrubEffect`, `TransitionEffect` with union `Effect`
    - `TriggerType`: 7 types (`hover`, `click`, `viewEnter`, `pageVisible`, `animationEnd`, `viewProgress`, `pointerMove`)
-3. **Custom Element**: `<wix-interact-element>` with required `data-wix-path` attribute
+3. **Custom Element**: `<interact-element>` with required `data-interact-key` attribute
 4. **Handler System**: Modular trigger handlers in `/src/handlers/` with consistent `add/remove` pattern
 5. **Motion Integration**: Named effects from `@wix/motion` (FadeIn, SlideIn, etc.) and custom keyframe effects
 
@@ -144,13 +144,13 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 - Rule for inline effects vs reusable effects with `effectId` references
 
 ### Stage 4: Custom Element and DOM Integration Rules
-**What**: Rules for generating proper `<wix-interact-element>` markup and key management
-**Where**: HTML/JSX generation with proper `data-wix-path` attributes
+**What**: Rules for generating proper `<interact-element>` markup and key management
+**Where**: HTML/JSX generation with proper `data-interact-key` attributes
 **Why**: Required for library function and common source of integration errors
 
 **Deliverables:**
 - Rule for custom element wrapper generation
-- Rule for element key generation and validation (matching data-wix-path to config key)
+- Rule for element key generation and validation (matching data-interact-key to config key)
 - Rule for React/JSX integration patterns
 - Rule for Vue/Angular custom element usage
 - Rule for ensuring at least one child element exists

@@ -906,7 +906,7 @@ Controlling movement direction for specific design needs:
 
 **Effects not triggering**:
 - Verify source element exists and is visible
-- Check `data-wix-path` matches CSS selector
+- Check `data-interact-key` matches CSS selector
 - Ensure proper hit area configuration
 - Test mouse event propagation
 

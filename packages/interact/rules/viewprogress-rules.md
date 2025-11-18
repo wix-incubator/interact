@@ -774,7 +774,7 @@ Same as Rule 4, with focus on exit range
         {
             key: 'data-point',
             customEffect: (element, progress) => {
-                const dataPoints = element.closest('wix-interact-element')?.querySelectorAll('.data-point') || [];
+                const dataPoints = element.closest('interact-element')?.querySelectorAll('.data-point') || [];
                 const totalPoints = dataPoints.length;
                 const elementIndex = Array.from(dataPoints).indexOf(element);
                 

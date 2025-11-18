@@ -35,8 +35,8 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
-- `[SOURCE_IDENTIFIER]`: Unique identifier for clickable element (e.g., 'menu-button', 'accordion-header'). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
-- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-wix-path attribute on the wrapping wix-interact-element.
+- `[SOURCE_IDENTIFIER]`: Unique identifier for clickable element (e.g., 'menu-button', 'accordion-header'). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
+- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
 - `[EFFECT_DEFINITION]`: Named effect object (e.g., { type: 'SlideIn', ...params }, { type: 'FadeIn', ...params }) or keyframe object (e.g., { name: 'custom-fade', keyframes: [{ opacity: 0 }, { opacity: 1 }] }, { name: 'custom-slide', keyframes: [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }] })
 - `[INITIAL_REVERSED_BOOL]`: Optional boolean value indicating whether the first toggle should play the reversed animation.

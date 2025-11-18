@@ -677,7 +677,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
         {
             key: 'task-item',
             customEffect: (element, progress) => {
-                const items = element.closest('wix-interact-element')?.querySelectorAll('.task-item') || [];
+                const items = element.closest('interact-element')?.querySelectorAll('.task-item') || [];
                 const totalItems = items.length;
                 const elementIndex = Array.from(items).indexOf(element);
                 
