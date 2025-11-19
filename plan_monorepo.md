@@ -55,10 +55,10 @@
   - `apps/docs/tsconfig.json` extending `../../tsconfig.base.json`.
   - `apps/docs/vite.config.ts` configured for React with TS.
 - **Workspace wiring to core library**:
-  - Add `"@interact/core": "*"` as a dependency in `apps/docs/package.json` so it is resolved through the workspace.
+  - Add `"@wix/interact": "*"` as a dependency in `apps/docs/package.json` so it is resolved through the workspace.
   - Use path aliases in `tsconfig.json` and/or Vite aliases to make imports from the library ergonomic if needed.
 - **Docs content scaffolding**:
-  - Create basic pages for introduction and component examples, importing components and utilities from `@interact/core`.
+  - Create basic pages for introduction and component examples, importing components and utilities from `@wix/interact`.
 
 ### 4. Create the demo app (separate from docs)
 
@@ -70,7 +70,7 @@
 - **Config and dependencies**:
   - `apps/demo/tsconfig.json` extending `../../tsconfig.base.json`.
   - `apps/demo/vite.config.ts` for React with TS.
-  - `apps/demo/package.json` depending on `"@interact/core": "*`, wired via npm workspaces.
+  - `apps/demo/package.json` depending on `"@wix/interact": "*`, wired via npm workspaces.
 
 ### 5. Shared configuration and developer experience
 
