@@ -1,0 +1,43 @@
+{
+  "name": "interact",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "dev:docs": "npm run dev --workspace apps/docs",
+    "dev:demo": "npm run dev --workspace apps/demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/interact.git"
+  },
+  "keywords": [
+    "animation",
+    "javascript",
+    "css",
+    "waapi"
+  ],
+  "author": {
+    "name": "wow!Team",
+    "email": "wow-dev@wix.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix-incubator/interact/issues"
+  },
+  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,119 @@
+import { AnimationGroupOptions, RangeOffset } from './types';
+
+/**
+ * @class AnimationGroup
+ *
+ * A wrapper object for simulating a GroupEffect and managing multiple animations.
+ * See: https://www.w3.org/TR/web-animations-2/#grouping-and-synchronization
+ */
+export class AnimationGroup {
+  animations: (Animation & {
+    start?: RangeOffset;
+    end?: RangeOffset;
+  })[];
+  options?: AnimationGroupOptions;
+  ready: Promise<void>;
+  isCSS: boolean;
+
+  constructor(animations: Animation[], options?: AnimationGroupOptions) {
+    this.animations = animations;
+    this.options = options;
+    this.ready = options?.measured || Promise.resolve();
+    this.isCSS = animations[0] instanceof CSSAnimation;
+  }
+
+  getProgress() {
+    return this.animations[0]?.effect?.getComputedTiming().progress || 0;
+  }
+
+  async play(callback?: () => void): Promise<void> {
+    await this.ready;
+
+    for (const animation of this.animations) {
+      animation.play();
+    }
+
+    // TODO: Wait for all animations to be ready, using allSettled to handle rejections gracefully
+    // await Promise.allSettled(
+    await Promise.all(this.animations.map((animation) => animation.ready));
+
+    if (callback) {
+      callback();
+    }
+  }
+
+  pause() {
+    for (const animation of this.animations) {
+      animation.pause();
+    }
+  }
+
+  async reverse(callback?: () => void): Promise<void> {
+    await this.ready;
+
+    for (const animation of this.animations) {
+      animation.reverse();
+    }
+
+    // TODO: Wait for all animations to be ready, using allSettled to handle rejections gracefully
+    // await Promise.allSettled(
+    await Promise.all(this.animations.map((animation) => animation.ready));
+
+    if (callback) {
+      callback();
+    }
+  }
+
+  progress(p: number) {
+    for (const animation of this.animations) {
+      const { activeDuration } = animation.effect!.getComputedTiming();
+      const { delay } = animation.effect!.getTiming();
+      animation.currentTime =
+        ((delay || 0) + ((activeDuration as number) || 0)) * p;
+    }
+  }
+
+  cancel() {
+    for (const animation of this.animations) {
+      animation.cancel();
+    }
+  }
+
+  setPlaybackRate(rate: number) {
+    for (const animation of this.animations) {
+      animation.playbackRate = rate;
+    }
+  }
+
+  async onFinish(callback: () => void): Promise<void> {
+    try {
+      await Promise.all(this.animations.map((animation) => animation.finished));
+
+      const a = this.animations[0];
+
+      if (a && !this.isCSS) {
+        const target = (a.effect as KeyframeEffect)?.target;
+
+        if (target) {
+          const endEvent = new Event('animationend');
+          target.dispatchEvent(endEvent);
+        }
+      }
+
+      callback();
+    } catch (_error) {
+      console.warn(
+        'animation was interrupted - aborting onFinish callback - ',
+        _error,
+      );
+    }
+  }
+
+  get finished() {
+    return Promise.all(this.animations.map((animation) => animation.finished));
+  }
+
+  get playState() {
+    return this.animations[0]?.playState;
+  }
+}

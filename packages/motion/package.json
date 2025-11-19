@@ -1,0 +1,65 @@
+{
+  "name": "@wix/motion",
+  "version": "1.0.0",
+  "description": "High-performance animation toolkit for the web, powering Wix motion presets and tooling.",
+  "license": "MIT",
+  "main": "dist/cjs/motion.js",
+  "module": "dist/es/motion.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/es/motion.js",
+      "require": "./dist/cjs/motion.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite dev --open",
+    "build": "rimraf dist && npm run build:types && vite build",
+    "build:types": "tsc",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "animation",
+    "motion",
+    "web-animations",
+    "browser",
+    "effects",
+    "typescript"
+  ],
+  "author": {
+    "name": "wow!Team",
+    "email": "wow-dev@wix.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wix-incubator/interact"
+  },
+  "bugs": {
+    "url": "https://github.com/wix-incubator/interact/issues"
+  },
+  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "fastdom": "^1.0.11"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vitest": "^3.0.9"
+  }
+}
+
