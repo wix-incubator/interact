@@ -330,7 +330,7 @@ describe('interact', () => {
 
     // Mock CSSStyleSheet
     (window as any).CSSStyleSheet = class CSSStyleSheet {
-      constructor(_: string) {
+      constructor() {
         return { replace: vi.fn(), insertRule: vi.fn() };
       }
     };
