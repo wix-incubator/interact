@@ -13,6 +13,56 @@ import { createTransitionCSS, getMediaQuery } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { removeListItems } from './remove';
+
+function _reconcile(
+  root: IInteractElement,
+  key: string,
+  instance: Interact,
+): void {
+  // Find all elements involved in this interaction key to ensure we clean up children too
+  const selectors = [...(instance.get(key)?.selectors.values() || [])].join(
+    ',',
+  );
+  const childElements = selectors
+    ? Array.from(root.querySelectorAll(selectors))
+    : [];
+  const elements = [root, ...childElements] as HTMLElement[];
+
+  // Remove all interactions from these elements
+  removeListItems(elements);
+
+  // Clear the interaction state for this key to allow re-adding
+  instance.clearInteractionStateForKey(key);
+
+  // Re-run the add logic
+  add(root, key);
+}
+
+function _setupMediaQueryListener(
+  instance: Interact,
+  id: string,
+  mql: MediaQueryList,
+  key: string,
+  callback: () => void,
+) {
+  if (instance.mediaQueryListeners.has(id)) {
+    return;
+  }
+
+  const handler = () => {
+    callback();
+  };
+
+  mql.addEventListener('change', handler);
+
+  instance.mediaQueryListeners.set(id, {
+    mql,
+    handler,
+    key,
+  });
+}
+
 
 function _getElementsFromData(
   data: Interaction | Effect,
@@ -159,6 +209,18 @@ function _addInteraction(
       instance.dataCache.conditions,
     );
 
+    if (mql) {
+      _setupMediaQueryListener(
+        instance,
+        interactionId,
+        mql,
+        sourceKey,
+        () => {
+          _reconcile(sourceRoot, sourceKey, instance);
+        },
+      );
+    }
+
     if (!mql || mql.matches) {
       interactionVariations[interactionId!] = true;
 
@@ -248,6 +310,19 @@ function addEffectsForTarget(
         effectOptions.conditions || [],
         instance!.dataCache.conditions,
       );
+
+      if (mql) {
+        _setupMediaQueryListener(
+          instance,
+          interactionId,
+          mql,
+          targetKey,
+          () => {
+            // For effects on target, we reconcile the target element
+            _reconcile(element, targetKey, instance);
+          },
+        );
+      }
 
       if (!mql || mql.matches) {
         const sourceKey =
@@ -360,13 +435,20 @@ export function add(element: IInteractElement, key: string): boolean {
 
   instance.setElement(key, element);
 
-  triggers.forEach((interaction) => {
+  triggers.forEach((interaction, index) => {
     const mql = getMediaQuery(
       interaction.conditions,
       instance!.dataCache.conditions,
     );
 
     // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+    if (mql) {
+      const interactionId = `${key}::trigger::${index}`;
+      _setupMediaQueryListener(instance, interactionId, mql, key, () => {
+        _reconcile(element, key, instance);
+      });
+    }
+
     if (!mql || mql.matches) {
       if (interaction.listContainer) {
         element.watchChildList(interaction.listContainer);
@@ -395,7 +477,7 @@ export function addListItems(
   if (instance) {
     const { triggers = [] } = instance?.get(key) || {};
 
-    triggers.forEach((interaction) => {
+    triggers.forEach((interaction, index) => {
       if (interaction.listContainer !== listContainer) {
         return;
       }
@@ -405,7 +487,14 @@ export function addListItems(
         instance!.dataCache.conditions,
       );
 
-      // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+      if (mql) {
+        const interactionId = `${key}::listTrigger::${listContainer}::${index}`;
+        _setupMediaQueryListener(instance, interactionId, mql, key, () => {
+          // For list items, reconciling the root might be expensive but safe
+          _reconcile(root, key, instance);
+        });
+      }
+
       if (!mql || mql.matches) {
         _addInteraction(key, root, instance!, interaction, elements);
       }
