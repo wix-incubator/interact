@@ -12,6 +12,14 @@ const complexConfig: InteractConfig = {
       type: 'media',
       predicate: 'max-width: 767px',
     },
+    tabletMinWidth: {
+      type: 'media',
+      predicate: 'min-width: 768px',
+    },
+    tabletMaxWidth: {
+      type: 'media',
+      predicate: 'max-width: 1025px',
+    },
   },
   interactions: [
     {
@@ -28,6 +36,11 @@ const complexConfig: InteractConfig = {
         },
         {
           key: 'cascade-target-2',
+          effectId: 'mobile-effect',
+          conditions: ['tabletMinWidth', 'tabletMaxWidth'],
+        },
+        {
+          key: 'cascade-target-3',
           effectId: 'mobile-effect',
           conditions: ['mobile'],
         },
@@ -152,9 +165,41 @@ export const ResponsiveDemo = () => {
                 letterSpacing: '1px',
               }}
             >
-              Mobile Target
+              Tablet Target
             </p>
             <interact-element data-interact-key="cascade-target-2">
+              <div
+                style={{
+                  width: '150px',
+                  height: '150px',
+                  background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)',
+                  color: '#333',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                }}
+              >
+                Bounce In
+              </div>
+            </interact-element>
+          </div>
+          {/* Target 3 */}
+          <div style={{ textAlign: 'center' }}>
+            <p
+              style={{
+                marginBottom: '8px',
+                fontSize: '12px',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+              }}
+            >
+              Mobile Target
+            </p>
+            <interact-element data-interact-key="cascade-target-3">
               <div
                 style={{
                   width: '150px',

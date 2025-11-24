@@ -62,16 +62,27 @@ export class Interact {
     const didRegister = registerInteractElement();
 
     if (!didRegister) {
-      Interact.elementCache.forEach((element: IInteractElement, key) =>
-        element.connect(key),
-      );
+      Interact.elementCache.forEach((element: IInteractElement, key) => element.connect(key));
     }
   }
 
   destroy(): void {
+    // In React Strict Mode, the instance is destroyed but the elements remain in the DOM.
+    // We need to disconnect them from this instance (cleanup listeners) but keep them in the
+    // global cache so the next instance can pick them up.
+    const preservedCache = new Map(Interact.elementCache);
+
     for (const element of this.elements) {
       element.disconnect();
     }
+
+    // Restore elements to cache so they can be picked up by a new instance
+    for (const [key, element] of preservedCache) {
+      if (!Interact.elementCache.has(key)) {
+        Interact.elementCache.set(key, element);
+      }
+    }
+
     this.mediaQueryListeners.forEach(({ mql, handler }) => {
       mql.removeEventListener('change', handler);
     });
@@ -104,7 +115,7 @@ export class Interact {
 
     if (element) {
       this.elements.delete(element);
-      Interact.elementCache.delete(key);
+      Interact.removeElement(key);
     }
   }
 
@@ -162,6 +173,10 @@ export class Interact {
   static setElement(key: string, element: IInteractElement): void {
     Interact.elementCache.set(key, element);
   }
+
+  static removeElement(key: string): void {
+    Interact.elementCache.delete(key);
+  }
 }
 
 let interactionIdCounter = 0;
@@ -174,9 +189,7 @@ export function getSelector(
   }: { asCombinator?: boolean; addItemFilter?: boolean } = {},
 ): string {
   if (d.listContainer) {
-    const itemFilter = `${
-      addItemFilter && d.listItemSelector ? ` > ${d.listItemSelector}` : ''
-    }`;
+    const itemFilter = `${addItemFilter && d.listItemSelector ? ` > ${d.listItemSelector}` : ''}`;
 
     if (d.selector) {
       return `${d.listContainer}${itemFilter} ${d.selector}`;
@@ -204,9 +217,7 @@ function parseConfig(config: InteractConfig): InteractCache {
     const { effects: effects_, ...rest } = interaction_;
 
     if (!source) {
-      console.error(
-        `Interaction ${interactionIdx} is missing a key for source element.`,
-      );
+      console.error(`Interaction ${interactionIdx} is missing a key for source element.`);
       return;
     }
 

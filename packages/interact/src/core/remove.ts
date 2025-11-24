@@ -8,6 +8,12 @@ export function remove(key: string): void {
   const instance = Interact.getInstance(key);
 
   if (!instance) {
+    // Even if no instance is found, we should ensure the element is removed from the global cache
+    // This handles cases where the instance was destroyed but the element is being removed from DOM later
+    const element = Interact.getElement(key);
+    if (element) {
+      Interact.removeElement(key);
+    }
     return;
   }
 
@@ -16,9 +22,7 @@ export function remove(key: string): void {
     return;
   }
 
-  const selectors = [...(instance.get(key)?.selectors.values() || [])].join(
-    ',',
-  );
+  const selectors = [...(instance.get(key)?.selectors.values() || [])].join(',');
   const elements = root.querySelectorAll(selectors);
 
   removeListItems(Array.from(elements) as HTMLElement[]);
