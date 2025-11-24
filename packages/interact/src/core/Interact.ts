@@ -67,25 +67,9 @@ export class Interact {
   }
 
   destroy(): void {
-    // In React Strict Mode, the instance is destroyed but the elements remain in the DOM.
-    // We need to disconnect them from this instance (cleanup listeners) but keep them in the
-    // global cache so the next instance can pick them up.
-    const preservedCache = new Map(Interact.elementCache);
-
     for (const element of this.elements) {
       element.disconnect();
     }
-
-    // Restore elements to cache so they can be picked up by a new instance
-    for (const [key, element] of preservedCache) {
-      if (!Interact.elementCache.has(key)) {
-        Interact.elementCache.set(key, element);
-      }
-    }
-
-    this.mediaQueryListeners.forEach(({ mql, handler }) => {
-      mql.removeEventListener('change', handler);
-    });
     this.mediaQueryListeners.clear();
     this.addedInteractions = {};
     this.listInteractionsCache = {};
