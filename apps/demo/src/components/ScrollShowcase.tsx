@@ -1,68 +1,68 @@
-import { useMemo } from 'react';
-import type { InteractConfig } from '@wix/interact';
-import { useInteractInstance } from '../hooks/useInteractInstance';
+// import { useMemo } from 'react';
+// import type { InteractConfig } from '@wix/interact';
+// import { useInteractInstance } from '../hooks/useInteractInstance';
 
-const cards = [
-  {
-    key: 'scroll-card-1',
-    title: 'View progress',
-    description: 'Drive progress-based animation tied to scroll offsets.'
-  },
-  {
-    key: 'scroll-card-2',
-    title: 'List choreography',
-    description: 'Chain staggered reveals with listContainer targeting.'
-  },
-  {
-    key: 'scroll-card-3',
-    title: 'Pointer reactivity',
-    description: 'Blend pointer and scroll triggers for hybrid scenes.'
-  }
-];
+// const cards = [
+//   {
+//     key: 'scroll-card-1',
+//     title: 'View progress',
+//     description: 'Drive progress-based animation tied to scroll offsets.'
+//   },
+//   {
+//     key: 'scroll-card-2',
+//     title: 'List choreography',
+//     description: 'Chain staggered reveals with listContainer targeting.'
+//   },
+//   {
+//     key: 'scroll-card-3',
+//     title: 'Pointer reactivity',
+//     description: 'Blend pointer and scroll triggers for hybrid scenes.'
+//   }
+// ];
 
-export const ScrollShowcase = () => {
-  const config = useMemo<InteractConfig>(() => {
-    const interactions = cards.map((card, index) => ({
-      key: card.key,
-      trigger: 'viewProgress' as const,
-      params: { type: 'repeat' as const, threshold: 0.4 },
-      effects: [{ effectId: `scroll-effect-${index}` }]
-    }));
+// export const ScrollShowcase = () => {
+//   const config = useMemo<InteractConfig>(() => {
+//     const interactions = cards.map((card, index) => ({
+//       key: card.key,
+//       trigger: 'viewProgress' as const,
+//       params: { type: 'repeat' as const, threshold: 0.4 },
+//       effects: [{ effectId: `scroll-effect-${index}` }]
+//     }));
 
-    const effects = cards.reduce<InteractConfig['effects']>((acc, card, index) => {
-      acc[`scroll-effect-${index}`] = {
-        key: card.key,
-        easing: 'linear',
-        keyframeEffect: {
-          name: `scroll-${index}`,
-          keyframes: [
-            { transform: 'translateY(40px)', opacity: 0 },
-            { transform: 'translateY(0)', opacity: 1 }
-          ]
-        }
-      };
-      return acc;
-    }, {});
+//     const effects = cards.reduce<InteractConfig['effects']>((acc, card, index) => {
+//       acc[`scroll-effect-${index}`] = {
+//         key: card.key,
+//         easing: 'linear',
+//         keyframeEffect: {
+//           name: `scroll-${index}`,
+//           keyframes: [
+//             { transform: 'translateY(40px)', opacity: 0 },
+//             { transform: 'translateY(0)', opacity: 1 }
+//           ]
+//         }
+//       };
+//       return acc;
+//     }, {});
 
-    return { interactions, effects };
-  }, []);
+//     return { interactions, effects };
+//   }, []);
 
-  useInteractInstance(config);
+//   useInteractInstance(config);
 
-  return (
-    <section className="panel">
-      <p className="scroll-label">Scroll driven</p>
-      <div className="scroll-scene">
-        {cards.map((card) => (
-          <interact-element key={card.key} data-interact-key={card.key}>
-            <div className="scroll-item">
-              <p className="scroll-label">{card.title}</p>
-              <strong>{card.description}</strong>
-            </div>
-          </interact-element>
-        ))}
-      </div>
-    </section>
-  );
-};
+//   return (
+//     <section className="panel">
+//       <p className="scroll-label">Scroll driven</p>
+//       <div className="scroll-scene">
+//         {cards.map((card) => (
+//           <interact-element key={card.key} data-interact-key={card.key}>
+//             <div className="scroll-item">
+//               <p className="scroll-label">{card.title}</p>
+//               <strong>{card.description}</strong>
+//             </div>
+//           </interact-element>
+//         ))}
+//       </div>
+//     </section>
+//   );
+// };
 
