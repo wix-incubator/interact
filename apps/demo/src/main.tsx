@@ -9,9 +9,4 @@ if (!root) {
   throw new Error('Demo root element missing');
 }
 
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
+ReactDOM.createRoot(root).render(<App />);

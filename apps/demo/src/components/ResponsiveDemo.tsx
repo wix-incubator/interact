@@ -36,7 +36,7 @@ const complexConfig: InteractConfig = {
         },
         {
           key: 'cascade-target-2',
-          effectId: 'mobile-effect',
+          effectId: 'tablet-effect',
           conditions: ['tabletMinWidth', 'tabletMaxWidth'],
         },
         {
@@ -61,7 +61,14 @@ const complexConfig: InteractConfig = {
         direction: 'center',
         power: 'hard',
       },
-      duration: 600,
+      duration: 1800,
+    },
+    'tablet-effect': {
+      namedEffect: {
+        type: 'FlipIn',
+        direction: 'left',
+      },
+      duration: 1800,
     },
   },
 };
@@ -97,7 +104,8 @@ export const ResponsiveDemo = () => {
           Resize the window to see different effects on click.
           <br />
           <strong>Desktop (≥1024px):</strong> SlideIn on Target 1<br />
-          <strong>Mobile (≤767px):</strong> BounceIn on Target 2
+          <strong>Tablet (≥767 and ≤1025px):</strong> FlipIn on Target 2<br />
+          <strong>Mobile (≤767px):</strong> BounceIn on Target 3
         </p>
 
         <div style={{ marginBottom: '30px' }}>
@@ -172,7 +180,7 @@ export const ResponsiveDemo = () => {
                 style={{
                   width: '150px',
                   height: '150px',
-                  background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)',
+                  background: 'linear-gradient(135deg, #2d1ccc 0%, #e1e1e1 99%, #500036 100%)',
                   color: '#333',
                   display: 'flex',
                   alignItems: 'center',
@@ -183,7 +191,7 @@ export const ResponsiveDemo = () => {
                   fontWeight: 'bold',
                 }}
               >
-                Bounce In
+                Flip In
               </div>
             </interact-element>
           </div>
