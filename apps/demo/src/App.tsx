@@ -1,4 +1,5 @@
 import { Playground } from './components/Playground';
+import { ScrollShowcase } from './components/ScrollShowcase';
 import { ResponsiveDemo } from './components/ResponsiveDemo';
 
 const heroCopy = [
@@ -30,7 +31,7 @@ function App() {
       <Playground />
       <div className="scroll-showcase-wrapper">
         <ResponsiveDemo />
-        {/* <ScrollShowcase /> */}
+        <ScrollShowcase />
       </div>
     </div>
   );
