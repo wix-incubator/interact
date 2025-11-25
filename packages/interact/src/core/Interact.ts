@@ -59,18 +59,29 @@ export class Interact {
 
     this.dataCache = parseConfig(config);
 
-    const didRegister = registerInteractElement();
+    registerInteractElement();
 
-    if (!didRegister) {
-      Interact.elementCache.forEach((element: IInteractElement, key) => element.connect(key));
-    }
+    // Always try to reconnect elements from cache.
+    // This handles cases where elements were added to DOM before the instance was created
+    // (e.g., in React where useEffect runs after render), or when an instance is recreated
+    // (e.g., in React StrictMode where effects run twice).
+    // The connect() method has a guard to skip if already connected.
+    Interact.elementCache.forEach((element: IInteractElement, key) => element.connect(key));
   }
 
   destroy(): void {
     for (const element of this.elements) {
       element.disconnect();
     }
+
+    // Properly remove all media query listeners before clearing the Map
+    // This is critical for React StrictMode where instances are destroyed and recreated,
+    // to prevent duplicate listeners from firing with stale instance references
+    for (const [, listener] of this.mediaQueryListeners.entries()) {
+      listener.mql.removeEventListener('change', listener.handler);
+    }
     this.mediaQueryListeners.clear();
+
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.elements.clear();

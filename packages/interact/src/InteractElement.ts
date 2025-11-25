@@ -52,7 +52,11 @@ export function getInteractElement() {
     disconnect() {
       const key = this.dataset.interactKey;
 
-      if (key) {
+      // Only call remove() if the element is actually being removed from DOM
+      // If the element is still connected to the DOM (this.isConnected === true),
+      // we're just disconnecting due to instance destruction (e.g., React StrictMode),
+      // so we should keep the element in the cache for reconnection
+      if (key && !this.isConnected) {
         remove(key);
       }
 
@@ -101,11 +105,7 @@ export function getInteractElement() {
       }
     }
 
-    toggleEffect(
-      effectId: string,
-      method: StateParams['method'],
-      item?: HTMLElement | null,
-    ) {
+    toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null) {
       if (item === null) {
         return;
       }
@@ -126,9 +126,7 @@ export function getInteractElement() {
           this._internals.states.clear();
         }
       } else {
-        const currentEffects = new Set(
-          this.dataset[INTERACT_EFFECT_DATA_ATTR]?.split(' ') || [],
-        );
+        const currentEffects = new Set(this.dataset[INTERACT_EFFECT_DATA_ATTR]?.split(' ') || []);
 
         if (method === 'toggle') {
           currentEffects.has(effectId)
@@ -142,17 +140,14 @@ export function getInteractElement() {
           currentEffects.clear();
         }
 
-        (item || this).dataset[INTERACT_EFFECT_DATA_ATTR] =
-          Array.from(currentEffects).join(' ');
+        (item || this).dataset[INTERACT_EFFECT_DATA_ATTR] = Array.from(currentEffects).join(' ');
       }
     }
 
     getActiveEffects(): string[] {
       if (this._internals) {
         const effects = Array.from(this._internals.states);
-        return isLegacyStateSyntax
-          ? effects.map((effect) => effect.replace(/^--/g, ''))
-          : effects;
+        return isLegacyStateSyntax ? effects.map((effect) => effect.replace(/^--/g, '')) : effects;
       }
 
       const raw = this.dataset[INTERACT_EFFECT_DATA_ATTR] || '';
@@ -168,9 +163,7 @@ export function getInteractElement() {
         let observer = this._observers.get(list as HTMLElement);
 
         if (!observer) {
-          observer = new MutationObserver(
-            this._childListChangeHandler.bind(this, listContainer),
-          );
+          observer = new MutationObserver(this._childListChangeHandler.bind(this, listContainer));
 
           this._observers.set(list as HTMLElement, observer);
 
