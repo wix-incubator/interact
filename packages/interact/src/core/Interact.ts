@@ -81,7 +81,6 @@ export class Interact {
       listener.mql.removeEventListener('change', listener.handler);
     }
     this.mediaQueryListeners.clear();
-
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.elements.clear();
@@ -99,18 +98,11 @@ export class Interact {
     const element = Interact.elementCache.get(key);
 
     this.clearInteractionStateForKey(key);
-
-    // cleanup any remaining listeners for this key (e.g. trigger-level listeners)
-    for (const [id, listener] of this.mediaQueryListeners.entries()) {
-      if (listener.key === key) {
-        listener.mql.removeEventListener('change', listener.handler);
-        this.mediaQueryListeners.delete(id);
-      }
-    }
+    this.clearMediaQueryListenersForKey(key);
 
     if (element) {
       this.elements.delete(element);
-      Interact.removeElement(key);
+      Interact.deleteElement(key);
     }
   }
 
@@ -123,6 +115,26 @@ export class Interact {
     return this.dataCache.interactions[processedKey];
   }
 
+  private _removeMediaQueryListener(id: string): void {
+    const listener = this.mediaQueryListeners.get(id);
+    if (listener) {
+      listener.mql.removeEventListener('change', listener.handler);
+      this.mediaQueryListeners.delete(id);
+    }
+  }
+
+  clearMediaQueryListenersForInteraction(interactionId: string): void {
+    this._removeMediaQueryListener(interactionId);
+  }
+
+  clearMediaQueryListenersForKey(key: string): void {
+    for (const [id, listener] of this.mediaQueryListeners.entries()) {
+      if (listener.key === key) {
+        this._removeMediaQueryListener(id);
+      }
+    }
+  }
+
   clearInteractionStateForKey(key: string): void {
     const interactionIds = this.get(key)?.interactionIds || [];
 
@@ -130,13 +142,7 @@ export class Interact {
       const interactionId = getInterpolatedKey(interactionId_, key);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.addedInteractions[interactionId];
-
-      // clean up media query listeners for this interaction
-      if (this.mediaQueryListeners.has(interactionId)) {
-        const { mql, handler } = this.mediaQueryListeners.get(interactionId)!;
-        mql.removeEventListener('change', handler);
-        this.mediaQueryListeners.delete(interactionId);
-      }
+      this.clearMediaQueryListenersForInteraction(interactionId);
     });
   }
 
@@ -169,7 +175,7 @@ export class Interact {
     Interact.elementCache.set(key, element);
   }
 
-  static removeElement(key: string): void {
+  static deleteElement(key: string): void {
     Interact.elementCache.delete(key);
   }
 }

@@ -12,7 +12,7 @@ export function remove(key: string): void {
     // This handles cases where the instance was destroyed but the element is being removed from DOM later
     const element = Interact.getElement(key);
     if (element) {
-      Interact.removeElement(key);
+      Interact.deleteElement(key);
     }
     return;
   }

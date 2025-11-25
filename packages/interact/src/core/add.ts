@@ -13,29 +13,10 @@ import { createTransitionCSS, getMediaQuery } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { removeListItems } from './remove';
+import { remove } from './remove';
 
-function _reconcile(
-  root: IInteractElement,
-  key: string,
-  instance: Interact,
-): void {
-  // Find all elements involved in this interaction key to ensure we clean up children too
-  const selectors = [...(instance.get(key)?.selectors.values() || [])].join(
-    ',',
-  );
-  const childElements = selectors
-    ? Array.from(root.querySelectorAll(selectors))
-    : [];
-  const elements = [root, ...childElements] as HTMLElement[];
-
-  // Remove all interactions from these elements
-  removeListItems(elements);
-
-  // Clear the interaction state for this key to allow re-adding
-  instance.clearInteractionStateForKey(key);
-
-  // Re-run the add logic
+function _reconcile(root: IInteractElement, key: string): void {
+  remove(key);
   add(root, key);
 }
 
@@ -44,16 +25,12 @@ function _setupMediaQueryListener(
   id: string,
   mql: MediaQueryList,
   key: string,
-  callback: () => void,
+  handler: () => void,
 ) {
   if (instance.mediaQueryListeners.has(id)) {
     return;
   }
-
-  const handler = () => {
-    callback();
-  };
-
+  
   mql.addEventListener('change', handler);
 
   instance.mediaQueryListeners.set(id, {
@@ -63,7 +40,6 @@ function _setupMediaQueryListener(
   });
 }
 
-
 function _getElementsFromData(
   data: Interaction | Effect,
   root: IInteractElement,
@@ -72,17 +48,13 @@ function _getElementsFromData(
     const container = root.querySelector(data.listContainer);
 
     if (!container) {
-      console.warn(
-        `Interact: No container found for list container "${data.listContainer}"`,
-      );
+      console.warn(`Interact: No container found for list container "${data.listContainer}"`);
 
       return [];
     }
 
     if (data.selector) {
-      return Array.from(
-        container.querySelectorAll(data.selector),
-      ) as HTMLElement[];
+      return Array.from(container.querySelectorAll(data.selector)) as HTMLElement[];
     }
 
     return Array.from(container.children) as HTMLElement[];
@@ -94,19 +66,14 @@ function _getElementsFromData(
     if (element) {
       return element as HTMLElement;
     } else {
-      console.warn(
-        `Interact: No element found for selector "${data.selector}"`,
-      );
+      console.warn(`Interact: No element found for selector "${data.selector}"`);
     }
   }
 
   return root.firstElementChild as HTMLElement | null;
 }
 
-function _queryItemElement(
-  data: Interaction | Effect,
-  elements: HTMLElement[],
-): HTMLElement[] {
+function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]): HTMLElement[] {
   return elements
     .map((element) => {
       return data.selector ? element.querySelector(data.selector) : element;
@@ -204,21 +171,12 @@ function _addInteraction(
     }
 
     // TODO: implement watching for condition `change` events and add/remove interactions accordingly
-    const mql = getMediaQuery(
-      effectOptions.conditions || [],
-      instance.dataCache.conditions,
-    );
+    const mql = getMediaQuery(effectOptions.conditions || [], instance.dataCache.conditions);
 
     if (mql) {
-      _setupMediaQueryListener(
-        instance,
-        interactionId,
-        mql,
-        sourceKey,
-        () => {
-          _reconcile(sourceRoot, sourceKey, instance);
-        },
-      );
+      _setupMediaQueryListener(instance, interactionId, mql, sourceKey, () => {
+        _reconcile(sourceRoot, sourceKey);
+      });
     }
 
     if (!mql || mql.matches) {
@@ -259,13 +217,7 @@ function _addInteraction(
 
       const key = target || interaction.key;
 
-      _applyInteraction(
-        key,
-        interaction,
-        effectOptions,
-        sourceElements,
-        targetElements,
-      );
+      _applyInteraction(key, interaction, effectOptions, sourceElements, targetElements);
     }
   });
 }
@@ -306,27 +258,17 @@ function addEffectsForTarget(
       }
 
       // TODO: implement watching for condition `change` events and add/remove interactions accordingly
-      const mql = getMediaQuery(
-        effectOptions.conditions || [],
-        instance!.dataCache.conditions,
-      );
+      const mql = getMediaQuery(effectOptions.conditions || [], instance!.dataCache.conditions);
 
       if (mql) {
-        _setupMediaQueryListener(
-          instance,
-          interactionId,
-          mql,
-          targetKey,
-          () => {
-            // For effects on target, we reconcile the target element
-            _reconcile(element, targetKey, instance);
-          },
-        );
+        _setupMediaQueryListener(instance, interactionId, mql, targetKey, () => {
+          // For effects on target, we reconcile the target element
+          _reconcile(element, targetKey);
+        });
       }
 
       if (!mql || mql.matches) {
-        const sourceKey =
-          interaction.key && getInterpolatedKey(interaction.key, targetKey);
+        const sourceKey = interaction.key && getInterpolatedKey(interaction.key, targetKey);
         const sourceElement = Interact.getElement(sourceKey);
 
         if (!sourceElement) {
@@ -436,16 +378,13 @@ export function add(element: IInteractElement, key: string): boolean {
   instance.setElement(key, element);
 
   triggers.forEach((interaction, index) => {
-    const mql = getMediaQuery(
-      interaction.conditions,
-      instance!.dataCache.conditions,
-    );
+    const mql = getMediaQuery(interaction.conditions, instance!.dataCache.conditions);
 
     // TODO: implement watching for condition `change` events and add/remove interactions accordingly
     if (mql) {
       const interactionId = `${key}::trigger::${index}`;
       _setupMediaQueryListener(instance, interactionId, mql, key, () => {
-        _reconcile(element, key, instance);
+        _reconcile(element, key);
       });
     }
 
@@ -482,16 +421,13 @@ export function addListItems(
         return;
       }
 
-      const mql = getMediaQuery(
-        interaction.conditions,
-        instance!.dataCache.conditions,
-      );
+      const mql = getMediaQuery(interaction.conditions, instance!.dataCache.conditions);
 
       if (mql) {
         const interactionId = `${key}::listTrigger::${listContainer}::${index}`;
         _setupMediaQueryListener(instance, interactionId, mql, key, () => {
           // For list items, reconciling the root might be expensive but safe
-          _reconcile(root, key, instance);
+          _reconcile(root, key);
         });
       }
 
