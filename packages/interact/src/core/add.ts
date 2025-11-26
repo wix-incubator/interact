@@ -1,0 +1,416 @@
+import type {
+  Effect,
+  TriggerType,
+  EffectRef,
+  InteractionParamsTypes,
+  TransitionEffect,
+  IInteractElement,
+  Interaction,
+  InteractionTrigger,
+  CreateTransitionCSSParams,
+} from '../types';
+import { createTransitionCSS, getMediaQuery } from '../utils';
+import { getInterpolatedKey } from './utilities';
+import { Interact, getSelector } from './Interact';
+import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+
+function _getElementsFromData(
+  data: Interaction | Effect,
+  root: IInteractElement,
+): HTMLElement | HTMLElement[] | null {
+  if (data.listContainer) {
+    const container = root.querySelector(data.listContainer);
+
+    if (!container) {
+      console.warn(
+        `Interact: No container found for list container "${data.listContainer}"`,
+      );
+
+      return [];
+    }
+
+    if (data.selector) {
+      return Array.from(
+        container.querySelectorAll(data.selector),
+      ) as HTMLElement[];
+    }
+
+    return Array.from(container.children) as HTMLElement[];
+  }
+
+  if (data.selector) {
+    const element = root.querySelector(data.selector);
+
+    if (element) {
+      return element as HTMLElement;
+    } else {
+      console.warn(
+        `Interact: No element found for selector "${data.selector}"`,
+      );
+    }
+  }
+
+  return root.firstElementChild as HTMLElement | null;
+}
+
+function _queryItemElement(
+  data: Interaction | Effect,
+  elements: HTMLElement[],
+): HTMLElement[] {
+  return elements
+    .map((element) => {
+      return data.selector ? element.querySelector(data.selector) : element;
+    })
+    .filter(Boolean) as HTMLElement[];
+}
+
+function _getInteractionElements(
+  interaction: InteractionTrigger,
+  effect: Effect,
+  source: IInteractElement,
+  target: IInteractElement,
+  sourceElements?: HTMLElement[],
+  targetElements?: HTMLElement[],
+): [HTMLElement | HTMLElement[] | null, HTMLElement | HTMLElement[] | null] {
+  return [
+    sourceElements
+      ? _queryItemElement(interaction, sourceElements)
+      : _getElementsFromData(interaction, source),
+    targetElements
+      ? _queryItemElement(effect, targetElements)
+      : _getElementsFromData(effect, target),
+  ];
+}
+
+function _applyInteraction(
+  key: string,
+  interaction: InteractionTrigger,
+  effect: Effect,
+  sourceElements: HTMLElement | HTMLElement[],
+  targetElements: HTMLElement | HTMLElement[],
+) {
+  const isSourceArray = Array.isArray(sourceElements);
+  const isTargetArray = Array.isArray(targetElements);
+
+  if (isSourceArray) {
+    sourceElements.forEach((sourceEl, index) => {
+      const targetEl = isTargetArray ? targetElements[index] : targetElements;
+
+      if (targetEl) {
+        addInteraction(
+          key,
+          sourceEl,
+          interaction.trigger,
+          targetEl,
+          effect as Effect,
+          interaction.params!,
+        );
+      }
+    });
+  } else {
+    const targets = isTargetArray ? targetElements : [targetElements];
+    targets.forEach((targetEl) => {
+      addInteraction(
+        key,
+        sourceElements,
+        interaction.trigger,
+        targetEl,
+        effect as Effect,
+        interaction.params!,
+      );
+    });
+  }
+}
+
+function _addInteraction(
+  sourceKey: string,
+  sourceRoot: IInteractElement,
+  instance: Interact,
+  interaction: Interaction,
+  elements?: HTMLElement[],
+) {
+  const interactionVariations: Record<string, boolean> = {};
+
+  interaction.effects.forEach((effect) => {
+    const effectId = (effect as EffectRef).effectId;
+
+    const effectOptions = {
+      ...(instance.dataCache.effects[effectId] || {}),
+      ...effect,
+      effectId,
+    };
+    const targetKey_ = effectOptions.key;
+
+    const interactionId = getInterpolatedKey(effect.interactionId!, sourceKey);
+
+    if (interactionVariations[interactionId!]) {
+      // Skip this effect if it has already been added
+      return;
+    }
+
+    if (instance.addedInteractions[interactionId!] && !elements) {
+      // Skip this interaction if it has already been added
+      return;
+    }
+
+    // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+    const mql = getMediaQuery(
+      effectOptions.conditions || [],
+      instance.dataCache.conditions,
+    );
+
+    if (!mql || mql.matches) {
+      interactionVariations[interactionId!] = true;
+
+      const target = targetKey_ && getInterpolatedKey(targetKey_, sourceKey);
+
+      let targetElement;
+      if (target) {
+        targetElement = Interact.getElement(target);
+
+        if (!targetElement) {
+          // Bail out :: no target element in cache
+          return;
+        }
+
+        if (effectOptions.listContainer) {
+          targetElement.watchChildList(effectOptions.listContainer);
+        }
+      } else {
+        // target is not specified - fallback to same as source
+        targetElement = sourceRoot;
+      }
+
+      const [sourceElements, targetElements] = _getInteractionElements(
+        interaction,
+        effectOptions,
+        sourceRoot,
+        targetElement!,
+        elements,
+      );
+
+      if (!sourceElements || !targetElements) {
+        return;
+      }
+
+      instance.addedInteractions[interactionId!] = true;
+
+      const key = target || interaction.key;
+
+      _applyInteraction(
+        key,
+        interaction,
+        effectOptions,
+        sourceElements,
+        targetElements,
+      );
+    }
+  });
+}
+
+function addEffectsForTarget(
+  targetKey: string,
+  element: IInteractElement,
+  instance: Interact,
+  listContainer?: string,
+  elements?: HTMLElement[],
+) {
+  const effects = instance.get(targetKey)?.effects || {};
+  const interactionIds = Object.keys(effects);
+
+  interactionIds.forEach((interactionId_) => {
+    const interactionId = getInterpolatedKey(interactionId_, targetKey);
+
+    if (instance.addedInteractions[interactionId] && !elements) {
+      // Skip this interaction if it has already been added
+      return;
+    }
+
+    const effectVariations = effects[interactionId_];
+
+    // use `some` to short-circuit after the first effect that matches the conditions
+    effectVariations.some(({ effect, ...interaction }) => {
+      const effectId = (effect as EffectRef).effectId;
+
+      const effectOptions = {
+        ...(instance!.dataCache.effects[effectId] || {}),
+        ...effect,
+        effectId,
+      };
+
+      if (listContainer && effectOptions.listContainer !== listContainer) {
+        // skip this effect if a listContainer was provided and it's not matching this effect.listContainer
+        return false;
+      }
+
+      // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+      const mql = getMediaQuery(
+        effectOptions.conditions || [],
+        instance!.dataCache.conditions,
+      );
+
+      if (!mql || mql.matches) {
+        const sourceKey =
+          interaction.key && getInterpolatedKey(interaction.key, targetKey);
+        const sourceElement = Interact.getElement(sourceKey);
+
+        if (!sourceElement) {
+          // Bail out :: no source or target elements in cache
+          return true;
+        }
+
+        if (effectOptions.listContainer) {
+          element.watchChildList(effectOptions.listContainer);
+        }
+
+        const [sourceElements, targetElements] = _getInteractionElements(
+          interaction,
+          effectOptions,
+          sourceElement,
+          element,
+          undefined,
+          elements,
+        );
+
+        if (!sourceElements || !targetElements) {
+          // Bail out :: no source or target elements found in DOM
+          return true;
+        }
+
+        instance!.addedInteractions[interactionId] = true;
+
+        _applyInteraction(
+          targetKey,
+          interaction,
+          effectOptions as Effect,
+          sourceElements,
+          targetElements,
+        );
+
+        // short-circuit the loop since we have a match
+        return true;
+      }
+
+      return false;
+    });
+  });
+
+  return interactionIds.length > 0;
+}
+
+/**
+ * Registers a handler to an event on a given element.
+ */
+function addInteraction<T extends TriggerType>(
+  key: string,
+  source: HTMLElement,
+  trigger: T,
+  target: HTMLElement,
+  effect: Effect,
+  options: InteractionParamsTypes[T],
+): void {
+  if (
+    (effect as TransitionEffect).transition ||
+    (effect as TransitionEffect).transitionProperties
+  ) {
+    const args: CreateTransitionCSSParams = {
+      key,
+      effectId: (effect as Effect).effectId!,
+      transition: (effect as TransitionEffect).transition,
+      properties: (effect as TransitionEffect).transitionProperties,
+      childSelector: getSelector(effect, {
+        asCombinator: true,
+        addItemFilter: true,
+      }),
+    };
+
+    const root = target.closest('interact-element') as IInteractElement;
+    if (!root) {
+      return;
+    }
+
+    root.renderStyle(createTransitionCSS(args));
+  }
+
+  TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(
+    source,
+    target,
+    effect,
+    options,
+    Interact.forceReducedMotion,
+  );
+}
+
+/**
+ * Adds all events and effects to an element based on config
+ */
+export function add(element: IInteractElement, key: string): boolean {
+  const instance = Interact.getInstance(key);
+
+  if (!instance) {
+    console.warn(`No instance found for key: ${key}`);
+
+    // even if we don't find a matching instance, we still want to cache the element
+    Interact.setElement(key, element);
+    return false;
+  }
+
+  const { triggers = [] } = instance?.get(key) || {};
+  const hasTriggers = triggers.length > 0;
+
+  instance.setElement(key, element);
+
+  triggers.forEach((interaction) => {
+    const mql = getMediaQuery(
+      interaction.conditions,
+      instance!.dataCache.conditions,
+    );
+
+    // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+    if (!mql || mql.matches) {
+      if (interaction.listContainer) {
+        element.watchChildList(interaction.listContainer);
+      }
+
+      _addInteraction(key, element, instance!, interaction);
+    }
+  });
+
+  let hasEffects = false;
+  if (instance) {
+    hasEffects = addEffectsForTarget(key, element, instance);
+  }
+
+  return hasTriggers || hasEffects;
+}
+
+export function addListItems(
+  root: IInteractElement,
+  key: string,
+  listContainer: string,
+  elements: HTMLElement[],
+) {
+  const instance = Interact.getInstance(key);
+
+  if (instance) {
+    const { triggers = [] } = instance?.get(key) || {};
+
+    triggers.forEach((interaction) => {
+      if (interaction.listContainer !== listContainer) {
+        return;
+      }
+
+      const mql = getMediaQuery(
+        interaction.conditions,
+        instance!.dataCache.conditions,
+      );
+
+      // TODO: implement watching for condition `change` events and add/remove interactions accordingly
+      if (!mql || mql.matches) {
+        _addInteraction(key, root, instance!, interaction, elements);
+      }
+    });
+
+    addEffectsForTarget(key, root, instance, listContainer, elements);
+  }
+}

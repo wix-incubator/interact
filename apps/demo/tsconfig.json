@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "declarationMap": false,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@wix/interact": ["../../packages/interact/src"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["dist"]
+}
+

@@ -1,0 +1,66 @@
+{
+  "name": "@wix/interact",
+  "version": "1.0.0",
+  "description": "A powerful, declarative interaction library for creating engaging web apps.",
+  "license": "MIT",
+  "main": "dist/interact.js",
+  "module": "dist/interact.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/interact.js",
+      "require": "./dist/interact.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite dev --open",
+    "build": "rimraf dist && npm run build:types && vite build",
+    "build:types": "tsc -p tsconfig.build.json",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "animation",
+    "javascript",
+    "css",
+    "waapi"
+  ],
+  "author": {
+    "name": "wow!Team",
+    "email": "wow-dev@wix.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wix-incubator/interact"
+  },
+  "bugs": {
+    "url": "https://github.com/wix-incubator/interact/issues"
+  },
+  "dependencies": {
+    "@wix/motion": "^1.0.0",
+    "kuliso": "^0.4.13",
+    "fizban": "^0.7.2"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "jsdom": "^24.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vitest": "^3.0.9"
+  }
+}
+

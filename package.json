@@ -1,0 +1,53 @@
+{
+  "name": "interact",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0",
+    "test": "npm run test --workspaces",
+    "dev:docs": "npm run dev --workspace apps/docs",
+    "dev:demo": "npm run dev --workspace apps/demo",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/interact.git"
+  },
+  "keywords": [
+    "animation",
+    "javascript",
+    "css",
+    "waapi"
+  ],
+  "author": {
+    "name": "wow!Team",
+    "email": "wow-dev@wix.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix-incubator/interact/issues"
+  },
+  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,142 @@
+:root {
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+.docs-sidebar {
+  background: #0f172a;
+  color: white;
+  padding: 2rem 1.75rem;
+}
+
+.docs-sidebar nav a {
+  display: block;
+  padding: 0.5rem 0;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.docs-content {
+  padding: 3rem;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(15 23 42 / 0.08);
+  box-shadow: 0 10px 40px rgb(15 23 42 / 0.08);
+}
+
+.hero-card {
+  padding: 2.5rem;
+  margin-bottom: 1.75rem;
+  background: linear-gradient(120deg, rgb(14 165 233 / 0.18), rgb(59 130 246 / 0.22));
+}
+
+.hero-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.hero-description {
+  margin-top: 0.75rem;
+  color: #0f172a;
+}
+
+.card-interactive {
+  cursor: pointer;
+  min-height: 160px;
+}
+
+.card-title {
+  margin: 0 0 0.5rem;
+}
+
+.card-text-muted {
+  margin: 0;
+  color: #475569;
+}
+
+.section-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+}
+
+.section-title {
+  margin-bottom: 0.75rem;
+  font-size: 2rem;
+}
+
+.section-description {
+  margin-bottom: 1.25rem;
+  max-width: 720px;
+  color: #475569;
+}
+
+.sidebar-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+}
+
+.sidebar-title {
+  margin-top: 0.4rem;
+}
+
+.sidebar-tagline {
+  color: rgb(255 255 255 / 0.6);
+}
+
+.sidebar-nav {
+  margin-top: 2rem;
+}
+
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
