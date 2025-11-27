@@ -43,6 +43,9 @@ vi.mock('fizban', () => ({
   })),
 }));
 
+// Shared mock MQL storage for breakpoint tests
+let mockMQLs: Map<string, MediaQueryList>;
+
 describe('interact', () => {
   let element: IInteractElement;
   let mockConfig: InteractConfig;
@@ -332,24 +335,36 @@ describe('interact', () => {
     }
 
     // Mock matchMedia for condition testing
+    mockMQLs = new Map();
     mockMatchMedia();
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
     const queryRule = `(${matchingQueries.join(') and (')})`;
     const mockMQL = (query: string) => {
-      return {
+      // Return existing MQL if already created for this query
+      if (mockMQLs.has(query)) {
+        return mockMQLs.get(query)!;
+      }
+
+      const mql = {
         matches: queryRule === query,
         media: query,
         onchange: null,
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
-      };
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      } as unknown as MediaQueryList;
+
+      mockMQLs.set(query, mql);
+      return mql;
     };
 
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
+      configurable: true,
       value: vi.fn().mockImplementation(mockMQL),
     });
   }
@@ -2142,57 +2157,15 @@ describe('interact', () => {
   describe('breakpoint media query listeners', () => {
     let instance: Interact;
     let testElement: IInteractElement;
-    let mockMQLs: Map<string, MediaQueryList>;
-    let matchMediaMock: ReturnType<typeof vi.fn>;
-
-    // Helper to create mock MediaQueryList objects
-    const createMockMQL = (query: string, initialMatches = false) => {
-      if (mockMQLs.has(query)) {
-        return mockMQLs.get(query)!;
-      }
-
-      const state = { matchesValue: initialMatches };
-      const mockMQL = {
-        media: query,
-        matches: initialMatches,
-        onchange: null,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-      } as unknown as MediaQueryList;
-
-      // Make matches property controllable
-      Object.defineProperty(mockMQL, 'matches', {
-        get: () => state.matchesValue,
-        set: (value: boolean) => {
-          state.matchesValue = value;
-        },
-        configurable: true,
-      });
-
-      (mockMQL as any)._state = state;
-      mockMQLs.set(query, mockMQL);
-      return mockMQL;
-    };
 
     beforeEach(() => {
-      Interact.destroy();
-      mockMQLs = new Map();
-
-      matchMediaMock = vi.fn().mockImplementation((query: string) => createMockMQL(query));
-
-      Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        configurable: true,
-        value: matchMediaMock,
-      });
+      // Clear existing MQLs and reset the mock for a fresh state
+      mockMQLs.clear();
+      mockMatchMedia();
     });
 
     afterEach(() => {
       Interact.destroy();
-      mockMQLs.clear();
     });
 
     const createResponsiveConfig = (): InteractConfig => ({
@@ -2235,7 +2208,7 @@ describe('interact', () => {
       add(testElement, 'responsive-button');
 
       // Verify matchMedia was called with the condition predicate
-      expect(matchMediaMock).toHaveBeenCalledWith('(min-width: 768px)');
+      expect(window.matchMedia).toHaveBeenCalledWith('(min-width: 768px)');
 
       // Verify listener was stored in instance
       expect(instance.mediaQueryListeners.size).toBe(1);
