@@ -1,6 +1,6 @@
 # Interact Monorepo
 
-This repository hosts the Interact component system, accompanying docs, and any supporting applications. It is structured as an npm workspace-powered monorepo with the following layout:
+This repository hosts the Interact library, accompanying docs, and any supporting applications. It is structured as an npm workspace-powered monorepo with the following layout:
 
 - `packages/` for publishable libraries (starting with the core Interact library).
 - `apps/` for documentation, demos, and future experience-specific frontends.
@@ -8,16 +8,30 @@ This repository hosts the Interact component system, accompanying docs, and any 
 
 ## Getting Started
 
-1. Install dependencies:
+### Install dependencies
    ```bash
    npm install
    ```
-2. Run workspace scripts. For example, to run all workspace dev servers once they exist:
+
+### Building
    ```bash
-   npm run dev
+   npm run build
    ```
 
-Workspace-specific scripts (e.g., `apps/docs`, `apps/demo`, `packages/interact`) will be added as those projects are scaffolded.
+### Testing
+   ```bash
+   npm run test
+   ```
+
+## Running demo app
+   ```bash
+   npm run dev:demo
+   ```
+
+## Running documentation app
+   ```bash
+   npm run dev:docs
+   ```
 
 ## Tooling
 
