@@ -123,10 +123,6 @@ export class Interact {
     }
   }
 
-  clearMediaQueryListenersForInteraction(interactionId: string): void {
-    this._removeMediaQueryListener(interactionId);
-  }
-
   clearMediaQueryListenersForKey(key: string): void {
     for (const [id, listener] of this.mediaQueryListeners.entries()) {
       if (listener.key === key) {
@@ -142,7 +138,21 @@ export class Interact {
       const interactionId = getInterpolatedKey(interactionId_, key);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.addedInteractions[interactionId];
-      this.clearMediaQueryListenersForInteraction(interactionId);
+      this._removeMediaQueryListener(interactionId);
+    });
+  }
+
+  setupMediaQueryListener(id: string, mql: MediaQueryList, key: string, handler: () => void) {
+    if (this.mediaQueryListeners.has(id)) {
+      return;
+    }
+
+    mql.addEventListener('change', handler);
+
+    this.mediaQueryListeners.set(id, {
+      mql,
+      handler,
+      key,
     });
   }
 

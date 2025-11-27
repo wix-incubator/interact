@@ -15,29 +15,9 @@ import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
 import { remove } from './remove';
 
-function _reconcile(root: IInteractElement, key: string): void {
+function update(root: IInteractElement, key: string): void {
   remove(key);
   add(root, key);
-}
-
-function _setupMediaQueryListener(
-  instance: Interact,
-  id: string,
-  mql: MediaQueryList,
-  key: string,
-  handler: () => void,
-) {
-  if (instance.mediaQueryListeners.has(id)) {
-    return;
-  }
-  
-  mql.addEventListener('change', handler);
-
-  instance.mediaQueryListeners.set(id, {
-    mql,
-    handler,
-    key,
-  });
 }
 
 function _getElementsFromData(
@@ -170,12 +150,11 @@ function _addInteraction(
       return;
     }
 
-    // TODO: implement watching for condition `change` events and add/remove interactions accordingly
     const mql = getMediaQuery(effectOptions.conditions || [], instance.dataCache.conditions);
 
     if (mql) {
-      _setupMediaQueryListener(instance, interactionId, mql, sourceKey, () => {
-        _reconcile(sourceRoot, sourceKey);
+      instance.setupMediaQueryListener(interactionId, mql, sourceKey, () => {
+        update(sourceRoot, sourceKey);
       });
     }
 
@@ -257,13 +236,12 @@ function addEffectsForTarget(
         return false;
       }
 
-      // TODO: implement watching for condition `change` events and add/remove interactions accordingly
       const mql = getMediaQuery(effectOptions.conditions || [], instance!.dataCache.conditions);
 
       if (mql) {
-        _setupMediaQueryListener(instance, interactionId, mql, targetKey, () => {
+        instance.setupMediaQueryListener(interactionId, mql, targetKey, () => {
           // For effects on target, we reconcile the target element
-          _reconcile(element, targetKey);
+          update(element, targetKey);
         });
       }
 
@@ -380,11 +358,10 @@ export function add(element: IInteractElement, key: string): boolean {
   triggers.forEach((interaction, index) => {
     const mql = getMediaQuery(interaction.conditions, instance!.dataCache.conditions);
 
-    // TODO: implement watching for condition `change` events and add/remove interactions accordingly
     if (mql) {
       const interactionId = `${key}::trigger::${index}`;
-      _setupMediaQueryListener(instance, interactionId, mql, key, () => {
-        _reconcile(element, key);
+      instance.setupMediaQueryListener(interactionId, mql, key, () => {
+        update(element, key);
       });
     }
 
@@ -425,9 +402,9 @@ export function addListItems(
 
       if (mql) {
         const interactionId = `${key}::listTrigger::${listContainer}::${index}`;
-        _setupMediaQueryListener(instance, interactionId, mql, key, () => {
+        instance.setupMediaQueryListener(interactionId, mql, key, () => {
           // For list items, reconciling the root might be expensive but safe
-          _reconcile(root, key);
+          update(root, key);
         });
       }
 
