@@ -115,18 +115,11 @@ export class Interact {
     return this.dataCache.interactions[processedKey];
   }
 
-  private _removeMediaQueryListener(id: string): void {
-    const listener = this.mediaQueryListeners.get(id);
-    if (listener) {
-      listener.mql.removeEventListener('change', listener.handler);
-      this.mediaQueryListeners.delete(id);
-    }
-  }
-
   clearMediaQueryListenersForKey(key: string): void {
     for (const [id, listener] of this.mediaQueryListeners.entries()) {
       if (listener.key === key) {
-        this._removeMediaQueryListener(id);
+        listener.mql.removeEventListener('change', listener.handler);
+        this.mediaQueryListeners.delete(id);
       }
     }
   }
@@ -138,7 +131,6 @@ export class Interact {
       const interactionId = getInterpolatedKey(interactionId_, key);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.addedInteractions[interactionId];
-      this._removeMediaQueryListener(interactionId);
     });
   }
 
