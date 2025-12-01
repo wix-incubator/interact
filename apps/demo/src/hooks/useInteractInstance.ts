@@ -10,4 +10,3 @@ export const useInteractInstance = (config: InteractConfig) => {
     };
   }, [config]);
 };
-

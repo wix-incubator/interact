@@ -1,10 +1,11 @@
 import { Playground } from './components/Playground';
 import { ScrollShowcase } from './components/ScrollShowcase';
+import { ResponsiveDemo } from './components/ResponsiveDemo';
 
 const heroCopy = [
   'Tune triggers, easings, and delays in real time.',
   'Preview viewProgress and hover behaviors without leaving the repo.',
-  'Copy the JSON config directly into CMS or product experiments.'
+  'Copy the JSON config directly into CMS or product experiments.',
 ];
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 
       <Playground />
       <div className="scroll-showcase-wrapper">
+        <ResponsiveDemo />
         <ScrollShowcase />
       </div>
     </div>
@@ -36,4 +38,3 @@ function App() {
 }
 
 export default App;
-

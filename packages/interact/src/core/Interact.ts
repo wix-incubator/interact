@@ -28,6 +28,14 @@ function _convertToKeyTemplate(key: string) {
 export class Interact {
   dataCache: InteractCache;
   addedInteractions: { [interactionId: string]: boolean };
+  mediaQueryListeners: Map<
+    string,
+    {
+      mql: MediaQueryList;
+      handler: (e: MediaQueryListEvent | MediaQueryList) => void;
+      key: string;
+    }
+  >;
   listInteractionsCache: {
     [listContainer: string]: { [interactionId: string]: boolean };
   };
@@ -39,6 +47,7 @@ export class Interact {
   constructor() {
     this.dataCache = { effects: {}, conditions: {}, interactions: {} };
     this.addedInteractions = {};
+    this.mediaQueryListeners = new Map();
     this.listInteractionsCache = {};
     this.elements = new Set();
   }
@@ -50,19 +59,28 @@ export class Interact {
 
     this.dataCache = parseConfig(config);
 
-    const didRegister = registerInteractElement();
+    registerInteractElement();
 
-    if (!didRegister) {
-      Interact.elementCache.forEach((element: IInteractElement, key) =>
-        element.connect(key),
-      );
-    }
+    // Always try to reconnect elements from cache.
+    // This handles cases where elements were added to DOM before the instance was created
+    // (e.g., in React where useEffect runs after render), or when an instance is recreated
+    // (e.g., in React StrictMode where effects run twice).
+    // The connect() method has a guard to skip if already connected.
+    Interact.elementCache.forEach((element: IInteractElement, key) => element.connect(key));
   }
 
   destroy(): void {
     for (const element of this.elements) {
       element.disconnect();
     }
+
+    // Properly remove all media query listeners before clearing the Map
+    // This is critical for React StrictMode where instances are destroyed and recreated,
+    // to prevent duplicate listeners from firing with stale instance references
+    for (const [, listener] of this.mediaQueryListeners.entries()) {
+      listener.mql.removeEventListener('change', listener.handler);
+    }
+    this.mediaQueryListeners.clear();
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.elements.clear();
@@ -80,10 +98,11 @@ export class Interact {
     const element = Interact.elementCache.get(key);
 
     this.clearInteractionStateForKey(key);
+    this.clearMediaQueryListenersForKey(key);
 
     if (element) {
       this.elements.delete(element);
-      Interact.elementCache.delete(key);
+      Interact.deleteElement(key);
     }
   }
 
@@ -96,6 +115,15 @@ export class Interact {
     return this.dataCache.interactions[processedKey];
   }
 
+  clearMediaQueryListenersForKey(key: string): void {
+    for (const [id, listener] of this.mediaQueryListeners.entries()) {
+      if (listener.key === key) {
+        listener.mql.removeEventListener('change', listener.handler);
+        this.mediaQueryListeners.delete(id);
+      }
+    }
+  }
+
   clearInteractionStateForKey(key: string): void {
     const interactionIds = this.get(key)?.interactionIds || [];
 
@@ -103,6 +131,20 @@ export class Interact {
       const interactionId = getInterpolatedKey(interactionId_, key);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.addedInteractions[interactionId];
+    });
+  }
+
+  setupMediaQueryListener(id: string, mql: MediaQueryList, key: string, handler: () => void) {
+    if (this.mediaQueryListeners.has(id)) {
+      return;
+    }
+
+    mql.addEventListener('change', handler);
+
+    this.mediaQueryListeners.set(id, {
+      mql,
+      handler,
+      key,
     });
   }
 
@@ -134,6 +176,10 @@ export class Interact {
   static setElement(key: string, element: IInteractElement): void {
     Interact.elementCache.set(key, element);
   }
+
+  static deleteElement(key: string): void {
+    Interact.elementCache.delete(key);
+  }
 }
 
 let interactionIdCounter = 0;
@@ -146,9 +192,7 @@ export function getSelector(
   }: { asCombinator?: boolean; addItemFilter?: boolean } = {},
 ): string {
   if (d.listContainer) {
-    const itemFilter = `${
-      addItemFilter && d.listItemSelector ? ` > ${d.listItemSelector}` : ''
-    }`;
+    const itemFilter = `${addItemFilter && d.listItemSelector ? ` > ${d.listItemSelector}` : ''}`;
 
     if (d.selector) {
       return `${d.listContainer}${itemFilter} ${d.selector}`;
@@ -176,9 +220,7 @@ function parseConfig(config: InteractConfig): InteractCache {
     const { effects: effects_, ...rest } = interaction_;
 
     if (!source) {
-      console.error(
-        `Interaction ${interactionIdx} is missing a key for source element.`,
-      );
+      console.error(`Interaction ${interactionIdx} is missing a key for source element.`);
       return;
     }
 

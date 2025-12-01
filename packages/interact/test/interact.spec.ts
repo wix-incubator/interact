@@ -1,12 +1,5 @@
 import type { MockInstance } from 'vitest';
-import {
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Interact } from '../src/core/Interact';
 import { add, addListItems } from '../src/core/add';
 import { remove } from '../src/core/remove';
@@ -24,13 +17,11 @@ vi.mock('@wix/motion', () => {
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),
-    getAnimation: vi
-      .fn()
-      .mockImplementation((target, options, trigger, reducedMotion) => {
-        return mock.getWebAnimation(target, options, trigger, {
-          reducedMotion,
-        });
-      }),
+    getAnimation: vi.fn().mockImplementation((target, options, trigger, reducedMotion) => {
+      return mock.getWebAnimation(target, options, trigger, {
+        reducedMotion,
+      });
+    }),
   };
 
   return mock;
@@ -51,6 +42,9 @@ vi.mock('fizban', () => ({
     end: vi.fn(),
   })),
 }));
+
+// Shared mock MQL storage for breakpoint tests
+let mockMQLs: Map<string, MediaQueryList>;
 
 describe('interact', () => {
   let element: IInteractElement;
@@ -341,24 +335,36 @@ describe('interact', () => {
     }
 
     // Mock matchMedia for condition testing
+    mockMQLs = new Map();
     mockMatchMedia();
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
     const queryRule = `(${matchingQueries.join(') and (')})`;
     const mockMQL = (query: string) => {
-      return {
+      // Return existing MQL if already created for this query
+      if (mockMQLs.has(query)) {
+        return mockMQLs.get(query)!;
+      }
+
+      const mql = {
         matches: queryRule === query,
         media: query,
         onchange: null,
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
-      };
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      } as unknown as MediaQueryList;
+
+      mockMQLs.set(query, mql);
+      return mql;
     };
 
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
+      configurable: true,
       value: vi.fn().mockImplementation(mockMQL),
     });
   }
@@ -501,15 +507,11 @@ describe('interact', () => {
     it('should call disconnect on all cached elements', () => {
       Interact.create(getMockConfig());
 
-      const element1 = document.createElement(
-        'interact-element',
-      ) as IInteractElement;
+      const element1 = document.createElement('interact-element') as IInteractElement;
       const div1 = document.createElement('div');
       element1.append(div1);
 
-      const element2 = document.createElement(
-        'interact-element',
-      ) as IInteractElement;
+      const element2 = document.createElement('interact-element') as IInteractElement;
       const div2 = document.createElement('div');
       element2.append(div2);
 
@@ -541,9 +543,7 @@ describe('interact', () => {
 
       // Re-create instance and verify it works independently
       Interact.create(getMockConfig());
-      const newElement = document.createElement(
-        'interact-element',
-      ) as IInteractElement;
+      const newElement = document.createElement('interact-element') as IInteractElement;
       const newDiv = document.createElement('div');
       newElement.append(newDiv);
 
@@ -614,12 +614,9 @@ describe('interact', () => {
 
       add(element, 'logo-hover');
 
-      expect(getWebAnimation).toHaveBeenCalledWith(
-        div,
-        expect.any(Object),
-        undefined,
-        { reducedMotion: true },
-      );
+      expect(getWebAnimation).toHaveBeenCalledWith(div, expect.any(Object), undefined, {
+        reducedMotion: true,
+      });
 
       Interact.forceReducedMotion = false;
 
@@ -641,9 +638,7 @@ describe('interact', () => {
       it('should add handler for hover trigger with alternate type', async () => {
         const { getWebAnimation } = await import('@wix/motion');
 
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -687,9 +682,7 @@ describe('interact', () => {
 
     describe('click', () => {
       it('should add handler for click trigger', () => {
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -711,9 +704,7 @@ describe('interact', () => {
     describe('viewEnter', () => {
       it('should add handler for viewEnter trigger', async () => {
         const { getWebAnimation } = await import('@wix/motion');
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -731,17 +722,13 @@ describe('interact', () => {
       it('should add handler for viewEnter trigger when target is added before source', async () => {
         const { getWebAnimation: getWebAnimationFn } = await import('@wix/motion');
         const getWebAnimation = getWebAnimationFn as unknown as MockInstance;
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         div.id = 'logo-entrance';
         element.dataset.interactKey = 'logo-entrance';
         element.append(div);
 
-        const elementClick = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const elementClick = document.createElement('interact-element') as IInteractElement;
         const divClick = document.createElement('div');
         divClick.id = 'logo-click';
         elementClick.dataset.interactKey = 'logo-click';
@@ -769,9 +756,7 @@ describe('interact', () => {
     describe('pageVisible', () => {
       it('should add handler for pageVisible trigger', async () => {
         const { getWebAnimation } = await import('@wix/motion');
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -790,9 +775,7 @@ describe('interact', () => {
     describe('animationEnd', () => {
       it('should add handler for animationEnd trigger', async () => {
         const { getWebAnimation } = await import('@wix/motion');
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -818,9 +801,7 @@ describe('interact', () => {
         };
         Pointer.mockImplementation(() => pointerInstance);
 
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -830,9 +811,7 @@ describe('interact', () => {
         expect(getScrubScene).toHaveBeenCalledWith(
           expect.any(HTMLElement),
           expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-track-mouse'] as ScrubEffect,
-            ),
+            effectToAnimationOptions(getMockConfig().effects['logo-track-mouse'] as ScrubEffect),
           ),
           expect.objectContaining({
             trigger: 'pointer-move',
@@ -846,9 +825,7 @@ describe('interact', () => {
       it('should add handler for viewProgress trigger with native ViewTimeline support', async () => {
         const { getWebAnimation } = await import('@wix/motion');
 
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         element.append(div);
 
@@ -858,9 +835,7 @@ describe('interact', () => {
         expect(getWebAnimation).toHaveBeenCalledWith(
           expect.any(HTMLElement),
           expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-fade-scroll'] as ScrubEffect,
-            ),
+            effectToAnimationOptions(getMockConfig().effects['logo-fade-scroll'] as ScrubEffect),
           ),
           expect.objectContaining({
             trigger: 'view-progress',
@@ -868,52 +843,47 @@ describe('interact', () => {
         );
       });
 
-      it('should add handler for viewProgress trigger with fizban polyfill', async () => new Promise(async (done) => {
-        // Remove ViewTimeline support
-        delete (window as any).ViewTimeline;
-        const { getScrubScene } = await import('@wix/motion');
-        const { Scroll } = await import('fizban');
-        const scrollInstance = {
-          start: vi.fn(),
-          destroy: vi.fn(),
-        };
-        Scroll.mockImplementation(() => scrollInstance);
+      it('should add handler for viewProgress trigger with fizban polyfill', async () =>
+        new Promise(async (done) => {
+          // Remove ViewTimeline support
+          delete (window as any).ViewTimeline;
+          const { getScrubScene } = await import('@wix/motion');
+          const { Scroll } = await import('fizban');
+          const scrollInstance = {
+            start: vi.fn(),
+            destroy: vi.fn(),
+          };
+          Scroll.mockImplementation(() => scrollInstance);
 
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
-        const div = document.createElement('div');
-        element.append(div);
+          element = document.createElement('interact-element') as IInteractElement;
+          const div = document.createElement('div');
+          element.append(div);
 
-        add(element, 'logo-scroll');
+          add(element, 'logo-scroll');
 
-        expect((global as any).ViewTimeline).toBeUndefined();
+          expect((global as any).ViewTimeline).toBeUndefined();
 
-        expect(getScrubScene).toHaveBeenCalledTimes(1);
-        expect(getScrubScene).toHaveBeenCalledWith(
-          expect.any(HTMLElement),
-          expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-fade-scroll'] as ScrubEffect,
+          expect(getScrubScene).toHaveBeenCalledTimes(1);
+          expect(getScrubScene).toHaveBeenCalledWith(
+            expect.any(HTMLElement),
+            expect.objectContaining(
+              effectToAnimationOptions(getMockConfig().effects['logo-fade-scroll'] as ScrubEffect),
             ),
-          ),
-          expect.objectContaining({
-            trigger: 'view-progress',
-          }),
-        );
-        setTimeout(() => {
-          expect(scrollInstance.start).toHaveBeenCalled();
-          Scroll.mockRestore();
-          done(void 0);
-        }, 0);
-      }));
+            expect.objectContaining({
+              trigger: 'view-progress',
+            }),
+          );
+          setTimeout(() => {
+            expect(scrollInstance.start).toHaveBeenCalled();
+            Scroll.mockRestore();
+            done(void 0);
+          }, 0);
+        }));
     });
 
     describe('listContainer', () => {
       it('should add a handler per list item for click trigger with listContainer', () => {
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-list';
@@ -950,9 +920,7 @@ describe('interact', () => {
       it('should add a handler per list item for viewEnter trigger with listContainer in effect', async () => {
         const { getWebAnimation: getWebAnimationFn } = await import('@wix/motion');
         const getWebAnimation = getWebAnimationFn as unknown as MockInstance;
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-list';
@@ -971,9 +939,7 @@ describe('interact', () => {
       });
 
       it('should add a handler per newly added list item for click trigger with listContainer', () => {
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-list';
@@ -1025,13 +991,9 @@ describe('interact', () => {
       it('should add a handler per newly added list item for viewProgress trigger but not add same interaction twice', async () => {
         const { getWebAnimation } = await import('@wix/motion');
 
-        element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const divTarget = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-scroll-list';
@@ -1052,9 +1014,7 @@ describe('interact', () => {
         expect(getWebAnimation).toHaveBeenCalledWith(
           li,
           expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-fade-scroll'] as ScrubEffect,
-            ),
+            effectToAnimationOptions(getMockConfig().effects['logo-fade-scroll'] as ScrubEffect),
           ),
           expect.objectContaining({
             trigger: 'view-progress',
@@ -1063,9 +1023,7 @@ describe('interact', () => {
         expect(getWebAnimation).toHaveBeenCalledWith(
           li2,
           expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-fade-scroll'] as ScrubEffect,
-            ),
+            effectToAnimationOptions(getMockConfig().effects['logo-fade-scroll'] as ScrubEffect),
           ),
           expect.objectContaining({
             trigger: 'view-progress',
@@ -1075,17 +1033,13 @@ describe('interact', () => {
         const li3 = document.createElement('li');
         ul.append(li3);
 
-        addListItems(targetElement, 'logo-scroll-items', '#logo-scroll-list', [
-          li3,
-        ]);
+        addListItems(targetElement, 'logo-scroll-items', '#logo-scroll-list', [li3]);
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation).toHaveBeenCalledWith(
           li3,
           expect.objectContaining(
-            effectToAnimationOptions(
-              getMockConfig().effects['logo-fade-scroll'] as ScrubEffect,
-            ),
+            effectToAnimationOptions(getMockConfig().effects['logo-fade-scroll'] as ScrubEffect),
           ),
           expect.objectContaining({
             trigger: 'view-progress',
@@ -1114,10 +1068,7 @@ describe('interact', () => {
       remove('logo-click');
 
       expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        'click',
-        expect.any(Function),
-      );
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
     });
 
     it('should do nothing if key does not exist', () => {
@@ -1151,15 +1102,11 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1198,15 +1145,11 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1234,15 +1177,11 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1272,15 +1211,11 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1308,15 +1243,11 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1395,21 +1326,15 @@ describe('interact', () => {
         mockMatchMedia(['min-width: 1024px']); // Only desktop matches
         Interact.create(complexConfig);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const target1Element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const target1Element = document.createElement('interact-element') as IInteractElement;
         const target1Div = document.createElement('div');
         target1Element.append(target1Div);
 
-        const target2Element = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const target2Element = document.createElement('interact-element') as IInteractElement;
         const target2Div = document.createElement('div');
         target2Element.append(target2Div);
 
@@ -1490,15 +1415,11 @@ describe('interact', () => {
         mockMatchMedia(['min-width: 1024px', 'min-resolution: 2dppx']);
         Interact.create(multiConditionConfig);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1562,15 +1483,11 @@ describe('interact', () => {
         mockMatchMedia(['min-width: 1024px']);
         Interact.create(configWithMissingCondition);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1624,15 +1541,11 @@ describe('interact', () => {
         mockMatchMedia([]);
         Interact.create(configWithEmptyConditions);
 
-        const sourceElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
         sourceElement.append(sourceDiv);
 
-        const targetElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        const targetElement = document.createElement('interact-element') as IInteractElement;
         const targetDiv = document.createElement('div');
         targetElement.append(targetDiv);
 
@@ -1661,9 +1574,7 @@ describe('interact', () => {
 
     beforeEach(() => {
       // Create source element with multiple child elements
-      sourceElement = document.createElement(
-        'interact-element',
-      ) as IInteractElement;
+      sourceElement = document.createElement('interact-element') as IInteractElement;
       sourceElement.innerHTML = `
         <div class="first-child">First Child</div>
         <button class="trigger-button">Click Me</button>
@@ -1676,9 +1587,7 @@ describe('interact', () => {
       `;
 
       // Create target element with multiple child elements
-      targetElement = document.createElement(
-        'interact-element',
-      ) as IInteractElement;
+      targetElement = document.createElement('interact-element') as IInteractElement;
       targetElement.innerHTML = `
         <div class="first-child">Target First</div>
         <div class="animation-target">Animation Target</div>
@@ -1718,12 +1627,8 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const triggerButton = sourceElement.querySelector(
-          '.trigger-button',
-        ) as HTMLElement;
-        const firstChild = sourceElement.querySelector(
-          '.first-child',
-        ) as HTMLElement;
+        const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
+        const firstChild = sourceElement.querySelector('.first-child') as HTMLElement;
 
         const triggerSpy = vi.spyOn(triggerButton, 'addEventListener');
         const firstChildSpy = vi.spyOn(firstChild, 'addEventListener');
@@ -1732,11 +1637,7 @@ describe('interact', () => {
         add(targetElement, 'selector-target');
 
         // Should add event listener to the selected element, not firstElementChild
-        expect(triggerSpy).toHaveBeenCalledWith(
-          'click',
-          expect.any(Function),
-          expect.any(Object),
-        );
+        expect(triggerSpy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
         expect(firstChildSpy).not.toHaveBeenCalled();
       });
 
@@ -1773,9 +1674,7 @@ describe('interact', () => {
         add(sourceElement, 'selector-source');
         add(targetElement, 'selector-target');
 
-        const animationTarget = targetElement.querySelector(
-          '.animation-target',
-        ) as HTMLElement;
+        const animationTarget = targetElement.querySelector('.animation-target') as HTMLElement;
 
         // Should create animation on the selected element, not firstElementChild
         expect(getWebAnimation).toHaveBeenCalledWith(
@@ -1813,9 +1712,7 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const firstChild = sourceElement.querySelector(
-          '.first-child',
-        ) as HTMLElement;
+        const firstChild = sourceElement.querySelector('.first-child') as HTMLElement;
         const firstChildSpy = vi.spyOn(firstChild, 'addEventListener');
 
         add(sourceElement, 'fallback-source');
@@ -1837,10 +1734,7 @@ describe('interact', () => {
             'list-effect': {
               keyframeEffect: {
                 name: 'list-test',
-                keyframes: [
-                  { transform: 'scale(1)' },
-                  { transform: 'scale(1.1)' },
-                ],
+                keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.1)' }],
               },
               duration: 200,
             },
@@ -1865,23 +1759,15 @@ describe('interact', () => {
         Interact.create(config);
 
         // Set up spies before adding interactions
-        const listItems = Array.from(
-          sourceElement.querySelectorAll('.list-item'),
-        ) as HTMLElement[];
+        const listItems = Array.from(sourceElement.querySelectorAll('.list-item')) as HTMLElement[];
 
-        const spies = listItems.map((item) =>
-          vi.spyOn(item, 'addEventListener'),
-        );
+        const spies = listItems.map((item) => vi.spyOn(item, 'addEventListener'));
 
         add(sourceElement, 'list-source');
 
         // Should add event listeners to each list item
         spies.forEach((spy) => {
-          expect(spy).toHaveBeenCalledWith(
-            'mouseenter',
-            expect.any(Function),
-            expect.any(Object),
-          );
+          expect(spy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
         });
       });
 
@@ -1918,19 +1804,13 @@ describe('interact', () => {
           sourceElement.querySelector('.list-container')?.children || [],
         ) as HTMLElement[];
 
-        const spies = containerChildren.map((child) =>
-          vi.spyOn(child, 'addEventListener'),
-        );
+        const spies = containerChildren.map((child) => vi.spyOn(child, 'addEventListener'));
 
         add(sourceElement, 'container-source');
 
         // Should add event listeners to all children of the container
         spies.forEach((spy) => {
-          expect(spy).toHaveBeenCalledWith(
-            'click',
-            expect.any(Function),
-            expect.any(Object),
-          );
+          expect(spy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
         });
       });
     });
@@ -2060,9 +1940,7 @@ describe('interact', () => {
         Interact.create(config);
 
         // Set up spy before adding interactions
-        const triggerButton = sourceElement.querySelector(
-          '.trigger-button',
-        ) as HTMLElement;
+        const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
         const spy = vi.spyOn(triggerButton, 'addEventListener');
 
         // This should not throw and should allow other interactions to work
@@ -2118,9 +1996,7 @@ describe('interact', () => {
         add(sourceElement, 'nested-source');
         add(targetElement, 'nested-target');
 
-        const deepTarget = targetElement.querySelector(
-          '.nested .deep-target',
-        ) as HTMLElement;
+        const deepTarget = targetElement.querySelector('.nested .deep-target') as HTMLElement;
 
         expect(addEventListenerSpy).toHaveBeenCalledWith(
           'click',
@@ -2128,19 +2004,14 @@ describe('interact', () => {
           expect.any(Object),
         );
 
-        expect(getWebAnimation).toHaveBeenCalledWith(
-          deepTarget,
-          expect.any(Object),
-          undefined,
-          { reducedMotion: false },
-        );
+        expect(getWebAnimation).toHaveBeenCalledWith(deepTarget, expect.any(Object), undefined, {
+          reducedMotion: false,
+        });
       });
 
       it('should handle attribute selectors', () => {
         // Add data attributes to test elements
-        const buttonWithData = sourceElement.querySelector(
-          '.trigger-button',
-        ) as HTMLElement;
+        const buttonWithData = sourceElement.querySelector('.trigger-button') as HTMLElement;
         buttonWithData.setAttribute('data-interactive', 'true');
         buttonWithData.setAttribute('data-category', 'primary');
 
@@ -2149,10 +2020,7 @@ describe('interact', () => {
             'attr-effect': {
               keyframeEffect: {
                 name: 'attr',
-                keyframes: [
-                  { backgroundColor: 'white' },
-                  { backgroundColor: 'lightblue' },
-                ],
+                keyframes: [{ backgroundColor: 'white' }, { backgroundColor: 'lightblue' }],
               },
               duration: 300,
             },
@@ -2181,11 +2049,7 @@ describe('interact', () => {
         add(sourceElement, 'attr-source');
         add(targetElement, 'attr-target');
 
-        expect(spy).toHaveBeenCalledWith(
-          'click',
-          expect.any(Function),
-          expect.any(Object),
-        );
+        expect(spy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
       });
     });
 
@@ -2266,13 +2130,8 @@ describe('interact', () => {
 
         Interact.create(config);
 
-        const triggerButton = sourceElement.querySelector(
-          '.trigger-button',
-        ) as HTMLElement;
-        const removeEventListenerSpy = vi.spyOn(
-          triggerButton,
-          'removeEventListener',
-        );
+        const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
+        const removeEventListenerSpy = vi.spyOn(triggerButton, 'removeEventListener');
 
         add(sourceElement, 'cleanup-source');
         add(targetElement, 'cleanup-target');
@@ -2280,10 +2139,7 @@ describe('interact', () => {
         remove('cleanup-source');
 
         // Should remove event listeners from the selected element
-        expect(removeEventListenerSpy).toHaveBeenCalledWith(
-          'click',
-          expect.any(Function),
-        );
+        expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
       });
     });
   });
@@ -2295,6 +2151,157 @@ describe('interact', () => {
 
       expect(Interact.elementCache.has(keyWithoutInstance)).toBe(true);
       expect(Interact.elementCache.get(keyWithoutInstance)).toBe(element);
+    });
+  });
+
+  describe('breakpoint media query listeners', () => {
+    let instance: Interact;
+    let testElement: IInteractElement;
+
+    beforeEach(() => {
+      // Clear existing MQLs and reset the mock for a fresh state
+      mockMQLs.clear();
+      mockMatchMedia();
+    });
+
+    afterEach(() => {
+      Interact.destroy();
+    });
+
+    const createResponsiveConfig = (): InteractConfig => ({
+      conditions: {
+        desktop: {
+          type: 'media',
+          predicate: 'min-width: 768px',
+        },
+      },
+      interactions: [
+        {
+          trigger: 'click',
+          key: 'responsive-button',
+          conditions: ['desktop'],
+          effects: [
+            {
+              key: 'responsive-button',
+              effectId: 'test-effect',
+            },
+          ],
+        },
+      ],
+      effects: {
+        'test-effect': {
+          namedEffect: {
+            type: 'FadeIn',
+            power: 'medium',
+          } as NamedEffect,
+          duration: 500,
+        },
+      },
+    });
+
+    it('should set up a media query listener when interaction has conditions', () => {
+      const config = createResponsiveConfig();
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      testElement.append(document.createElement('div'));
+      add(testElement, 'responsive-button');
+
+      // Verify matchMedia was called with the condition predicate
+      expect(window.matchMedia).toHaveBeenCalledWith('(min-width: 768px)');
+
+      // Verify listener was stored in instance
+      expect(instance.mediaQueryListeners.size).toBe(1);
+      expect(instance.mediaQueryListeners.has('responsive-button::trigger::0')).toBe(true);
+
+      // Verify addEventListener was called on the MQL
+      const mql = mockMQLs.get('(min-width: 768px)');
+      expect(mql?.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    });
+
+    it('should call reconcile (re-add) when media query changes', () => {
+      const config = createResponsiveConfig();
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      testElement.append(document.createElement('div'));
+      add(testElement, 'responsive-button');
+
+      // Get the stored handler
+      const listenerEntry = instance.mediaQueryListeners.get('responsive-button::trigger::0');
+      expect(listenerEntry).toBeDefined();
+
+      // Spy on clearInteractionStateForKey to verify reconcile behavior
+      const clearStateSpy = vi.spyOn(instance, 'clearInteractionStateForKey');
+
+      // Simulate media query change by calling the handler with a mock event
+      const mockEvent = { matches: true, media: '(min-width: 768px)' } as MediaQueryListEvent;
+      listenerEntry!.handler(mockEvent);
+
+      // Verify reconcile was triggered (clearInteractionStateForKey is called during reconcile)
+      expect(clearStateSpy).toHaveBeenCalledWith('responsive-button');
+    });
+
+    it('should properly remove event listeners when instance is destroyed', () => {
+      const config = createResponsiveConfig();
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      testElement.append(document.createElement('div'));
+      add(testElement, 'responsive-button');
+
+      const mql = mockMQLs.get('(min-width: 768px)');
+      expect(mql).toBeDefined();
+
+      // Verify listener was added
+      expect(mql!.addEventListener).toHaveBeenCalled();
+
+      // Destroy the instance
+      instance.destroy();
+
+      // Verify removeEventListener was called
+      expect(mql!.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+
+      // Verify the listeners map is cleared
+      expect(instance.mediaQueryListeners.size).toBe(0);
+    });
+
+    it('should not create duplicate listeners when add() is called twice', () => {
+      const config = createResponsiveConfig();
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      testElement.append(document.createElement('div'));
+
+      // Call add twice
+      add(testElement, 'responsive-button');
+      add(testElement, 'responsive-button');
+
+      // Should still only have one listener
+      expect(instance.mediaQueryListeners.size).toBe(1);
+
+      // addEventListener should only be called once
+      const mql = mockMQLs.get('(min-width: 768px)');
+      expect(mql?.addEventListener).toHaveBeenCalledTimes(1);
+    });
+
+    it('should remove listeners when element is deleted', () => {
+      const config = createResponsiveConfig();
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      testElement.append(document.createElement('div'));
+      add(testElement, 'responsive-button');
+
+      const mql = mockMQLs.get('(min-width: 768px)');
+      expect(instance.mediaQueryListeners.size).toBe(1);
+
+      // Delete the element
+      instance.deleteElement('responsive-button');
+
+      // Verify listener was removed
+      expect(mql!.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+      expect(instance.mediaQueryListeners.size).toBe(0);
     });
   });
 });
