@@ -1,10 +1,10 @@
 # @wix/interact Integration Rules
 
-This document outlines the rules and best practices for generating code that integrates `@wix/interact` into webpages.
+This document outlines the rules and best practices for generating code that integrates `@wix/interact` into a webpage.
 
 ## 1. Overview
 
-`@wix/interact` is a library for creating interactive animations and effects triggered by user actions (click, hover, scroll, etc.). It works by binding **Triggers** to **Effects** on specific **Elements**.
+`@wix/interact` is a library for creating interactive animations and effects triggered by user actions (click, hover, scroll, etc.). It works by binding **Triggers** and **Effects** to specific **Elements**.
 
 ## 2. Core Components
 
@@ -12,8 +12,8 @@ This document outlines the rules and best practices for generating code that int
 The custom element wrapper is **required** for any element that triggers an interaction or recieves an effect.
 
 **Rules:**
-- Must have a `data-interact-key` attribute that is unique within the scope.
-- Must contain at least one child element.
+- MUST have a `data-interact-key` attribute that is unique within the scope.
+- MUST contain at least one child element.
 - **Usage:**
   ```html
   <interact-element data-interact-key="my-button">
@@ -25,7 +25,7 @@ The custom element wrapper is **required** for any element that triggers an inte
 The entry point for initializing interactions.
 
 **Rules:**
-- Should be called once with the full configuration, or per page for single-page apps.
+- MUST be called at least once with the full configuration, or per page for single-page apps.
 - **Usage:**
   ```javascript
   import { Interact } from '@wix/interact';
@@ -40,7 +40,7 @@ The `InteractConfig` object defines the behavior.
 type InteractConfig = {
   interactions: Interaction[];          // Required: Array of interaction definitions
   effects?: Record<string, Effect>;     // Optional: Reusable named effects
-  conditions?: Record<string, Condition>; // Optional: Reusable conditions (media/container queries)
+  conditions?: Record<string, Condition>; // Optional: Reusable conditions (media queries)
 };
 ```
 
@@ -50,7 +50,7 @@ type InteractConfig = {
   key: 'element-key',       // Matches data-interact-key
   trigger: 'trigger-type',  // e.g., 'hover', 'click'
   selector?: '.child-cls',  // Optional: Targets specific child inside the interact-element
-  listContainer?: '.list',  // Optional: For list items
+  listContainer?: '.list',  // Optional: A selector for the element containing a list, for interactions on lists
   params?: { ... },         // Trigger-specific parameters
   conditions?: ['cond-id'], // Array of condition IDs
   effects: [ ... ]          // Array of effects to apply
@@ -58,8 +58,8 @@ type InteractConfig = {
 ```
 
 ### Element Selection Hierarchy
-1. **`listContainer`**: If present, selects a container to find list items.
-2. **`selector`**: Matches elements within the source/container.
+1. **`listContainer`**: If present, selects a container to target its immediate children as list items.
+2. **`selector`**: Matches elements within the root, or within each list item.
 3. **Fallback**: If neither is provided, targets the **first child** of `<interact-element>`.
 
 ## 4. Triggers & Behaviors
@@ -72,8 +72,6 @@ type InteractConfig = {
 | `viewProgress` | Scroll progress inside viewport | (No specific params, uses effect ranges) |
 | `pointerMove` | Mouse movement | `hitArea`: 'self' (default) or 'root' |
 | `animationEnd` | Chaining animations | `effectId`: ID of the previous effect |
-
-**Best Practice:** When using `viewEnter` make sure the triggering element is un-transformed and un-clipped, especially by the effect.
 
 ## 5. Effects & Animations
 
