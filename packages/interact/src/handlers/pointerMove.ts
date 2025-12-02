@@ -1,5 +1,5 @@
 import { getScrubScene } from '@wix/motion';
-import { Pointer } from 'kuliso';
+import { Pointer, PointerConfig } from 'kuliso';
 import type {
   PointerMoveParams,
   ScrubEffect,
@@ -12,6 +12,11 @@ import {
 } from './utilities';
 
 const pointerManagerMap = new WeakMap() as HandlerObjectMap;
+let pointerOptionsGetter: () => Partial<PointerConfig> = () => ({});
+
+function registerOptionsGetter(getter: () => Partial<PointerConfig>) {
+  pointerOptionsGetter = getter;
+}
 
 function addPointerMoveHandler(
   source: HTMLElement,
@@ -39,6 +44,7 @@ function addPointerMoveHandler(
     const pointer = new Pointer({
       root: options.hitArea === 'root' ? document.documentElement : source,
       scenes: Array.isArray(scene) ? scene : [scene],
+      ...pointerOptionsGetter(),
     });
     const cleanup = () => {
       pointer.destroy();
@@ -60,4 +66,5 @@ function removePointerMoveHandler(element: HTMLElement) {
 export default {
   add: addPointerMoveHandler,
   remove: removePointerMoveHandler,
+  registerOptionsGetter,
 };

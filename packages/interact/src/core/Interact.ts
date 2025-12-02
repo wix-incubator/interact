@@ -9,6 +9,7 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { getInteractElement } from '../InteractElement';
 import { generateId } from '../utils';
+import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
 
 function registerInteractElement() {
   if (!customElements.get('interact-element')) {
@@ -163,6 +164,23 @@ export class Interact {
     });
     Interact.instances.length = 0;
     Interact.elementCache.clear();
+  }
+
+  static setup(options: {
+    scrollOptionsGetter?: () => Partial<scrollConfig>;
+    pointerOptionsGetter?: () => Partial<PointerConfig>;
+  }): void {
+    if (options.scrollOptionsGetter) {
+      TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress.registerOptionsGetter?.(
+        options.scrollOptionsGetter,
+      );
+    }
+
+    if (options.pointerOptionsGetter) {
+      TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove.registerOptionsGetter?.(
+        options.pointerOptionsGetter,
+      );
+    }
   }
 
   static getInstance(key: string): Interact | undefined {
