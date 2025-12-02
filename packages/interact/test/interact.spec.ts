@@ -6,6 +6,7 @@ import { remove } from '../src/core/remove';
 import type { InteractConfig, ScrubEffect, IInteractElement } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
+import TRIGGER_TO_HANDLER_MODULE_MAP from '../src/handlers';
 
 // Mock @wix/motion module
 vi.mock('@wix/motion', () => {
@@ -2151,6 +2152,40 @@ describe('interact', () => {
 
       expect(Interact.elementCache.has(keyWithoutInstance)).toBe(true);
       expect(Interact.elementCache.get(keyWithoutInstance)).toBe(element);
+    });
+  });
+
+
+  describe('setup', () => {
+    afterEach(() => {
+      Interact.setup({
+        scrollOptionsGetter: () => ({}),
+        pointerOptionsGetter: () => ({}),
+      });
+    });
+
+    it('should register scroll options getter', () => {
+      const scrollOptionsGetter = vi.fn().mockReturnValue({});
+      const spy = vi.spyOn(
+        TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress,
+        'registerOptionsGetter',
+      );
+
+      Interact.setup({ scrollOptionsGetter });
+
+      expect(spy).toHaveBeenCalledWith(scrollOptionsGetter);
+    });
+
+    it('should register pointer options getter', () => {
+      const pointerOptionsGetter = vi.fn().mockReturnValue({});
+      const spy = vi.spyOn(
+        TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove,
+        'registerOptionsGetter',
+      );
+
+      Interact.setup({ pointerOptionsGetter });
+
+      expect(spy).toHaveBeenCalledWith(pointerOptionsGetter);
     });
   });
 

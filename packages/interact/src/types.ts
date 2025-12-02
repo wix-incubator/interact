@@ -200,6 +200,7 @@ export type InteractionParamsTypes = {
 };
 
 export type InteractionHandlerModule<T extends TriggerType> = {
+  registerOptionsGetter?: (getter: () => any) => void;
   add: (
     source: HTMLElement,
     target: HTMLElement,
