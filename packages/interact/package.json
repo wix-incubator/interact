@@ -44,7 +44,8 @@
   "dependencies": {
     "@wix/motion": "^1.0.0",
     "kuliso": "^0.4.13",
-    "fizban": "^0.7.2"
+    "fizban": "^0.7.2",
+    "fastdom": "^1.0.12"
   },
   "peerDependencies": {
     "react": "^18.3.1",
