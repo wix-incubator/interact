@@ -4,7 +4,7 @@ import type {
   AnimationEndParams,
   TimeEffect,
   HandlerObjectMap,
-  IInteractionController,
+  InteractOptions,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -19,7 +19,7 @@ function addAnimationEndHandler(
   target: HTMLElement,
   effect: TimeEffect,
   __: AnimationEndParams,
-  { reducedMotion }: { reducedMotion: boolean, targetController?: IInteractionController },
+  { reducedMotion }: InteractOptions,
 ): void {
   const animation = getAnimation(
     target,

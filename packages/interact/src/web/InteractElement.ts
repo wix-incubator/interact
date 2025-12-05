@@ -1,5 +1,5 @@
-import type { IInteractionController, StateParams } from './types';
-import { InteractionController } from './core/InteractionController';
+import type { IInteractionController, StateParams } from '../types';
+import { InteractionController } from '../core/InteractionController';
 
 export const INTERACT_EFFECT_DATA_ATTR = 'interactEffect';
 
@@ -58,6 +58,7 @@ export function getInteractElement() {
       if (item === null) {
         return;
       }
+
       if (isLegacyStateSyntax) {
         effectId = `--${effectId}`;
       }
@@ -75,7 +76,7 @@ export function getInteractElement() {
           this._internals.states.clear();
         }
       } else {
-        this.controller?.toggleEffect(effectId, method, item);
+        this.controller?.toggleEffect(effectId, method, item, true);
       }
     }
 

@@ -5,7 +5,7 @@ export type InteractRef = (node: Element | null) => () => void;
 export function createInteractRef(interactKey: string): InteractRef {
   return function (node: Element | null) {
     if (node) {
-      add(node as HTMLElement);
+      add(node as HTMLElement, interactKey);
     } else {
       // React 18 and below
       remove(interactKey);

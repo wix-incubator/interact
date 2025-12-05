@@ -5,10 +5,10 @@ import type {
   TransitionEffect,
   StateParams,
   HandlerObjectMap,
-  IInteractElement,
   PointerTriggerParams,
   EffectBase,
   IInteractionController,
+  InteractOptions,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -98,7 +98,7 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  { reducedMotion, targetController }: { reducedMotion: boolean, targetController?: IInteractionController },
+  { reducedMotion, targetController }: InteractOptions,
 ) {
   let handler: (event: MouseEvent) => void;
   let once = false;

@@ -5,10 +5,10 @@ import type {
   TransitionEffect,
   StateParams,
   HandlerObjectMap,
-  IInteractElement,
   PointerTriggerParams,
   EffectBase,
   IInteractionController,
+  InteractOptions,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -111,7 +111,7 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  { reducedMotion, targetController }: { reducedMotion: boolean, targetController?: IInteractionController },
+  { reducedMotion, targetController }: InteractOptions,
 ) {
   let handler: (event: MouseEvent) => void;
   let isStateTrigger = false;

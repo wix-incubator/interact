@@ -1,7 +1,7 @@
 import type { ScrubScrollScene } from '@wix/motion';
 import { getWebAnimation, getScrubScene } from '@wix/motion';
 import { Scroll, type scrollConfig } from 'fizban';
-import type { ViewEnterParams, ScrubEffect, HandlerObjectMap, IInteractionController } from '../types';
+import type { ViewEnterParams, ScrubEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -20,7 +20,7 @@ function addViewProgressHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   __: ViewEnterParams,
-  { reducedMotion }: { reducedMotion: boolean, targetController?: IInteractionController },
+  { reducedMotion }: InteractOptions,
 ): void {
   if (reducedMotion) {
     return;

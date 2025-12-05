@@ -1,4 +1,4 @@
-import type { StateParams } from '../types';
+import type { IInteractElement, StateParams } from '../types';
 import { add, addListItems } from './add';
 import { remove, removeListItems } from './remove';
 
@@ -82,8 +82,13 @@ export class InteractionController {
     }
   }
 
-  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null) {
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean) {
     if (item === null) {
+      return;
+    }
+
+    if (!isLegacy && !(this.element as IInteractElement).toggleEffect) {
+      (this.element as IInteractElement).toggleEffect(effectId, method, item);
       return;
     }
 

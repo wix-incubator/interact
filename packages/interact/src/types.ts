@@ -180,7 +180,7 @@ export interface IInteractionController {
   connect(key?: string): void;
   disconnect(): void;
   update(): void;
-  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
   getActiveEffects(): string[];
   renderStyle(cssRules: string[]): void;
   watchChildList(listContainer: string): void;
@@ -209,6 +209,11 @@ export type InteractionParamsTypes = {
   pointerMove: PointerMoveParams;
 };
 
+export type InteractOptions = {
+  reducedMotion?: boolean;
+  targetController?: IInteractionController;
+};
+
 export type InteractionHandlerModule<T extends TriggerType> = {
   registerOptionsGetter?: (getter: () => any) => void;
   add: (
@@ -216,7 +221,7 @@ export type InteractionHandlerModule<T extends TriggerType> = {
     target: HTMLElement,
     effect: Effect,
     options: InteractionParamsTypes[T],
-    reducedMotion?: boolean,
+    interactOptions: InteractOptions,
   ) => void;
   remove: (element: HTMLElement) => void;
 };

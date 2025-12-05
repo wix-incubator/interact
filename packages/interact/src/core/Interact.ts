@@ -7,26 +7,15 @@ import {
   IInteractionController,
 } from '../types';
 import { getInterpolatedKey } from './utilities';
-import { getInteractElement } from '../InteractElement';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-
-function registerInteractElement() {
-  if (!customElements.get('interact-element')) {
-    const interactElement = getInteractElement();
-    customElements.define('interact-element', interactElement);
-
-    return true;
-  }
-
-  return false;
-}
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
 }
 
 export class Interact {
+  static defineInteractElement?: () => boolean;
   dataCache: InteractCache;
   addedInteractions: { [interactionId: string]: boolean };
   mediaQueryListeners: Map<
@@ -60,7 +49,7 @@ export class Interact {
 
     this.dataCache = parseConfig(config);
 
-    registerInteractElement();
+    Interact.defineInteractElement?.();
 
     // Always try to reconnect elements from cache.
     // This handles cases where elements were added to DOM before the instance was created
