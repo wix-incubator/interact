@@ -8,6 +8,7 @@ import type {
   IInteractElement,
   PointerTriggerParams,
   EffectBase,
+  IInteractionController,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -70,6 +71,7 @@ function createTimeEffectHandler(
 
 function createTransitionHandler(
   element: HTMLElement,
+  targetController: IInteractionController,
   {
     effectId,
     listContainer,
@@ -80,13 +82,6 @@ function createTransitionHandler(
   const shouldSetStateOnElement = !!listContainer;
 
   return (__: MouseEvent) => {
-    const interactElement = element.closest(
-      'interact-element',
-    ) as IInteractElement;
-    if (!interactElement) {
-      return;
-    }
-
     let item;
     if (shouldSetStateOnElement) {
       item = element.closest(
@@ -94,7 +89,7 @@ function createTransitionHandler(
       ) as HTMLElement | null;
     }
 
-    interactElement.toggleEffect(effectId, options.method || 'toggle', item);
+    targetController.toggleEffect(effectId, options.method || 'toggle', item);
   };
 }
 
@@ -103,7 +98,7 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  reducedMotion: boolean = false,
+  { reducedMotion, targetController }: { reducedMotion: boolean, targetController?: IInteractionController },
 ) {
   let handler: (event: MouseEvent) => void;
   let once = false;
@@ -114,6 +109,7 @@ function addClickHandler(
   ) {
     handler = createTransitionHandler(
       target,
+      targetController!,
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
     );

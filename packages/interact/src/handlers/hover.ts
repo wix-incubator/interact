@@ -8,6 +8,7 @@ import type {
   IInteractElement,
   PointerTriggerParams,
   EffectBase,
+  IInteractionController,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -76,6 +77,7 @@ function createTimeEffectHandler(
 
 function createTransitionHandler(
   element: HTMLElement,
+  targetController: IInteractionController,
   {
     effectId,
     listContainer,
@@ -88,13 +90,6 @@ function createTransitionHandler(
   const shouldSetStateOnElement = !!listContainer;
 
   return (event: MouseEvent) => {
-    const interactElement = element.closest(
-      'interact-element',
-    ) as IInteractElement;
-    if (!interactElement) {
-      return;
-    }
-
     let item;
     if (shouldSetStateOnElement) {
       item = element.closest(
@@ -104,9 +99,9 @@ function createTransitionHandler(
 
     if (event.type === 'mouseenter') {
       const method_ = isToggle ? 'add' : method;
-      interactElement.toggleEffect(effectId, method_, item);
+      targetController.toggleEffect(effectId, method_, item);
     } else if (event.type === 'mouseleave' && isToggle) {
-      interactElement.toggleEffect(effectId, 'remove', item);
+      targetController.toggleEffect(effectId, 'remove', item);
     }
   };
 }
@@ -116,7 +111,7 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  reducedMotion: boolean = false,
+  { reducedMotion, targetController }: { reducedMotion: boolean, targetController?: IInteractionController },
 ) {
   let handler: (event: MouseEvent) => void;
   let isStateTrigger = false;
@@ -128,6 +123,7 @@ function addHoverHandler(
   ) {
     handler = createTransitionHandler(
       target,
+      targetController!,
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
     );

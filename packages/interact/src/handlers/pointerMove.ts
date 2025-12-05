@@ -1,9 +1,10 @@
 import { getScrubScene } from '@wix/motion';
-import { Pointer, PointerConfig } from 'kuliso';
+import { Pointer, type PointerConfig } from 'kuliso';
 import type {
   PointerMoveParams,
   ScrubEffect,
   HandlerObjectMap,
+  IInteractionController,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -23,7 +24,7 @@ function addPointerMoveHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   options: PointerMoveParams = {},
-  reducedMotion: boolean = false,
+  { reducedMotion }: { reducedMotion: boolean, targetController?: IInteractionController },
 ) {
   if (reducedMotion) {
     return;

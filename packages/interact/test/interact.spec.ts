@@ -1,12 +1,15 @@
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Interact } from '../src/core/Interact';
-import { add, addListItems } from '../src/core/add';
-import { remove } from '../src/core/remove';
+import { addListItems } from '../src/core/add';
+import { add } from '../src/dom/api';
+// import { remove as removeCore } from '../src/core/remove';
+import { remove } from '../src/dom/api';
 import type { InteractConfig, ScrubEffect, IInteractElement } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../src/handlers';
+// import { InteractionController } from '../src/core/InteractionController';
 
 // Mock @wix/motion module
 vi.mock('@wix/motion', () => {
@@ -465,15 +468,15 @@ describe('interact', () => {
       add(element, 'logo-entrance');
 
       expect(Object.keys(instance.dataCache.interactions).length).toBe(11);
-      expect(instance.elements.size).toBe(1);
+      expect(instance.controllers.size).toBe(1);
       expect(Interact.instances.length).toBe(1);
 
       instance.destroy();
 
       expect(Object.keys(instance.dataCache.interactions).length).toBe(0);
-      expect(instance.elements.size).toBe(0);
+      expect(instance.controllers.size).toBe(0);
       expect(Interact.instances.length).toBe(0);
-      expect(Interact.elementCache.size).toBe(0);
+      expect(Interact.controllerCache.size).toBe(0);
     });
   });
 
@@ -498,29 +501,35 @@ describe('interact', () => {
 
       add(element, 'logo-hover');
 
-      expect(Interact.elementCache.size).toBeGreaterThan(0);
+      expect(Interact.controllerCache.size).toBeGreaterThan(0);
 
       Interact.destroy();
 
-      expect(Interact.elementCache.size).toBe(0);
+      expect(Interact.controllerCache.size).toBe(0);
     });
 
     it('should call disconnect on all cached elements', () => {
       Interact.create(getMockConfig());
 
+      const key1 = 'logo-hover';
       const element1 = document.createElement('interact-element') as IInteractElement;
+      element1.dataset.interactKey = key1;
       const div1 = document.createElement('div');
       element1.append(div1);
 
+      const key2 = 'logo-click';
       const element2 = document.createElement('interact-element') as IInteractElement;
+      element2.dataset.interactKey = key2;
       const div2 = document.createElement('div');
       element2.append(div2);
 
-      add(element1, 'logo-hover');
-      add(element2, 'logo-click');
+      add(element1, key1);
+      add(element2, key2);
+      const controller1 = Interact.getController(key1);
+      const controller2 = Interact.getController(key2);
 
-      const disconnectSpy1 = vi.spyOn(element1, 'disconnect');
-      const disconnectSpy2 = vi.spyOn(element2, 'disconnect');
+      const disconnectSpy1 = vi.spyOn(controller1!, 'disconnect');
+      const disconnectSpy2 = vi.spyOn(controller2!, 'disconnect');
 
       Interact.destroy();
 
@@ -940,7 +949,9 @@ describe('interact', () => {
       });
 
       it('should add a handler per newly added list item for click trigger with listContainer', () => {
+        const key = 'logo-click-container';
         element = document.createElement('interact-element') as IInteractElement;
+        element.dataset.interactKey = key;
         const div = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-list';
@@ -954,7 +965,7 @@ describe('interact', () => {
         const addEventListenerSpy = vi.spyOn(li, 'addEventListener');
         const addEventListenerSpy2 = vi.spyOn(li2, 'addEventListener');
 
-        add(element, 'logo-click-container');
+        add(element, key);
 
         expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
         expect(addEventListenerSpy2).toHaveBeenCalledTimes(1);
@@ -977,7 +988,8 @@ describe('interact', () => {
         ul.append(li3);
         const addEventListenerSpy3 = vi.spyOn(li3, 'addEventListener');
 
-        addListItems(element, 'logo-click-container', '#logo-list', [li3]);
+        const controller = Interact.getController(key);
+        addListItems(controller!, '#logo-list', [li3]);
 
         expect(addEventListenerSpy3).toHaveBeenCalledTimes(1);
         expect(addEventListenerSpy3).toHaveBeenCalledWith(
@@ -992,9 +1004,13 @@ describe('interact', () => {
       it('should add a handler per newly added list item for viewProgress trigger but not add same interaction twice', async () => {
         const { getWebAnimation } = await import('@wix/motion');
 
+        const keySource = 'logo-scroll-container';
+        const keyTarget = 'logo-scroll-items';
         element = document.createElement('interact-element') as IInteractElement;
+        element.dataset.interactKey = keySource;
         const div = document.createElement('div');
         const targetElement = document.createElement('interact-element') as IInteractElement;
+        targetElement.dataset.interactKey = keyTarget;
         const divTarget = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-scroll-list';
@@ -1006,10 +1022,10 @@ describe('interact', () => {
         element.append(div);
         targetElement.append(divTarget);
 
-        add(element, 'logo-scroll-container');
+        add(element, keySource);
         expect(getWebAnimation).toHaveBeenCalledTimes(0);
 
-        add(targetElement, 'logo-scroll-items');
+        add(targetElement, keyTarget);
 
         expect(getWebAnimation).toHaveBeenCalledTimes(2);
         expect(getWebAnimation).toHaveBeenCalledWith(
@@ -1034,7 +1050,8 @@ describe('interact', () => {
         const li3 = document.createElement('li');
         ul.append(li3);
 
-        addListItems(targetElement, 'logo-scroll-items', '#logo-scroll-list', [li3]);
+        const controller = Interact.getController(keyTarget);
+        addListItems(controller!, '#logo-scroll-list', [li3]);
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation).toHaveBeenCalledWith(
@@ -1059,14 +1076,16 @@ describe('interact', () => {
     });
 
     it('should remove event listeners', () => {
+      const key = 'logo-click';
       element = document.createElement('interact-element') as IInteractElement;
+      element.dataset.interactKey = key;
       const div = document.createElement('div');
       element.append(div);
 
       const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
 
-      add(element, 'logo-click');
-      remove('logo-click');
+      add(element, key);
+      remove(key);
 
       expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
@@ -1084,12 +1103,14 @@ describe('interact', () => {
       };
       Pointer.mockImplementation(() => pointerInstance);
 
+      const key = 'logo-mouse';
       element = document.createElement('interact-element') as IInteractElement;
+      element.dataset.interactKey = key;
       const div = document.createElement('div');
       element.append(div);
 
-      add(element, 'logo-mouse');
-      remove('logo-mouse');
+      add(element, key);
+      remove(key);
 
       expect(pointerInstance.destroy).toHaveBeenCalledTimes(1);
     });
@@ -2146,12 +2167,14 @@ describe('interact', () => {
   });
 
   describe('element caching', () => {
-    it('should cache element in elementCache even when no instance was found for it', () => {
+    it('should cache element in controllerCache even when no instance was found for it', () => {
       const keyWithoutInstance = 'key-without-instance';
+      element.dataset.interactKey = keyWithoutInstance;
       add(element, keyWithoutInstance);
+      const controller = Interact.getController(keyWithoutInstance);
 
-      expect(Interact.elementCache.has(keyWithoutInstance)).toBe(true);
-      expect(Interact.elementCache.get(keyWithoutInstance)).toBe(element);
+      expect(Interact.controllerCache.has(keyWithoutInstance)).toBe(true);
+      expect(Interact.controllerCache.get(keyWithoutInstance)).toBe(controller);
     });
   });
 
@@ -2332,7 +2355,7 @@ describe('interact', () => {
       expect(instance.mediaQueryListeners.size).toBe(1);
 
       // Delete the element
-      instance.deleteElement('responsive-button');
+      instance.deleteController('responsive-button');
 
       // Verify listener was removed
       expect(mql!.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
