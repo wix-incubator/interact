@@ -4,25 +4,19 @@ import type {
   EffectRef,
   InteractionParamsTypes,
   TransitionEffect,
-  IInteractElement,
   Interaction,
   InteractionTrigger,
   CreateTransitionCSSParams,
+  IInteractionController,
 } from '../types';
 import { createTransitionCSS, getMediaQuery } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { remove } from './remove';
-
-function update(root: IInteractElement, key: string): void {
-  remove(key);
-  add(root, key);
-}
 
 function _getElementsFromData(
   data: Interaction | Effect,
-  root: IInteractElement,
+  root: HTMLElement,
 ): HTMLElement | HTMLElement[] | null {
   if (data.listContainer) {
     const container = root.querySelector(data.listContainer);
@@ -64,8 +58,8 @@ function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]):
 function _getInteractionElements(
   interaction: InteractionTrigger,
   effect: Effect,
-  source: IInteractElement,
-  target: IInteractElement,
+  source: HTMLElement,
+  target: HTMLElement,
   sourceElements?: HTMLElement[],
   targetElements?: HTMLElement[],
 ): [HTMLElement | HTMLElement[] | null, HTMLElement | HTMLElement[] | null] {
@@ -80,7 +74,7 @@ function _getInteractionElements(
 }
 
 function _applyInteraction(
-  key: string,
+  targetKey: string,
   interaction: InteractionTrigger,
   effect: Effect,
   sourceElements: HTMLElement | HTMLElement[],
@@ -95,7 +89,7 @@ function _applyInteraction(
 
       if (targetEl) {
         addInteraction(
-          key,
+          targetKey,
           sourceEl,
           interaction.trigger,
           targetEl,
@@ -108,7 +102,7 @@ function _applyInteraction(
     const targets = isTargetArray ? targetElements : [targetElements];
     targets.forEach((targetEl) => {
       addInteraction(
-        key,
+        targetKey,
         sourceElements,
         interaction.trigger,
         targetEl,
@@ -121,7 +115,7 @@ function _applyInteraction(
 
 function _addInteraction(
   sourceKey: string,
-  sourceRoot: IInteractElement,
+  sourceController: IInteractionController,
   instance: Interact,
   interaction: Interaction,
   elements?: HTMLElement[],
@@ -154,7 +148,7 @@ function _addInteraction(
 
     if (mql) {
       instance.setupMediaQueryListener(interactionId, mql, sourceKey, () => {
-        update(sourceRoot, sourceKey);
+        sourceController.update();
       });
     }
 
@@ -163,28 +157,28 @@ function _addInteraction(
 
       const target = targetKey_ && getInterpolatedKey(targetKey_, sourceKey);
 
-      let targetElement;
+      let targetController;
       if (target) {
-        targetElement = Interact.getElement(target);
+        targetController = Interact.getController(target);
 
-        if (!targetElement) {
+        if (!targetController) {
           // Bail out :: no target element in cache
           return;
         }
 
         if (effectOptions.listContainer) {
-          targetElement.watchChildList(effectOptions.listContainer);
+          targetController.watchChildList(effectOptions.listContainer);
         }
       } else {
         // target is not specified - fallback to same as source
-        targetElement = sourceRoot;
+        targetController = sourceController;
       }
 
       const [sourceElements, targetElements] = _getInteractionElements(
         interaction,
         effectOptions,
-        sourceRoot,
-        targetElement!,
+        sourceController.element,
+        targetController.element,
         elements,
       );
 
@@ -203,7 +197,7 @@ function _addInteraction(
 
 function addEffectsForTarget(
   targetKey: string,
-  element: IInteractElement,
+  targetController: IInteractionController,
   instance: Interact,
   listContainer?: string,
   elements?: HTMLElement[],
@@ -241,28 +235,28 @@ function addEffectsForTarget(
       if (mql) {
         instance.setupMediaQueryListener(interactionId, mql, targetKey, () => {
           // For effects on target, we reconcile the target element
-          update(element, targetKey);
+          targetController.update();
         });
       }
 
       if (!mql || mql.matches) {
         const sourceKey = interaction.key && getInterpolatedKey(interaction.key, targetKey);
-        const sourceElement = Interact.getElement(sourceKey);
+        const sourceController = Interact.getController(sourceKey);
 
-        if (!sourceElement) {
+        if (!sourceController) {
           // Bail out :: no source or target elements in cache
           return true;
         }
 
         if (effectOptions.listContainer) {
-          element.watchChildList(effectOptions.listContainer);
+          targetController.watchChildList(effectOptions.listContainer);
         }
 
         const [sourceElements, targetElements] = _getInteractionElements(
           interaction,
           effectOptions,
-          sourceElement,
-          element,
+          sourceController.element,
+          targetController.element,
           undefined,
           elements,
         );
@@ -297,19 +291,21 @@ function addEffectsForTarget(
  * Registers a handler to an event on a given element.
  */
 function addInteraction<T extends TriggerType>(
-  key: string,
+  targetKey: string,
   source: HTMLElement,
   trigger: T,
   target: HTMLElement,
   effect: Effect,
   options: InteractionParamsTypes[T],
 ): void {
+  let targetController;
+
   if (
     (effect as TransitionEffect).transition ||
     (effect as TransitionEffect).transitionProperties
   ) {
     const args: CreateTransitionCSSParams = {
-      key,
+      key: targetKey,
       effectId: (effect as Effect).effectId!,
       transition: (effect as TransitionEffect).transition,
       properties: (effect as TransitionEffect).transitionProperties,
@@ -319,12 +315,12 @@ function addInteraction<T extends TriggerType>(
       }),
     };
 
-    const root = target.closest('interact-element') as IInteractElement;
-    if (!root) {
+    targetController = Interact.getController(targetKey);
+    if (!targetController) {
       return;
     }
 
-    root.renderStyle(createTransitionCSS(args));
+    targetController.renderStyle(createTransitionCSS(args));
   }
 
   TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(
@@ -332,28 +328,29 @@ function addInteraction<T extends TriggerType>(
     target,
     effect,
     options,
-    Interact.forceReducedMotion,
+    { reducedMotion: Interact.forceReducedMotion, targetController },
   );
 }
 
 /**
  * Adds all events and effects to an element based on config
  */
-export function add(element: IInteractElement, key: string): boolean {
+export function add(controller: IInteractionController): boolean {
+  const key = controller.key as string;
   const instance = Interact.getInstance(key);
 
   if (!instance) {
     console.warn(`No instance found for key: ${key}`);
 
     // even if we don't find a matching instance, we still want to cache the element
-    Interact.setElement(key, element);
+    Interact.setController(key, controller);
     return false;
   }
 
   const { triggers = [] } = instance?.get(key) || {};
   const hasTriggers = triggers.length > 0;
 
-  instance.setElement(key, element);
+  instance.setController(key, controller);
 
   triggers.forEach((interaction, index) => {
     const mql = getMediaQuery(interaction.conditions, instance!.dataCache.conditions);
@@ -361,33 +358,33 @@ export function add(element: IInteractElement, key: string): boolean {
     if (mql) {
       const interactionId = `${key}::trigger::${index}`;
       instance.setupMediaQueryListener(interactionId, mql, key, () => {
-        update(element, key);
+        controller.update();
       });
     }
 
     if (!mql || mql.matches) {
       if (interaction.listContainer) {
-        element.watchChildList(interaction.listContainer);
+        controller.watchChildList(interaction.listContainer);
       }
 
-      _addInteraction(key, element, instance!, interaction);
+      _addInteraction(key, controller, instance!, interaction);
     }
   });
 
   let hasEffects = false;
   if (instance) {
-    hasEffects = addEffectsForTarget(key, element, instance);
+    hasEffects = addEffectsForTarget(key, controller, instance);
   }
 
   return hasTriggers || hasEffects;
 }
 
 export function addListItems(
-  root: IInteractElement,
-  key: string,
+  controller: IInteractionController,
   listContainer: string,
   elements: HTMLElement[],
 ) {
+  const key = controller.key as string;
   const instance = Interact.getInstance(key);
 
   if (instance) {
@@ -404,15 +401,15 @@ export function addListItems(
         const interactionId = `${key}::listTrigger::${listContainer}::${index}`;
         instance.setupMediaQueryListener(interactionId, mql, key, () => {
           // For list items, reconciling the root might be expensive but safe
-          update(root, key);
+          controller.update();
         });
       }
 
       if (!mql || mql.matches) {
-        _addInteraction(key, root, instance!, interaction, elements);
+        _addInteraction(key, controller, instance!, interaction, elements);
       }
     });
 
-    addEffectsForTarget(key, root, instance, listContainer, elements);
+    addEffectsForTarget(key, controller, instance, listContainer, elements);
   }
 }

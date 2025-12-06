@@ -1,12 +1,10 @@
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Interact } from '../src/core/Interact';
-import { add, addListItems } from '../src/core/add';
-import { remove } from '../src/core/remove';
+import { Interact, add, remove } from '../src/web';
+import { addListItems } from '../src/core/add';
 import type { InteractConfig, ScrubEffect, IInteractElement } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
-import TRIGGER_TO_HANDLER_MODULE_MAP from '../src/handlers';
 
 // Mock @wix/motion module
 vi.mock('@wix/motion', () => {
@@ -47,7 +45,7 @@ vi.mock('fizban', () => ({
 // Shared mock MQL storage for breakpoint tests
 let mockMQLs: Map<string, MediaQueryList>;
 
-describe('interact', () => {
+describe('interact (web)', () => {
   let element: IInteractElement;
   let mockConfig: InteractConfig;
   const getMockConfig: () => InteractConfig = () => ({
@@ -447,7 +445,7 @@ describe('interact', () => {
   });
 
   describe('init Interact instance', () => {
-    it('should initialize with valid config', () => {
+    it('should initialize with valid config and register custom element', () => {
       Interact.create({} as InteractConfig);
       expect(customElements.get('interact-element')).toBeDefined();
     });
@@ -465,15 +463,15 @@ describe('interact', () => {
       add(element, 'logo-entrance');
 
       expect(Object.keys(instance.dataCache.interactions).length).toBe(11);
-      expect(instance.elements.size).toBe(1);
+      expect(instance.controllers.size).toBe(1);
       expect(Interact.instances.length).toBe(1);
 
       instance.destroy();
 
       expect(Object.keys(instance.dataCache.interactions).length).toBe(0);
-      expect(instance.elements.size).toBe(0);
+      expect(instance.controllers.size).toBe(0);
       expect(Interact.instances.length).toBe(0);
-      expect(Interact.elementCache.size).toBe(0);
+      expect(Interact.controllerCache.size).toBe(0);
     });
   });
 
@@ -498,29 +496,35 @@ describe('interact', () => {
 
       add(element, 'logo-hover');
 
-      expect(Interact.elementCache.size).toBeGreaterThan(0);
+      expect(Interact.controllerCache.size).toBeGreaterThan(0);
 
       Interact.destroy();
 
-      expect(Interact.elementCache.size).toBe(0);
+      expect(Interact.controllerCache.size).toBe(0);
     });
 
     it('should call disconnect on all cached elements', () => {
       Interact.create(getMockConfig());
 
+      const key1 = 'logo-hover';
       const element1 = document.createElement('interact-element') as IInteractElement;
+      element1.dataset.interactKey = key1;
       const div1 = document.createElement('div');
       element1.append(div1);
 
+      const key2 = 'logo-click';
       const element2 = document.createElement('interact-element') as IInteractElement;
+      element2.dataset.interactKey = key2;
       const div2 = document.createElement('div');
       element2.append(div2);
 
-      add(element1, 'logo-hover');
-      add(element2, 'logo-click');
+      add(element1, key1);
+      add(element2, key2);
+      const controller1 = Interact.getController(key1);
+      const controller2 = Interact.getController(key2);
 
-      const disconnectSpy1 = vi.spyOn(element1, 'disconnect');
-      const disconnectSpy2 = vi.spyOn(element2, 'disconnect');
+      const disconnectSpy1 = vi.spyOn(controller1!, 'disconnect');
+      const disconnectSpy2 = vi.spyOn(controller2!, 'disconnect');
 
       Interact.destroy();
 
@@ -554,30 +558,6 @@ describe('interact', () => {
       expect(newAddEventListenerSpy).toHaveBeenCalled();
       expect(Interact.getInstance('logo-click')).toBeDefined();
     });
-
-    // TODO: fix this test - when adding this test it causes 2 other tests to fail
-    // it('should remove event listeners and styles when disconnect is called', () => {
-    //   Interact.create(mockConfig);
-
-    //   element = document.createElement(
-    //     'interact-element',
-    //   ) as IInteractElement;
-    //   element.dataset.interactKey = 'logo-click';
-    //   const div = document.createElement('div');
-    //   element.append(div);
-
-    //   add(element, 'logo-click');
-
-    //   const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
-
-    //   Interact.destroy();
-
-    //   expect(removeEventListenerSpy).toHaveBeenCalled();
-    //   expect(removeEventListenerSpy).toHaveBeenCalledWith(
-    //     'click',
-    //     expect.any(Function),
-    //   );
-    // });
   });
 
   describe('reduced motion', () => {
@@ -940,7 +920,9 @@ describe('interact', () => {
       });
 
       it('should add a handler per newly added list item for click trigger with listContainer', () => {
+        const key = 'logo-click-container';
         element = document.createElement('interact-element') as IInteractElement;
+        element.dataset.interactKey = key;
         const div = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-list';
@@ -954,7 +936,7 @@ describe('interact', () => {
         const addEventListenerSpy = vi.spyOn(li, 'addEventListener');
         const addEventListenerSpy2 = vi.spyOn(li2, 'addEventListener');
 
-        add(element, 'logo-click-container');
+        add(element, key);
 
         expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
         expect(addEventListenerSpy2).toHaveBeenCalledTimes(1);
@@ -977,7 +959,8 @@ describe('interact', () => {
         ul.append(li3);
         const addEventListenerSpy3 = vi.spyOn(li3, 'addEventListener');
 
-        addListItems(element, 'logo-click-container', '#logo-list', [li3]);
+        const controller = Interact.getController(key);
+        addListItems(controller!, '#logo-list', [li3]);
 
         expect(addEventListenerSpy3).toHaveBeenCalledTimes(1);
         expect(addEventListenerSpy3).toHaveBeenCalledWith(
@@ -992,9 +975,13 @@ describe('interact', () => {
       it('should add a handler per newly added list item for viewProgress trigger but not add same interaction twice', async () => {
         const { getWebAnimation } = await import('@wix/motion');
 
+        const keySource = 'logo-scroll-container';
+        const keyTarget = 'logo-scroll-items';
         element = document.createElement('interact-element') as IInteractElement;
+        element.dataset.interactKey = keySource;
         const div = document.createElement('div');
         const targetElement = document.createElement('interact-element') as IInteractElement;
+        targetElement.dataset.interactKey = keyTarget;
         const divTarget = document.createElement('div');
         const ul = document.createElement('ul');
         ul.id = 'logo-scroll-list';
@@ -1006,10 +993,10 @@ describe('interact', () => {
         element.append(div);
         targetElement.append(divTarget);
 
-        add(element, 'logo-scroll-container');
+        add(element, keySource);
         expect(getWebAnimation).toHaveBeenCalledTimes(0);
 
-        add(targetElement, 'logo-scroll-items');
+        add(targetElement, keyTarget);
 
         expect(getWebAnimation).toHaveBeenCalledTimes(2);
         expect(getWebAnimation).toHaveBeenCalledWith(
@@ -1034,7 +1021,8 @@ describe('interact', () => {
         const li3 = document.createElement('li');
         ul.append(li3);
 
-        addListItems(targetElement, 'logo-scroll-items', '#logo-scroll-list', [li3]);
+        const controller = Interact.getController(keyTarget);
+        addListItems(controller!, '#logo-scroll-list', [li3]);
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation).toHaveBeenCalledWith(
@@ -1059,14 +1047,16 @@ describe('interact', () => {
     });
 
     it('should remove event listeners', () => {
+      const key = 'logo-click';
       element = document.createElement('interact-element') as IInteractElement;
+      element.dataset.interactKey = key;
       const div = document.createElement('div');
       element.append(div);
 
       const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
 
-      add(element, 'logo-click');
-      remove('logo-click');
+      add(element, key);
+      remove(key);
 
       expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
@@ -1084,12 +1074,14 @@ describe('interact', () => {
       };
       Pointer.mockImplementation(() => pointerInstance);
 
+      const key = 'logo-mouse';
       element = document.createElement('interact-element') as IInteractElement;
+      element.dataset.interactKey = key;
       const div = document.createElement('div');
       element.append(div);
 
-      add(element, 'logo-mouse');
-      remove('logo-mouse');
+      add(element, key);
+      remove(key);
 
       expect(pointerInstance.destroy).toHaveBeenCalledTimes(1);
     });
@@ -2146,46 +2138,64 @@ describe('interact', () => {
   });
 
   describe('element caching', () => {
-    it('should cache element in elementCache even when no instance was found for it', () => {
+    it('should cache element in controllerCache even when no instance was found for it', () => {
       const keyWithoutInstance = 'key-without-instance';
+      element.dataset.interactKey = keyWithoutInstance;
       add(element, keyWithoutInstance);
+      const controller = Interact.getController(keyWithoutInstance);
 
-      expect(Interact.elementCache.has(keyWithoutInstance)).toBe(true);
-      expect(Interact.elementCache.get(keyWithoutInstance)).toBe(element);
+      expect(Interact.controllerCache.has(keyWithoutInstance)).toBe(true);
+      expect(Interact.controllerCache.get(keyWithoutInstance)).toBe(controller);
     });
   });
 
+  describe('InteractElement toggleEffect delegation', () => {
+    it('should call InteractElement.toggleEffect when element has that method', () => {
+      const config: InteractConfig = {
+        effects: {
+          'toggle-effect': {
+            transition: {
+              duration: 300,
+              styleProperties: [{ name: 'opacity', value: '0.5' }],
+            },
+          },
+        },
+        interactions: [
+          {
+            key: 'toggle-source',
+            trigger: 'click',
+            params: {
+              method: 'toggle',
+            },
+            effects: [
+              {
+                key: 'toggle-source',
+                effectId: 'toggle-effect',
+              },
+            ],
+          },
+        ],
+      };
 
-  describe('setup', () => {
-    afterEach(() => {
-      Interact.setup({
-        scrollOptionsGetter: () => ({}),
-        pointerOptionsGetter: () => ({}),
-      });
-    });
+      Interact.create(config);
 
-    it('should register scroll options getter', () => {
-      const scrollOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(
-        TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress,
-        'registerOptionsGetter',
-      );
+      // Create an InteractElement (which has toggleEffect method)
+      const interactElement = document.createElement('interact-element') as IInteractElement;
+      const div = document.createElement('div');
+      interactElement.append(div);
 
-      Interact.setup({ scrollOptionsGetter });
+      // Spy on the InteractElement's toggleEffect method
+      const toggleEffectSpy = vi.fn();
+      interactElement.toggleEffect = toggleEffectSpy;
 
-      expect(spy).toHaveBeenCalledWith(scrollOptionsGetter);
-    });
+      add(interactElement, 'toggle-source');
 
-    it('should register pointer options getter', () => {
-      const pointerOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(
-        TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove,
-        'registerOptionsGetter',
-      );
+      // Trigger click event
+      const clickEvent = new MouseEvent('click', { bubbles: true });
+      div.dispatchEvent(clickEvent);
 
-      Interact.setup({ pointerOptionsGetter });
-
-      expect(spy).toHaveBeenCalledWith(pointerOptionsGetter);
+      // The InteractElement's toggleEffect should be called (not the controller's fallback logic)
+      expect(toggleEffectSpy).toHaveBeenCalledWith('toggle-effect', 'toggle', undefined);
     });
   });
 
@@ -2332,11 +2342,118 @@ describe('interact', () => {
       expect(instance.mediaQueryListeners.size).toBe(1);
 
       // Delete the element
-      instance.deleteElement('responsive-button');
+      instance.deleteController('responsive-button');
 
       // Verify listener was removed
       expect(mql!.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
       expect(instance.mediaQueryListeners.size).toBe(0);
     });
+
+    it('should remove previous condition interactions when media query changes even if element is still connected', () => {
+      // Create config with two interactions that have mutually exclusive conditions
+      const config: InteractConfig = {
+        conditions: {
+          desktop: {
+            type: 'media',
+            predicate: 'min-width: 1024px',
+          },
+          mobile: {
+            type: 'media',
+            predicate: 'max-width: 767px',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'responsive-element',
+            conditions: ['desktop'],
+            effects: [
+              {
+                key: 'responsive-element',
+                effectId: 'desktop-effect',
+              },
+            ],
+          },
+          {
+            trigger: 'hover',
+            key: 'responsive-element',
+            conditions: ['mobile'],
+            effects: [
+              {
+                key: 'responsive-element',
+                effectId: 'mobile-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'desktop-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+          'mobile-effect': {
+            namedEffect: {
+              type: 'BounceIn',
+              direction: 'center',
+              power: 'hard',
+            } as NamedEffect,
+            duration: 300,
+          },
+        },
+      };
+
+      // Initially desktop matches
+      mockMatchMedia(['min-width: 1024px']);
+      instance = Interact.create(config);
+
+      testElement = document.createElement('interact-element') as IInteractElement;
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      // Simulate element being connected to DOM
+      Object.defineProperty(testElement, 'isConnected', {
+        value: true,
+        writable: true,
+      });
+
+      const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+      const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
+
+      add(testElement, 'responsive-element');
+
+      // Verify desktop interaction (click) is added, not mobile (hover)
+      expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+
+      // Clear spies for next assertions
+      addEventListenerSpy.mockClear();
+      removeEventListenerSpy.mockClear();
+
+      // Now simulate media query change to mobile
+      const desktopMql = mockMQLs.get('(min-width: 1024px)');
+      const mobileMql = mockMQLs.get('(max-width: 767px)');
+
+      // Update MQL matches values
+      (desktopMql as any).matches = false;
+      (mobileMql as any).matches = true;
+
+      // Get the stored handler and trigger it
+      const listenerEntry = instance.mediaQueryListeners.get('responsive-element::trigger::0');
+      expect(listenerEntry).toBeDefined();
+
+      // Simulate media query change event
+      const mockEvent = { matches: false, media: '(min-width: 1024px)' } as MediaQueryListEvent;
+      listenerEntry!.handler(mockEvent);
+
+      // The old click handler should be removed (this will fail due to isConnected check)
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+
+      // The new hover handler should be added
+      expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+    });
   });
 });
+
