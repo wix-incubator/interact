@@ -39,11 +39,7 @@ export class InteractionController {
   disconnect() {
     const key = this.key || this.element.dataset.interactKey;
 
-    // Only call remove() if the element is actually being removed from DOM
-    // If the element is still connected to the DOM (this.isConnected === true),
-    // we're just disconnecting due to instance destruction (e.g., React StrictMode),
-    // so we should keep the element in the cache for reconnection
-    if (key && !this.element.isConnected) {
+    if (key) {
       remove(this);
     }
 
@@ -87,7 +83,7 @@ export class InteractionController {
       return;
     }
 
-    if (!isLegacy && !(this.element as IInteractElement).toggleEffect) {
+    if (!isLegacy && (this.element as IInteractElement).toggleEffect) {
       (this.element as IInteractElement).toggleEffect(effectId, method, item);
       return;
     }

@@ -2143,7 +2143,6 @@ describe('interact (mini)', () => {
     });
   });
 
-
   describe('setup', () => {
     afterEach(() => {
       Interact.setup({
@@ -2325,6 +2324,112 @@ describe('interact (mini)', () => {
       // Verify listener was removed
       expect(mql!.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
       expect(instance.mediaQueryListeners.size).toBe(0);
+    });
+
+    it('should remove previous condition interactions when media query changes even if element is still connected', () => {
+      // Create config with two interactions that have mutually exclusive conditions
+      const config: InteractConfig = {
+        conditions: {
+          desktop: {
+            type: 'media',
+            predicate: 'min-width: 1024px',
+          },
+          mobile: {
+            type: 'media',
+            predicate: 'max-width: 767px',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'responsive-element',
+            conditions: ['desktop'],
+            effects: [
+              {
+                key: 'responsive-element',
+                effectId: 'desktop-effect',
+              },
+            ],
+          },
+          {
+            trigger: 'hover',
+            key: 'responsive-element',
+            conditions: ['mobile'],
+            effects: [
+              {
+                key: 'responsive-element',
+                effectId: 'mobile-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'desktop-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+          'mobile-effect': {
+            namedEffect: {
+              type: 'BounceIn',
+              direction: 'center',
+              power: 'hard',
+            } as NamedEffect,
+            duration: 300,
+          },
+        },
+      };
+
+      // Initially desktop matches
+      mockMatchMedia(['min-width: 1024px']);
+      instance = Interact.create(config);
+
+      testElement = document.createElement('div');
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      // Simulate element being connected to DOM
+      Object.defineProperty(testElement, 'isConnected', {
+        value: true,
+        writable: true,
+      });
+
+      const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+      const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
+
+      add(testElement, 'responsive-element');
+
+      // Verify desktop interaction (click) is added, not mobile (hover)
+      expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+
+      // Clear spies for next assertions
+      addEventListenerSpy.mockClear();
+      removeEventListenerSpy.mockClear();
+
+      // Now simulate media query change to mobile
+      const desktopMql = mockMQLs.get('(min-width: 1024px)');
+      const mobileMql = mockMQLs.get('(max-width: 767px)');
+
+      // Update MQL matches values
+      (desktopMql as any).matches = false;
+      (mobileMql as any).matches = true;
+
+      // Get the stored handler and trigger it
+      const listenerEntry = instance.mediaQueryListeners.get('responsive-element::trigger::0');
+      expect(listenerEntry).toBeDefined();
+
+      // Simulate media query change event
+      const mockEvent = { matches: false, media: '(min-width: 1024px)' } as MediaQueryListEvent;
+      listenerEntry!.handler(mockEvent);
+
+      // The old click handler should be removed (this will fail due to isConnected check)
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+
+      // The new hover handler should be added
+      expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
     });
   });
 });
