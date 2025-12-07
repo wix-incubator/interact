@@ -9,6 +9,11 @@
     "emitDeclarationOnly": true,
     "noEmit": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../motion/tsconfig.build.json"
+    }
+  ]
 }
 

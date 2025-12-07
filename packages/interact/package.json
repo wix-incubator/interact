@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "vite dev --open",
     "build": "rimraf dist && npm run build:types && vite build",
-    "build:types": "tsc -p tsconfig.build.json",
+    "build:types": "tsc --build tsconfig.build.json",
     "lint": "tsc --noEmit",
     "test": "vitest run"
   },
