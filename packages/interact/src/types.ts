@@ -189,8 +189,11 @@ export interface IInteractionController {
 
 export interface IInteractElement extends HTMLElement {
   _internals: (ElementInternals & { states: Set<string> }) | null;
+  controller: IInteractionController;
   connectedCallback(): void;
   disconnectedCallback(): void;
+  connect(key?: string): void;
+  disconnect(): void;
   toggleEffect(
     effectId: string,
     method: StateParams['method'],

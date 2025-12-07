@@ -1,4 +1,4 @@
-import { InteractConfig } from '@wix/interact';
+import { InteractConfig } from '@wix/interact/web';
 import { useEffect, useState } from 'react';
 import { useInteractInstance } from '../hooks/useInteractInstance';
 
