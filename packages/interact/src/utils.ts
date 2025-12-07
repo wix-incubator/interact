@@ -129,9 +129,11 @@ export function getSelectorCondition(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
 ): string | undefined {
-  const selectorCondition = (conditionNames || []).find((conditionName) => {
-    return conditions[conditionName]?.type === 'selector' && conditions[conditionName].predicate;
-  });
-
-  return selectorCondition ? conditions[selectorCondition].predicate : undefined;
+  for (const name of conditionNames || []) {
+    const condition = conditions[name];
+    if (condition?.type === 'selector' && condition.predicate) {
+      return condition.predicate;
+    }
+  }
+  return undefined;
 }
