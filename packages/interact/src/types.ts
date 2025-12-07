@@ -251,3 +251,10 @@ export type CreateTransitionCSSParams = {
   properties?: TransitionProperty[];
   childSelector?: string;
 };
+
+export type GetCSSResult = {
+  /** @keyframes rules for the animations */
+  keyframes: string[];
+  /** Full animation property rules per element (animation-name, duration, timing-function, fill-mode, etc.) */
+  animationRules: string[];
+};

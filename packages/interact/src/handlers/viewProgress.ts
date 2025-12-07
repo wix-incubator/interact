@@ -1,6 +1,6 @@
 import type { ScrubScrollScene } from '@wix/motion';
 import { getWebAnimation, getScrubScene } from '@wix/motion';
-import { Scroll, scrollConfig } from 'fizban';
+import { Scroll } from 'fizban';
 import type { ViewEnterParams, ScrubEffect, HandlerObjectMap } from '../types';
 import {
   effectToAnimationOptions,
