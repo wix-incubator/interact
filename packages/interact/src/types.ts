@@ -44,6 +44,7 @@ export type ViewEnterParams = {
   type?: ViewEnterType;
   threshold?: number;
   inset?: string;
+  useSafeViewEnter?: boolean;
 };
 
 export type PointerMoveParams = {
@@ -209,6 +210,10 @@ export type InteractionHandlerModule<T extends TriggerType> = {
     reducedMotion?: boolean,
   ) => void;
   remove: (element: HTMLElement) => void;
+};
+
+export type ViewEnterHandlerModule = InteractionHandlerModule<'viewEnter'> & {
+  setOptions: (options: Partial<ViewEnterParams>) => void;
 };
 
 export type TriggerHandlerMap<T extends TriggerType> = {
