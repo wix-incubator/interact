@@ -1,14 +1,24 @@
 import { getEasing } from '@wix/motion';
 import type { Condition, CreateTransitionCSSParams } from './types';
 
+/**
+ * Applies a selector condition predicate to a base selector.
+ * - If `&` is in the predicate, replace `&` with the base selector
+ * - If no `&`, assume `&<predicate>` (append predicate to base selector)
+ */
+function applySelectorCondition(baseSelector: string, predicate: string): string {
+  if (predicate.includes('&')) {
+    return predicate.replace(/&/g, baseSelector);
+  }
+  return `${baseSelector}${predicate}`;
+}
+
 export function generateId() {
   return 'wi-12343210'.replace(
     /\d/g,
     (c) =>
       String.fromCharCode(
-        (+c ^
-          (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))) +
-          97,
+        (+c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))) + 97,
       ), // 97 for "a"
   );
 }
@@ -19,6 +29,7 @@ export function createTransitionCSS({
   transition,
   properties,
   childSelector = '> :first-child',
+  selectorCondition,
 }: CreateTransitionCSSParams): string[] {
   let transitions: string[] = [];
 
@@ -26,16 +37,14 @@ export function createTransitionCSS({
     const { duration, easing, delay } = transition;
 
     if (duration) {
-      const hasCustomPropertiesTransition = transition.styleProperties.some(
-        (styleProperty) => styleProperty.name.startsWith('--'),
+      const hasCustomPropertiesTransition = transition.styleProperties.some((styleProperty) =>
+        styleProperty.name.startsWith('--'),
       );
 
       if (hasCustomPropertiesTransition) {
         // If there are custom properties in the transition, we need to fall back to Viewer's legacy implementation
         transitions = [
-          `all ${duration}ms ${getEasing(easing || 'ease')}${
-            delay ? ` ${delay}ms` : ''
-          }`,
+          `all ${duration}ms ${getEasing(easing || 'ease')}${delay ? ` ${delay}ms` : ''}`,
           'visibility 0s',
         ];
       } else {
@@ -65,16 +74,32 @@ export function createTransitionCSS({
     properties?.map((property) => `${property.name}: ${property.value};`) || [];
   const escapedKey = key.replace(/"/g, "'");
 
+  // Build selectors, applying condition if present
+  const stateSelector = `:is(:state(${effectId}), :--${effectId}) ${childSelector}`;
+  const dataAttrSelector = `[data-interact-effect~="${effectId}"] ${childSelector}`;
+
+  const finalStateSelector = selectorCondition
+    ? applySelectorCondition(stateSelector, selectorCondition)
+    : stateSelector;
+  const finalDataAttrSelector = selectorCondition
+    ? applySelectorCondition(dataAttrSelector, selectorCondition)
+    : dataAttrSelector;
+
   const result = [
-    `:is(:state(${effectId}), :--${effectId}) ${childSelector},
-    [data-interact-effect~="${effectId}"] ${childSelector} {
+    `${finalStateSelector},
+    ${finalDataAttrSelector} {
       ${styleProperties.join(`
       `)}
     }`,
   ];
 
   if (transitions.length) {
-    result.push(`@media (prefers-reduced-motion: no-preference) { [data-interact-key="${escapedKey}"] ${childSelector} {
+    const transitionSelector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+    const finalTransitionSelector = selectorCondition
+      ? applySelectorCondition(transitionSelector, selectorCondition)
+      : transitionSelector;
+
+    result.push(`@media (prefers-reduced-motion: no-preference) { ${finalTransitionSelector} {
       transition: ${transitions.join(', ')};
     } }`);
   }
@@ -87,10 +112,7 @@ export function getMediaQuery(
 ) {
   const conditionContent = (conditionNames || [])
     .filter((conditionName) => {
-      return (
-        conditions[conditionName]?.type === 'media' &&
-        conditions[conditionName].predicate
-      );
+      return conditions[conditionName]?.type === 'media' && conditions[conditionName].predicate;
     })
     .map((conditionName) => {
       return conditions[conditionName].predicate;

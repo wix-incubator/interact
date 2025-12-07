@@ -266,4 +266,5 @@ export type CreateTransitionCSSParams = {
   transition?: TransitionEffect['transition'];
   properties?: TransitionProperty[];
   childSelector?: string;
+  selectorCondition?: string;
 };

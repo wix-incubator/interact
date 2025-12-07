@@ -333,6 +333,7 @@ function addInteraction<T extends TriggerType>(
         asCombinator: true,
         addItemFilter: true,
       }),
+      selectorCondition,
     };
 
     targetController = Interact.getController(targetKey);
