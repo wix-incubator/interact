@@ -140,7 +140,7 @@ export type EffectRef = EffectBase & { effectId: string };
 export type Effect = EffectBase & (TimeEffect | ScrubEffect | TransitionEffect);
 
 export type Condition = {
-  type: 'media' | 'container';
+  type: 'media' | 'container' | 'selector';
   predicate?: string;
 };
 
@@ -212,6 +212,7 @@ export type InteractionParamsTypes = {
 export type InteractOptions = {
   reducedMotion?: boolean;
   targetController?: IInteractionController;
+  selectorCondition?: string;
 };
 
 export type InteractionHandlerModule<T extends TriggerType> = {

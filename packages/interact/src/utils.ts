@@ -102,3 +102,14 @@ export function getMediaQuery(
 
   return mql;
 }
+
+export function getSelectorCondition(
+  conditionNames: string[] | undefined,
+  conditions: Record<string, Condition>,
+): string | undefined {
+  const selectorCondition = (conditionNames || []).find((conditionName) => {
+    return conditions[conditionName]?.type === 'selector' && conditions[conditionName].predicate;
+  });
+
+  return selectorCondition ? conditions[selectorCondition].predicate : undefined;
+}

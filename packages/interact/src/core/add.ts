@@ -9,7 +9,7 @@ import type {
   CreateTransitionCSSParams,
   IInteractionController,
 } from '../types';
-import { createTransitionCSS, getMediaQuery } from '../utils';
+import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
@@ -79,6 +79,7 @@ function _applyInteraction(
   effect: Effect,
   sourceElements: HTMLElement | HTMLElement[],
   targetElements: HTMLElement | HTMLElement[],
+  selectorCondition?: string,
 ) {
   const isSourceArray = Array.isArray(sourceElements);
   const isTargetArray = Array.isArray(targetElements);
@@ -86,7 +87,6 @@ function _applyInteraction(
   if (isSourceArray) {
     sourceElements.forEach((sourceEl, index) => {
       const targetEl = isTargetArray ? targetElements[index] : targetElements;
-
       if (targetEl) {
         addInteraction(
           targetKey,
@@ -95,6 +95,7 @@ function _applyInteraction(
           targetEl,
           effect as Effect,
           interaction.params!,
+          selectorCondition,
         );
       }
     });
@@ -108,6 +109,7 @@ function _applyInteraction(
         targetEl,
         effect as Effect,
         interaction.params!,
+        selectorCondition,
       );
     });
   }
@@ -189,8 +191,19 @@ function _addInteraction(
       instance.addedInteractions[interactionId!] = true;
 
       const key = target || interaction.key;
+      const selectorCondition = getSelectorCondition(
+        effectOptions.conditions || [],
+        instance.dataCache.conditions,
+      );
 
-      _applyInteraction(key, interaction, effectOptions, sourceElements, targetElements);
+      _applyInteraction(
+        key,
+        interaction,
+        effectOptions,
+        sourceElements,
+        targetElements,
+        selectorCondition,
+      );
     }
   });
 }
@@ -268,12 +281,18 @@ function addEffectsForTarget(
 
         instance!.addedInteractions[interactionId] = true;
 
+        const selectorCondition = getSelectorCondition(
+          effectOptions.conditions || [],
+          instance!.dataCache.conditions,
+        );
+
         _applyInteraction(
           targetKey,
           interaction,
           effectOptions as Effect,
           sourceElements,
           targetElements,
+          selectorCondition,
         );
 
         // short-circuit the loop since we have a match
@@ -297,6 +316,7 @@ function addInteraction<T extends TriggerType>(
   target: HTMLElement,
   effect: Effect,
   options: InteractionParamsTypes[T],
+  selectorCondition?: string,
 ): void {
   let targetController;
 
@@ -323,13 +343,11 @@ function addInteraction<T extends TriggerType>(
     targetController.renderStyle(createTransitionCSS(args));
   }
 
-  TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(
-    source,
-    target,
-    effect,
-    options,
-    { reducedMotion: Interact.forceReducedMotion, targetController },
-  );
+  TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(source, target, effect, options, {
+    reducedMotion: Interact.forceReducedMotion,
+    targetController,
+    selectorCondition,
+  });
 }
 
 /**
