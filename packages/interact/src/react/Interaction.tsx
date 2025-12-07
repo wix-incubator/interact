@@ -30,10 +30,12 @@ const Interaction = React.forwardRef(function InteractionRender<T extends keyof 
       let parentCleanup: (() => void) | undefined;
 
       // Handle the forwarded ref
-      if (typeof ref === 'function') {
-        parentCleanup = ref(node) as (() => void) | undefined;
-      } else {
-        (ref as React.MutableRefObject<any>).current = node;
+      if (ref) {
+        if (typeof ref === 'function') {
+          parentCleanup = ref(node) as (() => void) | undefined;
+        } else {
+          (ref as React.MutableRefObject<any>).current = node;
+        }
       }
 
       return () => {

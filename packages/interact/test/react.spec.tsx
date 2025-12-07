@@ -1,8 +1,8 @@
-import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
-import React, { useRef } from 'react';
-import { Interaction, createInteractRef, Interact, add, remove } from '../src/react';
+import { useRef } from 'react';
+import { Interaction, createInteractRef, Interact } from '../src/react';
+import * as domApi from '../src/dom/api';
 import type { InteractConfig } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 
@@ -225,7 +225,7 @@ describe('interact (react)', () => {
     });
 
     it('should call add() when ref receives a DOM node', () => {
-      const addSpy = vi.spyOn(require('../src/dom/api'), 'add');
+      const addSpy = vi.spyOn(domApi, 'add');
       const interactKey = 'logo-click';
       const ref = createInteractRef(interactKey);
 
@@ -239,7 +239,7 @@ describe('interact (react)', () => {
     });
 
     it('should call remove() when ref receives null (React 18 unmount pattern)', () => {
-      const removeSpy = vi.spyOn(require('../src/dom/api'), 'remove');
+      const removeSpy = vi.spyOn(domApi, 'remove');
       const interactKey = 'logo-click';
       const ref = createInteractRef(interactKey);
 
@@ -256,7 +256,7 @@ describe('interact (react)', () => {
     });
 
     it('should return a cleanup function that calls remove() (React 19 pattern)', () => {
-      const removeSpy = vi.spyOn(require('../src/dom/api'), 'remove');
+      const removeSpy = vi.spyOn(domApi, 'remove');
       const interactKey = 'logo-click';
       const ref = createInteractRef(interactKey);
 
@@ -276,7 +276,7 @@ describe('interact (react)', () => {
     });
 
     it('should work with the same key across multiple renders', () => {
-      const addSpy = vi.spyOn(require('../src/dom/api'), 'add');
+      const addSpy = vi.spyOn(domApi, 'add');
       const interactKey = 'logo-click';
       const ref = createInteractRef(interactKey);
 
@@ -380,7 +380,7 @@ describe('interact (react)', () => {
     });
 
     it('should call add() on mount with the correct interactKey', () => {
-      const addSpy = vi.spyOn(require('../src/dom/api'), 'add');
+      const addSpy = vi.spyOn(domApi, 'add');
 
       render(
         <Interaction tagName="div" interactKey="logo-hover">
@@ -392,7 +392,7 @@ describe('interact (react)', () => {
     });
 
     it('should call remove() on unmount', () => {
-      const removeSpy = vi.spyOn(require('../src/dom/api'), 'remove');
+      const removeSpy = vi.spyOn(domApi, 'remove');
 
       const { unmount } = render(
         <Interaction tagName="div" interactKey="logo-hover">
@@ -407,7 +407,7 @@ describe('interact (react)', () => {
     });
 
     it('should handle re-renders without duplicate add() calls', () => {
-      const addSpy = vi.spyOn(require('../src/dom/api'), 'add');
+      const addSpy = vi.spyOn(domApi, 'add');
 
       const { rerender } = render(
         <Interaction tagName="div" interactKey="logo-click">
@@ -435,14 +435,11 @@ describe('interact (react)', () => {
 
       Interact.create(getMockConfig());
 
-      const { container } = render(
+      render(
         <Interaction tagName="div" interactKey="logo-hover">
           <div className="inner">Hover me</div>
         </Interaction>
       );
-
-      const innerElement = container.querySelector('.inner') as HTMLElement;
-      const addEventListenerSpy = vi.spyOn(innerElement, 'addEventListener');
 
       // The interaction should already be set up
       // Check if the animation was created
@@ -470,6 +467,13 @@ describe('interact (react)', () => {
       // Verify the component is rendered correctly
       expect(btnElement).not.toBeNull();
       expect(container.firstChild).toHaveProperty('dataset');
+
+      expect(getWebAnimation).toHaveBeenCalledWith(
+        expect.any(HTMLElement),
+        expect.any(Object),
+        undefined,
+        { reducedMotion: false }
+      );
     });
 
     it('should set up viewEnter interactions when using Interaction component', async () => {
@@ -616,13 +620,13 @@ describe('interact (react)', () => {
     it('should clean up all React components interactions', () => {
       Interact.create(getMockConfig());
 
-      const { unmount: unmount1 } = render(
+      render(
         <Interaction tagName="div" interactKey="logo-hover">
           <span>Hover</span>
         </Interaction>
       );
 
-      const { unmount: unmount2 } = render(
+      render(
         <Interaction tagName="div" interactKey="logo-click">
           <span>Click</span>
         </Interaction>
@@ -733,8 +737,9 @@ describe('interact (react)', () => {
     });
 
     it('should render as anchor with href', () => {
+      // Note: href prop requires type assertion due to generic type inference limitations
       const { container } = render(
-        <Interaction tagName="a" interactKey="logo-click" href="https://example.com">
+        <Interaction tagName="a" interactKey="logo-click" {...{ href: 'https://example.com' }}>
           Link
         </Interaction>
       );

@@ -66,16 +66,18 @@
     "react-dom": { "optional": true }
   },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.0.9",
     "jsdom": "^24.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
-    "vitest": "^3.0.9",
-    "@vitest/coverage-v8": "^3.0.9"
+    "vitest": "^3.0.9"
   }
 }
 
