@@ -1,5 +1,5 @@
 import { getScrubScene } from '@wix/motion';
-import { Pointer, type PointerConfig } from 'kuliso';
+import { Pointer } from 'kuliso';
 import type {
   PointerMoveParams,
   ScrubEffect,

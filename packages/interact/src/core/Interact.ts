@@ -5,6 +5,7 @@ import {
   Effect,
   Interaction,
   IInteractionController,
+  IInteractElement,
 } from '../types';
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
@@ -49,14 +50,21 @@ export class Interact {
 
     this.dataCache = parseConfig(config);
 
-    Interact.defineInteractElement?.();
+    const defined = Interact.defineInteractElement?.();
 
-    // Always try to reconnect elements from cache.
-    // This handles cases where elements were added to DOM before the instance was created
-    // (e.g., in React where useEffect runs after render), or when an instance is recreated
-    // (e.g., in React StrictMode where effects run twice).
-    // The connect() method has a guard to skip if already connected.
-    Interact.controllerCache.forEach((controller: IInteractionController, key) => controller.connect(key));
+    if (defined === false) {
+      // mostly to recover from React's <StrictMode>, blah...
+      document.querySelectorAll('interact-element').forEach((element) => {
+        (element as IInteractElement).connect();
+      });
+    } else {
+      // Always try to reconnect elements from cache.
+      // This handles cases where elements were added to DOM before the instance was created
+      // (e.g., in React where useEffect runs after render), or when an instance is recreated
+      // (e.g., in React StrictMode where effects run twice).
+      // The connect() method has a guard to skip if already connected.
+      Interact.controllerCache.forEach((controller: IInteractionController, key) => controller.connect(key));
+    }
   }
 
   destroy(): void {
