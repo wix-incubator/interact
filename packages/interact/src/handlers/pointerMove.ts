@@ -24,11 +24,12 @@ function addPointerMoveHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   options: PointerMoveParams = {},
-  { reducedMotion }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions,
 ) {
   if (reducedMotion) {
     return;
   }
+  if (selectorCondition && !target.matches(selectorCondition)) return;
 
   const triggerParams = {
     trigger: 'pointer-move' as const,

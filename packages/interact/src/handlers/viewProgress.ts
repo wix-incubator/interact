@@ -20,12 +20,14 @@ function addViewProgressHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   __: ViewEnterParams,
-  { reducedMotion }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions,
 ): void {
   if (reducedMotion) {
     return;
   }
 
+  if (selectorCondition && !target.matches(selectorCondition)) return;
+  
   const triggerParams = {
     trigger: 'view-progress' as const,
     element: source,

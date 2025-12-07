@@ -23,6 +23,7 @@ function createTimeEffectHandler(
   effect: TimeEffect & EffectBase,
   options: PointerTriggerParams,
   reducedMotion: boolean = false,
+  selectorCondition?: string,
 ) {
   const animation = getAnimation(
     element,
@@ -34,6 +35,7 @@ function createTimeEffectHandler(
   const type = options.type || 'alternate';
 
   return (__: MouseEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     if (type === 'alternate') {
       if (initialPlay) {
         initialPlay = false;
@@ -78,10 +80,12 @@ function createTransitionHandler(
     listItemSelector,
   }: TransitionEffect & EffectBase & { effectId: string },
   options: StateParams,
+  selectorCondition?: string,
 ) {
   const shouldSetStateOnElement = !!listContainer;
 
   return (__: MouseEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     let item;
     if (shouldSetStateOnElement) {
       item = element.closest(
@@ -98,7 +102,7 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  { reducedMotion, targetController }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition }: InteractOptions,
 ) {
   let handler: (event: MouseEvent) => void;
   let once = false;
@@ -112,6 +116,7 @@ function addClickHandler(
       targetController!,
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
+      selectorCondition,
     );
   } else {
     handler = createTimeEffectHandler(
@@ -119,6 +124,7 @@ function addClickHandler(
       effect as TimeEffect & EffectBase,
       options as PointerTriggerParams,
       reducedMotion,
+      selectorCondition,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }

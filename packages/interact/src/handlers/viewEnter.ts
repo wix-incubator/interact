@@ -54,7 +54,7 @@ function addViewEnterHandler(
   target: HTMLElement,
   effect: TimeEffect,
   options: ViewEnterParams = {},
-  { reducedMotion }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions,
 ) {
   const observer = getObserver(options);
   const animation = getAnimation(
@@ -71,6 +71,7 @@ function addViewEnterHandler(
   }
 
   const handler = () => {
+    if (selectorCondition && !target.matches(selectorCondition)) return;
     animation.play(() => {
       if (!animation.isCSS) {
         target.dataset.motionEnter = 'done';
