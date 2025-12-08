@@ -1,6 +1,22 @@
 # interact-element Custom Element
 
-The `interact-element` is a custom HTML element that serves as a wrapper for content that should have interactions applied to it. It automatically manages the connection between DOM elements and the `@wix/interact` system.
+The `interact-element` is a custom HTML element that serves as a wrapper for content that should have interactions applied to it. It automatically manages the connection between DOM elements and the `@wix/interact` system through an internal `InteractionController`.
+
+> **Note for React Users**: Consider using the [`Interaction` component](../integration/react.md) from `@wix/interact/react` instead, which provides better React integration with ref forwarding and automatic cleanup.
+
+## Import and Setup
+
+When using the web entry point, you must ensure the custom element is defined before using it:
+
+```typescript
+import { Interact } from '@wix/interact/web';
+
+// Create your configuration - this automatically defines the custom element
+const interact = Interact.create(config);
+
+// Or manually define it
+Interact.defineInteractElement?.();
+```
 
 ## Basic Usage
 
@@ -11,7 +27,7 @@ The `interact-element` is a custom HTML element that serves as a wrapper for con
 ```
 
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 // Configure interactions for the element
 const config = {
@@ -87,30 +103,156 @@ The custom element **must** contain at least one child to be the event/animation
 </interact-element>
 ```
 
+## Properties
+
+### `controller: IInteractionController`
+
+The internal controller that manages this element's interactions.
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+// Access the controller
+const controller = element.controller;
+console.log('Connected:', controller.connected);
+console.log('Key:', controller.key);
+
+// Toggle effects through controller
+controller.toggleEffect('my-effect', 'add');
+```
+
+### `_internals: ElementInternals | null`
+
+The element's internals for CSS custom state management.
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+if (element._internals) {
+  // Check active states
+  console.log('States:', Array.from(element._internals.states));
+}
+```
+
+## Methods
+
+### `connect(key?: string)`
+
+Connects the element to the interaction system.
+
+**Parameters:**
+- `key?: string` - Optional key override; defaults to `data-interact-key` attribute
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+// Manually connect (usually automatic via connectedCallback)
+element.connect('my-key');
+```
+
+### `disconnect()`
+
+Disconnects the element from the interaction system and cleans up resources.
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+// Manually disconnect
+element.disconnect();
+```
+
+### `toggleEffect(effectId, method, item?)`
+
+Toggles a CSS state effect on the element.
+
+**Parameters:**
+- `effectId: string` - The effect identifier
+- `method: 'add' | 'remove' | 'toggle' | 'clear'` - How to change the state
+- `item?: HTMLElement | null` - Optional specific element for list items
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+// Add an effect
+element.toggleEffect('active', 'add');
+
+// Toggle an effect
+element.toggleEffect('expanded', 'toggle');
+
+// Remove an effect
+element.toggleEffect('active', 'remove');
+
+// Clear all effects
+element.toggleEffect('', 'clear');
+```
+
+### `getActiveEffects(): string[]`
+
+Returns an array of currently active effect IDs.
+
+**Example:**
+```typescript
+const element = document.querySelector('interact-element') as IInteractElement;
+
+const activeEffects = element.getActiveEffects();
+console.log('Active effects:', activeEffects);
+// e.g., ['hover', 'expanded']
+```
+
 ## Framework Integration
 
-### React
+### Vanilla JavaScript
+
+```typescript
+import { Interact } from '@wix/interact/web';
+
+const config = {
+  interactions: [{
+    key: 'my-card',
+    trigger: 'hover',
+    effects: [{ effectId: 'lift' }]
+  }],
+  effects: {
+    lift: {
+      duration: 200,
+      keyframeEffect: {
+        name: 'lift',
+        keyframes: [{ transform: 'translateY(-4px)' }]
+      }
+    }
+  }
+};
+
+Interact.create(config);
+
+// Elements automatically connect when added to DOM
+document.body.innerHTML = `
+  <interact-element data-interact-key="my-card">
+    <div class="card">Card content</div>
+  </interact-element>
+`;
+```
+
+### React (Using interact-element)
+
+> **Recommended**: Use the [`Interaction` component](../integration/react.md) from `@wix/interact/react` instead.
 
 ```tsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Interact, IInteractElement } from '@wix/interact/web';
 
-// Basic React usage
-function InteractiveComponent() {
-  return (
-    <interact-element data-interact-key="react-component">
-      <div className="content">
-        <h2>React Component</h2>
-        <p>This will be animated</p>
-      </div>
-    </interact-element>
-  );
-}
-
-// TypeScript with proper typing
-import { IInteractElement } from '@wix/interact';
-
-function TypedComponent() {
-  const ref = React.useRef<IInteractElement>(null);
+function InteractiveCard() {
+  const ref = useRef<IInteractElement>(null);
+  
+  useEffect(() => {
+    Interact.create(config);
+    return () => Interact.destroy();
+  }, []);
   
   const handleClick = () => {
     ref.current?.toggleEffect('clicked', 'toggle');
@@ -119,7 +261,7 @@ function TypedComponent() {
   return (
     <interact-element 
       ref={ref}
-      data-interact-key="typed-component"
+      data-interact-key="card"
     >
       <button onClick={handleClick}>
         Toggle Effect
@@ -134,7 +276,7 @@ function TypedComponent() {
 ```vue
 <template>
   <interact-element 
-    :data-interact-key="elementPath"
+    :data-interact-key="elementKey"
     ref="interactElement"
   >
     <div class="vue-content">
@@ -145,12 +287,20 @@ function TypedComponent() {
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { IInteractElement } from '@wix/interact';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { Interact, type IInteractElement } from '@wix/interact/web';
 
-const elementPath = ref('#vue-component');
+const elementKey = ref('vue-component');
 const title = ref('Vue Component');
 const interactElement = ref<IInteractElement>();
+
+onMounted(() => {
+  Interact.create(config);
+});
+
+onUnmounted(() => {
+  Interact.destroy();
+});
 
 const toggleEffect = () => {
   interactElement.value?.toggleEffect('active', 'toggle');
@@ -161,8 +311,8 @@ const toggleEffect = () => {
 ### Angular
 
 ```typescript
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import type { IInteractElement } from '@wix/interact';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Interact, type IInteractElement } from '@wix/interact/web';
 
 @Component({
   selector: 'app-interactive',
@@ -178,16 +328,18 @@ import type { IInteractElement } from '@wix/interact';
     </interact-element>
   `
 })
-
-export class InteractiveComponent implements AfterViewInit {
+export class InteractiveComponent implements AfterViewInit, OnDestroy {
   @ViewChild('interactElement') 
   interactElement!: ElementRef<IInteractElement>;
   
   title = 'Angular Component';
   
   ngAfterViewInit() {
-    // Element is ready for interaction
-    console.log('Connected:', this.interactElement.nativeElement.connected);
+    Interact.create(config);
+  }
+  
+  ngOnDestroy() {
+    Interact.destroy();
   }
   
   toggleEffect() {
@@ -215,17 +367,16 @@ interact-element:state(active) > :first-child {
 
 ### Legacy Fallback
 
-For older browsers, the element falls back to CSS custom properties:
+For older browsers, the element falls back to data attributes:
 
 ```css
-/* Legacy syntax */
-interact-element:--hover-effect > :first-child {
+/* Data attribute fallback */
+interact-element[data-interact-effect~="hover-effect"] > :first-child {
   transform: scale(1.05);
 }
 
-/* Or data attribute fallback */
-interact-element[data-interact-effect~="hover-effect"] > :first-child {
-  transform: scale(1.05);
+interact-element[data-interact-effect~="active"] > :first-child {
+  background-color: blue;
 }
 ```
 
@@ -240,24 +391,20 @@ element.toggleEffect('focus', 'add');
 element.toggleEffect('disabled', 'add');
 
 // Check current states
-if (element._internals) {
-  console.log('Active states:', Array.from(element._internals.states));
-} else {
-  const effectAttr = element.dataset.interactEffect;
-  console.log('Active effects:', effectAttr?.split(' ') || []);
-}
+const activeEffects = element.getActiveEffects();
+console.log('Active effects:', activeEffects);
 
 // Clear all states
 element.toggleEffect('', 'clear');
 ```
 
-### List Management with watchChildList
+## List Management with watchChildList
 
-The `watchChildList(listContainer: string)` method sets up automatic tracking of list item additions and removals.
+The `controller.watchChildList(listContainer: string)` method sets up automatic tracking of list item additions and removals.
 
 **Signature:**
 ```typescript
-watchChildList(listContainer: string): void
+controller.watchChildList(listContainer: string): void
 ```
 
 **Parameters:**
@@ -268,7 +415,7 @@ watchChildList(listContainer: string): void
 const element = document.querySelector('interact-element') as IInteractElement;
 
 // Start watching for child changes in a specific container
-element.watchChildList('.dynamic-list');
+element.controller.watchChildList('.dynamic-list');
 
 // Now any DOM mutations will trigger automatic interaction management
 const container = element.querySelector('.dynamic-list');
@@ -276,10 +423,10 @@ const container = element.querySelector('.dynamic-list');
 // Adding items - interactions applied automatically
 const newItem = document.createElement('div');
 newItem.className = 'list-item';
-container.appendChild(newItem); // Automatically gets interactions
+container?.appendChild(newItem); // Automatically gets interactions
 
 // Removing items - cleanup happens automatically  
-const itemToRemove = container.querySelector('.item-5');
+const itemToRemove = container?.querySelector('.item-5');
 itemToRemove?.remove(); // Automatically cleaned up
 ```
 
@@ -296,33 +443,35 @@ When you use `listContainer` in your configuration, `watchChildList` is called a
 }
 ```
 
-**Manual Usage:**
-For advanced cases where you need explicit control:
+## Lifecycle
 
-```typescript
-const element = document.querySelector('[data-interact-key="my-list"]') as IInteractElement;
+### Connection Flow
 
-// Manually set up observer
-element.watchChildList('.custom-container');
+1. Element is added to DOM
+2. `connectedCallback()` is called
+3. `connect()` creates or retrieves an `InteractionController`
+4. Controller is stored in `Interact.controllerCache`
+5. Interactions are applied based on configuration
 
-// Later, add items as needed
-const container = element.querySelector('.custom-container');
-const items = createNewItems();
-items.forEach(item => container.appendChild(item));
-// All items automatically get interactions
-```
+### Disconnection Flow
+
+1. Element is removed from DOM
+2. `disconnectedCallback()` is called
+3. `disconnect()` cleans up the controller
+4. Event listeners are removed
+5. Controller is removed from cache (if element is fully removed)
 
 ## Browser Support
 
 ### Modern Browsers
-- ✅ Full feature support including CSS custom states
-- ✅ ElementInternals API for state management
-- ✅ Adopted stylesheets for dynamic CSS
+- Full feature support including CSS custom states
+- ElementInternals API for state management
+- Adopted stylesheets for dynamic CSS
 
 ### Legacy Browsers
-- ✅ Automatic fallback to data attributes
-- ✅ CSS custom property fallbacks
-- ✅ Polyfill support for custom elements
+- Automatic fallback to data attributes
+- CSS custom property fallbacks
+- Polyfill support for custom elements
 
 ### Detection
 
@@ -349,21 +498,21 @@ console.log('Browser support:', support);
 ```typescript
 // Debug element state
 function debugElement(key: string) {
-  const element = Interact.getElement(key);
+  const controller = Interact.getController(key);
   
-  if (!element) {
-    console.log(`Element ${key} not found in cache`);
+  if (!controller) {
+    console.log(`Controller for ${key} not found in cache`);
     return;
   }
   
+  const element = controller.element as IInteractElement;
+  
   console.log(`Element ${key}:`, {
-    connected: element.connected,
+    connected: controller.connected,
     hasChild: !!element.firstElementChild,
-    hasSheet: !!element.sheet,
+    hasSheet: !!controller.sheet,
     hasInternals: !!element._internals,
-    states: element._internals ? 
-      Array.from(element._internals.states) : 
-      element.dataset.interactEffect?.split(' ') || []
+    activeEffects: controller.getActiveEffects()
   });
 }
 
@@ -378,7 +527,7 @@ debugElement('hero');
 function validateElement(element: IInteractElement) {
   const issues: string[] = [];
   
-  if (!element.dataset.wixPath) {
+  if (!element.dataset.interactKey) {
     issues.push('Missing data-interact-key attribute');
   }
   
@@ -386,18 +535,31 @@ function validateElement(element: IInteractElement) {
     issues.push('Missing child element');
   }
   
-  if (!element.connected) {
-    issues.push('Element not connected to interaction system');
+  if (!element.controller?.connected) {
+    issues.push('Controller not connected to interaction system');
   }
   
   return issues;
 }
 ```
 
+## Comparison with Interaction Component
+
+| Feature | `<interact-element>` | `<Interaction>` (React) |
+|---------|----------------------|-------------------------|
+| Import | `@wix/interact/web` | `@wix/interact/react` |
+| Type | Web Component | React Component |
+| Ref handling | Manual | Built-in forwarding |
+| TypeScript | Requires casting | Full inference |
+| SSR | Requires care | Better compatibility |
+| Framework | Any | React only |
+
 ## See Also
 
 - [Interact Class](interact-class.md) - Main interaction manager
+- [InteractionController](interaction-controller.md) - Controller API
 - [Functions](functions.md) - `add()` and `remove()` functions  
 - [Type Definitions](types.md) - `IInteractElement` interface
-- [Configuration Guide](../guides/configuration.md) - Setting up interactions
+- [React Integration](../integration/react.md) - React components
+- [Configuration Guide](../guides/configuration-structure.md) - Setting up interactions
 - [Getting Started](../guides/getting-started.md) - Basic usage examples
