@@ -4,6 +4,8 @@ import {
   EffectRef,
   Effect,
   Interaction,
+  ViewEnterParams,
+  ViewEnterHandlerModule,
   IInteractionController,
   IInteractElement,
 } from '../types';
@@ -166,6 +168,7 @@ export class Interact {
   static setup(options: {
     scrollOptionsGetter?: () => Partial<scrollConfig>;
     pointerOptionsGetter?: () => Partial<PointerConfig>;
+    viewEnter?: Partial<ViewEnterParams>
   }): void {
     if (options.scrollOptionsGetter) {
       TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress.registerOptionsGetter?.(
@@ -177,6 +180,10 @@ export class Interact {
       TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove.registerOptionsGetter?.(
         options.pointerOptionsGetter,
       );
+    }
+
+    if(options.viewEnter) {
+      (TRIGGER_TO_HANDLER_MODULE_MAP.viewEnter as ViewEnterHandlerModule).setOptions(options.viewEnter);
     }
   }
 
