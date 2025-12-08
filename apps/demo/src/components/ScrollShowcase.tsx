@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { InteractConfig } from '@wix/interact';
+import type { InteractConfig } from '@wix/interact/web';
 import { useInteractInstance } from '../hooks/useInteractInstance';
 
 const cards = [
@@ -39,7 +39,9 @@ export const ScrollShowcase = () => {
             { transform: 'translateY(40px)', opacity: 0 },
             { transform: 'translateY(0)', opacity: 1 }
           ]
-        }
+        },
+        rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+        rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } }
       };
       return acc;
     }, {});

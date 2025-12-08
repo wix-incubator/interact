@@ -3,14 +3,24 @@
   "version": "1.0.0",
   "description": "A powerful, declarative interaction library for creating engaging web apps.",
   "license": "MIT",
-  "main": "dist/interact.js",
-  "module": "dist/interact.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
   "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/interact.js",
-      "require": "./dist/interact.js"
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/react/index.d.ts",
+      "import": "./dist/es/react.js",
+      "require": "./dist/cjs/react.js"
+    },
+    "./web": {
+      "types": "./dist/types/web/index.d.ts",
+      "import": "./dist/es/web.js",
+      "require": "./dist/cjs/web.js"
     }
   },
   "files": [
@@ -19,10 +29,11 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite dev --open",
-    "build": "rimraf dist && npm run build:types && vite build",
-    "build:types": "tsc --build tsconfig.build.json",
+    "build": "rimraf dist && vite build && npm run build:types",
+    "build:types": "tsc -p tsconfig.build.json",
     "lint": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "keywords": [
     "animation",
@@ -44,16 +55,23 @@
   "dependencies": {
     "@wix/motion": "^1.0.0",
     "kuliso": "^0.4.13",
-    "fizban": "^0.7.2"
+    "fizban": "^0.7.2",
+    "fastdom": "^1.0.12"
   },
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
+  "peerDependenciesMeta": {
+    "react": { "optional": true },
+    "react-dom": { "optional": true }
+  },
   "devDependencies": {
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^3.0.9",
     "jsdom": "^24.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

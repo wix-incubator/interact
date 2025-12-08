@@ -4,6 +4,7 @@ import type {
   PointerMoveParams,
   ScrubEffect,
   HandlerObjectMap,
+  InteractOptions,
 } from '../types';
 import {
   effectToAnimationOptions,
@@ -23,7 +24,7 @@ function addPointerMoveHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   options: PointerMoveParams = {},
-  reducedMotion: boolean = false,
+  { reducedMotion }: InteractOptions,
 ) {
   if (reducedMotion) {
     return;

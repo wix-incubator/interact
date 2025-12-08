@@ -6,7 +6,9 @@
     "declarationMap": false,
     "paths": {
       "@/*": ["./src/*"],
-      "@wix/interact": ["../../packages/interact/src"]
+      "@wix/interact/web": ["../../packages/interact/src/web"],
+      "@wix/interact/react": ["../../packages/interact/src/react"],
+      "@wix/interact": ["../../packages/interact/src/index"]
     }
   },
   "include": ["src"],

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-// import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -11,17 +10,21 @@ export default defineConfig(({ command }) => {
   const isDev = command === 'serve';
 
   return {
-    // plugins: [react()],
     build: {
       lib: {
-        entry: path.resolve(__dirname, 'src/index.ts'),
-        name: 'Interact',
-        fileName: (format: string) => `${format}/interact.js`,
+        entry: {
+          index: path.resolve(__dirname, 'src/index.ts'),
+          react: path.resolve(__dirname, 'src/react/index.ts'),
+          web: path.resolve(__dirname, 'src/web/index.ts'),
+        },
         formats: ['es', 'cjs']
       },
       sourcemap: true,
       rollupOptions: {
-        external: ['@wix/motion']
+        external: ['@wix/motion', 'react', 'react-dom'],
+        output: {
+          entryFileNames: '[format]/[name].js'
+        }
       }
     },
     resolve: {

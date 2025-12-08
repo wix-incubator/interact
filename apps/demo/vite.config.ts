@@ -11,7 +11,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@wix/interact': path.resolve(__dirname, '../../packages/interact/src')
+      '@wix/interact/web': path.resolve(__dirname, '../../packages/interact/src/web'),
+      '@wix/interact/react': path.resolve(__dirname, '../../packages/interact/src/react'),
+      '@wix/interact': path.resolve(__dirname, '../../packages/interact/src/index'),
     }
   },
   server: {

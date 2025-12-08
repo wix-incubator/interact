@@ -1,6 +1,5 @@
 export { Interact } from './core/Interact';
-export { add } from './core/add';
-export { remove } from './core/remove';
+export { add, remove } from './dom/api';
 export { getCSS } from './core/getCSS';
 
 export * from './types';

@@ -1,51 +1,58 @@
 # Standalone Functions
 
-The `@wix/interact` package exports two key standalone functions for managing interactions at the element level: `add()` and `remove()`. These functions work with `interact-element` custom elements to apply and remove interactions.
+The `@wix/interact` package exports standalone functions for managing interactions at the element level: `add()` and `remove()`. These functions work with any HTML element to apply and remove interactions.
 
 ## Import
 
 ```typescript
+// From the mini entry point
 import { add, remove } from '@wix/interact';
+
+// From the web entry point (for use with interact-element)
+import { add, remove } from '@wix/interact/web';
+
+// From the React entry point
+import { add, remove } from '@wix/interact/react';
 ```
+
+> **Note**: The `add` and `remove` functions are available from both `@wix/interact/web` and `@wix/interact/react` entry points. Choose the entry point based on your integration approach.
 
 ## Functions Overview
 
 | Function | Purpose | Parameters | Returns |
 |----------|---------|------------|---------|
-| `add()` | Add interactions to an element | `element`, `key` | `boolean` |
+| `add()` | Add interactions to an element | `element`, `key?` | `void` |
 | `remove()` | Remove interactions from an element | `key` | `void` |
-| `addListItems()` | Add interactions to new list items | `root`, `key`, `listContainer`, `elements` | `void` |
+| `addListItems()` | Add interactions to new list items | `controller`, `listContainer`, `elements` | `void` |
 | `removeListItems()` | Remove interactions from list items | `elements` | `void` |
 
 ---
 
-## `add(element, key)`
+## `add(element, key?)`
 
-Adds all configured interactions and effects to a `interact-element` based on its key configuration.
+Adds all configured interactions and effects to an element based on its key configuration. This function creates an `InteractionController` internally to manage the element's interactions.
 
 ### Signature
 
 ```typescript
-function add(element: IInteractElement, key: string): boolean
+function add(element: HTMLElement, key?: string): void
 ```
 
 ### Parameters
 
-**`element: IInteractElement`**
-- The custom `interact-element` that wraps the target content
-- Must contain a child element that will be the actual target of animations
-- Should have `data-interact-key` attribute matching the `key` parameter
+**`element: HTMLElement`**
+- Any HTML element that should have interactions applied
+- Can be an `interact-element` custom element or a regular HTML element
+- Should have `data-interact-key` attribute if `key` is not provided
 
-**`key: string`**
+**`key?: string`** (optional)
 - The unique identifier for the element in the interaction configuration
+- If not provided, the function will use `element.dataset.interactKey`
 - Must match a key defined in an `Interact` instance's configuration
-- Used to look up relevant interactions and effects
 
 ### Returns
 
-**`boolean`**
-- `true` if interactions were successfully added (element has triggers or effects)
-- `false` if no interactions were found for this key
+**`void`** - This function does not return a value. The element's controller is stored in `Interact.controllerCache`.
 
 ### Examples
 
@@ -77,130 +84,114 @@ const config = {
 Interact.create(config);
 
 // Get the element and add interactions
-const element = document.querySelector('interact-element[data-interact-key="my-hero"]');
-const hasInteractions = add(element as IInteractElement, 'my-hero');
-
-console.log('Interactions added:', hasInteractions);
+const element = document.querySelector('[data-interact-key="my-hero"]');
+if (element) {
+  add(element as HTMLElement, 'my-hero');
+}
 ```
 
-#### Programmatic Element Creation
+#### Using data-interact-key Attribute
 ```typescript
-// Create element programmatically
-const wixElement = document.createElement('interact-element');
-wixElement.setAttribute('data-interact-key', 'some-dynamic');
-
-const content = document.createElement('div');
-content.textContent = 'Animated content';
-wixElement.appendChild(content);
-
-document.body.appendChild(wixElement);
-
-// Add interactions
-const success = add(wixElement as IInteractElement, 'some-dynamic');
-if (success) {
-  console.log('Dynamic interactions added successfully');
+// When key is stored in the element's data attribute
+const element = document.querySelector('[data-interact-key="hero"]');
+if (element) {
+  // Key is inferred from data-interact-key
+  add(element as HTMLElement);
 }
+```
+
+#### With Regular HTML Elements (React approach)
+```typescript
+import { add, remove } from '@wix/interact/react';
+
+// Works with any HTML element, not just interact-element
+const div = document.createElement('div');
+div.setAttribute('data-interact-key', 'my-element');
+document.body.appendChild(div);
+
+add(div, 'my-element');
 ```
 
 ### Behavior Details
 
 #### What `add()` Does:
-1. **Caches the Element**: Stores the element in `Interact.elementCache` for future reference
-2. **Finds Configuration**: Looks up the interaction configuration for the given key
-3. **Registers Triggers**: Sets up event listeners for all configured triggers (hover, click, etc.)
-4. **Applies Effects**: Registers effects that target this element from other sources
-5. **Handles Conditions**: Evaluates media queries and conditions to determine which interactions to activate
-6. **Prevents Duplicates**: Tracks added interactions to avoid duplicate registrations
+1. **Creates Controller**: Instantiates an `InteractionController` for the element
+2. **Caches Controller**: Stores the controller in `Interact.controllerCache` for future reference
+3. **Finds Configuration**: Looks up the interaction configuration for the given key
+4. **Registers Triggers**: Sets up event listeners for all configured triggers (hover, click, etc.)
+5. **Applies Effects**: Registers effects that target this element from other sources
+6. **Handles Conditions**: Evaluates media queries and conditions to determine which interactions to activate
+7. **Prevents Duplicates**: Tracks added interactions to avoid duplicate registrations
 
 #### Element Requirements:
 ```html
-<!-- ✅ Correct structure -->
+<!-- ✅ Using interact-element (web approach) -->
 <interact-element data-interact-key="my-hero">
   <div class="hero-content">Content to animate</div>
 </interact-element>
 
-<!-- ❌ Missing child element -->
-<interact-element data-interact-key="my-hero">
-  <!-- No child element - will log warning -->
-</interact-element>
+<!-- ✅ Using regular element (React approach) -->
+<div data-interact-key="my-hero">
+  Content to animate
+</div>
 
-<!-- ❌ Missing data-interact-key -->
-<interact-element>
-  <div>Content</div>
-</interact-element>
+<!-- ❌ Missing data-interact-key (and no key parameter) -->
+<div>
+  Content without key
+</div>
 ```
 
 #### Error Handling:
 ```typescript
 // The function handles various error cases gracefully
-const element = document.querySelector('interact-element');
+const element = document.querySelector('.my-element');
 
-// Missing key
-add(element as IInteractElement, ''); 
-// Logs: "InteractElement: No key provided"
+// Missing key - logs warning
+add(element as HTMLElement); 
+// Console: "Interact: No key provided"
 
-// Element without child
-const emptyElement = document.createElement('interact-element');
-add(emptyElement as IInteractElement, 'test');
-// Logs: "InteractElement: No child element found"
-
-// No matching configuration  
-add(element as IInteractElement, 'nonexistent');
-// Returns false, no errors
+// No matching configuration - silently does nothing
+add(element as HTMLElement, 'nonexistent');
 ```
 
 ### Advanced Usage
 
-#### Manual Element Management
+#### Programmatic Element Creation
 ```typescript
-// Custom element creation with full control
-class CustomWixElement extends HTMLElement implements IInteractElement {
-  _internals: ElementInternals | null = null;
-  connected: boolean = false;
-  sheet: CSSStyleSheet | null = null;
-  
-  connectedCallback() {
-    // Custom connection logic
-    this.connect();
-  }
-  
-  connect(key?: string) {
-    const elementKey = key || this.dataset.wixPath;
-    if (elementKey) {
-      this.connected = add(this, elementKey);
-    }
-  }
-  
-  // Implement other required methods...
-  disconnectedCallback() { /* ... */ }
-  renderStyle(cssText: string) { /* ... */ }
-  toggleEffect(effectId: string, method: StateParams['method']) { /* ... */ }
-}
+import { add } from '@wix/interact';
 
-customElements.define('custom-wix-element', CustomWixElement);
+// Create element programmatically
+const container = document.createElement('div');
+container.setAttribute('data-interact-key', 'dynamic-element');
+
+const content = document.createElement('div');
+content.textContent = 'Animated content';
+container.appendChild(content);
+
+document.body.appendChild(container);
+
+// Add interactions
+add(container, 'dynamic-element');
 ```
 
 #### Batch Processing
 ```typescript
+import { add } from '@wix/interact';
+
 // Add interactions to multiple elements efficiently
 function addInteractionsToElements(selector: string) {
   const elements = document.querySelectorAll(selector);
-  const results = new Map<string, boolean>();
   
   elements.forEach(element => {
     const key = element.getAttribute('data-interact-key');
     if (key) {
-      const success = add(element as IInteractElement, key);
-      results.set(key, success);
+      add(element as HTMLElement, key);
     }
   });
-  
-  return results;
 }
 
 // Usage
-const results = addInteractionsToElements('interact-element');
-console.log('Interaction results:', Object.fromEntries(results));
+addInteractionsToElements('[data-interact-key]');
 ```
 
 ---
@@ -220,7 +211,7 @@ function remove(key: string): void
 **`key: string`**
 - The unique identifier for the element to remove interactions from
 - Should match the key used when interactions were added
-- Used to look up the cached element and its interactions
+- Used to look up the cached controller and its interactions
 
 ### Returns
 
@@ -241,6 +232,8 @@ console.log('Interactions removed for hero');
 
 #### Dynamic Content Management
 ```typescript
+import { add, remove } from '@wix/interact';
+
 // Remove interactions when content changes
 function updateContent(key: string, newContent: string) {
   // Remove old interactions
@@ -254,16 +247,18 @@ function updateContent(key: string, newContent: string) {
   
   // Re-add interactions if needed
   if (element) {
-    add(element as IInteractElement, key);
+    add(element as HTMLElement, key);
   }
 }
 ```
 
 #### Cleanup Before Page Navigation
 ```typescript
+import { remove } from '@wix/interact';
+
 // Clean up all interactions before navigation
 function cleanupInteractions() {
-  const elements = document.querySelectorAll('interact-element[data-interact-key]');
+  const elements = document.querySelectorAll('[data-interact-key]');
   
   elements.forEach(element => {
     const key = element.getAttribute('data-interact-key');
@@ -282,11 +277,12 @@ window.addEventListener('beforeunload', cleanupInteractions);
 ### Behavior Details
 
 #### What `remove()` Does:
-1. **Finds Cached Element**: Looks up the element in `Interact.elementCache`
-2. **Removes Event Listeners**: Calls `remove()` on all registered trigger handlers
-3. **Clears Element State**: Resets any active interaction states on the element
-4. **Cleans Instance State**: Calls `clearInteractionStateForKey()` on the managing instance
-5. **Removes from Cache**: Deletes the element from `Interact.elementCache`
+1. **Finds Cached Controller**: Looks up the controller in `Interact.controllerCache`
+2. **Disconnects Controller**: Calls `disconnect()` on the controller
+3. **Removes Event Listeners**: Cleans up all registered trigger handlers
+4. **Clears Element State**: Resets any active interaction states on the element
+5. **Cleans Instance State**: Calls `clearInteractionStateForKey()` on the managing instance
+6. **Removes from Cache**: Deletes the controller from `Interact.controllerCache`
 
 #### Safe to Call Multiple Times:
 ```typescript
@@ -298,16 +294,16 @@ remove('nonexistent'); // No error, key not found
 
 #### Automatic Cleanup:
 ```typescript
-// The custom element automatically calls remove() when disconnected
+// The interact-element custom element automatically handles cleanup
 const element = document.querySelector('interact-element[data-interact-key="auto"]');
 
-// Removing from DOM automatically triggers cleanup
-element?.remove(); // Calls remove('auto') internally
+// Removing from DOM automatically triggers cleanup via disconnectedCallback
+element?.remove();
 ```
 
 ---
 
-## `addListItems(root, key, listContainer, elements)`
+## `addListItems(controller, listContainer, elements)`
 
 Manually adds interactions to newly added list items in a dynamic list. This function is typically called automatically by the mutation observer when using `listContainer`, but can be called manually for advanced use cases.
 
@@ -315,8 +311,7 @@ Manually adds interactions to newly added list items in a dynamic list. This fun
 
 ```typescript
 function addListItems(
-  root: IInteractElement,
-  key: string,
+  controller: IInteractionController,
   listContainer: string,
   elements: HTMLElement[]
 ): void
@@ -324,13 +319,9 @@ function addListItems(
 
 ### Parameters
 
-**`root: IInteractElement`**
-- The `interact-element` that contains the list
-- This is the element with `data-interact-key` matching the `key` parameter
-
-**`key: string`**
-- The unique identifier for the interaction configuration
-- Must match a key defined in an `Interact` instance's configuration
+**`controller: IInteractionController`**
+- The interaction controller managing the list container
+- Can be obtained via `Interact.getController(key)`
 
 **`listContainer: string`**
 - CSS selector for the list container
@@ -344,52 +335,29 @@ function addListItems(
 
 #### Manual List Item Addition
 ```typescript
-import { addListItems } from '@wix/interact';
+import { Interact } from '@wix/interact';
 
-// Get the root element
-const root = document.querySelector('interact-element[data-interact-key="product-list"]') as IInteractElement;
+// Get the controller
+const controller = Interact.getController('product-list');
 
-// Create new items
-const newItems = [
-  document.createElement('div'),
-  document.createElement('div')
-];
+if (controller) {
+  // Create new items
+  const newItems = [
+    document.createElement('div'),
+    document.createElement('div')
+  ];
 
-newItems.forEach((item, index) => {
-  item.className = 'product-card';
-  item.textContent = `Product ${index + 1}`;
-});
-
-// Add to DOM
-const container = root.querySelector('.products');
-newItems.forEach(item => container?.appendChild(item));
-
-// Manually add interactions to new items
-addListItems(root, 'product-list', '.products', newItems);
-```
-
-#### Batch Adding Items
-```typescript
-function addProductsToGrid(products) {
-  const root = document.querySelector('interact-element[data-interact-key="products"]');
-  const container = root.querySelector('.product-grid');
-  
-  const newElements = products.map(product => {
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `
-      <img src="${product.image}" />
-      <h3>${product.name}</h3>
-      <p>$${product.price}</p>
-    `;
-    return card;
+  newItems.forEach((item, index) => {
+    item.className = 'product-card';
+    item.textContent = `Product ${index + 1}`;
   });
-  
+
   // Add to DOM
-  newElements.forEach(el => container.appendChild(el));
-  
-  // Add interactions
-  addListItems(root, 'products', '.product-grid', newElements);
+  const container = controller.element.querySelector('.products');
+  newItems.forEach(item => container?.appendChild(item));
+
+  // Manually add interactions to new items (typically automatic)
+  // addListItems(controller, '.products', newItems);
 }
 ```
 
@@ -407,22 +375,20 @@ function addProductsToGrid(products) {
 
 // Just add to DOM - interactions apply automatically
 const container = document.querySelector('.items');
-container.appendChild(newElement);
+container?.appendChild(newElement);
 ```
 
 **Manual (Advanced):**
 ```typescript
-// For cases where you need explicit control
-import { addListItems } from '@wix/interact';
+import { Interact } from '@wix/interact';
+// Note: addListItems is not exported from public API
+// It's used internally by InteractionController
 
-const root = document.querySelector('[data-interact-key="manual-list"]');
-const newItems = createItems();
-
-// Add to DOM
-container.append(...newItems);
-
-// Manually trigger interaction setup
-addListItems(root, 'manual-list', '.container', newItems);
+const controller = Interact.getController('manual-list');
+if (controller) {
+  // The controller handles list items automatically via watchChildList
+  controller.watchChildList('.container');
+}
 ```
 
 ---
@@ -441,33 +407,28 @@ function removeListItems(elements: HTMLElement[]): void
 
 **`elements: HTMLElement[]`**
 - Array of elements to remove interactions from
-- These should be elements that previously had interactions added via `addListItems()` or automatically
+- These should be elements that previously had interactions added
 
 ### Examples
 
 #### Manual Cleanup Before Removal
 ```typescript
-import { removeListItems } from '@wix/interact';
+// Note: removeListItems is typically handled automatically
+// When using interact-element or Interaction component, cleanup is automatic
 
-function removeProduct(productElement) {
-  // Remove from DOM
+function removeProduct(productElement: HTMLElement) {
+  // Simply remove from DOM - cleanup happens automatically
   productElement.remove();
-
-// Clean up interactions
-  removeListItems([productElement]);
 }
 ```
 
 #### Batch Removal
 ```typescript
-function clearFilteredItems(category) {
+function clearFilteredItems(category: string) {
   const items = document.querySelectorAll(`.product-card[data-category="${category}"]`);
   
-  // Remove from DOM
+  // Simply remove from DOM - cleanup happens automatically via mutation observer
   items.forEach(item => item.remove());
-  
-  // Clean up interactions
-  removeListItems(Array.from(items));
 }
 ```
 
@@ -477,21 +438,23 @@ function clearFilteredItems(category) {
 
 ### Efficient Usage Patterns
 
-#### ✅ Good: Batch Operations
+#### Good: Batch Operations
 ```typescript
-// Good: Process multiple elements efficiently
-const elements = document.querySelectorAll('interact-element');
+import { add } from '@wix/interact';
+
+// Process multiple elements efficiently
+const elements = document.querySelectorAll('[data-interact-key]');
 elements.forEach(el => {
-  const key = el.dataset.wixPath;
-  if (key) add(el as IInteractElement, key);
+  const key = (el as HTMLElement).dataset.interactKey;
+  if (key) add(el as HTMLElement, key);
 });
 ```
 
-#### ❌ Avoid: Redundant Calls
+#### Avoid: Redundant Calls
 ```typescript
-// Avoid: Calling add() multiple times for the same element
+// Avoid: The controller already exists after first add()
 add(element, 'hero');
-add(element, 'hero'); // Redundant - interactions already added
+add(element, 'hero'); // Redundant - controller already connected
 ```
 
 ## Error Handling
@@ -499,27 +462,21 @@ add(element, 'hero'); // Redundant - interactions already added
 Both functions include comprehensive error handling:
 
 ```typescript
+import { add, remove } from '@wix/interact';
+
 // add() error scenarios
-try {
-  // Element without child
-  const emptyElement = document.createElement('interact-element');
-  add(emptyElement as IInteractElement, 'test');
-  // Logs warning, returns false
-  
-  // Invalid key
-  add(element, ''); 
-  // Logs warning, returns false
-  
-  // No configuration found
-  add(element, 'unconfigured');
-  // Returns false silently
-} catch (error) {
-  // Functions don't throw, they log warnings
-}
+const element = document.querySelector('.my-element') as HTMLElement;
+
+// Missing key - logs warning
+add(element); 
+// Console: "Interact: No key provided"
+
+// No configuration found - silently continues
+add(element, 'unconfigured');
 
 // remove() error scenarios
 remove(''); // Safe, does nothing
-remove('nonexistent'); // Safe, does nothing
+remove('nonexistent'); // Safe, key not found in cache
 ```
 
 ## TypeScript Support
@@ -527,26 +484,24 @@ remove('nonexistent'); // Safe, does nothing
 Full TypeScript support with proper type checking:
 
 ```typescript
-import { add, remove, IInteractElement } from '@wix/interact';
+import { add, remove } from '@wix/interact';
 
-const element = document.querySelector('interact-element') as IInteractElement;
+const element = document.querySelector('[data-interact-key="hero"]') as HTMLElement;
 
 if (element) {
-  const success: boolean = add(element, 'hero');
-  
-  if (success) {
-    console.log('Interactions added successfully');
-  }
+  add(element, 'hero');
 }
 
 // Type-safe key parameter
 const key: string = 'hero';
-remove(key); // void return type
+remove(key);
 ```
 
 ## See Also
 
 - [Interact Class](interact-class.md) - Main interaction manager
+- [InteractionController](interaction-controller.md) - Controller API
 - [Custom Element](interact-element.md) - `interact-element` API
-- [Type Definitions](types.md) - `IInteractElement` and other types
+- [React Integration](../integration/react.md) - React components and hooks
+- [Type Definitions](types.md) - `IInteractionController` and other types
 - [Getting Started](../guides/getting-started.md) - Basic usage examples

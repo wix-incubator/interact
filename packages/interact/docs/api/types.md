@@ -5,6 +5,31 @@ Complete TypeScript interface and type definitions for `@wix/interact`. These ty
 ## Import
 
 ```typescript
+// From web entry point
+import type {
+  InteractConfig,
+  Interaction,
+  Effect,
+  TriggerType,
+  IInteractionController,
+  IInteractElement,
+  InteractOptions,
+  // ... other types
+} from '@wix/interact/web';
+
+// From React entry point
+import type {
+  InteractConfig,
+  Interaction,
+  Effect,
+  TriggerType,
+  IInteractionController,
+  InteractRef,
+  InteractOptions,
+  // ... other types
+} from '@wix/interact/react';
+
+// From base entry point (no framework-specific types)
 import type {
   InteractConfig,
   Interaction,
@@ -126,6 +151,166 @@ const interaction: Interaction = {
   ]
 };
 ```
+
+## Controller and Element Types
+
+### `IInteractionController`
+
+Interface for the controller that manages interactions on an element. This is the core unit of interaction management.
+
+```typescript
+interface IInteractionController {
+  // Properties
+  element: HTMLElement;
+  key: string | undefined;
+  connected: boolean;
+  sheet: CSSStyleSheet | null;
+  _observers: WeakMap<HTMLElement, MutationObserver>;
+  
+  // Methods
+  connect(key?: string): void;
+  disconnect(): void;
+  update(): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
+  getActiveEffects(): string[];
+  renderStyle(cssRules: string[]): void;
+  watchChildList(listContainer: string): void;
+  _childListChangeHandler(listContainer: string, entries: MutationRecord[]): void;
+}
+```
+
+**Properties:**
+- `element` - The DOM element this controller manages
+- `key` - The unique identifier for this element's interactions
+- `connected` - Whether the controller is currently connected to the interaction system
+- `sheet` - The adopted stylesheet for dynamic CSS rules
+- `_observers` - Internal storage for mutation observers
+
+**Methods:**
+- `connect(key?)` - Connects the controller to the interaction system
+- `disconnect()` - Disconnects and cleans up all resources
+- `update()` - Disconnects and reconnects (refreshes interactions)
+- `toggleEffect()` - Toggles a CSS state effect on the element
+- `getActiveEffects()` - Returns array of currently active effect IDs
+- `renderStyle()` - Renders CSS rules to the controller's stylesheet
+- `watchChildList()` - Sets up mutation observer for list item tracking
+
+**Example:**
+```typescript
+import { Interact, IInteractionController } from '@wix/interact/web';
+
+const controller: IInteractionController | undefined = Interact.getController('my-element');
+
+if (controller) {
+  console.log('Element:', controller.element);
+  console.log('Connected:', controller.connected);
+  console.log('Active effects:', controller.getActiveEffects());
+  
+  // Toggle an effect
+  controller.toggleEffect('expanded', 'toggle');
+}
+```
+
+### `IInteractElement`
+
+Interface for the custom `interact-element`. The element internally uses an `IInteractionController` to manage its interactions.
+
+```typescript
+interface IInteractElement extends HTMLElement {
+  _internals: (ElementInternals & { states: Set<string> }) | null;
+  controller: IInteractionController;
+  
+  connectedCallback(): void;
+  disconnectedCallback(): void;
+  connect(key?: string): void;
+  disconnect(): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null): void;
+  getActiveEffects(): string[];
+}
+```
+
+**Properties:**
+- `_internals` - Element internals for CSS custom state management
+- `controller` - The internal `InteractionController` managing this element
+
+**Methods:**
+- `connect(key?)` - Manually connect interactions
+- `disconnect()` - Disconnect and clean up
+- `toggleEffect()` - Programmatically control effect states
+- `getActiveEffects()` - Get array of active effect IDs
+
+**Example:**
+```typescript
+import { IInteractElement } from '@wix/interact/web';
+
+const element = document.querySelector('interact-element') as IInteractElement;
+
+if (element) {
+  // Access the internal controller
+  console.log('Controller connected:', element.controller.connected);
+  
+  // Toggle effects
+  element.toggleEffect('hover', 'add');
+  
+  // Get active effects
+  const effects = element.getActiveEffects();
+  console.log('Active effects:', effects);
+}
+```
+
+### `InteractOptions`
+
+Options passed to interaction handlers.
+
+```typescript
+type InteractOptions = {
+  reducedMotion?: boolean;
+  targetController?: IInteractionController;
+};
+```
+
+**Properties:**
+- `reducedMotion` - Whether reduced motion is enabled (respects `prefers-reduced-motion` or `Interact.forceReducedMotion`)
+- `targetController` - The controller managing the target element
+
+**Example:**
+```typescript
+// Used internally by handlers
+const options: InteractOptions = {
+  reducedMotion: Interact.forceReducedMotion,
+  targetController: Interact.getController('my-element')
+};
+```
+
+## React Types
+
+### `InteractRef`
+
+Type for React ref callbacks created by `createInteractRef`. This ref handles both React 18 and React 19 cleanup patterns.
+
+```typescript
+type InteractRef = (node: Element | null) => () => void;
+```
+
+**Usage:**
+```tsx
+import { createInteractRef, InteractRef } from '@wix/interact/react';
+
+function MyComponent() {
+  const interactRef = useRef<InteractRef>(createInteractRef('my-element'));
+
+  return (
+    <div ref={interactRef.current} data-interact-key="my-element">
+      Content
+    </div>
+  );
+}
+```
+
+**Behavior:**
+- When `node` is provided (mount): Calls `add(node, key)` to set up interactions
+- When `node` is `null` (React 18 unmount): Calls `remove(key)` to clean up
+- Returns cleanup function (React 19+): Also calls `remove(key)`
 
 ## Trigger Types
 
@@ -615,37 +800,46 @@ const wideContainer: Condition = {
 };
 ```
 
-## Custom Element Types
+## Handler Types
 
-### `IInteractElement`
+### `InteractionHandlerModule`
 
-Interface for the custom `interact-element`.
+Interface for trigger handler modules.
 
 ```typescript
-interface IInteractElement extends HTMLElement {
-  _internals: (ElementInternals & { states: Set<string> }) | null;
-  connected: boolean;
-  sheet: CSSStyleSheet | null;
-  
-  connectedCallback(): void;
-  disconnectedCallback(): void;
-  connect(path?: string): void;
-  renderStyle(cssText: string): void;
-  toggleEffect(effectId: string, method: StateParams['method']): void;
-  watchChildList(listContainer: string): void;
-}
+type InteractionHandlerModule<T extends TriggerType> = {
+  registerOptionsGetter?: (getter: () => any) => void;
+  add: (
+    source: HTMLElement,
+    target: HTMLElement,
+    effect: Effect,
+    options: InteractionParamsTypes[T],
+    interactOptions: InteractOptions,
+  ) => void;
+  remove: (element: HTMLElement) => void;
+};
 ```
 
 **Properties:**
-- `_internals` - Element internals for custom state management
-- `connected` - Whether the element has active interactions
-- `sheet` - CSS stylesheet for dynamic styles
+- `registerOptionsGetter` - Optional function to register global options getter
+- `add` - Function to add a handler for this trigger type
+- `remove` - Function to remove all handlers from an element
 
-**Methods:**
-- `connect()` - Manually connect interactions
-- `renderStyle()` - Inject dynamic CSS
-- `toggleEffect()` - Programmatically control effect states
-- `watchChildList()` - Set up mutation observer for dynamic list tracking
+### `InteractionParamsTypes`
+
+Map of trigger types to their parameter types.
+
+```typescript
+type InteractionParamsTypes = {
+  hover: StateParams | PointerTriggerParams;
+  click: StateParams | PointerTriggerParams;
+  viewEnter: ViewEnterParams;
+  pageVisible: ViewEnterParams;
+  animationEnd: AnimationEndParams;
+  viewProgress: ViewEnterParams;
+  pointerMove: PointerMoveParams;
+};
+```
 
 ## Cache and Internal Types
 
@@ -662,6 +856,7 @@ type InteractCache = {
       triggers: Interaction[];
       effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
       interactionIds: Set<string>;
+      selectors: Set<string>;
     };
   };
 };
@@ -680,37 +875,7 @@ type TriggerParams =
   | AnimationEndParams;
 ```
 
-### `InteractionParamsTypes`
-
-Map of trigger types to their parameter types.
-
-```typescript
-type InteractionParamsTypes = {
-  hover: StateParams | PointerTriggerParams;
-  click: StateParams | PointerTriggerParams;
-  viewEnter: ViewEnterParams;
-  pageVisible: ViewEnterParams;
-  animationEnd: AnimationEndParams;
-  viewProgress: ViewEnterParams;
-  pointerMove: PointerMoveParams;
-};
-```
-
 ## Utility Types
-
-### `CreateTransitionCSSParams`
-
-Parameters for creating transition CSS.
-
-```typescript
-type CreateTransitionCSSParams = {
-  key: string;
-  effectId: string;
-  transition?: TransitionEffect['transition'];
-  properties?: TransitionProperty[];
-  childSelector?: string;
-};
-```
 
 ### `HandlerObject`
 
@@ -723,6 +888,8 @@ type HandlerObject = {
   cleanup: () => void;
   handler?: () => void;
 };
+
+type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
 ```
 
 ### Configuration Builders
@@ -776,7 +943,9 @@ const config = new InteractConfigBuilder()
 ## See Also
 
 - [Interact Class](interact-class.md) - Main API class
+- [InteractionController](interaction-controller.md) - Controller API
 - [Functions](functions.md) - Standalone functions
 - [Custom Element](interact-element.md) - Custom element API
-- [Configuration Guide](../guides/configuration.md) - Building configurations
+- [React Integration](../integration/react.md) - React components and hooks
+- [Configuration Guide](../guides/configuration-structure.md) - Building configurations
 - [Examples](../examples/README.md) - Practical usage examples
