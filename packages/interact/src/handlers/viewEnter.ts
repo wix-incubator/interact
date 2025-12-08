@@ -6,43 +6,94 @@ import {
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import fastdom from 'fastdom';
+
+const SAFE_OBSERVER_CONFIG: IntersectionObserverInit = {
+  root: null,
+  rootMargin: '0px 0px -10% 0px',
+  threshold: [0],
+};
 
 const observers: Record<string, IntersectionObserver> = {};
 const handlerMap = new WeakMap() as HandlerObjectMap;
+const elementFirstRun = new WeakSet<HTMLElement>();
+const elementObserverMap = new WeakMap<HTMLElement, IntersectionObserver>();
+let viewEnterOptions: Partial<ViewEnterParams> = {};
 
-function getObserver(options: ViewEnterParams) {
-  const key = JSON.stringify(options);
+function setOptions(options: Partial<ViewEnterParams>) {
+  viewEnterOptions = options;
+}
+
+function getObserver(options: ViewEnterParams, isSafeMode: boolean = false) {
+  const key = JSON.stringify({ ...options, isSafeMode });
 
   if (observers[key]) {
     return observers[key];
   }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const handlers = handlerMap.get(entry.target as HTMLElement);
-
-          handlers?.forEach(({ source, handler }) => {
-            if (source === entry.target) {
-              handler!();
-            }
-          });
-
-          if (options.type === 'once') {
-            observer.unobserve(entry.target);
-          }
-        }
-      });
-    },
-    {
+  const config: IntersectionObserverInit = isSafeMode
+  ? SAFE_OBSERVER_CONFIG
+  : {
       root: null,
       rootMargin: options.inset
         ? `${options.inset} 0px ${options.inset}`
         : '0px',
       threshold: options.threshold,
-    },
-  );
+    };
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    const target = entry.target as HTMLElement;
+    const isFirstRun = !elementFirstRun.has(target);
+
+    if (isFirstRun) {
+      elementFirstRun.add(target);
+
+      if (options.useSafeViewEnter && !entry.isIntersecting) {
+        fastdom.measure(() => {
+          const sourceHeight = entry.boundingClientRect.height;
+          const rootHeight = entry.rootBounds?.height;
+
+          if (!rootHeight) {
+            return;
+          }
+
+          const threshold = Array.isArray(options.threshold)
+            ? Math.min(...options.threshold)
+            : options.threshold;
+
+          const needsSafeObserver =
+            threshold && sourceHeight * threshold > rootHeight;
+
+          if (needsSafeObserver) {
+            fastdom.mutate(() => {
+              observer.unobserve(target);
+              const safeObserver = getObserver(options, true);
+              elementObserverMap.set(target, safeObserver);
+              safeObserver.observe(target);
+            });
+          }
+        });
+        return;
+      }
+    }
+
+    if (entry.isIntersecting) {
+      const handlers = handlerMap.get(target);
+
+      handlers?.forEach(({ source, handler }) => {
+        if (source === entry.target) {
+          handler!();
+        }
+      });
+
+      if (options.type === 'once') {
+        observer.unobserve(entry.target);
+        elementFirstRun.delete(target);
+      }
+    }
+  });
+}, config);
 
   observers[key] = observer;
 
@@ -56,7 +107,7 @@ function addViewEnterHandler(
   options: ViewEnterParams = {},
   { reducedMotion, selectorCondition }: InteractOptions,
 ) {
-  const observer = getObserver(options);
+  const observer = getObserver({ ...viewEnterOptions, ...options });
   const animation = getAnimation(
     target,
     effectToAnimationOptions(effect),
@@ -79,14 +130,18 @@ function addViewEnterHandler(
     });
   };
   const cleanup = () => {
-    observer.unobserve(source);
+    const currentObserver = elementObserverMap.get(source) || observer;
+    currentObserver.unobserve(source);
     animation.cancel();
+    elementFirstRun.delete(source);
+    elementObserverMap.delete(source);
   };
   const handlerObj = { source, target, handler, cleanup };
 
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
+  elementObserverMap.set(source, observer);
   observer.observe(source);
 }
 
@@ -97,4 +152,5 @@ function removeViewEnterHandler(element: HTMLElement) {
 export default {
   add: addViewEnterHandler,
   remove: removeViewEnterHandler,
+  setOptions,
 };

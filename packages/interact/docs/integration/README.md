@@ -2,15 +2,25 @@
 
 Framework-specific integration guides and migration documentation for `@wix/interact`.
 
+## Package Entry Points
+
+`@wix/interact` provides three entry points optimized for different use cases:
+
+| Entry Point | Use Case | Key Exports |
+|-------------|----------|-------------|
+| `@wix/interact/react` | React applications | `Interact`, `Interaction` |
+| `@wix/interact/web` | Web Components | `Interact` |
+| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove` |
+
 ## Framework Integration
 
 ### React
 - [**React Integration**](react.md) - Complete React setup guide
-  - [Basic Setup](react.md#basic-setup) - Installation and configuration
-  - [Component Patterns](react.md#components) - Reusable React components
-  - [Hooks and Context](react.md#hooks) - Custom hooks for interactions
-  - [TypeScript Support](react.md#typescript) - Type-safe React usage
-  - [Performance Optimization](react.md#performance) - React-specific optimizations
+  - [Interaction Component](react.md#the-interaction-component) - React component for interactive elements
+  - [createInteractRef](react.md#the-createinteractref-function) - Ref callback for manual control
+  - [Configuration Patterns](react.md#configuration-patterns) - useEffect and custom hooks
+  - [TypeScript Support](react.md#typescript-support) - Full type inference
+  - [SSR Compatibility](react.md#server-side-rendering-ssr) - Next.js and other SSR frameworks
 
 ### Vanilla JavaScript
 - [**Vanilla JS Integration**](vanilla-js.md) - Direct DOM usage
@@ -153,30 +163,102 @@ yarn add @wix/interact @wix/motion
 pnpm add @wix/interact @wix/motion
 ```
 
-### Basic Integration
-```typescript
-import { Interact } from '@wix/interact';
+### Entry Point Imports
 
-// Create configuration
+```typescript
+// React applications (recommended for React)
+import { Interact, Interaction, createInteractRef, InteractRef } from '@wix/interact/react';
+
+// Web Components
+import { Interact, add, remove } from '@wix/interact/web';
+
+// Vanilla JavaScript
+import { Interact, add, remove } from '@wix/interact';
+```
+
+### Basic Integration
+
+**React:**
+```tsx
+import { useEffect } from 'react';
+import { Interact, Interaction } from '@wix/interact/react';
+
+const config = { /* your config */ };
+
+function App() {
+  useEffect(() => {
+    const instance = Interact.create(config);
+    return () => instance.destroy();
+  }, []);
+
+  return (
+    <Interaction tagName="div" interactKey="my-element">
+      Interactive content
+    </Interaction>
+  );
+}
+```
+
+**Vanilla JavaScript:**
+```typescript
+import { Interact } from '@wix/interact/web';
+
 const config = { /* your config */ };
 
 // Initialize
-const interact = Interact.create(config);
+Interact.create(config);
+
+// HTML
+// <interact-element data-interact-key="my-element">
+//   <div>Interactive content</div>
+// </interact-element>
 ```
 
-### Framework-Specific Imports
+**Vue:**
+```vue
+<template>
+  <interact-element data-interact-key="my-element">
+    <div>Interactive content</div>
+  </interact-element>
+</template>
+
+<script setup>
+import { onMounted, onUnmounted } from 'vue';
+import { Interact } from '@wix/interact/web';
+
+const config = { /* your config */ };
+
+onMounted(() => {
+  Interact.create(config);
+});
+
+onUnmounted(() => {
+  Interact.destroy();
+});
+</script>
+```
+
+**Angular:**
 ```typescript
-// React
-import { Interact } from '@wix/interact';
-import React from 'react';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Interact } from '@wix/interact/web';
 
-// Vue
-import { Interact } from '@wix/interact';
-import { defineComponent } from 'vue';
-
-// Angular
-import { Interact } from '@wix/interact';
-import { Component } from '@angular/core';
+@Component({
+  template: `
+    <interact-element data-interact-key="my-element">
+      <div>Interactive content</div>
+    </interact-element>
+  `
+})
+export class MyComponent implements OnInit, OnDestroy {
+  ngOnInit() {
+    Interact.create(config);
+  }
+  
+  ngOnDestroy() {
+    Interact.destroy();
+  }
+}
 ```
 
 For detailed examples and step-by-step instructions, explore the specific integration guides above.

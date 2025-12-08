@@ -2153,7 +2153,10 @@ describe('interact (mini)', () => {
 
     it('should register scroll options getter', () => {
       const scrollOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress, 'registerOptionsGetter');
+      const spy = vi.spyOn(
+        TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress,
+        'registerOptionsGetter',
+      );
 
       Interact.setup({ scrollOptionsGetter });
 
@@ -2162,7 +2165,10 @@ describe('interact (mini)', () => {
 
     it('should register pointer options getter', () => {
       const pointerOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove, 'registerOptionsGetter');
+      const spy = vi.spyOn(
+        TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove,
+        'registerOptionsGetter',
+      );
 
       Interact.setup({ pointerOptionsGetter });
 
@@ -2609,16 +2615,8 @@ describe('interact (mini)', () => {
       add(testElement, 'responsive-element');
 
       // Verify desktop interaction (click) is added, not mobile (hover)
-      expect(addEventListenerSpy).toHaveBeenCalledWith(
-        'click',
-        expect.any(Function),
-        expect.any(Object),
-      );
-      expect(addEventListenerSpy).not.toHaveBeenCalledWith(
-        'mouseenter',
-        expect.any(Function),
-        expect.any(Object),
-      );
+      expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
 
       // Clear spies for next assertions
       addEventListenerSpy.mockClear();
@@ -2644,11 +2642,8 @@ describe('interact (mini)', () => {
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
 
       // The new hover handler should be added
-      expect(addEventListenerSpy).toHaveBeenCalledWith(
-        'mouseenter',
-        expect.any(Function),
-        expect.any(Object),
-      );
+      expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
     });
   });
 });
+
