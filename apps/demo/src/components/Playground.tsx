@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import type { InteractConfig, TriggerType } from '@wix/interact';
+import type { InteractConfig, TriggerType } from '@wix/interact/web';
 import { useInteractInstance } from '../hooks/useInteractInstance';
 
 type EffectOption = 'lift' | 'pulse' | 'tilt';
@@ -19,7 +19,7 @@ const getTriggerParams = (trigger: TriggerType) => {
     return { type: 'repeat', threshold: 0.6 } as const;
   }
 
-  return { method: trigger === 'click' ? 'toggle' : 'add' } as const;
+  return { method: 'toggle' } as const;
 };
 
 const createEffectConfig = (

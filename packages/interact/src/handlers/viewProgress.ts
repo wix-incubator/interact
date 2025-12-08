@@ -1,7 +1,7 @@
 import type { ScrubScrollScene } from '@wix/motion';
 import { getWebAnimation, getScrubScene } from '@wix/motion';
-import { Scroll, scrollConfig } from 'fizban';
-import type { ViewEnterParams, ScrubEffect, HandlerObjectMap } from '../types';
+import { Scroll } from 'fizban';
+import type { ViewEnterParams, ScrubEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -11,7 +11,7 @@ import {
 const scrollManagerMap = new WeakMap() as HandlerObjectMap;
 let scrollOptionsGetter: () => Partial<scrollConfig> = () => ({});
 
-function registerOptionsGetter(getter: () => scrollConfig) {
+function registerOptionsGetter(getter: () => Partial<scrollConfig>) {
   scrollOptionsGetter = getter;
 }
 
@@ -20,7 +20,7 @@ function addViewProgressHandler(
   target: HTMLElement,
   effect: ScrubEffect,
   __: ViewEnterParams,
-  reducedMotion: boolean = false,
+  { reducedMotion }: InteractOptions,
 ): void {
   if (reducedMotion) {
     return;

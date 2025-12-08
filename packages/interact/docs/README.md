@@ -2,23 +2,33 @@
 
 Welcome to the complete documentation for the `@wix/interact` package - a powerful, declarative interaction library for creating engaging web animations and effects.
 
+## Package Entry Points
+
+| Entry Point | Use Case | Key Exports |
+|-------------|----------|-------------|
+| `@wix/interact/react` | React applications | `Interact`, `Interaction` |
+| `@wix/interact/web` | Web Components | `Interact` |
+| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove` |
+
 ## Table of Contents
 
-### 📚 **API Reference**
+### **API Reference**
 Complete reference documentation for all classes, methods, and types.
 
 - [**Core API**](api/README.md) - Main classes and functions
   - [Interact Class](api/interact-class.md) - Main interaction manager
+  - [InteractionController](api/interaction-controller.md) - Controller class for element interactions
   - [Standalone Functions](api/functions.md) - `add()`, `remove()`, `addListItems()`, `removeListItems()`
   - [Custom Element](api/interact-element.md) - `<interact-element>` API
   - [Element Selection](api/element-selection.md) - Selection priority and patterns
 - [**Type Definitions**](api/types.md) - Complete TypeScript interfaces
-  - [Configuration Types](api/types.md#configuration) - `InteractConfig`, `Interaction`, `Effect`
-  - [Trigger Types](api/types.md#triggers) - All trigger parameters and types
-  - [Effect Types](api/types.md#effects) - Time, scrub, and transition effects
-- [**Utilities**](api/utilities.md) - Helper functions and utilities
+  - [Configuration Types](api/types.md#configuration-types) - `InteractConfig`, `Interaction`, `Effect`
+  - [Controller Types](api/types.md#controller-and-element-types) - `IInteractionController`, `IInteractElement`
+  - [Trigger Types](api/types.md#trigger-types) - All trigger parameters and types
+  - [Effect Types](api/types.md#effect-types) - Time, scrub, and transition effects
+  - [React Types](api/types.md#react-types) - `InteractRef` and React-specific types
 
-### 🎓 **Guides & Tutorials**
+### **Guides & Tutorials**
 Learn the concepts and patterns for building effective interactions.
 
 - [**Getting Started**](guides/getting-started.md) - Your first interaction in 5 minutes
@@ -32,7 +42,7 @@ Learn the concepts and patterns for building effective interactions.
   - [Conditions & Media Queries](guides/conditions-and-media-queries.md) - Responsive interactions
 - [**Performance**](guides/performance.md) - Optimization tips and best practices
 
-### 💡 **Examples & Patterns**
+### **Examples & Patterns**
 Practical examples and common interaction patterns.
 
 - [**Basic Examples**](examples/README.md) - Simple, copy-paste examples
@@ -44,18 +54,18 @@ Practical examples and common interaction patterns.
 - [**Advanced Patterns**](examples/advanced-patterns.md) - Complex interaction sequences
 - [**Real-world Examples**](examples/real-world.md) - Production-ready implementations
 
-### 🔧 **Integration Guides**
+### **Integration Guides**
 Framework-specific integration and migration guides.
 
 - [**Framework Integration**](integration/README.md) - Using with different frameworks
-  - [React Integration](integration/react.md) - Components and hooks
+  - [React Integration](integration/react.md) - `Interaction` component, `createInteractRef`, hooks
   - [Vanilla JavaScript](integration/vanilla-js.md) - Direct DOM usage
-  - [Other Frameworks](integration/other-frameworks.md) - Vue, Angular, etc.
+  - [Other Frameworks](integration/other-frameworks.md) - Vue, Angular, Svelte, etc.
 - [**Migration Guides**](integration/migration.md) - Coming from other libraries
 - [**Testing**](integration/testing.md) - Testing interaction behaviors
 - [**Debugging**](integration/debugging.md) - Development tools and techniques
 
-### 🏗️ **Advanced Topics**
+### **Advanced Topics**
 Deep-dive technical documentation for power users.
 
 - [**Architecture**](advanced/architecture.md) - System design and decisions
@@ -68,29 +78,129 @@ Deep-dive technical documentation for power users.
 
 ### I want to...
 
-**🚀 Get started quickly**
+**Get started quickly**
 → [Getting Started Guide](guides/getting-started.md)
 
-**📖 Understand the concepts**
+**Use with React**
+→ [React Integration](integration/react.md)
+
+**Understand the concepts**
 → [Core Concepts](guides/README.md)
 
-**💻 See code examples**
+**See code examples**
 → [Examples & Patterns](examples/README.md)
 
-**🔍 Look up API details**
+**Look up API details**
 → [API Reference](api/README.md)
 
-**🔧 Integrate with my framework**
+**Integrate with my framework**
 → [Integration Guides](integration/README.md)
 
-**🐛 Debug an issue**
+**Debug an issue**
 → [Debugging Guide](integration/debugging.md)
 
-**⚡ Optimize performance**
+**Optimize performance**
 → [Performance Guide](guides/performance.md)
 
-**🛠️ Extend functionality**
+**Extend functionality**
 → [Advanced Topics](advanced/README.md)
+
+## Quick Start
+
+### React
+
+```tsx
+import { useEffect } from 'react';
+import { Interact, Interaction } from '@wix/interact/react';
+
+const config = {
+  interactions: [{
+    key: 'card',
+    trigger: 'hover',
+    effects: [{
+      keyframeEffect: {
+        name: 'lift',
+        keyframes: [{ transform: 'translateY(-4px)' }]
+      },
+      duration: 200
+    }]
+  }],
+  effects: {}
+};
+
+function App() {
+  useEffect(() => {
+    const instance = Interact.create(config);
+    return () => instance.destroy();
+  }, []);
+
+  return (
+    <Interaction tagName="div" interactKey="card" className="card">
+      <h2>Hover me!</h2>
+    </Interaction>
+  );
+}
+```
+
+### Web Components
+
+```html
+<interact-element data-interact-key="card">
+  <div class="card">
+    <h2>Hover me!</h2>
+  </div>
+</interact-element>
+```
+
+```javascript
+import { Interact } from '@wix/interact/web';
+
+Interact.create({
+  interactions: [{
+    key: 'card',
+    trigger: 'hover',
+    effects: [{
+      keyframeEffect: {
+        name: 'lift',
+        keyframes: [{ transform: 'translateY(-4px)' }]
+      },
+      duration: 200
+    }]
+  }],
+  effects: {}
+});
+```
+
+### Vanilla JS
+
+```html
+<div class="card" data-interact-key="nice-card">
+  <h2>Hover me!</h2>
+</div>
+```
+
+```javascript
+import { Interact, add } from '@wix/interact';
+
+const niceCard = document.querySelector('[data-interact-key="nice-card"]');
+
+add(niceCard);
+
+Interact.create({
+  interactions: [{
+    key: 'nice-card',
+    trigger: 'hover',
+    effects: [{
+      keyframeEffect: {
+        name: 'lift',
+        keyframes: [{ transform: 'translateY(-4px)' }]
+      },
+      duration: 200
+    }]
+  }],
+  effects: {}
+});
+```
 
 ## Version Information
 

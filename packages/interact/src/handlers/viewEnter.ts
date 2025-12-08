@@ -1,6 +1,6 @@
 import type { AnimationGroup } from '@wix/motion';
 import { getAnimation } from '@wix/motion';
-import type { TimeEffect, HandlerObjectMap, ViewEnterParams } from '../types';
+import type { TimeEffect, HandlerObjectMap, ViewEnterParams, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -105,7 +105,7 @@ function addViewEnterHandler(
   target: HTMLElement,
   effect: TimeEffect,
   options: ViewEnterParams = {},
-  reducedMotion: boolean = false,
+  { reducedMotion }: InteractOptions,
 ) {
   const observer = getObserver({ ...viewEnterOptions, ...options });
   const animation = getAnimation(

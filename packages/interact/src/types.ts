@@ -172,22 +172,35 @@ export type AnimationOptions<T extends 'time' | 'scrub'> =
 /// ////////////////////////////////////////////////////////
 /// ////////////////////////////////////////////////////////
 
-export interface IInteractElement extends HTMLElement {
-  _internals: (ElementInternals & { states: Set<string> }) | null;
+export interface IInteractionController {
+  element: HTMLElement;
+  key: string | undefined;
   connected: boolean;
   sheet: CSSStyleSheet | null;
   _observers: WeakMap<HTMLElement, MutationObserver>;
+  connect(key?: string): void;
+  disconnect(): void;
+  update(): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
+  getActiveEffects(): string[];
+  renderStyle(cssRules: string[]): void;
+  watchChildList(listContainer: string): void;
+  _childListChangeHandler(listContainer: string, entries: MutationRecord[]): void;
+}
+
+export interface IInteractElement extends HTMLElement {
+  _internals: (ElementInternals & { states: Set<string> }) | null;
+  controller: IInteractionController;
   connectedCallback(): void;
   disconnectedCallback(): void;
-  connect(path?: string): void;
+  connect(key?: string): void;
   disconnect(): void;
-  renderStyle(cssRules: string[]): void;
   toggleEffect(
     effectId: string,
     method: StateParams['method'],
     item?: HTMLElement | null,
   ): void;
-  watchChildList(listContainer: string): void;
+  getActiveEffects(): string[];
 }
 
 export type InteractionParamsTypes = {
@@ -200,6 +213,11 @@ export type InteractionParamsTypes = {
   pointerMove: PointerMoveParams;
 };
 
+export type InteractOptions = {
+  reducedMotion?: boolean;
+  targetController?: IInteractionController;
+};
+
 export type InteractionHandlerModule<T extends TriggerType> = {
   registerOptionsGetter?: (getter: () => any) => void;
   add: (
@@ -207,7 +225,7 @@ export type InteractionHandlerModule<T extends TriggerType> = {
     target: HTMLElement,
     effect: Effect,
     options: InteractionParamsTypes[T],
-    reducedMotion?: boolean,
+    interactOptions: InteractOptions,
   ) => void;
   remove: (element: HTMLElement) => void;
 };

@@ -1,34 +1,24 @@
 import {
   InteractCache,
-  IInteractElement,
   InteractConfig,
   EffectRef,
   Effect,
   Interaction,
   ViewEnterParams,
   ViewEnterHandlerModule,
+  IInteractionController,
+  IInteractElement,
 } from '../types';
 import { getInterpolatedKey } from './utilities';
-import { getInteractElement } from '../InteractElement';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-
-function registerInteractElement() {
-  if (!customElements.get('interact-element')) {
-    const interactElement = getInteractElement();
-    customElements.define('interact-element', interactElement);
-
-    return true;
-  }
-
-  return false;
-}
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
 }
 
 export class Interact {
+  static defineInteractElement?: () => boolean;
   dataCache: InteractCache;
   addedInteractions: { [interactionId: string]: boolean };
   mediaQueryListeners: Map<
@@ -42,17 +32,17 @@ export class Interact {
   listInteractionsCache: {
     [listContainer: string]: { [interactionId: string]: boolean };
   };
-  elements: Set<IInteractElement>;
+  controllers: Set<IInteractionController>;
   static forceReducedMotion: boolean = false;
   static instances: Interact[] = [];
-  static elementCache = new Map<string, IInteractElement>();
+  static controllerCache = new Map<string, IInteractionController>();
 
   constructor() {
     this.dataCache = { effects: {}, conditions: {}, interactions: {} };
     this.addedInteractions = {};
     this.mediaQueryListeners = new Map();
     this.listInteractionsCache = {};
-    this.elements = new Set();
+    this.controllers = new Set();
   }
 
   init(config: InteractConfig): void {
@@ -62,19 +52,26 @@ export class Interact {
 
     this.dataCache = parseConfig(config);
 
-    registerInteractElement();
+    const defined = Interact.defineInteractElement?.();
 
-    // Always try to reconnect elements from cache.
-    // This handles cases where elements were added to DOM before the instance was created
-    // (e.g., in React where useEffect runs after render), or when an instance is recreated
-    // (e.g., in React StrictMode where effects run twice).
-    // The connect() method has a guard to skip if already connected.
-    Interact.elementCache.forEach((element: IInteractElement, key) => element.connect(key));
+    if (defined === false) {
+      // mostly to recover from React's <StrictMode>, blah...
+      document.querySelectorAll('interact-element').forEach((element) => {
+        (element as IInteractElement).connect();
+      });
+    } else {
+      // Always try to reconnect elements from cache.
+      // This handles cases where elements were added to DOM before the instance was created
+      // (e.g., in React where useEffect runs after render), or when an instance is recreated
+      // (e.g., in React StrictMode where effects run twice).
+      // The connect() method has a guard to skip if already connected.
+      Interact.controllerCache.forEach((controller: IInteractionController, key) => controller.connect(key));
+    }
   }
 
   destroy(): void {
-    for (const element of this.elements) {
-      element.disconnect();
+    for (const controller of this.controllers) {
+      controller.disconnect();
     }
 
     // Properly remove all media query listeners before clearing the Map
@@ -86,26 +83,26 @@ export class Interact {
     this.mediaQueryListeners.clear();
     this.addedInteractions = {};
     this.listInteractionsCache = {};
-    this.elements.clear();
+    this.controllers.clear();
     this.dataCache = { effects: {}, conditions: {}, interactions: {} };
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
 
-  setElement(key: string, element: IInteractElement) {
-    this.elements.add(element);
+  setController(key: string, controller: IInteractionController) {
+    this.controllers.add(controller);
 
-    Interact.setElement(key, element);
+    Interact.setController(key, controller);
   }
 
-  deleteElement(key: string) {
-    const element = Interact.elementCache.get(key);
+  deleteController(key: string) {
+    const controller = Interact.controllerCache.get(key);
 
     this.clearInteractionStateForKey(key);
     this.clearMediaQueryListenersForKey(key);
 
-    if (element) {
-      this.elements.delete(element);
-      Interact.deleteElement(key);
+    if (controller) {
+      this.controllers.delete(controller);
+      Interact.deleteController(key);
     }
   }
 
@@ -161,11 +158,11 @@ export class Interact {
   }
 
   static destroy(): void {
-    Interact.elementCache.forEach((element: IInteractElement) => {
-      element.disconnect();
+    Interact.controllerCache.forEach((controller: IInteractionController) => {
+      controller.disconnect();
     });
     Interact.instances.length = 0;
-    Interact.elementCache.clear();
+    Interact.controllerCache.clear();
   }
 
   static setup(options: {
@@ -194,16 +191,16 @@ export class Interact {
     return Interact.instances.find((instance) => instance.has(key));
   }
 
-  static getElement(key: string | undefined): IInteractElement | undefined {
-    return key ? Interact.elementCache.get(key) : undefined;
+  static getController(key: string | undefined): IInteractionController | undefined {
+    return key ? Interact.controllerCache.get(key) : undefined;
   }
 
-  static setElement(key: string, element: IInteractElement): void {
-    Interact.elementCache.set(key, element);
+  static setController(key: string, controller: IInteractionController): void {
+    Interact.controllerCache.set(key, controller);
   }
 
-  static deleteElement(key: string): void {
-    Interact.elementCache.delete(key);
+  static deleteController(key: string): void {
+    Interact.controllerCache.delete(key);
   }
 }
 
