@@ -43,7 +43,7 @@ function addPointerMoveHandler(
 
   if (scene) {
     const pointer = new Pointer({
-      root: options.hitArea === 'root' ? document.documentElement : source,
+      root: options.hitArea === 'self' ? source : undefined,
       scenes: Array.isArray(scene) ? scene : [scene],
       ...pointerOptionsGetter(),
     });
