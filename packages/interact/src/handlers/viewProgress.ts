@@ -1,4 +1,4 @@
-import type { ScrubScrollScene } from '@wix/motion';
+import type { AnimationGroup, ScrubScrollScene } from '@wix/motion';
 import { getWebAnimation, getScrubScene } from '@wix/motion';
 import { Scroll } from 'fizban';
 import type { ViewEnterParams, ScrubEffect, HandlerObjectMap, InteractOptions } from '../types';
@@ -35,14 +35,21 @@ function addViewProgressHandler(
 
   if ('ViewTimeline' in window) {
     // Use ViewTimeline for modern browsers
-    const animationGroup = getWebAnimation(
-      target,
-      effectOptions,
-      triggerParams,
-    );
+    const animationGroup = getWebAnimation(target, effectOptions, triggerParams);
 
     if (animationGroup) {
-      (animationGroup as any).play();
+      animationGroup.play();
+
+      const cleanup = () => {
+        (animationGroup as AnimationGroup).ready.then(() => {
+          animationGroup.cancel();
+        });
+      };
+
+      const handlerObj = { source, target, cleanup };
+
+      addHandlerToMap(scrollManagerMap, source, handlerObj);
+      addHandlerToMap(scrollManagerMap, target, handlerObj);
     }
   } else {
     const scene = getScrubScene(target, effectOptions, triggerParams);
@@ -68,11 +75,11 @@ function addViewProgressHandler(
       addHandlerToMap(scrollManagerMap, source, handlerObj);
       addHandlerToMap(scrollManagerMap, target, handlerObj);
 
-      Promise.all(
-        (scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve()),
-      ).then(() => {
-        scroll.start();
-      });
+      Promise.all((scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve())).then(
+        () => {
+          scroll.start();
+        },
+      );
     }
   }
 }
