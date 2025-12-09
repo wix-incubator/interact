@@ -135,5 +135,5 @@ export function getSelectorCondition(
       return condition.predicate;
     }
   }
-  return undefined;
+  return;
 }
