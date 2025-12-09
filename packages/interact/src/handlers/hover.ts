@@ -23,6 +23,7 @@ function createTimeEffectHandler(
   effect: TimeEffect & EffectBase,
   options: PointerTriggerParams,
   reducedMotion: boolean = false,
+  selectorCondition?: string,
 ) {
   const animation = getAnimation(
     element,
@@ -34,6 +35,7 @@ function createTimeEffectHandler(
   let initialPlay = true;
 
   return (event: MouseEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     if (event.type === 'mouseenter') {
       if (type === 'alternate') {
         if (initialPlay) {
@@ -84,12 +86,14 @@ function createTransitionHandler(
     listItemSelector,
   }: TransitionEffect & EffectBase & { effectId: string },
   options: StateParams,
+  selectorCondition?: string,
 ) {
   const method = options.method || 'toggle';
   const isToggle = method === 'toggle';
   const shouldSetStateOnElement = !!listContainer;
 
   return (event: MouseEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     let item;
     if (shouldSetStateOnElement) {
       item = element.closest(
@@ -111,7 +115,7 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  { reducedMotion, targetController }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition }: InteractOptions,
 ) {
   let handler: (event: MouseEvent) => void;
   let isStateTrigger = false;
@@ -126,6 +130,7 @@ function addHoverHandler(
       targetController!,
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
+      selectorCondition,
     );
     isStateTrigger = true;
   } else {
@@ -134,6 +139,7 @@ function addHoverHandler(
       effect as TimeEffect & EffectBase,
       options as PointerTriggerParams,
       reducedMotion,
+      selectorCondition,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }

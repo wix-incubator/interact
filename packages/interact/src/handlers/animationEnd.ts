@@ -19,7 +19,7 @@ function addAnimationEndHandler(
   target: HTMLElement,
   effect: TimeEffect,
   __: AnimationEndParams,
-  { reducedMotion }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions,
 ): void {
   const animation = getAnimation(
     target,
@@ -29,6 +29,7 @@ function addAnimationEndHandler(
   ) as AnimationGroup;
 
   const handler = () => {
+    if (selectorCondition && !target.matches(selectorCondition)) return;
     animation.play();
   };
   const cleanup = () => {

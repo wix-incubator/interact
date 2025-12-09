@@ -2176,6 +2176,219 @@ describe('interact (mini)', () => {
     });
   });
 
+  describe('selector condition type', () => {
+    it('should pass selectorCondition to handler when condition type is selector', async () => {
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-test',
+            effects: [
+              {
+                key: 'selector-test',
+                effectId: 'test-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'test-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      add(testElement, 'selector-test');
+
+      // The handler should have received selectorCondition
+      // We verify by checking the animation is created (condition doesn't block setup)
+      const { getWebAnimation } = await import('@wix/motion');
+      expect(getWebAnimation).toHaveBeenCalled();
+    });
+
+    it('should skip handler execution when element does not match selector condition', async () => {
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = {
+        play: vi.fn(),
+        cancel: vi.fn(),
+        onFinish: vi.fn(),
+        reverse: vi.fn(),
+        progress: vi.fn(),
+        playState: 'idle',
+        isCSS: false,
+      };
+      (getWebAnimation as any).mockReturnValue(mockAnimation);
+
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-skip-test',
+            effects: [
+              {
+                key: 'selector-skip-test',
+                effectId: 'skip-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'skip-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      // div does NOT have .active class
+      testElement.append(div);
+
+      add(testElement, 'selector-skip-test');
+
+      // Simulate click - animation should NOT play because element doesn't match .active
+      div.click();
+
+      expect(mockAnimation.play).not.toHaveBeenCalled();
+    });
+
+    it('should execute handler when element matches selector condition', async () => {
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = {
+        play: vi.fn(),
+        cancel: vi.fn(),
+        onFinish: vi.fn(),
+        reverse: vi.fn(),
+        progress: vi.fn(),
+        playState: 'idle',
+        isCSS: false,
+      };
+      (getWebAnimation as any).mockReturnValue(mockAnimation);
+
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-match-test',
+            effects: [
+              {
+                key: 'selector-match-test',
+                effectId: 'match-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'match-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      div.classList.add('active'); // div HAS .active class
+      testElement.append(div);
+
+      add(testElement, 'selector-match-test');
+
+      // Simulate click - animation SHOULD play because element matches .active
+      div.click();
+
+      expect(mockAnimation.play).toHaveBeenCalled();
+    });
+
+    it('should not apply selector condition type to media query listeners', () => {
+      // Selector conditions should NOT create matchMedia listeners (only media conditions do)
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'no-mql-test',
+            conditions: ['active'],
+            effects: [
+              {
+                key: 'no-mql-test',
+                effectId: 'no-mql-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'no-mql-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      const instance = Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      add(testElement, 'no-mql-test');
+
+      // Selector conditions should NOT create media query listeners
+      expect(instance.mediaQueryListeners.size).toBe(0);
+      // matchMedia should not be called for selector type conditions
+      expect(window.matchMedia).not.toHaveBeenCalledWith('.active');
+    });
+  });
+
   describe('breakpoint media query listeners', () => {
     let instance: Interact;
     let testElement: HTMLElement;
