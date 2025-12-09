@@ -32,7 +32,7 @@ function addViewProgressHandler(
   };
 
   const effectOptions = effectToAnimationOptions(effect);
-
+  let cleanup;
   if ('ViewTimeline' in window) {
     // Use ViewTimeline for modern browsers
     const animationGroup = getWebAnimation(
@@ -44,16 +44,11 @@ function addViewProgressHandler(
     if (animationGroup) {
       animationGroup.play();
 
-      const cleanup = () => {
+      cleanup = () => {
         (animationGroup as AnimationGroup).ready.then(() => {
           animationGroup.cancel();
         });
       };
-
-      const handlerObj = { source, target, cleanup };
-
-      addHandlerToMap(scrollManagerMap, source, handlerObj);
-      addHandlerToMap(scrollManagerMap, target, handlerObj);
     }
   } else {
     const scene = getScrubScene(target, effectOptions, triggerParams);
@@ -70,14 +65,9 @@ function addViewProgressHandler(
         ...scrollOptionsGetter(),
       });
 
-      const cleanup = () => {
+      cleanup = () => {
         scroll.destroy();
       };
-
-      const handlerObj = { source, target, cleanup };
-
-      addHandlerToMap(scrollManagerMap, source, handlerObj);
-      addHandlerToMap(scrollManagerMap, target, handlerObj);
 
       Promise.all(
         (scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve()),
@@ -86,6 +76,13 @@ function addViewProgressHandler(
       });
     }
   }
+
+  if(!cleanup) return;
+  
+  const handlerObj = { source, target, cleanup };
+
+  addHandlerToMap(scrollManagerMap, source, handlerObj);
+  addHandlerToMap(scrollManagerMap, target, handlerObj);
 }
 
 function removeViewProgressHandler(element: HTMLElement): void {
