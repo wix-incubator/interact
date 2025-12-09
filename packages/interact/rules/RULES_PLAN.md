@@ -87,13 +87,12 @@ Based on the comprehensive exploration, here's a detailed plan for creating rule
 - Rule for range-based entry animation control with customEffects pattern
 - Rule for range-based exit animation control with customEffects pattern
 
-#### Stage 1.5: PointerMove Trigger Rules (`pointermove-rules.md`)
-- Rule for hit area configuration (`root` vs `self`) with appropriate use cases
-- Rule for centering range to animation target using `centeredToTarget` configuration
-- Rule for symmetric pointer effects (same animation in both directions)
-- Rule for anti-symmetric pointer effects (inverted animation based on direction)
-- Rules for pointer-based effects of single elements with namedEffect
-- Rules for pointer-based parallax effects of a group of elements with namedEffect
+#### Stage 1.5: PointerMove Trigger Rules (`pointermove-rules.md`) ✅
+- Rule for hit area configuration (`root` vs `self`) with appropriate use cases ✅
+- Rule for centering range to animation target using `centeredToTarget` configuration ✅
+- Rules for using namedEffect on single element ✅
+- Rules for using namedEffect on a group of elements to achieve a parallax effect ✅
+- Rules for using customEffect by using progress as an object with x and y properties ✅
 
 #### Stage 1.6: AnimationEnd Trigger Rules (`animationend-rules.md`)
 - Rule for configuration of entrance and loop animations chaining pattern
@@ -229,7 +228,7 @@ Based on current progress and critical gaps identified:
 ### **Phase 1: Foundation (Completed ✅)**
 - Stage 1.1-1.3: Basic triggers (hover, click, viewEnter) ✅
 - Stage 1.4: ViewProgress rules ✅
-- Stage 1.5: PointerMove rules ✅
+- Stage 1.5: PointerMove rules (namedEffect + customEffect with 2D progress) ✅
 
 ### **Phase 2: Critical Gaps (HIGH PRIORITY)**
 - **Stage 1.8**: List-Based Interaction Rules - Essential for galleries and grids
@@ -249,6 +248,6 @@ Based on current progress and critical gaps identified:
 ### **Next Immediate Actions:**
 1. Create `scroll-list-rules.md` with listContainer patterns
 2. Create element targeting guide explaining selector inheritance/non-inheritance
-3. Enhance pointer-move rules with symmetric/anti-symmetric patterns
+3. ~~Enhance pointer-move rules with symmetric/anti-symmetric patterns~~ ✅ (Added customEffect with 2D progress)
 4. Add animationEnd chaining patterns
 5. Document performance optimization for large lists

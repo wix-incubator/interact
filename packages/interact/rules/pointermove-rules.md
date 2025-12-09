@@ -2,6 +2,51 @@
 
 These rules help generate pointer-driven interactions using the `@wix/interact` library. PointerMove triggers create real-time animations that respond to mouse movement over elements, perfect for 3D effects, cursor followers, and interactive cards.
 
+## Core Concepts
+
+### Effect Types for PointerMove
+
+**IMPORTANT**: The `pointerMove` trigger provides 2D progress (x and y coordinates), which is incompatible with linear `keyframeEffect` animations. Only use:
+
+1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion` that handle 2D progress internally
+2. **`customEffect`** (Advanced): Custom function receiving the 2D progress object for full control
+
+**Never use `keyframeEffect` with `pointerMove`** - keyframes require linear 0-1 progress and cannot handle 2D coordinates.
+
+### Hit Area Configuration (`hitArea`)
+
+The `hitArea` parameter determines where mouse movement is tracked:
+
+| Value | Behavior | Best For |
+|-------|----------|----------|
+| `'self'` | Tracks mouse within the source element's bounds only | Local hover effects, card interactions |
+| `'root'` | Tracks mouse anywhere in the viewport (document root) | Global cursor followers, ambient effects |
+
+### Progress Object Structure (for `customEffect`)
+
+When using `customEffect` with `pointerMove`, the progress parameter is an object:
+
+```typescript
+type Progress = {
+  x: number;      // 0-1: horizontal position (0 = left edge, 1 = right edge)
+  y: number;      // 0-1: vertical position (0 = top edge, 1 = bottom edge)
+  v?: {           // Velocity (optional)
+    x: number;    // Horizontal velocity
+    y: number;    // Vertical velocity
+  };
+  active?: boolean; // Whether mouse is currently in the hit area
+};
+```
+
+### Centering with `centeredToTarget`
+
+Controls how the progress range is calculated:
+
+| Value | Behavior | Use When |
+|-------|----------|----------|
+| `true` | Centers the coordinate range at the target element | Source and target are different elements |
+| `false` | Uses source element bounds for calculations | Cursor followers, global effects |
+
 ## Rule 1: Single Element Pointer Effects with 3D Named Effects
 
 **Use Case**: Interactive 3D transformations on individual elements that respond to mouse position (e.g., card tilting, 3D product showcases, interactive buttons)
@@ -679,6 +724,315 @@ These rules help generate pointer-driven interactions using the `@wix/interact` 
 
 ---
 
+## Rule 8: Custom Pointer Effects with customEffect
+
+**Use Case**: When you need full control over pointer-driven animations that cannot be achieved with named effects, such as custom physics, complex multi-property animations, or unique visual transformations.
+
+**When to Apply**:
+- For custom physics-based animations
+- When creating unique visual effects not covered by named effects
+- When controlling WebGL/WebGPU effects or other JavaScript controlled effects
+- For complex DOM manipulations based on mouse position
+- When implementing grid-based or particle effects
+- For animations requiring access to velocity data
+
+**IMPORTANT**: Only use `customEffect` when `namedEffect` cannot achieve the desired result. Named effects are optimized and GPU-friendly.
+
+**Pattern - Basic customEffect**:
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: '[HIT_AREA]'
+    },
+    effects: [
+        {
+            key: '[TARGET_KEY]',
+            customEffect: (element, progress) => {
+                // progress.x: 0-1 horizontal position
+                // progress.y: 0-1 vertical position
+                // progress.v: { x, y } velocity (optional)
+                // progress.active: boolean (optional)
+                
+                [CUSTOM_ANIMATION_LOGIC]
+            },
+            centeredToTarget: [CENTERED_TO_TARGET]
+        }
+    ]
+}
+```
+
+**Variables**:
+- `[SOURCE_KEY]`: Unique identifier for source element tracking mouse movement
+- `[TARGET_KEY]`: Unique identifier for target element to animate
+- `[HIT_AREA]`: 'self' or 'root'
+- `[CUSTOM_ANIMATION_LOGIC]`: Your custom animation code using the progress object
+- `[CENTERED_TO_TARGET]`: true or false
+
+**Example - Custom Rotation Based on Mouse Position**:
+```typescript
+{
+    key: 'rotation-container',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                // Convert progress to angle (0-360 degrees)
+                const angle = Math.atan2(
+                    progress.y - 0.5,
+                    progress.x - 0.5
+                ) * (180 / Math.PI);
+                
+                element.style.transform = `rotate(${angle}deg)`;
+            },
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+**Example - Magnetic Effect with Distance Calculation**:
+```typescript
+{
+    key: 'magnetic-button',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                // Calculate distance from center (0.5, 0.5)
+                const dx = (progress.x - 0.5) * 2; // -1 to 1
+                const dy = (progress.y - 0.5) * 2; // -1 to 1
+                
+                // Apply magnetic pull effect
+                const maxMove = 20; // pixels
+                const moveX = dx * maxMove;
+                const moveY = dy * maxMove;
+                
+                element.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            },
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+**Example - Velocity-Based Motion Blur**:
+```typescript
+{
+    key: 'velocity-element',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'root'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                // Use velocity for motion blur intensity
+                const velocity = progress.v || { x: 0, y: 0 };
+                const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+                
+                // Apply blur based on speed
+                const blurAmount = Math.min(speed * 0.5, 10);
+                element.style.filter = `blur(${blurAmount}px)`;
+                
+                // Move element towards mouse
+                const offsetX = (progress.x - 0.5) * 100;
+                const offsetY = (progress.y - 0.5) * 100;
+                element.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+            },
+            centeredToTarget: false
+        }
+    ]
+}
+```
+
+**Example - Grid Cell Rotation Effect**:
+```typescript
+// First, cache grid cell positions for performance
+const cellCache = new Map();
+// ... populate cache with cell center positions
+
+{
+    key: 'interactive-grid',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'root'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                // Convert progress to viewport coordinates
+                const mouseX = progress.x * window.innerWidth;
+                const mouseY = progress.y * window.innerHeight;
+                
+                // Iterate through cached grid cells
+                for (const [cell, cache] of cellCache) {
+                    const deltaX = mouseX - cache.x;
+                    const deltaY = mouseY - cache.y;
+                    
+                    // Calculate angle pointing towards mouse
+                    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) + 90;
+                    
+                    // Calculate distance-based intensity
+                    const dist = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+                    const intensity = Math.max(0, 1 - dist / 500);
+                    
+                    cell.style.transform = `rotate(${angle}deg) scale(${1 + intensity * 0.2})`;
+                }
+            },
+            centeredToTarget: false
+        }
+    ]
+}
+```
+
+**Example - Active State Handling**:
+```typescript
+{
+    key: 'active-aware-element',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                if (!progress.active) {
+                    // Mouse left the hit area - reset or animate out
+                    element.style.transform = 'scale(1)';
+                    element.style.opacity = '0.7';
+                    return;
+                }
+                
+                // Mouse is active in hit area
+                const scale = 1 + (1 - Math.abs(progress.x - 0.5) * 2) * 0.1;
+                element.style.transform = `scale(${scale})`;
+                element.style.opacity = '1';
+            },
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+### customEffect with Transition Smoothing
+
+For smoother animations, you can use `transitionDuration` and `transitionEasing`:
+
+```typescript
+{
+    key: 'smooth-custom',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            customEffect: (element, progress) => {
+                const x = (progress.x - 0.5) * 50;
+                const y = (progress.y - 0.5) * 50;
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            },
+            transitionDuration: 100,
+            transitionEasing: 'easeOut',
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+---
+
+## Rule 9: Multi-Element Custom Parallax with customEffect
+
+**Use Case**: Complex parallax effects with custom physics or non-standard transformations across multiple layers.
+
+**When to Apply**:
+- For parallax with custom easing or physics
+- When layers need different calculation methods
+- For effects combining multiple CSS properties
+
+**Pattern**:
+```typescript
+{
+    key: '[CONTAINER_KEY]',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: '[HIT_AREA]'
+    },
+    effects: [
+        {
+            key: '[LAYER_1_KEY]',
+            customEffect: (element, progress) => {
+                [LAYER_1_CUSTOM_LOGIC]
+            },
+            centeredToTarget: true
+        },
+        {
+            key: '[LAYER_2_KEY]',
+            customEffect: (element, progress) => {
+                [LAYER_2_CUSTOM_LOGIC]
+            },
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+**Example - Depth-Based Custom Parallax**:
+```typescript
+{
+    key: 'parallax-scene',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            key: 'bg-stars',
+            customEffect: (element, progress) => {
+                // Background: subtle movement, inverted direction
+                const x = (0.5 - progress.x) * 10;
+                const y = (0.5 - progress.y) * 10;
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            },
+            centeredToTarget: true
+        },
+        {
+            key: 'mid-clouds',
+            customEffect: (element, progress) => {
+                // Midground: moderate movement with rotation
+                const x = (progress.x - 0.5) * 30;
+                const y = (progress.y - 0.5) * 20;
+                const rotation = (progress.x - 0.5) * 5;
+                element.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+            },
+            centeredToTarget: true
+        },
+        {
+            key: 'fg-elements',
+            customEffect: (element, progress) => {
+                // Foreground: strong movement with scale
+                const x = (progress.x - 0.5) * 60;
+                const y = (progress.y - 0.5) * 40;
+                const scale = 1 + Math.abs(progress.x - 0.5) * 0.1;
+                element.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+            },
+            centeredToTarget: true
+        }
+    ]
+}
+```
+
+---
+
 ## Advanced Patterns and Combinations
 
 ### Responsive Pointer Effects
@@ -811,22 +1165,45 @@ Controlling movement direction for specific design needs:
 
 ## Best Practices for PointerMove Interactions
 
+### Effect Type Selection Guidelines
+
+**When to use `namedEffect` (Preferred)**:
+1. For standard mouse-tracking effects (tilt, track, scale, blur)
+2. When GPU-optimized performance is critical
+3. For effects that match preset behavior (3D tilt, elastic following)
+4. When you don't need custom physics or calculations
+
+**When to use `customEffect`**:
+1. For custom physics-based animations (springs, gravity)
+2. When you need access to velocity data (`progress.v`)
+3. For complex DOM manipulations (updating multiple elements)
+4. When creating effects not covered by named presets
+5. For grid/particle systems with many elements
+6. For controlling WebGL/WebGPU effects
+
+**Never use `keyframeEffect`** with `pointerMove` - pointer progress is 2D and cannot map to linear keyframes.
+
 ### Performance Guidelines
 1. **Use hardware-accelerated properties** - prefer transforms over position changes
 2. **Limit simultaneous pointer effects** - too many can cause performance issues
 3. **Test on various devices** - pointer sensitivity varies across hardware
+4. **Cache DOM queries in customEffect** - avoid repeated `querySelector` calls
+5. **Use `requestAnimationFrame` sparingly** - the library already handles frame timing
+6. **Prefer `namedEffect` over `customEffect`** - named effects are optimized for GPU acceleration
 
 ### Hit Area Guidelines
-1. **Use `hitArea: 'self'`** for local element interactions
-2. **Use `hitArea: 'root'`** for global cursor followers
+1. **Use `hitArea: 'self'`** for local element interactions (cards, buttons, hover effects)
+2. **Use `hitArea: 'root'`** for global cursor followers and ambient effects
 3. **Consider container boundaries** when choosing hit areas
 4. **Test hit area responsiveness** across different screen sizes
+5. **`'self'`** is more performant than `'root'` - use when possible
 
 ### Centering Guidelines  
-1. **Set `centeredToTarget: true`** when target differs from source
-2. **Use `centeredToTarget: false`** for cursor followers
+1. **Set `centeredToTarget: true`** when target differs from source (e.g., animating child element from parent)
+2. **Use `centeredToTarget: false`** for cursor followers and global effects
 3. **Test centering behavior** with different element sizes
 4. **Consider responsive design** when setting centering
+5. **Centering affects how progress.x/y map to element position**
 
 ### User Experience Guidelines
 1. **Keep pointer effects subtle** to avoid overwhelming users
@@ -842,52 +1219,66 @@ Controlling movement direction for specific design needs:
 
 ### Common Use Cases by Pattern
 
-**Single Element 3D Effects (Rule 1)**:
+**Single Element 3D Effects (Rule 1)** - `namedEffect`:
 - Interactive product cards
 - 3D showcase elements
 - Immersive button interactions
 - Portfolio item presentations
 
-**Movement Followers (Rule 2)**:
+**Movement Followers (Rule 2)** - `namedEffect`:
 - Cursor follower elements
 - Floating decorative elements
 - Responsive UI indicators
 - Interactive overlays
 
-**Scale & Deformation (Rule 3)**:
+**Scale & Deformation (Rule 3)** - `namedEffect`:
 - Organic interface elements
 - Interactive morphing shapes
 - Creative scaling buttons
 - Blob-like interactions
 
-**Visual Effects (Rule 4)**:
+**Visual Effects (Rule 4)** - `namedEffect`:
 - Creative interface elements
 - Motion blur interactions
 - Spinning decorative elements
 - Dynamic visual feedback
 
-**Multi-Element Parallax (Rule 5)**:
+**Multi-Element Parallax (Rule 5)** - `namedEffect`:
 - Layered background effects
 - Depth-based interactions
 - Immersive hero sections
 - Complex scene responses
 
-**Group Coordination (Rule 6)**:
+**Group Coordination (Rule 6)** - `namedEffect`:
 - Interactive card grids
 - Navigation menu systems
 - Gallery hover effects
 - Coordinated UI responses
 
-**Global Followers (Rule 7)**:
+**Global Followers (Rule 7)** - `namedEffect`:
 - Custom cursor implementations
 - Page-wide decorative elements
 - Global interactive overlays
 - Immersive cursor experiences
 
+**Custom Pointer Effects (Rule 8)** - `customEffect`:
+- Grid-based rotation systems
+- Magnetic pull/push effects
+- Physics-based animations
+- Velocity-reactive effects
+- Complex DOM manipulations
+- Particle systems
+
+**Multi-Element Custom Parallax (Rule 9)** - `customEffect`:
+- Non-linear parallax physics
+- Layers with different calculation methods
+- Combined transform effects per layer
+- Custom easing per element
+
 ### Troubleshooting Common Issues
 
 **Poor pointer responsiveness**:
-- Check `power` settings (soft/medium/hard)
+- Check `power` settings (soft/medium/hard) for namedEffect
 - Verify `hitArea` configuration
 - Test `centeredToTarget` settings
 - Ensure target elements are properly positioned
@@ -897,6 +1288,20 @@ Controlling movement direction for specific design needs:
 - Use simpler named effects
 - Check for CSS conflicts
 - Test on lower-end devices
+- In customEffect: cache DOM queries outside the callback
+- Avoid creating objects inside customEffect callbacks
+
+**customEffect not updating smoothly**:
+- Add `transitionDuration` and `transitionEasing` for smoother transitions
+- Ensure style changes use transform/opacity for GPU acceleration
+- Avoid expensive calculations inside the callback
+- Consider debouncing complex logic
+
+**customEffect progress values unexpected**:
+- Remember x/y are 0-1 normalized (not pixel values)
+- Check `centeredToTarget` setting affects coordinate mapping
+- Verify `hitArea` matches expected tracking area
+- Use `progress.active` to handle edge cases
 
 **Unexpected behavior on touch devices**:
 - Implement appropriate conditions for touch vs. mouse
@@ -910,6 +1315,23 @@ Controlling movement direction for specific design needs:
 - Ensure proper hit area configuration
 - Test mouse event propagation
 
+**keyframeEffect not working with pointerMove**:
+- This is expected! `keyframeEffect` requires linear 0-1 progress
+- `pointerMove` provides 2D progress (x, y object)
+- Use `namedEffect` or `customEffect` instead
+
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, and named effect types as outlined in the development plan Stage 1.5.
+## Quick Reference: Effect Type Selection
+
+| Requirement | Use This | Why |
+|-------------|----------|-----|
+| Standard 3D tilt | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested |
+| Cursor following | `namedEffect: { type: 'TrackMouse' }` | Built-in physics |
+| Custom physics | `customEffect` | Full control over calculations |
+| Velocity-based effects | `customEffect` | Access to `progress.v` |
+| Grid/particle systems | `customEffect` | Can manipulate many elements |
+
+---
+
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, and custom effect patterns as outlined in the development plan Stage 1.5.
