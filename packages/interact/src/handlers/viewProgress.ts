@@ -35,7 +35,11 @@ function addViewProgressHandler(
 
   if ('ViewTimeline' in window) {
     // Use ViewTimeline for modern browsers
-    const animationGroup = getWebAnimation(target, effectOptions, triggerParams);
+    const animationGroup = getWebAnimation(
+      target,
+      effectOptions,
+      triggerParams,
+    );
 
     if (animationGroup) {
       animationGroup.play();
@@ -75,11 +79,11 @@ function addViewProgressHandler(
       addHandlerToMap(scrollManagerMap, source, handlerObj);
       addHandlerToMap(scrollManagerMap, target, handlerObj);
 
-      Promise.all((scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve())).then(
-        () => {
-          scroll.start();
-        },
-      );
+      Promise.all(
+        (scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve()),
+      ).then(() => {
+        scroll.start();
+      });
     }
   }
 }
