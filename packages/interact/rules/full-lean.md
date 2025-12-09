@@ -115,6 +115,19 @@ This configuration declares what user/system triggers occur on which source elem
             - `'self'`: Track pointer within the source element’s bounds.
             - `'root'`: Track pointer anywhere in the viewport (document root).
             - Only use with `ScrubEffect` mouse presets (`namedEffect`) or `customEffect` that consumes pointer progress; avoid `keyframeEffect` with `pointerMove`.
+          - When using `customEffect` with `pointerMove`, the progress parameter is an object:
+            - ```typescript
+              type Progress = {
+                x: number;      // 0-1: horizontal position (0 = left edge, 1 = right edge)
+                y: number;      // 0-1: vertical position (0 = top edge, 1 = bottom edge)
+                v?: {           // Velocity (optional)
+                  x: number;    // Horizontal velocity
+                  y: number;    // Vertical velocity
+                };
+                active?: boolean; // Whether mouse is currently in the hit area
+              };
+              ```
+
     - **conditions?: string[]**
       - OPTIONAL. Array of condition ids that MUST all pass for this trigger to be active.
     - **selector?: string**
@@ -235,7 +248,7 @@ const config: InteractConfig = {
      - `reversed?`: boolean
      - `rangeStart`: `RangeOffset`
      - `rangeEnd`: `RangeOffset`
-     - `centeredToTarget?`: boolean
+     - `centeredToTarget?`: boolean // If `true` centers the coordinate range at the target element, otherwise uses source element
      - `transitionDuration?`: number (ms for smoothing on progress jumps)
      - `transitionDelay?`: number
      - `transitionEasing?`: `ScrubTransitionEasing`
