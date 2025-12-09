@@ -49,7 +49,7 @@ export class InteractionController {
     }
 
     this._observers = new WeakMap();
-
+    this.sheet = null;
     this.connected = false;
   }
 
