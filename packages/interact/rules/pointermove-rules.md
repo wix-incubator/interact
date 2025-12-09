@@ -857,7 +857,11 @@ Controls how the progress range is calculated:
 ```typescript
 // First, cache grid cell positions for performance
 const cellCache = new Map();
+// Cache viewport size
+const windowWidth = window.innerWidth;
+const windowHeight = window.innerHeight;
 // ... populate cache with cell center positions
+// ... update `windowWidth/height` on window `resize` event
 
 {
     key: 'interactive-grid',
@@ -869,8 +873,8 @@ const cellCache = new Map();
         {
             customEffect: (element, progress) => {
                 // Convert progress to viewport coordinates
-                const mouseX = progress.x * window.innerWidth;
-                const mouseY = progress.y * window.innerHeight;
+                const mouseX = progress.x * windowWidth;
+                const mouseY = progress.y * windowHeight;
                 
                 // Iterate through cached grid cells
                 for (const [cell, cache] of cellCache) {
