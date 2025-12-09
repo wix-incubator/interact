@@ -87,6 +87,7 @@ function _applyInteraction(
   if (isSourceArray) {
     sourceElements.forEach((sourceEl, index) => {
       const targetEl = isTargetArray ? targetElements[index] : targetElements;
+      
       if (targetEl) {
         addInteraction(
           targetKey,
