@@ -1,4 +1,4 @@
-import type { ScrubScrollScene } from '@wix/motion';
+import type { AnimationGroup, ScrubScrollScene } from '@wix/motion';
 import { getWebAnimation, getScrubScene } from '@wix/motion';
 import { Scroll } from 'fizban';
 import type { ViewEnterParams, ScrubEffect, HandlerObjectMap, InteractOptions } from '../types';
@@ -32,7 +32,7 @@ function addViewProgressHandler(
   };
 
   const effectOptions = effectToAnimationOptions(effect);
-
+  let cleanup;
   if ('ViewTimeline' in window) {
     // Use ViewTimeline for modern browsers
     const animationGroup = getWebAnimation(
@@ -42,7 +42,13 @@ function addViewProgressHandler(
     );
 
     if (animationGroup) {
-      (animationGroup as any).play();
+      animationGroup.play();
+
+      cleanup = () => {
+        (animationGroup as AnimationGroup).ready.then(() => {
+          animationGroup.cancel();
+        });
+      };
     }
   } else {
     const scene = getScrubScene(target, effectOptions, triggerParams);
@@ -59,14 +65,9 @@ function addViewProgressHandler(
         ...scrollOptionsGetter(),
       });
 
-      const cleanup = () => {
+      cleanup = () => {
         scroll.destroy();
       };
-
-      const handlerObj = { source, target, cleanup };
-
-      addHandlerToMap(scrollManagerMap, source, handlerObj);
-      addHandlerToMap(scrollManagerMap, target, handlerObj);
 
       Promise.all(
         (scenes as ScrubScrollScene[]).map((s) => s.ready || Promise.resolve()),
@@ -75,6 +76,13 @@ function addViewProgressHandler(
       });
     }
   }
+
+  if(!cleanup) return;
+  
+  const handlerObj = { source, target, cleanup };
+
+  addHandlerToMap(scrollManagerMap, source, handlerObj);
+  addHandlerToMap(scrollManagerMap, target, handlerObj);
 }
 
 function removeViewProgressHandler(element: HTMLElement): void {
