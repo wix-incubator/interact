@@ -1460,30 +1460,22 @@ effects: [
 
     <!-- WIX INTERACT RUNTIME -->
     <script type="module">
-        import { Interact } from 'https://esm.sh/@wix/interact@1.90.0';
-
-        // --- GLOBAL MOUSE TRACKER ---
-        // Force initialization to center screen
-        window.mouseX = window.innerWidth / 2;
-        window.mouseY = window.innerHeight / 2;
-        
-        // Use document-level listener for robust tracking
-        document.addEventListener('mousemove', (e) => {
-            window.mouseX = e.clientX;
-            window.mouseY = e.clientY;
-        });
+        import { Interact } from 'https://esm.sh/@wix/interact@1.92.0';
 
         // --- 1. HERO GRID LOGIC ---
         const gridContainer = document.getElementById('grid-container');
         const lineCache = new Map();
         let centerX, centerY, maxDist;
+        let windowWidth, windowHeight;
 
         function updateGrid() {
             gridContainer.innerHTML = '';
             lineCache.clear();
+            windowWidth = window.innerWidth;
+            windowHeight = window.innerHeight;
             const cellSize = 40;
-            const containerWidth = gridContainer.offsetWidth || window.innerWidth;
-            const containerHeight = gridContainer.offsetHeight || window.innerHeight;
+            const containerWidth = gridContainer.offsetWidth || windowWidth;
+            const containerHeight = gridContainer.offsetHeight || windowHeight;
             const cols = Math.ceil(containerWidth / cellSize);
             const rows = Math.ceil(containerHeight / cellSize);
             const neededCells = cols * rows;
@@ -1503,8 +1495,8 @@ effects: [
             }
             gridContainer.appendChild(fragment);
 
-            centerX = window.innerWidth / 2;
-            centerY = window.innerHeight / 2;
+            centerX = windowWidth / 2;
+            centerY = windowHeight / 2;
             maxDist = Math.sqrt(centerX * centerX + centerY * centerY);
 
             const lines = document.getElementsByClassName('grid-line');
@@ -1520,12 +1512,10 @@ effects: [
         window.addEventListener('resize', updateGrid);
 
         const rotateGridEffect = (containerElement, progress) => {
-            // IGNORE 'progress' from Interact completely. 
-            // Use global window mouse coordinates for absolute reliability.
-            const mouseX = window.mouseX;
-            const mouseY = window.mouseY;
+            const mouseX = progress.x * windowWidth;
+            const mouseY = progress.y * windowHeight;
             
-            const screenDiagonal = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
+            const screenDiagonal = Math.sqrt(windowWidth ** 2 + windowHeight ** 2);
 
             for (const [line, cache] of lineCache) {
                 const deltaX = mouseX - cache.x;
@@ -1540,7 +1530,7 @@ effects: [
                 if (distFromMouse > 0) {
                     const influence = Math.max(0, 1 - (distFromMouse / (screenDiagonal * 1.2))); 
                     const pullFactor = influence; 
-                    const maxMove = 60; 
+                    const maxMove = 60;
                     moveX = (deltaX / distFromMouse) * (maxMove * pullFactor);
                     moveY = (deltaY / distFromMouse) * (maxMove * pullFactor);
                 }
@@ -1565,19 +1555,9 @@ effects: [
                 // Local center relative to the container's coordinates (for the physics)
                 cx = rect.width / 2; 
                 cy = rect.height / 2;
-                
-                // Start animation loop only after initial bounds are set
-                if (!animationStarted) {
-                    animationStarted = true;
-                    requestAnimationFrame(animate); 
-                }
-
-            } else if (!animationStarted) {
-                // If container isn't ready yet, try again in the next frame
-                requestAnimationFrame(updateTunnelBounds);
             }
         }
-        
+
         // Initial DOM generation for rings
         const generateTunnel = () => {
             const container = document.getElementById('tunnel-container');
@@ -1628,20 +1608,16 @@ effects: [
         };
 
         // Call DOM generation early
-        generateTunnel(); 
+        generateTunnel();
 
         // 4. ANIMATION LOOP (Runs constantly for physics)
         // Global movement reduction factor
         const MOVEMENT_FACTOR = 0.5; // Changed from 1.0 to 0.5 to reduce movement by half
 
-        const animate = () => {
-            
-            // Recalculate bounds in case of scroll or position change (more robust)
-            updateTunnelBounds();
-
+        const animate = (progress) => {
             // 1. Localized mouse position relative to container
-            const localMouseX = window.mouseX - tunnelSceneRect.left;
-            const localMouseY = window.mouseY - tunnelSceneRect.top;
+            const localMouseX = progress.x * windowWidth;
+            const localMouseY = progress.y * windowHeight;
 
             // 2. Calculate distance of mouse from container center (cx, cy are now container center)
             const targetX = localMouseX - cx;
@@ -1672,17 +1648,19 @@ effects: [
                 // Apply transform: Center (-50%) + Physics Offset (x, y)
                 ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0)`;
             });
-
-            requestAnimationFrame(animate);
         };
-        
-        // Start the process: calculate bounds first, which then calls animate()
+
+        // Recalculate bounds in case of scroll or position change (more robust)
         updateTunnelBounds();
-
-        // The Interact Hook (Just acts as a dummy to keep config valid, logic handled by loop)
+        window.addEventListener('resize', updateTunnelBounds);
+        
         const animateTunnel = (rootElement, progress) => {
-             // Logic moved to animation loop using global mouse coordinates
+            // Animate the tunnel
+            animate(progress);
         };
+
+        // Start the process: calculate bounds first, which then calls animate()
+        requestAnimationFrame(() => animateTunnel(null, { x: 0.5, y: 0.5 }));
 
         // --- 2.1 MOUSE TRACK PRIMITIVE GENERATION ---
         const generateMouseTunnel = () => {
@@ -1909,7 +1887,7 @@ effects: [
                     key: 'hero-grid',
                     trigger: 'pointerMove',
                     params: { hitArea: 'root' },
-                    effects: [{ customEffect: rotateGridEffect }]
+                    effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
                 },
                 // Hero Text
                 {
@@ -2312,8 +2290,8 @@ effects: [
                     effects: [
                         {
                             customEffect: animateTunnel,
-                            fill: 'both',
-                            composite: 'replace'
+                            centeredToTarget: true,
+                            fill: 'both'
                         }
                     ]
                 },
