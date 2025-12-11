@@ -264,6 +264,8 @@ Each effect defines:
 }
 ```
 
+> **Tip**: To prevent a flash of content before entrance animations start, use the `generate()` function to create CSS that hides elements until their animation triggers. See [Entrance Animations](../examples/entrance-animations.md#preventing-flash-of-unstyled-content-fouc) for details.
+
 ---
 
 ## React vs Web Components

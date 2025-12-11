@@ -6,9 +6,9 @@ Welcome to the complete documentation for the `@wix/interact` package - a powerf
 
 | Entry Point | Use Case | Key Exports |
 |-------------|----------|-------------|
-| `@wix/interact/react` | React applications | `Interact`, `Interaction` |
-| `@wix/interact/web` | Web Components | `Interact` |
-| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove` |
+| `@wix/interact/react` | React applications | `Interact`, `generate`, `Interaction` |
+| `@wix/interact/web` | Web Components | `Interact`, `generate` |
+| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove`, `generate` |
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ Complete reference documentation for all classes, methods, and types.
 - [**Core API**](api/README.md) - Main classes and functions
   - [Interact Class](api/interact-class.md) - Main interaction manager
   - [InteractionController](api/interaction-controller.md) - Controller class for element interactions
-  - [Standalone Functions](api/functions.md) - `add()`, `remove()`, `addListItems()`, `removeListItems()`
+  - [Standalone Functions](api/functions.md) - `add()`, `remove()`, `generate()`, `addListItems()`, `removeListItems()`
   - [Custom Element](api/interact-element.md) - `<interact-element>` API
   - [Element Selection](api/element-selection.md) - Selection priority and patterns
 - [**Type Definitions**](api/types.md) - Complete TypeScript interfaces
