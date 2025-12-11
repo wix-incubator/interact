@@ -14,6 +14,15 @@ import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
 
+type InteractionsToApply = Array<[
+  string,
+  InteractionTrigger,
+  Effect,
+  HTMLElement | HTMLElement[],
+  HTMLElement | HTMLElement[],
+  string | undefined
+]>;
+
 function _getElementsFromData(
   data: Interaction | Effect,
   root: HTMLElement,
@@ -125,6 +134,8 @@ function _addInteraction(
 ) {
   const interactionVariations: Record<string, boolean> = {};
 
+  const interactionsToApply: InteractionsToApply = [];
+  
   interaction.effects.forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 
@@ -197,15 +208,20 @@ function _addInteraction(
         instance.dataCache.conditions,
       );
 
-      _applyInteraction(
+      interactionsToApply.push([
         key,
         interaction,
         effectOptions,
         sourceElements,
         targetElements,
         selectorCondition,
-      );
+      ]);
     }
+  });
+
+  // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
+  interactionsToApply.reverse().forEach((interaction) => {
+    _applyInteraction(...interaction);
   });
 }
 
@@ -218,6 +234,7 @@ function addEffectsForTarget(
 ) {
   const effects = instance.get(targetKey)?.effects || {};
   const interactionIds = Object.keys(effects);
+  const interactionsToApply: InteractionsToApply = [];
 
   interactionIds.forEach((interactionId_) => {
     const interactionId = getInterpolatedKey(interactionId_, targetKey);
@@ -287,14 +304,14 @@ function addEffectsForTarget(
           instance!.dataCache.conditions,
         );
 
-        _applyInteraction(
+        interactionsToApply.push([
           targetKey,
           interaction,
           effectOptions as Effect,
           sourceElements,
           targetElements,
           selectorCondition,
-        );
+        ]);
 
         // short-circuit the loop since we have a match
         return true;
@@ -302,6 +319,11 @@ function addEffectsForTarget(
 
       return false;
     });
+  });
+
+  // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
+  interactionsToApply.reverse().forEach((interaction) => {
+    _applyInteraction(...interaction);
   });
 
   return interactionIds.length > 0;

@@ -105,7 +105,7 @@ function addViewEnterHandler(
   target: HTMLElement,
   effect: TimeEffect,
   options: ViewEnterParams = {},
-  { reducedMotion, selectorCondition }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions = {},
 ) {
   const observer = getObserver({ ...viewEnterOptions, ...options });
   const animation = getAnimation(
