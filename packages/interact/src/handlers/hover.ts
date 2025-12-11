@@ -34,9 +34,9 @@ function createTimeEffectHandler(
   const type = options.type || 'alternate';
   let initialPlay = true;
 
-  return (event: MouseEvent) => {
+  return (event: MouseEvent | FocusEvent) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
-    if (event.type === 'mouseenter') {
+    if (event.type === 'mouseenter' || event.type === 'focusin') {
       if (type === 'alternate') {
         if (initialPlay) {
           initialPlay = false;
@@ -62,7 +62,7 @@ function createTimeEffectHandler(
 
         animation.play();
       }
-    } else if (event.type === 'mouseleave') {
+    } else if (event.type === 'mouseleave' || event.type === 'focusout') {
       if (type === 'alternate') {
         animation.reverse();
       } else if (type === 'repeat') {
@@ -92,7 +92,7 @@ function createTransitionHandler(
   const isToggle = method === 'toggle';
   const shouldSetStateOnElement = !!listContainer;
 
-  return (event: MouseEvent) => {
+  return (event: MouseEvent | FocusEvent) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
     let item;
     if (shouldSetStateOnElement) {
@@ -101,10 +101,10 @@ function createTransitionHandler(
       ) as HTMLElement | null;
     }
 
-    if (event.type === 'mouseenter') {
+    if (event.type === 'mouseenter' || event.type === 'focusin') {
       const method_ = isToggle ? 'add' : method;
       targetController.toggleEffect(effectId, method_, item);
-    } else if (event.type === 'mouseleave' && isToggle) {
+    } else if ((event.type === 'mouseleave' || event.type === 'focusout') && isToggle) {
       targetController.toggleEffect(effectId, 'remove', item);
     }
   };
@@ -115,9 +115,9 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  { reducedMotion, targetController, selectorCondition }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
-  let handler: (event: MouseEvent) => void;
+  let handler: (event: MouseEvent | FocusEvent) => void;
   let isStateTrigger = false;
   let once = false;
 
@@ -147,12 +147,29 @@ function addHoverHandler(
   const cleanup = () => {
     source.removeEventListener('mouseenter', handler);
     source.removeEventListener('mouseleave', handler);
+    if (allowA11yTriggers) {
+      source.removeEventListener('focusin', handler);
+      source.removeEventListener('focusout', handler);
+    }
   };
 
   const handlerObj = { source, target, cleanup };
 
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
+
+  if (allowA11yTriggers) {
+    source.tabIndex = 0;
+    source.addEventListener(
+      'focusin',
+      (event) => {
+        if (!source.contains(event.relatedTarget as HTMLElement)) {
+          handler(event);
+        }
+      },
+      { once },
+    );
+  }
 
   source.addEventListener('mouseenter', handler, { passive: true, once });
 
@@ -161,6 +178,18 @@ function addHoverHandler(
     : (options as PointerTriggerParams).type !== 'once';
   if (addLeave) {
     source.addEventListener('mouseleave', handler, { passive: true });
+
+    if (allowA11yTriggers) {
+      source.addEventListener(
+        'focusout',
+        (event) => {
+          if (!source.contains(event.relatedTarget as HTMLElement)) {
+            handler(event);
+          }
+        },
+        { once },
+      );
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 # Understanding Triggers
 
-Triggers are the heart of `@wix/interact` - they define when an interaction should start. This guide covers all 7 trigger types and how to use them effectively.
+Triggers are the heart of `@wix/interact` - they define when an interaction should start. This guide covers all 9 trigger types and how to use them effectively.
 
 ## Overview of Trigger Types
 
@@ -8,6 +8,8 @@ Triggers are the heart of `@wix/interact` - they define when an interaction shou
 |---------|-------------|-----------|
 | `hover` | Mouse enter/leave events | Button highlights, image overlays |
 | `click` | Mouse click events | Toggles, state changes, menus |
+| `interest` | Accessibility-friendly hover (focus events) 
+| `activate` | Accessibility-friendly click (keyboard Enter/Space) 
 | `viewEnter` | Element enters viewport | Entrance animations, lazy loading |
 | `pageVisible` | Page becomes visible | Loop animations, Auto-play videos |
 | `animationEnd` | Previous animation completes | Animation sequences, chaining |
@@ -179,7 +181,65 @@ The `click` trigger responds to mouse click events and supports multiple behavio
 }
 ```
 
-## 3. ViewEnter Trigger
+## 3. Interest Trigger
+
+The `interest` trigger is an accessibility-friendly version of `hover` that responds to both mouse hover and keyboard focus events. This makes interactions accessible to keyboard users and screen reader users.
+
+### Basic Usage
+```typescript
+{
+    key: 'my-button',
+    trigger: 'interest',
+    effects: [
+        {
+            keyframeEffect: {
+                name: 'scale',
+                keyframes: [
+                    { scale: 2 }
+                ]
+            },
+            duration: 200
+        }
+    ]
+}
+```
+
+### How It Works
+- **Mouse users**: Triggers on `mouseenter` and `mouseleave` events (same as `hover`)
+- **Keyboard users**: Triggers on `focusin` and `focusout` events
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable
+
+## 4. Activate Trigger
+
+The `activate` trigger is an accessibility-friendly version of `click` that responds to both mouse clicks and keyboard activation (Enter/Space keys). This makes click interactions accessible to keyboard users.
+
+### Basic Usage
+```typescript
+{
+    key: 'toggle-button',
+    trigger: 'activate',
+    effects: [
+        {
+            key: 'sidebar',
+            keyframeEffect: {
+                name: 'sidebar-toggle',
+                keyframes: [
+                    { transform: 'translateX(-100%)' },
+                    { transform: 'translateX(0)' }
+                ]
+            },
+            duration: 300
+        }
+    ]
+}
+```
+
+### How It Works
+- **Mouse users**: Triggers on `click` events (same as `click`)
+- **Keyboard users**: Triggers on `keydown` events for Enter and Space keys
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable
+
+## 5. ViewEnter Trigger
 
 The `viewEnter` trigger uses Intersection Observer to detect when elements enter the viewport.
 
@@ -273,11 +333,11 @@ const cardAnimations = [
 ];
 ```
 
-## 4. PageVisible Trigger
+## 6. PageVisible Trigger
 
 TBD
 
-## 5. ViewProgress Trigger
+## 7. ViewProgress Trigger
 
 The `viewProgress` trigger creates scroll-driven animations as elements move through the viewport.
 
@@ -358,7 +418,7 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
 }
 ```
 
-## 6. PointerMove Trigger
+## 8. PointerMove Trigger
 
 The `pointerMove` trigger creates mouse-following effects and 3D interactions.
 
@@ -428,7 +488,7 @@ The `pointerMove` trigger creates mouse-following effects and 3D interactions.
 }
 ```
 
-## 7. AnimationEnd Trigger
+## 9. AnimationEnd Trigger
 
 The `animationEnd` trigger allows you to chain animations by waiting for a previous animation to complete.
 
@@ -590,8 +650,11 @@ You can combine multiple triggers on the same element for complex interactions:
 
 ### Accessibility
 1. **Respect `prefers-reduced-motion`** media query
-2. **Ensure click targets are accessible** via keyboard
-3. **Don't rely solely on motion** for important information
+2. **Use `activate` instead of `click`** for keyboard accessibility
+3. **Use `interest` instead of `hover`** for keyboard accessibility
+4. **Ensure click targets are accessible** via keyboard
+5. **Don't rely solely on motion** for important information
+6. **Enable accessibility triggers globally** using `Interact.setup({ allowA11yTriggers: true })` to make `click` and `hover` triggers keyboard-accessible
 
 ## Troubleshooting
 

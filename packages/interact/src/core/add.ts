@@ -349,6 +349,7 @@ function addInteraction<T extends TriggerType>(
     reducedMotion: Interact.forceReducedMotion,
     targetController,
     selectorCondition,
+    allowA11yTriggers: Interact.allowA11yTriggers,
   });
 }
 

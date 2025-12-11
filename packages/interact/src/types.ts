@@ -26,7 +26,9 @@ export type TriggerType =
   | 'pageVisible'
   | 'animationEnd'
   | 'viewProgress'
-  | 'pointerMove';
+  | 'pointerMove'
+  | 'activate'
+  | 'interest';
 
 export type ViewEnterType = 'once' | 'repeat' | 'alternate';
 
@@ -211,12 +213,15 @@ export type InteractionParamsTypes = {
   animationEnd: AnimationEndParams;
   viewProgress: ViewEnterParams;
   pointerMove: PointerMoveParams;
+  activate: StateParams | PointerTriggerParams;
+  interest: StateParams | PointerTriggerParams;
 };
 
 export type InteractOptions = {
   reducedMotion?: boolean;
   targetController?: IInteractionController;
   selectorCondition?: string;
+  allowA11yTriggers?: boolean;
 };
 
 export type InteractionHandlerModule<T extends TriggerType> = {
