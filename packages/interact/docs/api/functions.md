@@ -612,9 +612,9 @@ const html = `
 For the generated CSS to work, elements that should be hidden initially must have the `data-interact-initial="true"` attribute:
 
 ```html
-<!-- Element will be hidden until viewEnter animation completes -->
-<interact-element data-interact-key="hero" data-interact-initial="true">
-  <section class="hero">
+<interact-element data-interact-key="hero">
+  <!-- Element will be hidden until viewEnter animation completes -->
+  <section class="hero" data-interact-initial="true">
     <h1>Welcome</h1>
   </section>
 </interact-element>
