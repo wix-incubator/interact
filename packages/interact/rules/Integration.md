@@ -62,7 +62,56 @@ type InteractConfig = {
 2. **`selector`**: Matches elements within the root, or within each list item.
 3. **Fallback**: If neither is provided, targets the **first child** of `<interact-element>`.
 
-## 4. Triggers & Behaviors
+## 4. Generating Critical CSS for Entrance Animations
+
+### `generate(config)`
+Generates critical CSS styles that prevent flash-of-unstyled-content (FOUC) for elements with `viewEnter` entrance animations.
+
+**Rules:**
+- MUST be called server-side or at build time to generate static CSS.
+- The generated CSS hides elements marked with `data-interact-initial="true"` until their entrance animation completes.
+- Only affects users who have not requested reduced motion (`prefers-reduced-motion: no-preference`).
+- Elements MUST have `data-interact-initial="true"` attribute to be affected by the generated CSS.
+
+**Usage:**
+```javascript
+import { generate } from '@wix/interact';
+
+const config = {/*...*/};
+
+// Generate CSS at build time or on server
+const css = generate(config);
+
+// Include in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>${css}</style>
+</head>
+<body>
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
+            ...
+        </section>
+    </interact-element>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
+`;
+```
+
+**When to Use:**
+- For elements that have a `viewEnter` trigger with `type: 'once'`  and an effect on same element
+- To prevent elements from being visible before their entrance animation plays
+- For server-side rendering (SSR) or static site generation (SSG) scenarios
+
+**Important Notes:**
+- The attribute `data-motion-enter="done"` is automatically set by the runtime when the entrance animation completes
+- Users with `prefers-reduced-motion: reduce` will see elements immediately (no hiding)
+- The CSS resets transform properties to prevent any inherited transforms from affecting the hidden state
+
+## 5. Triggers & Behaviors
 
 | Trigger | Description | Key Parameters |
 | :--- | :--- | :--- |
@@ -73,7 +122,7 @@ type InteractConfig = {
 | `pointerMove` | Mouse movement | `hitArea`: 'self' (default) or 'root' |
 | `animationEnd` | Chaining animations | `effectId`: ID of the previous effect |
 
-## 5. Effects & Animations
+## 6. Effects & Animations
 
 Effects define *what* happens. They can be inline or referenced by ID.
 
@@ -138,7 +187,7 @@ Used with `pointerMove`, linked to mouse progress while moving over an element.
 - **Self**: Omit `key` in the effect to target the trigger element. If using `selector` for trigger, also specify it again for the effect target.
 - **Cross-Targeting**: Specify a different `key` and/or `selector` in the effect to animate a different element.
 
-## 6. Examples
+## 7. Examples
 
 ### Basic Hover (Scale)
 ```typescript
