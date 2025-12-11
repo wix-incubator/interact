@@ -5,11 +5,11 @@ const selectorConditionConfig: InteractConfig = {
   conditions: {
     isEven: {
       type: 'selector',
-      predicate: ':nth-child(2n)',
+      predicate: ':nth-child(even)',
     },
     isOdd: {
       type: 'selector',
-      predicate: ':nth-child(2n+1)',
+      predicate: ':nth-child(odd)',
     },
   },
   interactions: [
