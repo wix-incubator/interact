@@ -231,7 +231,7 @@ Interact.setup({
 
 // Enable accessibility for click and hover triggers
 Interact.setup({
-  allowA11yTriggers: true  // Makes 'click' and 'hover' keyboard-accessible
+  allowA11yTriggers: true
 });
 ```
 

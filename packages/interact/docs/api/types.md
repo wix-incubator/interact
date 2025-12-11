@@ -275,7 +275,7 @@ type InteractOptions = {
 - `reducedMotion` - Whether reduced motion is enabled (respects `prefers-reduced-motion` or `Interact.forceReducedMotion`)
 - `targetController` - The controller managing the target element
 - `selectorCondition` - Optional CSS selector condition for element matching
-- `allowA11yTriggers` - Whether to enable accessibility triggers (keyboard events) for `click` and `hover` triggers. When `true`, `click` responds to Enter/Space keys and `hover` responds to focus events. Defaults to `false`.
+- `allowA11yTriggers` - Whether to enable accessibility triggers (keyboard events) for `click` and `hover` triggers. When `true`, `click` responds to Enter/Space keys and `hover` responds to focus events. Defaults to `true`.
 
 **Example:**
 ```typescript
