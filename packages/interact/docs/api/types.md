@@ -266,12 +266,16 @@ Options passed to interaction handlers.
 type InteractOptions = {
   reducedMotion?: boolean;
   targetController?: IInteractionController;
+  selectorCondition?: string;
+  allowA11yTriggers?: boolean;
 };
 ```
 
 **Properties:**
 - `reducedMotion` - Whether reduced motion is enabled (respects `prefers-reduced-motion` or `Interact.forceReducedMotion`)
 - `targetController` - The controller managing the target element
+- `selectorCondition` - Optional CSS selector condition for element matching
+- `allowA11yTriggers` - Whether to enable accessibility triggers (keyboard events) for `click` and `hover` triggers. When `true`, `click` responds to Enter/Space keys and `hover` responds to focus events. Defaults to `false`.
 
 **Example:**
 ```typescript
@@ -322,6 +326,8 @@ Union type of all supported trigger types.
 type TriggerType =
   | 'hover'
   | 'click'
+  | 'interest'
+  | 'activate'
   | 'viewEnter'
   | 'pageVisible'
   | 'animationEnd'
@@ -375,7 +381,7 @@ const alternateParams: ViewEnterParams = {
 ```
 
 #### `StateParams`
-Parameters for state-based triggers (`hover`, `click`).
+Parameters for state-based triggers (`hover`, `click`, `interest`, `activate`).
 
 ```typescript
 type StateParams = {
