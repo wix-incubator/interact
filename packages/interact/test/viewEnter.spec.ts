@@ -6,6 +6,7 @@ vi.mock('@wix/motion', () => ({
       cancel: vi.fn(),
       onFinish: vi.fn(),
       isCSS: false,
+      ready: Promise.resolve(),
     }),
   }));
   
