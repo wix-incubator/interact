@@ -2647,7 +2647,7 @@ describe('interact (mini)', () => {
   });
 
   describe('a11y - accessible triggers', () => {
-    let a11yElement: IInteractElement;
+    let a11yElement: HTMLElement;
 
     function getA11yConfig(trigger: TriggerType, key: string): InteractConfig {
       return {
@@ -2675,8 +2675,8 @@ describe('interact (mini)', () => {
       it('should add both click and keydown listeners', () => {
         Interact.create(getA11yConfig('activate', 'activate-div'));
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const div = document.createElement('div');
         a11yElement.append(div);
@@ -2704,8 +2704,8 @@ describe('interact (mini)', () => {
 
         Interact.create(getA11yConfig('activate', 'activate-handler-test'));
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const button = document.createElement('button');
         a11yElement.append(button);
@@ -2726,8 +2726,8 @@ describe('interact (mini)', () => {
       it('should add focusin listener alongside mouseenter', () => {
         Interact.create(getA11yConfig('interest', 'interest-test'));
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const div = document.createElement('div');
         a11yElement.append(div);
@@ -2754,8 +2754,8 @@ describe('interact (mini)', () => {
         Interact.create(getA11yConfig('click', 'click-no-flag'));
         Interact.setup({ allowA11yTriggers: false });
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const div = document.createElement('div');
         a11yElement.append(div);
@@ -2780,8 +2780,8 @@ describe('interact (mini)', () => {
         Interact.setup({ allowA11yTriggers: true });
         Interact.create(getA11yConfig('click', 'click-with-flag'));
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const div = document.createElement('div');
         a11yElement.append(div);
@@ -2834,8 +2834,8 @@ describe('interact (mini)', () => {
         Interact.setup({ allowA11yTriggers: true });
         Interact.create(getA11yConfig('hover', 'hover-with-flag'));
         a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+          'div',
+        );
 
         const div = document.createElement('div');
         a11yElement.append(div);
