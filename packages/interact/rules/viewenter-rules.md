@@ -850,6 +850,72 @@ Combining with conditions for responsive behavior:
 
 ---
 
+## Preventing Flash of Unstyled Content (FOUC)
+
+When using `viewEnter` with for entrance animations, elements may briefly appear in their final state before the animation plays. Use the `generate` function to create critical CSS that prevents this.
+
+### Using the `generate` Function
+
+**Import and generate CSS:**
+```typescript
+import { generate } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero-section',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.3 },
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' },
+          duration: 800,
+          fill: 'backwards'
+        }
+      ]
+    }
+  ]
+};
+
+/**Usage:**
+```javascript
+import { generate } from '@wix/interact';
+
+const config = {/*...*/};
+
+// Generate CSS at build time or on server
+const css = generate(config);
+
+// Include in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>${css}</style>
+</head>
+<body>
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
+            <h1>Welcome to Our Site</h1>
+            <p>This content fades in smoothly without flash</p>
+        </section>
+    </interact-element>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
+`;
+```
+
+### Generated CSS Behavior
+
+The `generate` function produces CSS that:
+
+1. **Hides marked elements** until their entrance animation completes
+2. **Resets transforms** to allow `IntersectionObserver` to trigger entrance using the element's original layout and position
+3. **Respects reduced motion preferences** - users with `prefers-reduced-motion: reduce` see elements immediately
+
+---
+
 ## Best Practices for ViewEnter Interactions
 
 ### Behavior Guildelines

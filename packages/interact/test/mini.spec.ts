@@ -326,7 +326,16 @@ describe('interact (mini)', () => {
     // Mock CSSStyleSheet
     (window as any).CSSStyleSheet = class CSSStyleSheet {
       constructor() {
-        return { replace: vi.fn(), insertRule: vi.fn() };
+        return { replaceSync: vi.fn(), insertRule: vi.fn() };
+      }
+    };
+
+    // Mock PointerEvent
+    (window as any).PointerEvent = class PointerEvent extends MouseEvent {
+      pointerType: string;
+      constructor(type: string, eventInitDict?: PointerEventInit) {
+        super(type, eventInitDict);
+        this.pointerType = eventInitDict?.pointerType || '';
       }
     };
 
@@ -338,6 +347,9 @@ describe('interact (mini)', () => {
     // Mock matchMedia for condition testing
     mockMQLs = new Map();
     mockMatchMedia();
+
+    // Reset allowA11yTriggers to false to maintain test consistency
+    Interact.allowA11yTriggers = false;
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
@@ -444,6 +456,8 @@ describe('interact (mini)', () => {
     Interact.destroy();
     // Reset forceReducedMotion to default
     Interact.forceReducedMotion = false;
+    // Reset allowA11yTriggers to default false for test isolation
+    Interact.allowA11yTriggers = false;
   });
 
   describe('destroy Interact instance', () => {
@@ -775,7 +789,9 @@ describe('interact (mini)', () => {
           start: vi.fn(),
           destroy: vi.fn(),
         };
-        Pointer.mockImplementation(() => pointerInstance);
+        Pointer.mockImplementation(function(this: any) {
+          Object.assign(this, pointerInstance);
+        });
 
         element = document.createElement('div');
         const div = document.createElement('div');
@@ -829,7 +845,9 @@ describe('interact (mini)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(() => scrollInstance);
+          Scroll.mockImplementation(function(this: any) {
+            Object.assign(this, scrollInstance);
+          });
 
           element = document.createElement('div');
           const div = document.createElement('div');
@@ -1067,7 +1085,9 @@ describe('interact (mini)', () => {
         start: vi.fn(),
         destroy: vi.fn(),
       };
-      Pointer.mockImplementation(() => pointerInstance);
+      Pointer.mockImplementation(function(this: any) {
+        Object.assign(this, pointerInstance);
+      });
 
       const key = 'logo-mouse';
       element = document.createElement('div');
@@ -2278,7 +2298,7 @@ describe('interact (mini)', () => {
       add(testElement, 'selector-skip-test');
 
       // Simulate click - animation should NOT play because element doesn't match .active
-      div.click();
+      div.dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
 
       expect(mockAnimation.play).not.toHaveBeenCalled();
     });
@@ -2337,7 +2357,7 @@ describe('interact (mini)', () => {
       add(testElement, 'selector-match-test');
 
       // Simulate click - animation SHOULD play because element matches .active
-      div.click();
+      div.dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
 
       expect(mockAnimation.play).toHaveBeenCalled();
     });

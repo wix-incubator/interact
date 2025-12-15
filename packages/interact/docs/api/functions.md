@@ -1,12 +1,12 @@
 # Standalone Functions
 
-The `@wix/interact` package exports standalone functions for managing interactions at the element level: `add()` and `remove()`. These functions work with any HTML element to apply and remove interactions.
+The `@wix/interact` package exports standalone functions for managing interactions at the element level: `add()`, `remove()`, and `generate()`. These functions work with any HTML element to apply and remove interactions.
 
 ## Import
 
 ```typescript
 // From the mini entry point
-import { add, remove } from '@wix/interact';
+import { add, remove, generate } from '@wix/interact';
 
 // From the web entry point (for use with interact-element)
 import { add, remove } from '@wix/interact/web';
@@ -15,7 +15,7 @@ import { add, remove } from '@wix/interact/web';
 import { add, remove } from '@wix/interact/react';
 ```
 
-> **Note**: The `add` and `remove` functions are available from both `@wix/interact/web` and `@wix/interact/react` entry points. Choose the entry point based on your integration approach.
+> **Note**: The `add` and `remove` functions are available from both `@wix/interact/web` and `@wix/interact/react` entry points. The `generate` function is only available from the main `@wix/interact` entry point.
 
 ## Functions Overview
 
@@ -23,6 +23,7 @@ import { add, remove } from '@wix/interact/react';
 |----------|---------|------------|---------|
 | `add()` | Add interactions to an element | `element`, `key?` | `void` |
 | `remove()` | Remove interactions from an element | `key` | `void` |
+| `generate()` | Generate CSS for hiding elements with entrance animations | `config` | `string` |
 | `addListItems()` | Add interactions to new list items | `controller`, `listContainer`, `elements` | `void` |
 | `removeListItems()` | Remove interactions from list items | `elements` | `void` |
 
@@ -497,11 +498,141 @@ const key: string = 'hero';
 remove(key);
 ```
 
+---
+
+## `generate(config)`
+
+Generates CSS styles needed to hide elements that have entrance animations with a `viewEnter` trigger. This prevents a flash of unstyled content (FOUC) where elements briefly appear before their entrance animation starts.
+
+### Signature
+
+```typescript
+function generate(config: InteractConfig): string
+```
+
+### Parameters
+
+**`config: InteractConfig`**
+- The interaction configuration object
+- Used to determine which elements need initial hiding styles
+
+### Returns
+
+**`string`** - A CSS string that can be injected into a `<style>` tag or stylesheet
+
+### Generated CSS
+
+The function generates CSS that:
+
+1. **Respects reduced motion preferences**: Wrapped in `@media (prefers-reduced-motion: no-preference)` to ensure accessibility
+2. **Targets first child of elements with `data-interact-initial="true"`**: Only affects elements explicitly marked for entrance animations
+3. **Excludes completed animations**: Uses `:not([data-motion-enter="done"])` to show elements after their animation completes
+
+```css
+@media (prefers-reduced-motion: no-preference) {
+  [data-interact-initial="true"] > :first-child:not([data-motion-enter="done"]) {
+    visibility: hidden;
+    transform: none;
+    translate: none;
+    scale: none;
+    rotate: none;
+  }
+}
+```
+
+### Examples
+
+#### Basic Usage
+
+```typescript
+import { Interact, generate } from '@wix/interact';
+
+const config = {
+  interactions: [{
+    key: 'hero',
+    trigger: 'viewEnter',
+    params: { type: 'once', threshold: 0.2 },
+    effects: [{
+      keyframeEffect: {
+        name: 'fade-in',
+        keyframes: [
+          { opacity: 0, transform: 'translateY(40px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ]
+      },
+      duration: 800
+    }]
+  }],
+  effects: {}
+};
+
+// Generate the CSS
+const css = generate(config);
+
+// Inject into page
+const styleElement = document.createElement('style');
+styleElement.textContent = css;
+document.head.appendChild(styleElement);
+
+// Create the Interact instance
+Interact.create(config);
+```
+
+#### Server-Side Rendering (SSR)
+
+For SSR scenarios, generate the CSS on the server and include it in the initial HTML:
+
+```typescript
+// server.ts
+import { generate, InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [/* your interactions */],
+  effects: {}
+};
+
+const css = generate(config);
+
+// Include in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>${css}</style>
+</head>
+<body>
+  <!-- Your content -->
+</body>
+</html>
+`;
+```
+
+### HTML Setup
+
+For the generated CSS to work, the `<interact-element>` must have the `data-interact-initial="true"` attribute:
+
+```html
+<interact-element data-interact-key="hero" data-interact-initial="true">
+  <!-- First child will be hidden until viewEnter animation completes -->
+  <section class="hero">
+    <h1>Welcome</h1>
+  </section>
+</interact-element>
+
+<!-- Without the attribute, element is visible immediately -->
+<interact-element data-interact-key="footer">
+  <footer>Footer content</footer>
+</interact-element>
+```
+
+---
+
 ## See Also
 
 - [Interact Class](interact-class.md) - Main interaction manager
 - [InteractionController](interaction-controller.md) - Controller API
 - [Custom Element](interact-element.md) - `interact-element` API
 - [React Integration](../integration/react.md) - React components and hooks
+- [Entrance Animations](../examples/entrance-animations.md) - `viewEnter` trigger examples
 - [Type Definitions](types.md) - `IInteractionController` and other types
 - [Getting Started](../guides/getting-started.md) - Basic usage examples

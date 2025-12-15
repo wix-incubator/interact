@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => {
       },
       sourcemap: true,
       rollupOptions: {
-        external: ['@wix/motion', 'react', 'react-dom'],
+        external: ['react', 'react-dom'],
         output: {
           entryFileNames: '[format]/[name].js'
         }
