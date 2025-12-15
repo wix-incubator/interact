@@ -413,21 +413,23 @@ describe('motion.ts', () => {
         });
 
         // Mock global constructors
-        (global as any).ViewTimeline = vi.fn((options = {}) => {
+        (global as any).ViewTimeline = vi.fn(function (options = {}) {
           Object.assign(mockViewTimeline, options);
           return mockViewTimeline;
         });
-        (global as any).KeyframeEffect = vi.fn(() => mockKeyframeEffect);
-        (global as any).Animation = vi.fn((keyframeEffect, timeline) => ({
-          ready: Promise.resolve(),
-          play: vi.fn(),
-          pause: vi.fn(),
-          cancel: vi.fn(),
-          currentTime: 0,
-          playbackRate: 1,
-          effect: keyframeEffect,
-          timeline,
-        })) as any;
+        (global as any).KeyframeEffect = vi.fn(function () { return mockKeyframeEffect; });
+        (global as any).Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
+          return {
+            ready: Promise.resolve(),
+            play: vi.fn(),
+            pause: vi.fn(),
+            cancel: vi.fn(),
+            currentTime: 0,
+            playbackRate: 1,
+            effect: keyframeEffect,
+            timeline,
+          };
+        }) as any;
       });
 
       test('should create AnimationGroup for basic animation', async () => {
@@ -439,7 +441,7 @@ describe('motion.ts', () => {
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
         (AnimationGroup as Mock).mockImplementation(
-          () => mockAnimationGroup,
+          function () { return mockAnimationGroup; },
         );
 
         const result = getWebAnimation(mockElement, animationOptions);
@@ -461,7 +463,7 @@ describe('motion.ts', () => {
         const div = document.createElement('div');
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(div, animationOptions);
 
@@ -490,15 +492,15 @@ describe('motion.ts', () => {
           progress: vi.fn(),
           cancel: vi.fn(),
         };
-        const CustomMouseMock = vi.fn((target, options) => {
+        const CustomMouseMock = vi.fn(function (target: any, options: any) {
           Object.assign(customMouseMock, { target, options });
           return customMouseMock;
         });
 
         const { CustomMouse } = (await import('../src/library/mouse')).mouseAnimations;
-        (CustomMouse as Mock).mockImplementation((options) =>
-          vi.fn((target_) => new CustomMouseMock(target_, options)),
-        );
+        (CustomMouse as Mock).mockImplementation(function (options: any) {
+          return vi.fn(function (target_: any) { return new (CustomMouseMock as any)(target_, options); });
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions, {
           element: mockElement,
@@ -523,7 +525,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations, options) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any, options: any) {
           mockAnimationGroup.animations = animations;
           mockAnimationGroup.options = options;
           return mockAnimationGroup;
@@ -563,7 +565,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations, options) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any, options: any) {
           mockAnimationGroup.animations = animations;
           mockAnimationGroup.options = options;
           return mockAnimationGroup;
@@ -578,7 +580,7 @@ describe('motion.ts', () => {
         expect(mockAnimationGroup.animations[0].timeline).toBeUndefined();
 
         // Restore for other tests
-        (global as any).ViewTimeline = vi.fn(() => mockViewTimeline);
+        (global as any).ViewTimeline = vi.fn(function () { return mockViewTimeline; });
       });
 
       test('should set animation ranges for view-progress', async () => {
@@ -598,7 +600,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations, options) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any, options: any) {
           mockAnimationGroup.animations = animations;
           mockAnimationGroup.options = options;
           return mockAnimationGroup;
@@ -645,7 +647,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -679,7 +681,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -702,7 +704,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
         const fastdom = (await import('fastdom')).default;
 
         const result = getWebAnimation(mockElement, animationOptions);
@@ -739,7 +741,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(elementWithCustomDoc, animationOptions);
 
@@ -756,7 +758,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations, options) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any, options: any) {
           mockAnimationGroup.animations = animations;
           mockAnimationGroup.options = options;
           return mockAnimationGroup;
@@ -784,7 +786,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -813,7 +815,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -833,7 +835,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         // Test entrance animation
         const entranceResult = getWebAnimation(
@@ -869,7 +871,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -943,7 +945,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -962,7 +964,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1010,7 +1012,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getElementCSSAnimation('test-element', animationOptions);
 
@@ -1037,7 +1039,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1100,7 +1102,7 @@ describe('motion.ts', () => {
       test('should return AnimationGroup filtered by effectId', async () => {
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1134,7 +1136,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1157,7 +1159,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1189,7 +1191,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1216,7 +1218,7 @@ describe('motion.ts', () => {
       test('should handle string target', async () => {
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation(() => mockAnimationGroup);
+        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
 
         const result = getElementAnimation('test-element', 'effect-123');
 
@@ -1245,7 +1247,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1290,7 +1292,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -1317,27 +1319,31 @@ describe('motion.ts', () => {
         vi.clearAllMocks();
 
         // Mock global constructors
-        global.KeyframeEffect = vi.fn(() => ({
-          target: mockElement,
-          setKeyframes: vi.fn(),
-          updateTiming: vi.fn(),
-          composite: 'replace',
-          iterationComposite: 'replace',
-          pseudoElement: null,
-          getKeyframes: vi.fn(() => []),
-          getComputedTiming: vi.fn(() => ({ activeDuration: 1000 })),
-          getTiming: vi.fn(() => ({ delay: 0 })),
-        })) as any;
-        global.Animation = vi.fn((keyframeEffect, timeline) => ({
-          ready: Promise.resolve(),
-          play: vi.fn(),
-          pause: vi.fn(),
-          cancel: vi.fn(),
-          currentTime: 0,
-          playbackRate: 1,
-          effect: keyframeEffect,
-          timeline,
-        })) as any;
+        global.KeyframeEffect = vi.fn(function () {
+          return {
+            target: mockElement,
+            setKeyframes: vi.fn(),
+            updateTiming: vi.fn(),
+            composite: 'replace',
+            iterationComposite: 'replace',
+            pseudoElement: null,
+            getKeyframes: vi.fn(function () { return []; }),
+            getComputedTiming: vi.fn(function () { return { activeDuration: 1000 }; }),
+            getTiming: vi.fn(function () { return { delay: 0 }; }),
+          };
+        }) as any;
+        global.Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
+          return {
+            ready: Promise.resolve(),
+            play: vi.fn(),
+            pause: vi.fn(),
+            cancel: vi.fn(),
+            currentTime: 0,
+            playbackRate: 1,
+            effect: keyframeEffect,
+            timeline,
+          };
+        }) as any;
 
         // Create mock animations
         mockAnimations = [
@@ -1439,7 +1445,7 @@ describe('motion.ts', () => {
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
         // override getWebAnimations and assume the animations it returned are `mockAnimations`
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -1619,7 +1625,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -1648,7 +1654,7 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -1683,7 +1689,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -1718,7 +1724,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -1823,7 +1829,7 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((_: any) => {
+        (AnimationGroup as Mock).mockImplementation(function (_: any) {
           mockAnimationGroup.animations = mockAnimations;
           return mockAnimationGroup;
         });
@@ -2179,30 +2185,31 @@ describe('motion.ts', () => {
         });
 
         // Mock global constructors
-        (global as any).ViewTimeline = vi.fn((options = {}) => {
+        (global as any).ViewTimeline = vi.fn(function (options = {}) {
           Object.assign(mockViewTimeline, options);
           return mockViewTimeline;
         });
-        (global as any).KeyframeEffect = vi.fn(
-          (
+        (global as any).KeyframeEffect = vi.fn(function (
             _target: Element | null,
             _keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
             options: KeyframeEffectOptions | number | undefined,
-          ) => {
+          ) {
             mockKeyframeEffectOptions = options;
             return mockKeyframeEffect;
           },
         ) as any;
-        (global as any).Animation = vi.fn((keyframeEffect, timeline) => ({
-          ready: Promise.resolve(),
-          play: vi.fn(),
-          pause: vi.fn(),
-          cancel: vi.fn(),
-          currentTime: 0,
-          playbackRate: 1,
-          effect: keyframeEffect,
-          timeline,
-        })) as any;
+        (global as any).Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
+          return {
+            ready: Promise.resolve(),
+            play: vi.fn(),
+            pause: vi.fn(),
+            cancel: vi.fn(),
+            currentTime: 0,
+            playbackRate: 1,
+            effect: keyframeEffect,
+            timeline,
+          };
+        }) as any;
 
         // Create mock CSSAnimations
         mockCSSAnimations = [
@@ -2230,7 +2237,7 @@ describe('motion.ts', () => {
 
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -2265,7 +2272,7 @@ describe('motion.ts', () => {
 
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation((animations) => {
+        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
           mockAnimationGroup.animations = animations;
           return mockAnimationGroup;
         });
@@ -2289,7 +2296,7 @@ describe('motion.ts', () => {
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
         (AnimationGroup as Mock).mockImplementation(
-          () => mockAnimationGroup,
+          function () { return mockAnimationGroup; },
         );
 
         const result = getAnimation(mockElement, animationOptions);
@@ -2318,7 +2325,7 @@ describe('motion.ts', () => {
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
         (AnimationGroup as Mock).mockImplementation(
-          () => mockAnimationGroup,
+          function () { return mockAnimationGroup; },
         );
 
         const result = getAnimation(mockElement, animationOptions);

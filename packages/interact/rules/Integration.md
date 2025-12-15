@@ -69,9 +69,9 @@ Generates critical CSS styles that prevent flash-of-unstyled-content (FOUC) for 
 
 **Rules:**
 - MUST be called server-side or at build time to generate static CSS.
-- The generated CSS hides elements marked with `data-interact-initial="true"` until their entrance animation completes.
+- The generated CSS hides the first child of elements marked with `data-interact-initial="true"` until their entrance animation completes.
 - Only affects users who have not requested reduced motion (`prefers-reduced-motion: no-preference`).
-- Elements MUST have `data-interact-initial="true"` attribute to be affected by the generated CSS.
+- The `<interact-element>` MUST have `data-interact-initial="true"` attribute to be affected by the generated CSS.
 
 **Usage:**
 ```javascript
@@ -90,8 +90,8 @@ const html = `
     <style>${css}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero">
-        <section class="hero" data-interact-initial="true">
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
             ...
         </section>
     </interact-element>

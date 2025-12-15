@@ -13,6 +13,7 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),

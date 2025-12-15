@@ -6,6 +6,7 @@ vi.mock('@wix/motion', () => ({
       cancel: vi.fn(),
       onFinish: vi.fn(),
       isCSS: false,
+      ready: Promise.resolve(),
     }),
   }));
   
@@ -49,10 +50,12 @@ vi.mock('@wix/motion', () => ({
         disconnect: vi.fn(),
       };
   
-      IntersectionObserverMock = vi.fn((cb, _options) => {
+      IntersectionObserverMock = vi.fn(function(this: any, cb: any, _options: any) {
         observerCallback = cb;
-        return observerMock;
-      });
+        this.observe = observeSpy;
+        this.unobserve = unobserveSpy;
+        this.disconnect = vi.fn();
+      }) as any;
       (window as any).IntersectionObserver = IntersectionObserverMock;
     });
   
@@ -86,48 +89,51 @@ vi.mock('@wix/motion', () => ({
   
     describe('Regular flow', () => {
       it('should create an IntersectionObserver and observe the source', () => {
-        viewEnterHandler.add(
+      viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           {},
+          {},
         );
-  
+
         expect(IntersectionObserverMock).toHaveBeenCalled();
         expect(observeSpy).toHaveBeenCalledWith(element);
       });
   
       it('should unobserve after first intersection if type is "once"', () => {
-        viewEnterHandler.add(
+      viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           { type: 'once' },
+          {},
         );
-  
+
         const entry = createEntry();
         observerCallback([entry]);
-  
+
         expect(unobserveSpy).toHaveBeenCalledWith(element);
       });
     });
   
     describe('Safe flow', () => {
       it('should check for safe mode conditions on first run when not intersecting', () => {
-        viewEnterHandler.add(
+      viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           { useSafeViewEnter: true, threshold: 0.5 },
+          {},
         );
-  
+
         const entry = createEntry({
           isIntersecting: false,
           boundingClientRect: { height: 1000 } as DOMRectReadOnly,
           rootBounds: { height: 400 } as DOMRectReadOnly,
         });
         observerCallback([entry]);
-  
+
         expect(fastdom.measure).toHaveBeenCalled();
       });
   
@@ -136,77 +142,80 @@ vi.mock('@wix/motion', () => ({
         const sourceHeight = 1000;
         const rootHeight = 400; // 1000 * 0.5 = 500 > 400 -> Should trigger safe mode
   
-        viewEnterHandler.add(
+      viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           { useSafeViewEnter: true, threshold },
+          {},
         );
-  
+
         const entry = createEntry({
           isIntersecting: false,
           boundingClientRect: { height: sourceHeight } as DOMRectReadOnly,
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
-  
+
         observerCallback([entry]);
-  
+
         expect(fastdom.mutate).toHaveBeenCalled();
         expect(unobserveSpy).toHaveBeenCalledWith(element);
-  
+
         expect(IntersectionObserverMock).toHaveBeenCalledTimes(2);
-  
+
         const safeObserverConfig = IntersectionObserverMock.mock.calls[1][1];
         expect(safeObserverConfig.threshold).toEqual([0]);
         expect(safeObserverConfig.rootMargin).toBe('0px 0px -10% 0px');
       });
   
-      it('should NOT switch to safe observer if element fits in root', () => {
+    it('should NOT switch to safe observer if element fits in root', () => {
         const threshold = 0.5;
         const sourceHeight = 600;
         const rootHeight = 400; // 600 * 0.5 = 300 < 400 -> No safe mode needed
-  
+
         viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           { useSafeViewEnter: true, threshold },
+          {},
         );
-  
+
         const entry = createEntry({
           isIntersecting: false,
           boundingClientRect: { height: sourceHeight } as DOMRectReadOnly,
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
-  
+
         observerCallback([entry]);
-  
+
         expect(fastdom.measure).toHaveBeenCalled();
         expect(fastdom.mutate).not.toHaveBeenCalled();
         expect(unobserveSpy).not.toHaveBeenCalledWith(element);
         expect(IntersectionObserverMock).toHaveBeenCalledTimes(1);
       });
   
-      it('should NOT switch to safe observer if useSafeViewEnter is false', () => {
+    it('should NOT switch to safe observer if useSafeViewEnter is false', () => {
         const threshold = 0.5;
         const sourceHeight = 1000;
         const rootHeight = 400;
-  
+
         viewEnterHandler.add(
           element,
           target,
           { duration: 1000, namedEffect: { type: 'FadeIn' } },
           { useSafeViewEnter: false, threshold },
+          {},
         );
-  
+
         const entry = createEntry({
           isIntersecting: false,
           boundingClientRect: { height: sourceHeight } as DOMRectReadOnly,
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
-  
+
         observerCallback([entry]);
-  
+
         expect(fastdom.measure).not.toHaveBeenCalled();
       });
     });

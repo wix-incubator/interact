@@ -32,8 +32,8 @@ Interact.create(config);
 ### Preventing FOUC for entrance animations
 
 - Use `generate(config)` to create critical CSS that hides elements until their `viewEnter` entrance animation plays.
-- Add `data-interact-initial="true"` to elements that should be hidden initially.
-- Only use `data-interact-initial="true"` for elements with `viewEnter` trigger.
+- Add `data-interact-initial="true"` to the `<interact-element>` that should have its first child hidden initially.
+- Only use `data-interact-initial="true"` for `<interact-element>` with `viewEnter` trigger.
 - Do NOT use for `hover` or `click` interactions.
 
 **Usage:**
@@ -53,8 +53,8 @@ const html = `
     <style>${css}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero">
-        <section class="hero" data-interact-initial="true">
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
             <h1>Welcome to Our Site</h1>
             <p>This content fades in smoothly without flash</p>
         </section>

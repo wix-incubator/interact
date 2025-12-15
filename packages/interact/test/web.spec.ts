@@ -13,6 +13,7 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),
@@ -26,21 +27,23 @@ vi.mock('@wix/motion', () => {
   return mock;
 });
 
-// Mock kuliso module
-vi.mock('kuliso', () => ({
-  Pointer: vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
-    destroy: vi.fn(),
-  })),
-}));
+// Mock kuliso module - use class constructor for proper 'new' support
+vi.mock('kuliso', () => {
+  const MockPointer = vi.fn(function(this: any) {
+    this.start = vi.fn();
+    this.destroy = vi.fn();
+  }) as any;
+  return { Pointer: MockPointer };
+});
 
-// Mock fizban module
-vi.mock('fizban', () => ({
-  Scroll: vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
-    end: vi.fn(),
-  })),
-}));
+// Mock fizban module - use class constructor for proper 'new' support
+vi.mock('fizban', () => {
+  const MockScroll = vi.fn(function(this: any) {
+    this.start = vi.fn();
+    this.end = vi.fn();
+  }) as any;
+  return { Scroll: MockScroll };
+});
 
 // Shared mock MQL storage for breakpoint tests
 let mockMQLs: Map<string, MediaQueryList>;
@@ -333,9 +336,23 @@ describe('interact (web)', () => {
       document.adoptedStyleSheets = [];
     }
 
+    // Mock PointerEvent if not available (jsdom doesn't have it)
+    if (typeof PointerEvent === 'undefined') {
+      (global as any).PointerEvent = class PointerEvent extends MouseEvent {
+        pointerType: string;
+        constructor(type: string, eventInit?: PointerEventInit) {
+          super(type, eventInit);
+          this.pointerType = eventInit?.pointerType || '';
+        }
+      };
+    }
+
     // Mock matchMedia for condition testing
     mockMQLs = new Map();
     mockMatchMedia();
+
+    // Reset allowA11yTriggers to false to maintain test consistency
+    Interact.allowA11yTriggers = false;
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
@@ -442,6 +459,8 @@ describe('interact (web)', () => {
     Interact.destroy();
     // Reset forceReducedMotion to default
     Interact.forceReducedMotion = false;
+    // Reset allowA11yTriggers to default false for test isolation
+    Interact.allowA11yTriggers = false;
   });
 
   describe('init Interact instance', () => {
@@ -780,7 +799,9 @@ describe('interact (web)', () => {
           start: vi.fn(),
           destroy: vi.fn(),
         };
-        Pointer.mockImplementation(() => pointerInstance);
+        Pointer.mockImplementation(function(this: any) {
+          Object.assign(this, pointerInstance);
+        });
 
         element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
@@ -834,7 +855,9 @@ describe('interact (web)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(() => scrollInstance);
+          Scroll.mockImplementation(function(this: any) {
+            Object.assign(this, scrollInstance);
+          });
 
           element = document.createElement('interact-element') as IInteractElement;
           const div = document.createElement('div');
@@ -1072,7 +1095,9 @@ describe('interact (web)', () => {
         start: vi.fn(),
         destroy: vi.fn(),
       };
-      Pointer.mockImplementation(() => pointerInstance);
+      Pointer.mockImplementation(function(this: any) {
+        Object.assign(this, pointerInstance);
+      });
 
       const key = 'logo-mouse';
       element = document.createElement('interact-element') as IInteractElement;
@@ -2190,8 +2215,8 @@ describe('interact (web)', () => {
 
       add(interactElement, 'toggle-source');
 
-      // Trigger click event
-      const clickEvent = new MouseEvent('click', { bubbles: true });
+      // Trigger click event with pointerType to pass the click handler check
+      const clickEvent = new PointerEvent('click', { bubbles: true, pointerType: 'mouse' });
       div.dispatchEvent(clickEvent);
 
       // The InteractElement's toggleEffect should be called (not the controller's fallback logic)

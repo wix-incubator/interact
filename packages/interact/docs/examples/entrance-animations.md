@@ -849,8 +849,8 @@ const html = `
     <style>${css}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero">
-        <section class="hero" data-interact-initial="true">
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
             <h1>Welcome to Our Site</h1>
             <p>This content fades in smoothly without flash</p>
         </section>
@@ -863,11 +863,11 @@ const html = `
 
 ### HTML Markup
 
-Add `data-interact-initial="true"` to elements that should be hidden until their entrance animation:
+Add `data-interact-initial="true"` to the `<interact-element>` that has a child that should be hidden until its entrance animation:
 
 ```html
-<interact-element data-interact-key="hero">
-    <section class="hero" data-interact-initial="true">
+<interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">
         <h1>Welcome to Our Site</h1>
         <p>This content fades in smoothly without flash</p>
     </section>

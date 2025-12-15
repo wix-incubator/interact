@@ -525,12 +525,12 @@ function generate(config: InteractConfig): string
 The function generates CSS that:
 
 1. **Respects reduced motion preferences**: Wrapped in `@media (prefers-reduced-motion: no-preference)` to ensure accessibility
-2. **Targets elements with `data-interact-initial="true"`**: Only affects elements explicitly marked for entrance animations
+2. **Targets first child of elements with `data-interact-initial="true"`**: Only affects elements explicitly marked for entrance animations
 3. **Excludes completed animations**: Uses `:not([data-motion-enter="done"])` to show elements after their animation completes
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial="true"]:not([data-motion-enter="done"]) {
+  [data-interact-initial="true"] > :first-child:not([data-motion-enter="done"]) {
     visibility: hidden;
     transform: none;
     translate: none;
@@ -609,12 +609,12 @@ const html = `
 
 ### HTML Setup
 
-For the generated CSS to work, elements that should be hidden initially must have the `data-interact-initial="true"` attribute:
+For the generated CSS to work, the `<interact-element>` must have the `data-interact-initial="true"` attribute:
 
 ```html
-<interact-element data-interact-key="hero">
-  <!-- Element will be hidden until viewEnter animation completes -->
-  <section class="hero" data-interact-initial="true">
+<interact-element data-interact-key="hero" data-interact-initial="true">
+  <!-- First child will be hidden until viewEnter animation completes -->
+  <section class="hero">
     <h1>Welcome</h1>
   </section>
 </interact-element>
