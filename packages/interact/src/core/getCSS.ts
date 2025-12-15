@@ -5,33 +5,20 @@ import type {
   Effect,
   EffectRef,
   TimeEffect,
+  TransitionEffect,
+  CreateTransitionCSSParams,
   Condition,
 } from '../types';
+import { createTransitionCSS } from '../utils';
 import { getSelector } from './Interact';
-import { getEasing } from '@wix/motion';
-import { entranceAnimations } from '../../../motion/src/library/entrance';
-import { ongoingAnimations } from '../../../motion/src/library/ongoing';
-import { scrollAnimations } from '../../../motion/src/library/scroll';
-import { mouseAnimations } from '../../../motion/src/library/mouse';
-import { backgroundScrollAnimations } from '../../../motion/src/library/backgroundScroll';
+import { effectToAnimationOptions } from '../handlers/utilities';
+import { getCSSAnimation, getEasing } from '@wix/motion';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 type KeyframeProperty = Record<string, string | number | undefined>;
-
-interface AnimationData {
-  name: string;
-  keyframes: KeyframeProperty[];
-  duration?: number;
-  delay?: number;
-  easing?: string;
-  iterations?: number;
-  alternate?: boolean;
-  reversed?: boolean;
-  fill?: string;
-}
 
 interface AnimationProps {
   names: string[];
@@ -41,12 +28,6 @@ interface AnimationProps {
   iterationCounts: string[];
   directions: string[];
   fillModes: string[];
-}
-
-interface AnimationEffectAPI {
-  style?: (options: any) => any[];
-  web?: (options: any) => any[];
-  getNames?: (options: any) => string[];
 }
 
 // ============================================================================
@@ -150,115 +131,59 @@ function keyframesToCSS(name: string, keyframes: KeyframeProperty[]): string {
 }
 
 /**
- * Checks if effect has customEffect (JS-only).
+ * Gets animation data from an effect using the motion library's getCSSAnimation.
  */
-function isCustomEffect(effect: Effect): boolean {
-  return 'customEffect' in effect && (effect as any).customEffect !== undefined;
+function getTransitionData(effect: Effect & { key: string }): string[] {
+    const args: CreateTransitionCSSParams = {
+      key: effect.key,
+      effectId: (effect as Effect).effectId!,
+      transition: (effect as TransitionEffect).transition,
+      properties: (effect as TransitionEffect).transitionProperties,
+      childSelector: getSelector(effect, {
+        // TODO: (ameerf) - paste the right conditions here
+        asCombinator: true,
+        addItemFilter: true,
+      }),
+    };
+    return createTransitionCSS(args);
+}
+
+interface CSSAnimationResult {
+  name: string;
+  keyframes: KeyframeProperty[];
 }
 
 /**
- * Checks if effect has namedEffect.
+ * Gets animation data from an effect using the motion library's getCSSAnimation.
  */
-function hasNamedEffect(effect: any): boolean {
-  return 'namedEffect' in effect && effect.namedEffect !== undefined;
+function getAnimationData(effect: Effect): CSSAnimationResult[] {
+  const animationOptions = effectToAnimationOptions(effect as TimeEffect);
+
+  // Use getCSSAnimation from motion to get the animation data
+  const cssAnimations = getCSSAnimation(null, animationOptions);
+
+  return cssAnimations
+    .filter((anim) => anim.name !== undefined)
+    .map((anim) => ({
+      name: anim.name!,
+      keyframes: anim.keyframes as KeyframeProperty[],
+    }));
 }
 
-/**
- * Checks if effect has keyframeEffect.
- */
-function hasKeyframeEffect(effect: any): boolean {
-  return 'keyframeEffect' in effect && effect.keyframeEffect !== undefined;
-}
-
-/**
- * Gets the named effect API from animation libraries.
- */
-function getNamedEffectAPI(namedEffect: { type: string }): AnimationEffectAPI | null {
-  const name = namedEffect.type;
-
-  if (name in entranceAnimations) {
-    return entranceAnimations[name as keyof typeof entranceAnimations] as unknown as AnimationEffectAPI;
-  }
-  if (name in ongoingAnimations) {
-    return ongoingAnimations[name as keyof typeof ongoingAnimations] as unknown as AnimationEffectAPI;
-  }
-  if (name in scrollAnimations) {
-    return scrollAnimations[name as keyof typeof scrollAnimations] as unknown as AnimationEffectAPI;
-  }
-  if (name in mouseAnimations) {
-    return mouseAnimations[name as keyof typeof mouseAnimations] as unknown as AnimationEffectAPI;
-  }
-  if (name in backgroundScrollAnimations) {
-    return backgroundScrollAnimations[name as keyof typeof backgroundScrollAnimations] as unknown as AnimationEffectAPI;
-  }
-
-  return null;
-}
-
-/**
- * Gets animation data from an effect using the motion library.
- * Config values take precedence over effect defaults.
- */
-function getAnimationData(effect: Effect): AnimationData[] {
-  const timeEffect = effect as TimeEffect;
-
-  if (hasNamedEffect(effect)) {
-    const namedEffectApi = getNamedEffectAPI((effect as any).namedEffect);
-
-    if (namedEffectApi && namedEffectApi.style) {
-      const styleResult = namedEffectApi.style(effect);
-      return styleResult.map((data: any) => ({
-        name: data.name,
-        keyframes: data.keyframes,
-        // Config values take precedence over effect defaults
-        duration: timeEffect.duration ?? data.duration,
-        delay: timeEffect.delay ?? data.delay,
-        easing: timeEffect.easing ?? data.easing,
-        iterations: timeEffect.iterations ?? data.iterations,
-        alternate: timeEffect.alternate ?? data.alternate,
-        reversed: timeEffect.reversed ?? data.reversed,
-        fill: timeEffect.fill ?? data.fill,
-      }));
-    }
-  } else if (hasKeyframeEffect(effect)) {
-    const { name, keyframes } = (effect as any).keyframeEffect;
-    return [
-      {
-        name,
-        keyframes: keyframes as KeyframeProperty[],
-        duration: timeEffect.duration,
-        delay: timeEffect.delay,
-        easing: timeEffect.easing,
-        iterations: timeEffect.iterations,
-        alternate: timeEffect.alternate,
-        reversed: timeEffect.reversed,
-        fill: timeEffect.fill,
-      },
-    ];
-  }
-
-  return [];
-}
-
-/**
- * Resolves an effect from effectId reference or inline effect.
- */
 function resolveEffect(
   effectRef: Effect | EffectRef,
   effectsMap: Record<string, Effect>,
+  interactionKey: string,
 ): Effect | null {
-  if ('effectId' in effectRef && effectRef.effectId) {
-    const baseEffect = effectsMap[effectRef.effectId];
-    if (baseEffect) {
-      // Merge the base effect with any overrides from the reference
-      return { ...baseEffect, ...effectRef };
-    }
-    return null;
-  }
+  const fullEffect: any = effectRef.effectId
+      ? { ...effectsMap[effectRef.effectId], ...effectRef}
+      : { ...effectRef};
 
-  // Inline effect - check if it has namedEffect or keyframeEffect
-  if (hasNamedEffect(effectRef) || hasKeyframeEffect(effectRef)) {
-    return effectRef as Effect;
+  if (fullEffect.namedEffect || fullEffect.keyframeEffect || fullEffect.transition) {
+    if (!fullEffect.key) {
+      fullEffect.key = interactionKey;
+    }
+    return fullEffect as Effect;
   }
 
   return null;
@@ -297,29 +222,24 @@ function createEmptyAnimationProps(): AnimationProps {
  */
 function addAnimationProps(
   props: AnimationProps,
-  data: AnimationData,
+  animationResult: CSSAnimationResult,
   effect: Effect,
 ): void {
   const timeEffect = effect as TimeEffect;
 
-  props.names.push(data.name);
-  props.durations.push(`${data.duration ?? timeEffect.duration ?? 0}ms`);
-  props.delays.push(`${data.delay ?? timeEffect.delay ?? 0}ms`);
+  props.names.push(animationResult.name);
+  props.durations.push(`${timeEffect.duration ?? 0}ms`);
+  props.delays.push(`${timeEffect.delay ?? 0}ms`);
 
-  const easing = data.easing ?? timeEffect.easing;
-  props.timingFunctions.push(getEasing(easing));
+  props.timingFunctions.push(getEasing(timeEffect.easing));
 
-  const iterations = data.iterations ?? timeEffect.iterations;
   props.iterationCounts.push(
-    iterations === 0 ? 'infinite' : String(iterations ?? 1),
+    timeEffect.iterations === 0 ? 'infinite' : String(timeEffect.iterations ?? 1),
   );
 
-  const alternate = data.alternate ?? timeEffect.alternate;
-  const reversed = data.reversed ?? timeEffect.reversed;
-  props.directions.push(getDirection(alternate, reversed));
+  props.directions.push(getDirection(timeEffect.alternate, timeEffect.reversed));
 
-  const fill = data.fill ?? timeEffect.fill ?? 'none';
-  props.fillModes.push(fill);
+  props.fillModes.push(timeEffect.fill ?? 'none');
 }
 
 /**
@@ -397,13 +317,10 @@ export function getCSS(config: InteractConfig): GetCSSResult {
 
     for (const effectRef of interaction.effects) {
       // Resolve the effect
-      const effect = resolveEffect(effectRef, config.effects);
+      const effect = resolveEffect(effectRef, config.effects, interaction.key);
       if (!effect) continue;
 
-      // Skip customEffect (JS-only)
-      if (isCustomEffect(effect)) continue;
-
-      // Get animation data
+      // Get animation data using motion's getCSSAnimation
       const animationDataList = getAnimationData(effect);
       if (animationDataList.length === 0) continue;
 
