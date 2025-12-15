@@ -14,6 +14,7 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),
@@ -714,8 +715,8 @@ describe('interact (mini)', () => {
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation.mock.calls[0][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[1][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[2][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[1][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[2][0]).toBe(divClick);
         expect(getWebAnimation.mock.calls[0][3]).toMatchObject({
           reducedMotion: false,
         });
