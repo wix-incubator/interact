@@ -2,7 +2,7 @@ import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Interact, add, remove } from '../src/web';
 import { addListItems } from '../src/core/add';
-import type { InteractConfig, ScrubEffect, IInteractElement } from '../src/types';
+import type { InteractConfig, ScrubEffect, IInteractElement, TriggerType } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
 
@@ -739,8 +739,8 @@ describe('interact (web)', () => {
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation.mock.calls[0][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[1][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[2][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[1][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[2][0]).toBe(divClick);
         expect(getWebAnimation.mock.calls[0][3]).toMatchObject({
           reducedMotion: false,
         });
@@ -2478,6 +2478,218 @@ describe('interact (web)', () => {
 
       // The new hover handler should be added
       expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+    });
+  });
+
+  describe('a11y - accessible triggers', () => {
+    let a11yElement: IInteractElement;
+
+    function getA11yConfig(trigger: TriggerType, key: string): InteractConfig {
+      return {
+        interactions: [
+          {
+            trigger,
+            key,
+            effects: [{ effectId: 'test-effect' }],
+          },
+        ],
+        effects: {
+          'test-effect': {
+            namedEffect: { type: 'BounceIn', power: 'medium' } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+    }
+
+    afterEach(() => {
+      Interact.destroy();
+    });
+
+    describe('activate trigger', () => {
+      it('should add both click and keydown listeners', () => {
+        Interact.create(getA11yConfig('activate', 'activate-div'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'activate-div');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should not double-invoke handler when Enter triggers both keydown and click', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockPlay = (getWebAnimation as any)().play;
+        mockPlay.mockClear();
+
+        Interact.create(getA11yConfig('activate', 'activate-handler-test'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const button = document.createElement('button');
+        a11yElement.append(button);
+
+        add(a11yElement, 'activate-handler-test');
+
+        // Simulate browser behavior: Enter key triggers keydown AND synthesized click with no pointerType
+        button.dispatchEvent(
+          new KeyboardEvent('keydown', { code: 'Enter', bubbles: true }),
+        );
+        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+        expect(mockPlay).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('interest trigger', () => {
+      it('should add focusin listener alongside mouseenter', () => {
+        Interact.create(getA11yConfig('interest', 'interest-test'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'interest-test');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('click trigger with allowA11yTriggers flag', () => {
+      it('should NOT add keydown listener when flag is false', () => {
+        Interact.create(getA11yConfig('click', 'click-no-flag'));
+        Interact.setup({ allowA11yTriggers: false });
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add keydown listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('click', 'click-with-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('hover trigger with allowA11yTriggers flag', () => {
+      it('should NOT add focusin listener when flag is false', () => {
+        Interact.setup({ allowA11yTriggers: false });
+        Interact.create(getA11yConfig('hover', 'hover-no-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add focusin listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('hover', 'hover-with-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
     });
   });
 });
