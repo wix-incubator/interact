@@ -16,7 +16,6 @@ const selectorConditionConfig: InteractConfig = {
     {
       trigger: 'viewEnter',
       key: 'selector-demo-container',
-      listContainer: '.selector-demo-grid',
       params: {
         type: 'repeat',
         threshold: 0.5,

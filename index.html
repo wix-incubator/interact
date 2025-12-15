@@ -1373,8 +1373,7 @@ effects: [
             { transform: 'rotateY(0deg)' },
             { transform: 'rotateY(360deg)' }
         ]
-    },
-    composite: 'replace'
+    }
 },
 // 2. Horizontal Spin
 {
@@ -1389,8 +1388,7 @@ effects: [
             { transform: 'rotateX(90deg) rotateZ(0deg)' },
             { transform: 'rotateX(90deg) rotateZ(360deg)' }
         ]
-    },
-    composite: 'replace'
+    }
 },
 // 3. Diagonal 1 (+45)
 {
@@ -1404,8 +1402,7 @@ effects: [
             { transform: 'rotateZ(45deg) rotateY(0deg)' },
             { transform: 'rotateZ(45deg) rotateY(360deg)' }
         ]
-    },
-    composite: 'replace'
+    }
 },
 // 4. Diagonal 2 (-45)
 {
@@ -1419,8 +1416,7 @@ effects: [
             { transform: 'rotateZ(-45deg) rotateY(0deg)' },
             { transform: 'rotateZ(-45deg) rotateY(-360deg)' }
         ]
-    },
-    composite: 'replace'
+    }
 }
 ]           
             `
@@ -1472,6 +1468,7 @@ effects: [
     <!-- WIX INTERACT RUNTIME -->
     <script type="module">
         import { Interact } from 'https://esm.sh/@wix/interact@1.92.0';
+        // import { Interact } from './packages/interact/dist/es/web.js';
 
         // --- 1. HERO GRID LOGIC ---
         const gridContainer = document.getElementById('grid-container');
