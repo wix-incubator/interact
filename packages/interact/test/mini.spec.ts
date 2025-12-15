@@ -2,7 +2,7 @@ import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Interact, add, remove } from '../src/index';
 import { addListItems } from '../src/core/add';
-import type { InteractConfig, ScrubEffect } from '../src/types';
+import type { InteractConfig, ScrubEffect, TriggerType, IInteractElement } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../src/handlers';
@@ -14,6 +14,7 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),
@@ -325,7 +326,16 @@ describe('interact (mini)', () => {
     // Mock CSSStyleSheet
     (window as any).CSSStyleSheet = class CSSStyleSheet {
       constructor() {
-        return { replace: vi.fn(), insertRule: vi.fn() };
+        return { replaceSync: vi.fn(), insertRule: vi.fn() };
+      }
+    };
+
+    // Mock PointerEvent
+    (window as any).PointerEvent = class PointerEvent extends MouseEvent {
+      pointerType: string;
+      constructor(type: string, eventInitDict?: PointerEventInit) {
+        super(type, eventInitDict);
+        this.pointerType = eventInitDict?.pointerType || '';
       }
     };
 
@@ -337,6 +347,9 @@ describe('interact (mini)', () => {
     // Mock matchMedia for condition testing
     mockMQLs = new Map();
     mockMatchMedia();
+
+    // Reset allowA11yTriggers to false to maintain test consistency
+    Interact.allowA11yTriggers = false;
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
@@ -443,6 +456,8 @@ describe('interact (mini)', () => {
     Interact.destroy();
     // Reset forceReducedMotion to default
     Interact.forceReducedMotion = false;
+    // Reset allowA11yTriggers to default false for test isolation
+    Interact.allowA11yTriggers = false;
   });
 
   describe('destroy Interact instance', () => {
@@ -714,8 +729,8 @@ describe('interact (mini)', () => {
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation.mock.calls[0][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[1][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[2][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[1][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[2][0]).toBe(divClick);
         expect(getWebAnimation.mock.calls[0][3]).toMatchObject({
           reducedMotion: false,
         });
@@ -774,7 +789,9 @@ describe('interact (mini)', () => {
           start: vi.fn(),
           destroy: vi.fn(),
         };
-        Pointer.mockImplementation(() => pointerInstance);
+        Pointer.mockImplementation(function(this: any) {
+          Object.assign(this, pointerInstance);
+        });
 
         element = document.createElement('div');
         const div = document.createElement('div');
@@ -828,7 +845,9 @@ describe('interact (mini)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(() => scrollInstance);
+          Scroll.mockImplementation(function(this: any) {
+            Object.assign(this, scrollInstance);
+          });
 
           element = document.createElement('div');
           const div = document.createElement('div');
@@ -1066,7 +1085,9 @@ describe('interact (mini)', () => {
         start: vi.fn(),
         destroy: vi.fn(),
       };
-      Pointer.mockImplementation(() => pointerInstance);
+      Pointer.mockImplementation(function(this: any) {
+        Object.assign(this, pointerInstance);
+      });
 
       const key = 'logo-mouse';
       element = document.createElement('div');
@@ -2176,6 +2197,219 @@ describe('interact (mini)', () => {
     });
   });
 
+  describe('selector condition type', () => {
+    it('should pass selectorCondition to handler when condition type is selector', async () => {
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-test',
+            effects: [
+              {
+                key: 'selector-test',
+                effectId: 'test-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'test-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      add(testElement, 'selector-test');
+
+      // The handler should have received selectorCondition
+      // We verify by checking the animation is created (condition doesn't block setup)
+      const { getWebAnimation } = await import('@wix/motion');
+      expect(getWebAnimation).toHaveBeenCalled();
+    });
+
+    it('should skip handler execution when element does not match selector condition', async () => {
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = {
+        play: vi.fn(),
+        cancel: vi.fn(),
+        onFinish: vi.fn(),
+        reverse: vi.fn(),
+        progress: vi.fn(),
+        playState: 'idle',
+        isCSS: false,
+      };
+      (getWebAnimation as any).mockReturnValue(mockAnimation);
+
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-skip-test',
+            effects: [
+              {
+                key: 'selector-skip-test',
+                effectId: 'skip-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'skip-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      // div does NOT have .active class
+      testElement.append(div);
+
+      add(testElement, 'selector-skip-test');
+
+      // Simulate click - animation should NOT play because element doesn't match .active
+      div.dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
+
+      expect(mockAnimation.play).not.toHaveBeenCalled();
+    });
+
+    it('should execute handler when element matches selector condition', async () => {
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = {
+        play: vi.fn(),
+        cancel: vi.fn(),
+        onFinish: vi.fn(),
+        reverse: vi.fn(),
+        progress: vi.fn(),
+        playState: 'idle',
+        isCSS: false,
+      };
+      (getWebAnimation as any).mockReturnValue(mockAnimation);
+
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'selector-match-test',
+            effects: [
+              {
+                key: 'selector-match-test',
+                effectId: 'match-effect',
+                conditions: ['active'],
+              },
+            ],
+          },
+        ],
+        effects: {
+          'match-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      div.classList.add('active'); // div HAS .active class
+      testElement.append(div);
+
+      add(testElement, 'selector-match-test');
+
+      // Simulate click - animation SHOULD play because element matches .active
+      div.dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
+
+      expect(mockAnimation.play).toHaveBeenCalled();
+    });
+
+    it('should not apply selector condition type to media query listeners', () => {
+      // Selector conditions should NOT create matchMedia listeners (only media conditions do)
+      const config: InteractConfig = {
+        conditions: {
+          active: {
+            type: 'selector',
+            predicate: '.active',
+          },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'no-mql-test',
+            conditions: ['active'],
+            effects: [
+              {
+                key: 'no-mql-test',
+                effectId: 'no-mql-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'no-mql-effect': {
+            namedEffect: {
+              type: 'FadeIn',
+              power: 'medium',
+            } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+
+      const instance = Interact.create(config);
+
+      const testElement = document.createElement('div');
+      const div = document.createElement('div');
+      testElement.append(div);
+
+      add(testElement, 'no-mql-test');
+
+      // Selector conditions should NOT create media query listeners
+      expect(instance.mediaQueryListeners.size).toBe(0);
+      // matchMedia should not be called for selector type conditions
+      expect(window.matchMedia).not.toHaveBeenCalledWith('.active');
+    });
+  });
+
   describe('breakpoint media query listeners', () => {
     let instance: Interact;
     let testElement: HTMLElement;
@@ -2430,6 +2664,218 @@ describe('interact (mini)', () => {
 
       // The new hover handler should be added
       expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+    });
+  });
+
+  describe('a11y - accessible triggers', () => {
+    let a11yElement: HTMLElement;
+
+    function getA11yConfig(trigger: TriggerType, key: string): InteractConfig {
+      return {
+        interactions: [
+          {
+            trigger,
+            key,
+            effects: [{ effectId: 'test-effect' }],
+          },
+        ],
+        effects: {
+          'test-effect': {
+            namedEffect: { type: 'BounceIn', power: 'medium' } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+    }
+
+    afterEach(() => {
+      Interact.destroy();
+    });
+
+    describe('activate trigger', () => {
+      it('should add both click and keydown listeners', () => {
+        Interact.create(getA11yConfig('activate', 'activate-div'));
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'activate-div');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should not double-invoke handler when Enter triggers both keydown and click', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockPlay = (getWebAnimation as any)().play;
+        mockPlay.mockClear();
+
+        Interact.create(getA11yConfig('activate', 'activate-handler-test'));
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const button = document.createElement('button');
+        a11yElement.append(button);
+
+        add(a11yElement, 'activate-handler-test');
+
+        // Simulate browser behavior: Enter key triggers keydown AND synthesized click with no pointerType
+        button.dispatchEvent(
+          new KeyboardEvent('keydown', { code: 'Enter', bubbles: true }),
+        );
+        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+        expect(mockPlay).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('interest trigger', () => {
+      it('should add focusin listener alongside mouseenter', () => {
+        Interact.create(getA11yConfig('interest', 'interest-test'));
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'interest-test');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('click trigger with allowA11yTriggers flag', () => {
+      it('should NOT add keydown listener when flag is false', () => {
+        Interact.create(getA11yConfig('click', 'click-no-flag'));
+        Interact.setup({ allowA11yTriggers: false });
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add keydown listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('click', 'click-with-flag'));
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('hover trigger with allowA11yTriggers flag', () => {
+      it('should NOT add focusin listener when flag is false', () => {
+        Interact.setup({ allowA11yTriggers: false });
+        Interact.create(getA11yConfig('hover', 'hover-no-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add focusin listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('hover', 'hover-with-flag'));
+        a11yElement = document.createElement(
+          'div',
+        );
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
     });
   });
 });

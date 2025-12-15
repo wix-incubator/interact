@@ -2,7 +2,7 @@ import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Interact, add, remove } from '../src/web';
 import { addListItems } from '../src/core/add';
-import type { InteractConfig, ScrubEffect, IInteractElement } from '../src/types';
+import type { InteractConfig, ScrubEffect, IInteractElement, TriggerType } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
 
@@ -13,6 +13,7 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
     getEasing: vi.fn().mockImplementation((v) => v),
@@ -26,21 +27,23 @@ vi.mock('@wix/motion', () => {
   return mock;
 });
 
-// Mock kuliso module
-vi.mock('kuliso', () => ({
-  Pointer: vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
-    destroy: vi.fn(),
-  })),
-}));
+// Mock kuliso module - use class constructor for proper 'new' support
+vi.mock('kuliso', () => {
+  const MockPointer = vi.fn(function(this: any) {
+    this.start = vi.fn();
+    this.destroy = vi.fn();
+  }) as any;
+  return { Pointer: MockPointer };
+});
 
-// Mock fizban module
-vi.mock('fizban', () => ({
-  Scroll: vi.fn().mockImplementation(() => ({
-    start: vi.fn(),
-    end: vi.fn(),
-  })),
-}));
+// Mock fizban module - use class constructor for proper 'new' support
+vi.mock('fizban', () => {
+  const MockScroll = vi.fn(function(this: any) {
+    this.start = vi.fn();
+    this.end = vi.fn();
+  }) as any;
+  return { Scroll: MockScroll };
+});
 
 // Shared mock MQL storage for breakpoint tests
 let mockMQLs: Map<string, MediaQueryList>;
@@ -324,7 +327,7 @@ describe('interact (web)', () => {
     // Mock CSSStyleSheet
     (window as any).CSSStyleSheet = class CSSStyleSheet {
       constructor() {
-        return { replace: vi.fn(), insertRule: vi.fn() };
+        return { replaceSync: vi.fn(), insertRule: vi.fn() };
       }
     };
 
@@ -333,9 +336,23 @@ describe('interact (web)', () => {
       document.adoptedStyleSheets = [];
     }
 
+    // Mock PointerEvent if not available (jsdom doesn't have it)
+    if (typeof PointerEvent === 'undefined') {
+      (global as any).PointerEvent = class PointerEvent extends MouseEvent {
+        pointerType: string;
+        constructor(type: string, eventInit?: PointerEventInit) {
+          super(type, eventInit);
+          this.pointerType = eventInit?.pointerType || '';
+        }
+      };
+    }
+
     // Mock matchMedia for condition testing
     mockMQLs = new Map();
     mockMatchMedia();
+
+    // Reset allowA11yTriggers to false to maintain test consistency
+    Interact.allowA11yTriggers = false;
   });
 
   function mockMatchMedia(matchingQueries: string[] = []) {
@@ -442,6 +459,8 @@ describe('interact (web)', () => {
     Interact.destroy();
     // Reset forceReducedMotion to default
     Interact.forceReducedMotion = false;
+    // Reset allowA11yTriggers to default false for test isolation
+    Interact.allowA11yTriggers = false;
   });
 
   describe('init Interact instance', () => {
@@ -720,8 +739,8 @@ describe('interact (web)', () => {
 
         expect(getWebAnimation).toHaveBeenCalledTimes(3);
         expect(getWebAnimation.mock.calls[0][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[1][0]).toBe(divClick);
-        expect(getWebAnimation.mock.calls[2][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[1][0]).toBe(div);
+        expect(getWebAnimation.mock.calls[2][0]).toBe(divClick);
         expect(getWebAnimation.mock.calls[0][3]).toMatchObject({
           reducedMotion: false,
         });
@@ -780,7 +799,9 @@ describe('interact (web)', () => {
           start: vi.fn(),
           destroy: vi.fn(),
         };
-        Pointer.mockImplementation(() => pointerInstance);
+        Pointer.mockImplementation(function(this: any) {
+          Object.assign(this, pointerInstance);
+        });
 
         element = document.createElement('interact-element') as IInteractElement;
         const div = document.createElement('div');
@@ -834,7 +855,9 @@ describe('interact (web)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(() => scrollInstance);
+          Scroll.mockImplementation(function(this: any) {
+            Object.assign(this, scrollInstance);
+          });
 
           element = document.createElement('interact-element') as IInteractElement;
           const div = document.createElement('div');
@@ -1072,7 +1095,9 @@ describe('interact (web)', () => {
         start: vi.fn(),
         destroy: vi.fn(),
       };
-      Pointer.mockImplementation(() => pointerInstance);
+      Pointer.mockImplementation(function(this: any) {
+        Object.assign(this, pointerInstance);
+      });
 
       const key = 'logo-mouse';
       element = document.createElement('interact-element') as IInteractElement;
@@ -2190,8 +2215,8 @@ describe('interact (web)', () => {
 
       add(interactElement, 'toggle-source');
 
-      // Trigger click event
-      const clickEvent = new MouseEvent('click', { bubbles: true });
+      // Trigger click event with pointerType to pass the click handler check
+      const clickEvent = new PointerEvent('click', { bubbles: true, pointerType: 'mouse' });
       div.dispatchEvent(clickEvent);
 
       // The InteractElement's toggleEffect should be called (not the controller's fallback logic)
@@ -2453,6 +2478,218 @@ describe('interact (web)', () => {
 
       // The new hover handler should be added
       expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+    });
+  });
+
+  describe('a11y - accessible triggers', () => {
+    let a11yElement: IInteractElement;
+
+    function getA11yConfig(trigger: TriggerType, key: string): InteractConfig {
+      return {
+        interactions: [
+          {
+            trigger,
+            key,
+            effects: [{ effectId: 'test-effect' }],
+          },
+        ],
+        effects: {
+          'test-effect': {
+            namedEffect: { type: 'BounceIn', power: 'medium' } as NamedEffect,
+            duration: 500,
+          },
+        },
+      };
+    }
+
+    afterEach(() => {
+      Interact.destroy();
+    });
+
+    describe('activate trigger', () => {
+      it('should add both click and keydown listeners', () => {
+        Interact.create(getA11yConfig('activate', 'activate-div'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'activate-div');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should not double-invoke handler when Enter triggers both keydown and click', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockPlay = (getWebAnimation as any)().play;
+        mockPlay.mockClear();
+
+        Interact.create(getA11yConfig('activate', 'activate-handler-test'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const button = document.createElement('button');
+        a11yElement.append(button);
+
+        add(a11yElement, 'activate-handler-test');
+
+        // Simulate browser behavior: Enter key triggers keydown AND synthesized click with no pointerType
+        button.dispatchEvent(
+          new KeyboardEvent('keydown', { code: 'Enter', bubbles: true }),
+        );
+        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+        expect(mockPlay).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('interest trigger', () => {
+      it('should add focusin listener alongside mouseenter', () => {
+        Interact.create(getA11yConfig('interest', 'interest-test'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'interest-test');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('click trigger with allowA11yTriggers flag', () => {
+      it('should NOT add keydown listener when flag is false', () => {
+        Interact.create(getA11yConfig('click', 'click-no-flag'));
+        Interact.setup({ allowA11yTriggers: false });
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add keydown listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('click', 'click-with-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'click-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'keydown',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('hover trigger with allowA11yTriggers flag', () => {
+      it('should NOT add focusin listener when flag is false', () => {
+        Interact.setup({ allowA11yTriggers: false });
+        Interact.create(getA11yConfig('hover', 'hover-no-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-no-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
+
+      it('should add focusin listener when flag is true', () => {
+        Interact.setup({ allowA11yTriggers: true });
+        Interact.create(getA11yConfig('hover', 'hover-with-flag'));
+        a11yElement = document.createElement(
+          'interact-element',
+        ) as IInteractElement;
+
+        const div = document.createElement('div');
+        a11yElement.append(div);
+
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(a11yElement, 'hover-with-flag');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
     });
   });
 });

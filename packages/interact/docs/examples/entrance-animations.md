@@ -807,6 +807,81 @@ const testimonialConfig = {
 .testimonial-list > *:nth-child(3) { animation-delay: 400ms; }
 ```
 
+## Preventing Flash of Unstyled Content (FOUC)
+
+When using entrance animations, elements may briefly appear before their animation starts (a "flash"). To prevent this, use the `generate()` function to create CSS that hides elements until their animation completes.
+
+### Server-Side Setup
+
+For the best experience, generate the CSS on the server and include it in the initial HTML `<head>`:
+
+```typescript
+// server.ts or build script
+import { generate } from '@wix/interact';
+
+const config = {
+    interactions: [{
+        key: 'hero',
+        trigger: 'viewEnter',
+        params: { type: 'once', threshold: 0.2 },
+        effects: [{
+            keyframeEffect: {
+                name: 'fade-in',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(40px)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
+            },
+            duration: 800
+        }]
+    }],
+    effects: {}
+};
+
+// Generate CSS at build time or on server
+const css = generate(config);
+
+// Include in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>${css}</style>
+</head>
+<body>
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
+            <h1>Welcome to Our Site</h1>
+            <p>This content fades in smoothly without flash</p>
+        </section>
+    </interact-element>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
+`;
+```
+
+### HTML Markup
+
+Add `data-interact-initial="true"` to the `<interact-element>` that has a child that should be hidden until its entrance animation:
+
+```html
+<interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">
+        <h1>Welcome to Our Site</h1>
+        <p>This content fades in smoothly without flash</p>
+    </section>
+</interact-element>
+```
+
+### Accessibility
+
+The generated CSS respects `prefers-reduced-motion`. Users who prefer reduced motion will see content immediately without waiting for animations.
+
+See the [generate() function documentation](../api/functions.md#generate) for more details.
+
+---
+
 ## Best Practices
 
 ### Timing Guidelines

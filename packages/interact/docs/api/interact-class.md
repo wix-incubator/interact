@@ -214,7 +214,7 @@ console.log('Cache cleared:', Interact.controllerCache.size === 0);
 Configures global settings for the Interact system.
 
 **Parameters:**
-- `options: { forceReducedMotion?: boolean, viewEnter?: object, viewProgress?: object, pointerMove?: object }`
+- `options: { forceReducedMotion?: boolean, viewEnter?: object, viewProgress?: object, pointerMove?: object, allowA11yTriggers?: boolean}`
 
 **Example:**
 ```typescript
@@ -227,6 +227,11 @@ Interact.setup({
 Interact.setup({
   viewEnter: { threshold: 0.5 },
   viewProgress: { /* scroll options */ }
+});
+
+// Enable accessibility for click and hover triggers
+Interact.setup({
+  allowA11yTriggers: true
 });
 ```
 

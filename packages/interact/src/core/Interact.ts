@@ -34,6 +34,7 @@ export class Interact {
   };
   controllers: Set<IInteractionController>;
   static forceReducedMotion: boolean = false;
+  static allowA11yTriggers: boolean = true;
   static instances: Interact[] = [];
   static controllerCache = new Map<string, IInteractionController>();
 
@@ -168,7 +169,8 @@ export class Interact {
   static setup(options: {
     scrollOptionsGetter?: () => Partial<scrollConfig>;
     pointerOptionsGetter?: () => Partial<PointerConfig>;
-    viewEnter?: Partial<ViewEnterParams>
+    viewEnter?: Partial<ViewEnterParams>;
+    allowA11yTriggers?: boolean;
   }): void {
     if (options.scrollOptionsGetter) {
       TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress.registerOptionsGetter?.(
@@ -184,6 +186,10 @@ export class Interact {
 
     if(options.viewEnter) {
       (TRIGGER_TO_HANDLER_MODULE_MAP.viewEnter as ViewEnterHandlerModule).setOptions(options.viewEnter);
+    }
+
+    if(options.allowA11yTriggers !== undefined) {
+      Interact.allowA11yTriggers = options.allowA11yTriggers;
     }
   }
 

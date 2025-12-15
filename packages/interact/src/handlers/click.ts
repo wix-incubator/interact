@@ -23,6 +23,7 @@ function createTimeEffectHandler(
   effect: TimeEffect & EffectBase,
   options: PointerTriggerParams,
   reducedMotion: boolean = false,
+  selectorCondition?: string,
 ) {
   const animation = getAnimation(
     element,
@@ -33,7 +34,8 @@ function createTimeEffectHandler(
   let initialPlay = true;
   const type = options.type || 'alternate';
 
-  return (__: MouseEvent) => {
+  return (__: MouseEvent | KeyboardEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     if (type === 'alternate') {
       if (initialPlay) {
         initialPlay = false;
@@ -78,10 +80,12 @@ function createTransitionHandler(
     listItemSelector,
   }: TransitionEffect & EffectBase & { effectId: string },
   options: StateParams,
+  selectorCondition?: string,
 ) {
   const shouldSetStateOnElement = !!listContainer;
 
-  return (__: MouseEvent) => {
+  return (__: MouseEvent | KeyboardEvent) => {
+    if (selectorCondition && !element.matches(selectorCondition)) return;
     let item;
     if (shouldSetStateOnElement) {
       item = element.closest(
@@ -98,9 +102,9 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  { reducedMotion, targetController }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
-  let handler: (event: MouseEvent) => void;
+  let handler: (event: MouseEvent | KeyboardEvent) => void;
   let once = false;
 
   if (
@@ -112,6 +116,7 @@ function addClickHandler(
       targetController!,
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
+      selectorCondition,
     );
   } else {
     handler = createTimeEffectHandler(
@@ -119,12 +124,16 @@ function addClickHandler(
       effect as TimeEffect & EffectBase,
       options as PointerTriggerParams,
       reducedMotion,
+      selectorCondition,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }
 
   const cleanup = () => {
     source.removeEventListener('click', handler);
+    if (allowA11yTriggers) {
+      source.removeEventListener('keydown', handler);
+    }
   };
 
   const handlerObj = { source, target, cleanup };
@@ -132,7 +141,32 @@ function addClickHandler(
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
-  source.addEventListener('click', handler, { passive: true, once });
+  source.addEventListener(
+    'click',
+    (e) => {
+      if ((e as PointerEvent).pointerType) {
+        handler(e);
+      }
+    },
+    { passive: true, once },
+  );
+
+  if (allowA11yTriggers) {
+    source.tabIndex = 0;
+
+    source.addEventListener(
+      'keydown',
+      (event: KeyboardEvent) => {
+        if (event.code === 'Space') {
+          event.preventDefault();
+          handler(event);
+        } else if (event.code === 'Enter') {
+          handler(event);
+        }
+      },
+      { once },
+    );
+  }
 }
 
 function removeClickHandler(element: HTMLElement) {

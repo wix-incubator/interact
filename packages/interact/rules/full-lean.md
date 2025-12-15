@@ -29,6 +29,42 @@ Interact.create(config);
 </script>
 ```
 
+### Preventing FOUC for entrance animations
+
+- Use `generate(config)` to create critical CSS that hides elements until their `viewEnter` entrance animation plays.
+- Add `data-interact-initial="true"` to the `<interact-element>` that should have its first child hidden initially.
+- Only use `data-interact-initial="true"` for `<interact-element>` with `viewEnter` trigger.
+- Do NOT use for `hover` or `click` interactions.
+
+**Usage:**
+```javascript
+import { generate } from '@wix/interact';
+
+const config = {/*...*/};
+
+// Generate CSS at build time or on server
+const css = generate(config);
+
+// Include in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>${css}</style>
+</head>
+<body>
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
+            <h1>Welcome to Our Site</h1>
+            <p>This content fades in smoothly without flash</p>
+        </section>
+    </interact-element>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
+`;
+```
+
 ### General guidelines (avoiding common pitfalls)
 - Missing required fields or invalid references SHOULD be treated as no-ops for the offending interaction/effect while leaving the rest of the config functional.
 - Params with incorrect types or shapes (especially for `namedEffect` preset options) can produce console errors. If you do not know the expected type/structure for a param, omit it and rely on defaults rather than guessing.
@@ -115,6 +151,19 @@ This configuration declares what user/system triggers occur on which source elem
             - `'self'`: Track pointer within the source element’s bounds.
             - `'root'`: Track pointer anywhere in the viewport (document root).
             - Only use with `ScrubEffect` mouse presets (`namedEffect`) or `customEffect` that consumes pointer progress; avoid `keyframeEffect` with `pointerMove`.
+          - When using `customEffect` with `pointerMove`, the progress parameter is an object:
+            - ```typescript
+              type Progress = {
+                x: number;      // 0-1: horizontal position (0 = left edge, 1 = right edge)
+                y: number;      // 0-1: vertical position (0 = top edge, 1 = bottom edge)
+                v?: {           // Velocity (optional)
+                  x: number;    // Horizontal velocity
+                  y: number;    // Vertical velocity
+                };
+                active?: boolean; // Whether mouse is currently in the hit area
+              };
+              ```
+
     - **conditions?: string[]**
       - OPTIONAL. Array of condition ids that MUST all pass for this trigger to be active.
     - **selector?: string**
@@ -235,7 +284,7 @@ const config: InteractConfig = {
      - `reversed?`: boolean
      - `rangeStart`: `RangeOffset`
      - `rangeEnd`: `RangeOffset`
-     - `centeredToTarget?`: boolean
+     - `centeredToTarget?`: boolean // If `true` centers the coordinate range at the target element, otherwise uses source element
      - `transitionDuration?`: number (ms for smoothing on progress jumps)
      - `transitionDelay?`: number
      - `transitionEasing?`: `ScrubTransitionEasing`

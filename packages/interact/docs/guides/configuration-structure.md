@@ -707,6 +707,11 @@ const galleryConfig: InteractConfig = {
 2. **Extract reusable effects** as your project grows
 3. **Group by feature** rather than by type
 
+### Accessibility
+1. **Use `activate` instead of `click`** for keyboard accessibility (Enter/Space)
+2. **Use `interest` instead of `hover`** for keyboard accessibility (Focus)
+3. **Or enable `allowA11yTriggers` globally** to make existing triggers accessible
+
 ### Performance Tips
 1. **Reuse effects** instead of duplicating them
 2. **Use conditions** to avoid unnecessary animations

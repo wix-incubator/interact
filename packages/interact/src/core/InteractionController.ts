@@ -49,7 +49,7 @@ export class InteractionController {
     }
 
     this._observers = new WeakMap();
-
+    this.sheet = null;
     this.connected = false;
   }
 
@@ -61,7 +61,7 @@ export class InteractionController {
   renderStyle(cssRules: string[]) {
     if (!this.sheet) {
       this.sheet = new CSSStyleSheet();
-      void this.sheet.replace(cssRules.join('\n'));
+      void this.sheet.replaceSync(cssRules.join('\n'));
 
       document.adoptedStyleSheets.push(this.sheet);
     } else {
