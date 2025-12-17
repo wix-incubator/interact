@@ -7,48 +7,30 @@ import type {
   TimeEffect,
   TransitionEffect,
   CreateTransitionCSSParams,
-  Condition,
+  Interaction,
 } from '../types';
-import { createTransitionCSS } from '../utils';
+import { createTransitionCSS, applySelectorCondition } from '../utils';
 import { getSelector } from './Interact';
 import { effectToAnimationOptions } from '../handlers/utilities';
-import { getCSSAnimation, getEasing } from '@wix/motion';
-
-// ============================================================================
-// Types
-// ============================================================================
+import { getCSSAnimation } from '@wix/motion';
 
 type KeyframeProperty = Record<string, string | number | undefined>;
-
 interface AnimationProps {
-  names: string[];
-  durations: string[];
-  delays: string[];
-  timingFunctions: string[];
-  iterationCounts: string[];
-  directions: string[];
-  fillModes: string[];
+  animations: string[],
+  compositions: CompositeOperation[],
+  custom: KeyframeProperty,
 }
 
-// ============================================================================
-// Helper Utilities
-// ============================================================================
+interface CSSAnimationResult {
+  animation: string,
+  composition: CompositeOperation,
+  custom: KeyframeProperty,
+  name: string,
+  keyframes: KeyframeProperty[],
+}
 
-/**
- * Checks if the trigger is a time-based trigger (not scrub-based).
- */
 function isTimeTrigger(trigger: TriggerType): boolean {
   return !['viewProgress', 'pointerMove'].includes(trigger);
-}
-
-/**
- * Determines the animation-direction CSS value based on alternate and reversed flags.
- */
-function getDirection(alternate?: boolean, reversed?: boolean): string {
-  if (alternate && reversed) return 'alternate-reverse';
-  if (alternate) return 'alternate';
-  if (reversed) return 'reverse';
-  return 'normal';
 }
 
 /**
@@ -130,60 +112,69 @@ function keyframesToCSS(name: string, keyframes: KeyframeProperty[]): string {
   return `@keyframes ${name} { ${keyframeBlocks} }`;
 }
 
-/**
- * Gets animation data from an effect using the motion library's getCSSAnimation.
- */
-function getTransitionData(effect: Effect & { key: string }): string[] {
+function shortestCompositionPatternLength(compositions: CompositeOperation[]): number {
+  let patternLength = 1;
+  let index = 1;
+  while (index < compositions.length) {
+    if (compositions[index] === compositions[index % patternLength]) {
+      index++;
+    } else {
+      patternLength = Math.max(index - patternLength, patternLength) + 1;
+      index = patternLength;
+    }
+  }
+  return patternLength;
+}
+
+function getTransitionRules(effect: Effect & { key: string }, childSelector: string): string[] {
     const args: CreateTransitionCSSParams = {
       key: effect.key,
       effectId: (effect as Effect).effectId!,
       transition: (effect as TransitionEffect).transition,
       properties: (effect as TransitionEffect).transitionProperties,
-      childSelector: getSelector(effect, {
-        // TODO: (ameerf) - paste the right conditions here
-        asCombinator: true,
-        addItemFilter: true,
-      }),
+      childSelector,
     };
     return createTransitionCSS(args);
 }
 
-interface CSSAnimationResult {
-  name: string;
-  keyframes: KeyframeProperty[];
-}
-
-/**
- * Gets animation data from an effect using the motion library's getCSSAnimation.
- */
 function getAnimationData(effect: Effect): CSSAnimationResult[] {
   const animationOptions = effectToAnimationOptions(effect as TimeEffect);
-
-  // Use getCSSAnimation from motion to get the animation data
+  
   const cssAnimations = getCSSAnimation(null, animationOptions);
 
   return cssAnimations
-    .filter((anim) => anim.name !== undefined)
+    .filter((anim) => anim.name)
     .map((anim) => ({
-      name: anim.name!,
-      keyframes: anim.keyframes as KeyframeProperty[],
+      animation: anim.animation,
+      composition: anim.composition || 'replace',
+      custom: anim.custom || {},
+      name: anim.name,
+      keyframes: anim.keyframes,
     }));
 }
 
 function resolveEffect(
   effectRef: Effect | EffectRef,
   effectsMap: Record<string, Effect>,
-  interactionKey: string,
-): Effect | null {
+  interaction: Interaction,
+): (Effect & { key: string }) | null {
   const fullEffect: any = effectRef.effectId
       ? { ...effectsMap[effectRef.effectId], ...effectRef}
       : { ...effectRef};
 
   if (fullEffect.namedEffect || fullEffect.keyframeEffect || fullEffect.transition) {
     if (!fullEffect.key) {
-      fullEffect.key = interactionKey;
+      fullEffect.key = interaction.key;
     }
-    return fullEffect as Effect;
+    if (interaction.conditions && interaction.conditions.length) {
+      fullEffect.conditions = [...new Set(...interaction.conditions, ...(fullEffect.conditions || []))]
+    }
+    
+    const {keyframeEffect} = fullEffect;
+    if (keyframeEffect && !keyframeEffect.name) {
+      keyframeEffect.name = effectRef.keyframeEffect ? generateUniqueKeyframesName(keyframeEffect) : effectRef.effectId;
+    }
+    return fullEffect;
   }
 
   return null;
@@ -193,103 +184,54 @@ function resolveEffect(
  * Builds the full CSS selector for an element.
  */
 function buildSelector(
-  key: string,
-  effect: Effect,
-  addItemFilter = false,
+  effect: Effect & {key: string},
+  childSelector: string,
+  selectorCondition?: string
 ): string {
-  const keySelector = `[data-interact-key="${key}"]`;
-  const childSelector = getSelector(effect, { addItemFilter });
-  return `${keySelector} ${childSelector}`;
+  const escapedKey = effect.key.replace(/"/g, "'");
+  const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+  return selectorCondition
+    ? applySelectorCondition(selector, selectorCondition)
+    : selector;
 }
 
-/**
- * Creates empty animation props object.
- */
 function createEmptyAnimationProps(): AnimationProps {
   return {
-    names: [],
-    durations: [],
-    delays: [],
-    timingFunctions: [],
-    iterationCounts: [],
-    directions: [],
-    fillModes: [],
+    animations: [],
+    compositions: [],
+    custom: {},
   };
 }
 
-/**
- * Adds animation data properties to the animation props object.
- */
 function addAnimationProps(
   props: AnimationProps,
   animationResult: CSSAnimationResult,
-  effect: Effect,
 ): void {
-  const timeEffect = effect as TimeEffect;
-
-  props.names.push(animationResult.name);
-  props.durations.push(`${timeEffect.duration ?? 0}ms`);
-  props.delays.push(`${timeEffect.delay ?? 0}ms`);
-
-  props.timingFunctions.push(getEasing(timeEffect.easing));
-
-  props.iterationCounts.push(
-    timeEffect.iterations === 0 ? 'infinite' : String(timeEffect.iterations ?? 1),
-  );
-
-  props.directions.push(getDirection(timeEffect.alternate, timeEffect.reversed));
-
-  props.fillModes.push(timeEffect.fill ?? 'none');
+  props.animations.push(animationResult.animation);
+  props.compositions.push(animationResult.composition);
+  props.custom = {...props.custom, ...animationResult.custom};
 }
 
-/**
- * Builds a CSS animation rule from animation props.
- */
 function buildAnimationRule(selector: string, props: AnimationProps): string {
   const declarations: string[] = [];
 
-  declarations.push(`animation-name: ${props.names.join(', ')};`);
-  declarations.push(`animation-duration: ${props.durations.join(', ')};`);
-  declarations.push(`animation-delay: ${props.delays.join(', ')};`);
-  declarations.push(
-    `animation-timing-function: ${props.timingFunctions.join(', ')};`,
-  );
-  declarations.push(
-    `animation-iteration-count: ${props.iterationCounts.join(', ')};`,
-  );
-  declarations.push(`animation-direction: ${props.directions.join(', ')};`);
-  declarations.push(`animation-fill-mode: ${props.fillModes.join(', ')};`);
+  let {compositions} = props;
+  const compositionRepeatLength = shortestCompositionPatternLength(props.compositions);
+  compositions = compositions.slice(0, compositionRepeatLength);
+  if (compositions.length === 1 && compositions[0] === 'replace') {
+    compositions = [];
+  }
+
+  const {animations, custom} = props;
+
+  declarations.push(`animation: ${animations.join(', ')};`);
+  declarations.push(`animation-composition: ${compositions.join(', ')};`);
+
+  for (const [key, val] of Object.entries(custom)) {
+    declarations.push(`${key}: ${val};`);  
+  }
 
   return `${selector} { ${declarations.join(' ')} }`;
-}
-
-/**
- * Wraps a CSS rule in a media query.
- */
-function wrapInMediaQuery(rule: string, predicate: string): string {
-  return `@media (${predicate}) { ${rule} }`;
-}
-
-/**
- * Gets the media predicate for conditions.
- */
-function getMediaPredicate(
-  conditionIds: string[] | undefined,
-  conditions: Record<string, Condition> | undefined,
-): string | null {
-  if (!conditionIds || conditionIds.length === 0 || !conditions) {
-    return null;
-  }
-
-  // Find the first media condition
-  for (const id of conditionIds) {
-    const condition = conditions[id];
-    if (condition && condition.type === 'media' && condition.predicate) {
-      return condition.predicate;
-    }
-  }
-
-  return null;
 }
 
 // ============================================================================
@@ -303,90 +245,81 @@ function getMediaPredicate(
  * @returns GetCSSResult with keyframes and animationRules
  */
 export function getCSS(config: InteractConfig): GetCSSResult {
+  const transitionRules: string[] = [];
   const keyframeMap = new Map<string, string>(); // name -> CSS @keyframes rule
-  const selectorPropsMap = new Map<
+  const selectorPropsMap = new Map< // selector -> condition -> CSS props to apply
     string,
-    { props: AnimationProps; conditions: string | null }
+    Record<string, AnimationProps>
   >();
 
+
   for (const interaction of config.interactions) {
-    // Skip non-time-based triggers
     if (!isTimeTrigger(interaction.trigger)) {
       continue;
     }
 
     for (const effectRef of interaction.effects) {
-      // Resolve the effect
-      const effect = resolveEffect(effectRef, config.effects, interaction.key);
+      const effect = resolveEffect(effectRef, config.effects, interaction);
       if (!effect) continue;
 
-      // Get animation data using motion's getCSSAnimation
-      const animationDataList = getAnimationData(effect);
-      if (animationDataList.length === 0) continue;
-
-      // Build selector - use effect's key or fall back to interaction key
-      const targetKey = effect.key || interaction.key;
       const hasListItemSelector = Boolean(effect.listItemSelector);
-      const selector = buildSelector(targetKey, effect, hasListItemSelector);
+      const childSelector = getSelector(effect, {
+        asCombinator: true,
+        addItemFilter: hasListItemSelector, // TODO: (ameerf) - correct?
+      });
 
-      // Get media predicate for conditions
-      const mediaPredicate = getMediaPredicate(
-        effectRef.conditions,
-        config.conditions,
-      );
-
-      // Create a unique key for the selector + conditions combination
-      const selectorKey = mediaPredicate
-        ? `${selector}::${mediaPredicate}`
-        : selector;
-
-      // Get or create props for this selector
-      if (!selectorPropsMap.has(selectorKey)) {
-        selectorPropsMap.set(selectorKey, {
-          props: createEmptyAnimationProps(),
-          conditions: mediaPredicate,
-        });
+      if (
+        (effect as TransitionEffect).transition ||
+        (effect as TransitionEffect).transitionProperties
+      ) {
+        // TODO: (ameerf) - Do we want to override transition property like this?
+        transitionRules.push(...getTransitionRules(effect, childSelector));
       }
-      const { props } = selectorPropsMap.get(selectorKey)!;
 
-      // Process each animation data
-      for (const data of animationDataList) {
-        // Add keyframe (deduplicated)
-        if (data.name && !keyframeMap.has(data.name)) {
+      if (
+        (effect as any).namedEffect ||
+        (effect as any).keyframeEffect
+      ) {
+        const animationDataList = getAnimationData(effect);
+        if (animationDataList.length === 0) continue;          
+                
+        const escapedKey = effect.key.replace(/"/g, "'");
+        const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+        if (!selectorPropsMap.has(selector)) {
+          selectorPropsMap.set(selector, {});
+        }
+
+        for (const data of animationDataList) {
           const keyframeCSS = keyframesToCSS(data.name, data.keyframes);
           if (keyframeCSS) {
             keyframeMap.set(data.name, keyframeCSS);
           }
-        }
 
-        // Add animation properties
-        addAnimationProps(props, data, effect);
+          const conditionToProps = selectorPropsMap.get(selector)!;
+          const conditions = effect.conditions?.length ? effect.conditions : [''];
+          for (const condition of conditions) {
+            if (!conditionToProps[condition]) {
+              conditionToProps[condition] = createEmptyAnimationProps();  
+            }
+            addAnimationProps(conditionToProps[condition], data);
+          }
+        }
       }
     }
   }
 
-  // Build animation rules
   const animationRules: string[] = [];
-  for (const [selectorKey, { props, conditions }] of selectorPropsMap) {
-    if (props.names.length === 0) continue;
-
-    // Extract the actual selector (remove conditions suffix if present)
-    const selector = conditions
-      ? selectorKey.substring(0, selectorKey.lastIndexOf('::'))
-      : selectorKey;
-
-    let rule = buildAnimationRule(selector, props);
-
-    // Wrap in media query if conditions exist
-    if (conditions) {
-      rule = wrapInMediaQuery(rule, conditions);
+  for (const [baseSelector, conditionsMap] of selectorPropsMap) {
+    for (const [condition, props] of Object.entries(conditionsMap)) {
+      if (props.animations.length === 0) continue;
+      const rule = buildAnimationRule(baseSelector, props, condition);
+      animationRules.push(rule);
     }
-
-    animationRules.push(rule);
   }
 
   return {
     keyframes: Array.from(keyframeMap.values()),
     animationRules,
+    transitionRules
   };
 }

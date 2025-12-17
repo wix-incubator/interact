@@ -285,6 +285,8 @@ export type CreateTransitionCSSParams = {
 export type GetCSSResult = {
   /** @keyframes rules for the animations */
   keyframes: string[];
-  /** Full animation property rules per element (animation-name, duration, timing-function, fill-mode, etc.) */
+  /** Full animation property rules per element (animation, composition, custom, etc.) */
   animationRules: string[];
+  /** Full transition properties rules per element */
+  transitionRules: string[];
 };
