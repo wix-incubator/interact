@@ -4,7 +4,7 @@ import {
   BounceMouse,
   TrackMouse,
 } from '../../types';
-import { web as createTrack } from './TrackMouse';
+import { create as createTrack } from './TrackMouse';
 
 export function web(
   options: ScrubAnimationOptions & AnimationExtraOptions,

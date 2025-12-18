@@ -485,7 +485,7 @@ export type BackgroundScrollAnimation =
   | ImageParallax;
 
 export type BackgroundScrollAnimationModule = {
-  web: WebAnimationEffectFactory<'scrub'>;
+  create: WebAnimationEffectFactory<'scrub'>;
 };
 export type BackgroundScrollAnimations = Record<
   BackgroundScrollAnimation['type'],
@@ -624,7 +624,8 @@ export type MouseAnimation =
   | Track3DMouse
   | TrackMouse;
 export type MouseAnimationModule = {
-  web: MouseAnimationFactoryCreate;
+  web?: MouseAnimationFactoryCreate;
+  create?: MouseAnimationFactoryCreate;
 };
 export type MouseAnimations = Record<
   MouseAnimation['type'],

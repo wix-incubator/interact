@@ -32,10 +32,10 @@ Then register the presets before creating interactions:
 
 ```typescript
 import { Interact } from '@wix/interact/web';
-import { presets } from '@wix/motion-presets';
+import { FadeIn } from '@wix/motion-presets';
 
 // Register animation presets
-Interact.registerEffects(presets);
+Interact.registerEffects({ FadeIn });
 
 // Now you can use namedEffect in your config
 const config = {

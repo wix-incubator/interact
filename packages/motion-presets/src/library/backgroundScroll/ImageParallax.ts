@@ -6,7 +6,7 @@ import type {
 } from '../../types';
 import { measureCompHeight, measureSiteHeight } from './utils';
 
-export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+export function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const {
     speed = 1.5,
     reverse = false,

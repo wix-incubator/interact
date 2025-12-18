@@ -238,7 +238,7 @@ Interact.setup({
 
 ### `Interact.registerEffects(effects)`
 
-Registers animation presets from `@wix/motion-presets` (or custom effects) for use with `namedEffect` in your interactions.
+Registers animation presets from `@wix/motion-presets` in order to use them in the config.
 
 **Parameters:**
 - `effects: Record<string, NamedEffect>` - An object mapping effect names to effect definitions
@@ -278,7 +278,6 @@ Interact.registerEffects({ FadeIn, SlideIn });
 ```
 
 **Details:**
-- This is a passthrough to `@wix/motion`'s `registerEffects` function
 - Effects must be registered before calling `Interact.create()` with configurations that reference them
 - Registration is global — once registered, effects are available to all Interact instances
 
