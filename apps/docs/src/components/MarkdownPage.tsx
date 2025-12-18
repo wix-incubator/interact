@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -68,15 +68,54 @@ export function MarkdownPage() {
         components={{
           // Custom link handling for internal navigation
           a: ({ href, children, ...props }) => {
-            if (href?.startsWith('./') || href?.startsWith('../')) {
-              // Convert relative markdown links to router links
-              const cleanHref = href
-                .replace(/\.md$/, '')
-                .replace(/\/README$/, '');
-              return <a href={cleanHref} {...props}>{children}</a>;
-            }
+            // External links open in new tab
             if (href?.startsWith('http')) {
               return <a href={href} target="_blank" rel="noopener noreferrer" {...props}>{children}</a>;
+            }
+            // Anchor links (hash only)
+            if (href?.startsWith('#')) {
+              return <a href={href} {...props}>{children}</a>;
+            }
+            // Internal markdown links - convert to router paths
+            if (href && (href.endsWith('.md') || href.startsWith('./') || href.startsWith('../') || href.startsWith('/') || !href.includes('://'))) {
+              // Separate hash from path
+              const [pathPart, hashPart] = href.split('#');
+              
+              // Build absolute path from current location
+              let absolutePath = pathPart;
+              if (pathPart && !pathPart.startsWith('/')) {
+                // Relative path - resolve against current location
+                // For index pages (like /api), treat them as directories
+                const currentPath = location.pathname;
+                const currentDir = currentPath.endsWith('/') 
+                  ? currentPath.slice(0, -1)
+                  : currentPath; // Treat /api as directory /api for relative resolution
+                absolutePath = `${currentDir}/${pathPart}`.replace(/\/+/g, '/');
+              }
+              
+              // Clean up: remove .md extension and README, normalize path
+              let cleanPath = (absolutePath || '')
+                .replace(/\.md$/, '')
+                .replace(/\/README$/i, '')
+                .replace(/\/\.\//g, '/') // Remove ./
+                .replace(/\/+/g, '/') // Remove duplicate slashes
+                .replace(/^\/+/, '/'); // Ensure single leading slash
+              
+              // Handle ../ segments
+              const segments = cleanPath.split('/').filter(Boolean);
+              const resolved: string[] = [];
+              for (const seg of segments) {
+                if (seg === '..') {
+                  resolved.pop();
+                } else if (seg !== '.') {
+                  resolved.push(seg);
+                }
+              }
+              cleanPath = '/' + resolved.join('/');
+              
+              // Re-add hash if present
+              const finalPath = hashPart ? `${cleanPath}#${hashPart}` : cleanPath;
+              return <Link to={finalPath || '/'} {...props}>{children}</Link>;
             }
             return <a href={href} {...props}>{children}</a>;
           },
