@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/copy-docs.js",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
     "test": "echo 'No tests yet'"
@@ -13,7 +13,11 @@
   "dependencies": {
     "@wix/interact": "*",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^7.1.1",
+    "rehype-highlight": "^7.0.1",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.2",
@@ -23,4 +27,3 @@
     "vite": "^7.2.2"
   }
 }
-
