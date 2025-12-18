@@ -24,6 +24,30 @@ import { getWebAnimation } from 'https://unpkg.com/@wix/motion@latest/dist/esm/i
 </script>
 ```
 
+### Installing Animation Presets
+
+`@wix/motion` provides core animation utilities, while `@wix/motion-presets` provides ready-to-use animation presets (FadeIn, SlideIn, BounceIn, etc.).
+
+```bash
+npm install @wix/motion @wix/motion-presets
+```
+
+Before using named effects like `FadeIn`, you need to register the presets:
+
+```typescript
+import { registerEffects } from '@wix/motion';
+import { presets } from '@wix/motion-presets';
+
+// Register all presets
+registerEffects(presets);
+
+// Now you can use namedEffect
+const animation = getWebAnimation(element, {
+  namedEffect: { type: 'FadeIn' },
+  duration: 1000
+});
+```
+
 ## Your First Animation
 
 Let's create a simple fade-in animation for an element:

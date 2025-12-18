@@ -1,0 +1,42 @@
+import * as ArcScroll from './ArcScroll';
+import * as BlurScroll from './BlurScroll';
+import * as FadeScroll from './FadeScroll';
+import * as FlipScroll from './FlipScroll';
+import * as GrowScroll from './GrowScroll';
+import * as MoveScroll from './MoveScroll';
+import * as PanScroll from './PanScroll';
+import * as ParallaxScroll from './ParallaxScroll';
+import * as RevealScroll from './RevealScroll';
+import * as ShapeScroll from './ShapeScroll';
+import * as ShuttersScroll from './ShuttersScroll';
+import * as ShrinkScroll from './ShrinkScroll';
+import * as SkewPanScroll from './SkewPanScroll';
+import * as SlideScroll from './SlideScroll';
+import * as Spin3dScroll from './Spin3dScroll';
+import * as SpinScroll from './SpinScroll';
+import * as StretchScroll from './StretchScroll';
+import * as TiltScroll from './TiltScroll';
+import * as TurnScroll from './TurnScroll';
+import type { ScrollAnimations } from '../../types';
+
+export const scrollAnimations: ScrollAnimations = {
+  ArcScroll,
+  BlurScroll,
+  FadeScroll,
+  FlipScroll,
+  GrowScroll,
+  MoveScroll,
+  PanScroll,
+  ParallaxScroll,
+  RevealScroll,
+  ShapeScroll,
+  ShuttersScroll,
+  ShrinkScroll,
+  SkewPanScroll,
+  SlideScroll,
+  Spin3dScroll,
+  SpinScroll,
+  StretchScroll,
+  TiltScroll,
+  TurnScroll,
+};

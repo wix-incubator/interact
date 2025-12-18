@@ -1,9 +1,16 @@
-import { BackgroundScrollAnimation, EntranceAnimation, MouseAnimation, OngoingAnimation, ScrollAnimation } from "../types";
+import { NamedEffect } from "../types";
 
-type Preset = ScrollAnimation | EntranceAnimation | OngoingAnimation | MouseAnimation | BackgroundScrollAnimation;
+const registry: Record<string, NamedEffect> = {}
 
-export const registry: Record<string, Preset> = {}
-
-export function registerEffects(effects: Record<string, Preset>) {
+export function registerEffects(effects: Record<string, NamedEffect>) {
     Object.assign(registry, effects);
+}
+
+export function getRegisteredEffect(name: keyof NamedEffect) {
+    if (name in registry) {
+        return registry[name];
+    } else {
+        console.warn(`${name} not found in registry. Please make sure to import and register the preset.`);
+        return null;
+    }
 }

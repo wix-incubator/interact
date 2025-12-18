@@ -2,25 +2,16 @@ import type {
   AnimationData,
   AnimationDataForScrub,
   AnimationOptions,
-  BackgroundScrollAnimations,
-  EntranceAnimations,
   MeasureCallback,
-  MouseAnimations,
-  OngoingAnimations,
   RangeOffset,
-  ScrollAnimations,
   TimeAnimationOptions,
   TriggerVariant,
   UnitLengthPercentage,
 } from '../types';
-import { scrollAnimations } from '../library/scroll';
-import { entranceAnimations } from '../library/entrance';
-import { ongoingAnimations } from '../library/ongoing';
-import { mouseAnimations } from '../library/mouse';
-import { backgroundScrollAnimations } from '../library/backgroundScroll';
 import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
-import { registry } from './registry';
+import { getRegisteredEffect } from './registry';
+import { NamedEffect } from '@wix/motion-presets';
 
 function getElement(
   id: string | null,
@@ -85,12 +76,7 @@ function mutate(target: HTMLElement | null): MeasureCallback {
 function getNamedEffect(animation: AnimationOptions) {
   if (animation.namedEffect) {
     const name = animation.namedEffect.type;
-
-    if (name in registry) {
-      return registry[name];
-    } else {
-      console.warn(`Named effect ${name} not found in registry. Please make sure to import and register the preset first.`);
-    }
+    return getRegisteredEffect(name as keyof NamedEffect);
   } else if (animation.keyframeEffect) {
     const effect = (animation_: AnimationOptions) => {
       const { name, keyframes } = animation_.keyframeEffect!;
