@@ -6,8 +6,8 @@ Welcome to the complete documentation for the `@wix/interact` package - a powerf
 
 | Entry Point | Use Case | Key Exports |
 |-------------|----------|-------------|
-| `@wix/interact/react` | React applications | `Interact`, `generate`, `Interaction` |
 | `@wix/interact/web` | Web Components | `Interact`, `generate` |
+| `@wix/interact/react` | React applications | `Interact`, `generate`, `Interaction` |
 | `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove`, `generate` |
 
 ## Table of Contents
@@ -166,8 +166,7 @@ Interact.create({
       },
       duration: 200
     }]
-  }],
-  effects: {}
+  }]
 });
 ```
 
@@ -197,15 +196,14 @@ Interact.create({
       },
       duration: 200
     }]
-  }],
-  effects: {}
+  }]
 });
 ```
 
 ## Version Information
 
-This documentation is for `@wix/interact` v1.0.0. For earlier versions or migration information, see the [Migration Guide](integration/migration.md).
+This documentation is for `@wix/interact` v2.0.0. For earlier versions or migration information, see the [Migration Guide](integration/migration.md).
 
 ## Feedback
 
-Found an issue with the documentation? Please [open an issue](https://github.com/wix-incubator/wow-libs/issues) or contribute improvements via pull request.
+Found an issue with the documentation? Please [open an issue](https://github.com/wix-incubator/interact/issues) or contribute improvements via pull request.
