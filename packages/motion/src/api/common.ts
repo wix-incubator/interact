@@ -20,6 +20,7 @@ import { mouseAnimations } from '../library/mouse';
 import { backgroundScrollAnimations } from '../library/backgroundScroll';
 import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
+import { registry } from './registry';
 
 function getElement(
   id: string | null,
@@ -85,19 +86,10 @@ function getNamedEffect(animation: AnimationOptions) {
   if (animation.namedEffect) {
     const name = animation.namedEffect.type;
 
-    // check each preset library for the named effect
-    if (name in scrollAnimations) {
-      return scrollAnimations[name as keyof ScrollAnimations];
-    } else if (name in entranceAnimations) {
-      return entranceAnimations[name as keyof EntranceAnimations];
-    } else if (name in ongoingAnimations) {
-      return ongoingAnimations[name as keyof OngoingAnimations];
-    } else if (name in mouseAnimations) {
-      return mouseAnimations[name as keyof MouseAnimations];
-    } else if (name in backgroundScrollAnimations) {
-      return backgroundScrollAnimations[
-        name as keyof BackgroundScrollAnimations
-      ];
+    if (name in registry) {
+      return registry[name];
+    } else {
+      console.warn(`Named effect ${name} not found in registry. Please make sure to import and register the preset first.`);
     }
   } else if (animation.keyframeEffect) {
     const effect = (animation_: AnimationOptions) => {
