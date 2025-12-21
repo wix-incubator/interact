@@ -971,6 +971,7 @@ describe('getCSS', () => {
   // ============================================================================
   // SUITE 2: Animation Rules
   // ============================================================================
+  // TODO: (ameerf) - fix this to use animation short-hand and unskip
   describe.skip('animation rules', () => {
     describe('animation-name', () => {
       it('should include animation-name with selector for namedEffect', () => {
