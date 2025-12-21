@@ -1,5 +1,28 @@
 import { getEasing } from '@wix/motion';
-import type { Condition, CreateTransitionCSSParams } from './types';
+import type { TriggerType, Condition, CreateTransitionCSSParams } from './types';
+
+
+export function isTimeTrigger(trigger: TriggerType): boolean {
+  return !['viewProgress', 'pointerMove'].includes(trigger);
+}
+
+export function roundNumber(num: number, precision = 2): number {
+  return parseFloat(num.toFixed(precision));
+}
+
+export function shortestRepeatingPatternLength(values: string[] | number[]): number {
+  let patternLength = 1;
+  let index = 1;
+  while (index < values.length) {
+    if (values[index] === values[index % patternLength]) {
+      index++;
+    } else {
+      patternLength = Math.max(index - patternLength, patternLength) + 1;
+      index = patternLength;
+    }
+  }
+  return patternLength;
+}
 
 /**
  * Applies a selector condition predicate to a base selector.
@@ -106,20 +129,28 @@ export function createTransitionCSS({
   return result;
 }
 
-export function getMediaQuery(
+export function getFullPredicateByType(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
+  type: 'media' | 'container'
 ) {
   const conditionContent = (conditionNames || [])
     .filter((conditionName) => {
-      return conditions[conditionName]?.type === 'media' && conditions[conditionName].predicate;
+      return conditions[conditionName]?.type === type && conditions[conditionName].predicate;
     })
     .map((conditionName) => {
       return conditions[conditionName].predicate;
     })
     .join(') and (');
 
-  const condition = conditionContent && `(${conditionContent})`;
+  return conditionContent && `(${conditionContent})`;
+}
+
+export function getMediaQuery(
+  conditionNames: string[] | undefined,
+  conditions: Record<string, Condition>,
+) {
+  const condition = getFullPredicateByType(conditionNames, conditions, 'media');
   const mql = condition && window.matchMedia(condition);
 
   return mql;

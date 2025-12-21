@@ -136,6 +136,7 @@ export type EffectBase = {
   conditions?: string[];
   selector?: string;
   effectId?: string;
+  initial?: 'disable' | Record<string, string | number>;
 };
 
 export type EffectRef = EffectBase & { effectId: string };
