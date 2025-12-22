@@ -177,6 +177,7 @@ function buildAnimationRule(
 export function getCSS(config: InteractConfig): GetCSSResult {
   const transitionRules: string[] = [];
   const keyframeMap = new Map<string, string>(); // name -> CSS @keyframes rule
+  // TODO: (ameerf) - this couldn't possibly be the correct mapping along with condition cascading - get a well-defined structure from ydaniv
   const selectorPropsMap = new Map< // selector -> conditionSetHash -> CSS props to apply
     string,
     Map<number, AnimationProps>
@@ -229,7 +230,7 @@ export function getCSS(config: InteractConfig): GetCSSResult {
             keyframeMap.set(data.name, keyframeCSS);
           }
 
-          const conditions = effect.conditions?.length ? effect.conditions : [''];
+          const conditions = effect.conditions || [];
           const conditionSetHash = conditions.reduce((acc, condition) => {return acc + conditionHashNumbers[condition]}, 0);
           const conditionToProps = selectorPropsMap.get(selector)!;
           if (!conditionToProps.has) {
