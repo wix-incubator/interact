@@ -285,3 +285,29 @@ export interface ScrubPointerScene {
   destroy(): void;
   allowActiveEvent?: boolean;
 }
+
+type ScrubOptions = ScrubAnimationOptions & AnimationExtraOptions;
+
+export interface ScrollEffectModule {
+  web(options: ScrubOptions, dom?: DomApi): AnimationData[];
+}
+
+export interface MouseEffectModule {
+  web(options: ScrubOptions): (element: HTMLElement) => object;
+}
+
+export interface BackgroundScrollEffectModule {
+  create(options: ScrubOptions, dom?: DomApi): AnimationData[];
+}
+
+export interface MouseCreateEffectModule {
+  create(options: ScrubOptions): (element: HTMLElement) => object;
+}
+
+export type EffectModule =
+  | AnimationEffectAPI<'time'>
+  | AnimationEffectAPI<'scrub'>
+  | ScrollEffectModule
+  | MouseEffectModule
+  | MouseCreateEffectModule
+  | BackgroundScrollEffectModule;
