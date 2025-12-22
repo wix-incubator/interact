@@ -1,24 +1,58 @@
 import type {
   TimeEffect,
   ScrubEffect,
+  RangeOffset,
   HandlerObject,
   HandlerObjectMap,
   AnimationOptions,
 } from '../types';
 
+const DEFAULT_RANGE_VALUES = {
+  rangeStart: { name: 'cover' as const, offset: { value: 0, type: 'percentage' as const } },
+  rangeEnd: { name: 'cover' as const, offset: { value: 100, type: 'percentage' as const } },
+};
+
+function resolveRangeOffsets(
+  rangeStart: RangeOffset | undefined,
+  rangeEnd: RangeOffset | undefined,
+): { startOffset: RangeOffset; endOffset: RangeOffset } {
+  const startName = rangeStart?.name ?? DEFAULT_RANGE_VALUES.rangeStart.name;
+  const endName = rangeEnd?.name ?? rangeStart?.name ?? DEFAULT_RANGE_VALUES.rangeEnd.name;
+
+  const startOffset: RangeOffset = {
+    name: startName,
+    offset: rangeStart?.offset || DEFAULT_RANGE_VALUES.rangeStart.offset,
+  };
+
+  const endOffset: RangeOffset = {
+    name: endName,
+    offset: rangeEnd?.offset || DEFAULT_RANGE_VALUES.rangeEnd.offset,
+  };
+
+  return { startOffset, endOffset };
+}
+
 export function effectToAnimationOptions(effect: TimeEffect | ScrubEffect) {
   if ((effect as TimeEffect).duration) {
+    const timeEffect = effect as TimeEffect & { keyframeEffect?: { name?: string }; effectId?: string };
+
+    if (timeEffect.keyframeEffect && !timeEffect.keyframeEffect.name) {
+      timeEffect.keyframeEffect.name = timeEffect.effectId;
+    }
+
     return {
       id: '',
-      ...effect,
+      ...timeEffect,
     } as AnimationOptions<'time'>;
   }
 
   const { rangeStart, rangeEnd, ...rest } = effect as ScrubEffect;
+  const { startOffset, endOffset } = resolveRangeOffsets(rangeStart, rangeEnd);
+
   return {
     id: '',
-    startOffset: rangeStart,
-    endOffset: rangeEnd,
+    startOffset,
+    endOffset,
     ...rest,
   } as AnimationOptions<'scrub'>;
 }

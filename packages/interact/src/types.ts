@@ -5,6 +5,8 @@ import type {
   MotionAnimationOptions,
 } from '@wix/motion';
 
+export type { RangeOffset };
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
