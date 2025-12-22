@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from 'vitest';
-import { registerEffects, getRegisteredEffect } from '../src/api/registry';
+import { registerEffects, getRegisteredEffect, ScrollEffectModule } from '../src/api/registry';
 import { getNamedEffect } from '../src/api/common';
-import type { AnimationOptions } from '../src/types';
-import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
+import type { AnimationOptions, AnimationEffectAPI, TimeAnimationOptions, AnimationExtraOptions } from '../src/types';
+import { FadeIn, SlideIn, FadeScroll, ScrubAnimationOptions } from '@wix/motion-presets';
 
 // Mock fastdom
 vi.mock('fastdom', () => ({
@@ -102,7 +102,8 @@ describe('Registry Flow', () => {
       expect(effect).toHaveProperty('style');
       expect(effect).toHaveProperty('getNames');
 
-      const animationData = effect!.web(animationOptions);
+      const effectWithWeb = effect as AnimationEffectAPI<'time'>;
+      const animationData = effectWithWeb.web(animationOptions);
 
       expect(animationData).toHaveLength(1);
       expect(animationData[0].name).toBe('motion-fadeIn');
@@ -124,12 +125,12 @@ describe('Registry Flow', () => {
         },
       };
 
-      const effect = getNamedEffect(animationOptions);
+      const effect = getNamedEffect(animationOptions) as ScrollEffectModule;
 
       expect(effect).toBeDefined();
       expect(effect).toHaveProperty('web');
 
-      const animationData = effect!.web(animationOptions);
+      const animationData = effect.web(animationOptions as ScrubAnimationOptions);
 
       expect(animationData).toHaveLength(1);
       expect(animationData[0].keyframes).toBeDefined();
@@ -146,14 +147,14 @@ describe('Registry Flow', () => {
         namedEffect: { type: 'FadeScroll', id: 'sc1', range: 'in', opacity: 0 },
       };
 
-      const fadeEffect = getNamedEffect(fadeOptions);
-      const scrollEffect = getNamedEffect(scrollOptions);
+      const fadeEffect = getNamedEffect(fadeOptions) as AnimationEffectAPI<'time'>;
+      const scrollEffect = getNamedEffect(scrollOptions) as ScrollEffectModule;
 
       expect(fadeEffect).toBeDefined();
       expect(scrollEffect).toBeDefined();
 
-      const fadeData = fadeEffect!.web(fadeOptions);
-      const scrollData = scrollEffect!.web(scrollOptions);
+      const fadeData = fadeEffect.web(fadeOptions as TimeAnimationOptions & AnimationExtraOptions);
+      const scrollData = scrollEffect.web(scrollOptions as ScrubAnimationOptions);
 
       expect(fadeData).toHaveLength(1);
       expect(fadeData[0].keyframes).toBeDefined();
