@@ -2,11 +2,6 @@ name: Bump RC And Publish
 
 on:
   workflow_dispatch:
-    inputs:
-      yarnVersionArgs:
-        description: 'Arguments for "yarn version"'
-        required: true
-        type: string
     secrets:
       GH_EMAIL:
         required: true
