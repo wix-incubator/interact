@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
+  "packageManager": "yarn@4.10.3",
   "scripts": {
     "dev": "npm run dev --workspaces",
     "build": "npm run build --workspaces",
@@ -49,6 +50,5 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.3.3",
     "typescript": "^5.9.3"
-  },
-  "packageManager": "yarn@4.10.3"
+  }
 }
