@@ -1,7 +1,7 @@
 name: Bump RC And Publish
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       yarnVersionArgs:
         description: 'Arguments for "yarn version"'
