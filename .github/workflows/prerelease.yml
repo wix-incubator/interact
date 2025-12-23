@@ -1,0 +1,66 @@
+name: Bump RC And Publish
+
+on:
+  workflow_call:
+    inputs:
+      yarnVersionArgs:
+        description: 'Arguments for "yarn version"'
+        required: true
+        type: string
+    secrets:
+      GH_EMAIL:
+        required: true
+      GH_USER:
+        required: true
+      USER_GITHUB_TOKEN:
+        required: true
+
+permissions:
+  id-token: write # REQUIRED for npm Trusted Publishing
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0 # full history for yarn version
+
+      - name: Setup Node with trusted publishing
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - run: corepack enable
+      - run: yarn set version 4.10.3
+      - run: NPQ_PKG_MGR=yarn npx npq install
+      - run: yarn build
+      - run: yarn test
+
+      - name: Setup GIT
+        run: |
+          git reset --hard
+          git config --local --list
+          git checkout master
+          echo "Configured git as $GH_USER <$GH_EMAIL>"
+          git config user.email "$GH_EMAIL"
+          git config user.name "$GH_USER"
+        env:
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_USER: ${{ secrets.GH_USER }}
+
+      - name: Build and test
+        run: |
+          git reset --hard
+          yarn build
+          yarn test
+
+      # ---- PUBLISH WITH TRUSTED PUBLISHING ----
+
+      - name: npm publish @wix/interact (trusted)
+        run: |
+          npm publish --tag rc
