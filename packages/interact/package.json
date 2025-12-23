@@ -56,9 +56,9 @@
   },
   "dependencies": {
     "@wix/motion": "^1.0.0",
-    "kuliso": "^0.4.13",
+    "fastdom": "^1.0.12",
     "fizban": "^0.7.2",
-    "fastdom": "^1.0.12"
+    "kuliso": "^0.4.13"
   },
   "peerDependencies": {
     "react": "^18.3.1",
