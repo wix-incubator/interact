@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
+  "packageManager": "yarn@4.10.3",
   "scripts": {
     "dev": "npm run dev --workspaces",
     "build": "npm run build --workspaces",
