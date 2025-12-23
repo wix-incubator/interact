@@ -31,6 +31,7 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - run: corepack enable
+      - run: corepack prepare yarn@4.10.3 --activate
       - run: yarn set version 4.10.3
       - run: NPQ_PKG_MGR=yarn npx npq install
       - run: yarn build
