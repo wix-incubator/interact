@@ -49,12 +49,6 @@ jobs:
           GH_EMAIL: ${{ secrets.GH_EMAIL }}
           GH_USER: ${{ secrets.GH_USER }}
 
-      - name: Build and test
-        run: |
-          git reset --hard
-          yarn build
-          yarn test
-
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
       - name: npm publish @wix/interact (trusted)
