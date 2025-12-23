@@ -38,6 +38,7 @@ class Interact {
   static deleteController(key: string): void
   static destroy(): void
   static setup(options: { forceReducedMotion?: boolean, ... }): void
+  static registerEffects(effects: Record<string, NamedEffect>): void
   
   // Instance methods
   constructor()
@@ -234,6 +235,51 @@ Interact.setup({
   allowA11yTriggers: true
 });
 ```
+
+### `Interact.registerEffects(effects)`
+
+Registers animation presets from `@wix/motion-presets` in order to use them in the config.
+
+**Parameters:**
+- `effects: Record<string, NamedEffect>` - An object mapping effect names to effect definitions
+
+**Returns:** `void`
+
+**Example:**
+```typescript
+import { Interact } from '@wix/interact/web';
+import * as presets from '@wix/motion-presets';
+
+// Register all presets at once
+Interact.registerEffects(presets);
+
+// Now you can use namedEffect in your configuration
+const config = {
+  interactions: [{
+    key: 'hero',
+    trigger: 'viewEnter',
+    effects: [{
+      namedEffect: { type: 'FadeIn' },  // Works because FadeIn is registered
+      duration: 1000
+    }]
+  }]
+};
+
+Interact.create(config);
+```
+
+**Selective Registration:**
+```typescript
+import { Interact } from '@wix/interact/web';
+import { FadeIn, SlideIn } from '@wix/motion-presets';
+
+// Register only the effects you need (smaller bundle)
+Interact.registerEffects({ FadeIn, SlideIn });
+```
+
+**Details:**
+- Effects must be registered before calling `Interact.create()` with configurations that reference them
+- Registration is global — once registered, effects are available to all Interact instances
 
 ### `Interact.defineInteractElement` (Web Entry Only)
 
