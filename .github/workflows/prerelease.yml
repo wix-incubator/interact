@@ -59,4 +59,5 @@ jobs:
 
       - name: npm publish @wix/interact (trusted)
         run: |
+          cd packages/interact
           npm publish --tag rc
