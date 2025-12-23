@@ -1,3 +1,10 @@
+/* Register CSS custom properties for animation interpolation */
+@property --spacing {
+    syntax: '<length>';
+    inherits: true;
+    initial-value: 0px;
+}
+
 /* Critical CSS for viewEnter entrance animations - prevents FOUC */
 @media (prefers-reduced-motion: no-preference) {
     [data-interact-initial="true"] > :first-child:not([data-motion-enter="done"]) {

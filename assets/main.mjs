@@ -2,7 +2,11 @@
 import { Interact } from 'https://esm.sh/@wix/interact@1.92.0';
 // import { Interact } from './packages/interact/dist/es/web.js';
 
-// --- 1. HERO GRID LOGIC ---
+// =============================================================================
+// FUNCTIONS & METHODS
+// =============================================================================
+
+// --- Hero Grid Functions ---
 const gridContainer = document.getElementById('grid-container');
 const lineCache = new Map();
 let centerX, centerY, maxDist;
@@ -48,10 +52,8 @@ function updateGrid() {
         });
     }
 }
-updateGrid();
-window.addEventListener('resize', updateGrid);
 
-const rotateGridEffect = (containerElement, progress) => {
+function rotateGridEffect(_containerElement, progress) {
     const mouseX = progress.x * windowWidth;
     const mouseY = progress.y * windowHeight;
     
@@ -76,134 +78,92 @@ const rotateGridEffect = (containerElement, progress) => {
         }
         line.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${angle}deg) scaleY(${lengthScale})`;
     }
-};
+}
 
-// --- 2. TUNNEL EFFECT LOGIC (Manual RAF Loop for Physics) ---
+// --- Tunnel Effect Functions ---
 const NUM_CIRCLES = 45; 
 const tunnelRings = []; 
-
 let cx = 0; 
 let cy = 0; 
 let tunnelSceneRect = { top: 0, left: 0, width: 0, height: 0 };
 const tunnelSceneContainer = document.getElementById('tunnel-scene-container'); 
-let animationStarted = false; // Flag to ensure initialization runs once
 
 function updateTunnelBounds() {
     if (tunnelSceneContainer) {
         const rect = tunnelSceneContainer.getBoundingClientRect();
         tunnelSceneRect = rect;
-        // Local center relative to the container's coordinates (for the physics)
         cx = rect.width / 2; 
         cy = rect.height / 2;
     }
 }
 
-// Initial DOM generation for rings
-const generateTunnel = () => {
+function generateTunnel() {
     const container = document.getElementById('tunnel-container');
-    if (!container) return; // safety check
+    if (!container) return;
     container.innerHTML = '';
-    tunnelRings.length = 0; // Clear the physics array
+    tunnelRings.length = 0;
     
     for (let i = 0; i < NUM_CIRCLES; i++) {
         const circle = document.createElement('div');
         circle.classList.add('tunnel-circle'); 
         
-        // Force absolute centering for the physics calculations
         circle.style.position = 'absolute';
         circle.style.top = '50%';
         circle.style.left = '50%';
         
-        // Calculate border color based on depth (i)
         const normalizedDepth = i / NUM_CIRCLES; 
         const alpha = 0.05 + (1 - normalizedDepth) * 0.95; 
         circle.style.borderColor = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
-
-        // Initial transform
         circle.style.transform = 'translate(-50%, -50%)'; 
 
-        // MODIFIED: Use percentages relative to the container instead of vmin
-        // The first circle (i=0) uses CSS rules. Subsequent rings scale down from 100%
         const scale = 100 * Math.pow(0.91, i); 
         circle.style.width = `${scale}%`;
         circle.style.height = `${scale}%`;
-
-        // Z-index ordering
         circle.style.zIndex = NUM_CIRCLES - i; 
         
         container.appendChild(circle);
 
-        // Physics Parameters
         const easeVariance = 0.85 + Math.random() * 0.3;
         
         tunnelRings.push({
             element: circle,
             x: 0, 
             y: 0,
-            // Outer rings move more, inner rings move less (parallax).
             factor: ((NUM_CIRCLES - i) / NUM_CIRCLES) * 0.03,
             easeVariance: easeVariance
         });
     }
-};
+}
 
-// Call DOM generation early
-generateTunnel();
-
-// 4. ANIMATION LOOP (Runs constantly for physics)
-// Global movement reduction factor
-const MOVEMENT_FACTOR = 0.5; // Changed from 1.0 to 0.5 to reduce movement by half
-
-const animate = (progress) => {
-    // 1. Localized mouse position relative to container
+function animateTunnel(_rootElement, progress) {
     const localMouseX = progress.x * windowWidth;
     const localMouseY = progress.y * windowHeight;
 
-    // 2. Calculate distance of mouse from container center (cx, cy are now container center)
     const targetX = localMouseX - cx;
     const targetY = localMouseY - cy;
     
     const dist = Math.sqrt(targetX * targetX + targetY * targetY);
-    // Use local container dimensions for maxDist
     const maxDistLocal = Math.max(cx, cy) || 1;
     
     const normalizedDist = dist / maxDistLocal;
-    // "Stretch" logic: Pulls the tunnel apart more when mouse is at edges
-    // FIX: Reduced max stretch factor by half (from 4.0 to 2.0)
     const stretch = 1 + Math.pow(normalizedDist, 1.2) * 2.0; 
 
     tunnelRings.forEach((ring, index) => {
         const targetMoveX = targetX * ring.factor * stretch;
-        const targetMoveY = targetY * ring.factor * stretch; // Corrected to use factor for Y movement too
+        const targetMoveY = targetY * ring.factor * stretch;
 
-        // Base easing gets slightly stiffer for smaller rings
         let baseEase = 0.08 + (0.02 * (1 - index / NUM_CIRCLES));
-        // Apply organic variance (uses the unique easeVariance calculated in generateTunnel)
         const finalEase = baseEase * ring.easeVariance;
 
-        // Linear Interpolation (Lerp) for smooth lag
         ring.x += (targetMoveX - ring.x) * finalEase;
         ring.y += (targetMoveY - ring.y) * finalEase;
 
-        // Apply transform: Center (-50%) + Physics Offset (x, y)
         ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0)`;
     });
-};
+}
 
-// Recalculate bounds in case of scroll or position change (more robust)
-updateTunnelBounds();
-window.addEventListener('resize', updateTunnelBounds);
-
-const animateTunnel = (rootElement, progress) => {
-    // Animate the tunnel
-    animate(progress);
-};
-
-// Start the process: calculate bounds first, which then calls animate()
-requestAnimationFrame(() => animateTunnel(null, { x: 0.5, y: 0.5 }));
-
-// --- 2.1 MOUSE TRACK PRIMITIVE GENERATION ---
-const generateMouseTunnel = () => {
+// --- Mouse Track Tunnel Functions ---
+function generateMouseTunnel() {
     const mount = document.getElementById('mt-tunnel-mount');
     if (!mount) return;
     const DEPTH = 12;
@@ -231,41 +191,10 @@ const generateMouseTunnel = () => {
             currentParent = circle;
         }
     }
-};
-generateMouseTunnel();
+}
 
-// --- 3. REUSABLE ANIMATION CONFIGS ---
-const FADE_UP_OPTS = { type: 'FadeIn', direction: 'bottom', distance: '60px', power: 'soft' };
-
-// Custom elastic easing for a "pop" feel
-const CLICK_EASING = 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'; 
-
-// Entrance Configs
-const ENTRANCE_DURATION = 1000;
-const ENTRANCE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
-const ENTRANCE_OFFSET = '50px'; 
-const ENTRANCE_SLIDE_DIST = '120px';
-
-const HOVER_SCALE = {
-    name: 'hoverScale',
-    keyframes: [
-        { transform: 'scale(1)', offset: 0 },
-        { transform: 'scale(1.02)', offset: 1 }
-    ]
-};
-
-const TILT_UP_OPTS = {
-    name: 'tiltUp',
-    keyframes: [
-        { opacity: 0, transform: 'translateY(80px) rotateX(60deg) scale(0.9)', transformOrigin: 'center top' },
-        { opacity: 1, transform: 'translateY(0) rotateX(0deg) scale(1)', transformOrigin: 'center top' }
-    ]
-};
-
-// --- PRIMITIVE INTERACTIONS ---
-// Only Hover is auto-generated now. Click and Entrance are manual.
-const primitivePrefixes = ['hover'];
-const generateCircleInteractions = (prefix) => {
+// --- Primitive Interaction Generator ---
+function generateCircleInteractions(prefix) {
     return [
         {
             key: `${prefix}-circle-1`, trigger: 'hover',
@@ -295,72 +224,92 @@ const generateCircleInteractions = (prefix) => {
             ]
         }
     ];
-};
-const primitiveInteractions = primitivePrefixes.flatMap(prefix => generateCircleInteractions(prefix));
-
-// Register CSS Variable to ensure smooth interpolation by the engine
-if (window.CSS && CSS.registerProperty) {
-    try {
-        CSS.registerProperty({
-            name: '--spacing',
-            syntax: '<length>',
-            inherits: true,
-            initialValue: '0px',
-        });
-    } catch (err) {}
 }
 
-// --- Geometry Generation (Optimized) ---
-const spongeContainer = document.getElementById('sponge');
-const HS = 30; // Half size
-
-const fragment = document.createDocumentFragment();
-
+// --- Geometry Helper ---
 function shouldExist(x, y, z) {
     return [x, y, z].filter((c) => c === 0).length < 2;
 }
 
-const transformTemplates = [
-    `rotateY(0deg) translateZ(${HS}px)`,
-    `rotateY(180deg) translateZ(${HS}px)`,
-    `rotateY(90deg) translateZ(${HS}px)`,
-    `rotateY(-90deg) translateZ(${HS}px)`,
-    `rotateX(90deg) translateZ(${HS}px)`,
-    `rotateX(-90deg) translateZ(${HS}px)`,
-];
+// --- Sponge Geometry Generator ---
+function generateSpongeGeometry() {
+    const spongeContainer = document.getElementById('sponge');
+    if (!spongeContainer) return;
 
-for (let x = -1; x <= 1; x++) {
-    for (let y = -1; y <= 1; y++) {
-        for (let z = -1; z <= 1; z++) {
-            if (shouldExist(x, y, z)) {
-                const voxel = document.createElement('div');
-                voxel.className = 'voxel';
-                voxel.style.setProperty('--x', x);
-                voxel.style.setProperty('--y', y);
-                voxel.style.setProperty('--z', z);
+    const HS = 30; // Half size
+    const fragment = document.createDocumentFragment();
+    
+    const transformTemplates = [
+        `rotateY(0deg) translateZ(${HS}px)`,
+        `rotateY(180deg) translateZ(${HS}px)`,
+        `rotateY(90deg) translateZ(${HS}px)`,
+        `rotateY(-90deg) translateZ(${HS}px)`,
+        `rotateX(90deg) translateZ(${HS}px)`,
+        `rotateX(-90deg) translateZ(${HS}px)`,
+    ];
 
-                for (let i = 0; i < transformTemplates.length; i++) {
-                    const face = document.createElement('div');
-                    face.className = 'cube-face';
-                    face.style.transform = transformTemplates[i];
-                    voxel.appendChild(face);
+    for (let x = -1; x <= 1; x++) {
+        for (let y = -1; y <= 1; y++) {
+            for (let z = -1; z <= 1; z++) {
+                if (shouldExist(x, y, z)) {
+                    const voxel = document.createElement('div');
+                    voxel.className = 'voxel';
+                    voxel.style.setProperty('--x', x);
+                    voxel.style.setProperty('--y', y);
+                    voxel.style.setProperty('--z', z);
+
+                    for (let i = 0; i < transformTemplates.length; i++) {
+                        const face = document.createElement('div');
+                        face.className = 'cube-face';
+                        face.style.transform = transformTemplates[i];
+                        voxel.appendChild(face);
+                    }
+                   
+                    fragment.appendChild(voxel);
                 }
-               
-                fragment.appendChild(voxel);
             }
         }
     }
-}
 
-if (spongeContainer) {
     spongeContainer.appendChild(fragment);
 }
 
 
+// =============================================================================
+// CONFIGURATIONS
+// =============================================================================
 
-// --- INTERACT CONFIG ---
+// --- Animation Presets ---
+const FADE_UP_OPTS = { type: 'FadeIn', direction: 'bottom', distance: '60px', power: 'soft' };
+const CLICK_EASING = 'cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+const ENTRANCE_DURATION = 1000;
+const ENTRANCE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
+const ENTRANCE_OFFSET = '50px'; 
+const ENTRANCE_SLIDE_DIST = '120px';
+
+const HOVER_SCALE = {
+    name: 'hoverScale',
+    keyframes: [
+        { transform: 'scale(1)', offset: 0 },
+        { transform: 'scale(1.02)', offset: 1 }
+    ]
+};
+
+const TILT_UP_OPTS = {
+    name: 'tiltUp',
+    keyframes: [
+        { opacity: 0, transform: 'translateY(80px) rotateX(60deg) scale(0.9)', transformOrigin: 'center top' },
+        { opacity: 1, transform: 'translateY(0) rotateX(0deg) scale(1)', transformOrigin: 'center top' }
+    ]
+};
+
+// --- Generated Primitive Interactions ---
+const primitivePrefixes = ['hover'];
+const primitiveInteractions = primitivePrefixes.flatMap(prefix => generateCircleInteractions(prefix));
+
+// --- Interact Configuration ---
 const config = {
-effects: {
+    effects: {
         spongeTumble: {
             key: 'sponge',
             duration: 20000,
@@ -375,7 +324,6 @@ effects: {
                 ],
             },
         },
-
         spongeExplode: {
             key: 'sponge',
             duration: 1400,
@@ -392,43 +340,41 @@ effects: {
     },
 
     interactions: [
-     // Text Entrance
+        // Text Entrance
         {
             key: 'perf-text',
             trigger: 'viewEnter',
             effects: [{ keyframeEffect: { ...TILT_UP_OPTS }, duration: 1000, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'both' }]
         },
-          {
+        {
             key: 'perf-text-2',
             trigger: 'viewEnter',
             effects: [{ keyframeEffect: { ...TILT_UP_OPTS }, duration: 1000, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'both' }]
         },
+        
         // Sponge Tumble (Continuous)
         {
             key: 'sponge',
             trigger: 'pageVisible',
-            effects: [
-                { effectId: 'spongeTumble' },
-            ],
+            effects: [{ effectId: 'spongeTumble' }],
         },
+        
         // Sponge Explode (Hover)
         {
             key: 'hitbox',
             trigger: 'hover',
-            params: {
-                type: 'alternate',
-            },
-            effects: [
-                { effectId: 'spongeExplode' },
-            ],
+            params: { type: 'alternate' },
+            effects: [{ effectId: 'spongeExplode' }],
         },
-        // --- NEW HERO GRID INTERACTION ---
+        
+        // Hero Grid Interaction
         {
             key: 'hero-grid',
             trigger: 'pointerMove',
             params: { hitArea: 'root' },
             effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
         },
+        
         // Hero Text
         {
             key: 'hero-line-1',
@@ -456,11 +402,10 @@ effects: {
             effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200, fill: 'both' }]
         },
 
-        // --- REST OF THE PAGE INTERACTIONS ---
+        // Primitive Interactions (generated)
         ...primitiveInteractions,
         
-        // NEW ENTRANCE INTERACTION (Swirling Plus)
-        // 1. Top Circle: Slides in from Left
+        // Entrance Interactions (Swirling Plus)
         {
             key: 'circle-top',
             trigger: 'viewEnter',
@@ -469,8 +414,8 @@ effects: {
                 keyframeEffect: {
                     name: 'slideFromLeftToTop',
                     keyframes: [
-                        { opacity: 0, transform: `translate(-${ENTRANCE_SLIDE_DIST}, -${ENTRANCE_OFFSET})` }, // Start: Left of target
-                        { opacity: 1, transform: `translate(0, -${ENTRANCE_OFFSET})` }        // End: Top position
+                        { opacity: 0, transform: `translate(-${ENTRANCE_SLIDE_DIST}, -${ENTRANCE_OFFSET})` },
+                        { opacity: 1, transform: `translate(0, -${ENTRANCE_OFFSET})` }
                     ]
                 },
                 duration: ENTRANCE_DURATION,
@@ -478,7 +423,6 @@ effects: {
                 delay: 0
             }]
         },
-        // 2. Right Circle: Slides in from Top
         {
             key: 'circle-right',
             trigger: 'viewEnter',
@@ -487,8 +431,8 @@ effects: {
                 keyframeEffect: {
                     name: 'slideFromTopToRight',
                     keyframes: [
-                        { opacity: 0, transform: `translate(${ENTRANCE_OFFSET}, -${ENTRANCE_SLIDE_DIST})` }, // Start: Top of target
-                        { opacity: 1, transform: `translate(${ENTRANCE_OFFSET}, 0)` }        // End: Right position
+                        { opacity: 0, transform: `translate(${ENTRANCE_OFFSET}, -${ENTRANCE_SLIDE_DIST})` },
+                        { opacity: 1, transform: `translate(${ENTRANCE_OFFSET}, 0)` }
                     ]
                 },
                 duration: ENTRANCE_DURATION,
@@ -496,7 +440,6 @@ effects: {
                 delay: 100
             }]
         },
-        // 3. Bottom Circle: Slides in from Right
         {
             key: 'circle-bottom',
             trigger: 'viewEnter',
@@ -505,8 +448,8 @@ effects: {
                 keyframeEffect: {
                     name: 'slideFromRightToBottom',
                     keyframes: [
-                        { opacity: 0, transform: `translate(${ENTRANCE_SLIDE_DIST}, ${ENTRANCE_OFFSET})` }, // Start: Right of target
-                        { opacity: 1, transform: `translate(0, ${ENTRANCE_OFFSET})` }        // End: Bottom position
+                        { opacity: 0, transform: `translate(${ENTRANCE_SLIDE_DIST}, ${ENTRANCE_OFFSET})` },
+                        { opacity: 1, transform: `translate(0, ${ENTRANCE_OFFSET})` }
                     ]
                 },
                 duration: ENTRANCE_DURATION,
@@ -514,7 +457,6 @@ effects: {
                 delay: 200
             }]
         },
-        // 4. Left Circle: Slides in from Bottom
         {
             key: 'circle-left',
             trigger: 'viewEnter',
@@ -523,8 +465,8 @@ effects: {
                 keyframeEffect: {
                     name: 'slideFromBottomToLeft',
                     keyframes: [
-                        { opacity: 0, transform: `translate(-${ENTRANCE_OFFSET}, ${ENTRANCE_SLIDE_DIST})` }, // Start: Bottom of target
-                        { opacity: 1, transform: `translate(-${ENTRANCE_OFFSET}, 0)` }        // End: Left position
+                        { opacity: 0, transform: `translate(-${ENTRANCE_OFFSET}, ${ENTRANCE_SLIDE_DIST})` },
+                        { opacity: 1, transform: `translate(-${ENTRANCE_OFFSET}, 0)` }
                     ]
                 },
                 duration: ENTRANCE_DURATION,
@@ -533,13 +475,11 @@ effects: {
             }]
         },
 
-        // NEW CLICK INTERACTION (Ripple Effect)
+        // Click Interaction (Ripple Effect)
         {
             key: 'click-center',
             trigger: 'click',
-            // 'toggle' is default for state interactions
             effects: [
-                // 1. Fill the center circle
                 { 
                     selector: '.fill-circle', 
                     transition: { 
@@ -548,7 +488,6 @@ effects: {
                         styleProperties: [{ name: 'transform', value: 'scale(1)' }] 
                     } 
                 },
-                // 2. Expand Ripple 1
                 { 
                     key: 'click-ripple-1',
                     transition: { 
@@ -560,7 +499,6 @@ effects: {
                         ] 
                     } 
                 },
-                // 3. Expand Ripple 2 (Larger, Delayed)
                 { 
                     key: 'click-ripple-2',
                     transition: { 
@@ -576,30 +514,27 @@ effects: {
             ]
         },
 
-
-        // NEW MOUSE TRACK INTERACTION (3D Tilt Tunnel)
+        // Mouse Track Interaction (3D Tilt Tunnel)
         {
             key: 'mt-scene-root',
             trigger: 'pointerMove',
-            params: { hitArea: 'self'}, // 'self' keeps the effect contained to the card
+            params: { hitArea: 'self' },
             effects: [
-                // Effect 1: Tilt the Card Frame
                 {
                     key: 'mt-card-target',
                     namedEffect: {
                         type: 'Tilt3DMouse',
-                        maxAngle: 25, // Subtle tilt for the container
+                        maxAngle: 25,
                         perspective: 200
                     },
                     fill: 'both',
                     composite: 'replace'
                 },
-                // Effect 2: Tilt the Inner Circles (Intense)
                 {
                     key: 'mt-content-target',
                     namedEffect: {
                         type: 'Tilt3DMouse',
-                        maxAngle: 60, // Deep tilt for the tunnel
+                        maxAngle: 60,
                         perspective: 100
                     },
                     fill: 'both',
@@ -608,16 +543,14 @@ effects: {
             ]
         },
 
-        // NEW SCROLLYTELLING INTERACTION (Atom Spin)
+        // Scrollytelling Interaction (Atom Spin)
         {
             key: 'scrolly-atom-card',
             trigger: 'viewProgress', 
             effects: [
-                // 1. Vertical Spin
                 {
                     key: 'orbit-y',
                     fill: 'both',
-                    // Updated range to cover full entry to exit
                     rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
                     keyframeEffect: {
@@ -629,7 +562,6 @@ effects: {
                     },
                     composite: 'replace'
                 },
-                // 2. Horizontal Spin
                 {
                     key: 'orbit-x',
                     fill: 'both',
@@ -638,14 +570,12 @@ effects: {
                     keyframeEffect: {
                         name: 'rotateX',
                         keyframes: [
-                            // Added slight wobble to make rotation visible on flat plane
                             { transform: 'rotateX(90deg) rotateZ(0deg)' },
                             { transform: 'rotateX(90deg) rotateZ(360deg)' }
                         ]
                     },
                     composite: 'replace'
                 },
-                // 3. Diagonal 1 (+45)
                 {
                     key: 'orbit-diag-1',
                     fill: 'both',
@@ -660,7 +590,6 @@ effects: {
                     },
                     composite: 'replace'
                 },
-                // 4. Diagonal 2 (-45)
                 {
                     key: 'orbit-diag-2',
                     fill: 'both',
@@ -718,12 +647,11 @@ effects: {
             }]
         },
 
-        // --- CHANGED: NEW BEAUTIFUL SECTION SCROLL EFFECTS ---
+        // Beautiful Section Scroll Effects
         {
             key: 'beautiful-section',
             trigger: 'viewProgress',
             effects: [
-                // 1. Pyramid Rotation
                 {
                     key: 'pyramid-target',
                     fill: 'both',
@@ -737,9 +665,6 @@ effects: {
                         ]
                     }
                 },
-                
-                // 2. SCROLL DRIVEN TEXT ANIMATIONS
-                // Step 1: "Beautiful" (0% - 15%)
                 {
                     key: 'word-1',
                     keyframeEffect: {
@@ -752,8 +677,6 @@ effects: {
                     rangeEnd: { name: 'cover', offset: { value: 15, type: 'percentage' } },
                     fill: 'both'
                 },
-                
-                // Step 2: "Effects," (5% - 20%)
                 {
                     key: 'word-2',
                     keyframeEffect: {
@@ -766,8 +689,6 @@ effects: {
                     rangeEnd: { name: 'cover', offset: { value: 20, type: 'percentage' } },
                     fill: 'both'
                 },
-                
-                // Step 3: "Ready to Use." (Grouped: 15% - 30%)
                 {
                     key: 'word-3',
                     keyframeEffect: {
@@ -780,7 +701,6 @@ effects: {
                     rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
                     fill: 'both'
                 },
-                
                 {
                     key: 'word-4',
                     keyframeEffect: {
@@ -805,8 +725,6 @@ effects: {
                     rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
                     fill: 'both'
                 },
-                
-                // Step 4: Description (30% - 45%)
                 {
                     key: 'desc-text',
                     keyframeEffect: {
@@ -822,21 +740,19 @@ effects: {
             ]
         },
 
-        // --- CHANGED: NEW TUNNEL INTERACTION ---
+        // Tunnel Interaction
         {
             key: 'tunnel-root',
             trigger: 'pointerMove',
             params: { hitArea: 'root' },
-            effects: [
-                {
-                    customEffect: animateTunnel,
-                    centeredToTarget: true,
-                    fill: 'both'
-                }
-            ]
+            effects: [{
+                customEffect: animateTunnel,
+                centeredToTarget: true,
+                fill: 'both'
+            }]
         },
 
-        // Cards Hover (using the generated primitive)
+        // Cards Hover
         {
             key: 'hover-target',
             trigger: 'hover',
@@ -850,7 +766,7 @@ effects: {
             }]
         },
 
-        // NEW TAILORED SECTION ANIMATIONS
+        // Tailored Section Animations
         {
             key: 'tailored-header',
             trigger: 'viewEnter',
@@ -890,7 +806,6 @@ effects: {
                         ]
                     }
                 },
-                // ... other cards kept implicitly by leaving config structure similar ...
                 {
                     key: 'spread-card-1',
                     fill: 'both',
@@ -950,85 +865,87 @@ effects: {
         {
             key: 'h-section',
             trigger: 'viewProgress',
-            effects: [{
-                key: 'h-track',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
-                keyframeEffect: {
-                    name: 'moveLeft',
-                    keyframes: [
-                        { transform: 'translateX(0)' },
-                        { transform: 'translateX(-5824px)' } 
-                    ]
+            effects: [
+                {
+                    key: 'h-track',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'moveLeft',
+                        keyframes: [
+                            { transform: 'translateX(0)' },
+                            { transform: 'translateX(-5824px)' } 
+                        ]
+                    }
+                },
+                {
+                    key: 'h-card-1',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'scaleCenter1',
+                        keyframes: [{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }]
+                    }
+                },
+                {
+                    key: 'h-card-2',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter2', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-3',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter3', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-4',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter4', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-5',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter5', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-6',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter6', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-7',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter7', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-8',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter8', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-9',
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenter9', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }] }
                 }
-            },
-            {
-                key: 'h-card-1',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
-                keyframeEffect: {
-                    name: 'scaleCenter1',
-                    keyframes: [{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }]
-                }
-            },
-            {
-                key: 'h-card-2',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter2', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-3',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter3', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-4',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter4', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-5',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter5', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-6',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter6', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-7',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter7', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-8',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter8', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)', offset: 0.5 }, { transform: 'scale(1)' }] }
-            },
-            {
-                key: 'h-card-9',
-                fill: 'both',
-                rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
-                rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
-                keyframeEffect: { name: 'scaleCenter9', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }] }
-            }]
+            ]
         },
 
         // Footer
@@ -1044,8 +961,26 @@ effects: {
         }
     ]
 };
-// Respect reduced motion settings (disable all animations)
+
+// =============================================================================
+// INITIALIZATION & USAGE
+// =============================================================================
+
+// Generate DOM elements
+updateGrid();
+generateTunnel();
+generateMouseTunnel();
+generateSpongeGeometry();
+
+// Update bounds
+updateTunnelBounds();
+
+// Event listeners
+window.addEventListener('resize', updateGrid);
+window.addEventListener('resize', updateTunnelBounds);
+
+// Respect reduced motion settings
 Interact.forceReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Initialize Interact
 Interact.create(config);
-
