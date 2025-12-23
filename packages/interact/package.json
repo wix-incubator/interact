@@ -24,7 +24,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "rules",
+    "docs"
   ],
   "sideEffects": false,
   "scripts": {
