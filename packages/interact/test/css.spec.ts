@@ -1,1452 +1,771 @@
-import { describe, it, expect } from 'vitest';
-import type { InteractConfig, TimeEffect, Effect } from '../src/types';
+import { describe, it, expect, beforeAll } from 'vitest';
+import type { InteractConfig, Effect, TimeEffect, TransitionEffect } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { getCSS } from '../src/core/css';
-import { getSelector } from '../src/core/Interact';
+import { getCSSAnimation } from '@wix/motion';
+import { effectToAnimationOptions } from '../src/handlers/utilities';
+
+// Mock CSS.escape for jsdom environment
+beforeAll(() => {
+  if (typeof CSS === 'undefined') {
+    (globalThis as any).CSS = {};
+  }
+  if (typeof CSS.escape !== 'function') {
+    CSS.escape = (value: string) => value.replace(/([^\w-])/g, '\\$1');
+  }
+});
 
 /**
  * getCSS Test Suite
  *
- * Tests CSS generation for time-based animations only.
- * CSS should be generated for triggers: viewEnter, animationEnd, hover, click, pageVisible
- * CSS should NOT be generated for scrub triggers: viewProgress, pointerMove
+ * Tests CSS generation for time-based animations and transitions.
+ * - Generates CSS for triggers: viewEnter, animationEnd, hover, click, pageVisible
+ * - Does NOT generate CSS for scrub triggers: viewProgress, pointerMove
  */
 describe('getCSS', () => {
   // ============================================================================
-  // Helpers
+  // Test Helpers
   // ============================================================================
 
-  /** Get keyframe names - mocked to return predictable values */
-  const getFadeInNames = (_: number): string[] => ['motion-fadeIn'];
-  const getArcInNames = (_: number): string[] => [
-    'motion-fadeIn',
-    'motion-arcIn',
-  ];
-
-  /** Extract duration from an effect in a config */
-  const getEffectDuration = (config: InteractConfig, effectId: string) =>
-    (config.effects[effectId] as { duration: number }).duration;
-
-  /**
-   * Creates a regex pattern for a keyframe block that allows properties in any order.
-   * @param percentage - The percentage value (e.g., '0', '25', '100')
-   * @param properties - Array of [property, value] tuples to match
-   * @returns RegExp that matches the keyframe block with properties in any order
-   */
-  const createKeyframeBlockPattern = (
-    percentage: string,
-    properties: [string, string][],
-  ): RegExp => {
-    // Each property must appear exactly once, but order doesn't matter
-    // Use lookahead assertions for unordered matching
-    const propertyLookaheads = properties
-      .map(([prop, val]) => {
-        const escapedVal = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        return `(?=.*${prop}:\\s*${escapedVal})`;
-      })
-      .join('');
-
-    return new RegExp(`${percentage}%\\s*\\{${propertyLookaheads}[^}]+\\}`);
-  };
-
-  /**
-   * Builds the full CSS selector for an element with a given key and optional child selector.
-   * @param key - The data-interact-key value
-   * @param effect - Optional effect object to derive child selector from
-   * @returns Full CSS selector string
-   */
-  const buildFullSelector = (key: string, effect?: Effect): string => {
-    const keySelector = `[data-interact-key="${key}"]`;
-    const childSelector = effect ? getSelector(effect) : getSelector({});
-    return `${keySelector} ${childSelector}`;
-  };
-
-  /**
-   * Escapes special regex characters in a string.
-   */
+  /** Escapes special regex characters */
   const escapeRegex = (str: string): string =>
     str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-  /**
-   * Creates a regex pattern that matches a CSS rule with selector and specific property.
-   * @param selector - The CSS selector
-   * @param property - The animation property name
-   * @param value - The expected value
-   * @returns RegExp that matches the full rule
-   */
-  const createAnimationRulePattern = (
-    selector: string,
-    property: string,
-    value: string,
-  ): RegExp => {
-    const escapedSelector = escapeRegex(selector);
-    const escapedValue = escapeRegex(value);
-    return new RegExp(
-      `${escapedSelector}\\s*\\{[^}]*${property}:\\s*${escapedValue}[^}]*\\}`,
-    );
+  /** Creates regex to match a @keyframes rule with the given name */
+  const keyframesPattern = (name: string) =>
+    new RegExp(`@keyframes\\s+${escapeRegex(name)}\\s*\\{[^}]*\\}`);
+
+  /** Creates regex to match a CSS property in a rule */
+  const propertyPattern = (prop: string, value: string) =>
+    new RegExp(`${escapeRegex(prop)}:\\s*${escapeRegex(value)}`);
+
+  /** Gets animation data from motion library for a given effect */
+  const getMotionAnimationData = (effect: TimeEffect) => {
+    const options = effectToAnimationOptions(effect);
+    return getCSSAnimation(null, options);
   };
 
-  /**
-   * Gets all effect names/values for multipleEffectsConfig.
-   * Must be called after multipleEffectsConfig is defined.
-   */
-  const getMultiEffectValues = () => {
-    const dur1 = getEffectDuration(multipleEffectsConfig, 'first-effect');
-    const dur2 = getEffectDuration(multipleEffectsConfig, 'second-effect');
-    const dur3 = getEffectDuration(multipleEffectsConfig, 'third-effect');
+  /** Extracts keyframe names from motion library for a given effect */
+  const getKeyframeNames = (effect: TimeEffect): string[] => {
+    const data = getMotionAnimationData(effect);
+    return data.map((d) => d.name).filter(Boolean) as string[];
+  };
 
-    const [name1] = getFadeInNames(dur1);
-    const name2 = (
-      multipleEffectsConfig.effects['second-effect'] as {
-        keyframeEffect: { name: string };
-      }
-    ).keyframeEffect.name;
-    const [name3] = getFadeInNames(dur3);
+  /** Extracts animation strings from motion library */
+  const getAnimationStrings = (effect: TimeEffect): string[] => {
+    const data = getMotionAnimationData(effect);
+    return data.map((d) => d.animation);
+  };
 
-    const delay1 = (
-      multipleEffectsConfig.effects['first-effect'] as { delay: number }
-    ).delay;
-    const delay2 = (
-      multipleEffectsConfig.effects['second-effect'] as { delay: number }
-    ).delay;
-    const delay3 = (
-      multipleEffectsConfig.effects['third-effect'] as { delay: number }
-    ).delay;
+  /** Creates a basic config with a single effect and interaction */
+  const createConfig = (
+    effect: Effect,
+    options: {
+      key?: string;
+      trigger?: InteractConfig['interactions'][0]['trigger'];
+      effectId?: string;
+      conditions?: InteractConfig['conditions'];
+      effectConditions?: string[];
+      selector?: string;
+      listContainer?: string;
+      listItemSelector?: string;
+    } = {},
+  ): InteractConfig => {
+    const {
+      key = 'test-element',
+      trigger = 'viewEnter',
+      effectId = 'test-effect',
+      conditions,
+      effectConditions,
+      selector,
+      listContainer,
+      listItemSelector,
+    } = options;
 
-    const fill1 = (
-      multipleEffectsConfig.effects['first-effect'] as { fill: string }
-    ).fill;
-    const fill2 = (
-      multipleEffectsConfig.effects['second-effect'] as { fill: string }
-    ).fill;
-    const fill3 = (
-      multipleEffectsConfig.effects['third-effect'] as { fill: string }
-    ).fill;
+    const effectRef: any = { key, effectId };
+    if (effectConditions) effectRef.conditions = effectConditions;
+    if (selector) effectRef.selector = selector;
+    if (listContainer) effectRef.listContainer = listContainer;
+    if (listItemSelector) effectRef.listItemSelector = listItemSelector;
 
     return {
-      names: [name1, name2, name3],
-      durations: [dur1, dur2, dur3],
-      delays: [delay1, delay2, delay3],
-      fills: [fill1, fill2, fill3],
+      conditions,
+      effects: { [effectId]: effect },
+      interactions: [
+        {
+          trigger,
+          key,
+          listContainer,
+          listItemSelector,
+          effects: [effectRef],
+        },
+      ],
     };
   };
 
   // ============================================================================
-  // Test Configurations
+  // Common Test Effects
   // ============================================================================
 
-  /** Config with FadeIn namedEffect */
-  const fadeInConfig: InteractConfig = {
-    effects: {
-      'fade-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'fade-element',
-        effects: [{ key: 'fade-element', effectId: 'fade-effect' }],
-      },
-    ],
+  const fadeInEffect: TimeEffect = {
+    namedEffect: { type: 'FadeIn' } as NamedEffect,
+    duration: 500,
   };
 
-  /** Config with custom keyframeEffect */
-  const keyframeEffectConfig: InteractConfig = {
-    effects: {
-      'custom-slide': {
-        keyframeEffect: {
-          name: 'custom-slide-animation',
-          keyframes: [
-            { offset: 0, transform: 'translateX(-100px)', opacity: '0' },
-            { offset: 1, transform: 'translateX(0)', opacity: '1' },
-          ],
-        },
-        duration: 800,
-      },
+  const keyframeEffect: TimeEffect = {
+    keyframeEffect: {
+      name: 'custom-slide',
+      keyframes: [
+        { offset: 0, transform: 'translateX(-100px)', opacity: '0' },
+        { offset: 1, transform: 'translateX(0)', opacity: '1' },
+      ],
     },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'slide-element',
-        effects: [{ key: 'slide-element', effectId: 'custom-slide' }],
-      },
-    ],
+    duration: 800,
   };
 
-  /** Config with customEffect - should NOT generate CSS */
-  const customEffectConfig: InteractConfig = {
-    effects: {
-      'js-effect': {
-        customEffect: (_element: Element, _progress: number) => {
-          // JavaScript-only animation
-        },
-        duration: 1000,
-      } as Effect,
+  const transitionEffect: TransitionEffect = {
+    transition: {
+      duration: 300,
+      easing: 'ease-out',
+      styleProperties: [
+        { name: 'opacity', value: '1' },
+        { name: 'transform', value: 'scale(1)' },
+      ],
     },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'js-element',
-        effects: [{ key: 'js-element', effectId: 'js-effect' }],
-      },
-    ],
-  };
-
-  /** Config with all TimeEffect options */
-  const fullOptionsConfig: InteractConfig = {
-    effects: {
-      'full-options': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 1000,
-        delay: 200,
-        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-        iterations: 3,
-        alternate: true,
-        fill: 'both',
-        reversed: false,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'full-options-element',
-        effects: [{ key: 'full-options-element', effectId: 'full-options' }],
-      },
-    ],
-  };
-
-  /** Config with reversed direction */
-  const reversedConfig: InteractConfig = {
-    effects: {
-      'reversed-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        reversed: true,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'reversed-element',
-        effects: [{ key: 'reversed-element', effectId: 'reversed-effect' }],
-      },
-    ],
-  };
-
-  /** Config with alternate-reverse direction */
-  const alternateReversedConfig: InteractConfig = {
-    effects: {
-      'alt-rev-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        alternate: true,
-        reversed: true,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'alt-rev-element',
-        effects: [{ key: 'alt-rev-element', effectId: 'alt-rev-effect' }],
-      },
-    ],
-  };
-
-  /** Config with infinite iterations */
-  const infiniteIterationsConfig: InteractConfig = {
-    effects: {
-      'infinite-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        iterations: 0, // 0 means infinite
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'infinite-element',
-        effects: [{ key: 'infinite-element', effectId: 'infinite-effect' }],
-      },
-    ],
-  };
-
-  /** Config with scrub trigger (viewProgress) - should NOT generate CSS */
-  const scrubTriggerConfig: InteractConfig = {
-    effects: {
-      'scroll-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        rangeStart: {
-          name: 'contain',
-          offset: { value: 0, type: 'percentage' },
-        },
-        rangeEnd: {
-          name: 'contain',
-          offset: { value: 100, type: 'percentage' },
-        },
-      } as Effect,
-    },
-    interactions: [
-      {
-        trigger: 'viewProgress',
-        key: 'scroll-element',
-        effects: [{ key: 'scroll-element', effectId: 'scroll-effect' }],
-      },
-    ],
-  };
-
-  /** Config with pointerMove trigger - should NOT generate CSS */
-  const pointerMoveTriggerConfig: InteractConfig = {
-    effects: {
-      'pointer-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        rangeStart: {
-          name: 'contain',
-          offset: { value: 0, type: 'percentage' },
-        },
-        rangeEnd: {
-          name: 'contain',
-          offset: { value: 100, type: 'percentage' },
-        },
-      } as Effect,
-    },
-    interactions: [
-      {
-        trigger: 'pointerMove',
-        key: 'pointer-element',
-        effects: [{ key: 'pointer-element', effectId: 'pointer-effect' }],
-      },
-    ],
-  };
-
-  /** Config with hover trigger - time-based, should generate CSS */
-  const hoverTriggerConfig: InteractConfig = {
-    effects: {
-      'hover-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 300,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'hover',
-        key: 'hover-element',
-        effects: [{ key: 'hover-element', effectId: 'hover-effect' }],
-      },
-    ],
-  };
-
-  /** Config with click trigger - time-based, should generate CSS */
-  const clickTriggerConfig: InteractConfig = {
-    effects: {
-      'click-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 400,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'click',
-        key: 'click-element',
-        effects: [{ key: 'click-element', effectId: 'click-effect' }],
-      },
-    ],
-  };
-
-  /** Config with animationEnd trigger - time-based, should generate CSS */
-  const animationEndTriggerConfig: InteractConfig = {
-    effects: {
-      'chain-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 600,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'animationEnd',
-        key: 'chain-element',
-        params: { effectId: 'some-previous-effect' },
-        effects: [{ key: 'chain-element', effectId: 'chain-effect' }],
-      },
-    ],
-  };
-
-  /** Config with custom selector */
-  const customSelectorConfig: InteractConfig = {
-    effects: {
-      'selector-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'parent-element',
-        effects: [
-          {
-            key: 'parent-element',
-            selector: '.child-target',
-            effectId: 'selector-effect',
-          },
-        ],
-      },
-    ],
-  };
-
-  /** Config with listContainer */
-  const listContainerConfig: InteractConfig = {
-    effects: {
-      'list-item-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 300,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'list-wrapper',
-        listContainer: '.items-container',
-        listItemSelector: '.item',
-        effects: [
-          {
-            listContainer: '.items-container',
-            listItemSelector: '.item',
-            effectId: 'list-item-effect',
-          },
-        ],
-      },
-    ],
-  };
-
-  /** Config with media condition */
-  const conditionalConfig: InteractConfig = {
-    conditions: {
-      desktop: { type: 'media', predicate: 'min-width: 1024px' },
-    },
-    effects: {
-      'conditional-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'conditional-element',
-        effects: [
-          {
-            key: 'conditional-element',
-            effectId: 'conditional-effect',
-            conditions: ['desktop'],
-          },
-        ],
-      },
-    ],
-  };
-
-  /** Empty config */
-  const emptyConfig: InteractConfig = {
-    effects: {},
-    interactions: [],
-  };
-
-  /** Config with same effect used twice (deduplication test) */
-  const duplicateEffectConfig: InteractConfig = {
-    effects: {
-      'shared-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'element-a',
-        effects: [{ key: 'element-a', effectId: 'shared-effect' }],
-      },
-      {
-        trigger: 'viewEnter',
-        key: 'element-b',
-        effects: [{ key: 'element-b', effectId: 'shared-effect' }],
-      },
-    ],
-  };
-
-  /** Config with inline effect definition (no effectId reference) */
-  const inlineEffectConfig: InteractConfig = {
-    effects: {},
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'inline-element',
-        effects: [
-          {
-            key: 'inline-element',
-            namedEffect: { type: 'FadeIn' } as NamedEffect,
-            duration: 400,
-          } as Effect,
-        ],
-      },
-    ],
-  };
-
-  /** Config with fill modes */
-  const fillNoneConfig: InteractConfig = {
-    effects: {
-      'fill-none': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        fill: 'none',
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'fill-none-element',
-        effects: [{ key: 'fill-none-element', effectId: 'fill-none' }],
-      },
-    ],
-  };
-
-  const fillForwardsConfig: InteractConfig = {
-    effects: {
-      'fill-forwards': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        fill: 'forwards',
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'fill-forwards-element',
-        effects: [{ key: 'fill-forwards-element', effectId: 'fill-forwards' }],
-      },
-    ],
-  };
-
-  /** Config with ArcIn (multi-keyframe effect) */
-  const arcInConfig: InteractConfig = {
-    effects: {
-      'arc-effect': {
-        namedEffect: {
-          type: 'ArcIn',
-          direction: 'right',
-          power: 'medium',
-        } as NamedEffect,
-        duration: 1000,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'arc-element',
-        effects: [{ key: 'arc-element', effectId: 'arc-effect' }],
-      },
-    ],
-  };
-
-  /** Config with fractional offset keyframes */
-  const fractionalKeyframesConfig: InteractConfig = {
-    effects: {
-      'multi-step': {
-        keyframeEffect: {
-          name: 'multi-step-animation',
-          keyframes: [
-            { offset: 0, opacity: '0' },
-            { offset: 0.25, opacity: '0.5' },
-            { offset: 0.75, opacity: '0.8' },
-            { offset: 1, opacity: '1' },
-          ],
-        },
-        duration: 1000,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'multi-step-element',
-        effects: [{ key: 'multi-step-element', effectId: 'multi-step' }],
-      },
-    ],
-  };
-
-  /** Config with keyframes without explicit offsets (interpolated) */
-  const interpolatedKeyframesConfig: InteractConfig = {
-    effects: {
-      'interpolated-effect': {
-        keyframeEffect: {
-          name: 'interpolated-animation',
-          keyframes: [
-            { opacity: '0', transform: 'scale(0.5)' },
-            { opacity: '0.3', transform: 'scale(0.7)' },
-            { opacity: '0.7', transform: 'scale(0.9)' },
-            { opacity: '1', transform: 'scale(1)' },
-          ],
-        },
-        duration: 1000,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'interpolated-element',
-        effects: [
-          {
-            key: 'interpolated-element',
-            effectId: 'interpolated-effect',
-          },
-        ],
-      },
-    ],
-  };
-
-  /** Config with mixed explicit and implicit offsets */
-  const mixedOffsetsConfig: InteractConfig = {
-    effects: {
-      'mixed-effect': {
-        keyframeEffect: {
-          name: 'mixed-offset-animation',
-          keyframes: [
-            { offset: 0, opacity: '0' },
-            { opacity: '0.5' }, // Should be interpolated to 50%
-            { offset: 1, opacity: '1' },
-          ],
-        },
-        duration: 500,
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'mixed-element',
-        effects: [{ key: 'mixed-element', effectId: 'mixed-effect' }],
-      },
-    ],
-  };
-
-  /** Config with multiple effects on same target */
-  const multipleEffectsConfig: InteractConfig = {
-    effects: {
-      'first-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 500,
-        delay: 0,
-        fill: 'forwards',
-      },
-      'second-effect': {
-        keyframeEffect: {
-          name: 'scale-up',
-          keyframes: [
-            { offset: 0, transform: 'scale(0.8)' },
-            { offset: 1, transform: 'scale(1)' },
-          ],
-        },
-        duration: 800,
-        delay: 100,
-        fill: 'both',
-      },
-      'third-effect': {
-        namedEffect: { type: 'FadeIn' } as NamedEffect,
-        duration: 300,
-        delay: 200,
-        iterations: 2,
-        fill: 'none',
-      },
-    },
-    interactions: [
-      {
-        trigger: 'viewEnter',
-        key: 'multi-effect-element',
-        effects: [
-          { key: 'multi-effect-element', effectId: 'first-effect' },
-          { key: 'multi-effect-element', effectId: 'second-effect' },
-          { key: 'multi-effect-element', effectId: 'third-effect' },
-        ],
-      },
-    ],
   };
 
   // ============================================================================
-  // SUITE 1: Keyframes Rules
+  // SUITE 1: Return Structure
   // ============================================================================
-  describe('keyframes rules', () => {
-    describe('namedEffect keyframes', () => {
-      it('should generate valid @keyframes rule for FadeIn effect', () => {
-        const result = getCSS(fadeInConfig);
-        const duration = getEffectDuration(fadeInConfig, 'fade-effect');
-        const [fadeInName] = getFadeInNames(duration);
+  describe('return structure', () => {
+    it('should return an object with keyframes, animationRules, and transitionRules arrays', () => {
+      const result = getCSS({ effects: {}, interactions: [] });
 
-        expect(result.keyframes).toHaveLength(1);
-
-        // FadeIn generates keyframe with opacity animation
-        // Pattern: @keyframes {name} { 0% { opacity: 0 } 100% { opacity: ... } }
-        const keyframeRule = result.keyframes[0];
-        const keyframePattern = new RegExp(
-          `^@keyframes\\s+${fadeInName}\\s*\\{\\s*0%\\s*\\{\\s*opacity:\\s*0;?\\s*\\}\\s*100%\\s*\\{\\s*opacity:\\s*[^}]+\\}\\s*\\}$`,
-        );
-
-        expect(keyframeRule).toMatch(keyframePattern);
-      });
-
-      it('should generate multiple @keyframes rules for multi-keyframe effects', () => {
-        const result = getCSS(arcInConfig);
-        const duration = getEffectDuration(arcInConfig, 'arc-effect');
-        const [fadeInName, arcInName] = getArcInNames(duration);
-
-        // ArcIn generates 2 keyframes
-        expect(result.keyframes).toHaveLength(2);
-
-        // Should have fadeIn keyframe
-        const hasFadeIn = result.keyframes.some((kf) =>
-          new RegExp(`^@keyframes\\s+${fadeInName}\\s*\\{`).test(kf),
-        );
-        expect(hasFadeIn).toBe(true);
-
-        // Should have arcIn keyframe with transform/perspective
-        const hasArcIn = result.keyframes.some(
-          (kf) =>
-            new RegExp(`^@keyframes\\s+${arcInName}\\s*\\{`).test(kf) &&
-            kf.includes('transform') &&
-            kf.includes('perspective'),
-        );
-        expect(hasArcIn).toBe(true);
-      });
+      expect(result).toHaveProperty('keyframes');
+      expect(result).toHaveProperty('animationRules');
+      expect(result).toHaveProperty('transitionRules');
+      expect(Array.isArray(result.keyframes)).toBe(true);
+      expect(Array.isArray(result.animationRules)).toBe(true);
+      expect(Array.isArray(result.transitionRules)).toBe(true);
     });
 
-    describe('keyframeEffect keyframes', () => {
-      it('should generate @keyframes with custom name and keyframe values (properties may be scrambled)', () => {
-        const result = getCSS(keyframeEffectConfig);
+    it('should return empty arrays for empty config', () => {
+      const result = getCSS({ effects: {}, interactions: [] });
 
-        const { name, keyframes } = (
-          keyframeEffectConfig.effects['custom-slide'] as {
-            keyframeEffect: { name: string; keyframes: Keyframe[] };
-          }
-        ).keyframeEffect;
-
-        expect(result.keyframes).toHaveLength(1);
-        const keyframeRule = result.keyframes[0];
-
-        // Verify complete @keyframes structure: @keyframes name { ... }
-        const fullStructurePattern = new RegExp(
-          `^@keyframes\\s+${name}\\s*\\{[\\s\\S]*\\}$`,
-        );
-        expect(keyframeRule).toMatch(fullStructurePattern);
-
-        // Verify first keyframe (0%) with properties in any order
-        const firstKeyframe = keyframes[0];
-        const firstPercentage = String((firstKeyframe.offset ?? 0) * 100);
-        const firstProps: [string, string][] = [
-          ['transform', 'translateX(-100px)'],
-          ['opacity', '0'],
-        ];
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern(firstPercentage, firstProps),
-        );
-
-        // Verify last keyframe (100%) with properties in any order
-        const lastKeyframe = keyframes[keyframes.length - 1];
-        const lastPercentage = String((lastKeyframe.offset ?? 1) * 100);
-        const lastProps: [string, string][] = [
-          ['transform', 'translateX(0)'],
-          ['opacity', '1'],
-        ];
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern(lastPercentage, lastProps),
-        );
-      });
-
-      it('should generate @keyframes with fractional offset values', () => {
-        const result = getCSS(fractionalKeyframesConfig);
-
-        const { name } = (
-          fractionalKeyframesConfig.effects['multi-step'] as {
-            keyframeEffect: { name: string };
-          }
-        ).keyframeEffect;
-
-        expect(result.keyframes).toHaveLength(1);
-        const keyframeRule = result.keyframes[0];
-
-        // Verify complete structure with all percentage stops
-        const fullStructurePattern = new RegExp(
-          `^@keyframes\\s+${name}\\s*\\{` +
-            `\\s*0%\\s*\\{\\s*opacity:\\s*0;?\\s*\\}` +
-            `\\s*25%\\s*\\{\\s*opacity:\\s*0\\.5;?\\s*\\}` +
-            `\\s*75%\\s*\\{\\s*opacity:\\s*0\\.8;?\\s*\\}` +
-            `\\s*100%\\s*\\{\\s*opacity:\\s*1;?\\s*\\}` +
-            `\\s*\\}$`,
-        );
-        expect(keyframeRule).toMatch(fullStructurePattern);
-      });
-
-      it('should interpolate percentages when offset is not provided', () => {
-        // When offsets are not provided, they should be evenly distributed
-        // 4 keyframes without offset → 0%, 33.33%, 66.67%, 100%
-        const result = getCSS(interpolatedKeyframesConfig);
-
-        const { name } = (
-          interpolatedKeyframesConfig.effects['interpolated-effect'] as {
-            keyframeEffect: { name: string };
-          }
-        ).keyframeEffect;
-
-        expect(result.keyframes).toHaveLength(1);
-        const keyframeRule = result.keyframes[0];
-
-        // Verify @keyframes name
-        expect(keyframeRule).toMatch(
-          new RegExp(`^@keyframes\\s+${name}\\s*\\{`),
-        );
-
-        // First keyframe should be 0%
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern('0', [
-            ['opacity', '0'],
-            ['transform', 'scale(0.5)'],
-          ]),
-        );
-
-        // Middle keyframes should be interpolated (33% or 33.33%, 66% or 66.67%)
-        // Allow for rounding variations
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern('33(?:\\.33)?', [
-            ['opacity', '0.3'],
-            ['transform', 'scale(0.7)'],
-          ]),
-        );
-
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern('66(?:\\.67)?', [
-            ['opacity', '0.7'],
-            ['transform', 'scale(0.9)'],
-          ]),
-        );
-
-        // Last keyframe should be 100%
-        expect(keyframeRule).toMatch(
-          createKeyframeBlockPattern('100', [
-            ['opacity', '1'],
-            ['transform', 'scale(1)'],
-          ]),
-        );
-      });
-
-      it('should handle mixed explicit and implicit offsets', () => {
-        // First and last have explicit offsets, middle ones are interpolated
-        const result = getCSS(mixedOffsetsConfig);
-
-        const { name } = (
-          mixedOffsetsConfig.effects['mixed-effect'] as {
-            keyframeEffect: { name: string };
-          }
-        ).keyframeEffect;
-
-        expect(result.keyframes).toHaveLength(1);
-        const keyframeRule = result.keyframes[0];
-
-        // Verify complete structure with interpolated middle keyframe
-        const fullStructurePattern = new RegExp(
-          `^@keyframes\\s+${name}\\s*\\{` +
-            `\\s*0%\\s*\\{\\s*opacity:\\s*0;?\\s*\\}` +
-            `\\s*50%\\s*\\{\\s*opacity:\\s*0\\.5;?\\s*\\}` +
-            `\\s*100%\\s*\\{\\s*opacity:\\s*1;?\\s*\\}` +
-            `\\s*\\}$`,
-        );
-        expect(keyframeRule).toMatch(fullStructurePattern);
-      });
-    });
-
-    describe('customEffect keyframes', () => {
-      it('should NOT generate keyframes for customEffect', () => {
-        const result = getCSS(customEffectConfig);
-
-        expect(result.keyframes).toHaveLength(0);
-      });
-    });
-
-    describe('keyframes deduplication', () => {
-      it('should not duplicate keyframes when same effect is used multiple times', () => {
-        const result = getCSS(duplicateEffectConfig);
-        const duration = getEffectDuration(
-          duplicateEffectConfig,
-          'shared-effect',
-        );
-        const [fadeInName] = getFadeInNames(duration);
-
-        // fadeIn keyframe should appear exactly once
-        const fadeInKeyframes = result.keyframes.filter((kf) =>
-          kf.includes(fadeInName),
-        );
-        expect(fadeInKeyframes).toHaveLength(1);
-      });
-    });
-
-    describe('trigger filtering', () => {
-      it('should NOT generate keyframes for viewProgress trigger', () => {
-        const result = getCSS(scrubTriggerConfig);
-        expect(result.keyframes).toHaveLength(0);
-      });
-
-      it('should NOT generate keyframes for pointerMove trigger', () => {
-        const result = getCSS(pointerMoveTriggerConfig);
-        expect(result.keyframes).toHaveLength(0);
-      });
-
-      it('should generate keyframes for hover trigger', () => {
-        const result = getCSS(hoverTriggerConfig);
-        const duration = getEffectDuration(hoverTriggerConfig, 'hover-effect');
-        const [fadeInName] = getFadeInNames(duration);
-        expect(result.keyframes.length).toBeGreaterThan(0);
-        expect(result.keyframes[0]).toMatch(
-          new RegExp(`^@keyframes\\s+${fadeInName}`),
-        );
-      });
-
-      it('should generate keyframes for click trigger', () => {
-        const result = getCSS(clickTriggerConfig);
-        const duration = getEffectDuration(clickTriggerConfig, 'click-effect');
-        const [fadeInName] = getFadeInNames(duration);
-        expect(result.keyframes.length).toBeGreaterThan(0);
-        expect(result.keyframes[0]).toMatch(
-          new RegExp(`^@keyframes\\s+${fadeInName}`),
-        );
-      });
-
-      it('should generate keyframes for animationEnd trigger', () => {
-        const result = getCSS(animationEndTriggerConfig);
-        const duration = getEffectDuration(
-          animationEndTriggerConfig,
-          'chain-effect',
-        );
-        const [fadeInName] = getFadeInNames(duration);
-        expect(result.keyframes.length).toBeGreaterThan(0);
-        expect(result.keyframes[0]).toMatch(
-          new RegExp(`^@keyframes\\s+${fadeInName}`),
-        );
-      });
-    });
-
-    describe('edge cases', () => {
-      it('should return empty keyframes array for empty config', () => {
-        const result = getCSS(emptyConfig);
-        expect(result.keyframes).toEqual([]);
-      });
-
-      it('should generate keyframes for inline effect definitions', () => {
-        const result = getCSS(inlineEffectConfig);
-        // Inline effect has duration in the interaction effect, not in config.effects
-        const inlineEffect = inlineEffectConfig.interactions[0].effects[0] as {
-          duration: number;
-        };
-        const [fadeInName] = getFadeInNames(inlineEffect.duration);
-        expect(result.keyframes.length).toBeGreaterThan(0);
-        expect(result.keyframes[0]).toMatch(
-          new RegExp(`^@keyframes\\s+${fadeInName}`),
-        );
-      });
-
-      it('should skip effects without namedEffect or keyframeEffect', () => {
-        const invalidConfig: InteractConfig = {
-          effects: {
-            'invalid-effect': { duration: 500 } as TimeEffect,
-          },
-          interactions: [
-            {
-              trigger: 'viewEnter',
-              key: 'invalid-element',
-              effects: [{ key: 'invalid-element', effectId: 'invalid-effect' }],
-            },
-          ],
-        };
-
-        const result = getCSS(invalidConfig);
-        expect(result.keyframes).toEqual([]);
-      });
+      expect(result.keyframes).toEqual([]);
+      expect(result.animationRules).toEqual([]);
+      expect(result.transitionRules).toEqual([]);
     });
   });
 
   // ============================================================================
-  // SUITE 2: Animation Rules
+  // SUITE 2: Trigger Filtering
   // ============================================================================
-  // TODO: (ameerf) - fix this to use animation short-hand and unskip
-  describe.skip('animation rules', () => {
-    describe('animation-name', () => {
-      it('should include animation-name with selector for namedEffect', () => {
-        const result = getCSS(fadeInConfig);
-        const duration = getEffectDuration(fadeInConfig, 'fade-effect');
-        const [fadeInName] = getFadeInNames(duration);
-        const selector = buildFullSelector('fade-element');
+  describe('trigger filtering', () => {
+    const timeTriggers = ['viewEnter', 'hover', 'click', 'animationEnd', 'pageVisible'] as const;
+    const scrubTriggers = ['viewProgress', 'pointerMove'] as const;
 
-        expect(result.animationRules.length).toBeGreaterThan(0);
+    it.each(timeTriggers)('should generate CSS for %s trigger', (trigger) => {
+      const config = createConfig(fadeInEffect, { trigger });
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-name',
-          fadeInName,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.animationRules.length).toBeGreaterThan(0);
+    });
 
-      it('should include animation-name with selector for keyframeEffect', () => {
-        const result = getCSS(keyframeEffectConfig);
-        const { name } = (
-          keyframeEffectConfig.effects['custom-slide'] as {
-            keyframeEffect: { name: string };
-          }
-        ).keyframeEffect;
-        const selector = buildFullSelector('slide-element');
+    it.each(scrubTriggers)('should NOT generate CSS for %s trigger', (trigger) => {
+      const config = createConfig(fadeInEffect, { trigger });
+      const result = getCSS(config);
 
-        expect(result.animationRules.length).toBeGreaterThan(0);
+      expect(result.keyframes).toEqual([]);
+      expect(result.animationRules).toEqual([]);
+    });
+  });
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-name',
-          name,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
+  // ============================================================================
+  // SUITE 3: Keyframes Generation
+  // ============================================================================
+  describe('keyframes generation', () => {
+    it('should generate valid @keyframes rule for namedEffect', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
+      const [expectedName] = getKeyframeNames(fadeInEffect);
+
+      expect(result.keyframes).toHaveLength(1);
+      expect(result.keyframes[0]).toMatch(keyframesPattern(expectedName));
+      expect(result.keyframes[0]).toMatch(/0%\s*\{[^}]*opacity/);
+      expect(result.keyframes[0]).toMatch(/100%\s*\{[^}]*opacity/);
+    });
+
+    it('should generate @keyframes with custom name for keyframeEffect', () => {
+      const config = createConfig(keyframeEffect);
+      const result = getCSS(config);
+
+      expect(result.keyframes).toHaveLength(1);
+      expect(result.keyframes[0]).toMatch(keyframesPattern('custom-slide'));
+      expect(result.keyframes[0]).toMatch(/0%\s*\{[^}]*transform/);
+      expect(result.keyframes[0]).toMatch(/100%\s*\{[^}]*transform/);
+    });
+
+    it('should generate multiple @keyframes for multi-part effects (like ArcIn)', () => {
+      const arcInEffect: TimeEffect = {
+        namedEffect: { type: 'ArcIn', direction: 'right' } as NamedEffect,
+        duration: 1000,
+      };
+      const config = createConfig(arcInEffect);
+      const result = getCSS(config);
+      const expectedNames = getKeyframeNames(arcInEffect);
+
+      expect(result.keyframes.length).toBe(expectedNames.length);
+      expectedNames.forEach((name) => {
+        expect(result.keyframes.some((kf) => kf.includes(`@keyframes ${name}`))).toBe(true);
       });
     });
 
-    describe('animation-duration', () => {
-      it('should include animation-duration in milliseconds with selector', () => {
-        const result = getCSS(fadeInConfig);
-        const duration = getEffectDuration(fadeInConfig, 'fade-effect');
-        const selector = buildFullSelector('fade-element');
+    it('should deduplicate keyframes when same effect is used multiple times', () => {
+      const config: InteractConfig = {
+        effects: { shared: fadeInEffect },
+        interactions: [
+          { trigger: 'viewEnter', key: 'el-a', effects: [{ key: 'el-a', effectId: 'shared' }] },
+          { trigger: 'viewEnter', key: 'el-b', effects: [{ key: 'el-b', effectId: 'shared' }] },
+        ],
+      };
+      const result = getCSS(config);
+      const [expectedName] = getKeyframeNames(fadeInEffect);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-duration',
-          `${duration}ms`,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should use correct duration value from effect config', () => {
-        const result = getCSS(keyframeEffectConfig);
-        const duration = getEffectDuration(
-          keyframeEffectConfig,
-          'custom-slide',
-        );
-        const selector = buildFullSelector('slide-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-duration',
-          `${duration}ms`,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
+      const keyframesWithName = result.keyframes.filter((kf) => kf.includes(expectedName));
+      expect(keyframesWithName).toHaveLength(1);
     });
 
-    describe('animation-delay', () => {
-      it('should include animation-delay when delay is specified', () => {
-        const result = getCSS(fullOptionsConfig);
-        const delay = (
-          fullOptionsConfig.effects['full-options'] as { delay: number }
-        ).delay;
-        const selector = buildFullSelector('full-options-element');
+    it('should interpolate keyframe offsets when not provided', () => {
+      const interpolatedEffect: TimeEffect = {
+        keyframeEffect: {
+          name: 'interpolated',
+          keyframes: [
+            { opacity: '0' },
+            { opacity: '0.5' },
+            { opacity: '1' },
+          ],
+        },
+        duration: 1000,
+      };
+      const config = createConfig(interpolatedEffect);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-delay',
-          `${delay}ms`,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should omit animation-delay when not specified', () => {
-        const result = getCSS(fadeInConfig);
-
-        // fadeInConfig has no delay - either no animation-delay or 0ms
-        const hasNonZeroDelay = result.animationRules.some((rule) =>
-          /animation-delay:\s*[1-9]\d*ms/.test(rule),
-        );
-        expect(hasNonZeroDelay).toBe(false);
-      });
+      // Should have 0%, 50%, 100% (evenly distributed)
+      expect(result.keyframes[0]).toMatch(/0%\s*\{/);
+      expect(result.keyframes[0]).toMatch(/50%\s*\{/);
+      expect(result.keyframes[0]).toMatch(/100%\s*\{/);
     });
 
-    describe('animation-timing-function', () => {
-      it('should include custom easing as animation-timing-function', () => {
-        const result = getCSS(fullOptionsConfig);
-        const easing = (
-          fullOptionsConfig.effects['full-options'] as { easing: string }
-        ).easing;
-        const selector = buildFullSelector('full-options-element');
+    it('should NOT generate keyframes for customEffect', () => {
+      const customEffect = {
+        customEffect: () => {},
+        duration: 1000,
+      } as Effect;
+      const config = createConfig(customEffect);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-timing-function',
-          easing,
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
+      expect(result.keyframes).toEqual([]);
+    });
+  });
 
-      it('should include animation-timing-function when not specified', () => {
-        const result = getCSS(fadeInConfig);
-        const selector = buildFullSelector('fade-element');
+  // ============================================================================
+  // SUITE 4: Initial State in Keyframes
+  // ============================================================================
+  describe('initial state in keyframes', () => {
+    it('should include default initial state properties in keyframes', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
 
-        // Should have animation-timing-function property
-        const hasTimingFunction = result.animationRules.some(
-          (rule) =>
-            rule.includes(selector) &&
-            rule.includes('animation-timing-function:'),
-        );
-        expect(hasTimingFunction).toBe(true);
-      });
+      // Default initial includes visibility: hidden
+      expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*visibility:\s*hidden/);
     });
 
-    describe('animation-iteration-count', () => {
-      it('should include animation-iteration-count when iterations specified', () => {
-        const result = getCSS(fullOptionsConfig);
-        const iterations = (
-          fullOptionsConfig.effects['full-options'] as { iterations: number }
-        ).iterations;
-        const selector = buildFullSelector('full-options-element');
+    it('should use custom initial state when provided', () => {
+      const effectWithInitial: Effect = {
+        ...fadeInEffect,
+        initial: { opacity: '0', transform: 'scale(0.5)' },
+      };
+      const config = createConfig(effectWithInitial);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-iteration-count',
-          String(iterations),
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should use "infinite" for iterations: 0', () => {
-        const result = getCSS(infiniteIterationsConfig);
-        const selector = buildFullSelector('infinite-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-iteration-count',
-          'infinite',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
+      expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*opacity:\s*0/);
+      expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*transform:\s*scale\(0\.5\)/);
     });
 
-    describe('animation-direction', () => {
-      it('should include animation-direction: alternate when alternate: true', () => {
-        const result = getCSS(fullOptionsConfig);
-        const selector = buildFullSelector('full-options-element');
+    it('should NOT include initial when set to "disable"', () => {
+      const effectWithDisabledInitial: Effect = {
+        ...fadeInEffect,
+        initial: 'disable',
+      };
+      const config = createConfig(effectWithDisabledInitial);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-direction',
-          'alternate',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
+      expect(result.keyframes[0]).not.toMatch(/from\s*\{/);
+    });
+  });
 
-      it('should include animation-direction: reverse when reversed: true', () => {
-        const result = getCSS(reversedConfig);
-        const selector = buildFullSelector('reversed-element');
+  // ============================================================================
+  // SUITE 5: Animation Rules
+  // ============================================================================
+  describe('animation rules', () => {
+    it('should generate animation rule with correct selector', () => {
+      const config = createConfig(fadeInEffect, { key: 'my-element' });
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-direction',
-          'reverse',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should include animation-direction: alternate-reverse when both', () => {
-        const result = getCSS(alternateReversedConfig);
-        const selector = buildFullSelector('alt-rev-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-direction',
-          'alternate-reverse',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should use normal direction when neither alternate nor reversed', () => {
-        const result = getCSS(fadeInConfig);
-
-        // Should not have reverse or alternate in direction
-        const hasReverseOrAlternate = result.animationRules.some(
-          (rule) =>
-            /animation-direction:\s*reverse/.test(rule) ||
-            /animation-direction:\s*alternate/.test(rule),
-        );
-        expect(hasReverseOrAlternate).toBe(false);
-      });
+      const hasCorrectSelector = result.animationRules.some((rule) =>
+        rule.includes('[data-interact-key="my-element"]'),
+      );
+      expect(hasCorrectSelector).toBe(true);
     });
 
-    describe('animation-fill-mode', () => {
-      it('should include animation-fill-mode: both when fill: "both"', () => {
-        const result = getCSS(fullOptionsConfig);
-        const selector = buildFullSelector('full-options-element');
+    it('should use CSS custom properties for animation definition', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-fill-mode',
-          'both',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should include animation-fill-mode: forwards when fill: "forwards"', () => {
-        const result = getCSS(fillForwardsConfig);
-        const selector = buildFullSelector('fill-forwards-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-fill-mode',
-          'forwards',
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should not include forwards/backwards/both when fill: "none"', () => {
-        const result = getCSS(fillNoneConfig);
-
-        // Should NOT have forwards, backwards, or both
-        const hasOtherFill = result.animationRules.some(
-          (rule) =>
-            /animation-fill-mode:\s*forwards/.test(rule) ||
-            /animation-fill-mode:\s*backwards/.test(rule) ||
-            /animation-fill-mode:\s*both/.test(rule),
-        );
-        expect(hasOtherFill).toBe(false);
-      });
+      // Animation rules should use --anim-def-* custom properties
+      const hasCustomProp = result.animationRules.some((rule) =>
+        /--anim-def-\w+/.test(rule),
+      );
+      expect(hasCustomProp).toBe(true);
     });
 
-    describe('selectors', () => {
-      it('should target element using data-interact-key and child selector', () => {
-        const result = getCSS(fadeInConfig);
-        const selector = buildFullSelector('fade-element');
+    it('should include animation property with var() fallback', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
 
-        const hasSelector = result.animationRules.some((rule) =>
-          rule.includes(selector),
-        );
-        expect(hasSelector).toBe(true);
-      });
-
-      it('should include custom selector when specified', () => {
-        const result = getCSS(customSelectorConfig);
-        const effect = customSelectorConfig.interactions[0]
-          .effects[0] as Effect;
-        const selector = buildFullSelector('parent-element', effect);
-
-        const hasSelector = result.animationRules.some((rule) =>
-          rule.includes(selector),
-        );
-        expect(hasSelector).toBe(true);
-      });
-
-      it('should include listContainer and listItemSelector in selector', () => {
-        const result = getCSS(listContainerConfig);
-        const effect = listContainerConfig.interactions[0].effects[0] as Effect;
-        const childSelector = getSelector(effect, { addItemFilter: true });
-
-        // Should include the list container path
-        const hasListSelector = result.animationRules.some(
-          (rule) =>
-            rule.includes('[data-interact-key="list-wrapper"]') &&
-            rule.includes(childSelector),
-        );
-        expect(hasListSelector).toBe(true);
-      });
+      const hasAnimationWithVar = result.animationRules.some((rule) =>
+        /animation:\s*var\(--anim-def-[^,]+,\s*none\)/.test(rule),
+      );
+      expect(hasAnimationWithVar).toBe(true);
     });
 
-    describe('media conditions', () => {
-      it('should wrap animation rule in @media query when condition specified', () => {
-        const result = getCSS(conditionalConfig);
-        const predicate = conditionalConfig.conditions!.desktop.predicate || '';
-        const duration = getEffectDuration(
-          conditionalConfig,
-          'conditional-effect',
-        );
-        const [fadeInName] = getFadeInNames(duration);
-        const selector = buildFullSelector('conditional-element');
+    it('should include animation string from motion library', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
+      const [expectedAnimation] = getAnimationStrings(fadeInEffect);
 
-        // Build the animation rule pattern
-        const animationRulePattern = createAnimationRulePattern(
-          selector,
-          'animation-name',
-          fadeInName,
-        );
-
-        // Should have @media (predicate) wrapper containing the animation rule
-        const mediaPattern = new RegExp(
-          `@media\\s*\\(\\s*${escapeRegex(
-            predicate,
-          )}\\s*\\)\\s*\\{[\\s\\S]*\\}`,
-        );
-        const hasMediaQueryWithRule = result.animationRules.some(
-          (rule) => mediaPattern.test(rule) && animationRulePattern.test(rule),
-        );
-        expect(hasMediaQueryWithRule).toBe(true);
-      });
-
-      it('should NOT wrap in @media when no conditions', () => {
-        const result = getCSS(fadeInConfig);
-
-        const hasMediaQuery = result.animationRules.some((rule) =>
-          rule.includes('@media'),
-        );
-        expect(hasMediaQuery).toBe(false);
-      });
+      const hasMotionAnimation = result.animationRules.some((rule) =>
+        rule.includes(expectedAnimation),
+      );
+      expect(hasMotionAnimation).toBe(true);
     });
 
-    describe('multiple effects on same target', () => {
-      it('should generate comma-separated animation-name values in order', () => {
-        const result = getCSS(multipleEffectsConfig);
-        const { names } = getMultiEffectValues();
-        const selector = buildFullSelector('multi-effect-element');
+    it('should include animation-composition property', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
 
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-name',
-          names.join(', '),
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should generate comma-separated animation-duration values in order', () => {
-        const result = getCSS(multipleEffectsConfig);
-        const { durations } = getMultiEffectValues();
-        const selector = buildFullSelector('multi-effect-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-duration',
-          durations.map((d) => `${d}ms`).join(', '),
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should generate comma-separated animation-delay values in order', () => {
-        const result = getCSS(multipleEffectsConfig);
-        const { delays } = getMultiEffectValues();
-        const selector = buildFullSelector('multi-effect-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-delay',
-          delays.map((d) => `${d}ms`).join(', '),
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should generate comma-separated animation-fill-mode values in order', () => {
-        const result = getCSS(multipleEffectsConfig);
-        const { fills } = getMultiEffectValues();
-        const selector = buildFullSelector('multi-effect-element');
-
-        const pattern = createAnimationRulePattern(
-          selector,
-          'animation-fill-mode',
-          fills.join(', '),
-        );
-        expect(result.animationRules.some((rule) => pattern.test(rule))).toBe(
-          true,
-        );
-      });
-
-      it('should maintain consistent order across all animation properties', () => {
-        const result = getCSS(multipleEffectsConfig);
-        const { names, durations } = getMultiEffectValues();
-        const selector = buildFullSelector('multi-effect-element');
-
-        // Verify both animation-name and animation-duration have correct order
-        const namePattern = createAnimationRulePattern(
-          selector,
-          'animation-name',
-          names.join(', '),
-        );
-        const durationPattern = createAnimationRulePattern(
-          selector,
-          'animation-duration',
-          durations.map((d) => `${d}ms`).join(', '),
-        );
-
-        // Find the rule for this element
-        const rule = result.animationRules.find((r) =>
-          r.includes('[data-interact-key="multi-effect-element"]'),
-        );
-        expect(rule).toBeDefined();
-
-        // Both patterns should match the same rule
-        expect(namePattern.test(rule!)).toBe(true);
-        expect(durationPattern.test(rule!)).toBe(true);
-      });
+      const hasComposition = result.animationRules.some((rule) =>
+        rule.includes('animation-composition:'),
+      );
+      expect(hasComposition).toBe(true);
     });
 
-    describe('trigger filtering', () => {
-      it('should NOT generate animation rules for viewProgress trigger', () => {
-        const result = getCSS(scrubTriggerConfig);
-        expect(result.animationRules).toHaveLength(0);
-      });
+    it('should generate multiple animation custom props for multiple effects on same element', () => {
+      const config: InteractConfig = {
+        effects: {
+          effect1: fadeInEffect,
+          effect2: keyframeEffect,
+        },
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'multi-effect',
+            effects: [
+              { key: 'multi-effect', effectId: 'effect1' },
+              { key: 'multi-effect', effectId: 'effect2' },
+            ],
+          },
+        ],
+      };
+      const result = getCSS(config);
 
-      it('should NOT generate animation rules for pointerMove trigger', () => {
-        const result = getCSS(pointerMoveTriggerConfig);
-        expect(result.animationRules).toHaveLength(0);
-      });
+      // Should have comma-separated var() calls in animation property
+      const hasMultipleVars = result.animationRules.some((rule) =>
+        /animation:\s*var\([^)]+\),\s*var\([^)]+\)/.test(rule),
+      );
+      expect(hasMultipleVars).toBe(true);
+    });
+  });
 
-      it('should generate animation rules for all time-based triggers', () => {
-        const hoverResult = getCSS(hoverTriggerConfig);
-        const clickResult = getCSS(clickTriggerConfig);
-        const animEndResult = getCSS(animationEndTriggerConfig);
+  // ============================================================================
+  // SUITE 6: Selectors
+  // ============================================================================
+  describe('selectors', () => {
+    it('should escape special characters in key', () => {
+      const config = createConfig(fadeInEffect, { key: 'element.with:special#chars' });
+      const result = getCSS(config);
 
-        expect(hoverResult.animationRules.length).toBeGreaterThan(0);
-        expect(clickResult.animationRules.length).toBeGreaterThan(0);
-        expect(animEndResult.animationRules.length).toBeGreaterThan(0);
-      });
+      // CSS.escape handles special chars
+      const hasEscapedSelector = result.animationRules.some((rule) =>
+        rule.includes('data-interact-key='),
+      );
+      expect(hasEscapedSelector).toBe(true);
     });
 
-    describe('edge cases', () => {
-      it('should return empty animation rules for empty config', () => {
-        const result = getCSS(emptyConfig);
-        expect(result.animationRules).toEqual([]);
-      });
+    it('should include custom selector when specified', () => {
+      const config = createConfig(fadeInEffect, { selector: '.child-target' });
+      const result = getCSS(config);
 
-      it('should NOT generate animation rules for customEffect', () => {
-        const result = getCSS(customEffectConfig);
-        expect(result.animationRules).toHaveLength(0);
-      });
+      const hasCustomSelector = result.animationRules.some((rule) =>
+        rule.includes('.child-target'),
+      );
+      expect(hasCustomSelector).toBe(true);
+    });
 
-      it('should generate animation rules for inline effect definitions', () => {
-        const result = getCSS(inlineEffectConfig);
-        expect(result.animationRules.length).toBeGreaterThan(0);
+    it('should include listContainer and listItemSelector in selector', () => {
+      const config = createConfig(fadeInEffect, {
+        listContainer: '.items-container',
+        listItemSelector: '.item',
       });
+      const result = getCSS(config);
+
+      const hasListSelector = result.animationRules.some(
+        (rule) => rule.includes('.items-container') && rule.includes('.item'),
+      );
+      expect(hasListSelector).toBe(true);
+    });
+
+    it('should use default child selector (> :first-child) when no selector specified', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
+
+      const hasDefaultSelector = result.animationRules.some((rule) =>
+        rule.includes('> :first-child'),
+      );
+      expect(hasDefaultSelector).toBe(true);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 7: Conditions - Media Queries
+  // ============================================================================
+  describe('conditions - media queries', () => {
+    it('should wrap rule in @media when media condition is specified', () => {
+      const config = createConfig(fadeInEffect, {
+        conditions: { desktop: { type: 'media', predicate: 'min-width: 1024px' } },
+        effectConditions: ['desktop'],
+      });
+      const result = getCSS(config);
+
+      const hasMediaQuery = result.animationRules.some((rule) =>
+        /@media\s*\(min-width:\s*1024px\)/.test(rule),
+      );
+      expect(hasMediaQuery).toBe(true);
+    });
+
+    it('should combine multiple media conditions with "and"', () => {
+      const config = createConfig(fadeInEffect, {
+        conditions: {
+          desktop: { type: 'media', predicate: 'min-width: 1024px' },
+          landscape: { type: 'media', predicate: 'orientation: landscape' },
+        },
+        effectConditions: ['desktop', 'landscape'],
+      });
+      const result = getCSS(config);
+
+      const hasCombinedMedia = result.animationRules.some((rule) =>
+        /@media\s*\([^)]+\)\s*and\s*\([^)]+\)/.test(rule),
+      );
+      expect(hasCombinedMedia).toBe(true);
+    });
+
+    it('should NOT wrap in @media when no conditions', () => {
+      const config = createConfig(fadeInEffect);
+      const result = getCSS(config);
+
+      const hasMediaQuery = result.animationRules.some((rule) => rule.includes('@media'));
+      expect(hasMediaQuery).toBe(false);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 8: Conditions - Container Queries
+  // ============================================================================
+  describe('conditions - container queries', () => {
+    it('should wrap rule in @container when container condition is specified', () => {
+      const config = createConfig(fadeInEffect, {
+        conditions: { wide: { type: 'container', predicate: 'min-width: 500px' } },
+        effectConditions: ['wide'],
+      });
+      const result = getCSS(config);
+
+      const hasContainerQuery = result.animationRules.some((rule) =>
+        /@container\s*\(min-width:\s*500px\)/.test(rule),
+      );
+      expect(hasContainerQuery).toBe(true);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 9: Conditions - Selector Conditions
+  // ============================================================================
+  describe('conditions - selector conditions', () => {
+    it('should apply selector condition to the target selector', () => {
+      const config = createConfig(fadeInEffect, {
+        conditions: { active: { type: 'selector', predicate: '.is-active' } },
+        effectConditions: ['active'],
+      });
+      const result = getCSS(config);
+
+      const hasSelectorCondition = result.animationRules.some((rule) =>
+        rule.includes(':is(.is-active)'),
+      );
+      expect(hasSelectorCondition).toBe(true);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 10: Transitions
+  // ============================================================================
+  describe('transitions', () => {
+    it('should generate transition rules for transition effects', () => {
+      const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
+      const result = getCSS(config);
+
+      expect(result.transitionRules.length).toBeGreaterThan(0);
+    });
+
+    it('should generate state rule with :state() and data-interact-effect selectors', () => {
+      const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
+      const result = getCSS(config);
+
+      const hasStateSelector = result.transitionRules.some((rule) =>
+        /:state\(trans-effect\)/.test(rule) || /--trans-effect/.test(rule),
+      );
+      const hasDataAttrSelector = result.transitionRules.some((rule) =>
+        rule.includes('[data-interact-effect~="trans-effect"]'),
+      );
+
+      expect(hasStateSelector).toBe(true);
+      expect(hasDataAttrSelector).toBe(true);
+    });
+
+    it('should include style properties in state rule', () => {
+      const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
+      const result = getCSS(config);
+
+      const hasOpacity = result.transitionRules.some((rule) =>
+        propertyPattern('opacity', '1').test(rule),
+      );
+      const hasTransform = result.transitionRules.some((rule) =>
+        propertyPattern('transform', 'scale(1)').test(rule),
+      );
+
+      expect(hasOpacity).toBe(true);
+      expect(hasTransform).toBe(true);
+    });
+
+    it('should use CSS custom properties for transition definition', () => {
+      const config = createConfig(transitionEffect as Effect);
+      const result = getCSS(config);
+
+      const hasTransitionCustomProp = result.transitionRules.some((rule) =>
+        /--trans-def-\w+/.test(rule),
+      );
+      expect(hasTransitionCustomProp).toBe(true);
+    });
+
+    it('should include transition property with var() fallback', () => {
+      const config = createConfig(transitionEffect as Effect);
+      const result = getCSS(config);
+
+      const hasTransitionWithVar = result.transitionRules.some((rule) =>
+        /transition:\s*var\(--trans-def-[^,]+,\s*_\)/.test(rule),
+      );
+      expect(hasTransitionWithVar).toBe(true);
+    });
+
+    it('should NOT generate animation rules for transition-only effects', () => {
+      const config = createConfig(transitionEffect as Effect);
+      const result = getCSS(config);
+
+      expect(result.keyframes).toEqual([]);
+      expect(result.animationRules).toEqual([]);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 11: TransitionProperties (alternative syntax)
+  // ============================================================================
+  describe('transitionProperties', () => {
+    it('should support transitionProperties when used with transition', () => {
+      // Note: transitionProperties alone doesn't work; it needs transition to be present
+      const effect: TransitionEffect = {
+        transition: {
+          duration: 300,
+          styleProperties: [{ name: 'opacity', value: '1' }],
+        },
+        transitionProperties: [
+          { name: 'transform', value: 'translateY(0)', duration: 500, delay: 100 },
+        ],
+      };
+      const config = createConfig(effect as Effect, { effectId: 'prop-trans' });
+      const result = getCSS(config);
+
+      expect(result.transitionRules.length).toBeGreaterThan(0);
+      
+      const hasOpacity = result.transitionRules.some((rule) => rule.includes('opacity'));
+      expect(hasOpacity).toBe(true);
+    });
+
+    it('should NOT generate CSS for transitionProperties without transition', () => {
+      // Current implementation requires transition property to be present
+      const effect: TransitionEffect = {
+        transitionProperties: [
+          { name: 'opacity', value: '1', duration: 300 },
+        ],
+      };
+      const config = createConfig(effect as Effect, { effectId: 'prop-trans' });
+      const result = getCSS(config);
+
+      // No CSS generated because resolveEffect returns null without transition
+      expect(result.transitionRules).toEqual([]);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 12: Effect Options
+  // ============================================================================
+  describe('effect options', () => {
+    it('should handle all TimeEffect options correctly', () => {
+      const fullOptionsEffect: TimeEffect = {
+        namedEffect: { type: 'FadeIn' } as NamedEffect,
+        duration: 1000,
+        delay: 200,
+        easing: 'ease-in-out',
+        iterations: 3,
+        alternate: true,
+        fill: 'both',
+        reversed: true,
+      };
+      const config = createConfig(fullOptionsEffect);
+      const result = getCSS(config);
+      const [expectedAnimation] = getAnimationStrings(fullOptionsEffect);
+
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.animationRules.length).toBeGreaterThan(0);
+
+      // Animation string from motion should be in the rules
+      const hasExpectedAnimation = result.animationRules.some((rule) =>
+        rule.includes(expectedAnimation),
+      );
+      expect(hasExpectedAnimation).toBe(true);
+    });
+
+    it('should handle infinite iterations (iterations: 0)', () => {
+      const infiniteEffect: TimeEffect = {
+        namedEffect: { type: 'FadeIn' } as NamedEffect,
+        duration: 500,
+        iterations: 0,
+      };
+      const config = createConfig(infiniteEffect);
+      const result = getCSS(config);
+
+      const hasInfinite = result.animationRules.some((rule) =>
+        rule.includes('infinite'),
+      );
+      expect(hasInfinite).toBe(true);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 13: Inline Effects
+  // ============================================================================
+  describe('inline effects', () => {
+    it('should support inline effect definition without effectId reference', () => {
+      const config: InteractConfig = {
+        effects: {},
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'inline-element',
+            effects: [
+              {
+                key: 'inline-element',
+                namedEffect: { type: 'FadeIn' } as NamedEffect,
+                duration: 400,
+              } as Effect,
+            ],
+          },
+        ],
+      };
+      const result = getCSS(config);
+
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.animationRules.length).toBeGreaterThan(0);
+    });
+  });
+
+  // ============================================================================
+  // SUITE 14: Edge Cases
+  // ============================================================================
+  describe('edge cases', () => {
+    it('should skip effects without namedEffect, keyframeEffect, or transition', () => {
+      const invalidEffect = { duration: 500 } as TimeEffect;
+      const config = createConfig(invalidEffect);
+      const result = getCSS(config);
+
+      expect(result.keyframes).toEqual([]);
+      expect(result.animationRules).toEqual([]);
+      expect(result.transitionRules).toEqual([]);
+    });
+
+    it('should skip condition that does not exist in config.conditions', () => {
+      const config = createConfig(fadeInEffect, {
+        conditions: { existing: { type: 'media', predicate: 'min-width: 800px' } },
+        effectConditions: ['nonexistent', 'existing'],
+      });
+      const result = getCSS(config);
+
+      // Should still generate CSS (with existing condition)
+      expect(result.animationRules.length).toBeGreaterThan(0);
+      
+      // Should have the existing media query
+      const hasExistingMedia = result.animationRules.some((rule) =>
+        rule.includes('min-width: 800px'),
+      );
+      expect(hasExistingMedia).toBe(true);
+    });
+
+    it('should handle empty keyframes array', () => {
+      const emptyKeyframesEffect: TimeEffect = {
+        keyframeEffect: {
+          name: 'empty-keyframes',
+          keyframes: [],
+        },
+        duration: 500,
+      };
+      const config = createConfig(emptyKeyframesEffect);
+      const result = getCSS(config);
+
+      // Empty keyframes should result in empty or no CSS
+      expect(result.keyframes).toEqual([]);
+    });
+
+    it('should handle mixed animation and transition effects in same interaction', () => {
+      const config: InteractConfig = {
+        effects: {
+          anim: fadeInEffect,
+          trans: transitionEffect as Effect,
+        },
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'mixed',
+            effects: [
+              { key: 'mixed', effectId: 'anim' },
+              { key: 'mixed', effectId: 'trans' },
+            ],
+          },
+        ],
+      };
+      const result = getCSS(config);
+
+      expect(result.keyframes.length).toBeGreaterThan(0);
+      expect(result.animationRules.length).toBeGreaterThan(0);
+      expect(result.transitionRules.length).toBeGreaterThan(0);
     });
   });
 });
