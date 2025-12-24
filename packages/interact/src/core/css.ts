@@ -10,7 +10,7 @@ import type {
   Condition,
 } from '../types';
 import {
-  createTransitionCSS,
+  createStateRuleAndCSSTransitions,
   applySelectorCondition,
   generateId,
   isTimeTrigger,
@@ -32,9 +32,17 @@ const DEFAULT_INITIAL = {
 };
 
 interface AnimationProps {
-  animations: string[],
-  compositions: CompositeOperation[],
+  animation: string,
+  composition: CompositeOperation,
   custom: Keyframe,
+  conditions: string[],
+  animationCustomPropName: string,
+}
+
+interface TransitionProps {
+  transition: string,
+  conditions: string[],
+  transitionCustomPropName: string,
 }
 interface CSSAnimationResult {
   animation: string,
@@ -44,27 +52,15 @@ interface CSSAnimationResult {
   keyframes: Keyframe[],
 }
 
-function createEmptyAnimationProps(): AnimationProps {
-  return {
-    animations: [],
-    compositions: [],
-    custom: {},
-  };
+interface CSSTransitionResult {
+  stateRule: string,
+  transitions: string[],
 }
 
-function addAnimationProps(
-  props: AnimationProps,
-  animationResult: CSSAnimationResult,
-): void {
-  props.animations.push(animationResult.animation);
-  props.compositions.push(animationResult.composition);
-  props.custom = {...props.custom, ...animationResult.custom};
-}
-
-function getTransitionRules(
+function getTransitionData(
   effect: Effect & { key: string },
   childSelector: string
-): string[] {
+): CSSTransitionResult {
   const args: CreateTransitionCSSParams = {
     key: effect.key,
     effectId: (effect as Effect).effectId!,
@@ -72,7 +68,7 @@ function getTransitionRules(
     properties: (effect as TransitionEffect).transitionProperties,
     childSelector,
   };
-  return createTransitionCSS(args);
+  return createStateRuleAndCSSTransitions(args);
 }
 
 function getAnimationData(effect: Effect): CSSAnimationResult[] {
@@ -105,12 +101,13 @@ function resolveEffect(
     if (!fullEffect.key) {
       fullEffect.key = interaction.key;
     }
+
     if (interaction.conditions && interaction.conditions.length) {
       fullEffect.conditions = [...new Set(...interaction.conditions, ...(fullEffect.conditions || []))]
           .filter((condition) => conditionDefinitions[condition]);
     }
     
-    const {keyframeEffect} = fullEffect;
+    const { keyframeEffect } = fullEffect;
     if (keyframeEffect && !keyframeEffect.name) {
       keyframeEffect.name = (effectRef as TimeEffect & { keyframeEffect: MotionKeyframeEffect }).keyframeEffect ?
           generateId() : effectRef.effectId;
@@ -125,47 +122,94 @@ function resolveEffect(
   return null;
 }
 
-function buildAnimationRule(
+function buildCascadingTransitionCustomPropRule(
   selector: string,
-  props: AnimationProps,
-  conditionNames: string[],
+  props: TransitionProps,
   configConditions: Record<string, Condition>
-): string {
-  const declarations: string[] = [];
+) {
+  const { transitionCustomPropName, transition, conditions } = props;
 
-  let { compositions } = props;
-  const compositionRepeatLength = shortestRepeatingPatternLength(props.compositions);
-  compositions = compositions.slice(0, compositionRepeatLength);
-  if (compositions.length === 1 && compositions[0] === 'replace') {
-    compositions = [];
-  }
+  const declaration: string = `${transitionCustomPropName}: ${transition};`;
 
-  const { animations, custom } = props;
-
-  declarations.push(`animation: ${animations.join(', ')};`);
-  declarations.push(`animation-composition: ${compositions.join(', ')};`);
-
-  for (const [key, val] of Object.entries(custom)) {
-    if (val !== undefined && val !== null) {
-      declarations.push(`${key}: ${val};`);
-    }
-  }
-
-  // TODO: (ameerf) - getSelectorCondition takes the first selector - fix it to get the AND of all selectors
-  const selectorCondition = getSelectorCondition(conditionNames, configConditions);
+  const selectorCondition = getSelectorCondition(conditions, configConditions);
   const targetSelector = selectorCondition ?
     applySelectorCondition(selector, selectorCondition) : selector;
 
-  let rule = `${targetSelector} { ${declarations.join(' ')} }`;
+  let rule = `${targetSelector} { ${declaration} }`;
 
   ['container' as const, 'media' as const].forEach((type) => {
-    const predicate = getFullPredicateByType(conditionNames, configConditions, type);
+    const predicate = getFullPredicateByType(conditions, configConditions, type);
     if (predicate) {
       rule = `@${type} ${predicate} { ${rule} }`;
     }
   });
 
   return rule;
+}
+
+function buildCascadingAnimationCustomPropRule(
+  selector: string,
+  props: AnimationProps,
+  configConditions: Record<string, Condition>
+) {
+  const declarations: string[] = [];
+  const { animationCustomPropName, animation, custom, conditions } = props;
+
+  const propsToApply = { [animationCustomPropName]: animation, ...custom };
+  for (const [key, val] of Object.entries(propsToApply)) {
+    if (val !== undefined && val !== null) {
+      declarations.push(`${key}: ${val};`);
+    }
+  }
+
+  const selectorCondition = getSelectorCondition(conditions, configConditions);
+  const targetSelector = selectorCondition ?
+    applySelectorCondition(selector, selectorCondition) : selector;
+
+  let rule = `${targetSelector} { ${declarations.join(' ')} }`;
+
+  ['container' as const, 'media' as const].forEach((type) => {
+    const predicate = getFullPredicateByType(conditions, configConditions, type);
+    if (predicate) {
+      rule = `@${type} ${predicate} { ${rule} }`;
+    }
+  });
+
+  return rule;
+}
+
+function buildTransitionRule(
+  selector: string,
+  propsArray: TransitionProps[],
+): string {
+  const declarations: string[] = [];
+
+  const transitions = propsArray.map((props) => `var(${props.transitionCustomPropName}, _)`);
+  declarations.push(`transition: ${transitions.join(', ')};`);
+
+  return `${selector} { ${declarations.join(' ')} }`;
+}
+
+function buildAnimationRule(
+  selector: string,
+  propsArray: AnimationProps[],
+): string {
+  const declarations: string[] = [];
+
+  const animations = propsArray.map((props) => `var(${props.animationCustomPropName}, none)`);
+  declarations.push(`animation: ${animations.join(', ')};`);
+
+  let compositions = propsArray.map((props) => props.composition);
+  const compositionRepeatLength = shortestRepeatingPatternLength(compositions);
+  compositions = compositions.slice(0, compositionRepeatLength);
+
+  if (compositions.length === 1 && compositions[0] === 'replace') {
+    compositions = [];
+  }
+
+  declarations.push(`animation-composition: ${compositions.join(', ')};`);
+
+  return `${selector} { ${declarations.join(' ')} }`;
 }
 
 /**
@@ -175,19 +219,18 @@ function buildAnimationRule(
  * @returns GetCSSResult with keyframes and animationRules
  */
 export function getCSS(config: InteractConfig): GetCSSResult {
-  const transitionRules: string[] = [];
-  const keyframeMap = new Map<string, string>(); // name -> CSS @keyframes rule
-  // TODO: (ameerf) - this couldn't possibly be the correct mapping along with condition cascading - get a well-defined structure from ydaniv
-  const selectorPropsMap = new Map< // selector -> conditionSetHash -> CSS props to apply
+  const keyframeMap = new Map<string, string>();
+  const selectorTransitionPropsMap = new Map<
     string,
-    Map<number, AnimationProps>
+    TransitionProps[]
   >();
+  const selectorAnimationPropsMap = new Map<
+    string,
+    AnimationProps[]
+  >();
+  const transitionRules: string[] = [];
 
   const configConditions = config.conditions || {};
-  const conditionHashNumbers = Object.keys(configConditions).reduce((acc, condition, index) => {
-    acc[condition] = 1 << index;
-    return acc;
-  }, {} as Record <string, number>);
 
   for (const interaction of config.interactions) {
     if (!isTimeTrigger(interaction.trigger)) {
@@ -202,13 +245,35 @@ export function getCSS(config: InteractConfig): GetCSSResult {
         asCombinator: true, // TODO: (ameerf) - correct?
         addItemFilter: Boolean(effect.listItemSelector), // TODO: (ameerf) - correct?
       });
+                
+      const escapedKey = CSS.escape(effect.key);
+      const keyWithNoSpecialChars = effect.key.replace(/[^a-zA-Z0-9_-]/g, '');
+      const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+      const conditions = (effect.conditions || []);
 
       if (
         (effect as TransitionEffect).transition ||
         (effect as TransitionEffect).transitionProperties
       ) {
-        // TODO: (ameerf) - Do we want to override transition property like this?
-        transitionRules.push(...getTransitionRules(effect, childSelector));
+        const {stateRule, transitions} = getTransitionData(effect, childSelector);
+        transitionRules.push(stateRule);
+        if (transitions.length === 0) {
+          continue;
+        }          
+
+        if (!selectorTransitionPropsMap.has(selector)) {
+          selectorTransitionPropsMap.set(selector, []);
+        }
+        const transitionPropsArray = selectorTransitionPropsMap.get(selector)!;
+
+        for (const transition of transitions) {
+          const transitionCustomPropName = `--trans-def-${keyWithNoSpecialChars}-${transitionPropsArray.length}`;
+          transitionPropsArray.push({
+            transition,
+            conditions,
+            transitionCustomPropName
+          });
+        }
       }
 
       if (
@@ -216,13 +281,14 @@ export function getCSS(config: InteractConfig): GetCSSResult {
         (effect as any).keyframeEffect
       ) {
         const animationDataList = getAnimationData(effect);
-        if (animationDataList.length === 0) continue;          
-                
-        const escapedKey = effect.key.replace(/"/g, "'");
-        const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
-        if (!selectorPropsMap.has(selector)) {
-          selectorPropsMap.set(selector, new Map<number, AnimationProps>());
+        if (animationDataList.length === 0) {
+          continue;
+        }          
+
+        if (!selectorAnimationPropsMap.has(selector)) {
+          selectorAnimationPropsMap.set(selector, []);
         }
+        const animationPropsArray = selectorAnimationPropsMap.get(selector)!;
 
         for (const data of animationDataList) {
           const keyframeCSS = keyframesToCSS(data.name, data.keyframes, effect.initial);
@@ -230,40 +296,44 @@ export function getCSS(config: InteractConfig): GetCSSResult {
             keyframeMap.set(data.name, keyframeCSS);
           }
 
-          const conditions = effect.conditions || [];
-          const conditionSetHash = conditions.reduce((acc, condition) => {return acc + conditionHashNumbers[condition]}, 0);
-          const conditionToProps = selectorPropsMap.get(selector)!;
-          if (!conditionToProps.has) {
-            conditionToProps.set(conditionSetHash, createEmptyAnimationProps());
-          }
+          const { animation, composition, custom } = data;
+          const animationCustomPropName = `--anim-def-${keyWithNoSpecialChars}-${animationPropsArray.length}`;
 
-          const props = conditionToProps.get(conditionSetHash);
-          addAnimationProps(props!, data);
+          animationPropsArray.push({
+            animation,
+            composition,
+            custom,
+            conditions,
+            animationCustomPropName
+          });
         }
       }
     }
   }
 
-  const animationRules: string[] = [];
-  for (const [baseSelector, conditionsMap] of selectorPropsMap) {
-    for (const [conditionSetHash, props] of conditionsMap) {
-      if (props.animations.length === 0) {
-        continue;
-      }
-      const conditions = Object.entries(conditionHashNumbers).reduce((acc, [condition, hash]) => {
-        if (hash & conditionSetHash) {
-          acc.push(condition);
-        }
-        return acc;
-      }, [] as string[]);
-      const rule = buildAnimationRule(
+  for (const [baseSelector, transitionPropsArray] of selectorTransitionPropsMap) {
+    transitionPropsArray.forEach((transitionProps) => {
+      transitionRules.push(buildCascadingTransitionCustomPropRule(
         baseSelector,
-        props,
-        conditions,
+        transitionProps,
         configConditions
-      );
-      animationRules.push(rule);
-    }
+      ));
+    });
+
+    transitionRules.push(buildTransitionRule(baseSelector, transitionPropsArray));
+  }
+
+  const animationRules: string[] = [];
+  for (const [baseSelector, animationPropsArray] of selectorAnimationPropsMap) {
+    animationPropsArray.forEach((animationProps) => {
+      animationRules.push(buildCascadingAnimationCustomPropRule(
+        baseSelector,
+        animationProps,
+        configConditions
+      ));
+    });
+
+    animationRules.push(buildAnimationRule(baseSelector, animationPropsArray));
   }
 
   return {
@@ -274,8 +344,7 @@ export function getCSS(config: InteractConfig): GetCSSResult {
 }
 
 export function generate(config: InteractConfig): string {
-  const {keyframes, animationRules, transitionRules} = getCSS(config);
+  const { keyframes, animationRules, transitionRules } = getCSS(config);
   const css: string[] = [...keyframes, ...animationRules, ...transitionRules];
-
   return css.join('\n');
 }

@@ -46,14 +46,16 @@ export function generateId() {
   );
 }
 
-export function createTransitionCSS({
-  key,
+export function createStateRuleAndCSSTransitions({
   effectId,
   transition,
   properties,
   childSelector = '> :first-child',
   selectorCondition,
-}: CreateTransitionCSSParams): string[] {
+}: CreateTransitionCSSParams): {
+  stateRule: string,
+  transitions: string[]
+} {
   let transitions: string[] = [];
 
   if (transition?.styleProperties) {
@@ -95,7 +97,6 @@ export function createTransitionCSS({
 
   const styleProperties =
     properties?.map((property) => `${property.name}: ${property.value};`) || [];
-  const escapedKey = key.replace(/"/g, "'");
 
   // Build selectors, applying condition if present
   const stateSelector = `:is(:state(${effectId}), :--${effectId}) ${childSelector}`;
@@ -108,14 +109,35 @@ export function createTransitionCSS({
     ? applySelectorCondition(dataAttrSelector, selectorCondition)
     : dataAttrSelector;
 
-  const result = [
+  const stateRule = 
     `${finalStateSelector},
     ${finalDataAttrSelector} {
       ${styleProperties.join(`
       `)}
-    }`,
-  ];
+    }`;
 
+  return { stateRule, transitions };
+}
+
+export function createTransitionCSS({
+  key,
+  effectId,
+  transition,
+  properties,
+  childSelector = '> :first-child',
+  selectorCondition,
+}: CreateTransitionCSSParams): string[] {
+  const { stateRule, transitions } = createStateRuleAndCSSTransitions({
+    key,
+    effectId,
+    transition,
+    properties,
+    childSelector,
+    selectorCondition,
+  });
+  const result = [stateRule];
+
+  const escapedKey = key.replace(/"/g, "'");
   if (transitions.length) {
     const transitionSelector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
     const finalTransitionSelector = selectorCondition
@@ -160,11 +182,12 @@ export function getSelectorCondition(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
 ): string | undefined {
-  for (const name of conditionNames || []) {
-    const condition = conditions[name];
-    if (condition?.type === 'selector' && condition.predicate) {
-      return condition.predicate;
-    }
-  }
-  return;
+  return (conditionNames || [])
+    .filter((conditionName) => {
+      return conditions[conditionName]?.type === 'selector' && conditions[conditionName].predicate;
+    })
+    .map((conditionName) => {
+      return `:is(${conditions[conditionName].predicate})`;
+    })
+    .join('');
 }
