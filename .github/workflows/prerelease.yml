@@ -37,21 +37,11 @@ jobs:
       - run: yarn build
       - run: yarn test
 
-      - name: Setup GIT
-        run: |
-          git reset --hard
-          git config --local --list
-          git checkout master
-          echo "Configured git as $GH_USER <$GH_EMAIL>"
-          git config user.email "$GH_EMAIL"
-          git config user.name "$GH_USER"
-        env:
-          GH_EMAIL: ${{ secrets.GH_EMAIL }}
-          GH_USER: ${{ secrets.GH_USER }}
-
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
       - name: npm publish @wix/interact (trusted)
         run: |
           cd packages/interact
           npm publish --tag rc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
