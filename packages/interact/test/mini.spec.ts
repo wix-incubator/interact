@@ -845,7 +845,7 @@ describe('interact (mini)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(function(this: any) {
+          Scroll.mockImplementation(function (this: any) {
             Object.assign(this, scrollInstance);
           });
 
@@ -2972,6 +2972,7 @@ describe('interact (mini)', () => {
       });
     });
 
+    describe('keyframeEffect name defaults', () => {
       it('should assign effectId as keyframeEffect.name when keyframeEffect has no name', () => {
         const timeEffect = {
           keyframeEffect: {
@@ -2999,5 +3000,6 @@ describe('interact (mini)', () => {
         expect(result.keyframeEffect?.name).toBeUndefined();
       });
     });
+  });
 });
 

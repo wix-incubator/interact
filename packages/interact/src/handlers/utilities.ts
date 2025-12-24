@@ -33,20 +33,23 @@ function resolveRangeOffsets(
 }
 
 export function effectToAnimationOptions(effect: TimeEffect | ScrubEffect) {
-  if ((effect as TimeEffect).duration) {
-    const timeEffect = effect as TimeEffect & { keyframeEffect?: { name?: string }; effectId?: string };
+  if (
+    'keyframeEffect' in effect &&
+    !effect.keyframeEffect.name &&
+    'effectId' in effect &&
+    effect.effectId
+  ) {
+    effect.keyframeEffect.name = effect.effectId as string;
+  }
 
-    if (timeEffect.keyframeEffect && !timeEffect.keyframeEffect.name) {
-      timeEffect.keyframeEffect.name = timeEffect.effectId;
-    }
-
+  if ('duration' in effect) {
     return {
       id: '',
-      ...timeEffect,
+      ...effect,
     } as AnimationOptions<'time'>;
   }
 
-  const { rangeStart, rangeEnd, ...rest } = effect as ScrubEffect;
+  const { rangeStart, rangeEnd, ...rest } = effect;
   const { startOffset, endOffset } = resolveRangeOffsets(rangeStart, rangeEnd);
 
   return {
