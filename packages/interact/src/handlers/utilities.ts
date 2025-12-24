@@ -36,8 +36,7 @@ export function effectToAnimationOptions(effect: TimeEffect | ScrubEffect) {
   if (
     'keyframeEffect' in effect &&
     !effect.keyframeEffect.name &&
-    'effectId' in effect &&
-    effect.effectId
+    'effectId' in effect
   ) {
     effect.keyframeEffect.name = effect.effectId as string;
   }
