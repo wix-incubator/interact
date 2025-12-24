@@ -845,7 +845,7 @@ describe('interact (mini)', () => {
             start: vi.fn(),
             destroy: vi.fn(),
           };
-          Scroll.mockImplementation(function(this: any) {
+          Scroll.mockImplementation(function (this: any) {
             Object.assign(this, scrollInstance);
           });
 
@@ -2875,6 +2875,129 @@ describe('interact (mini)', () => {
           expect.any(Function),
           expect.any(Object),
         );
+      });
+    });
+  });
+  
+  describe('configuration defaults', () => {
+    describe('scroll animation range defaults', () => {
+      it('should use default range values when rangeStart and rangeEnd are not provided', () => {
+        const scrubEffect: ScrubEffect = {
+          namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
+        };
+
+        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+
+        expect(result.startOffset).toEqual({
+          name: 'cover',
+          offset: { value: 0, type: 'percentage' },
+        });
+        expect(result.endOffset).toEqual({
+          name: 'cover',
+          offset: { value: 100, type: 'percentage' },
+        });
+      });
+
+      it('should use provided rangeStart and rangeEnd values when supplied', () => {
+        const scrubEffect: ScrubEffect = {
+          namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
+          rangeStart: { name: 'contain', offset: { value: 10, type: 'percentage' } },
+          rangeEnd: { name: 'entry', offset: { value: 90, type: 'percentage' } },
+        };
+
+        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+
+        expect(result.startOffset).toEqual({
+          name: 'contain',
+          offset: { value: 10, type: 'percentage' },
+        });
+        expect(result.endOffset).toEqual({
+          name: 'entry',
+          offset: { value: 90, type: 'percentage' },
+        });
+      });
+
+      it('should use rangeStart.name for endOffset.name when only rangeStart is provided', () => {
+        const scrubEffect: ScrubEffect = {
+          namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
+          rangeStart: { name: 'entry', offset: { value: 25, type: 'percentage' } },
+        };
+
+        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+
+        expect(result.startOffset).toEqual({
+          name: 'entry',
+          offset: { value: 25, type: 'percentage' },
+        });
+        expect(result.endOffset).toEqual({
+          name: 'entry',
+          offset: { value: 100, type: 'percentage' },
+        });
+      });
+
+      it('should use default offset when only rangeStart.name is provided', () => {
+        const scrubEffect: ScrubEffect = {
+          namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
+          rangeStart: { name: 'exit' },
+        };
+
+        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+
+        expect(result.startOffset).toEqual({
+          name: 'exit',
+          offset: { value: 0, type: 'percentage' },
+        });
+        expect(result.endOffset).toEqual({
+          name: 'exit',
+          offset: { value: 100, type: 'percentage' },
+        });
+      });
+
+      it('should use default startOffset.name when only rangeEnd is provided', () => {
+        const scrubEffect: ScrubEffect = {
+          namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
+          rangeEnd: { name: 'exit', offset: { value: 75, type: 'percentage' } },
+        };
+
+        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+
+        expect(result.startOffset).toEqual({
+          name: 'cover',
+          offset: { value: 0, type: 'percentage' },
+        });
+        expect(result.endOffset).toEqual({
+          name: 'exit',
+          offset: { value: 75, type: 'percentage' },
+        });
+      });
+    });
+
+    describe('keyframeEffect name defaults', () => {
+      it('should assign effectId as keyframeEffect.name when keyframeEffect has no name', () => {
+        const timeEffect = {
+          keyframeEffect: {
+            keyframes: [{ opacity: '0' }, { opacity: '1' }],
+          },
+          duration: 500,
+          effectId: 'my-effect-id',
+        };
+
+        const result = effectToAnimationOptions(timeEffect as any) as { keyframeEffect?: { name?: string } };
+
+        expect(result.keyframeEffect?.name).toBe('my-effect-id');
+      });
+
+      it('should handle keyframeEffect without name and without effectId', () => {
+        const timeEffect = {
+          keyframeEffect: {
+            keyframes: [{ opacity: '0' }, { opacity: '1' }],
+          },
+          duration: 500,
+        };
+
+        const result = effectToAnimationOptions(timeEffect as any) as { keyframeEffect?: { name?: string } };
+
+        expect(result.keyframeEffect?.name).toBeUndefined();
       });
     });
   });
