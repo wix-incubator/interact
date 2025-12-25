@@ -138,6 +138,7 @@ export type EffectBase = {
   conditions?: string[];
   selector?: string;
   effectId?: string;
+  initial?: 'disable' | Record<string, string | number>;
 };
 
 export type EffectRef = EffectBase & { effectId: string };
@@ -282,4 +283,13 @@ export type CreateTransitionCSSParams = {
   properties?: TransitionProperty[];
   childSelector?: string;
   selectorCondition?: string;
+};
+
+export type GetCSSResult = {
+  /** @keyframes rules for the animations */
+  keyframes: string[];
+  /** Full animation property rules per element (animation, composition, custom, etc.) */
+  animationRules: string[];
+  /** Full transition properties rules per element */
+  transitionRules: string[];
 };
