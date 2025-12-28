@@ -181,9 +181,10 @@ export interface IInteractionController {
   key: string | undefined;
   connected: boolean;
   sheet: CSSStyleSheet | null;
+  useFirstChild: boolean;
   _observers: WeakMap<HTMLElement, MutationObserver>;
   connect(key?: string): void;
-  disconnect(): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
   update(): void;
   toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
   getActiveEffects(): string[];
@@ -198,7 +199,7 @@ export interface IInteractElement extends HTMLElement {
   connectedCallback(): void;
   disconnectedCallback(): void;
   connect(key?: string): void;
-  disconnect(): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
   toggleEffect(
     effectId: string,
     method: StateParams['method'],
@@ -282,4 +283,5 @@ export type CreateTransitionCSSParams = {
   properties?: TransitionProperty[];
   childSelector?: string;
   selectorCondition?: string;
+  useFirstChild?: boolean;
 };
