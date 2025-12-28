@@ -51,5 +51,5 @@ jobs:
         run: |
           cd packages/interact
           npm publish --tag rc --provenance --access=public
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
