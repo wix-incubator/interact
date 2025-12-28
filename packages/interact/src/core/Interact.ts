@@ -51,9 +51,10 @@ export class Interact {
       return;
     }
 
-    this.dataCache = parseConfig(config, options?.useCutsomElement);
-    
     const useCutsomElement = options?.useCutsomElement ?? !!Interact.defineInteractElement;
+
+    this.dataCache = parseConfig(config, useCutsomElement);
+
     const defined = Interact.defineInteractElement?.();
 
     if (useCutsomElement && defined === false) {

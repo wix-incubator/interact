@@ -85,22 +85,14 @@ export const ResponsiveDemo = () => {
   useInteractInstance(complexConfig);
 
   return (
-    <section className="panel" style={{ marginTop: '20px', position: 'relative' }}>
+    <section className="panel responsive-demo-panel">
       <p className="scroll-label">Responsive Demo</p>
-      <div
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          fontSize: '48px',
-          color: '#faf7f7',
-        }}
-      >
+      <div className="responsive-demo-width-display">
         screen width: {width}px
       </div>
-      <div style={{ padding: '20px' }}>
-        <h3 style={{ marginBottom: '10px' }}>Responsive Interactions</h3>
-        <p style={{ marginBottom: '20px', color: '#888' }}>
+      <div className="responsive-demo-content">
+        <h3 className="responsive-demo-title">Responsive Interactions</h3>
+        <p className="responsive-demo-description">
           Resize the window to see different effects on click.
           <br />
           <strong>Desktop (≥1024px):</strong> SlideIn on Target 1<br />
@@ -108,121 +100,46 @@ export const ResponsiveDemo = () => {
           <strong>Mobile (≤767px):</strong> BounceIn on Target 3
         </p>
 
-        <div style={{ marginBottom: '30px' }}>
+        <div className="responsive-demo-button-wrapper">
           {/* Trigger */}
-          <interact-element data-interact-key="multi-source-1" style={{ display: 'inline-block' }}>
-            <button
-              style={{
-                padding: '12px 24px',
-                fontSize: '16px',
-                cursor: 'pointer',
-                background: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: 'bold',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              }}
-            >
+          <interact-element data-interact-key="multi-source-1" className="responsive-demo-trigger">
+            <button className="responsive-demo-button">
               Trigger Animation
             </button>
           </interact-element>
         </div>
 
-        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+        <div className="responsive-demo-targets">
           {/* Target 1 */}
-          <div style={{ textAlign: 'center' }}>
-            <p
-              style={{
-                marginBottom: '8px',
-                fontSize: '12px',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-              }}
-            >
+          <div className="responsive-demo-target">
+            <p className="responsive-demo-target-label">
               Desktop Target
             </p>
             <interact-element data-interact-key="cascade-target-1">
-              <div
-                style={{
-                  width: '150px',
-                  height: '150px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                }}
-              >
+              <div className="responsive-demo-target-card responsive-demo-target-card--desktop">
                 Slide In
               </div>
             </interact-element>
           </div>
 
           {/* Target 2 */}
-          <div style={{ textAlign: 'center' }}>
-            <p
-              style={{
-                marginBottom: '8px',
-                fontSize: '12px',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-              }}
-            >
+          <div className="responsive-demo-target">
+            <p className="responsive-demo-target-label">
               Tablet Target
             </p>
             <interact-element data-interact-key="cascade-target-2">
-              <div
-                style={{
-                  width: '150px',
-                  height: '150px',
-                  background: 'linear-gradient(135deg, #2d1ccc 0%, #e1e1e1 99%, #500036 100%)',
-                  color: '#333',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                }}
-              >
+              <div className="responsive-demo-target-card responsive-demo-target-card--tablet">
                 Flip In
               </div>
             </interact-element>
           </div>
           {/* Target 3 */}
-          <div style={{ textAlign: 'center' }}>
-            <p
-              style={{
-                marginBottom: '8px',
-                fontSize: '12px',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-              }}
-            >
+          <div className="responsive-demo-target">
+            <p className="responsive-demo-target-label">
               Mobile Target
             </p>
             <interact-element data-interact-key="cascade-target-3">
-              <div
-                style={{
-                  width: '150px',
-                  height: '150px',
-                  background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)',
-                  color: '#333',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                }}
-              >
+              <div className="responsive-demo-target-card responsive-demo-target-card--mobile">
                 Bounce In
               </div>
             </interact-element>
@@ -232,4 +149,3 @@ export const ResponsiveDemo = () => {
     </section>
   );
 };
-
