@@ -53,6 +53,9 @@ function updateGrid() {
     }
 }
 
+
+/* this is the old desktop effect with the mouse movement... I added a new effect that also uses mouse
+movement but it's a bit different. It's a bit more subtle and it's more like a wind effect.
 function rotateGridEffect(_containerElement, progress) {
     const mouseX = progress.x * windowWidth;
     const mouseY = progress.y * windowHeight;
@@ -79,6 +82,43 @@ function rotateGridEffect(_containerElement, progress) {
         line.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${angle}deg) scaleY(${lengthScale})`;
     }
 }
+*/
+
+const rotateGridEffect = (containerElement, progress) => {
+    const mouseX = progress.x * windowWidth;
+    const mouseY = progress.y * windowHeight;
+    
+    for (const [line, cache] of lineCache) {
+        const dx = mouseX - cache.x;
+        const dy = mouseY - cache.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = dist * 0.5;
+        const influenceRadius = 3000;
+        const rawProximity = Math.max(0, 1 - dist / influenceRadius);
+        const proximity = Math.pow(rawProximity, 1.5); 
+        const scale = 1 + (proximity * 0.9);
+        const twist = proximity * 100;
+        line.style.transform = `rotate(${angle + 45 + twist}deg) scaleY(${scale})`;
+    }
+};
+
+const rotateGridEffectMobile = (containerElement, progress) => {
+
+    const time = progress * Math.PI * 2 * 3; // 3 full wave cycles per animation loop
+
+    for (const [line, cache] of lineCache)
+    {
+        const dist = cache.x + cache.y;
+        const spatialPhase = dist * 0.004;
+        const wave = Math.sin(time - spatialPhase);
+        const windForce = (wave + 1) / 2; 
+        const sharpWind = Math.pow(windForce, 2); 
+        const angle = sharpWind * 360; 
+        const scale = 1 + sharpWind * 0.4;
+        line.style.transform = `rotate(${angle}deg) scaleY(${scale})`;
+    }
+};
+
 
 // --- Tunnel Effect Functions ---
 const NUM_CIRCLES = 45; 
@@ -159,6 +199,55 @@ function animateTunnel(_rootElement, progress) {
         ring.y += (targetMoveY - ring.y) * finalEase;
 
         ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0)`;
+    });
+}
+
+function animateTunnelMobile(_rootElement, progress) {
+    // Normalized progress: -1 at top, 0 at center, +1 at bottom
+    const normalizedProgress = (progress - 0.05) * 2;
+    
+    // Create wave phases for organic motion
+    const wavePhase = progress * Math.PI * 5; // Multiple waves across scroll
+    const slowWave = Math.sin(wavePhase * 0.5);
+    const fastWave = Math.sin(wavePhase * 2.5);
+    
+    tunnelRings.forEach((ring, index) => {
+        const depth = 1 - (index / NUM_CIRCLES); // 1 = front, 0 = back
+        const depthCubed = Math.pow(depth, 4.5); // More dramatic depth falloff
+        
+        // --- Y Movement (primary parallax) ---
+        const baseY = normalizedProgress  * depthCubed;
+        const waveY = slowWave * 5 * depth; // Subtle wave oscillation
+        const targetY = baseY + waveY;
+        
+        // --- X Movement (secondary parallax - swaying) ---
+        const sway = fastWave * 50 * depthCubed; // Layers sway side to side
+        const drift = Math.sin(wavePhase + index * 0.3) * 8 * depth; // Phase offset per ring
+        const targetX = sway + drift;
+        
+        // --- Scale (breathing/zoom effect) ---
+        const breathe = 1 + (slowWave * 0.08 * depth); // Front rings scale more
+        const zoomPush = 1 + (normalizedProgress * 0.15 * depthCubed); // Zoom based on scroll
+        const targetScale = breathe * zoomPush;
+        
+        // --- Rotation (subtle tilt for depth) ---
+        const tiltAmount = normalizedProgress * 3 * depthCubed; // degrees
+        const spinOffset = fastWave * 1.5 * depth;
+        const targetRotation = tiltAmount + spinOffset;
+        
+        // --- Smooth easing (different rates per layer) ---
+        const ease = 0.02 + (0.08 * depth);
+        ring.x = ring.x || 0;
+        ring.y = ring.y || 0;
+        ring.scale = ring.scale || 1;
+        ring.rotation = ring.rotation || 0;
+        
+        ring.x += (targetX - ring.x) * ease;
+        ring.y += (targetY - ring.y) * ease;
+        ring.scale += (targetScale - ring.scale) * ease * 0.5;
+        ring.rotation += (targetRotation - ring.rotation) * ease;
+        
+        ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0) scale(${ring.scale}) rotate(${ring.rotation}deg)`;
     });
 }
 
@@ -309,6 +398,28 @@ const primitiveInteractions = primitivePrefixes.flatMap(prefix => generateCircle
 
 // --- Interact Configuration ---
 const config = {
+  
+    conditions: {
+        Mobile: { 
+          type: 'media', 
+          predicate: '(max-width: 1000px)' 
+        },
+        Desktop: { 
+          type: 'media', 
+          predicate: '(min-width: 1001px)' 
+        },
+
+        // Hover media queries, when you hover over the page, in mobile
+        hover: {
+            type: 'media',
+            predicate: '(hover: hover)'
+        },
+        notHover: {
+            type: 'media',
+            predicate: 'not (hover: hover)'
+        }
+    },
+  
     effects: {
         spongeTumble: {
             key: 'sponge',
@@ -337,6 +448,22 @@ const config = {
                 ],
             },
         },
+        spongeExplodeMobile: {
+            key: 'sponge',
+            duration: 3600, 
+            fill: 'both',
+            composite: 'replace',
+            keyframeEffect: {
+                keyframes: [
+                    { '--spacing': '0px', offset: 0, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' },
+                    { '--spacing': '100px', offset: 0.5, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' },  
+                    { '--spacing': '100px', offset: 0.667, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' }, 
+                    { '--spacing': '0px', offset: 1 }  
+                ],
+            },
+        },
+
+
     },
 
     interactions: [
@@ -363,8 +490,16 @@ const config = {
         {
             key: 'hitbox',
             trigger: 'hover',
+            conditions: ['Desktop'],
             params: { type: 'alternate' },
             effects: [{ effectId: 'spongeExplode' }],
+        },
+        {
+            key: 'hitbox',
+            trigger: 'viewEnter',
+            conditions: ['Mobile'],
+            params: { type: 'alternate' },
+            effects: [{ effectId: 'spongeExplodeMobile' }],
         },
         
         // Hero Grid Interaction
@@ -372,9 +507,23 @@ const config = {
             key: 'hero-grid',
             trigger: 'pointerMove',
             params: { hitArea: 'root' },
+            conditions: ['Desktop'],
             effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
         },
-        
+        {
+            key: 'hero-grid',
+            trigger: 'viewEnter',
+           params: {type: 'once'},
+            conditions: ['Mobile'],
+            effects: [ 
+                 { 
+                    customEffect: rotateGridEffectMobile, 
+                    duration: 8000, 
+                    iterations: Infinity, 
+                    easing: 'linear'
+                }
+            ]
+        },
         // Hero Text
         {
             key: 'hero-line-1',
@@ -745,11 +894,24 @@ const config = {
             key: 'tunnel-root',
             trigger: 'pointerMove',
             params: { hitArea: 'root' },
+            conditions: ['Desktop'],
             effects: [{
                 customEffect: animateTunnel,
                 centeredToTarget: true,
                 fill: 'both'
             }]
+        },
+        {
+            key: 'performance-section',
+            trigger: 'viewProgress',
+            conditions: ['Mobile'],
+            effects: [{
+                    key: 'tunnel-root',
+                    customEffect: animateTunnelMobile,
+                    fill: 'both',
+                    rangeStart: { name: 'cover', offset: { value: 10, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } }
+                }]
         },
 
         // Cards Hover

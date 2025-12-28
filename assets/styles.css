@@ -41,6 +41,14 @@ interact-element {
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 
+
+.text-stroke-black {
+    -webkit-text-stroke-width: 12px;
+    -webkit-text-stroke-color: #111111;
+    paint-order: stroke fill;
+    filter: drop-shadow( 0px 0px 2px #111111);
+}
+
 .grid-cell {
     display: flex;
     align-items: center;
