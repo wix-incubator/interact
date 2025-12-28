@@ -223,3 +223,49 @@ body {
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* Integration badges and back link */
+.back-link {
+  display: inline-block;
+  color: rgb(148 163 184 / 0.8);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #e2e8f0;
+}
+
+.integration-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.integration-badge--web {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.integration-badge--react {
+  background: rgba(97, 218, 251, 0.15);
+  color: #61dafb;
+  border: 1px solid rgba(97, 218, 251, 0.3);
+}
+
+.demo-hero-body code {
+  background: rgb(30 41 59 / 0.8);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #a5b4fc;
+}

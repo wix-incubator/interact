@@ -1,4 +1,4 @@
-import { InteractConfig } from '@wix/interact/web';
+import { InteractConfig, Interaction } from '@wix/interact/react';
 import { useEffect, useState } from 'react';
 import { useInteractInstance } from '../hooks/useInteractInstance';
 
@@ -110,7 +110,7 @@ export const ResponsiveDemo = () => {
 
         <div style={{ marginBottom: '30px' }}>
           {/* Trigger */}
-          <interact-element data-interact-key="multi-source-1" style={{ display: 'inline-block' }}>
+          <Interaction tagName="span" interactKey="multi-source-1" style={{ display: 'inline-block' }}>
             <button
               style={{
                 padding: '12px 24px',
@@ -126,7 +126,7 @@ export const ResponsiveDemo = () => {
             >
               Trigger Animation
             </button>
-          </interact-element>
+          </Interaction>
         </div>
 
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
@@ -142,7 +142,7 @@ export const ResponsiveDemo = () => {
             >
               Desktop Target
             </p>
-            <interact-element data-interact-key="cascade-target-1">
+            <Interaction tagName="div" interactKey="cascade-target-1">
               <div
                 style={{
                   width: '150px',
@@ -160,7 +160,7 @@ export const ResponsiveDemo = () => {
               >
                 Slide In
               </div>
-            </interact-element>
+            </Interaction>
           </div>
 
           {/* Target 2 */}
@@ -175,7 +175,7 @@ export const ResponsiveDemo = () => {
             >
               Tablet Target
             </p>
-            <interact-element data-interact-key="cascade-target-2">
+            <Interaction tagName="div" interactKey="cascade-target-2">
               <div
                 style={{
                   width: '150px',
@@ -193,7 +193,7 @@ export const ResponsiveDemo = () => {
               >
                 Flip In
               </div>
-            </interact-element>
+            </Interaction>
           </div>
           {/* Target 3 */}
           <div style={{ textAlign: 'center' }}>
@@ -207,7 +207,7 @@ export const ResponsiveDemo = () => {
             >
               Mobile Target
             </p>
-            <interact-element data-interact-key="cascade-target-3">
+            <Interaction tagName="div" interactKey="cascade-target-3">
               <div
                 style={{
                   width: '150px',
@@ -225,10 +225,11 @@ export const ResponsiveDemo = () => {
               >
                 Bounce In
               </div>
-            </interact-element>
+            </Interaction>
           </div>
         </div>
       </div>
     </section>
   );
 };
+

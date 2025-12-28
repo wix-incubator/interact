@@ -10,3 +10,4 @@ export const useInteractInstance = (config: InteractConfig, options?: { useCutso
     };
   }, [config, options]);
 };
+

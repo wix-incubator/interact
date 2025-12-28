@@ -13,9 +13,11 @@ function App() {
   return (
     <div className="demo-shell">
       <header className="demo-hero">
-        <p className="scroll-label">Interact Demo Lab</p>
+        <a href="/" className="back-link">← Back to integrations</a>
+        <span className="integration-badge integration-badge--web">Web Integration</span>
         <h1 className="demo-hero-title">Experiment faster</h1>
         <p className="demo-hero-body">
+          Using <code>&lt;interact-element&gt;</code> custom elements for framework-agnostic setup.
           A playground focused on validating motion recipes, stress-testing new triggers, and
           exporting configs that production surfaces can consume immediately.
         </p>
@@ -40,3 +42,4 @@ function App() {
 }
 
 export default App;
+

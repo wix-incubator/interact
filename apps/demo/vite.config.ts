@@ -16,8 +16,16 @@ export default defineConfig({
       '@wix/interact': path.resolve(__dirname, '../../packages/interact/src/index'),
     }
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        web: path.resolve(__dirname, 'web/index.html'),
+        react: path.resolve(__dirname, 'react/index.html'),
+      },
+    },
+  },
   server: {
     port: 4174
   }
 });
-
