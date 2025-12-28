@@ -57,11 +57,9 @@ export const ScrollShowcase = () => {
       <p className="scroll-label">Scroll driven</p>
       <div className="scroll-scene">
         {cards.map((card) => (
-          <Interaction tagName="div" interactKey={card.key} key={card.key}>
-            <div className="scroll-item">
-              <p className="scroll-label">{card.title}</p>
-              <strong>{card.description}</strong>
-            </div>
+          <Interaction tagName="div" interactKey={card.key} key={card.key} className="scroll-item">
+            <p className="scroll-label">{card.title}</p>
+            <strong>{card.description}</strong>
           </Interaction>
         ))}
       </div>

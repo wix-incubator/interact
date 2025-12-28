@@ -102,10 +102,8 @@ export const ResponsiveDemo = () => {
 
         <div className="responsive-demo-button-wrapper">
           {/* Trigger */}
-          <Interaction tagName="span" interactKey="multi-source-1" className="responsive-demo-trigger">
-            <button className="responsive-demo-button">
-              Trigger Animation
-            </button>
+          <Interaction tagName="button" interactKey="multi-source-1" className="responsive-demo-button">
+            Trigger Animation
           </Interaction>
         </div>
 
@@ -115,10 +113,8 @@ export const ResponsiveDemo = () => {
             <p className="responsive-demo-target-label">
               Desktop Target
             </p>
-            <Interaction tagName="div" interactKey="cascade-target-1">
-              <div className="responsive-demo-target-card responsive-demo-target-card--desktop">
-                Slide In
-              </div>
+            <Interaction tagName="div" interactKey="cascade-target-1" className="responsive-demo-target-card responsive-demo-target-card--desktop">
+              Slide In
             </Interaction>
           </div>
 
@@ -127,10 +123,8 @@ export const ResponsiveDemo = () => {
             <p className="responsive-demo-target-label">
               Tablet Target
             </p>
-            <Interaction tagName="div" interactKey="cascade-target-2">
-              <div className="responsive-demo-target-card responsive-demo-target-card--tablet">
-                Flip In
-              </div>
+            <Interaction tagName="div" interactKey="cascade-target-2" className="responsive-demo-target-card responsive-demo-target-card--tablet">
+              Flip In
             </Interaction>
           </div>
           {/* Target 3 */}
@@ -138,10 +132,8 @@ export const ResponsiveDemo = () => {
             <p className="responsive-demo-target-label">
               Mobile Target
             </p>
-            <Interaction tagName="div" interactKey="cascade-target-3">
-              <div className="responsive-demo-target-card responsive-demo-target-card--mobile">
-                Bounce In
-              </div>
+            <Interaction tagName="div" interactKey="cascade-target-3" className="responsive-demo-target-card responsive-demo-target-card--mobile">
+              Bounce In
             </Interaction>
           </div>
         </div>

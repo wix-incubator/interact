@@ -199,15 +199,13 @@ export const Playground = () => {
 
       <section className="panel preview-stage">
         <p className="scroll-label">Live Preview</p>
-        <Interaction tagName="div" interactKey="demo-card">
-          <div className="preview-card">
-            <p className="scroll-label">Key demo-card</p>
-            <h3>Atomic swap triggers</h3>
-            <p>
-              Change the trigger or easing to feel the difference immediately. The preview listens
-              to the same config schema your product pages will consume.
-            </p>
-          </div>
+        <Interaction tagName="div" interactKey="demo-card" className="preview-card">
+          <p className="scroll-label">Key demo-card</p>
+          <h3>Atomic swap triggers</h3>
+          <p>
+            Change the trigger or easing to feel the difference immediately. The preview listens
+            to the same config schema your product pages will consume.
+          </p>
         </Interaction>
 
         <div className="stacked-scenes">
