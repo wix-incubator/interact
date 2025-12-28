@@ -38,6 +38,7 @@ const Interaction = React.forwardRef(function InteractionRender<T extends keyof 
         }
       }
 
+      // Cleanup for React 19+, this raises a warning in React 18-
       return () => {
         cleanup?.();
         parentCleanup?.();

@@ -46,16 +46,17 @@ export class Interact {
     this.controllers = new Set();
   }
 
-  init(config: InteractConfig): void {
+  init(config: InteractConfig, options?: { useCutsomElement?: boolean }): void {
     if (typeof window === 'undefined' || !window.customElements) {
       return;
     }
 
-    this.dataCache = parseConfig(config);
-
+    this.dataCache = parseConfig(config, options?.useCutsomElement);
+    
+    const useCutsomElement = options?.useCutsomElement ?? !!Interact.defineInteractElement;
     const defined = Interact.defineInteractElement?.();
 
-    if (defined === false) {
+    if (useCutsomElement && defined === false) {
       // mostly to recover from React's <StrictMode>, blah...
       document.querySelectorAll('interact-element').forEach((element) => {
         (element as IInteractElement).connect();
@@ -95,13 +96,13 @@ export class Interact {
     Interact.setController(key, controller);
   }
 
-  deleteController(key: string) {
+  deleteController(key: string, removeFromCache: boolean = false) {
     const controller = Interact.controllerCache.get(key);
 
     this.clearInteractionStateForKey(key);
     this.clearMediaQueryListenersForKey(key);
 
-    if (controller) {
+    if (controller && removeFromCache) {
       this.controllers.delete(controller);
       Interact.deleteController(key);
     }
@@ -149,11 +150,11 @@ export class Interact {
     });
   }
 
-  static create(config: InteractConfig): Interact {
+  static create(config: InteractConfig, options?: { useCutsomElement?: boolean }): Interact {
     const instance = new Interact();
     Interact.instances.push(instance);
 
-    instance.init(config);
+    instance.init(config, options);
 
     return instance;
   }
@@ -217,7 +218,8 @@ export function getSelector(
   {
     asCombinator = false,
     addItemFilter = false,
-  }: { asCombinator?: boolean; addItemFilter?: boolean } = {},
+    useFirstChild = false,
+  }: { asCombinator?: boolean; addItemFilter?: boolean; useFirstChild?: boolean } = {},
 ): string {
   if (d.listContainer) {
     const itemFilter = `${addItemFilter && d.listItemSelector ? ` > ${d.listItemSelector}` : ''}`;
@@ -232,13 +234,13 @@ export function getSelector(
   }
 
   // TODO: consider moving :scope to be configurable since it may lead to unexpected results in some cases
-  return asCombinator ? '> :first-child' : ':scope > :first-child';
+  return useFirstChild ? (asCombinator ? '> :first-child' : ':scope > :first-child') : '';
 }
 
 /**
  * Parses the config object and caches interactions, effects, and conditions
  */
-function parseConfig(config: InteractConfig): InteractCache {
+function parseConfig(config: InteractConfig, useCutsomElement: boolean = false): InteractCache {
   const conditions = config.conditions || {};
   const interactions: InteractCache['interactions'] = {};
 
@@ -269,7 +271,7 @@ function parseConfig(config: InteractConfig): InteractCache {
     const interaction = { ...rest, effects };
 
     interactions[source].triggers.push(interaction);
-    interactions[source].selectors.add(getSelector(interaction));
+    interactions[source].selectors.add(getSelector(interaction, { useFirstChild: useCutsomElement }));
 
     const listContainer = interaction.listContainer;
 
@@ -333,7 +335,7 @@ function parseConfig(config: InteractConfig): InteractCache {
       }
 
       interactions[target].effects[interactionId].push({ ...rest, effect });
-      interactions[target].selectors.add(getSelector(effect));
+      interactions[target].selectors.add(getSelector(effect, { useFirstChild: useCutsomElement }));
     });
   });
 

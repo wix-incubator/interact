@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Interact, type InteractConfig } from '@wix/interact/web';
 
-export const useInteractInstance = (config: InteractConfig) => {
+export const useInteractInstance = (config: InteractConfig, options?: { useCutsomElement?: boolean }) => {
   useEffect(() => {
-    const instance = Interact.create(config);
+    const instance = Interact.create(config, options);
 
     return () => {
       instance.destroy();
     };
-  }, [config]);
+  }, [config, options]);
 };

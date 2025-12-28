@@ -1,10 +1,11 @@
 import type { MockInstance } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Interact, add, remove } from '../src/web';
+import { Interact, remove } from '../src/web';
 import { addListItems } from '../src/core/add';
 import type { InteractConfig, ScrubEffect, IInteractElement, TriggerType } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
+import { InteractionController } from '../src/core/InteractionController';
 
 // Mock @wix/motion module
 vi.mock('@wix/motion', () => {
@@ -47,6 +48,11 @@ vi.mock('fizban', () => {
 
 // Shared mock MQL storage for breakpoint tests
 let mockMQLs: Map<string, MediaQueryList>;
+
+const add = (element: IInteractElement, key: string) => {
+  const controller = new InteractionController(element, key, { useFirstChild: true });
+  controller.connect(key);
+}
 
 describe('interact (web)', () => {
   let element: IInteractElement;
@@ -465,7 +471,7 @@ describe('interact (web)', () => {
 
   describe('init Interact instance', () => {
     it('should initialize with valid config and register custom element', () => {
-      Interact.create({} as InteractConfig);
+      Interact.create({} as InteractConfig, { useCutsomElement: true });
       expect(customElements.get('interact-element')).toBeDefined();
     });
   });
@@ -490,14 +496,13 @@ describe('interact (web)', () => {
       expect(Object.keys(instance.dataCache.interactions).length).toBe(0);
       expect(instance.controllers.size).toBe(0);
       expect(Interact.instances.length).toBe(0);
-      expect(Interact.controllerCache.size).toBe(0);
     });
   });
 
   describe('destroy Interact', () => {
     it('should clear all instances', () => {
-      Interact.create(getMockConfig());
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
+      Interact.create(getMockConfig(), { useCutsomElement: true });
 
       expect(Interact.instances.length).toBe(2);
 
@@ -507,7 +512,7 @@ describe('interact (web)', () => {
     });
 
     it('should clear all elements from cache', () => {
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
 
       element = document.createElement('interact-element') as IInteractElement;
       const div = document.createElement('div');
@@ -523,7 +528,7 @@ describe('interact (web)', () => {
     });
 
     it('should call disconnect on all cached elements', () => {
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
 
       const key1 = 'logo-hover';
       const element1 = document.createElement('interact-element') as IInteractElement;
@@ -552,7 +557,7 @@ describe('interact (web)', () => {
     });
 
     it('should clean up interactions after destroy', () => {
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
 
       element = document.createElement('interact-element') as IInteractElement;
       const div = document.createElement('div');
@@ -566,7 +571,7 @@ describe('interact (web)', () => {
       expect(Interact.getInstance('logo-click')).toBeUndefined();
 
       // Re-create instance and verify it works independently
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
       const newElement = document.createElement('interact-element') as IInteractElement;
       const newDiv = document.createElement('div');
       newElement.append(newDiv);
@@ -606,7 +611,7 @@ describe('interact (web)', () => {
             duration: 1200,
           },
         },
-      });
+      }, { useCutsomElement: true });
 
       element = document.createElement('interact-element') as IInteractElement;
       const div = document.createElement('div');
@@ -627,7 +632,7 @@ describe('interact (web)', () => {
   describe('add interaction', () => {
     beforeEach(() => {
       mockConfig = getMockConfig();
-      Interact.create(mockConfig);
+      Interact.create(mockConfig, { useCutsomElement: true });
     });
     afterEach(() => {
       Interact.destroy();
@@ -1063,7 +1068,7 @@ describe('interact (web)', () => {
 
   describe('remove interaction', () => {
     beforeEach(() => {
-      Interact.create(getMockConfig());
+      Interact.create(getMockConfig(), { useCutsomElement: true });
     });
     afterEach(() => {
       Interact.destroy();
@@ -1118,7 +1123,7 @@ describe('interact (web)', () => {
         const { getWebAnimation } = await import('@wix/motion');
         const config = createCascadingTestConfig({}, ['min-width: 1024px']);
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1161,7 +1166,7 @@ describe('interact (web)', () => {
         const { getWebAnimation } = await import('@wix/motion');
         const config = createCascadingTestConfig({}, []); // No matching conditions
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1193,7 +1198,7 @@ describe('interact (web)', () => {
         const { getWebAnimation } = await import('@wix/motion');
         const config = createCascadingTestConfig({}, ['max-width: 767px']);
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1227,7 +1232,7 @@ describe('interact (web)', () => {
         const { getWebAnimation } = await import('@wix/motion');
         const config = createCascadingTestConfig({}, ['min-width: 1024px']);
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1259,7 +1264,7 @@ describe('interact (web)', () => {
         const { getWebAnimation } = await import('@wix/motion');
         const config = createCascadingTestConfig({}, ['min-width: 1024px']);
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1342,7 +1347,7 @@ describe('interact (web)', () => {
         };
 
         mockMatchMedia(['min-width: 1024px']); // Only desktop matches
-        Interact.create(complexConfig);
+        Interact.create(complexConfig, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1431,7 +1436,7 @@ describe('interact (web)', () => {
 
         // Both conditions match
         mockMatchMedia(['min-width: 1024px', 'min-resolution: 2dppx']);
-        Interact.create(multiConditionConfig);
+        Interact.create(multiConditionConfig, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1499,7 +1504,7 @@ describe('interact (web)', () => {
         };
 
         mockMatchMedia(['min-width: 1024px']);
-        Interact.create(configWithMissingCondition);
+        Interact.create(configWithMissingCondition, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1557,7 +1562,7 @@ describe('interact (web)', () => {
         };
 
         mockMatchMedia([]);
-        Interact.create(configWithEmptyConditions);
+        Interact.create(configWithEmptyConditions, { useCutsomElement: true });
 
         const sourceElement = document.createElement('interact-element') as IInteractElement;
         const sourceDiv = document.createElement('div');
@@ -1643,7 +1648,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
         const firstChild = sourceElement.querySelector('.first-child') as HTMLElement;
@@ -1687,7 +1692,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         add(sourceElement, 'selector-source');
         add(targetElement, 'selector-target');
@@ -1728,7 +1733,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const firstChild = sourceElement.querySelector('.first-child') as HTMLElement;
         const firstChildSpy = vi.spyOn(firstChild, 'addEventListener');
@@ -1815,7 +1820,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         // Set up spies before adding interactions
         const containerChildren = Array.from(
@@ -1872,7 +1877,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         add(sourceElement, 'invalid-source');
         add(targetElement, 'invalid-target');
@@ -1908,7 +1913,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         add(sourceElement, 'invalid-container-source');
         add(targetElement, 'invalid-container-target');
@@ -1955,7 +1960,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         // Set up spy before adding interactions
         const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
@@ -2004,7 +2009,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const addEventListenerSpy = vi.spyOn(
           sourceElement.querySelector('.other-element') as HTMLElement,
@@ -2059,7 +2064,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         // Set up spy before adding interactions
         const spy = vi.spyOn(buttonWithData, 'addEventListener');
@@ -2101,7 +2106,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         add(sourceElement, 'inherit-source');
         add(targetElement, 'inherit-target');
@@ -2146,7 +2151,7 @@ describe('interact (web)', () => {
           ],
         };
 
-        Interact.create(config);
+        Interact.create(config, { useCutsomElement: true });
 
         const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
         const removeEventListenerSpy = vi.spyOn(triggerButton, 'removeEventListener');
@@ -2202,7 +2207,7 @@ describe('interact (web)', () => {
         ],
       };
 
-      Interact.create(config);
+      Interact.create(config, { useCutsomElement: true });
 
       // Create an InteractElement (which has toggleEffect method)
       const interactElement = document.createElement('interact-element') as IInteractElement;
@@ -2271,7 +2276,7 @@ describe('interact (web)', () => {
 
     it('should set up a media query listener when interaction has conditions', () => {
       const config = createResponsiveConfig();
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       testElement.append(document.createElement('div'));
@@ -2291,7 +2296,7 @@ describe('interact (web)', () => {
 
     it('should call reconcile (re-add) when media query changes', () => {
       const config = createResponsiveConfig();
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       testElement.append(document.createElement('div'));
@@ -2314,7 +2319,7 @@ describe('interact (web)', () => {
 
     it('should properly remove event listeners when instance is destroyed', () => {
       const config = createResponsiveConfig();
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       testElement.append(document.createElement('div'));
@@ -2338,7 +2343,7 @@ describe('interact (web)', () => {
 
     it('should not create duplicate listeners when add() is called twice', () => {
       const config = createResponsiveConfig();
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       testElement.append(document.createElement('div'));
@@ -2357,7 +2362,7 @@ describe('interact (web)', () => {
 
     it('should remove listeners when element is deleted', () => {
       const config = createResponsiveConfig();
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       testElement.append(document.createElement('div'));
@@ -2432,7 +2437,7 @@ describe('interact (web)', () => {
 
       // Initially desktop matches
       mockMatchMedia(['min-width: 1024px']);
-      instance = Interact.create(config);
+      instance = Interact.create(config, { useCutsomElement: true });
 
       testElement = document.createElement('interact-element') as IInteractElement;
       const div = document.createElement('div');
@@ -2508,7 +2513,7 @@ describe('interact (web)', () => {
 
     describe('activate trigger', () => {
       it('should add both click and keydown listeners', () => {
-        Interact.create(getA11yConfig('activate', 'activate-div'));
+        Interact.create(getA11yConfig('activate', 'activate-div'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
@@ -2537,7 +2542,7 @@ describe('interact (web)', () => {
         const mockPlay = (getWebAnimation as any)().play;
         mockPlay.mockClear();
 
-        Interact.create(getA11yConfig('activate', 'activate-handler-test'));
+        Interact.create(getA11yConfig('activate', 'activate-handler-test'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
@@ -2559,7 +2564,7 @@ describe('interact (web)', () => {
 
     describe('interest trigger', () => {
       it('should add focusin listener alongside mouseenter', () => {
-        Interact.create(getA11yConfig('interest', 'interest-test'));
+        Interact.create(getA11yConfig('interest', 'interest-test'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
@@ -2586,7 +2591,7 @@ describe('interact (web)', () => {
 
     describe('click trigger with allowA11yTriggers flag', () => {
       it('should NOT add keydown listener when flag is false', () => {
-        Interact.create(getA11yConfig('click', 'click-no-flag'));
+        Interact.create(getA11yConfig('click', 'click-no-flag'), { useCutsomElement: true });
         Interact.setup({ allowA11yTriggers: false });
         a11yElement = document.createElement(
           'interact-element',
@@ -2613,7 +2618,7 @@ describe('interact (web)', () => {
 
       it('should add keydown listener when flag is true', () => {
         Interact.setup({ allowA11yTriggers: true });
-        Interact.create(getA11yConfig('click', 'click-with-flag'));
+        Interact.create(getA11yConfig('click', 'click-with-flag'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
@@ -2641,7 +2646,7 @@ describe('interact (web)', () => {
     describe('hover trigger with allowA11yTriggers flag', () => {
       it('should NOT add focusin listener when flag is false', () => {
         Interact.setup({ allowA11yTriggers: false });
-        Interact.create(getA11yConfig('hover', 'hover-no-flag'));
+        Interact.create(getA11yConfig('hover', 'hover-no-flag'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
@@ -2667,7 +2672,7 @@ describe('interact (web)', () => {
 
       it('should add focusin listener when flag is true', () => {
         Interact.setup({ allowA11yTriggers: true });
-        Interact.create(getA11yConfig('hover', 'hover-with-flag'));
+        Interact.create(getA11yConfig('hover', 'hover-with-flag'), { useCutsomElement: true });
         a11yElement = document.createElement(
           'interact-element',
         ) as IInteractElement;
