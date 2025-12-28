@@ -53,5 +53,3 @@ jobs:
           npm publish --tag rc --provenance --access=public
           env:
             NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
-        else:
-          run: echo "Dry run: npm publish @wix/interact (trusted) skipped"
