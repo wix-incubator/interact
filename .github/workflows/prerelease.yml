@@ -10,6 +10,13 @@ on:
       USER_GITHUB_TOKEN:
         required: true
 
+    inputs:
+      dry_run:
+          description: 'Dry run (preview only)'
+          required: false
+          default: false
+          type: boolean
+
 permissions:
   id-token: write # REQUIRED for npm Trusted Publishing
   contents: write
@@ -40,8 +47,11 @@ jobs:
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
       - name: npm publish @wix/interact (trusted)
+        if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
           cd packages/interact
           npm publish --tag rc --provenance --access=public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
+        else:
+          run: echo "Dry run: npm publish @wix/interact (trusted) skipped"
