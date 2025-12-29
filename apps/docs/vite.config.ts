@@ -29,10 +29,33 @@ function serveDocsPlugin() {
   };
 }
 
+// Custom plugin to serve rules markdown files from packages/interact/rules
+function serveRulesPlugin() {
+  const rulesPath = path.resolve(__dirname, '../../packages/interact/rules');
+  
+  return {
+    name: 'serve-rules',
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use('/rules', (req, res, next) => {
+        const filePath = path.join(rulesPath, req.url || '');
+        
+        if (fs.existsSync(filePath) && filePath.endsWith('.md')) {
+          const content = fs.readFileSync(filePath, 'utf-8');
+          res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+          res.end(content);
+        } else {
+          next();
+        }
+      });
+    }
+  };
+}
+
 export default defineConfig({
   plugins: [
     react(),
-    serveDocsPlugin()
+    serveDocsPlugin(),
+    serveRulesPlugin()
   ],
   resolve: {
     alias: {
