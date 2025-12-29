@@ -20,10 +20,11 @@ npm install @wix/interact
 
 ## Quick Start
 
-### 1. Basic Setup
+### Using Custom Elements
 
+#### 1. Basic Setup
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 // Define your interaction configuration
 const config = {
@@ -53,7 +54,7 @@ const config = {
 const interact = Interact.create(config);
 ```
 
-### 2. HTML Setup
+#### 2. HTML Setup
 
 ```html
 <!-- Wrap your target element with interact-element -->
@@ -62,21 +63,97 @@ const interact = Interact.create(config);
 </interact-element>
 ```
 
-### 3. Framework Integration
+### Using React
 
-#### React
+#### 1. Basic Setup
+```typescript
+import { Interact } from '@wix/interact/react';
+
+// Define your interaction configuration
+const config = {
+  interactions: [
+    {
+      trigger: 'viewEnter',
+      key: '#my-element',
+      effects: [
+        {
+          effectId: 'fade-in',
+        }
+      ]
+    }
+  ],
+  effects: {
+    'fade-in': {
+      duration: 1000,
+      keyframeEffect: {
+        name: 'fade',
+        keyframes: {opacity: [0, 1]}
+      }
+    }
+  }
+};
+
+// Initialize the interact instance
+const interact = Interact.create(config);
+```
+
+#### 2. HTML Setup
+
 ```tsx
-import React from 'react';
+import { Interaction } from '@wix/interact/react';
 
 function MyComponent() {
   return (
-    <interact-element data-interact-key="my-element">
-      <div className="animated-content">
-        Hello, animated world!
-      </div>
-    </interact-element>
+    <Interaction tagName="div" interactKey="my-element" className="animated-content">
+      Hello, animated world!
+    </Interaction>
   );
 }
+```
+
+### Vanilla usage
+
+#### 1. Basic Setup
+```typescript
+import { Interact, add } from '@wix/interact';
+
+// Define your interaction configuration
+const config = {
+  interactions: [
+    {
+      trigger: 'viewEnter',
+      key: '#my-element',
+      effects: [
+        {
+          effectId: 'fade-in',
+        }
+      ]
+    }
+  ],
+  effects: {
+    'fade-in': {
+      duration: 1000,
+      keyframeEffect: {
+        name: 'fade',
+        keyframes: {opacity: [0, 1]}
+      }
+    }
+  }
+};
+
+// add element
+add(document.querySelector('[data-interact-key="my-element"]'), 'my-element');
+
+// Initialize the interact instance
+const interact = Interact.create(config);
+```
+
+#### 2. HTML Setup
+
+```html
+<div data-interact-key="my-element" class="animated-content">
+  Hello, animated world!
+</div>
 ```
 
 ## Core Concepts
@@ -86,9 +163,8 @@ Define when interactions should occur:
 - `viewEnter` - When element enters viewport
 - `click` - On element click
 - `hover` - On element hover
-- `viewProgress` - Based on scroll progress
-- `pointerMove` - On pointer/mouse movement
-- `pageVisible` - When page becomes visible
+- `viewProgress` - Scroll-driven animations based on progress of element in viewport
+- `pointerMove` - On pointer/mouse movement over an element or viewport
 - `animationEnd` - When another animation completes
 
 ### Effects
@@ -127,7 +203,7 @@ Define what should happen:
 }
 ```
 
-## API Reference
+## Basic API Reference
 
 ### Interact Class
 
@@ -135,12 +211,6 @@ Define what should happen:
 ```typescript
 // Create a new instance with configuration
 Interact.create(config: InteractConfig): Interact
-
-// Get instance that handles a specific key
-Interact.getInstance(key: string): Interact | undefined
-
-// Get cached element by key
-Interact.getElement(key: string): IInteractElement | undefined
 ```
 
 ### Standalone Functions
@@ -197,6 +267,32 @@ remove(key: string): void
 }
 ```
 
+### Scroll-driven Animation
+```typescript
+{
+  interactions: [{
+    trigger: 'viewProgress',
+    key: 'parallax-card',
+    effects: [{ effectId: 'parallax-scroll' }]
+  }],
+  effects: {
+    'parallax-scroll': {
+      keyframeEffect: {
+        name: 'parallax-1',
+        keyframes: [
+          { transform: 'translateY(200px)' },
+          { transform: 'translateY(-200px)' }
+        ]
+      },
+      rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
+      rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+      fill: 'both',
+      easing: 'linear'
+    }
+  }
+}
+```
+
 ### Responsive Interactions
 ```typescript
 {
@@ -229,14 +325,20 @@ remove(key: string): void
 
 ## Documentation
 
-- [Full API Documentation](https://wix-incubator.github.io/interact-ai/docs/api)
-- [Guides and Tutorials](https://wix-incubator.github.io/interact-ai/docs/guides)
-- [Examples and Patterns](https://wix-incubator.github.io/interact-ai/docs/examples)
-- [Integration Guides](https://wix-incubator.github.io/interact-ai/docs/integration)
+- [Full API Documentation](https://wix-incubator.github.io/interact/docs/api)
+- [Guides and Tutorials](https://wix-incubator.github.io/interact/docs/guides)
+- [Examples and Patterns](https://wix-incubator.github.io/interact/docs/examples)
+- [Integration Guides](https://wix-incubator.github.io/interact/docs/integration)
 
 ## AI Support
 
-- [Rules for Interaction Generation](https://wix-incubator.github.io/interact-ai/rules)
+- [Full-flow, lean rules](https://wix-incubator.github.io/interact/rules/full-lean.md)
+- [Rules for integration](https://wix-incubator.github.io/interact/rules/integration.md)
+- [Rules for view entrance interactions](https://wix-incubator.github.io/interact/rules/viewenter.md)
+- [Rules for click interactions](https://wix-incubator.github.io/interact/rules/click.md)
+- [Rules for hover interactions](https://wix-incubator.github.io/interact/rules/click.md)
+- [Rules for scroll interactions](https://wix-incubator.github.io/interact/rules/viewprogress.md)
+- [Rules for pointer-move interactions](https://wix-incubator.github.io/interact/rules/pointermove.md)
 
 ## Development
 
@@ -265,10 +367,6 @@ yarn build
 - [`fizban`](https://github.com/wix-incubator/fizban) - For polyfilling scroll-driven animations
 - [`kuliso`](https://github.com/wix-incubator/kuliso) - For polyfilling pointer-driven animations
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this package.
-
 ## License
 
-UNLICENSED - Internal Wix package
+[MIT](https://github.com/wix-incubator/interact/blob/master/LICENSE)

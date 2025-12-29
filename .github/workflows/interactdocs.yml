@@ -1,0 +1,66 @@
+name: Deploy Docs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
+        run: corepack enable
+        run: corepack prepare yarn@4.10.3 --activate
+        run: yarn set version 4.10.3
+        run: NPQ_PKG_MGR=yarn npx npq install
+
+      - name: Build interact package
+        run: yarn workspace @wix/interact build
+
+      - name: Build docs app
+        run: yarn workspace @wix/interact-docs build
+        env:
+          # Set base path for GitHub Pages deployment under /docs
+          VITE_BASE: /docs/
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p _site/docs
+          cp -r apps/docs/dist/* _site/docs/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@6509e525a06f43847064050610066357391e6390 # v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@3a27866f6480871542049080632d70930d695383 # v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}docs/
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@939173330191535487491557568637540315448 # v4
