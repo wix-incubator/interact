@@ -84,6 +84,8 @@ export default defineConfig({
     serveDocsPlugin(),
     serveRulesPlugin()
   ],
+  // Use VITE_BASE env var for GitHub Pages deployment, default to '/' for local dev
+  base: process.env.VITE_BASE || '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
