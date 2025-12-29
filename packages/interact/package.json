@@ -1,6 +1,6 @@
 {
   "name": "@wix/interact",
-  "version": "2.0.0",
+  "version": "2.0.0-rc.4",
   "description": "A powerful, declarative interaction library for creating engaging web apps.",
   "license": "MIT",
   "main": "dist/cjs/index.js",
@@ -24,7 +24,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "rules",
+    "docs"
   ],
   "sideEffects": false,
   "scripts": {
@@ -54,19 +56,24 @@
   },
   "dependencies": {
     "@wix/motion": "^1.0.0",
-    "kuliso": "^0.4.13",
+    "fastdom": "^1.0.12",
     "fizban": "^0.7.2",
-    "fastdom": "^1.0.12"
+    "kuliso": "^0.4.13"
   },
   "peerDependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
@@ -81,4 +88,3 @@
     "vitest": "^4.0.14"
   }
 }
-
