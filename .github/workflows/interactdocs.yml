@@ -2,6 +2,14 @@ name: Deploy Docs to GitHub Pages
 
 on:
   push:
+    secrets:
+      GH_EMAIL:
+        required: true
+      GH_USER:
+        required: true
+      USER_GITHUB_TOKEN:
+        required: true
+
     branches:
       - master
 
