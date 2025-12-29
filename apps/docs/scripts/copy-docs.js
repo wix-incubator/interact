@@ -17,12 +17,12 @@ if (!existsSync(dirname(destDocs))) {
 }
 
 // Copy docs to dist
-cpSync(srcDocs, destDocs, { recursive: true });
+cpSync(srcDocs, destDocs, { recursive: true, force: true });
 
 console.log('✓ Docs copied to dist/docs');
 
 // Copy rules to dist
-cpSync(srcRules, destRules, { recursive: true });
+cpSync(srcRules, destRules, { recursive: true, force: true });
 
 console.log('✓ Rules copied to dist/rules');
 

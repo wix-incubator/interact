@@ -7,6 +7,33 @@ import fs from 'node:fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Validates that the resolved path is within the allowed base directory
+// Prevents path traversal attacks using ../ sequences
+function getSafeFilePath(baseDir: string, requestUrl: string): string | null {
+  // Resolve the absolute path
+  const resolvedPath = path.resolve(baseDir, '.' + requestUrl);
+  
+  // Check the resolved path is within the base directory
+  if (!resolvedPath.startsWith(baseDir + path.sep) && resolvedPath !== baseDir) {
+    return null;
+  }
+  
+  // If file exists, also verify via realpath (handles symlinks)
+  if (fs.existsSync(resolvedPath)) {
+    try {
+      const realPath = fs.realpathSync(resolvedPath);
+      const realBaseDir = fs.realpathSync(baseDir);
+      if (!realPath.startsWith(realBaseDir + path.sep) && realPath !== realBaseDir) {
+        return null;
+      }
+    } catch {
+      return null;
+    }
+  }
+  
+  return resolvedPath;
+}
+
 // Custom plugin to serve markdown files from packages/interact/docs
 function serveDocsPlugin() {
   const docsPath = path.resolve(__dirname, '../../packages/interact/docs');
@@ -15,9 +42,9 @@ function serveDocsPlugin() {
     name: 'serve-docs',
     configureServer(server: ViteDevServer) {
       server.middlewares.use('/docs', (req, res, next) => {
-        const filePath = path.join(docsPath, req.url || '');
+        const filePath = getSafeFilePath(docsPath, req.url || '');
         
-        if (fs.existsSync(filePath) && filePath.endsWith('.md')) {
+        if (filePath && fs.existsSync(filePath) && filePath.endsWith('.md')) {
           const content = fs.readFileSync(filePath, 'utf-8');
           res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
           res.end(content);
@@ -37,9 +64,9 @@ function serveRulesPlugin() {
     name: 'serve-rules',
     configureServer(server: ViteDevServer) {
       server.middlewares.use('/rules', (req, res, next) => {
-        const filePath = path.join(rulesPath, req.url || '');
+        const filePath = getSafeFilePath(rulesPath, req.url || '');
         
-        if (fs.existsSync(filePath) && filePath.endsWith('.md')) {
+        if (filePath && fs.existsSync(filePath) && filePath.endsWith('.md')) {
           const content = fs.readFileSync(filePath, 'utf-8');
           res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
           res.end(content);
