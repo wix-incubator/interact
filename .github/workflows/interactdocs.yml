@@ -25,12 +25,14 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
+          registry-url: https://registry.npmjs.org
 
       - name: Enable Corepack
-        run: corepack enable
-        run: corepack prepare yarn@4.10.3 --activate
-        run: yarn set version 4.10.3
-        run: NPQ_PKG_MGR=yarn npx npq install
+        run: |
+          corepack enable
+          corepack prepare yarn@4.10.3 --activate
+          yarn set version 4.10.3
+          NPQ_PKG_MGR=yarn npx npq install
 
       - name: Build interact package
         run: yarn workspace @wix/interact build
