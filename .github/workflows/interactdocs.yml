@@ -52,7 +52,7 @@ jobs:
           VITE_BASE: /docs/
 
       - name: Setup Pages
-        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+        uses: actions/configure-pages@b8130d9ab958b325bbde9786d62f2c97a9885a0e # v3
 
       - name: Prepare deployment directory
         run: |
@@ -60,7 +60,7 @@ jobs:
           cp -r apps/docs/dist/* _site/docs/
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: _site
 
