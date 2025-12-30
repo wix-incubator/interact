@@ -51,13 +51,16 @@ jobs:
           # Set base path for GitHub Pages deployment under /docs
           VITE_BASE: /docs/
 
+      - name: Setup Pages
+        uses: actions/configure-pages@b8130d9ab958b325bbde9786d62f2c97a9885a0e # v3
+
       - name: Prepare deployment directory
         run: |
           mkdir -p _site/docs
           cp -r apps/docs/dist/* _site/docs/
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: _site
 
