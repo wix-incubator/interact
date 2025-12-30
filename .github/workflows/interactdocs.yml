@@ -56,11 +56,8 @@ jobs:
           mkdir -p _site/docs
           cp -r apps/docs/dist/* _site/docs/
 
-      - name: Setup Pages
-        uses: actions/configure-pages@6509e525a06f43847064050610066357391e6390 # v5
-
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@3a27866f6480871542049080632d70930d695383 # v3
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: _site
 

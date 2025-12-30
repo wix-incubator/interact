@@ -17,7 +17,7 @@ export function MarkdownPage() {
       setError(null);
 
       const mdPath = getMarkdownPath(location.pathname);
-      ;
+      
       try {
         // Use the /docs endpoint which serves from packages/interact/docs
         const response = await fetch(`/docs/${mdPath}`);
