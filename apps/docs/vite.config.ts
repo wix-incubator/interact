@@ -97,6 +97,7 @@ export default defineConfig({
     port: 4173
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
