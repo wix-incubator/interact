@@ -372,7 +372,7 @@ const config = {
             key: 'hero-section',
             trigger: 'pointerMove',
             params: { hitArea: 'self' },
-            effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
+            effects: [{ customEffect: rotateGridEffect, centeredToTarget: false }]
         },
         
         // Hero Text
