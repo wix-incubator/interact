@@ -369,10 +369,10 @@ const config = {
         
         // Hero Grid Interaction
         {
-            key: 'hero-grid',
+            key: 'hero-section',
             trigger: 'pointerMove',
-            params: { hitArea: 'root' },
-            effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
+            params: { hitArea: 'self' },
+            effects: [{ customEffect: rotateGridEffect, centeredToTarget: false }]
         },
         
         // Hero Text
