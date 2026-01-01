@@ -369,9 +369,9 @@ const config = {
         
         // Hero Grid Interaction
         {
-            key: 'hero-grid',
+            key: 'hero-section',
             trigger: 'pointerMove',
-            params: { hitArea: 'root' },
+            params: { hitArea: 'self' },
             effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
         },
         
