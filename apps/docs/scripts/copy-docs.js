@@ -8,9 +8,6 @@ const __dirname = dirname(__filename);
 const srcDocs = resolve(__dirname, '../../../packages/interact/docs');
 const destDocs = resolve(__dirname, '../dist/docs');
 
-const srcRules = resolve(__dirname, '../../../packages/interact/rules');
-const destRules = resolve(__dirname, '../dist/rules');
-
 // Create dest directory if it doesn't exist
 if (!existsSync(dirname(destDocs))) {
   mkdirSync(dirname(destDocs), { recursive: true });
@@ -21,8 +18,6 @@ cpSync(srcDocs, destDocs, { recursive: true, force: true });
 
 console.log('✓ Docs copied to dist/docs');
 
-// Copy rules to dist
-cpSync(srcRules, destRules, { recursive: true, force: true });
-
-console.log('✓ Rules copied to dist/rules');
+// Note: Rules are NOT copied here - they are deployed separately to /rules/
+// in the GitHub Actions workflow (not under /docs/rules/)
 

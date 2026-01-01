@@ -3,8 +3,11 @@ import { Layout } from './components/Layout';
 import { MarkdownPage } from './components/MarkdownPage';
 
 function App() {
+  // Remove trailing slash from BASE_URL for router basename
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+  
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Layout>
         <Routes>
           <Route path="*" element={<MarkdownPage />} />
