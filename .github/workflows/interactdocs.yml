@@ -42,8 +42,8 @@ jobs:
       - name: Build docs app
         run: yarn workspace @wix/interact-docs build
         env:
-          # Set base path for GitHub Pages deployment to ./ which should be under /docs/
-          VITE_BASE: ./
+          # Set base path for GitHub Pages deployment (absolute path for React Router compatibility)
+          VITE_BASE: /interact/docs/
 
       - name: Setup Pages
         uses: actions/configure-pages@1f0c5cde4bc74cd7e1254d0cb4de8d49e9068c7d # v4
