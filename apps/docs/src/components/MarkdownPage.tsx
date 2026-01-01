@@ -19,8 +19,10 @@ export function MarkdownPage() {
       const mdPath = getMarkdownPath(location.pathname);
       
       try {
-        // Use the /docs endpoint which serves from packages/interact/docs
-        const response = await fetch(`/docs/${mdPath}`);
+        // Use the base URL + /docs endpoint which serves from packages/interact/docs
+        // In dev (base=/): fetches /docs/README.md
+        // In prod (base=/docs/): fetches /docs/docs/README.md
+        const response = await fetch(`${import.meta.env.BASE_URL}docs/${mdPath}`);
         
         if (!response.ok) {
           throw new Error(`Failed to load: ${mdPath}`);
