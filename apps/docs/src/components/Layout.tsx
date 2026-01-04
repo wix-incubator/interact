@@ -1,12 +1,15 @@
 import type { PropsWithChildren } from 'react';
-import { DocsSidebar } from './Sidebar';
+import { Sidebar } from './Sidebar';
 
-export const Layout = ({ children }: PropsWithChildren) => {
+export function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="docs-layout">
-      <DocsSidebar />
-      <main className="docs-content">{children}</main>
+    <div className="layout">
+      <Sidebar />
+      <main className="main-content">
+        <div className="content-container">
+          {children}
+        </div>
+      </main>
     </div>
   );
-};
-
+}
