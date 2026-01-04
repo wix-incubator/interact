@@ -4,8 +4,21 @@
 - Call `Interact.create(config)` once to initialize.
 - Create the full configuration up‑front and pass it in a single `create` call to avoid unintended overrides; subsequent calls replace the previous config.
 
+**For web (Custom Elements):**
 ```ts
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
+import type { InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  // config-props
+};
+
+Interact.create(config);
+```
+
+**For React:**
+```ts
+import { Interact } from '@wix/interact/react';
 import type { InteractConfig } from '@wix/interact';
 
 const config: InteractConfig = {
@@ -19,7 +32,7 @@ Interact.create(config);
 
 ```html
 <script type="module">
-  import { Interact } from 'https://esm.sh/@wix/interact@1.86.0';
+  import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.4';
 
   const config = {
     // config-props
@@ -38,7 +51,7 @@ Interact.create(config);
 
 **Usage:**
 ```javascript
-import { generate } from '@wix/interact';
+import { generate } from '@wix/interact/web';
 
 const config = {/*...*/};
 
@@ -82,7 +95,7 @@ This configuration declares what user/system triggers occur on which source elem
 - **Element keys**: All element keys (`key` fields) refer to the element path string (e.g., the value used in `data-interact-key`) and MUST be stable for the lifetime of the configuration.
 - **List context**: Where both a list container and list item selector are provided, they MUST describe the same list context across an interaction and its effects. Mismatched list contexts will be ignored by the system.
 - **Conditions**: Conditions act as guards. If any condition on an interaction or effect evaluates to false, the corresponding trigger/effect WILL NOT be applied.
-- **Custom element usage**: Do NOT add observers/listeners manually. Wrap the DOM subtree with `<interact-element>` and set `data-interact-key` to the element key; use that same key in your config (`Interaction.key`/`Effect.key`). The runtime binds triggers/effects via this attribute.
+- **Element binding**: Do NOT add observers/listeners manually. For web, wrap the DOM subtree with `<interact-element>` and set `data-interact-key` to the element key. For React, use the `<Interaction>` component with `interactKey` prop. Use the same key in your config (`Interaction.key`/`Effect.key`). The runtime binds triggers/effects via this attribute.
 
 ### Structure
 - **effects: Record<string, Effect>**
@@ -171,9 +184,13 @@ This configuration declares what user/system triggers occur on which source elem
     - **effects: Array<Effect | EffectRef>**
       - REQUIRED. The effects to apply when the trigger fires. Ordering is significant: the first array entry is applied first. The system may reverse internal storage to preserve this application order.
 
-### Working with `<interact-element>`
-- Wrap the interactive DOM subtree with the custom element and set `data-interact-key` to a stable key. Reference that same key from your config via `Interaction.key` (and optionally `Effect.key`). No observers/listeners or manual DOM querying are needed—the runtime binds triggers and effects by this attribute.
-- If an effect targets an element that is not the interaction’s source, you MUST also wrap that target element’s subtree with its own `<interact-element>` and set `data-interact-key` to the target’s key (the value used in `Effect.key` or the referenced registry Effect’s `key`). This is required so the runtime can locate and apply effects to non-source targets.
+### Working with elements
+
+#### Web: `<interact-element>` custom element
+- Wrap the interactive DOM subtree with the custom element and set `data-interact-key` to a stable key. Reference that same key from your config via `Interaction.key` (and optionally `Effect.key`). No observers/listeners or manual DOM querying are needed—the runtime binds triggers and effects via this attribute.
+- If an effect targets an element that is not the interaction's source, you MUST also wrap that target element's subtree with its own `<interact-element>` and set `data-interact-key` to the target's key (the value used in `Effect.key` or the referenced registry Effect's `key`). This is required so the runtime can locate and apply effects to non-source targets.
+- MUST have a `data-interact-key` attribute with a value that is unique within the scope.
+- MUST contain at least one child element.
 
 ```html
 <interact-element data-interact-key="my-button">
@@ -228,6 +245,45 @@ const config: InteractConfig = {
   ],
 };
 ```
+
+#### React: `<Interaction>` component
+- MUST replace the element itself with the `<Interaction/>` component.
+- MUST set the `tagName` prop with the tag of the replaced element.
+- MUST set the `interactKey` prop to a unique string within the scope.
+
+```tsx
+import { Interaction } from '@wix/interact/react';
+
+function MyComponent() {
+  return (
+    <Interaction tagName="button" interactKey="my-button" className="btn">
+      Click me
+    </Interaction>
+  );
+}
+```
+
+For a different target element:
+
+```tsx
+import { Interaction } from '@wix/interact/react';
+
+function MyComponent() {
+  return (
+    <>
+      <Interaction tagName="button" interactKey="my-button" className="btn">
+        Click me
+      </Interaction>
+
+      <Interaction tagName="span" interactKey="my-badge" className="badge">
+        Badge
+      </Interaction>
+    </>
+  );
+}
+```
+
+The config remains the same for both integrations—only the HTML/JSX setup differs.
 
 ### Effect rules (applies to both registry-defined Effect and inline Effect within interactions)
 - Common fields (`EffectBase`):
