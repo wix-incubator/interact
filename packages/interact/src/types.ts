@@ -32,7 +32,7 @@ export type TriggerType =
   | 'activate'
   | 'interest';
 
-export type ViewEnterType = 'once' | 'repeat' | 'alternate';
+export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 
 export type TransitionMethod = 'add' | 'remove' | 'toggle' | 'clear';
 
@@ -251,7 +251,7 @@ export type HandlerObject = {
   source: HTMLElement;
   target: HTMLElement;
   cleanup: () => void;
-  handler?: () => void;
+  handler?: (isIntersecting?: boolean) => void;
 };
 
 export type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
