@@ -97,7 +97,10 @@ function resolveEffect(
       ? { ...effectsMap[effectRef.effectId], ...effectRef }
       : { ...effectRef };
 
-  if (fullEffect.namedEffect || fullEffect.keyframeEffect || fullEffect.transition) {
+  if (fullEffect.namedEffect ||
+      fullEffect.keyframeEffect ||
+      fullEffect.transition ||
+      fullEffect.transitionProperties) {
     if (!fullEffect.key) {
       fullEffect.key = interaction.key;
     }
@@ -109,11 +112,14 @@ function resolveEffect(
     
     const { keyframeEffect } = fullEffect;
     if (keyframeEffect && !keyframeEffect.name) {
-      keyframeEffect.name = (effectRef as TimeEffect & { keyframeEffect: MotionKeyframeEffect }).keyframeEffect ?
-          generateId() : effectRef.effectId;
+      // use effectId only if the keyframes are not overridden by effectRef or effectRef has a unique effectId (no reference)
+      const canUseEffectId =
+        (effectRef.effectId && !effectsMap[effectRef.effectId]) ||
+        !(effectRef as TimeEffect & { keyframeEffect: MotionKeyframeEffect }).keyframeEffect;
+      keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
     }
 
-    fullEffect.initial = fullEffect.initial === 'disable' ?
+    fullEffect.initial = fullEffect.initial === false ?
       undefined : (fullEffect.initial || DEFAULT_INITIAL);
 
     return fullEffect;
@@ -242,12 +248,13 @@ export function getCSS(config: InteractConfig): GetCSSResult {
       if (!effect) continue;
 
       const childSelector = getSelector(effect, {
-        asCombinator: true, // TODO: (ameerf) - correct?
-        addItemFilter: Boolean(effect.listItemSelector), // TODO: (ameerf) - correct?
+        asCombinator: true,
+        addItemFilter: true,
+        useFirstChild: true,
       });
                 
       const escapedKey = CSS.escape(effect.key);
-      const keyWithNoSpecialChars = effect.key.replace(/[^a-zA-Z0-9_-]/g, '');
+      const keyWithNoSpecialChars = effect.key.replace(/[^\w-]/g, '');
       const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
       const conditions = (effect.conditions || []);
 
@@ -255,7 +262,7 @@ export function getCSS(config: InteractConfig): GetCSSResult {
         (effect as TransitionEffect).transition ||
         (effect as TransitionEffect).transitionProperties
       ) {
-        const {stateRule, transitions} = getTransitionData(effect, childSelector);
+        const { stateRule, transitions } = getTransitionData(effect, childSelector);
         transitionRules.push(stateRule);
         if (transitions.length === 0) {
           continue;

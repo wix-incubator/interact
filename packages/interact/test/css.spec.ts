@@ -294,10 +294,10 @@ describe('getCSS', () => {
       expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*transform:\s*scale\(0\.5\)/);
     });
 
-    it('should NOT include initial when set to "disable"', () => {
+    it('should NOT include initial when set to false', () => {
       const effectWithDisabledInitial: Effect = {
         ...fadeInEffect,
-        initial: 'disable',
+        initial: false,
       };
       const config = createConfig(effectWithDisabledInitial);
       const result = getCSS(config);
