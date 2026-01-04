@@ -48,12 +48,12 @@
 <body class="bg-off-black text-white selection:bg-blue-300 selection:text-off-black">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 px-6 py-6 md:px-12 flex justify-between items-center mix-blend-difference text-white">
+    <nav class="fixed top-0 w-full z-50 px-6 py-6 md:px-12 flex justify-between items-center text-white">
         <interact-element data-interact-key="nav-logo" data-interact-initial="true">
             <div class="text-sm font-medium tracking-wide uppercase">● Interact </div>
         </interact-element>
         <interact-element data-interact-key="nav-cta" data-interact-initial="true">
-            <a href="https://github.com/wix-incubator/interact" target="_blank" class="text-sm font-medium border border-transparent px-6 py-2 rounded-full bg-white text-off-black hover:bg-gray-200 transition-colors duration-300">
+            <a href="https://github.com/wix-incubator/interact" target="_blank" class="text-sm font-medium border border-black px-6 py-2 rounded-full bg-white text-off-black hover:bg-black hover:text-white hover:border-white transition-colors duration-300">
                Go to Repository ↗
             </a>
         </interact-element>
@@ -239,12 +239,12 @@ Interact runs closer to the browser, delivering smooth, GPU-accelerated animatio
                     <!-- Text Container -->
                     <div class="mt-0">
                         <!-- Using Mega size defined in tailwind -->
-                        <h3 class="text-6xl md:text-mega font-light tracking-tighter text-white leading-tight mb-8 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] whitespace-nowrap">
-                            <interact-element data-interact-key="word-1" class="inline-block"><span>Beautiful</span></interact-element>
-                            <interact-element data-interact-key="word-2" class="inline-block"><span>Effects,</span></interact-element><br>
-                            <interact-element data-interact-key="word-3" class="inline-block"><span>Ready</span></interact-element>
-                            <interact-element data-interact-key="word-4" class="inline-block"><span>to</span></interact-element>
-                            <interact-element data-interact-key="word-5" class="inline-block"><span>Use.</span></interact-element>
+                        <h3 class="text-5xl md:text-mega font-light tracking-tighter text-white  leading-tight mb-8 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                            <interact-element data-interact-key="word-1" class="inline-block"><span class="block">Beautiful</span></interact-element>
+                            <interact-element data-interact-key="word-2" class="inline-block"><span class="block">Effects,</span></interact-element><br>
+                            <interact-element data-interact-key="word-3" class="inline-block"><span class="block">Ready</span></interact-element>
+                            <interact-element data-interact-key="word-4" class="inline-block"><span class="block">to</span></interact-element>
+                            <interact-element data-interact-key="word-5" class="inline-block"><span class="block">Use.</span></interact-element>
                         </h3>
                         <!-- Description -->
                         <interact-element data-interact-key="desc-text" class="block">
@@ -275,19 +275,19 @@ Interact comes with a rich and diverse set of named effects, each designed to br
                 
                 <div class="relative w-full h-full flex items-center justify-center perspective-[1000px]">
                     <interact-element data-interact-key="spread-card-0">
-                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_e6637e07dfcb4e53b7678a9cef40aa7a~mv2.png'); z-index: 5;"></div>
+                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_e6637e07dfcb4e53b7678a9cef40aa7a~mv2.png');"></div>
                     </interact-element>
                     <interact-element data-interact-key="spread-card-1">
-                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_2946702578bc4f3196e15f2ea4f93f0b~mv2.png'); z-index: 4;"></div>
+                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_2946702578bc4f3196e15f2ea4f93f0b~mv2.png');"></div>
                     </interact-element>
                     <interact-element data-interact-key="spread-card-2">
-                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_e42d5b5ebaf942f1979ced8700e0d499~mv2.png'); z-index: 3;"></div>
+                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_e42d5b5ebaf942f1979ced8700e0d499~mv2.png');"></div>
                     </interact-element>
                     <interact-element data-interact-key="spread-card-3">
-                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_00ea4d8b1bfc418486b742e3bcdf0e53~mv2.png'); z-index: 2;"></div>
+                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_00ea4d8b1bfc418486b742e3bcdf0e53~mv2.png');"></div>
                     </interact-element>
                     <interact-element data-interact-key="spread-card-4">
-                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_2ffdb3397a52442a928502e6f447dfc1~mv2.png'); z-index: 1;"></div>
+                        <div class="spread-card spread-card-init" style="background-image: url('https://static.wixstatic.com/media/9eca39_2ffdb3397a52442a928502e6f447dfc1~mv2.png');"></div>
                     </interact-element>
                 </div>
 
@@ -300,7 +300,7 @@ Interact comes with a rich and diverse set of named effects, each designed to br
 
     <!-- INTERACTION GRID -->
     <section class="bg-white py-32 px-6 md:px-12 lg:px-24 text-off-black relative">
-        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-off-black text-center leading-[1.85]"">Trigger Your Motion</h2>
+        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-off-black text-center leading-[1.20]">Trigger Your Motion</h2>
         <p><br></p>
           <p class="text-xl md:text-3xl font-light text-gray-600 leading-tight tracking-tight text-center mb-8 min-w-xl max-w-2xl mx-auto ">Animate elements based on user interactions -  from micro-motion touches to large-scale expressive interactions.</p>
         <div class="flex flex-col gap-40 items-center w-full">
@@ -546,7 +546,7 @@ Interact comes with a rich and diverse set of named effects, each designed to br
                 <!-- Title & Description -->
                 <interact-element data-interact-key="tailored-header" data-interact-initial="true">
                     <div class="mb-24 text-center max-w-4xl mx-auto">
-                        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-white text-center leading-[1.85]">Effects. Tailored to Your Vision</h2>
+                        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-white text-center leading-[0.95]">Effects. Tailored to Your Vision</h2>
                         <p><br></p>
                         <p class="text-xl md:text-3xl font-light text-gray-400 leading-tight tracking-tight mb-8 text-center">
                             From a curated set of ready-to-use effects to fully custom motion, Interact gives you control to tailor animations precisely to your vision.
@@ -599,7 +599,7 @@ Interact comes with a rich and diverse set of named effects, each designed to br
             <div class="sticky-wrapper items-center">
                 <div class="w-full h-full flex flex-col justify-center">
                     <div class="px-12 mb-[88px] text-center w-full relative z-10">
-                        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-white text-center leading-[1.85]">Hey, Good Looking</h2>
+                        <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-white text-center leading-[0.95]">Hey, Good Looking</h2>
                         <p><br></p>
                         <p class="text-xl md:text-3xl font-light text-gray-400 leading-tight tracking-tight text-center mb-8 min-w-xl max-w-2xl mx-auto">Get inspired by these motion-forward Wix websites created with Interact</p>
                     </div>

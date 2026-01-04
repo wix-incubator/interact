@@ -94,6 +94,52 @@ interact-element {
 .spread-card-init {
     transform: translate(-50%, -50%);
 }
+/* Z-Index desktop card spread */
+[data-interact-key="spread-card-0"] .spread-card { z-index: 5; }
+[data-interact-key="spread-card-1"] .spread-card { z-index: 4; }
+[data-interact-key="spread-card-2"] .spread-card { z-index: 3; }
+[data-interact-key="spread-card-3"] .spread-card { z-index: 2; }
+[data-interact-key="spread-card-4"] .spread-card { z-index: 1; }
+
+/* Mobile overrides for card spread */
+@media (max-width: 1000px) {
+    #spread-section {
+        height: 500vh !important;
+    }
+
+    .spread-card {
+        top: 15vh; 
+        left: 50%;
+        width: 85vw;
+        height: 65vh;
+        max-width: 400px;
+        background-size: contain;
+        box-shadow: none; 
+        border-radius: 0; 
+        transform: translateX(-50%);
+    }
+    [data-interact-key="spread-card-0"] .spread-card {
+        transform: translateX(-50%) translateY(0);
+        z-index: 1;
+    }
+    [data-interact-key="spread-card-1"] .spread-card {
+        transform: translateX(-50%) translateY(100vh);
+        z-index: 2;
+    }
+    [data-interact-key="spread-card-2"] .spread-card {
+        transform: translateX(-50%) translateY(100vh);
+        z-index: 3;
+    }
+    [data-interact-key="spread-card-3"] .spread-card {
+        transform: translateX(-50%) translateY(100vh);
+        z-index: 4;
+    }
+    [data-interact-key="spread-card-4"] .spread-card {
+        transform: translateX(-50%) translateY(100vh);
+        z-index: 5;
+    }
+}
+
 
 /* TUNNEL EFFECT STYLES */
 .tunnel-container {
@@ -167,8 +213,23 @@ interact-element {
     position: relative;
     overflow: hidden; 
     border: 1px solid rgba(255, 255, 255, 0.8);
-
 }
+
+/* Mobile responsive for horizontal scroll cards */
+@media (max-width: 1000px) {
+    .horizontal-track {
+        gap: 4vw;
+        padding-left: 2.5vw; /* Centers 95vw card: 50vw - 47.5vw */
+        padding-right: 50vw;
+    }
+    
+    .h-card {
+        width: 95vw;
+        height: 63.33vw; /* Maintains 1.5:1 aspect ratio */
+        border-radius: 12px;
+    }
+}
+
 
 /* NEW COMPONENT STYLES */
 .custom-scrollbar::-webkit-scrollbar {

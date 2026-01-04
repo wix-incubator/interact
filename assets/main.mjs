@@ -375,6 +375,7 @@ const ENTRANCE_DURATION = 1000;
 const ENTRANCE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
 const ENTRANCE_OFFSET = '50px'; 
 const ENTRANCE_SLIDE_DIST = '120px';
+const mobileEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 const HOVER_SCALE = {
     name: 'hoverScale',
@@ -818,60 +819,60 @@ const config = {
                     key: 'word-1',
                     keyframeEffect: {
                         keyframes: [
-                            { opacity: 0, transform: 'translateY(150px)' },
+                            { opacity: 0, transform: 'translateY(100px)' },
                             { opacity: 1, transform: 'translateY(0)' }
                         ]
                     },
-                    rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-                    rangeEnd: { name: 'cover', offset: { value: 15, type: 'percentage' } },
+                    rangeStart: { name: 'cover', offset: { value: 25, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 40, type: 'percentage' } },
                     fill: 'both'
                 },
                 {
                     key: 'word-2',
                     keyframeEffect: {
                         keyframes: [
-                            { opacity: 0, transform: 'translateY(150px)' },
+                            { opacity: 0, transform: 'translateY(100px)' },
                             { opacity: 1, transform: 'translateY(0)' }
                         ]
                     },
-                    rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-                    rangeEnd: { name: 'cover', offset: { value: 20, type: 'percentage' } },
+                    rangeStart: { name: 'cover', offset: { value: 28, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 43, type: 'percentage' } },
                     fill: 'both'
                 },
                 {
                     key: 'word-3',
                     keyframeEffect: {
                         keyframes: [
-                            { opacity: 0, transform: 'translateY(150px)' },
+                            { opacity: 0, transform: 'translateY(50px)' },
                             { opacity: 1, transform: 'translateY(0)' }
                         ]
                     },
-                    rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-                    rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+                    rangeStart: { name: 'cover', offset: { value: 31, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 46, type: 'percentage' } },
                     fill: 'both'
                 },
                 {
                     key: 'word-4',
                     keyframeEffect: {
                         keyframes: [
-                            { opacity: 0, transform: 'translateY(150px)' },
+                            { opacity: 0, transform: 'translateY(50px)' },
                             { opacity: 1, transform: 'translateY(0)' }
                         ]
                     },
-                    rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-                    rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+                    rangeStart: { name: 'cover', offset: { value: 34, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 49, type: 'percentage' } },
                     fill: 'both'
                 },
                 {
                     key: 'word-5',
                     keyframeEffect: {
                         keyframes: [
-                            { opacity: 0, transform: 'translateY(150px)' },
+                            { opacity: 0, transform: 'translateY(50px)' },
                             { opacity: 1, transform: 'translateY(0)' }
                         ]
                     },
-                    rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-                    rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+                    rangeStart: { name: 'cover', offset: { value: 38, type: 'percentage' } },
+                    rangeEnd: { name: 'cover', offset: { value: 53, type: 'percentage' } },
                     fill: 'both'
                 },
                 {
@@ -950,13 +951,14 @@ const config = {
             effects: [{ namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' }, duration: 800, delay: 300, fill: 'both' }]
         },
         
-        // Spread Section
+        // Spread Section (Desktop)
         {
             key: 'spread-section',
             trigger: 'viewProgress',
             effects: [
                 {
                     key: 'spread-card-0',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -970,6 +972,7 @@ const config = {
                 },
                 {
                     key: 'spread-card-1',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -983,6 +986,7 @@ const config = {
                 },
                 {
                     key: 'spread-card-2',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -996,6 +1000,7 @@ const config = {
                 },
                 {
                     key: 'spread-card-3',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -1009,6 +1014,7 @@ const config = {
                 },
                 {
                     key: 'spread-card-4',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -1017,6 +1023,88 @@ const config = {
                         keyframes: [
                             { transform: 'translate(-50%, -50%) scale(1)' },
                             { transform: 'translate(calc(-50% + 32vw), -50%) scale(0.9)' }
+                        ]
+                    }
+                },
+
+                 // Spread Section (Mobile)
+
+                {
+                    key: 'spread-card-0',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    easing: mobileEasing,
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'card-0-scaleDown',
+                        keyframes: [
+                            { transform: 'translateX(-50%) translateY(0) scale(1)' },
+                            { transform: 'translateX(-50%) translateY(0) scale(0.85)' }
+                        ]
+                    }
+                },
+                {
+                    key: 'spread-card-1',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    easing: mobileEasing,
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'card-1-slideUp-scaleDown',
+                        keyframes: [
+                            { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+                            { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+                            { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' }
+                        ]
+                    }
+                },
+                {
+                    key: 'spread-card-2',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    easing: mobileEasing,
+                    rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'card-2-slideUp-scaleDown',
+                        keyframes: [
+                            { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+                            { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+                            { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' }
+                        ]
+                    }
+                },
+                {
+                    key: 'spread-card-3',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    easing: mobileEasing,
+                    rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'card-3-slideUp-scaleDown',
+                        keyframes: [
+                            { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+                            { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+                            { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' }
+                        ]
+                    }
+                },
+                {
+                    key: 'spread-card-4',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    easing: mobileEasing,
+                    rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'card-4-slideUp-scaleDown',
+                        keyframes: [
+                        { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+                        { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+                        { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' }
                         ]
                     }
                 }
@@ -1028,8 +1116,10 @@ const config = {
             key: 'h-section',
             trigger: 'viewProgress',
             effects: [
+                // Desktop: h-track movement (9 cards × 600px + 8 gaps × 128px - 600px = 5824px)
                 {
                     key: 'h-track',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -1041,8 +1131,25 @@ const config = {
                         ]
                     }
                 },
+                // Mobile: h-track movement (8 × (95vw + 4vw) = 792vw)
+                {
+                    key: 'h-track',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: {
+                        name: 'moveLeftMobile',
+                        keyframes: [
+                            { transform: 'translateX(0)' },
+                            { transform: 'translateX(-792vw)' }
+                        ]
+                    }
+                },
+                // Desktop card scaling
                 {
                     key: 'h-card-1',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
@@ -1053,6 +1160,7 @@ const config = {
                 },
                 {
                     key: 'h-card-2',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
@@ -1060,6 +1168,7 @@ const config = {
                 },
                 {
                     key: 'h-card-3',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
@@ -1067,6 +1176,7 @@ const config = {
                 },
                 {
                     key: 'h-card-4',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
@@ -1074,6 +1184,7 @@ const config = {
                 },
                 {
                     key: 'h-card-5',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
@@ -1081,6 +1192,7 @@ const config = {
                 },
                 {
                     key: 'h-card-6',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
@@ -1088,6 +1200,7 @@ const config = {
                 },
                 {
                     key: 'h-card-7',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
@@ -1095,6 +1208,7 @@ const config = {
                 },
                 {
                     key: 'h-card-8',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -1102,10 +1216,83 @@ const config = {
                 },
                 {
                     key: 'h-card-9',
+                    conditions: ['Desktop'],
                     fill: 'both',
                     rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
                     rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
                     keyframeEffect: { name: 'scaleCenter9', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }] }
+                },
+                {
+                    key: 'h-card-1',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM1', keyframes: [{ transform: 'scale(1.05)' }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-2',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM2', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-3',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM3', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-4',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM4', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-5',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM5', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-6',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM6', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-7',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM7', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-8',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM8', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: 0.5 }, { transform: 'scale(1)' }] }
+                },
+                {
+                    key: 'h-card-9',
+                    conditions: ['Mobile'],
+                    fill: 'both',
+                    rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+                    rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+                    keyframeEffect: { name: 'scaleCenterM9', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }] }
                 }
             ]
         },
