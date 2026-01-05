@@ -211,9 +211,11 @@ function addViewEnterHandler(
     const currentObserver = elementObserverMap.get(source) || observer;
     currentObserver.unobserve(source);
 
-    // Clean up exit observer if it exists
-    const exitObserver = getExitObserver();
-    exitObserver.unobserve(source);
+    if (type === 'repeat' || type === 'state') {
+      // Clean up exit observer if it exists
+      const exitObserver = getExitObserver();
+      exitObserver.unobserve(source);
+    }
 
     animation.cancel();
     elementFirstRun.delete(source);
