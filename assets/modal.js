@@ -167,6 +167,9 @@ effects: [
 
 function openModal(type) {
     modalCode.textContent = codeSnippets[type];
+    // Syntax highlight (highlight.js) after injecting text
+    modalCode.classList.add('language-javascript');
+    if (window.hljs) window.hljs.highlightElement(modalCode);
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }

@@ -326,9 +326,10 @@ interact-element {
     transform: scale(0.76); 
     transform-origin: center;
 }
-@media (max-width: 640px) {
+@media (max-width: 740px) {
     .pyramid-wrapper {
-        transform: scale(1.265);
+        transform-origin: top center;
+        transform: scale(0.45);
     }
 }
 
@@ -441,6 +442,10 @@ interact-element {
     overflow-x: auto;
     border-left: 2px solid #111;
     white-space: pre;
+}
+
+.hljs {
+    background: transparent !important;
 }
 
 /* --- MENGER SPONGE STYLES --- */

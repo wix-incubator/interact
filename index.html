@@ -43,6 +43,8 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="assets/styles.css">
+    <!-- Code highlighting (highlight.js) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 
 <body class="bg-off-black text-white selection:bg-blue-300 selection:text-off-black">
@@ -202,7 +204,7 @@ Interact runs closer to the browser, delivering smooth, GPU-accelerated animatio
             <div class="sticky-wrapper scene-container" style="perspective: 500px; flex-direction: column;">
                 
                 <!-- 1. PYRAMID (Visual Element) -->
-                <div class="pyramid-wrapper absolute" style="position: absolute; transform: scale(0.76);" >
+                <div class="pyramid-wrapper absolute">
                     <interact-element data-interact-key="pyramid-target" class="w-full h-full">
                         <div class="pyramid-rotator">
                             <div class="face front">
@@ -303,7 +305,7 @@ Interact comes with a rich and diverse set of named effects, each designed to br
         <h2 class="text-6xl md:text-6xl lg:text-6xl font-light tracking-tighter text-off-black text-center leading-[1.20]">Trigger Your Motion</h2>
         <p><br></p>
           <p class="text-xl md:text-3xl font-light text-gray-600 leading-tight tracking-tight text-center mb-8 min-w-xl max-w-2xl mx-auto ">Animate elements based on user interactions -  from micro-motion touches to large-scale expressive interactions.</p>
-        <div class="flex flex-col gap-40 items-center w-full">
+        <div class="flex flex-col lg:gap-40 gap-20 items-center w-full">
             
             <!-- 1. HOVER -->
             <div class="w-full h-auto lg:h-[500px] overflow-hidden flex flex-col lg:flex-row rounded-3xl">
@@ -749,12 +751,13 @@ Interact comes with a rich and diverse set of named effects, each designed to br
                 </button>
             </div>
             <div class="p-0">
-                <pre id="modal-code" class="code-block !bg-white !p-8 !border-none text-sm"></pre>
+                <pre class="code-block !p-8 !border-none text-sm"><code id="modal-code" class="language-javascript"></code></pre>
             </div>
         </div>
     </div>
 
     <!-- External JavaScript Files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="assets/modal.js"></script>
     <script src="assets/snippets.js"></script>
     <script type="module" src="assets/main.mjs"></script>
