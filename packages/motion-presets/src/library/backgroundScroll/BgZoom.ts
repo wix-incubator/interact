@@ -21,7 +21,7 @@ const DIRECTION_TO_PARAMS = {
   },
 };
 
-export function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const { direction = 'in' } = options.namedEffect as BgZoom;
   const isIn = direction === 'in';
 

@@ -11,7 +11,7 @@ import type {
 import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
 import { getRegisteredEffect } from './registry';
-import { NamedEffect } from '@wix/motion-presets';
+import type { NamedEffect } from '@wix/motion-presets/types';
 
 function getElement(
   id: string | null,

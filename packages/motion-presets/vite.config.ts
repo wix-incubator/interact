@@ -8,9 +8,12 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(() => ({
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        'motion-presets': path.resolve(__dirname, 'src/index.ts'),
+        types: path.resolve(__dirname, 'src/typesEntry.ts'),
+      },
       name: 'MotionPresets',
-      fileName: (format: string) => `${format}/motion-presets.js`,
+      fileName: (format: string, entryName: string) => `${format}/${entryName}.js`,
       formats: ['es' as const, 'cjs' as const],
     },
     emptyOutDir: false,

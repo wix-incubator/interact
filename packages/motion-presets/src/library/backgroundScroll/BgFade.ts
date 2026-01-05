@@ -9,7 +9,7 @@ import { measureCompHeight } from './utils';
 const EASE_IN = 'sineIn';
 const EASE_OUT = 'sineOut';
 
-export function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const measures = { compHeight: 0 };
   if (dom) {
     measureCompHeight(measures, dom);

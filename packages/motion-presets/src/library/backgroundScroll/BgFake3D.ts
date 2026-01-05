@@ -8,7 +8,7 @@ import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
 const PERSPECTIVE = 100;
 
-export function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const measures = { compHeight: 0 };
   if (dom) {
     measureCompHeight(measures, dom, true);

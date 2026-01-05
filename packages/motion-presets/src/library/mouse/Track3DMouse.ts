@@ -49,7 +49,7 @@ class Track3DMouseAnimation extends CustomMouse {
   }
 }
 
-export function create(
+export default function create(
   options: ScrubAnimationOptions & AnimationExtraOptions,
 ) {
   const { transitionDuration, transitionEasing } = options;

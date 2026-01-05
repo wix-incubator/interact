@@ -6,7 +6,7 @@ import type {
 } from '../../types';
 import { measureCompHeight } from './utils';
 
-export function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const measures = { compHeight: 0 };
   if (dom) {
     measureCompHeight(measures, dom);

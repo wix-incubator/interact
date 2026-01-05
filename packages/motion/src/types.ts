@@ -1,4 +1,10 @@
-import type { BackgroundScrollAnimation, EntranceAnimation, OngoingAnimation, ScrollAnimation, MouseAnimation } from '@wix/motion-presets';
+import type {
+  BackgroundScrollAnimation,
+  EntranceAnimation,
+  OngoingAnimation,
+  ScrollAnimation,
+  MouseAnimation,
+} from '@wix/motion-presets/types';
 
 type LengthUnit = 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
 

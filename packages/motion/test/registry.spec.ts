@@ -2,7 +2,8 @@ import { describe, expect, test, vi } from 'vitest';
 import { registerEffects, getRegisteredEffect } from '../src/api/registry';
 import { getNamedEffect } from '../src/api/common';
 import type { AnimationOptions, AnimationEffectAPI, TimeAnimationOptions, AnimationExtraOptions, ScrollEffectModule } from '../src/types';
-import { FadeIn, SlideIn, FadeScroll, ScrubAnimationOptions } from '@wix/motion-presets';
+import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
+import type { ScrubAnimationOptions } from '@wix/motion-presets/types';
 
 // Mock fastdom
 vi.mock('fastdom', () => ({
