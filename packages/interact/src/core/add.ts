@@ -67,9 +67,7 @@ function _getElementsFromData(
     }
   }
 
-  return useFirstChild
-    ? (root.firstElementChild as HTMLElement | null)
-    : (root as HTMLElement | null);
+  return useFirstChild ? root.firstElementChild as HTMLElement | null : root as HTMLElement | null;
 }
 
 function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]): HTMLElement[] {

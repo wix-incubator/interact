@@ -171,8 +171,8 @@ export type InteractConfig = {
   interactions: Interaction[];
 };
 
-export type AnimationOptions<T extends 'time' | 'scrub'> = MotionAnimationOptions<T> &
-  EffectEffectProperty;
+export type AnimationOptions<T extends 'time' | 'scrub'> =
+  MotionAnimationOptions<T> & EffectEffectProperty;
 
 /// ////////////////////////////////////////////////////////
 /// ////////////////////////////////////////////////////////
@@ -188,12 +188,7 @@ export interface IInteractionController {
   connect(key?: string): void;
   disconnect(options?: { removeFromCache?: boolean }): void;
   update(): void;
-  toggleEffect(
-    effectId: string,
-    method: StateParams['method'],
-    item?: HTMLElement | null,
-    isLegacy?: boolean,
-  ): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
   getActiveEffects(): string[];
   renderStyle(cssRules: string[]): void;
   watchChildList(listContainer: string): void;
@@ -207,7 +202,11 @@ export interface IInteractElement extends HTMLElement {
   disconnectedCallback(): void;
   connect(key?: string): void;
   disconnect(options?: { removeFromCache?: boolean }): void;
-  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null): void;
+  toggleEffect(
+    effectId: string,
+    method: StateParams['method'],
+    item?: HTMLElement | null,
+  ): void;
   getActiveEffects(): string[];
 }
 
@@ -269,7 +268,10 @@ export type InteractCache = {
   interactions: {
     [path: string]: {
       triggers: Interaction[];
-      effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
+      effects: Record<
+        string,
+        (InteractionTrigger & { effect: Effect | EffectRef })[]
+      >;
       interactionIds: Set<string>;
       selectors: Set<string>;
     };

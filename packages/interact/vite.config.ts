@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve';
 
@@ -16,23 +17,24 @@ export default defineConfig(({ command }) => {
           react: path.resolve(__dirname, 'src/react/index.ts'),
           web: path.resolve(__dirname, 'src/web/index.ts'),
         },
-        formats: ['es', 'cjs'],
+        formats: ['es', 'cjs']
       },
       sourcemap: true,
       rollupOptions: {
         external: ['react', 'react-dom'],
         output: {
-          entryFileNames: '[format]/[name].js',
-        },
-      },
+          entryFileNames: '[format]/[name].js'
+        }
+      }
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
-      },
+        '@': path.resolve(__dirname, 'src')
+      }
     },
     define: {
-      __DEV__: isDev,
-    },
+      __DEV__: isDev
+    }
   };
 });
+
