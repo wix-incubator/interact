@@ -175,7 +175,7 @@ function generateTunnel() {
     }
 }
 
-function animateTunnel(_rootElement, progress) {
+const animateTunnel = (_rootElement, progress) => {
     const localMouseX = progress.x * windowWidth;
     const localMouseY = progress.y * windowHeight;
 
@@ -202,40 +202,34 @@ function animateTunnel(_rootElement, progress) {
     });
 }
 
-function animateTunnelMobile(_rootElement, progress) {
-    // Normalized progress: -1 at top, 0 at center, +1 at bottom
+const animateTunnelMobile = (_rootElement, progress) => {
+
     const normalizedProgress = (progress - 0.05) * 2;
     
-    // Create wave phases for organic motion
-    const wavePhase = progress * Math.PI * 5; // Multiple waves across scroll
+    const wavePhase = progress * Math.PI * 5; 
     const slowWave = Math.sin(wavePhase * 0.5);
     const fastWave = Math.sin(wavePhase * 2.5);
     
     tunnelRings.forEach((ring, index) => {
-        const depth = 1 - (index / NUM_CIRCLES); // 1 = front, 0 = back
-        const depthCubed = Math.pow(depth, 4.5); // More dramatic depth falloff
+        const depth = 1 - (index / NUM_CIRCLES); 
+        const depthCubed = Math.pow(depth, 4.5); 
         
-        // --- Y Movement (primary parallax) ---
         const baseY = normalizedProgress  * depthCubed;
-        const waveY = slowWave * 5 * depth; // Subtle wave oscillation
+        const waveY = slowWave * 5 * depth;
         const targetY = baseY + waveY;
         
-        // --- X Movement (secondary parallax - swaying) ---
-        const sway = fastWave * 50 * depthCubed; // Layers sway side to side
-        const drift = Math.sin(wavePhase + index * 0.3) * 8 * depth; // Phase offset per ring
+        const sway = fastWave * 50 * depthCubed; 
+        const drift = Math.sin(wavePhase + index * 0.3) * 8 * depth; 
         const targetX = sway + drift;
-        
-        // --- Scale (breathing/zoom effect) ---
-        const breathe = 1 + (slowWave * 0.08 * depth); // Front rings scale more
-        const zoomPush = 1 + (normalizedProgress * 0.15 * depthCubed); // Zoom based on scroll
+
+        const breathe = 1 + (slowWave * 0.08 * depth); 
+        const zoomPush = 1 + (normalizedProgress * 0.15 * depthCubed); 
         const targetScale = breathe * zoomPush;
         
-        // --- Rotation (subtle tilt for depth) ---
-        const tiltAmount = normalizedProgress * 3 * depthCubed; // degrees
+        const tiltAmount = normalizedProgress * 3 * depthCubed; 
         const spinOffset = fastWave * 1.5 * depth;
         const targetRotation = tiltAmount + spinOffset;
         
-        // --- Smooth easing (different rates per layer) ---
         const ease = 0.02 + (0.08 * depth);
         ring.x = ring.x || 0;
         ring.y = ring.y || 0;
@@ -498,9 +492,12 @@ const config = {
         {
             key: 'hitbox',
             trigger: 'viewEnter',
-            conditions: ['Mobile'],
+           
             params: { type: 'alternate' },
-            effects: [{ effectId: 'spongeExplodeMobile' }],
+            effects: [{ 
+                conditions: ['Mobile'],
+                effectId: 'spongeExplodeMobile' 
+            }],
         },
         
         // Hero Grid Interaction
@@ -905,11 +902,11 @@ const config = {
         {
             key: 'performance-section',
             trigger: 'viewProgress',
-            conditions: ['Mobile'],
             effects: [{
                     key: 'tunnel-root',
                     customEffect: animateTunnelMobile,
                     fill: 'both',
+                    conditions: ['Mobile'],
                     rangeStart: { name: 'cover', offset: { value: 10, type: 'percentage' } },
                     rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } }
                 }]
