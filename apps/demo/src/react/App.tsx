@@ -2,6 +2,7 @@ import { Playground } from './components/Playground';
 import { ScrollShowcase } from './components/ScrollShowcase';
 import { ResponsiveDemo } from './components/ResponsiveDemo';
 import { SelectorConditionDemo } from './components/SelectorConditionDemo';
+import { StaggerDemo } from './components/StaggerDemo';
 
 const heroCopy = [
   'Tune triggers, easings, and delays in real time.',
@@ -13,12 +14,14 @@ function App() {
   return (
     <div className="demo-shell">
       <header className="demo-hero">
-        <a href="/" className="back-link">← Back to integrations</a>
+        <a href="/" className="back-link">
+          ← Back to integrations
+        </a>
         <span className="integration-badge integration-badge--react">React Integration</span>
         <h1 className="demo-hero-title">Experiment faster</h1>
         <p className="demo-hero-body">
-          Using the <code>&lt;Interaction&gt;</code> component with ref-based element tracking.
-          A playground focused on validating motion recipes, stress-testing new triggers, and
+          Using the <code>&lt;Interaction&gt;</code> component with ref-based element tracking. A
+          playground focused on validating motion recipes, stress-testing new triggers, and
           exporting configs that production surfaces can consume immediately.
         </p>
 
@@ -32,6 +35,7 @@ function App() {
       </header>
 
       <Playground />
+      <StaggerDemo />
       <SelectorConditionDemo />
       <div className="scroll-showcase-wrapper">
         <ResponsiveDemo />
@@ -42,4 +46,3 @@ function App() {
 }
 
 export default App;
-
