@@ -15,10 +15,10 @@ const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
     effect: {
       getComputedTiming: vi.fn().mockReturnValue({
         progress: 0.5,
-        activeDuration: 1000,
       }),
       getTiming: vi.fn().mockReturnValue({
         delay: 0,
+        duration: 1000,
       }),
     } as any,
     play: vi.fn(),
@@ -165,18 +165,14 @@ describe('AnimationGroup', () => {
     test('should return progress from first animation effect', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            progress: 0.75,
-          }),
-          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.75 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
         } as any,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            progress: 0.25, // Different progress - should not be used
-          }),
-          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.25 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
         } as any,
       });
 
@@ -230,10 +226,8 @@ describe('AnimationGroup', () => {
       testCases.forEach(({ inputProgress, expectedProgress }) => {
         const mockAnimation = createMockAnimation({
           effect: {
-            getComputedTiming: vi.fn().mockReturnValue({
-              progress: inputProgress,
-            }),
-            getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+            getComputedTiming: vi.fn().mockReturnValue({ progress: inputProgress }),
+            getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
           } as any,
         });
 
@@ -515,21 +509,17 @@ describe('AnimationGroup', () => {
     test('should set currentTime on all animations based on progress value', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 2000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 100,
+            duration: 2000,
           }),
         } as any,
       });
@@ -541,47 +531,43 @@ describe('AnimationGroup', () => {
 
       animationGroup.progress(0.5);
 
-      // Expected calculation: (delay + activeDuration) * progress
+      // Expected calculation: (delay + duration * progress) * progress
       // Animation 1: (200 + 1000) * 0.5 = 600
       // Animation 2: (100 + 2000) * 0.5 = 1050
       expect(mockAnimation1.currentTime).toBe(600);
       expect(mockAnimation2.currentTime).toBe(1050);
-      expect(mockAnimation1.effect!.getComputedTiming).toHaveBeenCalled();
       expect(mockAnimation1.effect!.getTiming).toHaveBeenCalled();
-      expect(mockAnimation2.effect!.getComputedTiming).toHaveBeenCalled();
       expect(mockAnimation2.effect!.getTiming).toHaveBeenCalled();
     });
 
-    test('should calculate currentTime using activeDuration and delay', () => {
+    test('should calculate currentTime using , progress, and delay', () => {
       const testCases = [
         {
-          activeDuration: 1000,
+          duration: 1000,
           delay: 500,
           progress: 0.75,
           expected: 1125, // (500 + 1000) * 0.75
         },
         {
-          activeDuration: 800,
+          duration: 800,
           delay: 0,
           progress: 0.25,
           expected: 200, // (0 + 800) * 0.25
         },
         {
-          activeDuration: 0,
+          duration: 0,
           delay: 300,
           progress: 1.0,
           expected: 300, // (300 + 0) * 1.0
         },
       ];
 
-      testCases.forEach(({ activeDuration, delay, progress, expected }) => {
+      testCases.forEach(({ duration, delay, progress, expected }) => {
         const mockAnimation = createMockAnimation({
           effect: {
-            getComputedTiming: vi.fn().mockReturnValue({
-              activeDuration,
-            }),
             getTiming: vi.fn().mockReturnValue({
               delay,
+              duration,
             }),
           } as any,
         });
@@ -596,11 +582,9 @@ describe('AnimationGroup', () => {
     test('should handle progress value of 0', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -614,11 +598,9 @@ describe('AnimationGroup', () => {
     test('should handle progress value of 1', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -632,11 +614,9 @@ describe('AnimationGroup', () => {
     test('should handle progress values greater than 1', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -650,11 +630,9 @@ describe('AnimationGroup', () => {
     test('should handle negative progress values', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -668,11 +646,9 @@ describe('AnimationGroup', () => {
     test('should handle animations with no delay', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: undefined,
+            duration: 1000,
           }),
         } as any,
       });
@@ -684,14 +660,12 @@ describe('AnimationGroup', () => {
       expect(mockAnimation.currentTime).toBe(500);
     });
 
-    test('should handle animations with zero activeDuration', () => {
+    test('should handle animations with zero duration', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 0,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 0,
           }),
         } as any,
       });
@@ -1015,24 +989,20 @@ describe('AnimationGroup', () => {
     test('should coordinate multiple animations with different timings', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-            progress: 0.3,
-          }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.3 }),
           getTiming: vi.fn().mockReturnValue({
             delay: 100,
+            duration: 1000,
           }),
         } as any,
         playState: 'running' as AnimationPlayState,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 2000,
-            progress: 0.7,
-          }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.7 }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 2000,
           }),
         } as any,
         playState: 'running' as AnimationPlayState,
