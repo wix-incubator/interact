@@ -3,7 +3,7 @@ import type {
   ScrubAnimationOptions,
   TiltScroll,
 } from '../../types';
-import { cssEasings as easings } from '../../easings';
+import { cssEasings as easings } from '@wix/motion';
 
 const MAX_Y_TRAVEL = 40;
 

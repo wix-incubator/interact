@@ -8,8 +8,8 @@ import {
   getAdjustedDirection,
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
-} from '../../utils';
-import type { Direction } from '../../utils';
+} from '@wix/motion';
+import type { Direction } from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-revealIn'];

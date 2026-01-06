@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange } from '@wix/motion';
 import type {
   ScrubAnimationOptions,
   AiryMouse,

@@ -3,7 +3,7 @@ import type {
   AnimationExtraOptions,
   TimeAnimationOptions,
 } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];

@@ -1,5 +1,5 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn'];

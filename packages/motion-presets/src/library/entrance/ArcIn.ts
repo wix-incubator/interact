@@ -4,7 +4,7 @@ import type {
   EffectFourDirections,
   DomApi,
 } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '@wix/motion';
 
 const ROTATION_ANGLE = 80;
 const DIRECTION_MAP: Record<

@@ -3,7 +3,7 @@ import {
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
   toKeyframeValue,
-} from '../../utils';
+} from '@wix/motion';
 import type { TiltIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {

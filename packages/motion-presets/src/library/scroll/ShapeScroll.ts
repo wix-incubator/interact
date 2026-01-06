@@ -6,7 +6,7 @@ import {
   ShapeScroll,
   AnimationFillMode,
 } from '../../types';
-import { getEasing } from '../../utils';
+import { getEasing } from '@wix/motion';
 
 const SHAPES: Record<
   ShapeScroll['shape'],

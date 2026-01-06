@@ -4,7 +4,7 @@ import type {
   DomApi,
   AnimationExtraOptions,
 } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
+import { getTimingFactor, toKeyframeValue, mapRange } from '@wix/motion';
 
 const POWER_TO_JELLO_FACTOR_MAP = {
   soft: 1,

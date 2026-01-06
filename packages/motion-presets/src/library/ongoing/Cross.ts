@@ -4,7 +4,7 @@ import type {
   TimeAnimationOptions,
   AnimationExtraOptions,
 } from '../../types';
-import { getElementOffset, getTimingFactor } from '../../utils';
+import { getElementOffset, getTimingFactor } from '@wix/motion';
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
   // 100cqw - left

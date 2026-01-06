@@ -4,7 +4,7 @@ import type {
   DomApi,
   AnimationExtraOptions,
 } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue } from '@wix/motion';
 
 const POWER_EASING_MAP = {
   soft: 'linear',

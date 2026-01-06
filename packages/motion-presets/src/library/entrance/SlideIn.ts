@@ -9,7 +9,7 @@ import {
   getAdjustedDirection,
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
-} from '../../utils';
+} from '@wix/motion';
 
 export function getNames(options: TimeAnimationOptions) {
   const { power } = options.namedEffect as SlideIn;

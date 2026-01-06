@@ -3,7 +3,7 @@ import type {
   DomApi,
   AnimationExtraOptions,
 } from '../../types';
-import { getEasing, getTimingFactor } from '../../utils';
+import { getEasing, getTimingFactor } from '@wix/motion';
 
 export function web(
   options: TimeAnimationOptions & AnimationExtraOptions,

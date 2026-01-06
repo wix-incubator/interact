@@ -4,7 +4,7 @@ import {
   getEasing,
   toKeyframeValue,
   INITIAL_FRAME_OFFSET,
-} from '../../utils';
+} from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-shuttersIn'];

@@ -1,5 +1,5 @@
 import type { FoldIn, TimeAnimationOptions, DomApi } from '../../types';
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-foldIn'];

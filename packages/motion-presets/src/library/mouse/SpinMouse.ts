@@ -4,7 +4,7 @@ import {
   SpinMouse,
   Progress,
 } from '../../types';
-import { getMouseTransitionEasing, getAngleInDeg } from '../../utils';
+import { getMouseTransitionEasing, getAngleInDeg } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
 class SpinMouseAnimation extends CustomMouse {

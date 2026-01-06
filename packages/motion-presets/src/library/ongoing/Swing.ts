@@ -9,7 +9,7 @@ import {
   getEasingFamily,
   getTimingFactor,
   toKeyframeValue,
-} from '../../utils';
+} from '@wix/motion';
 
 const POWER_TO_SWING_FACTOR_MAP = {
   soft: 1,

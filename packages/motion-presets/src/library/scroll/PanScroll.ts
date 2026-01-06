@@ -5,7 +5,7 @@ import {
   DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getCssUnits } from '../../utils';
+import { getCssUnits } from '@wix/motion';
 
 const DIRECTIONS: Record<EffectTwoSides, number> = {
   left: 1,

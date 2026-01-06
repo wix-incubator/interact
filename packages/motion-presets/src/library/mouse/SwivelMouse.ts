@@ -7,7 +7,7 @@ import {
   EffectPower,
   ScrubTransitionEasing,
 } from '../../types';
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
 const paramsMap: Record<

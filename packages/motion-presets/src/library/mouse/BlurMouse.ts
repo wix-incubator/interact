@@ -3,8 +3,8 @@ import {
   getMouseTransitionEasing,
   distance2d,
   mapRange,
-} from '../../utils';
-import { quadInOut } from '../../easings';
+} from '@wix/motion';
+import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,

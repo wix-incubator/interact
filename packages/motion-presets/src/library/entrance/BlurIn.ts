@@ -1,5 +1,5 @@
 import type { BlurIn, TimeAnimationOptions } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue } from '@wix/motion';
 
 const BLUR_POWER_MAP = {
   soft: 6,

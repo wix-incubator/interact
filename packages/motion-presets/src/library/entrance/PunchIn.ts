@@ -3,9 +3,9 @@ import {
   getEasing,
   toKeyframeValue,
   INITIAL_FRAME_OFFSET,
-} from '../../utils';
+} from '@wix/motion';
 import type { PunchIn, TimeAnimationOptions, DomApi } from '../../types';
-import { cssEasings as easings } from '../../easings';
+import { cssEasings as easings } from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-punchIn'];

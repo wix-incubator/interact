@@ -9,7 +9,7 @@ import {
   getOutOfScreenDistance,
   INITIAL_FRAME_OFFSET,
   toKeyframeValue,
-} from '../../utils';
+} from '@wix/motion';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-glideIn'];

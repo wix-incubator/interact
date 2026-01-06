@@ -1,4 +1,4 @@
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,

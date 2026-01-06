@@ -6,7 +6,7 @@ import type {
   DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
+import { getAdjustedDirection, getClipPolygonParams } from '@wix/motion';
 
 type Translate = { x: string; y: string };
 

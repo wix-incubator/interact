@@ -4,7 +4,7 @@ import type {
   ScrubAnimationOptions,
   DomApi,
 } from '../../types';
-import { roundNumber } from '../../utils';
+import { roundNumber } from '@wix/motion';
 import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
 const PERSPECTIVE = 100;

@@ -1,4 +1,4 @@
-import { cssEasings as easings } from '../../easings';
+import { cssEasings as easings } from '@wix/motion';
 import type {
   AnimationFillMode,
   ScrubAnimationOptions,

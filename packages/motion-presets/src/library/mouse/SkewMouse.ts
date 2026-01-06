@@ -6,8 +6,8 @@ import {
   ScrubTransitionEasing,
   EffectPower,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
-import { circInOut } from '../../easings';
+import { getCssUnits, getMouseTransitionEasing, mapRange } from '@wix/motion';
+import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
 const paramsMap: Record<

@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions, DomApi } from '../../types';
-import { getElementOffset } from '../../utils';
+import { getElementOffset } from '@wix/motion';
 
 const RATIO_DAMPING_FACTOR = 0.5;
 

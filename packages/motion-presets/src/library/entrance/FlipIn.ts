@@ -1,4 +1,4 @@
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '@wix/motion';
 import type { FlipIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
