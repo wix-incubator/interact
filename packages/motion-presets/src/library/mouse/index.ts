@@ -2,7 +2,7 @@ import AiryMouse from './AiryMouse';
 import BlobMouse from './BlobMouse';
 import BlurMouse from './BlurMouse';
 import BounceMouse from './BounceMouse';
-import CustomMouse from './CustomMouse';
+import { create as CustomMouse } from './CustomMouse';
 import ScaleMouse from './ScaleMouse';
 import SkewMouse from './SkewMouse';
 import SpinMouse from './SpinMouse';
