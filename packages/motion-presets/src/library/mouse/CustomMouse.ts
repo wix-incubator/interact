@@ -39,6 +39,6 @@ export class CustomMouse {
   }
 }
 
-export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
+export function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   return (target: HTMLElement) => new CustomMouse(target, options);
 }
