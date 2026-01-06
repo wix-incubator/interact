@@ -1397,7 +1397,7 @@ __metadata:
   resolution: "@wix/motion-presets@workspace:packages/motion-presets"
   dependencies:
     "@vitest/coverage-v8": "npm:^4.0.14"
-    "@wix/motion": "npm:^1.0.0"
+    "@wix/motion": "npm:^2.0.0"
     rimraf: "npm:^6.0.1"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.2.2"
@@ -1412,16 +1412,6 @@ __metadata:
     "@babel/runtime": "npm:^7.26.0"
     fastdom: "npm:^1.0.12"
   checksum: 10/20beb6b6b7362d1980495e54c235f6b53b48fbfb4c82fb5263961db7af57c30aed0e255543cdef1f7fb2d9d9cb3600584538decac52d84289211edb926fb32e9
-  languageName: node
-  linkType: hard
-
-"@wix/motion@npm:^1.0.0":
-  version: 1.658.0
-  resolution: "@wix/motion@npm:1.658.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-    fastdom: "npm:^1.0.12"
-  checksum: 10/988a17f1ca0f3a992004d09c9ce383bd89b56bd91ba1cb25793d12e22ab864a046a949f857caf0df180265bb7ce264d6cb6959888e07095b59ac31fbdbe5e06c
   languageName: node
   linkType: hard
 
