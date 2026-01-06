@@ -1,16 +1,16 @@
 import type { BackgroundScrollAnimations } from '../../types';
-import * as BgCloseUp from './BgCloseUp';
-import * as BgFade from './BgFade';
-import * as BgFadeBack from './BgFadeBack';
-import * as BgFake3D from './BgFake3D';
-import * as BgPan from './BgPan';
-import * as BgParallax from './BgParallax';
-import * as BgPullBack from './BgPullBack';
-import * as BgReveal from './BgReveal';
-import * as BgRotate from './BgRotate';
-import * as BgSkew from './BgSkew';
-import * as BgZoom from './BgZoom';
-import * as ImageParallax from './ImageParallax';
+import BgCloseUp from './BgCloseUp';
+import BgFade from './BgFade';
+import BgFadeBack from './BgFadeBack';
+import BgFake3D from './BgFake3D';
+import BgPan from './BgPan';
+import BgParallax from './BgParallax';
+import BgPullBack from './BgPullBack';
+import BgReveal from './BgReveal';
+import BgRotate from './BgRotate';
+import BgSkew from './BgSkew';
+import BgZoom from './BgZoom';
+import ImageParallax from './ImageParallax';
 
 export const backgroundScrollAnimations: BackgroundScrollAnimations = {
   BgCloseUp,

@@ -68,7 +68,7 @@ class ScaleMouseAnimation extends CustomMouse {
   }
 }
 
-export function web(
+export default function create(
   options: ScrubAnimationOptions & AnimationExtraOptions,
 ) {
   const { transitionDuration, transitionEasing } = options;

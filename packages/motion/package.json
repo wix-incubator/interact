@@ -21,8 +21,8 @@
   "scripts": {
     "dev": "vite dev --open",
     "build": "rimraf dist && npm run build:types && vite build",
-    "build:types": "tsc",
-    "lint": "tsc --noEmit",
+    "build:types": "tsc -p tsconfig.build.json",
+    "lint": "tsc -p tsconfig.build.json --noEmit",
     "test": "vitest run",
     "coverage": "vitest run --coverage"
   },

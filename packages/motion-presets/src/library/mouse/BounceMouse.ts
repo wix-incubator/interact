@@ -4,9 +4,9 @@ import {
   BounceMouse,
   TrackMouse,
 } from '../../types';
-import { create as createTrack } from './TrackMouse';
+import createTrack from './TrackMouse';
 
-export function web(
+export default function create(
   options: ScrubAnimationOptions & AnimationExtraOptions,
 ) {
   const { distance = { value: 80, type: 'px' } } =

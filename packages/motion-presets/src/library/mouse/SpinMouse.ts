@@ -30,7 +30,7 @@ class SpinMouseAnimation extends CustomMouse {
   }
 }
 
-export function web(
+export default function create(
   options: ScrubAnimationOptions & AnimationExtraOptions,
 ) {
   const { transitionDuration, transitionEasing = 'linear' } = options;
@@ -48,4 +48,8 @@ export function web(
 
   return (target: HTMLElement) =>
     new SpinMouseAnimation(target, animationOptions);
+}
+
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions) {
+  return create(options);
 }

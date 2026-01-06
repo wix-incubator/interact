@@ -489,7 +489,7 @@ export type BackgroundScrollAnimationModule = {
 };
 export type BackgroundScrollAnimations = Record<
   BackgroundScrollAnimation['type'],
-  BackgroundScrollAnimationModule
+  WebAnimationEffectFactory<'scrub'>
 >;
 
 type MouseEffectBase = {
@@ -623,13 +623,10 @@ export type MouseAnimation =
   | Tilt3DMouse
   | Track3DMouse
   | TrackMouse;
-export type MouseAnimationModule = {
-  web?: MouseAnimationFactoryCreate;
-  create?: MouseAnimationFactoryCreate;
-};
+
 export type MouseAnimations = Record<
   MouseAnimation['type'],
-  MouseAnimationModule
+  MouseAnimationFactoryCreate
 >;
 
 export type NamedEffect =

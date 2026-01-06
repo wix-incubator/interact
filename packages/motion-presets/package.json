@@ -53,16 +53,13 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@wix/motion": "^2.0.0"
+    "@wix/motion": "^1.0.0"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.14",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.14",
-    "@vitest/coverage-v8": "^4.0.14"
+    "vitest": "^4.0.14"
   }
 }
-
-
-

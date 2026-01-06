@@ -11,7 +11,6 @@ import type {
 import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
 import { getRegisteredEffect } from './registry';
-import type { NamedEffect } from '@wix/motion-presets/types';
 
 function getElement(
   id: string | null,
@@ -75,8 +74,8 @@ function mutate(target: HTMLElement | null): MeasureCallback {
 
 function getNamedEffect(animation: AnimationOptions) {
   if (animation.namedEffect) {
-    const name = animation.namedEffect.type;
-    return getRegisteredEffect(name as keyof NamedEffect);
+    const effectName = animation.namedEffect.type;
+    return typeof effectName === 'string' ? getRegisteredEffect(effectName) : null;
   } else if (animation.keyframeEffect) {
     const effect = (animation_: AnimationOptions) => {
       const { name, keyframes } = animation_.keyframeEffect!;
