@@ -930,21 +930,25 @@ const config = {
         {
             key: 'tailored-header',
             trigger: 'viewEnter',
+            params: { type: 'once' },
             effects: [{ namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' }, duration: 800, fill: 'both' }]
         },
         {
             key: 'tailored-col-1',
             trigger: 'viewEnter',
+            params: { type: 'once' },
             effects: [{ namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' }, duration: 800, delay: 100, fill: 'both' }]
         },
         {
             key: 'tailored-col-2',
             trigger: 'viewEnter',
+            params: { type: 'once' },
             effects: [{ namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' }, duration: 800, delay: 200, fill: 'both' }]
         },
         {
             key: 'tailored-col-3',
             trigger: 'viewEnter',
+            params: { type: 'once' },
             effects: [{ namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' }, duration: 800, delay: 300, fill: 'both' }]
         },
         
