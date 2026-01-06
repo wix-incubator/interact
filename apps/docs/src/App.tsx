@@ -1,17 +1,20 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { Introduction } from './pages/Introduction';
-import { ComponentExamples } from './pages/ComponentExamples';
-import { ApiCheatsheet } from './pages/ApiCheatsheet';
+import { MarkdownPage } from './components/MarkdownPage';
 
 function App() {
+  // Remove trailing slash from BASE_URL for router basename
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+  
   return (
-    <Layout>
-      <Introduction />
-      <ComponentExamples />
-      <ApiCheatsheet />
-    </Layout>
+    <BrowserRouter basename={basename}>
+      <Layout>
+        <Routes>
+          <Route path="*" element={<MarkdownPage />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 
 export default App;
-

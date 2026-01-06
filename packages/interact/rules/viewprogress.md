@@ -1,6 +1,6 @@
 # ViewProgress Trigger Rules for @wix/interact
 
-These rules help generate scroll-driven interactions using the `@wix/interact` library. ViewProgress triggers create scroll-based animations that update continuously as elements move through the viewport, perfect for parallax effects, progress indicators, and scroll-responsive content.
+These rules help generate scroll-driven interactions using the `@wix/interact` library. `viewProgress` triggers create scroll-based animations that update continuously as elements move through the viewport, leveraging native CSS ViewTimelines.
 
 ## Rule 1: Range-Based Parallax/Continuous Animation Control with Named Effects
 
@@ -12,7 +12,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 - For continuous scroll-driven decorative animations
 - When using pre-built motion effects for scroll interactions
 
-**Pattern**:
+**KeyframeEffect Pattern**:
 ```typescript
 {
     key: '[SOURCE_SELECTOR]',
@@ -20,12 +20,14 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
     effects: [
         {
             key: '[TARGET_SELECTOR]',
-            namedEffect: {
-              type: '[NAMED_EFFECT]',
+            keyframeEffect: {
+              name: '[EFFECT_NAME]',
+              keyframes: [EFFECT_KEYFRAMES]
             },
             rangeStart: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
             rangeEnd: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -35,12 +37,35 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 **Variables**:
 - `[SOURCE_SELECTOR]`: Unique identifier for element that tracks scroll progress
 - `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
-- `[NAMED_EFFECT]`: Pre-built scroll effect name from @wix/motion (e.g., 'ParallaxScroll', 'MoveScroll', 'FadeScroll', 'RevealScroll', 'GrowScroll', 'SlideScroll', 'SpinScroll', 'PanScroll', 'BlurScroll', 'ArcScroll', 'FlipScroll', 'Spin3dScroll', 'TiltScroll', 'TurnScroll', 'ShapeScroll', 'ShuttersScroll', 'ShrinkScroll', 'SkewPanScroll', 'StretchScroll')
+- `[EFFECT_NAME]`: Optional unique name for the effec
+- `[EFFECT_KEYFRAMES]`: Keyframes for the effect
 - `[RANGE_NAME]`: 'cover', 'contain', 'entry', 'exit', 'entry-crossing', or 'exit-crossing'
 - `[START_PERCENTAGE]`: Start point as percentage (0-100)
 - `[END_PERCENTAGE]`: End point as percentage (0-100)
 - `[EASING_FUNCTION]`: Timing function (typically 'linear' for smooth scroll effects)
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier
+
+**NamedEffect Pattern**:
+```typescript
+{
+    key: '[SOURCE_SELECTOR]',
+    trigger: 'viewProgress',
+    effects: [
+        {
+            key: '[TARGET_SELECTOR]',
+            namedEffect: {
+              type: '[NAMED_EFFECT]'
+            },
+            rangeStart: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_NAME]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            easing: '[EASING_FUNCTION]',
+            effectId: '[UNIQUE_EFFECT_ID]'
+        }
+    ]
+}
+```
+- `[NAMED_EFFECT]`: Pre-built scroll effect name from @wix/motion (e.g., 'ParallaxScroll', 'MoveScroll', 'FadeScroll', 'RevealScroll', 'GrowScroll', 'SlideScroll', 'SpinScroll', 'PanScroll', 'BlurScroll', 'ArcScroll', 'FlipScroll', 'Spin3dScroll', 'TiltScroll', 'TurnScroll', 'ShapeScroll', 'ShuttersScroll', 'ShrinkScroll', 'SkewPanScroll', 'StretchScroll')
+
 
 **Example - Background Parallax**:
 ```typescript
@@ -56,27 +81,6 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
             rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
             easing: 'linear'
-        }
-    ]
-}
-```
-
-**Example - Floating Element Scroll Response**:
-```typescript
-{
-    key: 'content-section',
-    trigger: 'viewProgress',
-    effects: [
-        {
-            key: 'floating-decoration',
-            namedEffect: {
-                type: 'MoveScroll',
-                angle: 45  // 45-degree angle movement
-            },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
-            easing: 'linear',
-            effectId: 'decoration-float'
         }
     ]
 }
@@ -180,13 +184,14 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
     effects: [
         {
             key: '[TARGET_SELECTOR]',
-            namedEffect: {
-                type: '[EXIT_EFFECT]',
-                range: 'out'
+            keyframeEffect: {
+                name: '[EFFECT_NAME]',
+                keyframes: [EFFECT_KEYFRAMES]
             },
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: [EXIT_START] } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: [EXIT_END] } },
             easing: '[EASING_FUNCTION]',
+            fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
     ]
@@ -194,10 +199,9 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 ```
 
 **Variables**:
-- `[EXIT_EFFECT]`: Named exit effect (e.g., 'FadeScroll', 'SlideScroll', 'GrowScroll', 'ShrinkScroll')
 - `[EXIT_START]`: Exit animation start percentage (typically 0-30)
 - `[EXIT_END]`: Exit animation end percentage (typically 70-100)
-- Other variables same as Rule 1
+- `[EFFECT_KEYFRAMES]`: 
 
 **Example - Content Fade Out on Exit**:
 ```typescript
@@ -207,35 +211,16 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
     effects: [
         {
             key: 'hero-text',
-            namedEffect: {
-                type: 'FadeScroll',
-                range: 'out'
+            keyframeEffect: {
+                name: 'fade-out'
+                keyframes: [{
+                    opacity: 0
+                }]
             },
             rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 50 } },
-            easing: 'ease-in'
-        }
-    ]
-}
-```
-
-**Example - Navigation Hide on Scroll Out**:
-```typescript
-{
-    key: 'main-content',
-    trigger: 'viewProgress',
-    effects: [
-        {
-            key: 'floating-nav',
-            namedEffect: {
-                type: 'SlideScroll',
-                direction: 'top',
-                range: 'out'
-            },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 20 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 80 } },
-            easing: 'ease-in-out',
-            effectId: 'nav-hide'
+            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            easing: 'ease-in',
+            fill: 'both'
         }
     ]
 }
