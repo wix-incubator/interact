@@ -859,7 +859,7 @@ describe('AnimationGroup', () => {
 
     test('should catch and log errors when animations are interrupted', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation1 = createMockAnimation({
         finished: Promise.resolve(undefined as any),
@@ -895,7 +895,7 @@ describe('AnimationGroup', () => {
 
     test('should not execute callback if any animation is cancelled', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation1 = createMockAnimation({
         finished: Promise.resolve(undefined as any),
@@ -919,7 +919,7 @@ describe('AnimationGroup', () => {
 
     test('should handle promise rejections gracefully', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation = createMockAnimation({
         finished: Promise.reject(new Error('Unexpected animation error')),
