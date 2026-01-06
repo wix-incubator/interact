@@ -68,8 +68,8 @@ export class AnimationGroup {
     for (const animation of this.animations) {
       const { activeDuration } = animation.effect!.getComputedTiming();
       const { delay } = animation.effect!.getTiming();
-      animation.currentTime =
-        ((delay || 0) + ((activeDuration as number) || 0)) * p;
+      const duration = Number.isFinite(activeDuration) ? (activeDuration as number) || 0 : 0;
+      animation.currentTime = (delay || 0) + duration * p;
     }
   }
 
