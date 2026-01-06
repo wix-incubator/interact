@@ -1,4 +1,3 @@
-import type { OngoingAnimations } from '../../types';
 import * as Bounce from './Bounce';
 import * as Breathe from './Breathe';
 import * as Cross from './Cross';
@@ -14,11 +13,10 @@ import * as Spin from './Spin';
 import * as Swing from './Swing';
 import * as Wiggle from './Wiggle';
 
-export const ongoingAnimations: Partial<OngoingAnimations> = {
+export {
   Bounce,
   Breathe,
   Cross,
-  // DVD,
   Flash,
   Flip,
   Fold,

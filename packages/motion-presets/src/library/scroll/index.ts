@@ -17,26 +17,5 @@ import * as SpinScroll from './SpinScroll';
 import * as StretchScroll from './StretchScroll';
 import * as TiltScroll from './TiltScroll';
 import * as TurnScroll from './TurnScroll';
-import type { ScrollAnimations } from '../../types';
 
-export const scrollAnimations: ScrollAnimations = {
-  ArcScroll,
-  BlurScroll,
-  FadeScroll,
-  FlipScroll,
-  GrowScroll,
-  MoveScroll,
-  PanScroll,
-  ParallaxScroll,
-  RevealScroll,
-  ShapeScroll,
-  ShuttersScroll,
-  ShrinkScroll,
-  SkewPanScroll,
-  SlideScroll,
-  Spin3dScroll,
-  SpinScroll,
-  StretchScroll,
-  TiltScroll,
-  TurnScroll,
-};
+export { ArcScroll, BlurScroll, FadeScroll, FlipScroll, GrowScroll, MoveScroll, PanScroll, ParallaxScroll, RevealScroll, ShapeScroll, ShuttersScroll, ShrinkScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, TurnScroll };

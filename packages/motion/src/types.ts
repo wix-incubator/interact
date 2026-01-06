@@ -315,5 +315,5 @@ export type EffectModule =
   | AnimationEffectAPI<'scrub'>
   | ScrollEffectModule
   | MouseEffectModule
-  | MouseCreateEffectModule
-  | BackgroundScrollEffectModule;
+  | WebAnimationEffectFactory<'scrub'>
+  | BackgroundScrollEffectModule

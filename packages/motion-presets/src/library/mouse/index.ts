@@ -1,4 +1,3 @@
-import type { MouseAnimations } from '../../types';
 import AiryMouse from './AiryMouse';
 import BlobMouse from './BlobMouse';
 import BlurMouse from './BlurMouse';
@@ -12,7 +11,7 @@ import Tilt3DMouse from './Tilt3DMouse';
 import Track3DMouse from './Track3DMouse';
 import TrackMouse from './TrackMouse';
 
-export const mouseAnimations: MouseAnimations = {
+export {
   AiryMouse,
   BlobMouse,
   BlurMouse,

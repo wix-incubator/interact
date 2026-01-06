@@ -420,12 +420,9 @@ export type ScrollAnimation =
   | StretchScroll
   | TiltScroll
   | TurnScroll;
-export type ScrollAnimationModule = {
-  web: WebAnimationEffectFactory<'scrub'>;
-};
 export type ScrollAnimations = Record<
   ScrollAnimation['type'],
-  ScrollAnimationModule
+  WebAnimationEffectFactory<'scrub'>
 >;
 
 export type BgCloseUp = BaseDataItemLike<'BgCloseUp'> & {

@@ -21,9 +21,8 @@ import * as SpinIn from './SpinIn';
 import * as TiltIn from './TiltIn';
 import * as TurnIn from './TurnIn';
 import * as WinkIn from './WinkIn';
-import type { EntranceAnimations } from '../../types';
 
-export const entranceAnimations: EntranceAnimations = {
+export {
   ArcIn,
   BlurIn,
   ShuttersIn,

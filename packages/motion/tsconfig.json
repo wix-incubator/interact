@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist/es",
     "moduleResolution": "bundler",
     "declarationDir": "dist/types",
@@ -10,7 +10,9 @@
   },
   "include": [
     "src/**/*",
-    "src"
+    "src",
+    "test/**/*",
+    "test"
   ],
   "files": [
     "./src/external-types.d.ts",
