@@ -10,7 +10,7 @@ The `pointerMove` trigger provides 2D progress (x and y coordinates). You can us
 
 1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion` that handle 2D progress internally
 2. **`customEffect`** (Advanced): Custom function receiving the 2D progress object for full control
-3. **`keyframeEffect`** (Single-axis): The pointer position on a single axis is mapped to linear 0-1 progress for keyframe animations. Use `axis: 'horizontal'` or `axis: 'vertical'` (defaults to `'vertical'`)
+3. **`keyframeEffect`** (Single-axis): The pointer position on a single axis is mapped to linear 0-1 progress for keyframe animations. Use `axis: 'x'` or `axis: 'y'` (defaults to `'y'`)
 
 ### Hit Area Configuration (`hitArea`)
 
@@ -1491,4 +1491,4 @@ Controlling movement direction for specific design needs:
 
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframeEffect, and custom effect patterns as outlined in the development plan Stage 1.5.
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframeEffect, and custom effect patterns.

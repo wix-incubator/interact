@@ -5,7 +5,7 @@ import { useInteractInstance } from '../hooks/useInteractInstance';
 type AxisOption = PointerMoveAxis | 'none';
 
 export const PointerMoveDemo = () => {
-  const [axis, setAxis] = useState<AxisOption>('horizontal');
+  const [axis, setAxis] = useState<AxisOption>('x');
 
   const config = useMemo<InteractConfig>(() => {
     return {
@@ -13,7 +13,7 @@ export const PointerMoveDemo = () => {
         {
           key: 'pointer-container',
           trigger: 'pointerMove',
-          params: { hitArea: 'self' },
+          params: { hitArea: 'self', axis: axis === 'none' ? undefined : axis },
           effects: [
             {
               key: 'pointer-slider',
@@ -35,7 +35,6 @@ export const PointerMoveDemo = () => {
               { transform: 'translateX(280px)' },
             ],
           },
-          axis: axis === 'none' ? undefined : axis,
           fill: 'both',
         },
         'indicator-effect': {
@@ -46,7 +45,6 @@ export const PointerMoveDemo = () => {
               { opacity: 1, transform: 'scale(1.2)' },
             ],
           },
-          axis: axis === 'none' ? undefined : axis,
           fill: 'both',
         },
       },
@@ -63,7 +61,7 @@ export const PointerMoveDemo = () => {
         <p className="pointer-demo-description">
           Move your mouse over the container to control the animation with pointer position.
           <br />
-          <strong>Axis:</strong> Maps <code>{axis === 'horizontal' ? 'x' : 'y'}</code> position to animation progress.
+          <strong>Axis:</strong> Maps <code>{axis}</code> position to animation progress.
         </p>
         <div className="pointer-demo-controls">
           <label htmlFor="axis-select">Axis:</label>
@@ -73,8 +71,8 @@ export const PointerMoveDemo = () => {
             onChange={(e) => setAxis(e.target.value as AxisOption)}
             className="pointer-demo-select"
           >
-            <option value="horizontal">horizontal (x)</option>
-            <option value="vertical">vertical (y)</option>
+            <option value="x">x</option>
+            <option value="y">y</option>
             <option value="none">none (default: vertical)</option>
           </select>
         </div>
@@ -87,7 +85,7 @@ export const PointerMoveDemo = () => {
           </interact-element>
           <interact-element data-interact-key="pointer-indicator">
             <div className="pointer-demo-indicator">
-              Move {axis === 'horizontal' ? '← →' : axis === 'vertical' ? '↑ ↓' : '↑ ↓ (default)'}
+              Move {axis === 'x' ? '← →' : axis === 'y' ? '↑ ↓' : '↑ ↓ (default)'}
             </div>
           </interact-element>
         </div>

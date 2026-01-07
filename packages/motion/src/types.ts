@@ -697,7 +697,7 @@ export type TimeAnimationOptions = {
   reversed?: boolean;
 };
 
-export type PointerMoveAxis = 'horizontal' | 'vertical';
+export type PointerMoveAxis = 'x' | 'y';
 
 type ScrubAnimationDataBase = {
   id?: string;
@@ -716,7 +716,6 @@ type ScrubAnimationDataBase = {
   transitionDelay?: number;
   transitionEasing?: ScrubTransitionEasing;
   centeredToTarget?: boolean;
-  axis?: PointerMoveAxis;
 };
 
 export type ScrubAnimationOptions = ScrubAnimationDataBase & {

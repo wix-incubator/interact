@@ -7,6 +7,7 @@ import type {
   CustomMouseAnimationInstance,
   ScrubScrollScene,
   ScrubPointerScene,
+  PointerMoveAxis,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
 import { getEasing, getJsEasing } from './utils';
@@ -83,11 +84,11 @@ function getScrubScene(
   sceneOptions: Record<string, any> = {},
 ): ScrubScrollScene[] | ScrubPointerScene | ScrubPointerScene[] {
   const { disabled, allowActiveEvent, ...rest } = sceneOptions;
+  const animation = getWebAnimation(target, animationOptions, trigger, rest);
 
   let typeSpecificOptions = {} as Record<string, any>;
 
   if (trigger.trigger === 'view-progress' && !window.ViewTimeline) {
-    const animation = getWebAnimation(target, animationOptions, trigger, rest);
     // TODO(ameerf): consider doing this only for bgscrub to not affect the other scroll effects
     const viewSource = trigger.element || getElement(trigger.componentId!);
     const { ready } = animation as AnimationGroup;
@@ -123,13 +124,12 @@ function getScrubScene(
     });
   } else if (trigger.trigger === 'pointer-move') {
     const scrubOptions = animationOptions as ScrubAnimationOptions;
-    const { centeredToTarget, transitionDuration, transitionEasing, axis } =
+    const { centeredToTarget, transitionDuration, transitionEasing } =
       scrubOptions;
+    const axis = (trigger as { axis?: PointerMoveAxis }).axis;
 
     if (scrubOptions.keyframeEffect) {
-      const animationGroup = getWebAnimation(target, animationOptions, trigger, rest) as AnimationGroup;
-
-      if (!animationGroup || !animationGroup.animations || animationGroup.animations.length === 0) {
+      if (!(animation as AnimationGroup).animations || (animation as AnimationGroup).animations.length === 0) {
         return [] as ScrubPointerScene[];
       }
 
@@ -138,21 +138,21 @@ function getScrubScene(
       const scene: ScrubPointerScene = {
         target: undefined,
         centeredToTarget,
-        ready: animationGroup.ready,
+        ready: (animation as AnimationGroup).ready,
         getProgress() {
           return {
-            x: axis === 'horizontal' ? currentProgress : 0.5,
-            y: axis === 'vertical' ? currentProgress : 0.5,
+            x: axis === 'x' ? currentProgress : 0.5,
+            y: axis === 'y' ? currentProgress : 0.5,
           };
         },
         effect(_scene: any, p: { x: number; y: number }) {
-          const linearProgress = axis === 'horizontal' ? p.x : p.y;
+          const linearProgress = axis === 'x' ? p.x : p.y;
           currentProgress = linearProgress;
-          animationGroup.progress(linearProgress);
+          (animation as AnimationGroup).progress(linearProgress);
         },
         disabled: disabled ?? false,
         destroy() {
-          animationGroup.cancel();
+          animation.cancel();
         },
       };
 
@@ -168,11 +168,6 @@ function getScrubScene(
       typeSpecificOptions.transitionDuration = transitionDuration;
       typeSpecificOptions.transitionEasing = getJsEasing(transitionEasing);
     }
-  }
-
-  const animation = getWebAnimation(target, animationOptions, trigger, rest);
-
-  if (trigger.trigger === 'pointer-move') {
     typeSpecificOptions.target = (animation as MouseAnimationInstance).target;
   }
 

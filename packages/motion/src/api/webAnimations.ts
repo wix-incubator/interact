@@ -67,7 +67,7 @@ function getWebAnimation(
   const element =
     target instanceof HTMLElement ? target : getElement(target, ownerDocument);
 
-  if (trigger?.trigger === 'pointer-move') {
+  if (trigger?.trigger === 'pointer-move' && !animationOptions.keyframeEffect) {
     let effectOptions = animationOptions;
 
     if (animationOptions.customEffect) {
@@ -77,7 +77,7 @@ function getWebAnimation(
       };
     }
 
-    if (!(animationOptions as any).keyframeEffect || effectOptions.namedEffect) {
+    if (effectOptions.namedEffect || animationOptions.customEffect) {
       // TODO: need to fix the type here, currently lying about the returned type to be WebAnimationEffectFactory instead of MouseAnimationFactoryCreate
       const mouseAnimationPreset = getNamedEffect(
         effectOptions,
@@ -92,6 +92,7 @@ function getWebAnimation(
 
       return mouseAnimationFactory(element as HTMLElement);
     }
+    // If no namedEffect and no customEffect, fall through to create a regular AnimationGroup
   }
 
   // get the preset for the given animation options
