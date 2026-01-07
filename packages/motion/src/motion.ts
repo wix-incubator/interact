@@ -159,10 +159,7 @@ function getScrubScene(
       return scene;
     }
 
-    const animation = getWebAnimation(target, animationOptions, trigger, rest);
-
     typeSpecificOptions = {
-      target: (animation as MouseAnimationInstance).target,
       centeredToTarget,
       allowActiveEvent,
     };
@@ -171,39 +168,13 @@ function getScrubScene(
       typeSpecificOptions.transitionDuration = transitionDuration;
       typeSpecificOptions.transitionEasing = getJsEasing(transitionEasing);
     }
-
-    return {
-      ...typeSpecificOptions,
-      getProgress() {
-        return (
-          animation as AnimationGroup | CustomMouseAnimationInstance
-        ).getProgress();
-      },
-      effect(
-        __: any,
-        p: number | { x: number; y: number },
-        v?: { x: number; y: number },
-        active?: boolean,
-      ) {
-        animation.progress(
-          v
-            ? {
-              // @ts-expect-error spread error on p
-              ...p,
-              v,
-              active,
-            }
-            : p,
-        );
-      },
-      disabled,
-      destroy() {
-        animation.cancel();
-      },
-    } as ScrubPointerScene;
   }
 
   const animation = getWebAnimation(target, animationOptions, trigger, rest);
+
+  if (trigger.trigger === 'pointer-move') {
+    typeSpecificOptions.target = (animation as MouseAnimationInstance).target;
+  }
 
   return {
     ...typeSpecificOptions,
