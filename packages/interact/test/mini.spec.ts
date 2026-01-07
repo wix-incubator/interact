@@ -14,6 +14,12 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      pause: vi.fn(),
+      reverse: vi.fn(),
+      progress: vi.fn(),
+      persist: vi.fn(),
+      isCSS: false,
+      playState: 'idle',
       ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
@@ -714,6 +720,180 @@ describe('interact (mini)', () => {
         expect(getWebAnimation.mock.calls[2][3]).toMatchObject({
           reducedMotion: false,
         });
+      });
+
+      it('should add handler for viewEnter trigger with alternate type and reverse on exit', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockAnimation = (getWebAnimation as any)();
+        
+        // Capture observer callbacks
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+          observerCallbacks.push(cb);
+          this.observe = vi.fn();
+          this.unobserve = vi.fn();
+          this.disconnect = vi.fn();
+        }) as any;
+        (window as any).IntersectionObserver = IntersectionObserverMock;
+
+        const alternateConfig: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'viewEnter',
+              key: 'logo-alternate',
+              params: { type: 'alternate' },
+              effects: [{ key: 'logo-alternate', effectId: 'logo-arc-in' }],
+            },
+          ],
+          effects: {
+            'logo-arc-in': {
+              namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+              duration: 1200,
+            },
+          },
+        };
+
+        Interact.destroy();
+        Interact.create(alternateConfig);
+
+        element = document.createElement('div');
+        add(element, 'logo-alternate');
+
+        expect(getWebAnimation).toHaveBeenCalledTimes(2); // 1 for the creation of mockAnimation above
+        expect(mockAnimation.persist).toHaveBeenCalled();
+
+        // Simulate first entry - should play
+        const mainObserverCallback = observerCallbacks[0];
+        mainObserverCallback([{ target: element, isIntersecting: true }]);
+        expect(mockAnimation.play).toHaveBeenCalled();
+
+        mockAnimation.reverse.mockClear();
+
+        // Simulate exit - should reverse
+        mainObserverCallback([{ target: element, isIntersecting: false }]);
+        expect(mockAnimation.reverse).toHaveBeenCalled();
+
+        mockAnimation.reverse.mockClear();
+
+        // Simulate re-entry - should reverse again
+        mainObserverCallback([{ target: element, isIntersecting: true }]);
+        expect(mockAnimation.reverse).toHaveBeenCalled();
+      });
+
+      it('should add handler for viewEnter trigger with repeat type and pause+reset on exit', async () => {
+        const viewEnterHandler = (await import('../src/handlers/viewEnter')).default;
+        viewEnterHandler.reset();
+
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockAnimation = (getWebAnimation as any)();
+        
+        // Capture observer callbacks
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+          observerCallbacks.push(cb);
+          this.observe = vi.fn();
+          this.unobserve = vi.fn();
+          this.disconnect = vi.fn();
+        }) as any;
+        (window as any).IntersectionObserver = IntersectionObserverMock;
+
+        const repeatConfig: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'viewEnter',
+              key: 'logo-repeat',
+              params: { type: 'repeat' },
+              effects: [{ key: 'logo-repeat', effectId: 'logo-arc-in' }],
+            },
+          ],
+          effects: {
+            'logo-arc-in': {
+              namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+              duration: 1200,
+            },
+          },
+        };
+
+        Interact.destroy();
+        Interact.create(repeatConfig);
+
+        element = document.createElement('div');
+        add(element, 'logo-repeat');
+
+        expect(getWebAnimation).toHaveBeenCalledTimes(2); // 1 for the creation of mockAnimation above
+        expect(mockAnimation.persist).toHaveBeenCalled();
+
+        // Simulate first entry - should play
+        const mainObserverCallback = observerCallbacks[0];
+        mainObserverCallback([{ target: element, isIntersecting: true }]);
+        expect(mockAnimation.play).toHaveBeenCalled();
+
+        mockAnimation.pause.mockClear();
+        mockAnimation.progress.mockClear();
+
+        // Simulate exit via exit observer - should pause and reset progress
+        const exitObserverCallback = observerCallbacks[1];
+        exitObserverCallback([{ target: element, isIntersecting: false }]);
+        expect(mockAnimation.pause).toHaveBeenCalled();
+        expect(mockAnimation.progress).toHaveBeenCalledWith(0);
+      });
+
+      it('should add handler for viewEnter trigger with state type and pause on exit', async () => {
+        const viewEnterHandler = (await import('../src/handlers/viewEnter')).default;
+        viewEnterHandler.reset();
+
+        const { getWebAnimation } = await import('@wix/motion');
+        const mockAnimation = (getWebAnimation as any)();
+        
+        // Capture observer callbacks
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+          observerCallbacks.push(cb);
+          this.observe = vi.fn();
+          this.unobserve = vi.fn();
+          this.disconnect = vi.fn();
+        }) as any;
+        (window as any).IntersectionObserver = IntersectionObserverMock;
+
+        const stateConfig: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'viewEnter',
+              key: 'logo-state',
+              params: { type: 'state' },
+              effects: [{ key: 'logo-state', effectId: 'logo-arc-in' }],
+            },
+          ],
+          effects: {
+            'logo-arc-in': {
+              namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+              duration: 1200,
+            },
+          },
+        };
+
+        Interact.destroy();
+        Interact.create(stateConfig);
+
+        element = document.createElement('div');
+        add(element, 'logo-state');
+
+        expect(getWebAnimation).toHaveBeenCalledTimes(2); // 1 for the creation of mockAnimation above
+        expect(mockAnimation.persist).toHaveBeenCalled();
+
+        // Simulate first entry - should play
+        const mainObserverCallback = observerCallbacks[0];
+        mainObserverCallback([{ target: element, isIntersecting: true }]);
+        expect(mockAnimation.play).toHaveBeenCalled();
+
+        mockAnimation.pause.mockClear();
+        mockAnimation.progress.mockClear();
+
+        // Simulate exit via exit observer - should pause (but NOT reset progress)
+        const exitObserverCallback = observerCallbacks[1];
+        exitObserverCallback([{ target: element, isIntersecting: false }]);
+        expect(mockAnimation.pause).toHaveBeenCalled();
+        expect(mockAnimation.progress).not.toHaveBeenCalled();
       });
     });
 
@@ -2867,6 +3047,165 @@ describe('interact (mini)', () => {
         const result = effectToAnimationOptions(timeEffect as any) as { keyframeEffect?: { name?: string } };
 
         expect(result.keyframeEffect?.name).toBeUndefined();
+      });
+    });
+  });
+
+  describe('null animation handling', () => {
+    describe('click handler', () => {
+      it('should not add event listeners when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'click',
+              key: 'null-click-test',
+              effects: [
+                {
+                  key: 'null-click-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-click-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+      });
+    });
+
+    describe('hover handler', () => {
+      it('should not add event listeners when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'hover',
+              key: 'null-hover-test',
+              effects: [
+                {
+                  key: 'null-hover-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-hover-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseleave', expect.any(Function), expect.any(Object));
+      });
+    });
+
+    describe('animationEnd handler', () => {
+      it('should not add event listener when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'animationEnd',
+              key: 'null-animation-end-test',
+              params: {
+                effectId: 'null-effect',
+              },
+              effects: [
+                {
+                  key: 'null-animation-end-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-animation-end-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('animationend', expect.any(Function));
+      });
+    });
+
+    describe('viewProgress handler', () => {
+      it('should not create scroll manager when animation is null', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        (getWebAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'viewProgress',
+              key: 'null-viewprogress-test',
+              effects: [
+                {
+                  key: 'null-viewprogress-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+
+        // Should not throw when animation is null
+        expect(() => add(testElement, 'null-viewprogress-test')).not.toThrow();
       });
     });
   });

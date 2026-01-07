@@ -26,7 +26,12 @@ function addAnimationEndHandler(
     effectToAnimationOptions(effect),
     undefined,
     reducedMotion,
-  ) as AnimationGroup;
+  ) as AnimationGroup | null;
+
+  // Early return if animation is null, no handler attached
+  if (!animation) {
+    return;
+  }
 
   const handler = () => {
     if (selectorCondition && !target.matches(selectorCondition)) return;
