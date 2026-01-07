@@ -1,11 +1,3 @@
-import type {
-  BackgroundScrollAnimation,
-  EntranceAnimation,
-  OngoingAnimation,
-  ScrollAnimation,
-  MouseAnimation,
-} from '@wix/motion-presets/types';
-
 type LengthUnit = 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
 
 export declare type Length = {
@@ -90,21 +82,6 @@ export type WebAnimationEffectFactory<
   options?: Record<string, any>,
 ) => AnimationData[];
 
-
-export type ImageParallax = BaseDataItemLike<'ImageParallax'> & {
-  reverse?: boolean;
-  speed?: number;
-  isPage?: boolean;
-};
-
-export type MousePivotAxis =
-  | 'top'
-  | 'bottom'
-  | 'right'
-  | 'left'
-  | 'center-horizontal'
-  | 'center-vertical';
-
 export type Progress = {
   x: number;
   y: number;
@@ -132,11 +109,7 @@ export type MouseAnimationFactoryCreate = (
 ) => MouseAnimationFactory;
 
 export type NamedEffect =
-  | EntranceAnimation
-  | OngoingAnimation
-  | ScrollAnimation
-  | MouseAnimation
-  | BackgroundScrollAnimation;
+  BaseDataItemLike<string> & Record<string, unknown>;
 
 export type CustomEffect =
   | {
@@ -151,7 +124,10 @@ export type AnimationExtraOptions = {
   ) => void;
 };
 
-export type AnimationOptions = (TimeAnimationOptions | ScrubAnimationOptions) &
+export type AnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> = (
+  | TimeAnimationOptions<TNamedEffect>
+  | ScrubAnimationOptions<TNamedEffect>
+) &
   AnimationExtraOptions;
 
 export type MotionAnimationOptions<T extends keyof AnimationOptionsTypes> =
@@ -162,8 +138,8 @@ export type MeasureCallback = (
 ) => void;
 export type DomApi = { measure: MeasureCallback; mutate: MeasureCallback };
 
-export type NamedEffectFunction = (
-  options: AnimationOptions,
+export type NamedEffectFunction<TNamedEffect extends NamedEffect = NamedEffect> = (
+  options: AnimationOptions<TNamedEffect>,
   domApi?: DomApi | undefined,
   config?: Record<string, any>,
 ) => AnimationData[];
@@ -191,10 +167,10 @@ export type MotionKeyframeEffect = BaseDataItemLike<'KeyframeEffect'> & {
   keyframes: Keyframe[];
 };
 
-export type TimeAnimationOptions = {
+export type TimeAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> = {
   id?: string;
   keyframeEffect?: MotionKeyframeEffect;
-  namedEffect?: NamedEffect;
+  namedEffect?: TNamedEffect;
   customEffect?: CustomEffect;
   duration?: number;
   delay?: number;
@@ -206,10 +182,10 @@ export type TimeAnimationOptions = {
   reversed?: boolean;
 };
 
-type ScrubAnimationDataBase = {
+type ScrubAnimationDataBase<TNamedEffect extends NamedEffect = NamedEffect> = {
   id?: string;
   keyframeEffect?: MotionKeyframeEffect;
-  namedEffect?: NamedEffect;
+  namedEffect?: TNamedEffect;
   customEffect?: CustomEffect;
   startOffset?: RangeOffset;
   endOffset?: RangeOffset;
@@ -225,7 +201,8 @@ type ScrubAnimationDataBase = {
   centeredToTarget?: boolean;
 };
 
-export type ScrubAnimationOptions = ScrubAnimationDataBase & {
+export type ScrubAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> =
+  ScrubAnimationDataBase<TNamedEffect> & {
   duration?: LengthPercentage;
 };
 

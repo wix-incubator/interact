@@ -1,62 +1,70 @@
-type LengthUnit = 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
+export type {
+  AnimationData,
+  AnimationEffectAPI,
+  AnimationExtraOptions,
+  AnimationFillMode,
+  AnimationOptions,
+  AnimationOptionsTypes,
+  AnimationProperties,
+  AnimationGroupOptions,
+  BaseDataItemLike,
+  CustomEffect,
+  DomApi,
+  EffectEightDirections,
+  EffectFourCorners,
+  EffectFourDirections,
+  EffectModule,
+  EffectNineDirections,
+  EffectPower,
+  EffectScaleDirection,
+  EffectScrollRange,
+  EffectTwoSides,
+  Length,
+  LengthPercentage,
+  MeasureCallback,
+  MotionAnimationOptions,
+  MotionKeyframeEffect,
+  MouseAnimationFactory,
+  MouseAnimationFactoryCreate,
+  MouseAnimationInstance,
+  MouseCreateEffectModule,
+  MouseEffectModule,
+  NamedEffectFunction,
+  Percentage,
+  Progress,
+  RangeOffset,
+  ScrubAnimationOptions,
+  ScrubPointerScene,
+  ScrubScrollScene,
+  ScrubTransitionEasing,
+  ScrollEffectModule,
+  Shape,
+  TimeAnimationOptions,
+  TriggerVariant,
+  UnitLengthPercentage,
+  WebAnimationEffectFactory,
+  BackgroundScrollEffectModule,
+  CustomMouseAnimationInstance,
+  Point,
+  AnimationDataForScrub,
+} from '@wix/motion';
 
-export declare type Length = {
-  value: number;
-  type: LengthUnit;
-};
-
-export declare type Percentage = {
-  value: number;
-  type: 'percentage';
-};
-
-export declare type LengthPercentage = Length | Percentage;
-
-export declare type UnitLengthPercentage = LengthPercentage;
-
-export type Point = [number, number];
-
-export type EffectNineDirections =
-  | 'right'
-  | 'top-right'
-  | 'top'
-  | 'top-left'
-  | 'left'
-  | 'bottom-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'center';
-
-export type EffectScaleDirection = 'up' | 'down';
-
-declare class ViewTimeline {
-  constructor(options: { subject: HTMLElement });
-}
-
-declare global {
-  interface Window {
-    ViewTimeline: ViewTimeline;
-  }
-}
-
-export type AnimationFillMode = 'none' | 'backwards' | 'forwards' | 'both';
-
-export type BaseDataItemLike<Type extends string = string> = {
-  id?: string;
-  type: Type;
-};
-
-export type EffectTwoSides = 'left' | 'right';
-
-export type EffectFourDirections = 'top' | 'right' | 'bottom' | 'left';
-export type EffectFourCorners =
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left';
-export type EffectEightDirections = EffectFourDirections | EffectFourCorners;
-export type EffectPower = 'soft' | 'medium' | 'hard';
-export type EffectScrollRange = 'in' | 'out' | 'continuous';
+import type {
+  AnimationEffectAPI,
+  AnimationOptions,
+  BaseDataItemLike,
+  EffectEightDirections,
+  EffectFourCorners,
+  EffectFourDirections,
+  EffectNineDirections,
+  EffectPower,
+  EffectScaleDirection,
+  EffectScrollRange,
+  EffectTwoSides,
+  MouseAnimationFactoryCreate,
+  UnitLengthPercentage,
+  WebAnimationEffectFactory,
+} from '@wix/motion';
 
 export type FadeIn = BaseDataItemLike<'FadeIn'>;
 export type ArcIn = BaseDataItemLike<'ArcIn'> & {
@@ -157,30 +165,6 @@ export type BlurIn = BaseDataItemLike<'BlurIn'> & {
   blur?: number;
   power?: EffectPower;
 };
-
-export type AnimationOptionsTypes = {
-  time: TimeAnimationOptions & AnimationExtraOptions;
-  scrub: ScrubAnimationOptions & AnimationExtraOptions;
-};
-
-export type AnimationEffectAPI<Enum extends keyof AnimationOptionsTypes> = {
-  web: (
-    animationOptions: AnimationOptionsTypes[Enum],
-    dom?: DomApi,
-    options?: Record<string, any>,
-  ) => AnimationData[];
-  getNames: (animationOptions: AnimationOptionsTypes[Enum]) => string[];
-  style?: (options: AnimationOptionsTypes[Enum]) => AnimationData[];
-  prepare?: (options: AnimationOptionsTypes[Enum], dom?: DomApi) => void;
-};
-
-export type WebAnimationEffectFactory<
-  Enum extends keyof AnimationOptionsTypes,
-> = (
-  animationOptions: AnimationOptionsTypes[Enum],
-  dom?: DomApi,
-  options?: Record<string, any>,
-) => AnimationData[];
 
 export type EntranceAnimation =
   | FadeIn
@@ -581,32 +565,6 @@ export type TrackMouse = BaseDataItemLike<'TrackMouse'> &
 
 export type CustomMouse = BaseDataItemLike<'CustomMouse'>;
 
-export type Progress = {
-  x: number;
-  y: number;
-  v?: { x: number; y: number };
-  active?: boolean;
-};
-export interface MouseAnimationInstance {
-  target: HTMLElement;
-  play: () => void;
-  progress: (progress: Progress) => void;
-  cancel: () => void;
-}
-
-export interface CustomMouseAnimationInstance extends MouseAnimationInstance {
-  getProgress: () => Progress;
-}
-
-export type MouseAnimationFactory = (
-  element: HTMLElement,
-) => MouseAnimationInstance;
-
-export type MouseAnimationFactoryCreate = (
-  options: ScrubAnimationOptions,
-  dom?: DomApi,
-) => MouseAnimationFactory;
-
 export type MouseAnimation =
   | AiryMouse
   | BlobMouse
@@ -633,156 +591,6 @@ export type NamedEffect =
   | MouseAnimation
   | BackgroundScrollAnimation;
 
-export type CustomEffect =
-  | {
-      ranges: { name: string; min: number; max: number; step?: number }[];
-    }
-  | ((element: Element | null, progress: number | null) => void);
-
-export type AnimationExtraOptions = {
-  effectId?: string;
-  effect?: (
-    progress: () => number | { x: number | undefined; y: number | undefined },
-  ) => void;
-};
-
-export type AnimationOptions = (TimeAnimationOptions | ScrubAnimationOptions) &
-  AnimationExtraOptions;
-
-export type MotionAnimationOptions<T extends keyof AnimationOptionsTypes> =
-  AnimationOptionsTypes[T];
-
-export type MeasureCallback = (
-  fn: (target: HTMLElement | null) => void,
-) => void;
-export type DomApi = { measure: MeasureCallback; mutate: MeasureCallback };
-
-export type NamedEffectFunction = (
-  options: AnimationOptions,
-  domApi?: DomApi | undefined,
-  config?: Record<string, any>,
-) => AnimationData[];
-
-export type ScrubTransitionEasing =
-  | 'linear'
-  | 'hardBackOut'
-  | 'easeOut'
-  | 'elastic'
-  | 'bounce';
-
-export type RangeOffset = {
-  name?:
-    | 'entry'
-    | 'exit'
-    | 'contain'
-    | 'cover'
-    | 'entry-crossing'
-    | 'exit-crossing';
-  offset?: LengthPercentage;
-};
-
-export type MotionKeyframeEffect = BaseDataItemLike<'KeyframeEffect'> & {
-  name: string;
-  keyframes: Keyframe[];
-};
-
-export type TimeAnimationOptions = {
-  id?: string;
-  keyframeEffect?: MotionKeyframeEffect;
-  namedEffect?: NamedEffect;
-  customEffect?: CustomEffect;
-  duration?: number;
-  delay?: number;
-  endDelay?: number;
-  easing?: string;
-  iterations?: number;
-  alternate?: boolean;
-  fill?: AnimationFillMode;
-  reversed?: boolean;
-};
-
-type ScrubAnimationDataBase = {
-  id?: string;
-  keyframeEffect?: MotionKeyframeEffect;
-  namedEffect?: NamedEffect;
-  customEffect?: CustomEffect;
-  startOffset?: RangeOffset;
-  endOffset?: RangeOffset;
-  playbackRate?: number;
-  easing?: string;
-  iterations?: number;
-  fill?: AnimationFillMode;
-  alternate?: boolean;
-  reversed?: boolean;
-  transitionDuration?: number;
-  transitionDelay?: number;
-  transitionEasing?: ScrubTransitionEasing;
-  centeredToTarget?: boolean;
-};
-
-export type ScrubAnimationOptions = ScrubAnimationDataBase & {
-  duration?: LengthPercentage;
-};
-
-type AnimationDataExtra = {
-  name?: string; // TODO:  need to be added to all animations and then be made required
-  keyframes: Record<string, string | number | undefined>[];
-  custom?: Record<string, string | number | undefined>;
-  composite?: CompositeOperation;
-  part?: string;
-  timing?: Partial<EffectTiming>;
-};
-
-export type AnimationDataForScrub = ScrubAnimationDataBase & {
-  duration?: LengthPercentage | number;
-  startOffsetAdd?: string;
-  endOffsetAdd?: string;
-};
-
-export type AnimationData = (TimeAnimationOptions | AnimationDataForScrub) &
-  AnimationDataExtra;
-
-// TODO: need it?
-export type AnimationProperties = {
-  groups?: string[];
-  schema: { [key: string]: any };
-};
-
-export type TriggerVariant = {
-  id: string;
-  trigger: 'view-progress' | 'pointer-move';
-  componentId: string;
-};
-
-export type AnimationGroupOptions = AnimationOptions & {
-  trigger?: Partial<TriggerVariant> | undefined;
-  startOffsetAdd?: string | undefined;
-  endOffsetAdd?: string | undefined;
-  measured?: Promise<void>;
-};
-
-export type Shape = 'ellipse' | 'circle' | 'rectangle' | 'diamond' | 'window';
-
-export interface ScrubScrollScene {
-  start: RangeOffset;
-  end: RangeOffset;
-  viewSource: HTMLElement;
-  ready: Promise<void>;
-  getProgress(): number;
-  effect(__: any, p: number): void;
-  disabled: boolean;
-  destroy(): void;
-  groupId?: string;
-}
-
-export interface ScrubPointerScene {
-  target?: HTMLElement;
-  centeredToTarget?: boolean;
-  transitionDuration?: number;
-  transitionEasing?: ScrubTransitionEasing;
-  getProgress(): Progress;
-  effect(p: Progress): void;
-  disabled: boolean;
-  destroy(): void;
-  allowActiveEvent?: boolean;
-}
+export type MotionPresetsAnimationOptions<
+  TNamedEffect extends NamedEffect = NamedEffect,
+> = AnimationOptions & { namedEffect?: TNamedEffect };

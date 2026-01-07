@@ -1,49 +1,23 @@
-import * as ArcIn from './ArcIn';
-import * as BlurIn from './BlurIn';
-import * as ShuttersIn from './ShuttersIn';
-import * as BounceIn from './BounceIn';
-import * as CurveIn from './CurveIn';
-import * as CircleIn from './CircleIn';
-import * as DropIn from './DropIn';
-import * as ExpandIn from './ExpandIn';
-import * as FadeIn from './FadeIn';
-import * as FlipIn from './FlipIn';
-import * as FloatIn from './FloatIn';
-import * as FoldIn from './FoldIn';
-import * as GlideIn from './GlideIn';
-import * as GlitchIn from './GlitchIn';
-import * as GrowIn from './GrowIn';
-import * as PunchIn from './PunchIn';
-import * as ShapeIn from './ShapeIn';
-import * as RevealIn from './RevealIn';
-import * as SlideIn from './SlideIn';
-import * as SpinIn from './SpinIn';
-import * as TiltIn from './TiltIn';
-import * as TurnIn from './TurnIn';
-import * as WinkIn from './WinkIn';
-
-export {
-  ArcIn,
-  BlurIn,
-  ShuttersIn,
-  BounceIn,
-  CurveIn,
-  CircleIn,
-  DropIn,
-  ExpandIn,
-  FadeIn,
-  FlipIn,
-  FloatIn,
-  FoldIn,
-  GlideIn,
-  GlitchIn,
-  GrowIn,
-  PunchIn,
-  ShapeIn,
-  RevealIn,
-  SlideIn,
-  SpinIn,
-  TiltIn,
-  TurnIn,
-  WinkIn,
-};
+export * as ArcIn from './ArcIn';
+export * as BlurIn from './BlurIn';
+export * as ShuttersIn from './ShuttersIn';
+export * as BounceIn from './BounceIn';
+export * as CurveIn from './CurveIn';
+export * as CircleIn from './CircleIn';
+export * as DropIn from './DropIn';
+export * as ExpandIn from './ExpandIn';
+export * as FadeIn from './FadeIn';
+export * as FlipIn from './FlipIn';
+export * as FloatIn from './FloatIn';
+export * as FoldIn from './FoldIn';
+export * as GlideIn from './GlideIn';
+export * as GlitchIn from './GlitchIn';
+export * as GrowIn from './GrowIn';
+export * as PunchIn from './PunchIn';
+export * as ShapeIn from './ShapeIn';
+export * as RevealIn from './RevealIn';
+export * as SlideIn from './SlideIn';
+export * as SpinIn from './SpinIn';
+export * as TiltIn from './TiltIn';
+export * as TurnIn from './TurnIn';
+export * as WinkIn from './WinkIn';

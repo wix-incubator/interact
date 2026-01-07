@@ -1,30 +1,13 @@
-import * as Bounce from './Bounce';
-import * as Breathe from './Breathe';
-import * as Cross from './Cross';
-// import * as DVD from './DVD';
-import * as Flash from './Flash';
-import * as Flip from './Flip';
-import * as Fold from './Fold';
-import * as Jello from './Jello';
-import * as Poke from './Poke';
-import * as Rubber from './Rubber';
-import * as Pulse from './Pulse';
-import * as Spin from './Spin';
-import * as Swing from './Swing';
-import * as Wiggle from './Wiggle';
-
-export {
-  Bounce,
-  Breathe,
-  Cross,
-  Flash,
-  Flip,
-  Fold,
-  Jello,
-  Poke,
-  Rubber,
-  Pulse,
-  Spin,
-  Swing,
-  Wiggle,
-};
+export * as Bounce from './Bounce';
+export * as Breathe from './Breathe';
+export * as Cross from './Cross';
+export * as Flash from './Flash';
+export * as Flip from './Flip';
+export * as Fold from './Fold';
+export * as Jello from './Jello';
+export * as Poke from './Poke';
+export * as Rubber from './Rubber';
+export * as Pulse from './Pulse';
+export * as Spin from './Spin';
+export * as Swing from './Swing';
+export * as Wiggle from './Wiggle';

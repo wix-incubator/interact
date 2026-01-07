@@ -10,7 +10,7 @@ export default defineConfig(() => ({
     lib: {
       entry: {
         'motion-presets': path.resolve(__dirname, 'src/index.ts'),
-        types: path.resolve(__dirname, 'src/typesEntry.ts'),
+        types: path.resolve(__dirname, 'src/types.ts'),
       },
       name: 'MotionPresets',
       fileName: (format: string, entryName: string) => `${format}/${entryName}.js`,

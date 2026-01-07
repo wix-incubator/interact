@@ -402,7 +402,6 @@ describe('motion.ts', () => {
 
       beforeEach(() => {
         vi.clearAllMocks();
-        
         // Create mock HTMLElement
         mockElement = {
           id: 'test-element',

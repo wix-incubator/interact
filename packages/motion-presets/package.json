@@ -13,7 +13,7 @@
       "require": "./dist/cjs/motion-presets.js"
     },
     "./types": {
-      "types": "./dist/types/typesEntry.d.ts",
+      "types": "./dist/types/types.d.ts",
       "import": "./dist/es/types.js",
       "require": "./dist/cjs/types.js"
     },
