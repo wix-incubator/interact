@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0 # full history for yarn version
+          token: ${{ secrets.USER_GITHUB_TOKEN }}
 
       - name: Setup Node with trusted publishing
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -43,6 +44,25 @@ jobs:
       - run: NPQ_PKG_MGR=yarn npx npq install
       - run: yarn build
       - run: yarn test
+
+      # ---- BUMP VERSION ----
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "${{ secrets.GH_EMAIL }}"
+          git config --global user.name "${{ secrets.GH_USER }}"
+
+      - name: Bump RC version
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        working-directory: packages/interact
+        run: yarn version prerelease --preid rc
+
+      - name: Commit and push version bump
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        run: |
+          git add .
+          git commit -m "chore: bump @wix/interact RC version [skip ci]"
+          git push
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
