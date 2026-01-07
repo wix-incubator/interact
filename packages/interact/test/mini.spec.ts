@@ -3046,5 +3046,164 @@ describe('interact (mini)', () => {
       });
     });
   });
+
+  describe('null animation handling', () => {
+    describe('click handler', () => {
+      it('should not add event listeners when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'click',
+              key: 'null-click-test',
+              effects: [
+                {
+                  key: 'null-click-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-click-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+      });
+    });
+
+    describe('hover handler', () => {
+      it('should not add event listeners when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'hover',
+              key: 'null-hover-test',
+              effects: [
+                {
+                  key: 'null-hover-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-hover-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseleave', expect.any(Function), expect.any(Object));
+      });
+    });
+
+    describe('animationEnd handler', () => {
+      it('should not add event listener when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'animationEnd',
+              key: 'null-animation-end-test',
+              params: {
+                effectId: 'null-effect',
+              },
+              effects: [
+                {
+                  key: 'null-animation-end-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+        const addEventListenerSpy = vi.spyOn(testElement, 'addEventListener');
+
+        add(testElement, 'null-animation-end-test');
+
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith('animationend', expect.any(Function));
+      });
+    });
+
+    describe('viewProgress handler', () => {
+      it('should not create scroll manager when animation is null', async () => {
+        const { getWebAnimation } = await import('@wix/motion');
+        (getWebAnimation as any).mockReturnValueOnce(null);
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'viewProgress',
+              key: 'null-viewprogress-test',
+              effects: [
+                {
+                  key: 'null-viewprogress-test',
+                  effectId: 'null-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'null-effect': {
+              namedEffect: {
+                type: 'NonExistentEffect' as any,
+              } as NamedEffect,
+            },
+          },
+        };
+
+        Interact.create(config);
+
+        const testElement = document.createElement('div');
+
+        // Should not throw when animation is null
+        expect(() => add(testElement, 'null-viewprogress-test')).not.toThrow();
+      });
+    });
+  });
 });
 
