@@ -68,6 +68,27 @@ vi.mock('../src/library/scroll', () => ({
       ]),
       getNames: vi.fn(() => ['fade-scroll']),
     },
+    ParallaxScroll: vi.fn((options: AnimationOptions) => [
+      {
+        fill: 'both',
+        easing: 'linear',
+        startOffsetAdd: '-25vh',
+        endOffsetAdd: '25vh',
+        startOffset: {
+          name: 'entry',
+          offset: { value: 0, type: 'percentage' },
+        },
+        endOffset: {
+          name: 'exit',
+          offset: { value: 100, type: 'percentage' },
+        },
+        keyframes: [
+          { transform: 'translateY(-25vh)' },
+          { transform: 'translateY(25vh)' },
+        ],
+        ...options,
+      },
+    ]),
   },
 }));
 
@@ -121,7 +142,33 @@ vi.mock('../src/library/entrance', () => ({
 }));
 
 vi.mock('../src/library/ongoing', () => ({
-  ongoingAnimations: {},
+  ongoingAnimations: {
+    Poke: {
+      style: vi.fn((options: AnimationOptions) => [
+        {
+          name: 'motion-poke',
+          easing: 'linear',
+          keyframes: [
+            { translate: '0 0' },
+            { translate: '10px 0' },
+          ],
+          ...options,
+        },
+      ]),
+      web: vi.fn((options: AnimationOptions) => [
+        {
+          name: 'motion-poke',
+          easing: 'linear',
+          keyframes: [
+            { translate: '0 0' },
+            { translate: '10px 0' },
+          ],
+          ...options,
+        },
+      ]),
+      getNames: vi.fn(() => ['motion-poke']),
+    },
+  },
 }));
 
 vi.mock('../src/library/mouse', () => ({
@@ -2306,28 +2353,17 @@ describe('motion.ts', () => {
         (AnimationGroup as Mock).mockRestore();
       });
 
-      test('should return an empty animation if reducedMotion is true and iterations is NOT 1', async () => {
+      test('should return null if reducedMotion is true and iterations is NOT 1', async () => {
         const animationOptions: AnimationOptions = {
           namedEffect: { type: 'Poke', id: 'poke', direction: 'right' },
           duration: 1000,
           iterations: Infinity,
         };
 
-        // Mock AnimationGroup constructor
-        const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function (animations: any) {
-          mockAnimationGroup.animations = animations;
-          return mockAnimationGroup;
-        });
+        const result = getAnimation(mockElement, animationOptions, undefined, true);
 
-        getAnimation(mockElement, animationOptions, undefined, true);
-
-        expect(AnimationGroup).toHaveBeenCalledWith(
-          [],
-          expect.objectContaining(animationOptions),
-        );
-
-        (AnimationGroup as Mock).mockRestore();
+        // When reducedMotion is true and iterations !== 1, no animation should be created
+        expect(result).toBeNull();
       });
 
       test('should return a Web Animation if *NO* CSS animation is found', async () => {
