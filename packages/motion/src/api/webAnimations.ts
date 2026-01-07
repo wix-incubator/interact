@@ -77,19 +77,21 @@ function getWebAnimation(
       };
     }
 
-    // TODO: need to fix the type here, currently lying about the returned type to be WebAnimationEffectFactory instead of MouseAnimationFactoryCreate
-    const mouseAnimationPreset = getNamedEffect(
-      effectOptions,
-    ) as WebAnimationEffectFactory<'scrub'>;
-    const mouseAnimationFactory = getWebAnimationEffect(
-      mouseAnimationPreset,
-      animationOptions,
-      element,
-      trigger,
-      options,
-    ) as MouseAnimationFactory;
+    if (!(animationOptions as any).keyframeEffect || effectOptions.namedEffect) {
+      // TODO: need to fix the type here, currently lying about the returned type to be WebAnimationEffectFactory instead of MouseAnimationFactoryCreate
+      const mouseAnimationPreset = getNamedEffect(
+        effectOptions,
+      ) as WebAnimationEffectFactory<'scrub'>;
+      const mouseAnimationFactory = getWebAnimationEffect(
+        mouseAnimationPreset,
+        animationOptions,
+        element,
+        trigger,
+        options,
+      ) as MouseAnimationFactory;
 
-    return mouseAnimationFactory(element as HTMLElement);
+      return mouseAnimationFactory(element as HTMLElement);
+    }
   }
 
   // get the preset for the given animation options

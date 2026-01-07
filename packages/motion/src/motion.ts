@@ -81,13 +81,13 @@ function getScrubScene(
   animationOptions: AnimationOptions,
   trigger: Partial<TriggerVariant> & { element?: HTMLElement },
   sceneOptions: Record<string, any> = {},
-): ScrubScrollScene[] | ScrubPointerScene {
+): ScrubScrollScene[] | ScrubPointerScene | ScrubPointerScene[] {
   const { disabled, allowActiveEvent, ...rest } = sceneOptions;
-  const animation = getWebAnimation(target, animationOptions, trigger, rest);
 
   let typeSpecificOptions = {} as Record<string, any>;
 
   if (trigger.trigger === 'view-progress' && !window.ViewTimeline) {
+    const animation = getWebAnimation(target, animationOptions, trigger, rest);
     // TODO(ameerf): consider doing this only for bgscrub to not affect the other scroll effects
     const viewSource = trigger.element || getElement(trigger.componentId!);
     const { ready } = animation as AnimationGroup;
@@ -122,8 +122,44 @@ function getScrubScene(
       } as ScrubScrollScene;
     });
   } else if (trigger.trigger === 'pointer-move') {
-    const { centeredToTarget, transitionDuration, transitionEasing } =
-      animationOptions as ScrubAnimationOptions;
+    const scrubOptions = animationOptions as ScrubAnimationOptions;
+    const { centeredToTarget, transitionDuration, transitionEasing, axis } =
+      scrubOptions;
+
+    if (scrubOptions.keyframeEffect) {
+      const animationGroup = getWebAnimation(target, animationOptions, trigger, rest) as AnimationGroup;
+
+      if (!animationGroup || !animationGroup.animations || animationGroup.animations.length === 0) {
+        return [] as ScrubPointerScene[];
+      }
+
+      let currentProgress = 0;
+
+      const scene: ScrubPointerScene = {
+        target: undefined,
+        centeredToTarget,
+        ready: animationGroup.ready,
+        getProgress() {
+          return {
+            x: axis === 'horizontal' ? currentProgress : 0.5,
+            y: axis === 'vertical' ? currentProgress : 0.5,
+          };
+        },
+        effect(_scene: any, p: { x: number; y: number }) {
+          const linearProgress = axis === 'horizontal' ? p.x : p.y;
+          currentProgress = linearProgress;
+          animationGroup.progress(linearProgress);
+        },
+        disabled: disabled ?? false,
+        destroy() {
+          animationGroup.cancel();
+        },
+      };
+
+      return scene;
+    }
+
+    const animation = getWebAnimation(target, animationOptions, trigger, rest);
 
     typeSpecificOptions = {
       target: (animation as MouseAnimationInstance).target,
@@ -135,7 +171,39 @@ function getScrubScene(
       typeSpecificOptions.transitionDuration = transitionDuration;
       typeSpecificOptions.transitionEasing = getJsEasing(transitionEasing);
     }
+
+    return {
+      ...typeSpecificOptions,
+      getProgress() {
+        return (
+          animation as AnimationGroup | CustomMouseAnimationInstance
+        ).getProgress();
+      },
+      effect(
+        __: any,
+        p: number | { x: number; y: number },
+        v?: { x: number; y: number },
+        active?: boolean,
+      ) {
+        animation.progress(
+          v
+            ? {
+              // @ts-expect-error spread error on p
+              ...p,
+              v,
+              active,
+            }
+            : p,
+        );
+      },
+      disabled,
+      destroy() {
+        animation.cancel();
+      },
+    } as ScrubPointerScene;
   }
+
+  const animation = getWebAnimation(target, animationOptions, trigger, rest);
 
   return {
     ...typeSpecificOptions,

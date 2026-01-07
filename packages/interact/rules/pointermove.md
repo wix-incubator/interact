@@ -6,12 +6,11 @@ These rules help generate pointer-driven interactions using the `@wix/interact` 
 
 ### Effect Types for PointerMove
 
-**IMPORTANT**: The `pointerMove` trigger provides 2D progress (x and y coordinates), which is incompatible with linear `keyframeEffect` animations. Only use:
+The `pointerMove` trigger provides 2D progress (x and y coordinates). You can use:
 
 1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion` that handle 2D progress internally
 2. **`customEffect`** (Advanced): Custom function receiving the 2D progress object for full control
-
-**Never use `keyframeEffect` with `pointerMove`** - keyframes require linear 0-1 progress and cannot handle 2D coordinates.
+3. **`keyframeEffect`** (Single-axis): The pointer position on a single axis is mapped to linear 0-1 progress for keyframe animations. Use `axis: 'horizontal'` or `axis: 'vertical'` (defaults to `'vertical'`)
 
 ### Hit Area Configuration (`hitArea`)
 
@@ -1037,6 +1036,163 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 
 ---
 
+## Rule 10: KeyframeEffect with Axis Mapping
+
+**Use Case**: When you want to use standard keyframe animations driven by pointer movement along a single axis (e.g., horizontal sliders, vertical progress indicators, single-axis parallax effects)
+
+**When to Apply**:
+- For slider-like interactions driven by horizontal mouse position
+- For vertical scroll-like effects driven by vertical mouse position
+- When you have existing keyframe animations you want to control with pointer movement
+- For simple linear interpolation effects along one axis
+
+**Pattern**:
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: '[HIT_AREA]'
+    },
+    effects: [
+        {
+            key: '[TARGET_KEY]',
+            keyframeEffect: {
+                name: '[ANIMATION_NAME]',
+                keyframes: [
+                    { [PROPERTY]: '[START_VALUE]' },
+                    { [PROPERTY]: '[END_VALUE]' }
+                ]
+            },
+            axis: '[AXIS]',
+            fill: '[FILL_MODE]',
+            centeredToTarget: [CENTERED_TO_TARGET]
+        }
+    ]
+}
+```
+
+**Variables**:
+- `[SOURCE_KEY]`: Unique identifier for source element tracking mouse movement
+- `[TARGET_KEY]`: Unique identifier for target element to animate
+- `[HIT_AREA]`: 'self' or 'root'
+- `[ANIMATION_NAME]`: Name for the keyframe animation
+- `[PROPERTY]`: CSS property to animate (transform, opacity, etc.)
+- `[START_VALUE]`: Value at progress 0 (left/top edge)
+- `[END_VALUE]`: Value at progress 1 (right/bottom edge)
+- `[AXIS]`: 'horizontal' (maps x position) or 'vertical' (maps y position) - **defaults to 'vertical'**
+- `[FILL_MODE]`: 'none', 'forwards', 'backwards', 'both'
+- `[CENTERED_TO_TARGET]`: true or false
+
+**Example - Horizontal Slider Control**:
+```typescript
+{
+    key: 'slider-track',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            key: 'slider-thumb',
+            keyframeEffect: {
+                name: 'slide-horizontal',
+                keyframes: [
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(200px)' }
+                ]
+            },
+            axis: 'horizontal',
+            fill: 'both'
+        }
+    ]
+}
+```
+
+**Example - Vertical Progress Indicator**:
+```typescript
+{
+    key: 'progress-container',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            key: 'progress-fill',
+            keyframeEffect: {
+                name: 'fill-vertical',
+                keyframes: [
+                    { transform: 'scaleY(0)', opacity: 0.5 },
+                    { transform: 'scaleY(1)', opacity: 1 }
+                ]
+            },
+            axis: 'vertical',
+            fill: 'both'
+        }
+    ]
+}
+```
+
+**Example - Horizontal Color Transition**:
+```typescript
+{
+    key: 'color-picker',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            key: 'color-display',
+            keyframeEffect: {
+                name: 'color-gradient',
+                keyframes: [
+                    { backgroundColor: '#ff0000' },
+                    { backgroundColor: '#00ff00', offset: 0.5 },
+                    { backgroundColor: '#0000ff' }
+                ]
+            },
+            axis: 'horizontal',
+            fill: 'both'
+        }
+    ]
+}
+```
+
+**Example - Reveal on Hover with Axis**:
+```typescript
+{
+    key: 'reveal-container',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: 'self'
+    },
+    effects: [
+        {
+            key: 'reveal-content',
+            keyframeEffect: {
+                name: 'reveal-left-right',
+                keyframes: [
+                    { clipPath: 'inset(0 100% 0 0)' },
+                    { clipPath: 'inset(0 0 0 0)' }
+                ]
+            },
+            axis: 'horizontal',
+            fill: 'both'
+        }
+    ]
+}
+```
+
+**Important Notes**:
+- `axis` defaults to `'vertical'` when using `keyframeEffect` with `pointerMove`
+- `axis: 'horizontal'` maps `progress.x` (0=left, 1=right) to animation progress
+- `axis: 'vertical'` maps `progress.y` (0=top, 1=bottom) to animation progress
+- For 2D effects that need both axes, use `namedEffect` or `customEffect` instead
+
+---
+
 ## Advanced Patterns and Combinations
 
 ### Responsive Pointer Effects
@@ -1319,10 +1475,10 @@ Controlling movement direction for specific design needs:
 - Ensure proper hit area configuration
 - Test mouse event propagation
 
-**keyframeEffect not working with pointerMove**:
-- This is expected! `keyframeEffect` requires linear 0-1 progress
-- `pointerMove` provides 2D progress (x, y object)
-- Use `namedEffect` or `customEffect` instead
+**keyframeEffect not responding as expected with pointerMove**:
+- `keyframeEffect` defaults to `axis: 'vertical'` (maps y position to progress)
+- Use `axis: 'horizontal'` if you want horizontal pointer movement to control the animation
+- For 2D effects that need both axes, use `namedEffect` or `customEffect` instead
 
 ---
 
@@ -1332,10 +1488,13 @@ Controlling movement direction for specific design needs:
 |-------------|----------|-----|
 | Standard 3D tilt | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested |
 | Cursor following | `namedEffect: { type: 'TrackMouse' }` | Built-in physics |
+| Single-axis slider/scrubber | `keyframeEffect` + `axis` | Simple linear interpolation |
+| Horizontal progress control | `keyframeEffect` + `axis: 'horizontal'` | Maps x position to keyframes |
+| Vertical progress control | `keyframeEffect` + `axis: 'vertical'` | Maps y position to keyframes |
 | Custom physics | `customEffect` | Full control over calculations |
 | Velocity-based effects | `customEffect` | Access to `progress.v` |
 | Grid/particle systems | `customEffect` | Can manipulate many elements |
 
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, and custom effect patterns as outlined in the development plan Stage 1.5.
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframeEffect, and custom effect patterns as outlined in the development plan Stage 1.5.

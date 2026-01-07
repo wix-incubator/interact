@@ -697,6 +697,8 @@ export type TimeAnimationOptions = {
   reversed?: boolean;
 };
 
+export type PointerMoveAxis = 'horizontal' | 'vertical';
+
 type ScrubAnimationDataBase = {
   id?: string;
   keyframeEffect?: MotionKeyframeEffect;
@@ -714,6 +716,7 @@ type ScrubAnimationDataBase = {
   transitionDelay?: number;
   transitionEasing?: ScrubTransitionEasing;
   centeredToTarget?: boolean;
+  axis?: PointerMoveAxis;
 };
 
 export type ScrubAnimationOptions = ScrubAnimationDataBase & {
@@ -777,8 +780,9 @@ export interface ScrubPointerScene {
   transitionDuration?: number;
   transitionEasing?: ScrubTransitionEasing;
   getProgress(): Progress;
-  effect(p: Progress): void;
+  effect(scene: any, p: Progress): void;
   disabled: boolean;
   destroy(): void;
   allowActiveEvent?: boolean;
+  ready?: Promise<void>;
 }

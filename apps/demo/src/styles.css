@@ -224,6 +224,120 @@ body {
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* PointerMove Demo */
+.pointer-demo-section {
+  margin-top: 2rem;
+}
+
+.pointer-demo-header {
+  margin-bottom: 1.5rem;
+}
+
+.pointer-demo-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.pointer-demo-description {
+  color: rgb(148 163 184 / 0.9);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.pointer-demo-description code {
+  background: rgb(30 41 59 / 0.8);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #a5b4fc;
+}
+
+.pointer-demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pointer-demo-controls label {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.pointer-demo-select {
+  background: rgb(30 41 59 / 0.8);
+  border: 1px solid rgb(148 163 184 / 0.3);
+  border-radius: 6px;
+  color: #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pointer-demo-select:hover {
+  border-color: rgb(148 163 184 / 0.5);
+}
+
+.pointer-demo-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: crosshair;
+  border: 1px solid rgb(148 163 184 / 0.15);
+}
+
+.pointer-demo-slider {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+}
+
+.pointer-demo-indicator {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.pointer-demo-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgb(30 41 59 / 0.5);
+  border-radius: 0.75rem;
+  border: 1px solid rgb(148 163 184 / 0.1);
+}
+
+.pointer-demo-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: rgb(148 163 184 / 0.9);
+  line-height: 1.5;
+}
+
+.pointer-demo-info code {
+  background: rgb(30 41 59 / 0.8);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #a5b4fc;
+}
+
 /* Integration badges and back link */
 .back-link {
   display: inline-block;

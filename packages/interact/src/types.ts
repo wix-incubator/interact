@@ -7,6 +7,8 @@ import type {
 
 export type { RangeOffset };
 
+export type PointerMoveAxis = 'horizontal' | 'vertical';
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
@@ -106,6 +108,7 @@ export type ScrubEffect = {
   transitionDuration?: number;
   transitionDelay?: number;
   transitionEasing?: ScrubTransitionEasing;
+  axis?: PointerMoveAxis;
 } & EffectEffectProperty;
 
 export type TransitionOptions = {
