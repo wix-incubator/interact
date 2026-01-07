@@ -42,8 +42,18 @@ jobs:
       - run: corepack prepare yarn@4.10.3 --activate
       - run: yarn set version 4.10.3
       - run: NPQ_PKG_MGR=yarn npx npq install
-      - run: yarn build
-      - run: yarn test
+
+      - name: Build motion package
+        run: yarn workspace @wix/motion build
+
+      - name: Build interact package
+        run: yarn workspace @wix/interact build
+
+      - name: Test motion package
+        run: yarn workspace @wix/motion test
+
+      - name: Test interact package
+        run: yarn workspace @wix/interact test
 
       # ---- BUMP VERSION ----
 
