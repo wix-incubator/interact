@@ -1475,11 +1475,6 @@ Controlling movement direction for specific design needs:
 - Ensure proper hit area configuration
 - Test mouse event propagation
 
-**keyframeEffect not responding as expected with pointerMove**:
-- `keyframeEffect` defaults to `axis: 'vertical'` (maps y position to progress)
-- Use `axis: 'horizontal'` if you want horizontal pointer movement to control the animation
-- For 2D effects that need both axes, use `namedEffect` or `customEffect` instead
-
 ---
 
 ## Quick Reference: Effect Type Selection
@@ -1488,7 +1483,6 @@ Controlling movement direction for specific design needs:
 |-------------|----------|-----|
 | Standard 3D tilt | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested |
 | Cursor following | `namedEffect: { type: 'TrackMouse' }` | Built-in physics |
-| Single-axis slider/scrubber | `keyframeEffect` + `axis` | Simple linear interpolation |
 | Horizontal progress control | `keyframeEffect` + `axis: 'horizontal'` | Maps x position to keyframes |
 | Vertical progress control | `keyframeEffect` + `axis: 'vertical'` | Maps y position to keyframes |
 | Custom physics | `customEffect` | Full control over calculations |
