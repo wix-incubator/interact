@@ -890,6 +890,30 @@ describe('motion.ts', () => {
 
         (AnimationGroup as Mock).mockRestore();
       });
+
+      test('should return null when namedEffect is not found and no animation data is generated', async () => {
+        const animationOptions: AnimationOptions = {
+          namedEffect: { type: 'NonExistentEffect' as any, id: 'nonexistent' },
+          duration: 1000,
+        };
+
+        const result = getWebAnimation(mockElement, animationOptions);
+
+        expect(result).toBeNull();
+      });
+
+      test('should return null for pointer-move trigger when mouse animation factory is not callable', async () => {
+        const animationOptions: AnimationOptions = {
+          namedEffect: { type: 'NonExistentMouseEffect' as any, id: 'nonexistent' },
+        };
+
+        const result = getWebAnimation(mockElement.id, animationOptions, {
+          element: mockElement,
+          trigger: 'pointer-move',
+        });
+
+        expect(result).toBeNull();
+      });
     });
 
     describe('getElementCSSAnimation()', () => {
@@ -1858,6 +1882,25 @@ describe('motion.ts', () => {
         expect(scene1.end).toBe('updated-end');
 
         (AnimationGroup as Mock).mockRestore();
+      });
+
+      test('should return null when getWebAnimation returns null', async () => {
+        const animationOptions: AnimationOptions = {
+          namedEffect: { type: 'NonExistentEffect' as any, id: 'nonexistent' },
+        };
+
+        const trigger = {
+          trigger: 'view-progress' as const,
+          componentId: 'view-source',
+        };
+
+        const result = getScrubScene(
+          mockElement,
+          animationOptions,
+          trigger,
+        );
+
+        expect(result).toBeNull();
       });
     });
 

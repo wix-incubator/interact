@@ -143,14 +143,20 @@ function addViewEnterHandler(
   { reducedMotion, selectorCondition }: InteractOptions = {},
 ) {
   const mergedOptions = { ...viewEnterOptions, ...options };
-  const observer = getObserver(mergedOptions);
   const type = mergedOptions.type || 'once';
   const animation = getAnimation(
     target,
     effectToAnimationOptions(effect),
     undefined,
     reducedMotion,
-  ) as AnimationGroup;
+  ) as AnimationGroup | null;
+
+  // Early return if animation is null, no observer created
+  if (!animation) {
+    return;
+  }
+
+  const observer = getObserver(mergedOptions);
 
   // Persist animation for non-once types to prevent auto-cleanup
   if (type !== 'once') {
