@@ -63,7 +63,7 @@ function getWebAnimation(
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
   options?: Record<string, any>,
   ownerDocument?: Document,
-): AnimationGroup | MouseAnimationInstance {
+): AnimationGroup | MouseAnimationInstance | null {
   const element =
     target instanceof HTMLElement ? target : getElement(target, ownerDocument);
 
@@ -107,6 +107,12 @@ function getWebAnimation(
     trigger,
     options,
   ) as AnimationData[];
+
+  // Return null if animation data cannot be generated
+  if (!animationsData || animationsData.length === 0) {
+    return null;
+  }
+
   const data = getEffectsData(
     animationsData,
     trigger,

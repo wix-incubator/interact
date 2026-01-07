@@ -30,7 +30,13 @@ function createTimeEffectHandler(
     effectToAnimationOptions(effect),
     undefined,
     reducedMotion,
-  ) as AnimationGroup;
+  ) as AnimationGroup | null;
+
+  // Return null if animation could not be created
+  if (!animation) {
+    return null;
+  }
+
   let initialPlay = true;
   const type = options.type || 'alternate';
 
@@ -104,7 +110,7 @@ function addClickHandler(
   options: StateParams | PointerTriggerParams = {} as StateParams,
   { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
-  let handler: (event: MouseEvent | KeyboardEvent) => void;
+  let handler: ((event: MouseEvent | KeyboardEvent) => void) | null;
   let once = false;
 
   if (
@@ -127,6 +133,11 @@ function addClickHandler(
       selectorCondition,
     );
     once = (options as PointerTriggerParams).type === 'once';
+  }
+
+  // Early return if animation is null, no event listeners added
+  if (!handler) {
+    return;
   }
 
   const cleanup = () => {

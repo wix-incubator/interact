@@ -13,6 +13,12 @@ vi.mock('@wix/motion', () => {
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      pause: vi.fn(),
+      reverse: vi.fn(),
+      progress: vi.fn(),
+      persist: vi.fn(),
+      isCSS: false,
+      playState: 'idle',
       ready: Promise.resolve(),
     }),
     getScrubScene: vi.fn().mockReturnValue({}),
@@ -494,6 +500,192 @@ describe('interact (react)', () => {
         undefined,
         { reducedMotion: false }
       );
+    });
+
+    it('should set up viewEnter interactions with alternate type and reverse on exit', async () => {
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = (getWebAnimation as any)();
+      
+      // Capture observer callbacks
+      const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        observerCallbacks.push(cb);
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+      }) as any;
+      (window as any).IntersectionObserver = IntersectionObserverMock;
+
+      const alternateConfig: InteractConfig = {
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'logo-alternate',
+            params: { type: 'alternate' },
+            effects: [{ key: 'logo-alternate', effectId: 'logo-arc-in' }],
+          },
+        ],
+        effects: {
+          'logo-arc-in': {
+            namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+            duration: 1200,
+          },
+        },
+      };
+
+      Interact.create(alternateConfig);
+
+      const { container } = render(
+        <Interaction tagName="div" interactKey="logo-alternate">
+          <div>Alternate animation target</div>
+        </Interaction>
+      );
+
+      expect(getWebAnimation).toHaveBeenCalled();
+      expect(mockAnimation.persist).toHaveBeenCalled();
+
+      const targetElement = container.firstChild as HTMLElement;
+
+      // Simulate first entry - should play
+      const mainObserverCallback = observerCallbacks[0];
+      mainObserverCallback([{ target: targetElement, isIntersecting: true }]);
+      expect(mockAnimation.play).toHaveBeenCalled();
+
+      mockAnimation.reverse.mockClear();
+
+      // Simulate exit - should reverse
+      mainObserverCallback([{ target: targetElement, isIntersecting: false }]);
+      expect(mockAnimation.reverse).toHaveBeenCalled();
+
+      mockAnimation.reverse.mockClear();
+
+      // Simulate re-entry - should reverse again
+      mainObserverCallback([{ target: targetElement, isIntersecting: true }]);
+      expect(mockAnimation.reverse).toHaveBeenCalled();
+    });
+
+    it('should set up viewEnter interactions with repeat type and pause+reset on exit', async () => {
+      const viewEnterHandler = (await import('../src/handlers/viewEnter')).default;
+      viewEnterHandler.reset();
+
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = (getWebAnimation as any)();
+      
+      // Capture observer callbacks
+      const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        observerCallbacks.push(cb);
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+      }) as any;
+      (window as any).IntersectionObserver = IntersectionObserverMock;
+
+      const repeatConfig: InteractConfig = {
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'logo-repeat',
+            params: { type: 'repeat' },
+            effects: [{ key: 'logo-repeat', effectId: 'logo-arc-in' }],
+          },
+        ],
+        effects: {
+          'logo-arc-in': {
+            namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+            duration: 1200,
+          },
+        },
+      };
+
+      Interact.create(repeatConfig);
+
+      const { container } = render(
+        <Interaction tagName="div" interactKey="logo-repeat">
+          <div>Repeat animation target</div>
+        </Interaction>
+      );
+
+      expect(getWebAnimation).toHaveBeenCalled();
+      expect(mockAnimation.persist).toHaveBeenCalled();
+
+      const targetElement = container.firstChild as HTMLElement;
+
+      // Simulate first entry - should play
+      const mainObserverCallback = observerCallbacks[0];
+      mainObserverCallback([{ target: targetElement, isIntersecting: true }]);
+      expect(mockAnimation.play).toHaveBeenCalled();
+
+      mockAnimation.pause.mockClear();
+      mockAnimation.progress.mockClear();
+
+      // Simulate exit via exit observer - should pause and reset progress
+      const exitObserverCallback = observerCallbacks[1];
+      exitObserverCallback([{ target: targetElement, isIntersecting: false }]);
+      expect(mockAnimation.pause).toHaveBeenCalled();
+      expect(mockAnimation.progress).toHaveBeenCalledWith(0);
+    });
+
+    it('should set up viewEnter interactions with state type and pause on exit', async () => {
+      const viewEnterHandler = (await import('../src/handlers/viewEnter')).default;
+      viewEnterHandler.reset();
+
+      const { getWebAnimation } = await import('@wix/motion');
+      const mockAnimation = (getWebAnimation as any)();
+      
+      // Capture observer callbacks
+      const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
+      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        observerCallbacks.push(cb);
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+      }) as any;
+      (window as any).IntersectionObserver = IntersectionObserverMock;
+
+      const stateConfig: InteractConfig = {
+        interactions: [
+          {
+            trigger: 'viewEnter',
+            key: 'logo-state',
+            params: { type: 'state' },
+            effects: [{ key: 'logo-state', effectId: 'logo-arc-in' }],
+          },
+        ],
+        effects: {
+          'logo-arc-in': {
+            namedEffect: { type: 'ArcIn', direction: 'right', power: 'medium' } as NamedEffect,
+            duration: 1200,
+          },
+        },
+      };
+
+      Interact.create(stateConfig);
+
+      const { container } = render(
+        <Interaction tagName="div" interactKey="logo-state">
+          <div>State animation target</div>
+        </Interaction>
+      );
+
+      expect(getWebAnimation).toHaveBeenCalled();
+      expect(mockAnimation.persist).toHaveBeenCalled();
+
+      const targetElement = container.firstChild as HTMLElement;
+
+      // Simulate first entry - should play
+      const mainObserverCallback = observerCallbacks[0];
+      mainObserverCallback([{ target: targetElement, isIntersecting: true }]);
+      expect(mockAnimation.play).toHaveBeenCalled();
+
+      mockAnimation.pause.mockClear();
+      mockAnimation.progress.mockClear();
+
+      // Simulate exit via exit observer - should pause (but NOT reset progress)
+      const exitObserverCallback = observerCallbacks[1];
+      exitObserverCallback([{ target: targetElement, isIntersecting: false }]);
+      expect(mockAnimation.pause).toHaveBeenCalled();
+      expect(mockAnimation.progress).not.toHaveBeenCalled();
     });
 
     it('should clean up interactions properly on component unmount', () => {
