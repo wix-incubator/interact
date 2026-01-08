@@ -2,14 +2,6 @@ name: Bump RC And Publish
 
 on:
   workflow_dispatch:
-    secrets:
-      GH_EMAIL:
-        required: true
-      GH_USER:
-        required: true
-      USER_GITHUB_TOKEN:
-        required: true
-
     inputs:
       dry_run:
           description: 'Dry run (preview only)'
@@ -65,15 +57,13 @@ jobs:
       - name: Commit and push version bump
         if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
-          git config user.email "${{ secrets.GH_EMAIL }}"
-          git config user.name "${{ secrets.GH_USER }}"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
           git add .
           git commit -m "chore: bump @wix/interact RC version [skip ci]"
           git push --follow-tags
         env:
-          GH_EMAIL: ${{ secrets.GH_EMAIL }}
-          GH_USER: ${{ secrets.GH_USER }}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
