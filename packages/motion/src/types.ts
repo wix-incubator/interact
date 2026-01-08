@@ -41,11 +41,6 @@ declare global {
 
 export type AnimationFillMode = 'none' | 'backwards' | 'forwards' | 'both';
 
-export type BaseDataItemLike<Type extends string = string> = {
-  id?: string;
-  type: Type;
-};
-
 export type EffectTwoSides = 'left' | 'right';
 
 export type EffectFourDirections = 'top' | 'right' | 'bottom' | 'left';
@@ -109,7 +104,7 @@ export type MouseAnimationFactoryCreate = (
 ) => MouseAnimationFactory;
 
 export type NamedEffect =
-  BaseDataItemLike<string> & Record<string, unknown>;
+  {type: string} & Record<string, unknown>;
 
 export type CustomEffect =
   | {
@@ -162,7 +157,7 @@ export type RangeOffset = {
   offset?: LengthPercentage;
 };
 
-export type MotionKeyframeEffect = BaseDataItemLike<'KeyframeEffect'> & {
+export type MotionKeyframeEffect = {type: 'KeyframeEffect'} & {
   name: string;
   keyframes: Keyframe[];
 };
