@@ -57,11 +57,6 @@ jobs:
 
       # ---- BUMP VERSION ----
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "${{ secrets.GH_EMAIL }}"
-          git config --global user.name "${{ secrets.GH_USER }}"
-
       - name: Bump RC version
         if: ${{ github.event.inputs.dry_run == 'false' }}
         working-directory: packages/interact
@@ -70,9 +65,15 @@ jobs:
       - name: Commit and push version bump
         if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
+          git config user.email "${{ secrets.GH_EMAIL }}"
+          git config user.name "${{ secrets.GH_USER }}"
           git add .
           git commit -m "chore: bump @wix/interact RC version [skip ci]"
-          git push
+          git push --follow-tags
+        env:
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_USER: ${{ secrets.GH_USER }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
