@@ -574,4 +574,22 @@ vi.mock('@wix/motion', () => ({
         expect(mockAnimation.persist).toHaveBeenCalled();
       });
     });
+
+    describe('Null animation handling', () => {
+      it('should not create IntersectionObserver when animation is null', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        (getAnimation as any).mockReturnValueOnce(null);
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'NonExistentEffect' } },
+          {},
+          {},
+        );
+
+        // IntersectionObserver should not be created when animation is null
+        expect(observeSpy).not.toHaveBeenCalled();
+      });
+    });
   });
