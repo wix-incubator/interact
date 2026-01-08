@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { registerEffects, getRegisteredEffect } from '../src/api/registry';
 import { getNamedEffect } from '../src/api/common';
-import type { AnimationOptions, AnimationEffectAPI, TimeAnimationOptions, AnimationExtraOptions, ScrollEffectModule } from '../src/types';
+import type { AnimationOptions, AnimationEffectAPI, TimeAnimationOptions, AnimationExtraOptions, ScrollEffectModule, WebAnimationEffectFactory } from '../src/types';
 import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
 import type { ScrubAnimationOptions } from '@wix/motion-presets/types';
 
@@ -126,12 +126,12 @@ describe('Registry Flow', () => {
         },
       };
 
-      const effect = getNamedEffect(animationOptions) as ScrollEffectModule;
+      const effect = getNamedEffect(animationOptions) as WebAnimationEffectFactory<'scrub'>;
 
       expect(effect).toBeDefined();
-      expect(effect).toHaveProperty('web');
+      expect(typeof effect).toBe('function');
 
-      const animationData = effect.web(animationOptions as ScrubAnimationOptions);
+      const animationData = effect(animationOptions as ScrubAnimationOptions);
 
       expect(animationData).toHaveLength(1);
       expect(animationData[0].keyframes).toBeDefined();
@@ -149,13 +149,13 @@ describe('Registry Flow', () => {
       };
 
       const fadeEffect = getNamedEffect(fadeOptions) as AnimationEffectAPI<'time'>;
-      const scrollEffect = getNamedEffect(scrollOptions) as ScrollEffectModule;
+      const scrollEffect = getNamedEffect(scrollOptions) as WebAnimationEffectFactory<'scrub'>;
 
       expect(fadeEffect).toBeDefined();
       expect(scrollEffect).toBeDefined();
 
       const fadeData = fadeEffect.web(fadeOptions as TimeAnimationOptions & AnimationExtraOptions);
-      const scrollData = scrollEffect.web(scrollOptions as ScrubAnimationOptions);
+      const scrollData = scrollEffect(scrollOptions as ScrubAnimationOptions);
 
       expect(fadeData).toHaveLength(1);
       expect(fadeData[0].keyframes).toBeDefined();
