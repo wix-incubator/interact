@@ -49,8 +49,10 @@ export type {
 } from '@wix/motion';
 
 import type {
+  AnimationData,
   AnimationEffectAPI,
   AnimationOptions,
+  DomApi,
   EffectEightDirections,
   EffectFourCorners,
   EffectFourDirections,
@@ -60,6 +62,7 @@ import type {
   EffectScrollRange,
   EffectTwoSides,
   MouseAnimationFactoryCreate,
+  ScrubAnimationOptions,
   UnitLengthPercentage,
   WebAnimationEffectFactory,
 } from '@wix/motion';
