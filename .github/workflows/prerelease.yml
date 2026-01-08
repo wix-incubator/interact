@@ -65,7 +65,7 @@ jobs:
       - name: Bump RC version
         if: ${{ github.event.inputs.dry_run == 'false' }}
         working-directory: packages/interact
-        run: yarn version prerelease --preid rc
+        run: yarn version prerelease
 
       - name: Commit and push version bump
         if: ${{ github.event.inputs.dry_run == 'false' }}
