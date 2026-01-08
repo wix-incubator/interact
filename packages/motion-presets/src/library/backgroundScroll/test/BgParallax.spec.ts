@@ -3,9 +3,8 @@ import { describe, expect, test } from 'vitest';
 import BgParallax from '../BgParallax';
 import { baseMockOptions } from './testUtils';
 import type {
-  BgParallax,
-  AnimationData,
   BgParallax as BgParallaxType,
+  AnimationData,
 } from '../../../types';
 
 describe('BgParallax', () => {
