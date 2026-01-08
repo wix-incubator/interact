@@ -3,10 +3,8 @@ import type { InteractConfig, PointerMoveAxis } from '@wix/interact/react';
 import { Interaction } from '@wix/interact/react';
 import { useInteractInstance } from '../hooks/useInteractInstance';
 
-type AxisOption = PointerMoveAxis | 'none';
-
 export const PointerMoveDemo = () => {
-  const [axis, setAxis] = useState<AxisOption>('x');
+  const [axis, setAxis] = useState<PointerMoveAxis>('x');
 
   const config = useMemo<InteractConfig>(() => {
     return {
@@ -14,7 +12,7 @@ export const PointerMoveDemo = () => {
         {
           key: 'pointer-container',
           trigger: 'pointerMove',
-          params: { hitArea: 'self', axis: axis === 'none' ? undefined : axis },
+          params: { hitArea: 'self', axis: axis },
           effects: [
             {
               key: 'pointer-slider',
@@ -69,12 +67,11 @@ export const PointerMoveDemo = () => {
           <select
             id="axis-select"
             value={axis}
-            onChange={(e) => setAxis(e.target.value as AxisOption)}
+            onChange={(e) => setAxis(e.target.value as PointerMoveAxis)}
             className="pointer-demo-select"
           >
             <option value="x">x</option>
             <option value="y">y</option>
-            <option value="none">none (default: y)</option>
           </select>
         </div>
       </div>
@@ -94,7 +91,7 @@ export const PointerMoveDemo = () => {
           interactKey="pointer-indicator"
           className="pointer-demo-indicator"
         >
-          Move {axis === 'x' ? '← →' : axis === 'y' ? '↑ ↓' : '↑ ↓ (default)'}
+          Move {axis === 'x' ? '← →' : '↑ ↓'}
         </Interaction>
       </Interaction>
 

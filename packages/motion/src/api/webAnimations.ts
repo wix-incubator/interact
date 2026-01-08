@@ -77,22 +77,19 @@ function getWebAnimation(
       };
     }
 
-    if (effectOptions.namedEffect || animationOptions.customEffect) {
-      // TODO: need to fix the type here, currently lying about the returned type to be WebAnimationEffectFactory instead of MouseAnimationFactoryCreate
-      const mouseAnimationPreset = getNamedEffect(
-        effectOptions,
-      ) as WebAnimationEffectFactory<'scrub'>;
-      const mouseAnimationFactory = getWebAnimationEffect(
-        mouseAnimationPreset,
-        animationOptions,
-        element,
-        trigger,
-        options,
-      ) as MouseAnimationFactory;
+    // TODO: need to fix the type here, currently lying about the returned type to be WebAnimationEffectFactory instead of MouseAnimationFactoryCreate
+    const mouseAnimationPreset = getNamedEffect(
+      effectOptions,
+    ) as WebAnimationEffectFactory<'scrub'>;
+    const mouseAnimationFactory = getWebAnimationEffect(
+      mouseAnimationPreset,
+      animationOptions,
+      element,
+      trigger,
+      options,
+    ) as MouseAnimationFactory;
 
-      return mouseAnimationFactory(element as HTMLElement);
-    }
-    // If no namedEffect and no customEffect, fall through to create a regular AnimationGroup
+    return mouseAnimationFactory(element as HTMLElement);
   }
 
   // get the preset for the given animation options
@@ -158,11 +155,11 @@ function getWebAnimation(
       const animation: Animation | CustomAnimation =
         typeof effect.customEffect === 'function'
           ? (new CustomAnimation(
-              effect.customEffect,
-              effectTarget || null,
-              effectOptions,
-              timingOptions,
-            ) as Animation)
+            effect.customEffect,
+            effectTarget || null,
+            effectOptions,
+            timingOptions,
+          ) as Animation)
           : new Animation(keyframeEffect, timingOptions.timeline);
 
       // if this is a ScrubAnimation with view-progress trigger and the browser supports the ViewTimeline API

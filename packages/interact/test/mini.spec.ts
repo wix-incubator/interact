@@ -814,6 +814,8 @@ describe('interact (mini)', () => {
           },
         };
 
+
+
         Interact.destroy();
         Interact.create(repeatConfig);
 
@@ -956,6 +958,77 @@ describe('interact (mini)', () => {
             ),
             expect.objectContaining({
               trigger: 'pointer-move',
+            }),
+          );
+          setTimeout(() => {
+            expect(pointerInstance.start).toHaveBeenCalled();
+            done(void 0);
+          }, 0);
+        }));
+
+      it('should add handler for pointerMove trigger with keyframeEffect', async () =>
+        new Promise(async (done) => {
+          const { getScrubScene } = await import('@wix/motion');
+          const { Pointer } = await import('kuliso');
+          const pointerInstance = {
+            start: vi.fn(),
+            destroy: vi.fn(),
+          };
+          Pointer.mockImplementation(function (this: any) {
+            Object.assign(this, pointerInstance);
+          });
+
+          const keyframeEffectConfig: InteractConfig = {
+            interactions: [
+              {
+                trigger: 'pointerMove',
+                key: 'keyframe-mouse',
+                params: {
+                  hitArea: 'root',
+                  axis: 'x',
+                },
+                effects: [
+                  {
+                    key: 'keyframe-mouse',
+                    effectId: 'keyframe-track-mouse',
+                  },
+                ],
+              },
+            ],
+            effects: {
+              'keyframe-track-mouse': {
+                keyframeEffect: {
+                  name: 'custom-pointer-move',
+                  keyframes: [
+                    { transform: 'translateX(-50px)' },
+                    { transform: 'translateX(50px)' },
+                  ],
+                },
+              },
+            },
+          };
+
+          Interact.destroy();
+          Interact.create(keyframeEffectConfig);
+
+          element = document.createElement('div');
+
+          add(element, 'keyframe-mouse');
+
+          expect(getScrubScene).toHaveBeenCalledWith(
+            expect.any(HTMLElement),
+            expect.objectContaining({
+              keyframeEffect: expect.objectContaining({
+                name: 'custom-pointer-move',
+                keyframes: [
+                  { transform: 'translateX(-50px)' },
+                  { transform: 'translateX(50px)' },
+                ],
+              }),
+            }),
+            expect.objectContaining({
+              trigger: 'pointer-move',
+              axis: 'x',
             }),
           );
           setTimeout(() => {
