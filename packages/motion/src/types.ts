@@ -157,7 +157,7 @@ export type RangeOffset = {
   offset?: LengthPercentage;
 };
 
-export type MotionKeyframeEffect = {type: 'KeyframeEffect'} & {
+export type MotionKeyframeEffect = {
   name: string;
   keyframes: Keyframe[];
 };
