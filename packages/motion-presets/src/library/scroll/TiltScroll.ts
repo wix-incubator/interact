@@ -86,7 +86,7 @@ function getScrubOffsets({ power, range = 'in', distance = 0 }: TiltScroll) {
   };
 }
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     power,
     distance = 0,

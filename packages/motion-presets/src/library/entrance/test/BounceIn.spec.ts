@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as BounceIn from '../BounceIn';
 import { baseMockOptions } from './testUtils';
-import type { BounceIn, AnimationData } from '../../../types';
+import type { BounceIn as BounceInType, AnimationData } from '../../../types';
 
 describe('BounceIn', () => {
   test('BounceIn animation with default options', () => {
@@ -10,7 +10,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as BounceIn,
+      namedEffect: {} as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -88,7 +88,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -98,7 +98,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { distanceFactor: 2 } as BounceIn,
+      namedEffect: { distanceFactor: 2 } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -174,7 +174,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -184,7 +184,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'top' } as BounceIn,
+      namedEffect: { direction: 'top' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -260,7 +260,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -270,7 +270,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'right' } as BounceIn,
+      namedEffect: { direction: 'right' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -346,7 +346,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -356,7 +356,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'left' } as BounceIn,
+      namedEffect: { direction: 'left' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -432,7 +432,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -442,7 +442,7 @@ describe('BounceIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'center' } as BounceIn,
+      namedEffect: { direction: 'center' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -518,7 +518,7 @@ describe('BounceIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.web(mockOptions);
+    const result = BounceIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -530,7 +530,7 @@ describe('BounceIn style method', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as BounceIn,
+      namedEffect: {} as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -623,7 +623,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -633,7 +633,7 @@ describe('BounceIn style method', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { distanceFactor: 2 } as BounceIn,
+      namedEffect: { distanceFactor: 2 } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -722,7 +722,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -732,7 +732,7 @@ describe('BounceIn style method', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'top' } as BounceIn,
+      namedEffect: { direction: 'top' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -821,7 +821,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result =  BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -831,7 +831,7 @@ describe('BounceIn style method', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'right' } as BounceIn,
+      namedEffect: { direction: 'right' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -920,17 +920,17 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('BounceIn style with left direction', () => {
+  test('BounceIn style with left direction', () => {  
     const duration = 1000;
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'left' } as BounceIn,
+      namedEffect: { direction: 'left' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -1019,7 +1019,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -1029,7 +1029,7 @@ describe('BounceIn style method', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { direction: 'center' } as BounceIn,
+      namedEffect: { direction: 'center' } as BounceInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -1118,7 +1118,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result = entranceAnimations.BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

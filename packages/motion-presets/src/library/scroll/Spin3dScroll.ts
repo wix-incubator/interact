@@ -68,7 +68,7 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: Spin3dScroll) {
   };
 }
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     rotate = -100,
     power,

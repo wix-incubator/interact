@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgCloseUp from '../BgCloseUp';
 import { baseMockOptions } from './testUtils';
 import type {
-  BackgroundScrollAnimation,
+  BgCloseUp as BgCloseUpType,
   AnimationData,
 } from '../../../types';
 
@@ -11,7 +11,7 @@ describe('BgCloseUp', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BackgroundScrollAnimation,
+      namedEffect: {} as BgCloseUpType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -22,7 +22,7 @@ describe('BgCloseUp', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgCloseUp(mockOptions);
+    const result = BgCloseUp(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -31,7 +31,7 @@ describe('BgCloseUp', () => {
     const scale = 50;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { scale } as BackgroundScrollAnimation,
+      namedEffect: { scale } as BgCloseUpType,
     };
     const expectedResult: Partial<AnimationData>[] = [
       { ...baseMockOptions },
@@ -41,7 +41,7 @@ describe('BgCloseUp', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgCloseUp(mockOptions);
+    const result = BgCloseUp(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { RevealScroll, ScrubAnimationOptions } from '../../../types';
+import RevealScroll from '../RevealScroll';
+import type { RevealScroll as RevealScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('RevealScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as RevealScroll,
+      namedEffect: {} as RevealScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('RevealScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as RevealScroll,
+      namedEffect: { direction: 'left' } as RevealScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('RevealScroll', () => {
   test('custom direction - right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as RevealScroll,
+      namedEffect: { direction: 'right' } as RevealScrollType,
     };
 
     const expectedResult = [
@@ -80,7 +80,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -88,7 +88,7 @@ describe('RevealScroll', () => {
   test('custom direction - top', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top' } as RevealScroll,
+      namedEffect: { direction: 'top' } as RevealScrollType,
     };
 
     const expectedResult = [
@@ -106,7 +106,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -114,7 +114,7 @@ describe('RevealScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as RevealScroll,
+      namedEffect: { range: 'out' } as RevealScrollType,
     };
 
     const expectedResult = [
@@ -133,7 +133,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -141,7 +141,7 @@ describe('RevealScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as RevealScroll,
+      namedEffect: { range: 'continuous' } as RevealScrollType,
     };
 
     const expectedResult = [
@@ -162,7 +162,7 @@ describe('RevealScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.RevealScroll?.(mockOptions);
+    const result = RevealScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

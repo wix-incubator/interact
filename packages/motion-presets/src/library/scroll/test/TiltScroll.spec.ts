@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { TiltScroll, ScrubAnimationOptions } from '../../../types';
+import TiltScroll from '../TiltScroll';
+import type { TiltScroll as TiltScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('TiltScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as TiltScroll,
+      namedEffect: {} as TiltScrollType,
     };
 
     const expectedResult = [
@@ -44,7 +44,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -52,7 +52,7 @@ describe('TiltScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as TiltScroll,
+      namedEffect: { power: 'soft' } as TiltScrollType,
     };
 
     const expectedResult = [
@@ -84,7 +84,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -92,7 +92,7 @@ describe('TiltScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as TiltScroll,
+      namedEffect: { range: 'out' } as TiltScrollType,
     };
 
     const expectedResult = [
@@ -126,7 +126,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -135,7 +135,7 @@ describe('TiltScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as TiltScroll,
+      namedEffect: { range: 'continuous' } as TiltScrollType,
     };
 
     const expectedResult = [
@@ -169,7 +169,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -177,7 +177,7 @@ describe('TiltScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as TiltScroll,
+      namedEffect: { direction: 'left' } as TiltScrollType,
     };
 
     const expectedResult = [
@@ -205,7 +205,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -213,7 +213,7 @@ describe('TiltScroll', () => {
   test('custom distance', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { distance: 0.5 } as TiltScroll,
+      namedEffect: { distance: 0.5 } as TiltScrollType,
     };
 
     const expectedResult = [
@@ -237,7 +237,7 @@ describe('TiltScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TiltScroll?.(mockOptions);
+    const result = TiltScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

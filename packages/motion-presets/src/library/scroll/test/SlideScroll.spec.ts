@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { SlideScroll, ScrubAnimationOptions } from '../../../types';
+import SlideScroll from '../SlideScroll';
+import type { SlideScroll as SlideScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('SlideScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as SlideScroll,
+      namedEffect: {} as SlideScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('SlideScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SlideScroll?.(mockOptions);
+    const result = SlideScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('SlideScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as SlideScroll,
+      namedEffect: { direction: 'left' } as SlideScrollType,
     };
 
     const expectedResult = [
@@ -55,7 +55,7 @@ describe('SlideScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SlideScroll?.(mockOptions);
+    const result = SlideScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -63,7 +63,7 @@ describe('SlideScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as SlideScroll,
+      namedEffect: { range: 'out' } as SlideScrollType,
     };
 
     const expectedResult = [
@@ -83,7 +83,7 @@ describe('SlideScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SlideScroll?.(mockOptions);
+    const result = SlideScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -91,7 +91,7 @@ describe('SlideScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as SlideScroll,
+      namedEffect: { range: 'continuous' } as SlideScrollType,
     };
 
     const expectedResult = [
@@ -115,7 +115,7 @@ describe('SlideScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SlideScroll?.(mockOptions);
+    const result = SlideScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as GlideIn from '../GlideIn';
 import { baseMockOptions } from './testUtils';
-import type { GlideIn, AnimationData } from '../../../types';
+import type { GlideIn as GlideInType, AnimationData } from '../../../types';
 
 describe('GlideIn', () => {
   test('GlideIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GlideIn,
+      namedEffect: {} as GlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -34,7 +34,7 @@ describe('GlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlideIn.web(mockOptions);
+    const result = GlideIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -44,7 +44,7 @@ describe('GlideIn', () => {
     const distance = { value: 200, type: 'px' };
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction, distance } as GlideIn,
+      namedEffect: { direction, distance } as GlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -69,7 +69,7 @@ describe('GlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlideIn.web(mockOptions);
+    const result = GlideIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -77,7 +77,7 @@ describe('GlideIn', () => {
   test('GlideIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GlideIn,
+      namedEffect: {} as GlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -108,7 +108,7 @@ describe('GlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlideIn.style?.(mockOptions);
+    const result = GlideIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -118,7 +118,7 @@ describe('GlideIn', () => {
     const distance = { value: 200, type: 'px' };
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction, distance } as GlideIn,
+      namedEffect: { direction, distance } as GlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -148,7 +148,7 @@ describe('GlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlideIn.style?.(mockOptions);
+    const result = GlideIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

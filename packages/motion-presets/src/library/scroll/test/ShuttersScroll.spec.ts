@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { ShuttersScroll, ScrubAnimationOptions } from '../../../types';
+import ShuttersScroll from '../ShuttersScroll';
+import type { ShuttersScroll as ShuttersScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('ShuttersScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ShuttersScroll,
+      namedEffect: {} as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -29,7 +29,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -37,7 +37,7 @@ describe('ShuttersScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as ShuttersScroll,
+      namedEffect: { direction: 'left' } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -55,7 +55,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -63,7 +63,7 @@ describe('ShuttersScroll', () => {
   test('custom direction - top', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top' } as ShuttersScroll,
+      namedEffect: { direction: 'top' } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -81,7 +81,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -89,7 +89,7 @@ describe('ShuttersScroll', () => {
   test('custom direction - bottom', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom' } as ShuttersScroll,
+      namedEffect: { direction: 'bottom' } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -107,7 +107,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -115,7 +115,7 @@ describe('ShuttersScroll', () => {
   test('custom shutters', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { shutters: 6 } as ShuttersScroll,
+      namedEffect: { shutters: 6 } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -133,7 +133,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -141,7 +141,7 @@ describe('ShuttersScroll', () => {
   test('staggered false', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { staggered: false } as ShuttersScroll,
+      namedEffect: { staggered: false } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -160,7 +160,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -168,7 +168,7 @@ describe('ShuttersScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as ShuttersScroll,
+      namedEffect: { range: 'out' } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -188,7 +188,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -197,7 +197,7 @@ describe('ShuttersScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as ShuttersScroll,
+      namedEffect: { range: 'continuous' } as ShuttersScrollType,
     };
 
     const expectedResult = [
@@ -235,7 +235,7 @@ describe('ShuttersScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShuttersScroll?.(mockOptions);
+    const result = ShuttersScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

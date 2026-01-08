@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as ArcIn from '../ArcIn';
 import { baseMockOptions } from './testUtils';
-import type { ArcIn, AnimationData } from '../../../types';
+import type { ArcIn as ArcInType, AnimationData } from '../../../types';
 
 describe('ArcIn', () => {
   test('ArcIn animation with left direction and soft power', () => {
@@ -12,7 +12,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -32,7 +32,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.web(mockOptions);
+    const result = ArcIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -44,7 +44,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -64,7 +64,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.web(mockOptions);
+    const result = ArcIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -76,7 +76,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -96,7 +96,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.web(mockOptions);
+    const result = ArcIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -104,7 +104,7 @@ describe('ArcIn', () => {
   test('ArcIn animation with default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ArcIn,
+      namedEffect: {} as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -124,7 +124,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.web(mockOptions);
+    const result = ArcIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -136,7 +136,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -168,7 +168,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.style?.(mockOptions);
+    const result = ArcIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -180,7 +180,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -212,7 +212,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.style?.(mockOptions);
+    const result = ArcIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -220,7 +220,7 @@ describe('ArcIn', () => {
   test('ArcIn style animation with default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ArcIn,
+      namedEffect: {} as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -252,7 +252,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.style?.(mockOptions);
+    const result = ArcIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -264,7 +264,7 @@ describe('ArcIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcIn,
+      namedEffect: { power, direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -296,7 +296,7 @@ describe('ArcIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ArcIn.style?.(mockOptions);
+    const result = ArcIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

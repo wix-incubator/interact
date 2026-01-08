@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { SpinScroll, ScrubAnimationOptions } from '../../../types';
+import SpinScroll from '../SpinScroll';
+import type { SpinScroll as SpinScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('SpinScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as SpinScroll,
+      namedEffect: {} as SpinScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('SpinScroll', () => {
   test('custom spins', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { spins: 0.5 } as SpinScroll,
+      namedEffect: { spins: 0.5 } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('SpinScroll', () => {
   test('custom scale', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { scale: 0.5 } as SpinScroll,
+      namedEffect: { scale: 0.5 } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -80,7 +80,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -88,7 +88,7 @@ describe('SpinScroll', () => {
   test('custom direction - counter-clockwise', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'counter-clockwise' } as SpinScroll,
+      namedEffect: { direction: 'counter-clockwise' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -106,7 +106,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -114,7 +114,7 @@ describe('SpinScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as SpinScroll,
+      namedEffect: { power: 'soft' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -132,7 +132,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -140,7 +140,7 @@ describe('SpinScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as SpinScroll,
+      namedEffect: { power: 'medium' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -158,7 +158,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -166,7 +166,7 @@ describe('SpinScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as SpinScroll,
+      namedEffect: { power: 'hard' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -184,7 +184,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -192,7 +192,7 @@ describe('SpinScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as SpinScroll,
+      namedEffect: { range: 'out' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -211,7 +211,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -219,7 +219,7 @@ describe('SpinScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as SpinScroll,
+      namedEffect: { range: 'continuous' } as SpinScrollType,
     };
 
     const expectedResult = [
@@ -237,7 +237,7 @@ describe('SpinScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SpinScroll?.(mockOptions);
+    const result = SpinScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -15,7 +15,7 @@ const ROTATE_DIRECTION_MAP = {
   horizontal: 'rotateY',
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     rotate = 240,
     direction = 'horizontal',

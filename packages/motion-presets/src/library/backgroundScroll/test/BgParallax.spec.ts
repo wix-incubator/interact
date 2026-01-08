@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgParallax from '../BgParallax';
 import { baseMockOptions } from './testUtils';
 import type {
   BgParallax,
   AnimationData,
-  BackgroundScrollAnimation,
+  BgParallax as BgParallaxType,
 } from '../../../types';
 
 describe('BgParallax', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BgParallax,
+      namedEffect: {} as BgParallaxType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -27,7 +27,7 @@ describe('BgParallax', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgParallax(mockOptions);
+    const result = BgParallax(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('BgParallax', () => {
     const speed = 0.5;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { speed } as BackgroundScrollAnimation,
+      namedEffect: { speed } as BgParallaxType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -51,7 +51,7 @@ describe('BgParallax', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgParallax(mockOptions);
+    const result = BgParallax(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

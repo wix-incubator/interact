@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as FloatIn from '../FloatIn';
 import { baseMockOptions } from './testUtils';
-import type { FloatIn, AnimationData } from '../../../types';
+import type { FloatIn as FloatInType, AnimationData } from '../../../types';
 
 describe('FloatIn', () => {
   test('FloatIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FloatIn,
+      namedEffect: {} as FloatInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -34,7 +34,7 @@ describe('FloatIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FloatIn.web(mockOptions);
+    const result = FloatIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -42,7 +42,7 @@ describe('FloatIn', () => {
   test('FloatIn animation with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top' } as FloatIn,
+      namedEffect: { direction: 'top' } as FloatInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -67,7 +67,7 @@ describe('FloatIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FloatIn.web(mockOptions);
+    const result = FloatIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -75,7 +75,7 @@ describe('FloatIn', () => {
   test('FloatIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FloatIn,
+      namedEffect: {} as FloatInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -105,7 +105,7 @@ describe('FloatIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FloatIn.style?.(mockOptions);
+    const result = FloatIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -113,7 +113,7 @@ describe('FloatIn', () => {
   test('FloatIn style animation with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top' } as FloatIn,
+      namedEffect: { direction: 'top' } as FloatInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -142,7 +142,7 @@ describe('FloatIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FloatIn.style?.(mockOptions);
+    const result = FloatIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

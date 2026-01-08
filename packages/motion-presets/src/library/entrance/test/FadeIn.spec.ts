@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as FadeIn from '../FadeIn';
 import { baseMockOptions } from './testUtils';
-import type { FadeIn, AnimationData } from '../../../types';
+import type { FadeIn as FadeInType, AnimationData } from '../../../types';
 
 describe('FadeIn', () => {
   test('FadeIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FadeIn,
+      namedEffect: {} as FadeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -18,7 +18,7 @@ describe('FadeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FadeIn.web(mockOptions);
+    const result = FadeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -26,7 +26,7 @@ describe('FadeIn', () => {
   test('FadeIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FadeIn,
+      namedEffect: {} as FadeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -36,7 +36,7 @@ describe('FadeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FadeIn.style?.(mockOptions);
+    const result = FadeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

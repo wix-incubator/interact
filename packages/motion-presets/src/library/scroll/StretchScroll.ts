@@ -66,7 +66,7 @@ const opacityKeyframesMap = {
   ],
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     power,
     stretch = 0.6,

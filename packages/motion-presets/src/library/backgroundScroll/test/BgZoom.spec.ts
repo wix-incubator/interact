@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgZoom from '../BgZoom';
 import { baseMockOptions } from './testUtils';
 import type {
-  BackgroundScrollAnimation,
+  BgZoom as BgZoomType,
   AnimationData,
 } from '../../../types';
 
@@ -11,7 +11,7 @@ describe('BgZoom', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'BgZoom' } as BackgroundScrollAnimation,
+      namedEffect: { type: 'BgZoom' } as BgZoomType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -40,7 +40,7 @@ describe('BgZoom', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgZoom(mockOptions);
+    const result = BgZoom(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -49,7 +49,7 @@ describe('BgZoom', () => {
     const zoom = 40;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { zoom, type: 'BgZoom' } as BackgroundScrollAnimation,
+      namedEffect: { zoom, type: 'BgZoom' } as BgZoomType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -78,7 +78,7 @@ describe('BgZoom', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgZoom(mockOptions);
+    const result = BgZoom(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -86,7 +86,7 @@ describe('BgZoom', () => {
   test('Custom direction - out', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'out', type: 'BgZoom' } as BackgroundScrollAnimation,
+      namedEffect: { direction: 'out', type: 'BgZoom' } as BgZoomType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -115,7 +115,7 @@ describe('BgZoom', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgZoom(mockOptions);
+    const result = BgZoom(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

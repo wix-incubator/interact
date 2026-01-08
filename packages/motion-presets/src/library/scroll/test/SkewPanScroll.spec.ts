@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { SkewPanScroll, ScrubAnimationOptions } from '../../../types';
+import SkewPanScroll from '../SkewPanScroll';
+import type { SkewPanScroll as SkewPanScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('SkewPanScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as SkewPanScroll,
+      namedEffect: {} as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('SkewPanScroll', () => {
   test('custom skew value', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { skew: 20 } as SkewPanScroll,
+      namedEffect: { skew: 20 } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('SkewPanScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as SkewPanScroll,
+      namedEffect: { direction: 'left' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -80,7 +80,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -88,7 +88,7 @@ describe('SkewPanScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as SkewPanScroll,
+      namedEffect: { power: 'soft' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -106,7 +106,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -114,7 +114,7 @@ describe('SkewPanScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as SkewPanScroll,
+      namedEffect: { power: 'medium' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -132,7 +132,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -140,7 +140,7 @@ describe('SkewPanScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as SkewPanScroll,
+      namedEffect: { power: 'hard' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -158,7 +158,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -166,7 +166,7 @@ describe('SkewPanScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as SkewPanScroll,
+      namedEffect: { range: 'out' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -185,7 +185,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -193,7 +193,7 @@ describe('SkewPanScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as SkewPanScroll,
+      namedEffect: { range: 'continuous' } as SkewPanScrollType,
     };
 
     const expectedResult = [
@@ -211,7 +211,7 @@ describe('SkewPanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.SkewPanScroll?.(mockOptions);
+    const result = SkewPanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

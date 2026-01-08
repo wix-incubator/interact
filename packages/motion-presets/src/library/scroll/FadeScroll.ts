@@ -4,7 +4,7 @@ import type {
   AnimationFillMode,
 } from '../../types';
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const { opacity = 0, range = 'in' } = options.namedEffect as FadeScroll;
   const isOut = range === 'out';
   const fromValue = isOut ? 'var(--comp-opacity, 1)' : opacity;

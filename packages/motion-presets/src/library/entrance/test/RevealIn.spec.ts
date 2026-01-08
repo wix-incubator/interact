@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as RevealIn from '../RevealIn';
 import { baseMockOptions } from './testUtils';
-import type { RevealIn, AnimationData } from '../../../types';
+import type { RevealIn as RevealInType, AnimationData } from '../../../types';
 
 describe('RevealIn', () => {
   test('RevealIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as RevealIn,
+      namedEffect: {} as RevealInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -33,7 +33,7 @@ describe('RevealIn', () => {
       },
     ];
 
-    const result = entranceAnimations.RevealIn.web(mockOptions);
+    const result = RevealIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -41,7 +41,7 @@ describe('RevealIn', () => {
   test('RevealIn animation with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as RevealIn,
+      namedEffect: { direction: 'right' } as RevealInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -65,7 +65,7 @@ describe('RevealIn', () => {
       },
     ];
 
-    const result = entranceAnimations.RevealIn.web(mockOptions);
+    const result = RevealIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -73,7 +73,7 @@ describe('RevealIn', () => {
   test('RevealIn style with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as RevealIn,
+      namedEffect: {} as RevealInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -101,7 +101,7 @@ describe('RevealIn', () => {
       },
     ];
 
-    const result = entranceAnimations.RevealIn.style?.(mockOptions);
+    const result = RevealIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -109,7 +109,7 @@ describe('RevealIn', () => {
   test('RevealIn style with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as RevealIn,
+      namedEffect: { direction: 'right' } as RevealInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -137,7 +137,7 @@ describe('RevealIn', () => {
       },
     ];
 
-    const result = entranceAnimations.RevealIn.style?.(mockOptions);
+    const result = RevealIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

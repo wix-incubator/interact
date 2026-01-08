@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgSkew from '../BgSkew';
 import { baseMockOptions } from './testUtils';
-import type { BgSkew, AnimationData } from '../../../types';
+import type { BgSkew as BgSkewType, AnimationData } from '../../../types';
 
 describe('BgSkew', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'BgSkew' } as BgSkew,
+      namedEffect: { type: 'BgSkew' } as BgSkewType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -20,7 +20,7 @@ describe('BgSkew', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgSkew(mockOptions);
+    const result = BgSkew(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -29,7 +29,7 @@ describe('BgSkew', () => {
     const angle = 20;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { angle, type: 'BgSkew' } as BgSkew,
+      namedEffect: { angle, type: 'BgSkew' } as BgSkewType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -41,7 +41,7 @@ describe('BgSkew', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgSkew(mockOptions);
+    const result = BgSkew(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -50,7 +50,7 @@ describe('BgSkew', () => {
     const direction = 'clockwise';
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction, type: 'BgSkew' } as BgSkew,
+      namedEffect: { direction, type: 'BgSkew' } as BgSkewType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -62,7 +62,7 @@ describe('BgSkew', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgSkew(mockOptions);
+    const result = BgSkew(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

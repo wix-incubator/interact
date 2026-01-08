@@ -43,7 +43,7 @@ function getClipTo(
       });
 }
 
-export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const { direction = 'bottom', range = 'in' } =
     options.namedEffect as RevealScroll;
   const easing = 'linear';

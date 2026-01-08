@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as SlideIn from '../SlideIn';
 import { baseMockOptions } from './testUtils';
-import type { SlideIn, AnimationData } from '../../../types';
+import type { SlideIn as SlideInType, AnimationData } from '../../../types';
 
 describe('SlideIn', () => {
   test('SlideIn animation with default options', () => {
     const power = 'medium';
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { power } as SlideIn,
+      namedEffect: { power } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -42,7 +42,7 @@ describe('SlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SlideIn.web(mockOptions);
+    const result = SlideIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -50,7 +50,7 @@ describe('SlideIn', () => {
   test('SlideIn animation with custom direction and power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right', power: 'hard' } as SlideIn,
+      namedEffect: { direction: 'right', power: 'hard' } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -85,7 +85,7 @@ describe('SlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SlideIn.web(mockOptions);
+    const result = SlideIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -94,7 +94,7 @@ describe('SlideIn', () => {
     const power = 'medium';
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { power } as SlideIn,
+      namedEffect: { power } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -127,7 +127,7 @@ describe('SlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SlideIn.style?.(mockOptions);
+    const result = SlideIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -135,7 +135,7 @@ describe('SlideIn', () => {
   test('SlideIn style with custom direction and power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right', power: 'hard' } as SlideIn,
+      namedEffect: { direction: 'right', power: 'hard' } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -170,7 +170,7 @@ describe('SlideIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SlideIn.style?.(mockOptions);
+    const result = SlideIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

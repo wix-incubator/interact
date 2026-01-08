@@ -50,7 +50,7 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: ShrinkScroll) {
   };
 }
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     power,
     range = 'in',

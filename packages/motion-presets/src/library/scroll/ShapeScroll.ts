@@ -117,7 +117,7 @@ const KEYFRAMES_RANGE_MAP: Record<
   ],
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     shape = 'circle',
     power,

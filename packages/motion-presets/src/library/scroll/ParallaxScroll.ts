@@ -20,7 +20,7 @@ function getScrubOffsets({ speed = DEFAULT_SPEED }: ParallaxScroll) {
   };
 }
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const { speed = DEFAULT_SPEED } = options.namedEffect as ParallaxScroll;
 
   const fromValue = `${-50 * speed}vh`;

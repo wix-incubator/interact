@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import ImageParallax from '../ImageParallax';
 import { baseMockOptions } from './testUtils';
 import type {
-  BackgroundScrollAnimation,
+  ImageParallax as ImageParallaxType,
   AnimationData,
 } from '../../../types';
 
@@ -11,7 +11,7 @@ describe('ImageParallax', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'ImageParallax' } as BackgroundScrollAnimation,
+      namedEffect: { type: 'ImageParallax' } as ImageParallaxType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -23,7 +23,7 @@ describe('ImageParallax', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.ImageParallax(mockOptions);
+    const result = ImageParallax(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -32,7 +32,7 @@ describe('ImageParallax', () => {
     const reverse = true;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { reverse, type: 'ImageParallax' } as BackgroundScrollAnimation,
+      namedEffect: { reverse, type: 'ImageParallax' } as ImageParallaxType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -44,7 +44,7 @@ describe('ImageParallax', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.ImageParallax(mockOptions);
+    const result = ImageParallax(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -53,7 +53,7 @@ describe('ImageParallax', () => {
     const speed = 2;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { speed, type: 'ImageParallax' } as BackgroundScrollAnimation,
+      namedEffect: { speed, type: 'ImageParallax' } as ImageParallaxType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -65,7 +65,7 @@ describe('ImageParallax', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.ImageParallax(mockOptions);
+    const result = ImageParallax(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

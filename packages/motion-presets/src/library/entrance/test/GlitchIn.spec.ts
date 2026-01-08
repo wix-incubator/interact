@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as GlitchIn from '../GlitchIn';
 import { baseMockOptions } from './testUtils';
-import type { GlitchIn, AnimationData } from '../../../types';
+import type { GlitchIn as GlitchInType, AnimationData } from '../../../types';
 
 describe('GlitchIn', () => {
   test('GlitchIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GlitchIn,
+      namedEffect: {} as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -34,7 +34,7 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.web(mockOptions);
+    const result = GlitchIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -44,7 +44,7 @@ describe('GlitchIn', () => {
       ...baseMockOptions,
       namedEffect: {
         startFromOffScreen: true,
-      } as GlitchIn,
+      } as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -70,11 +70,11 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.web(mockOptions);
+    const result = GlitchIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
 
-    const result2 = entranceAnimations.GlitchIn.web(mockOptions);
+    const result2 = GlitchIn.web(mockOptions);
 
     expect(result2).toMatchObject(expectedResult);
   });
@@ -89,7 +89,7 @@ describe('GlitchIn', () => {
       namedEffect: {
         direction,
         distance,
-      } as GlitchIn,
+      } as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -115,7 +115,7 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.web(mockOptions);
+    const result = GlitchIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -123,7 +123,7 @@ describe('GlitchIn', () => {
   test('GlitchIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GlitchIn,
+      namedEffect: {} as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -154,7 +154,7 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.style?.(mockOptions);
+    const result = GlitchIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -164,7 +164,7 @@ describe('GlitchIn', () => {
       ...baseMockOptions,
       namedEffect: {
         startFromOffScreen: true,
-      } as GlitchIn,
+      } as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -197,11 +197,11 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.style?.(mockOptions);
+    const result = GlitchIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
 
-    const result2 = entranceAnimations.GlitchIn.style?.(mockOptions);
+    const result2 = GlitchIn.style?.(mockOptions);
 
     expect(result2).toMatchObject(expectedResult);
   });
@@ -216,7 +216,7 @@ describe('GlitchIn', () => {
       namedEffect: {
         direction,
         distance,
-      } as GlitchIn,
+      } as GlitchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -247,7 +247,7 @@ describe('GlitchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GlitchIn.style?.(mockOptions);
+    const result = GlitchIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { GrowScroll, ScrubAnimationOptions } from '../../../types';
+import GrowScroll from '../GrowScroll';
+import type { GrowScroll as GrowScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('GrowScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GrowScroll,
+      namedEffect: {} as GrowScrollType,
     };
 
     const expectedResult = [
@@ -29,7 +29,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -37,7 +37,7 @@ describe('GrowScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as GrowScroll,
+      namedEffect: { power: 'soft' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -57,7 +57,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -65,7 +65,7 @@ describe('GrowScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as GrowScroll,
+      namedEffect: { power: 'medium' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -85,7 +85,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -93,7 +93,7 @@ describe('GrowScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as GrowScroll,
+      namedEffect: { power: 'hard' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -113,7 +113,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -121,7 +121,7 @@ describe('GrowScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as GrowScroll,
+      namedEffect: { range: 'out' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -142,7 +142,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -150,7 +150,7 @@ describe('GrowScroll', () => {
   test('custom direction - top-right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top-right' } as GrowScroll,
+      namedEffect: { direction: 'top-right' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -168,7 +168,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -176,7 +176,7 @@ describe('GrowScroll', () => {
   test('custom direction - bottom-left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-left' } as GrowScroll,
+      namedEffect: { direction: 'bottom-left' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -194,7 +194,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -202,7 +202,7 @@ describe('GrowScroll', () => {
   test('custom direction - bottom-right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right' } as GrowScroll,
+      namedEffect: { direction: 'bottom-right' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -220,7 +220,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -228,7 +228,7 @@ describe('GrowScroll', () => {
   test('custom direction - top-left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top-left' } as GrowScroll,
+      namedEffect: { direction: 'top-left' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -246,7 +246,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -254,7 +254,7 @@ describe('GrowScroll', () => {
   test('custom direction - bottom', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom' } as GrowScroll,
+      namedEffect: { direction: 'bottom' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -272,7 +272,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -280,7 +280,7 @@ describe('GrowScroll', () => {
   test('custom direction - top', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top' } as GrowScroll,
+      namedEffect: { direction: 'top' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -298,7 +298,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -306,7 +306,7 @@ describe('GrowScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as GrowScroll,
+      namedEffect: { direction: 'left' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -324,7 +324,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -332,7 +332,7 @@ describe('GrowScroll', () => {
   test('custom direction - right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as GrowScroll,
+      namedEffect: { direction: 'right' } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -350,7 +350,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -358,7 +358,7 @@ describe('GrowScroll', () => {
   test('custom speed', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { speed: 0.5 } as GrowScroll,
+      namedEffect: { speed: 0.5 } as GrowScrollType,
     };
 
     const expectedResult = [
@@ -378,7 +378,7 @@ describe('GrowScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.GrowScroll?.(mockOptions);
+    const result = GrowScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { PanScroll, ScrubAnimationOptions } from '../../../types';
+import PanScroll from '../PanScroll';
+import type { PanScroll as PanScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('PanScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as PanScroll,
+      namedEffect: {} as PanScrollType,
     };
 
     const expectedResult = [
@@ -26,7 +26,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('PanScroll', () => {
       ...baseMockOptions,
       namedEffect: {
         distance: { value: 200, type: 'percentage' },
-      } as PanScroll,
+      } as PanScrollType,
     };
 
     const expectedResult = [
@@ -53,7 +53,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -61,7 +61,7 @@ describe('PanScroll', () => {
   test('custom direction - right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as PanScroll,
+      namedEffect: { direction: 'right' } as PanScrollType,
     };
 
     const expectedResult = [
@@ -78,7 +78,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -86,7 +86,7 @@ describe('PanScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as PanScroll,
+      namedEffect: { range: 'out' } as PanScrollType,
     };
 
     const expectedResult = [
@@ -104,7 +104,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -113,7 +113,7 @@ describe('PanScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as PanScroll,
+      namedEffect: { range: 'continuous' } as PanScrollType,
     };
 
     const expectedResult = [
@@ -132,7 +132,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -142,7 +142,7 @@ describe('PanScroll', () => {
       ...baseMockOptions,
       namedEffect: {
         startFromOffScreen: false,
-      } as PanScroll,
+      } as PanScrollType,
     };
 
     const expectedResult = [
@@ -158,7 +158,7 @@ describe('PanScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.PanScroll?.(mockOptions);
+    const result = PanScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

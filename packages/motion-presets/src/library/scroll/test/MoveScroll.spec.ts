@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { MoveScroll, ScrubAnimationOptions } from '../../../types';
+import MoveScroll from '../MoveScroll';
+import type { MoveScroll as MoveScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('MoveScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as MoveScroll,
+      namedEffect: {} as MoveScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -38,7 +38,7 @@ describe('MoveScroll', () => {
       ...baseMockOptions,
       namedEffect: {
         distance: { value: 200, type: 'percentage' },
-      } as MoveScroll,
+      } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -56,7 +56,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -64,7 +64,7 @@ describe('MoveScroll', () => {
   test('custom angle', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { angle: 45 } as MoveScroll,
+      namedEffect: { angle: 45 } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -81,7 +81,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -89,7 +89,7 @@ describe('MoveScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as MoveScroll,
+      namedEffect: { power: 'soft' } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -108,7 +108,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -116,7 +116,7 @@ describe('MoveScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as MoveScroll,
+      namedEffect: { power: 'medium' } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -135,7 +135,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -143,7 +143,7 @@ describe('MoveScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as MoveScroll,
+      namedEffect: { power: 'hard' } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -162,7 +162,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -170,7 +170,7 @@ describe('MoveScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as MoveScroll,
+      namedEffect: { range: 'out' } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -190,7 +190,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -198,7 +198,7 @@ describe('MoveScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as MoveScroll,
+      namedEffect: { range: 'continuous' } as MoveScrollType,
     };
 
     const expectedResult = [
@@ -218,7 +218,7 @@ describe('MoveScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.MoveScroll?.(mockOptions);
+    const result = MoveScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

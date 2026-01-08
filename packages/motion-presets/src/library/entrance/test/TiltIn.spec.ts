@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as TiltIn from '../TiltIn';
 import { baseMockOptions } from './testUtils';
-import type { TiltIn, AnimationData } from '../../../types';
+import type { TiltIn as TiltInType, AnimationData } from '../../../types';
 
 describe('TiltIn', () => {
   test('TiltIn animation with default options', () => {
@@ -10,7 +10,7 @@ describe('TiltIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as TiltIn,
+      namedEffect: {} as TiltInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -37,7 +37,7 @@ describe('TiltIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TiltIn.web(mockOptions);
+    const result = TiltIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -49,7 +49,7 @@ describe('TiltIn', () => {
       ...baseMockOptions,
       easing,
       duration,
-      namedEffect: { direction: 'right' } as TiltIn,
+      namedEffect: { direction: 'right' } as TiltInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -73,7 +73,7 @@ describe('TiltIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TiltIn.web(mockOptions);
+    const result = TiltIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -83,7 +83,7 @@ describe('TiltIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as TiltIn,
+      namedEffect: {} as TiltInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -138,7 +138,7 @@ describe('TiltIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TiltIn.style?.(mockOptions);
+    const result = TiltIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -150,7 +150,7 @@ describe('TiltIn', () => {
       ...baseMockOptions,
       easing,
       duration,
-      namedEffect: { direction: 'right' } as TiltIn,
+      namedEffect: { direction: 'right' } as TiltInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -205,7 +205,7 @@ describe('TiltIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TiltIn.style?.(mockOptions);
+    const result = TiltIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

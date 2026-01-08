@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgPan from '../BgPan';
 import { baseMockOptions } from './testUtils';
-import type { BgPan, AnimationData } from '../../../types';
+import type { BgPan as BgPanType, AnimationData } from '../../../types';
 
 describe('BgPan', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BgPan,
+      namedEffect: {} as BgPanType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -21,7 +21,7 @@ describe('BgPan', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgPan(mockOptions);
+    const result = BgPan(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -30,7 +30,7 @@ describe('BgPan', () => {
     const direction = 'right';
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction } as BgPan,
+      namedEffect: { direction } as BgPanType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -42,7 +42,7 @@ describe('BgPan', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgPan(mockOptions);
+    const result = BgPan(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -51,7 +51,7 @@ describe('BgPan', () => {
     const speed = 0.5;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { speed } as BgPan,
+      namedEffect: { speed } as BgPanType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -63,7 +63,7 @@ describe('BgPan', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgPan(mockOptions);
+    const result = BgPan(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

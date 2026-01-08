@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as CircleIn from '../CircleIn';
 import { baseMockOptions } from './testUtils';
-import type { CircleIn, AnimationData } from '../../../types';
+import type { CircleIn as CircleInType, AnimationData } from '../../../types';
 
 describe('CircleIn', () => {
   describe('web method', () => {
     test('CircleIn animation with default options', () => {
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: {} as CircleIn,
+        namedEffect: {} as CircleInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -42,7 +42,7 @@ describe('CircleIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CircleIn.web(mockOptions);
+      const result = CircleIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -50,7 +50,7 @@ describe('CircleIn', () => {
     test('CircleIn animation with left direction', () => {
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { direction: 'left' } as CircleIn,
+        namedEffect: { direction: 'left' } as CircleInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -83,7 +83,7 @@ describe('CircleIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CircleIn.web(mockOptions);
+      const result = CircleIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -93,7 +93,7 @@ describe('CircleIn', () => {
     test('CircleIn style with default options', () => {
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: {} as CircleIn,
+        namedEffect: {} as CircleInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -140,7 +140,7 @@ describe('CircleIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CircleIn.style?.(mockOptions);
+      const result = CircleIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -148,7 +148,7 @@ describe('CircleIn', () => {
     test('CircleIn style with left direction', () => {
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { direction: 'left' } as CircleIn,
+        namedEffect: { direction: 'left' } as CircleInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -193,7 +193,7 @@ describe('CircleIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CircleIn.style?.(mockOptions);
+      const result = CircleIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

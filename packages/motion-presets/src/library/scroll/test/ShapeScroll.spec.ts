@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { ShapeScroll, ScrubAnimationOptions } from '../../../types';
+import ShapeScroll from '../ShapeScroll';
+import type { ShapeScroll as ShapeScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
-
+    
 describe('ShapeScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ShapeScroll,
+      namedEffect: {} as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -27,7 +27,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -35,7 +35,7 @@ describe('ShapeScroll', () => {
   test('custom shape - diamond', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'diamond' } as ShapeScroll,
+      namedEffect: { shape: 'diamond' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -51,7 +51,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -59,7 +59,7 @@ describe('ShapeScroll', () => {
   test('custom shape - ellipse', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'ellipse' } as ShapeScroll,
+      namedEffect: { shape: 'ellipse' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -75,7 +75,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -83,7 +83,7 @@ describe('ShapeScroll', () => {
   test('custom shape - window', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'window' } as ShapeScroll,
+      namedEffect: { shape: 'window' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -99,7 +99,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -107,7 +107,7 @@ describe('ShapeScroll', () => {
   test('custom shape - rectangle', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'rectangle' } as ShapeScroll,
+      namedEffect: { shape: 'rectangle' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -123,7 +123,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -131,7 +131,7 @@ describe('ShapeScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as ShapeScroll,
+      namedEffect: { power: 'soft' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -147,7 +147,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -155,7 +155,7 @@ describe('ShapeScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as ShapeScroll,
+      namedEffect: { power: 'medium' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -171,7 +171,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -179,7 +179,7 @@ describe('ShapeScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as ShapeScroll,
+      namedEffect: { power: 'hard' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -195,7 +195,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -203,7 +203,7 @@ describe('ShapeScroll', () => {
   test('custom intensity', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { intensity: 0.75 } as ShapeScroll,
+      namedEffect: { intensity: 0.75 } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -219,7 +219,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -227,7 +227,7 @@ describe('ShapeScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as ShapeScroll,
+      namedEffect: { range: 'out' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -244,7 +244,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -253,7 +253,7 @@ describe('ShapeScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as ShapeScroll,
+      namedEffect: { range: 'continuous' } as ShapeScrollType,
     };
 
     const expectedResult = [
@@ -273,7 +273,7 @@ describe('ShapeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShapeScroll?.(mockOptions);
+    const result = ShapeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as WinkIn from '../WinkIn';
 import { baseMockOptions } from './testUtils';
-import type { WinkIn, AnimationData } from '../../../types';
+import type { WinkIn as WinkInType, AnimationData } from '../../../types';
 
 describe('WinkIn', () => {
   test('WinkIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as WinkIn,
+      namedEffect: {} as WinkInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -42,7 +42,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.web(mockOptions);
+    const result = WinkIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -85,7 +85,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.web(mockOptions);
+    const result = WinkIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -129,7 +129,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.web(mockOptions);
+    const result = WinkIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -188,7 +188,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.style?.(mockOptions);
+    const result = WinkIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -248,7 +248,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.style?.(mockOptions);
+    const result = WinkIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -309,7 +309,7 @@ describe('WinkIn', () => {
       },
     ];
 
-    const result = entranceAnimations.WinkIn.style?.(mockOptions);
+    const result = WinkIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

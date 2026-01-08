@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { StretchScroll, ScrubAnimationOptions } from '../../../types';
+import StretchScroll from '../StretchScroll';
+import type { StretchScroll as StretchScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('StretchScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as StretchScroll,
+      namedEffect: {} as StretchScrollType,
     };
 
     const expectedResult = [
@@ -42,7 +42,7 @@ describe('StretchScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -50,7 +50,7 @@ describe('StretchScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as StretchScroll,
+      namedEffect: { power: 'soft' } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -69,7 +69,7 @@ describe('StretchScroll', () => {
       {},
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -77,7 +77,7 @@ describe('StretchScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as StretchScroll,
+      namedEffect: { power: 'medium' } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -96,7 +96,7 @@ describe('StretchScroll', () => {
       {},
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -104,7 +104,7 @@ describe('StretchScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as StretchScroll,
+      namedEffect: { power: 'hard' } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -123,7 +123,7 @@ describe('StretchScroll', () => {
       {},
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -131,7 +131,7 @@ describe('StretchScroll', () => {
   test('custom stretch value', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { stretch: 0.8 } as StretchScroll,
+      namedEffect: { stretch: 0.8 } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -161,7 +161,7 @@ describe('StretchScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -169,7 +169,7 @@ describe('StretchScroll', () => {
   test('custom range - in', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'in' } as StretchScroll,
+      namedEffect: { range: 'in' } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -201,7 +201,7 @@ describe('StretchScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -210,7 +210,7 @@ describe('StretchScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as StretchScroll,
+      namedEffect: { range: 'continuous' } as StretchScrollType,
     };
 
     const expectedResult = [
@@ -258,7 +258,7 @@ describe('StretchScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.StretchScroll?.(mockOptions);
+    const result = StretchScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

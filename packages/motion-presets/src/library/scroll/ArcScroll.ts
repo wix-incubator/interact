@@ -17,7 +17,7 @@ const RANGES_MAP = {
   continuous: { fromValue: -ROTATION, toValue: ROTATION },
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const { direction = 'horizontal', range = 'in' } =
     options.namedEffect as ArcScroll;
   const fill = (

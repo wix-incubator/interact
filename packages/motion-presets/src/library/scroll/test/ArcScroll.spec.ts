@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { ArcScroll, ScrubAnimationOptions } from '../../../types';
+import ArcScroll from '../ArcScroll';
+import type { ArcScroll as ArcScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('ArcScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ArcScroll,
+      namedEffect: {} as ArcScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('ArcScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ArcScroll?.(mockOptions);
+    const result = ArcScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('ArcScroll', () => {
   test('vertical direction', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'vertical' } as ArcScroll,
+      namedEffect: { direction: 'vertical' } as ArcScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('ArcScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ArcScroll?.(mockOptions);
+    const result = ArcScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('ArcScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as ArcScroll,
+      namedEffect: { range: 'out' } as ArcScrollType,
     };
 
     const expectedResult = [
@@ -80,7 +80,7 @@ describe('ArcScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ArcScroll?.(mockOptions);
+    const result = ArcScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -89,7 +89,7 @@ describe('ArcScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'forwards',
-      namedEffect: { range: 'continuous' } as ArcScroll,
+      namedEffect: { range: 'continuous' } as ArcScrollType,
     };
 
     const expectedResult = [
@@ -108,7 +108,7 @@ describe('ArcScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ArcScroll?.(mockOptions);
+    const result = ArcScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

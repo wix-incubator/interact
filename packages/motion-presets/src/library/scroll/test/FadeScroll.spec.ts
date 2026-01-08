@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { FadeScroll, ScrubAnimationOptions } from '../../../types';
+import FadeScroll from '../FadeScroll';
+import type { FadeScroll as FadeScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('FadeScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FadeScroll,
+      namedEffect: {} as FadeScrollType,
     };
 
     const expectedResult = [
@@ -26,7 +26,7 @@ describe('FadeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.FadeScroll?.(mockOptions);
+    const result = FadeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -34,7 +34,7 @@ describe('FadeScroll', () => {
   test('custom opacity', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { opacity: 0.5 } as FadeScroll,
+      namedEffect: { opacity: 0.5 } as FadeScrollType,
     };
 
     const expectedResult = [
@@ -50,7 +50,7 @@ describe('FadeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.FadeScroll?.(mockOptions);
+    const result = FadeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -58,7 +58,7 @@ describe('FadeScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as FadeScroll,
+      namedEffect: { range: 'out' } as FadeScrollType,
     };
 
     const expectedResult = [
@@ -75,7 +75,7 @@ describe('FadeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.FadeScroll?.(mockOptions);
+    const result = FadeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -84,7 +84,7 @@ describe('FadeScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as FadeScroll,
+      namedEffect: { range: 'continuous' } as FadeScrollType,
     };
 
     const expectedResult = [
@@ -101,7 +101,7 @@ describe('FadeScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.FadeScroll?.(mockOptions);
+    const result = FadeScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

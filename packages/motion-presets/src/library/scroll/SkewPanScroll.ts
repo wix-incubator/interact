@@ -42,7 +42,7 @@ const POSITIONS = {
   },
 };
 
-export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const {
     skew = 10,
     direction = 'right',

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as GrowIn from '../GrowIn';
 import { baseMockOptions } from './testUtils';
-import type { GrowIn, AnimationData } from '../../../types';
+import type { GrowIn as GrowInType, AnimationData } from '../../../types';
 
 describe('GrowIn', () => {
   test('GrowIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GrowIn,
+      namedEffect: {} as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -34,7 +34,7 @@ describe('GrowIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GrowIn.web(mockOptions);
+    const result = GrowIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -42,7 +42,7 @@ describe('GrowIn', () => {
   test('GrowIn animation with custom direction and power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 45, power: 'hard' } as GrowIn,
+      namedEffect: { direction: 45, power: 'hard' } as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -68,7 +68,7 @@ describe('GrowIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GrowIn.web(mockOptions);
+    const result = GrowIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -76,7 +76,7 @@ describe('GrowIn', () => {
   test('GrowIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as GrowIn,
+      namedEffect: {} as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -110,7 +110,7 @@ describe('GrowIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GrowIn.style?.(mockOptions);
+    const result = GrowIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -118,7 +118,7 @@ describe('GrowIn', () => {
   test('GrowIn style animation with custom direction and power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 45, power: 'hard' } as GrowIn,
+      namedEffect: { direction: 45, power: 'hard' } as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -152,7 +152,7 @@ describe('GrowIn', () => {
       },
     ];
 
-    const result = entranceAnimations.GrowIn.style?.(mockOptions);
+    const result = GrowIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

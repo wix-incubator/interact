@@ -457,6 +457,13 @@ export type ScrollAnimation =
   | StretchScroll
   | TiltScroll
   | TurnScroll;
+
+export type ScrollPreset = (
+  options: ScrubAnimationOptions,
+  dom?: DomApi,
+  config?: Record<string, any>,
+) => AnimationData[];
+
 export type ScrollAnimations = Record<
   ScrollAnimation['type'],
   WebAnimationEffectFactory<'scrub'>

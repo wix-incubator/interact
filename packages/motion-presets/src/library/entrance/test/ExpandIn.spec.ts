@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
-import type { AnimationData, ExpandIn } from '../../../types';
+import * as ExpandIn from '../ExpandIn';
+import type { AnimationData, ExpandIn as ExpandInType } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('ExpandIn', () => {
@@ -11,7 +11,7 @@ describe('ExpandIn', () => {
       const mockOptions = {
         ...baseMockOptions,
         direction: 'center',
-        namedEffect: {} as ExpandIn,
+        namedEffect: {} as ExpandInType,
         duration,
       };
 
@@ -32,7 +32,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.web(mockOptions);
+      const result = ExpandIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -44,7 +44,7 @@ describe('ExpandIn', () => {
         namedEffect: {
           direction: 'top-right',
           initialScale: 0.5,
-        } as ExpandIn,
+        } as ExpandInType,
         duration,
       };
 
@@ -65,7 +65,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.web(mockOptions);
+      const result = ExpandIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -74,7 +74,7 @@ describe('ExpandIn', () => {
       const duration = 2000;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { power: 'hard' } as ExpandIn,
+        namedEffect: { power: 'hard' } as ExpandInType,
         duration,
       };
 
@@ -95,7 +95,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.web(mockOptions);
+      const result = ExpandIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -107,7 +107,7 @@ describe('ExpandIn', () => {
       const mockOptions = {
         ...baseMockOptions,
         direction: 'center',
-        namedEffect: {} as ExpandIn,
+        namedEffect: {} as ExpandInType,
         duration,
       };
 
@@ -139,7 +139,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.style?.(mockOptions);
+      const result = ExpandIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -151,7 +151,7 @@ describe('ExpandIn', () => {
         namedEffect: {
           direction: 'top-right',
           initialScale: 0.5,
-        } as ExpandIn,
+        } as ExpandInType,
         duration,
       };
 
@@ -183,7 +183,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.style?.(mockOptions);
+    const result = ExpandIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -192,7 +192,7 @@ describe('ExpandIn', () => {
       const duration = 2000;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { power: 'hard' } as ExpandIn,
+        namedEffect: { power: 'hard' } as ExpandInType,
         duration,
       };
 
@@ -224,7 +224,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-      const result = entranceAnimations.ExpandIn.style?.(mockOptions);
+      const result = ExpandIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

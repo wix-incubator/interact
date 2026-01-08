@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as FlipIn from '../FlipIn';
 import { baseMockOptions } from './testUtils';
-import type { FlipIn, AnimationData } from '../../../types';
+import type { FlipIn as FlipInType, AnimationData } from '../../../types';
 
 describe('FlipIn', () => {
   test('FlipIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FlipIn,
+      namedEffect: {} as FlipInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -24,7 +24,7 @@ describe('FlipIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FlipIn.web(mockOptions);
+    const result = FlipIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -40,7 +40,7 @@ describe('FlipIn', () => {
         direction,
         power,
         initialRotate: 50,
-      } as FlipIn,
+      } as FlipInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -56,7 +56,7 @@ describe('FlipIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FlipIn.web(mockOptions);
+    const result = FlipIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -64,7 +64,7 @@ describe('FlipIn', () => {
   test('FlipIn style with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FlipIn,
+      namedEffect: {} as FlipInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -92,7 +92,7 @@ describe('FlipIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FlipIn.style?.(mockOptions);
+    const result = FlipIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -108,7 +108,7 @@ describe('FlipIn', () => {
         direction,
         power,
         initialRotate: 50,
-      } as FlipIn,
+      } as FlipInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -136,7 +136,7 @@ describe('FlipIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FlipIn.style?.(mockOptions);
+    const result = FlipIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

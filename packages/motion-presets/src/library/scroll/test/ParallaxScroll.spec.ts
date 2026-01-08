@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { ParallaxScroll, ScrubAnimationOptions } from '../../../types';
+import ParallaxScroll from '../ParallaxScroll';
+import type { ParallaxScroll as ParallaxScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('ParallaxScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ParallaxScroll,
+      namedEffect: {} as ParallaxScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('ParallaxScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ParallaxScroll?.(mockOptions);
+    const result = ParallaxScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('ParallaxScroll', () => {
   test('custom speed', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { speed: 0.75 } as ParallaxScroll,
+      namedEffect: { speed: 0.75 } as ParallaxScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('ParallaxScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ParallaxScroll?.(mockOptions);
+    const result = ParallaxScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

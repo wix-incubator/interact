@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as FoldIn from '../FoldIn';
 import { baseMockOptions } from './testUtils';
-import type { FoldIn, AnimationData } from '../../../types';
+import type { FoldIn as FoldInType, AnimationData } from '../../../types';
 
 describe('FoldIn', () => {
   test('FoldIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FoldIn,
+      namedEffect: {} as FoldInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -28,7 +28,7 @@ describe('FoldIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FoldIn.web(mockOptions);
+    const result = FoldIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -40,7 +40,7 @@ describe('FoldIn', () => {
       namedEffect: {
         direction: 'left',
         power: 'soft',
-      } as FoldIn,
+      } as FoldInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -60,7 +60,7 @@ describe('FoldIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FoldIn.web(mockOptions);
+    const result = FoldIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -68,7 +68,7 @@ describe('FoldIn', () => {
   test('FoldIn style animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as FoldIn,
+      namedEffect: {} as FoldInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -100,7 +100,7 @@ describe('FoldIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FoldIn.style?.(mockOptions);
+    const result = FoldIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -112,7 +112,7 @@ describe('FoldIn', () => {
       namedEffect: {
         direction: 'left',
         power: 'soft',
-      } as FoldIn,
+      } as FoldInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -144,7 +144,7 @@ describe('FoldIn', () => {
       },
     ];
 
-    const result = entranceAnimations.FoldIn.style?.(mockOptions);
+    const result = FoldIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

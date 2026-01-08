@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgRotate from '../BgRotate';
 import { baseMockOptions } from './testUtils';
-import type { BgRotate, AnimationData } from '../../../types';
+import type { BgRotate as BgRotateType, AnimationData } from '../../../types';
 
 describe('BgRotate', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'BgRotate' } as BgRotate,
+      namedEffect: { type: 'BgRotate' } as BgRotateType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -17,7 +17,7 @@ describe('BgRotate', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgRotate(mockOptions);
+    const result = BgRotate(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -26,7 +26,7 @@ describe('BgRotate', () => {
     const angle = 30;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { angle, type: 'BgRotate' } as BgRotate,
+      namedEffect: { angle, type: 'BgRotate' } as BgRotateType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -35,7 +35,7 @@ describe('BgRotate', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgRotate(mockOptions);
+    const result = BgRotate(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -44,7 +44,7 @@ describe('BgRotate', () => {
     const direction = 'clockwise';
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction, type: 'BgRotate' } as BgRotate,
+      namedEffect: { direction, type: 'BgRotate' } as BgRotateType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -53,7 +53,7 @@ describe('BgRotate', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgRotate(mockOptions);
+    const result = BgRotate(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

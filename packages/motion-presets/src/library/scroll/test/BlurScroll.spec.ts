@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { BlurScroll, ScrubAnimationOptions } from '../../../types';
+import BlurScroll from '../BlurScroll';
+import type { BlurScroll as BlurScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('BlurScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BlurScroll,
+      namedEffect: {} as BlurScrollType,
     };
 
     const expectedResult = [
@@ -25,7 +25,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -33,7 +33,7 @@ describe('BlurScroll', () => {
   test('custom blur value', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { blur: 10 } as BlurScroll,
+      namedEffect: { blur: 10 } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -49,7 +49,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -57,7 +57,7 @@ describe('BlurScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as BlurScroll,
+      namedEffect: { power: 'soft' } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -73,7 +73,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -81,7 +81,7 @@ describe('BlurScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as BlurScroll,
+      namedEffect: { power: 'medium' } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -97,7 +97,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -105,7 +105,7 @@ describe('BlurScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as BlurScroll,
+      namedEffect: { power: 'hard' } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -121,7 +121,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -129,7 +129,7 @@ describe('BlurScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as BlurScroll,
+      namedEffect: { range: 'out' } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -146,7 +146,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -155,7 +155,7 @@ describe('BlurScroll', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
       fill: 'both',
-      namedEffect: { range: 'continuous' } as BlurScroll,
+      namedEffect: { range: 'continuous' } as BlurScrollType,
     };
 
     const expectedResult = [
@@ -172,7 +172,7 @@ describe('BlurScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.BlurScroll?.(mockOptions);
+    const result = BlurScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

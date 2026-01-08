@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as BlurIn from '../BlurIn';
 import { baseMockOptions } from './testUtils';
-import type { BlurIn, AnimationData } from '../../../types';
+import type { BlurIn as BlurInType, AnimationData } from '../../../types';
 
 describe('BlurIn', () => {
   test('BlurIn animation with default options', () => {
@@ -10,7 +10,7 @@ describe('BlurIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as BlurIn,
+      namedEffect: {} as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -23,7 +23,7 @@ describe('BlurIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BlurIn.web(mockOptions);
+    const result = BlurIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -37,7 +37,7 @@ describe('BlurIn', () => {
       ...baseMockOptions,
       duration,
       easing,
-      namedEffect: { blur, power } as BlurIn,
+      namedEffect: { blur, power } as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -48,7 +48,7 @@ describe('BlurIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BlurIn.web(mockOptions);
+    const result = BlurIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -58,7 +58,7 @@ describe('BlurIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as BlurIn,
+      namedEffect: {} as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -82,7 +82,7 @@ describe('BlurIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BlurIn.style?.(mockOptions);
+    const result = BlurIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -96,7 +96,7 @@ describe('BlurIn', () => {
       ...baseMockOptions,
       duration,
       easing,
-      namedEffect: { blur, power } as BlurIn,
+      namedEffect: { blur, power } as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -120,7 +120,7 @@ describe('BlurIn', () => {
       },
     ];
 
-    const result = entranceAnimations.BlurIn.style?.(mockOptions);
+    const result = BlurIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

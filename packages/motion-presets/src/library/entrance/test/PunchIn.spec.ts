@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as PunchIn from '../PunchIn';
 import { baseMockOptions } from './testUtils';
-import type { PunchIn, AnimationData } from '../../../types';
+import type { PunchIn as PunchInType, AnimationData } from '../../../types';
 
 describe('PunchIn', () => {
   test('PunchIn animation with default options', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: {} as PunchIn,
+      namedEffect: {} as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -98,7 +98,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.web(mockOptions);
+    const result = PunchIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -106,7 +106,7 @@ describe('PunchIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: { direction: 'top-left' } as PunchIn,
+      namedEffect: { direction: 'top-left' } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -195,7 +195,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.web(mockOptions);
+    const result = PunchIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -203,7 +203,7 @@ describe('PunchIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: { direction: 'bottom-right' } as PunchIn,
+      namedEffect: { direction: 'bottom-right' } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -292,7 +292,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.web(mockOptions);
+    const result = PunchIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -302,7 +302,7 @@ describe('PunchIn', () => {
       duration: 1000,
       namedEffect: {
         direction: 'bottom-left',
-      } as PunchIn,
+      } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -391,7 +391,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.web(mockOptions);
+    const result = PunchIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -401,7 +401,7 @@ describe('PunchIn', () => {
       duration: 1000,
       namedEffect: {
         direction: 'center',
-      } as PunchIn,
+      } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -490,7 +490,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.web(mockOptions);
+    const result = PunchIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -498,7 +498,7 @@ describe('PunchIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: {} as PunchIn,
+      namedEffect: {} as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -596,7 +596,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.style?.(mockOptions);
+    const result = PunchIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -604,7 +604,7 @@ describe('PunchIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: { direction: 'top-left' } as PunchIn,
+      namedEffect: { direction: 'top-left' } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -702,7 +702,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.style?.(mockOptions);
+    const result = PunchIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -710,7 +710,7 @@ describe('PunchIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration: 1000,
-      namedEffect: { direction: 'bottom-right' } as PunchIn,
+      namedEffect: { direction: 'bottom-right' } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -808,7 +808,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.style?.(mockOptions);
+    const result = PunchIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -818,7 +818,7 @@ describe('PunchIn', () => {
       duration: 1000,
       namedEffect: {
         direction: 'bottom-left',
-      } as PunchIn,
+      } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -916,7 +916,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.style?.(mockOptions);
+    const result = PunchIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -926,7 +926,7 @@ describe('PunchIn', () => {
       duration: 1000,
       namedEffect: {
         direction: 'center',
-      } as PunchIn,
+      } as PunchInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -1024,7 +1024,7 @@ describe('PunchIn', () => {
       },
     ];
 
-    const result = entranceAnimations.PunchIn.style?.(mockOptions);
+    const result = PunchIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 });

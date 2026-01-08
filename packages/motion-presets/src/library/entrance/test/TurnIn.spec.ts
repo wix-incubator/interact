@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as TurnIn from '../TurnIn';
 import { baseMockOptions } from './testUtils';
-import type { TurnIn, AnimationData } from '../../../types';
+import type { TurnIn as TurnInType, AnimationData } from '../../../types';
 
 describe('TurnIn', () => {
   const duration = 1000;
@@ -11,7 +11,7 @@ describe('TurnIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as TurnIn,
+      namedEffect: {} as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -31,7 +31,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.web(mockOptions);
+    const result = TurnIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -39,7 +39,7 @@ describe('TurnIn', () => {
   test('TurnIn animation with bottom-right direction and soft power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnIn,
+      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -57,7 +57,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.web(mockOptions);
+    const result = TurnIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -65,7 +65,7 @@ describe('TurnIn', () => {
   test('TurnIn animation with top-right direction and medium power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top-right', power: 'medium' } as TurnIn,
+      namedEffect: { direction: 'top-right', power: 'medium' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -83,7 +83,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.web(mockOptions);
+    const result = TurnIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -91,7 +91,7 @@ describe('TurnIn', () => {
   test('TurnIn animation with bottom-left direction and hard power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-left', power: 'hard' } as TurnIn,
+      namedEffect: { direction: 'bottom-left', power: 'hard' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -109,7 +109,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.web(mockOptions);
+    const result = TurnIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -119,7 +119,7 @@ describe('TurnIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       easing: customEasing,
-      namedEffect: {} as TurnIn,
+      namedEffect: {} as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -137,7 +137,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.web(mockOptions);
+    const result = TurnIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -146,7 +146,7 @@ describe('TurnIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as TurnIn,
+      namedEffect: {} as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -176,7 +176,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.style?.(mockOptions);
+    const result = TurnIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -184,7 +184,7 @@ describe('TurnIn', () => {
   test('TurnIn.style animation with bottom-right direction and soft power', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnIn,
+      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -213,7 +213,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.style?.(mockOptions);
+    const result = TurnIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -223,7 +223,7 @@ describe('TurnIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       easing: customEasing,
-      namedEffect: {} as TurnIn,
+      namedEffect: {} as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -252,7 +252,7 @@ describe('TurnIn', () => {
       },
     ];
 
-    const result = entranceAnimations.TurnIn.style?.(mockOptions);
+    const result = TurnIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

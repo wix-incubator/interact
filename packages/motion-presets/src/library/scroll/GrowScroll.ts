@@ -50,7 +50,7 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
   };
 }
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     power,
     range = 'in',

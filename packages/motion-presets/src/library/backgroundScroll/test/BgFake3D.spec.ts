@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgFake3D from '../BgFake3D';
 import { baseMockOptions } from './testUtils';
 import type {
-  BackgroundScrollAnimation,
+  BgFake3D as BgFake3DType,
   AnimationData,
 } from '../../../types';
 
@@ -11,7 +11,7 @@ describe('BgFake3D', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BackgroundScrollAnimation,
+      namedEffect: {} as BgFake3DType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -35,7 +35,7 @@ describe('BgFake3D', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFake3D(mockOptions);
+    const result = BgFake3D(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -45,7 +45,7 @@ describe('BgFake3D', () => {
     const zoom = 30;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { stretch, zoom } as BackgroundScrollAnimation,
+      namedEffect: { stretch, zoom } as BgFake3DType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -69,7 +69,7 @@ describe('BgFake3D', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFake3D(mockOptions);
+    const result = BgFake3D(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

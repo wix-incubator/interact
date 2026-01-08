@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { ShrinkScroll, ScrubAnimationOptions } from '../../../types';
+import ShrinkScroll from '../ShrinkScroll';
+import type { ShrinkScroll as ShrinkScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('ShrinkScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as ShrinkScroll,
+      namedEffect: {} as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -30,7 +30,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -38,7 +38,7 @@ describe('ShrinkScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as ShrinkScroll,
+      namedEffect: { power: 'soft' } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -58,7 +58,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -66,7 +66,7 @@ describe('ShrinkScroll', () => {
   test('custom power - medium', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'medium' } as ShrinkScroll,
+      namedEffect: { power: 'medium' } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -86,7 +86,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -94,7 +94,7 @@ describe('ShrinkScroll', () => {
   test('custom power - hard', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'hard' } as ShrinkScroll,
+      namedEffect: { power: 'hard' } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -114,7 +114,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -122,7 +122,7 @@ describe('ShrinkScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as ShrinkScroll,
+      namedEffect: { range: 'out' } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -143,7 +143,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -151,7 +151,7 @@ describe('ShrinkScroll', () => {
   test('custom direction - top-right', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top-right' } as ShrinkScroll,
+      namedEffect: { direction: 'top-right' } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -169,7 +169,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -177,7 +177,7 @@ describe('ShrinkScroll', () => {
   test('custom scale', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { scale: 1.5 } as ShrinkScroll,
+      namedEffect: { scale: 1.5 } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -195,7 +195,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -203,7 +203,7 @@ describe('ShrinkScroll', () => {
   test('custom speed', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { speed: 0.5 } as ShrinkScroll,
+      namedEffect: { speed: 0.5 } as ShrinkScrollType,
     };
 
     const expectedResult = [
@@ -223,7 +223,7 @@ describe('ShrinkScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.ShrinkScroll?.(mockOptions);
+    const result = ShrinkScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

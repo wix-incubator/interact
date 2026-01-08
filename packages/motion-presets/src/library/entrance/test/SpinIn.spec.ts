@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as SpinIn from '../SpinIn';
 import { baseMockOptions } from './testUtils';
-import { SpinIn, AnimationData } from '../../../types';
+import { SpinIn as SpinInType, AnimationData } from '../../../types';
 
 describe('SpinIn', () => {
   test('SpinIn animation with default options', () => {
@@ -10,7 +10,7 @@ describe('SpinIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as SpinIn,
+      namedEffect: {} as SpinInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -29,7 +29,7 @@ describe('SpinIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SpinIn.web(mockOptions);
+    const result = SpinIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -45,7 +45,7 @@ describe('SpinIn', () => {
         direction: 'counter-clockwise',
         spins: 2,
         power: 'soft',
-      } as SpinIn,
+      } as SpinInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -64,7 +64,7 @@ describe('SpinIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SpinIn.web(mockOptions);
+    const result = SpinIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -74,7 +74,7 @@ describe('SpinIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as SpinIn,
+      namedEffect: {} as SpinInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -105,7 +105,7 @@ describe('SpinIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SpinIn.style?.(mockOptions);
+    const result = SpinIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -121,7 +121,7 @@ describe('SpinIn', () => {
         direction: 'counter-clockwise',
         spins: 2,
         power: 'soft',
-      } as SpinIn,
+      } as SpinInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -152,7 +152,7 @@ describe('SpinIn', () => {
       },
     ];
 
-    const result = entranceAnimations.SpinIn.style?.(mockOptions);
+    const result = SpinIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

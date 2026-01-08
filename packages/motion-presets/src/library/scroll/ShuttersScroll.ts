@@ -16,7 +16,7 @@ const OPPOSITE_DIRECTION_MAP: Record<
   left: 'right',
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     direction = 'right',
     shutters = 12,

@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgFade from '../BgFade';
 import { baseMockOptions } from './testUtils';
-import type { AnimationData, BgFade } from '../../../types';
+import type { AnimationData, BgFade as BgFadeType } from '../../../types';
 
 describe('BgFade', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BgFade,
+      namedEffect: {} as BgFadeType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -19,7 +19,7 @@ describe('BgFade', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFade(mockOptions);
+    const result = BgFade(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -27,7 +27,7 @@ describe('BgFade', () => {
   test('Custom range - out', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as BgFade,
+      namedEffect: { range: 'out' } as BgFadeType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -37,7 +37,7 @@ describe('BgFade', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFade(mockOptions);
+    const result = BgFade(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

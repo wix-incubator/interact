@@ -1,17 +1,17 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as DropIn from '../DropIn';
 import { baseMockOptions } from './testUtils';
-import type { DropIn, AnimationData } from '../../../types';
+import type { DropIn as DropInType, AnimationData } from '../../../types';
 
-describe('DropIn', () => {
+  describe('DropIn', () => {
   describe('web method', () => {
     test('DropIn animation with default options', () => {
       const duration = 1000;
       const mockOptions = {
         ...baseMockOptions,
         duration,
-        namedEffect: {} as DropIn,
+        namedEffect: {} as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -24,7 +24,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.web(mockOptions);
+      const result = DropIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -34,7 +34,7 @@ describe('DropIn', () => {
       const mockOptions = {
         ...baseMockOptions,
         duration,
-        namedEffect: { power: 'hard' } as DropIn,
+        namedEffect: { power: 'hard' } as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -47,7 +47,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.web(mockOptions);
+      const result = DropIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -59,7 +59,7 @@ describe('DropIn', () => {
         ...baseMockOptions,
         duration,
         easing: customEasing,
-        namedEffect: {} as DropIn,
+        namedEffect: {} as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -72,7 +72,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.web(mockOptions);
+      const result = DropIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -84,7 +84,7 @@ describe('DropIn', () => {
       const mockOptions = {
         ...baseMockOptions,
         duration,
-        namedEffect: {} as DropIn,
+        namedEffect: {} as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -112,7 +112,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.style?.(mockOptions);
+      const result = DropIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -122,7 +122,7 @@ describe('DropIn', () => {
       const mockOptions = {
         ...baseMockOptions,
         duration,
-        namedEffect: { power: 'hard' } as DropIn,
+        namedEffect: { power: 'hard' } as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -150,7 +150,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.style?.(mockOptions);
+    const result = DropIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -162,7 +162,7 @@ describe('DropIn', () => {
         ...baseMockOptions,
         duration,
         easing: customEasing,
-        namedEffect: {} as DropIn,
+        namedEffect: {} as DropInType,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -190,7 +190,7 @@ describe('DropIn', () => {
         },
       ];
 
-      const result = entranceAnimations.DropIn.style?.(mockOptions);
+      const result = DropIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

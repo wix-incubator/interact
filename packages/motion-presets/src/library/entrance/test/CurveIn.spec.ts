@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
-import type { AnimationData, CurveIn } from '../../../types';
+import * as CurveIn from '../CurveIn';
+import type { AnimationData, CurveIn as CurveInType } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('CurveIn', () => {
@@ -10,7 +10,7 @@ describe('CurveIn', () => {
       const duration = 1000;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: {} as CurveIn,
+        namedEffect: {} as CurveInType,
         duration,
       };
 
@@ -38,7 +38,7 @@ describe('CurveIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CurveIn.web(mockOptions);
+      const result = CurveIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -47,7 +47,7 @@ describe('CurveIn', () => {
       const duration = 1500;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { direction: 'left' } as CurveIn,
+        namedEffect: { direction: 'left' } as CurveInType,
         duration,
       };
 
@@ -75,7 +75,7 @@ describe('CurveIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CurveIn.web(mockOptions);
+      const result = CurveIn.web(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -86,7 +86,7 @@ describe('CurveIn', () => {
       const duration = 1000;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: {} as CurveIn,
+        namedEffect: {} as CurveInType,
         duration,
       };
 
@@ -119,7 +119,7 @@ describe('CurveIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CurveIn.style?.(mockOptions);
+      const result = CurveIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });
@@ -128,7 +128,7 @@ describe('CurveIn', () => {
       const duration = 1500;
       const mockOptions = {
         ...baseMockOptions,
-        namedEffect: { direction: 'left' } as CurveIn,
+        namedEffect: { direction: 'left' } as CurveInType,
         duration,
       };
 
@@ -161,7 +161,7 @@ describe('CurveIn', () => {
         },
       ];
 
-      const result = entranceAnimations.CurveIn.style?.(mockOptions);
+      const result = CurveIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
+import * as ShapeIn from '../ShapeIn';
 import { baseMockOptions } from './testUtils';
-import type { ShapeIn, AnimationData } from '../../../types';
+import type { ShapeIn as ShapeInType, AnimationData } from '../../../types';
 
 describe('ShapeIn', () => {
   test('ShapeIn animation with default options', () => {
@@ -10,7 +10,7 @@ describe('ShapeIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as ShapeIn,
+      namedEffect: {} as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -23,7 +23,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.web(mockOptions);
+    const result = ShapeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -31,7 +31,7 @@ describe('ShapeIn', () => {
   test('ShapeIn animation with circle', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'circle' } as ShapeIn,
+      namedEffect: { shape: 'circle' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -41,7 +41,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.web(mockOptions);
+    const result = ShapeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -49,7 +49,7 @@ describe('ShapeIn', () => {
   test('ShapeIn animation with diamond', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'diamond' } as ShapeIn,
+      namedEffect: { shape: 'diamond' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -62,14 +62,14 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.web(mockOptions);
+    const result = ShapeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
   test('ShapeIn animation with window', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'window' } as ShapeIn,
+      namedEffect: { shape: 'window' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -82,7 +82,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.web(mockOptions);
+    const result = ShapeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -90,7 +90,7 @@ describe('ShapeIn', () => {
   test('ShapeIn animation with ellipse', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'ellipse' } as ShapeIn,
+      namedEffect: { shape: 'ellipse' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -103,7 +103,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.web(mockOptions);
+    const result = ShapeIn.web(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -113,7 +113,7 @@ describe('ShapeIn', () => {
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: {} as ShapeIn,
+      namedEffect: {} as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -138,7 +138,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.style?.(mockOptions);
+    const result = ShapeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -146,7 +146,7 @@ describe('ShapeIn', () => {
   test('ShapeIn style with circle', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'circle' } as ShapeIn,
+      namedEffect: { shape: 'circle' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -168,7 +168,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.style?.(mockOptions);
+    const result = ShapeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -176,7 +176,7 @@ describe('ShapeIn', () => {
   test('ShapeIn style with diamond', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'diamond' } as ShapeIn,
+      namedEffect: { shape: 'diamond' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -199,7 +199,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.style?.(mockOptions);
+    const result = ShapeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -207,7 +207,7 @@ describe('ShapeIn', () => {
   test('ShapeIn style with window', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'window' } as ShapeIn,
+      namedEffect: { shape: 'window' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -229,7 +229,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.style?.(mockOptions);
+    const result = ShapeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -237,7 +237,7 @@ describe('ShapeIn', () => {
   test('ShapeIn style with ellipse', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { shape: 'ellipse' } as ShapeIn,
+      namedEffect: { shape: 'ellipse' } as ShapeInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -259,7 +259,7 @@ describe('ShapeIn', () => {
       },
     ];
 
-    const result = entranceAnimations.ShapeIn.style?.(mockOptions);
+    const result = ShapeIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

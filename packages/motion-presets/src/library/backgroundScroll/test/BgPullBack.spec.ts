@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgPullBack from '../BgPullBack';
 import { baseMockOptions } from './testUtils';
 import type {
-  BackgroundScrollAnimation,
+  BgPullBack as BgPullBackType,
   AnimationData,
 } from '../../../types';
 
@@ -11,7 +11,7 @@ describe('BgPullBack', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BackgroundScrollAnimation,
+      namedEffect: {} as BgPullBackType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -25,7 +25,7 @@ describe('BgPullBack', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgPullBack(mockOptions);
+    const result = BgPullBack(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -34,7 +34,7 @@ describe('BgPullBack', () => {
     const scale = 60;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { scale } as BackgroundScrollAnimation,
+      namedEffect: { scale } as BgPullBackType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -48,7 +48,7 @@ describe('BgPullBack', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgPullBack(mockOptions);
+    const result = BgPullBack(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

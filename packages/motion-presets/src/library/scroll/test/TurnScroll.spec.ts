@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { scrollAnimations } from '../index';
-import { TurnScroll, ScrubAnimationOptions } from '../../../types';
+import TurnScroll from '../TurnScroll';
+import type { TurnScroll as TurnScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('TurnScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: {} as TurnScroll,
+      namedEffect: {} as TurnScrollType,
     };
 
     const expectedResult = [
@@ -28,7 +28,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -36,7 +36,7 @@ describe('TurnScroll', () => {
   test('custom power - soft', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { power: 'soft' } as TurnScroll,
+      namedEffect: { power: 'soft' } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -54,7 +54,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -62,7 +62,7 @@ describe('TurnScroll', () => {
   test('custom spin - counter-clockwise', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { spin: 'counter-clockwise' } as TurnScroll,
+      namedEffect: { spin: 'counter-clockwise' } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -80,7 +80,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -88,7 +88,7 @@ describe('TurnScroll', () => {
   test('custom direction - left', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'left' } as TurnScroll,
+      namedEffect: { direction: 'left' } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -106,7 +106,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -114,7 +114,7 @@ describe('TurnScroll', () => {
   test('custom scale', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { scale: 0.5 } as TurnScroll,
+      namedEffect: { scale: 0.5 } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -132,7 +132,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -140,7 +140,7 @@ describe('TurnScroll', () => {
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'out' } as TurnScroll,
+      namedEffect: { range: 'out' } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -159,7 +159,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -167,7 +167,7 @@ describe('TurnScroll', () => {
   test('custom range - continuous', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { range: 'continuous' } as TurnScroll,
+      namedEffect: { range: 'continuous' } as TurnScrollType,
     };
 
     const expectedResult = [
@@ -185,7 +185,7 @@ describe('TurnScroll', () => {
       },
     ];
 
-    const result = scrollAnimations?.TurnScroll?.(mockOptions);
+    const result = TurnScroll(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

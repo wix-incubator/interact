@@ -73,7 +73,7 @@ const KEYFRAMES_RANGE_MAP: Record<
   ],
 };
 
-export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const { direction = 'bottom', range = 'in' } =
     options.namedEffect as SlideScroll;
   const easing = 'linear';

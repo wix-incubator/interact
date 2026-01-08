@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { backgroundScrollAnimations } from '../index';
+import BgFadeBack from '../BgFadeBack';
 import { baseMockOptions } from './testUtils';
-import type { BgFadeBack, AnimationData } from '../../../types';
+import type { BgFadeBack as BgFadeBackType, AnimationData } from '../../../types';
 
 describe('BgFadeBack', () => {
   test('Default values', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: {} as BgFadeBack,
+      namedEffect: {} as BgFadeBackType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -19,7 +19,7 @@ describe('BgFadeBack', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFadeBack(mockOptions);
+    const result = BgFadeBack(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -28,7 +28,7 @@ describe('BgFadeBack', () => {
     const scale = 0.7;
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { scale } as BgFadeBack,
+      namedEffect: { scale } as BgFadeBackType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -39,7 +39,7 @@ describe('BgFadeBack', () => {
       },
     ];
 
-    const result = backgroundScrollAnimations.BgFadeBack(mockOptions);
+    const result = BgFadeBack(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });

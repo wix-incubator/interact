@@ -10,7 +10,7 @@ const BLUR_POWER_MAP = {
   hard: 50,
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const { blur = 6, power, range = 'in' } = options.namedEffect as BlurScroll;
   const blurFactor =
     power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;

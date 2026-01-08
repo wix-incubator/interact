@@ -74,7 +74,7 @@ const RANGES_MAP: RangeValuesTurnScroll = {
   }),
 };
 
-export function web(
+export default function create(
   options: ScrubAnimationOptions & AnimationExtraOptions,
   dom?: DomApi,
 ) {

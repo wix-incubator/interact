@@ -26,7 +26,7 @@ const OFFSCREEN_POSITIONS: Record<
   },
 };
 
-export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const {
     distance = { value: 400, type: 'px' },
     direction = 'left',

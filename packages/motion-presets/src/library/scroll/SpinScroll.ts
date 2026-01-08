@@ -15,7 +15,7 @@ const DIRECTION_MAP = {
   'counter-clockwise': -1,
 };
 
-export function web(options: ScrubAnimationOptions) {
+export default function create(options: ScrubAnimationOptions) {
   const {
     spins = 0.15,
     scale = 1,

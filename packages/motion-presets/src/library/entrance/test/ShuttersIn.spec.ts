@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { entranceAnimations } from '../index';
-import type { ShuttersIn, TimeAnimationOptions } from '../../../types';
+import * as ShuttersIn from '../ShuttersIn';
+import type { ShuttersIn as ShuttersInType, TimeAnimationOptions } from '../../../types';
 import { getEasing } from '../../../utils';
 
 const baseMockOptions: TimeAnimationOptions = {
@@ -13,7 +13,7 @@ describe('ShuttersIn.web()', () => {
   test('default options (right direction)', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as ShuttersIn,
+      namedEffect: { direction: 'right' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -40,14 +40,14 @@ describe('ShuttersIn.web()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.web(mockOptions);
+    const result = ShuttersIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
   test('left direction', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'ShuttersIn', direction: 'left' } as ShuttersIn,
+      namedEffect: { type: 'ShuttersIn', direction: 'left' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -73,7 +73,7 @@ describe('ShuttersIn.web()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.web(mockOptions);
+    const result = ShuttersIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -84,7 +84,7 @@ describe('ShuttersIn.web()', () => {
         type: 'ShuttersIn',
         direction: 'right',
         shutters: 6,
-      } as ShuttersIn,
+      } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -110,7 +110,7 @@ describe('ShuttersIn.web()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.web(mockOptions);
+    const result = ShuttersIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -121,7 +121,7 @@ describe('ShuttersIn.web()', () => {
         type: 'ShuttersIn',
         direction: 'right',
         staggered: false,
-      } as ShuttersIn,
+      } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -147,7 +147,7 @@ describe('ShuttersIn.web()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.web(mockOptions);
+    const result = ShuttersIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -155,7 +155,7 @@ describe('ShuttersIn.web()', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
       easing: 'easeInOutQuad',
-      namedEffect: { type: 'ShuttersIn', direction: 'right' } as ShuttersIn,
+      namedEffect: { type: 'ShuttersIn', direction: 'right' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -182,7 +182,7 @@ describe('ShuttersIn.web()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.web(mockOptions);
+    const result = ShuttersIn.web(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 });
@@ -191,7 +191,7 @@ describe('ShuttersIn.style()', () => {
   test('default options (right direction)', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right' } as ShuttersIn,
+      namedEffect: { direction: 'right' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -223,14 +223,14 @@ describe('ShuttersIn.style()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.style?.(mockOptions);
+    const result = ShuttersIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
   test('left direction', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
-      namedEffect: { type: 'ShuttersIn', direction: 'left' } as ShuttersIn,
+      namedEffect: { type: 'ShuttersIn', direction: 'left' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -261,7 +261,7 @@ describe('ShuttersIn.style()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.style?.(mockOptions);
+    const result = ShuttersIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -272,7 +272,7 @@ describe('ShuttersIn.style()', () => {
         type: 'ShuttersIn',
         direction: 'right',
         shutters: 6,
-      } as ShuttersIn,
+      } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -303,7 +303,7 @@ describe('ShuttersIn.style()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.style?.(mockOptions);
+    const result = ShuttersIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -314,7 +314,7 @@ describe('ShuttersIn.style()', () => {
         type: 'ShuttersIn',
         direction: 'right',
         staggered: false,
-      } as ShuttersIn,
+      } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -345,7 +345,7 @@ describe('ShuttersIn.style()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.style?.(mockOptions);
+    const result = ShuttersIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 
@@ -353,7 +353,7 @@ describe('ShuttersIn.style()', () => {
     const mockOptions: TimeAnimationOptions = {
       ...baseMockOptions,
       easing: 'easeInOutQuad',
-      namedEffect: { type: 'ShuttersIn', direction: 'right' } as ShuttersIn,
+      namedEffect: { type: 'ShuttersIn', direction: 'right' } as ShuttersInType,
     };
 
     const expectedResult = [
@@ -385,7 +385,7 @@ describe('ShuttersIn.style()', () => {
       },
     ];
 
-    const result = entranceAnimations.ShuttersIn.style?.(mockOptions);
+    const result = ShuttersIn.style?.(mockOptions);
     expect(result).toMatchObject(expectedResult);
   });
 });

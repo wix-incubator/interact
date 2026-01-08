@@ -50,7 +50,7 @@ function getScrubOffsets({
   };
 }
 
-export function web(
+export default function create(
   options: ScrubAnimationOptions,
   _?: DomApi,
   config?: Record<string, any>,
