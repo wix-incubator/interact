@@ -2,6 +2,7 @@ import { Playground } from './components/Playground';
 import { ScrollShowcase } from './components/ScrollShowcase';
 import { ResponsiveDemo } from './components/ResponsiveDemo';
 import { SelectorConditionDemo } from './components/SelectorConditionDemo';
+import { CSSGenerationDemo } from './components/CSSGenerationDemo';
 
 const heroCopy = [
   'Tune triggers, easings, and delays in real time.',
@@ -32,6 +33,7 @@ function App() {
       </header>
 
       <Playground />
+      <CSSGenerationDemo />
       <SelectorConditionDemo />
       <div className="scroll-showcase-wrapper">
         <ResponsiveDemo />

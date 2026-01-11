@@ -573,6 +573,154 @@ Avoid animating:
 }
 ```
 
+## Initial State and CSS Generation
+
+### The `initial` Property
+
+The `initial` property defines the CSS state of an element **before** its animation starts. This is essential for entrance animations to prevent a "flash" of the final state before the animation begins.
+
+```typescript
+type initial = Record<string, string | number> | false;
+```
+
+#### Default Initial State
+
+When `initial` is not specified on an effect, `generateCSS` applies these defaults:
+
+```typescript
+{
+  visibility: 'hidden',
+  transform: 'none',
+  translate: 'none',
+  scale: 'none',
+  rotate: 'none',
+}
+```
+
+This hides the element and resets transforms so the animation starts from a clean state.
+
+#### Custom Initial State
+
+For animations that start from a specific visual state (not just hidden), provide a custom `initial`:
+
+```typescript
+{
+  key: 'hero',
+  keyframeEffect: {
+    name: 'blur-reveal',
+    keyframes: [
+      { filter: 'blur(20px)', opacity: 0, transform: 'scale(0.9)' },
+      { filter: 'blur(0)', opacity: 1, transform: 'scale(1)' }
+    ]
+  },
+  duration: 1000,
+  initial: {
+    filter: 'blur(20px)',
+    opacity: 0,
+    transform: 'scale(0.9)'
+  }
+}
+```
+
+The custom `initial` should match your animation's first keyframe to ensure a seamless transition.
+
+#### Disabling Initial State
+
+Set `initial: false` when you don't want elements hidden before animation:
+
+```typescript
+{
+  key: 'always-visible',
+  namedEffect: { type: 'Pulse' },
+  duration: 500,
+  initial: false  // Element visible immediately
+}
+```
+
+Use this for:
+- Animations on already-visible elements
+- Hover/click effects that don't need hiding
+- Looping animations
+
+### Pre-Generating CSS with `generateCSS`
+
+For optimal performance, especially in SSR scenarios, use `generateCSS` to pre-render animation styles:
+
+```typescript
+import { generateCSS, Interact, InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [{
+    key: 'hero',
+    trigger: 'viewEnter',
+    params: { type: 'once' },
+    effects: [{
+      keyframeEffect: {
+        name: 'fade-up',
+        keyframes: [
+          { opacity: 0, transform: 'translateY(30px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ]
+      },
+      duration: 800,
+      initial: {
+        opacity: 0,
+        transform: 'translateY(30px)'
+      }
+    }]
+  }],
+  effects: {}
+};
+
+// Generate CSS at build time or on server
+const css = generateCSS(config);
+
+// Inject into document head
+const style = document.createElement('style');
+style.textContent = css;
+document.head.appendChild(style);
+
+// Initialize Interact for runtime trigger handling
+Interact.create(config);
+```
+
+#### Benefits of CSS Generation
+
+| Approach | Initial Render | Animation Start | SSR Compatible |
+|----------|---------------|-----------------|----------------|
+| JavaScript-only | Flash possible | After hydration | ❌ |
+| `generateCSS` | Smooth | Immediate | ✅ |
+
+#### Generated CSS Structure
+
+`generateCSS` outputs:
+
+1. **@keyframes with initial state**: The `from` keyframe contains your `initial` properties
+2. **Animation rules**: Apply animations via `[data-interact-key]` selectors
+3. **CSS custom properties**: Allow conditional activation via media/container queries
+
+```css
+/* Example output */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+[data-interact-key="hero"] > :first-child {
+  --anim-def-hero-0: fade-up 800ms ease forwards;
+}
+
+[data-interact-key="hero"] > :first-child {
+  animation: var(--anim-def-hero-0, none);
+}
+```
+
+See [generateCSS API](../api/functions.md#generatecss) for complete documentation.
+
 ## Best Practices
 
 ### Animation Timing
@@ -632,3 +780,4 @@ Now that you understand effects and animations:
 - **[Configuration Structure](./configuration-structure.md)** - Organize complex interactions
 - **[State Management](./state-management.md)** - Advanced state handling
 - **[Conditions and Media Queries](./conditions-and-media-queries.md)** - Responsive animations
+- **[generateCSS API](../api/functions.md#generatecss)** - Pre-generate CSS for SSR and performance
