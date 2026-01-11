@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import type { InteractConfig, Effect, TimeEffect, TransitionEffect } from '../src/types';
 import type { NamedEffect } from '@wix/motion';
-import { getCSS } from '../src/core/css';
+import { _generateCSS } from '../src/core/css';
 import { getCSSAnimation } from '@wix/motion';
 import { effectToAnimationOptions } from '../src/handlers/utilities';
 
@@ -16,13 +16,13 @@ beforeAll(() => {
 });
 
 /**
- * getCSS Test Suite
+ * _generateCSS Test Suite
  *
  * Tests CSS generation for time-based animations and transitions.
  * - Generates CSS for triggers: viewEnter, animationEnd, hover, click, pageVisible
  * - Does NOT generate CSS for scrub triggers: viewProgress, pointerMove
  */
-describe('getCSS', () => {
+describe('_generateCSS', () => {
   // ============================================================================
   // Test Helpers
   // ============================================================================
@@ -139,7 +139,7 @@ describe('getCSS', () => {
   // ============================================================================
   describe('return structure', () => {
     it('should return an object with keyframes, animationRules, and transitionRules arrays', () => {
-      const result = getCSS({ effects: {}, interactions: [] });
+      const result = _generateCSS({ effects: {}, interactions: [] });
 
       expect(result).toHaveProperty('keyframes');
       expect(result).toHaveProperty('animationRules');
@@ -150,7 +150,7 @@ describe('getCSS', () => {
     });
 
     it('should return empty arrays for empty config', () => {
-      const result = getCSS({ effects: {}, interactions: [] });
+      const result = _generateCSS({ effects: {}, interactions: [] });
 
       expect(result.keyframes).toEqual([]);
       expect(result.animationRules).toEqual([]);
@@ -167,7 +167,7 @@ describe('getCSS', () => {
 
     it.each(timeTriggers)('should generate CSS for %s trigger', (trigger) => {
       const config = createConfig(fadeInEffect, { trigger });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes.length).toBeGreaterThan(0);
       expect(result.animationRules.length).toBeGreaterThan(0);
@@ -175,7 +175,7 @@ describe('getCSS', () => {
 
     it.each(scrubTriggers)('should NOT generate CSS for %s trigger', (trigger) => {
       const config = createConfig(fadeInEffect, { trigger });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes).toEqual([]);
       expect(result.animationRules).toEqual([]);
@@ -188,7 +188,7 @@ describe('getCSS', () => {
   describe('keyframes generation', () => {
     it('should generate valid @keyframes rule for namedEffect', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
       const [expectedName] = getKeyframeNames(fadeInEffect);
 
       expect(result.keyframes).toHaveLength(1);
@@ -199,7 +199,7 @@ describe('getCSS', () => {
 
     it('should generate @keyframes with custom name for keyframeEffect', () => {
       const config = createConfig(keyframeEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes).toHaveLength(1);
       expect(result.keyframes[0]).toMatch(keyframesPattern('custom-slide'));
@@ -213,7 +213,7 @@ describe('getCSS', () => {
         duration: 1000,
       };
       const config = createConfig(arcInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
       const expectedNames = getKeyframeNames(arcInEffect);
 
       expect(result.keyframes.length).toBe(expectedNames.length);
@@ -230,7 +230,7 @@ describe('getCSS', () => {
           { trigger: 'viewEnter', key: 'el-b', effects: [{ key: 'el-b', effectId: 'shared' }] },
         ],
       };
-      const result = getCSS(config);
+      const result = _generateCSS(config);
       const [expectedName] = getKeyframeNames(fadeInEffect);
 
       const keyframesWithName = result.keyframes.filter((kf) => kf.includes(expectedName));
@@ -250,7 +250,7 @@ describe('getCSS', () => {
         duration: 1000,
       };
       const config = createConfig(interpolatedEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Should have 0%, 50%, 100% (evenly distributed)
       expect(result.keyframes[0]).toMatch(/0%\s*\{/);
@@ -264,7 +264,7 @@ describe('getCSS', () => {
         duration: 1000,
       } as Effect;
       const config = createConfig(customEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes).toEqual([]);
     });
@@ -276,7 +276,7 @@ describe('getCSS', () => {
   describe('initial state in keyframes', () => {
     it('should include default initial state properties in keyframes', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Default initial includes visibility: hidden
       expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*visibility:\s*hidden/);
@@ -288,7 +288,7 @@ describe('getCSS', () => {
         initial: { opacity: '0', transform: 'scale(0.5)' },
       };
       const config = createConfig(effectWithInitial);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*opacity:\s*0/);
       expect(result.keyframes[0]).toMatch(/from\s*\{[^}]*transform:\s*scale\(0\.5\)/);
@@ -300,7 +300,7 @@ describe('getCSS', () => {
         initial: false,
       };
       const config = createConfig(effectWithDisabledInitial);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes[0]).not.toMatch(/from\s*\{/);
     });
@@ -312,7 +312,7 @@ describe('getCSS', () => {
   describe('animation rules', () => {
     it('should generate animation rule with correct selector', () => {
       const config = createConfig(fadeInEffect, { key: 'my-element' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasCorrectSelector = result.animationRules.some((rule) =>
         rule.includes('[data-interact-key="my-element"]'),
@@ -322,7 +322,7 @@ describe('getCSS', () => {
 
     it('should use CSS custom properties for animation definition', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Animation rules should use --anim-def-* custom properties
       const hasCustomProp = result.animationRules.some((rule) =>
@@ -333,7 +333,7 @@ describe('getCSS', () => {
 
     it('should include animation property with var() fallback', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasAnimationWithVar = result.animationRules.some((rule) =>
         /animation:\s*var\(--anim-def-[^,]+,\s*none\)/.test(rule),
@@ -343,7 +343,7 @@ describe('getCSS', () => {
 
     it('should include animation string from motion library', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
       const [expectedAnimation] = getAnimationStrings(fadeInEffect);
 
       const hasMotionAnimation = result.animationRules.some((rule) =>
@@ -354,7 +354,7 @@ describe('getCSS', () => {
 
     it('should include animation-composition property', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasComposition = result.animationRules.some((rule) =>
         rule.includes('animation-composition:'),
@@ -379,7 +379,7 @@ describe('getCSS', () => {
           },
         ],
       };
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Should have comma-separated var() calls in animation property
       const hasMultipleVars = result.animationRules.some((rule) =>
@@ -395,7 +395,7 @@ describe('getCSS', () => {
   describe('selectors', () => {
     it('should escape special characters in key', () => {
       const config = createConfig(fadeInEffect, { key: 'element.with:special#chars' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // CSS.escape handles special chars
       const hasEscapedSelector = result.animationRules.some((rule) =>
@@ -406,7 +406,7 @@ describe('getCSS', () => {
 
     it('should include custom selector when specified', () => {
       const config = createConfig(fadeInEffect, { selector: '.child-target' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasCustomSelector = result.animationRules.some((rule) =>
         rule.includes('.child-target'),
@@ -419,7 +419,7 @@ describe('getCSS', () => {
         listContainer: '.items-container',
         listItemSelector: '.item',
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasListSelector = result.animationRules.some(
         (rule) => rule.includes('.items-container') && rule.includes('.item'),
@@ -429,7 +429,7 @@ describe('getCSS', () => {
 
     it('should use default child selector (> :first-child) when no selector specified', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasDefaultSelector = result.animationRules.some((rule) =>
         rule.includes('> :first-child'),
@@ -447,7 +447,7 @@ describe('getCSS', () => {
         conditions: { desktop: { type: 'media', predicate: 'min-width: 1024px' } },
         effectConditions: ['desktop'],
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasMediaQuery = result.animationRules.some((rule) =>
         /@media\s*\(min-width:\s*1024px\)/.test(rule),
@@ -463,7 +463,7 @@ describe('getCSS', () => {
         },
         effectConditions: ['desktop', 'landscape'],
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasCombinedMedia = result.animationRules.some((rule) =>
         /@media\s*\([^)]+\)\s*and\s*\([^)]+\)/.test(rule),
@@ -473,7 +473,7 @@ describe('getCSS', () => {
 
     it('should NOT wrap in @media when no conditions', () => {
       const config = createConfig(fadeInEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasMediaQuery = result.animationRules.some((rule) => rule.includes('@media'));
       expect(hasMediaQuery).toBe(false);
@@ -489,7 +489,7 @@ describe('getCSS', () => {
         conditions: { wide: { type: 'container', predicate: 'min-width: 500px' } },
         effectConditions: ['wide'],
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasContainerQuery = result.animationRules.some((rule) =>
         /@container\s*\(min-width:\s*500px\)/.test(rule),
@@ -507,7 +507,7 @@ describe('getCSS', () => {
         conditions: { active: { type: 'selector', predicate: '.is-active' } },
         effectConditions: ['active'],
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasSelectorCondition = result.animationRules.some((rule) =>
         rule.includes(':is(.is-active)'),
@@ -522,14 +522,14 @@ describe('getCSS', () => {
   describe('transitions', () => {
     it('should generate transition rules for transition effects', () => {
       const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.transitionRules.length).toBeGreaterThan(0);
     });
 
     it('should generate state rule with :state() and data-interact-effect selectors', () => {
       const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasStateSelector = result.transitionRules.some((rule) =>
         /:state\(trans-effect\)/.test(rule) || /--trans-effect/.test(rule),
@@ -544,7 +544,7 @@ describe('getCSS', () => {
 
     it('should include style properties in state rule', () => {
       const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasOpacity = result.transitionRules.some((rule) =>
         propertyPattern('opacity', '1').test(rule),
@@ -559,7 +559,7 @@ describe('getCSS', () => {
 
     it('should use CSS custom properties for transition definition', () => {
       const config = createConfig(transitionEffect as Effect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasTransitionCustomProp = result.transitionRules.some((rule) =>
         /--trans-def-\w+/.test(rule),
@@ -569,7 +569,7 @@ describe('getCSS', () => {
 
     it('should include transition property with var() fallback', () => {
       const config = createConfig(transitionEffect as Effect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasTransitionWithVar = result.transitionRules.some((rule) =>
         /transition:\s*var\(--trans-def-[^,]+,\s*_\)/.test(rule),
@@ -579,7 +579,7 @@ describe('getCSS', () => {
 
     it('should NOT generate animation rules for transition-only effects', () => {
       const config = createConfig(transitionEffect as Effect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes).toEqual([]);
       expect(result.animationRules).toEqual([]);
@@ -602,7 +602,7 @@ describe('getCSS', () => {
         ],
       };
       const config = createConfig(effect as Effect, { effectId: 'prop-trans' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.transitionRules.length).toBeGreaterThan(0);
       
@@ -618,7 +618,7 @@ describe('getCSS', () => {
         ],
       };
       const config = createConfig(effect as Effect, { effectId: 'prop-trans' });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // No CSS generated because resolveEffect returns null without transition
       expect(result.transitionRules).toEqual([]);
@@ -641,7 +641,7 @@ describe('getCSS', () => {
         reversed: true,
       };
       const config = createConfig(fullOptionsEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
       const [expectedAnimation] = getAnimationStrings(fullOptionsEffect);
 
       expect(result.keyframes.length).toBeGreaterThan(0);
@@ -661,7 +661,7 @@ describe('getCSS', () => {
         iterations: 0,
       };
       const config = createConfig(infiniteEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       const hasInfinite = result.animationRules.some((rule) =>
         rule.includes('infinite'),
@@ -691,7 +691,7 @@ describe('getCSS', () => {
           },
         ],
       };
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes.length).toBeGreaterThan(0);
       expect(result.animationRules.length).toBeGreaterThan(0);
@@ -705,7 +705,7 @@ describe('getCSS', () => {
     it('should skip effects without namedEffect, keyframeEffect, or transition', () => {
       const invalidEffect = { duration: 500 } as TimeEffect;
       const config = createConfig(invalidEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes).toEqual([]);
       expect(result.animationRules).toEqual([]);
@@ -717,7 +717,7 @@ describe('getCSS', () => {
         conditions: { existing: { type: 'media', predicate: 'min-width: 800px' } },
         effectConditions: ['nonexistent', 'existing'],
       });
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Should still generate CSS (with existing condition)
       expect(result.animationRules.length).toBeGreaterThan(0);
@@ -738,7 +738,7 @@ describe('getCSS', () => {
         duration: 500,
       };
       const config = createConfig(emptyKeyframesEffect);
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       // Empty keyframes should result in empty or no CSS
       expect(result.keyframes).toEqual([]);
@@ -761,7 +761,7 @@ describe('getCSS', () => {
           },
         ],
       };
-      const result = getCSS(config);
+      const result = _generateCSS(config);
 
       expect(result.keyframes.length).toBeGreaterThan(0);
       expect(result.animationRules.length).toBeGreaterThan(0);

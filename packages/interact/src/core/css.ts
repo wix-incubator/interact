@@ -265,7 +265,7 @@ function getRulesFromSelectorPropsMap(
  * @param config - The interact configuration containing effects and interactions
  * @returns GetCSSResult with keyframes and animationRules
  */
-export function getCSS(config: InteractConfig): GetCSSResult {
+export function _generateCSS(config: InteractConfig): GetCSSResult {
   const keyframeMap = new Map<string, string>();
   const selectorTransitionPropsMap = new Map<
     string,
@@ -359,8 +359,14 @@ export function getCSS(config: InteractConfig): GetCSSResult {
   };
 }
 
-export function generate(config: InteractConfig): string {
-  const { keyframes, animationRules, transitionRules } = getCSS(config);
+/**
+ * Generates CSS for animations from an InteractConfig.
+ *
+ * @param config - The interact configuration containing effects and interactions
+ * @returns string containing all of the CSS rules needed for time-based animations
+ */
+export function generateCSS(config: InteractConfig): string {
+  const { keyframes, animationRules, transitionRules } = _generateCSS(config);
   const css: string[] = [...keyframes, ...animationRules, ...transitionRules];
   return css.join('\n');
 }
