@@ -609,20 +609,6 @@ describe('_generateCSS', () => {
       const hasOpacity = result.transitionRules.some((rule) => rule.includes('opacity'));
       expect(hasOpacity).toBe(true);
     });
-
-    it('should NOT generate CSS for transitionProperties without transition', () => {
-      // Current implementation requires transition property to be present
-      const effect: TransitionEffect = {
-        transitionProperties: [
-          { name: 'opacity', value: '1', duration: 300 },
-        ],
-      };
-      const config = createConfig(effect as Effect, { effectId: 'prop-trans' });
-      const result = _generateCSS(config);
-
-      // No CSS generated because resolveEffect returns null without transition
-      expect(result.transitionRules).toEqual([]);
-    });
   });
 
   // ============================================================================

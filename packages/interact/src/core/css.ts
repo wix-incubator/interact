@@ -137,8 +137,7 @@ function buildAnimationCompositionDeclaration(compositions: CompositeOperation[]
   const compositionRepeatLength = shortestRepeatingPatternLength(compositions);
   let resultCompositions = compositions.slice(0, compositionRepeatLength);
 
-  if ((resultCompositions.length === 1 && resultCompositions[0] === 'replace')
-      || resultCompositions.length === 0) {
+  if (resultCompositions.length === 0) {
     return '';
   }
 
@@ -244,7 +243,10 @@ function getRulesFromSelectorPropsMap(
     const extraDeclarations = [];
     if (isAnimation) {
       const compositions = propsArray.map(({ composition }) => composition || 'replace');
-      extraDeclarations.push(buildAnimationCompositionDeclaration(compositions));
+      const compositionDeclaration = buildAnimationCompositionDeclaration(compositions);
+      if (compositionDeclaration) {
+        extraDeclarations.push(buildAnimationCompositionDeclaration(compositions));
+      }
     }
 
     rules.push(buildUnconditionalRuleFromCustomProps(
@@ -346,7 +348,7 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
     false
   ));
   const animationRules: string[] = getRulesFromSelectorPropsMap(
-    selectorTransitionPropsMap,
+    selectorAnimationPropsMap,
     configConditions,
     true
   );
