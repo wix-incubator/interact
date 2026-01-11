@@ -287,6 +287,22 @@ export type CreateTransitionCSSParams = {
   useFirstChild?: boolean;
 };
 
+export type EffectCSSProps = {
+  declaration: string,
+  conditions: string[],
+  customPropName: string,
+  composition?: CompositeOperation,
+  custom?: Keyframe,
+};
+
+export type MotionCSSAnimationResult = {
+  animation: string,
+  composition: CompositeOperation,
+  custom: Keyframe,
+  name: string,
+  keyframes: Keyframe[],
+};
+
 export type GetCSSResult = {
   /** @keyframes rules for the animations */
   keyframes: string[];

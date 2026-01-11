@@ -69,37 +69,39 @@ function keyframePropertyToCSS(key: string): string {
 	if (key === 'cssOffset') {
 		return 'offset'
 	}
+	if (key === 'composite') {
+		return 'animation-composition'
+	}
   return key.replace(/([A-Z])/g, '-$1').toLowerCase();
 }
 
+function keyframeObjectToKeyframeCSS(keyframeObj: Keyframe, offsetString: string): string {
+  const props = Object.entries(keyframeObj)
+    .filter(([key, value]) => key !== 'offset' && value !== undefined && value !== null)
+    .map(([key, value]) => {
+      const cssKey = keyframePropertyToCSS(key);
+      return `${cssKey}: ${value};`;
+    })
+    .join(' ');
+  return `${offsetString} { ${props} }`;
+}
+
 export function keyframesToCSS(name: string, keyframes: Keyframe[], initial?: any): string {
+  if (!keyframes || keyframes.length === 0) return '';
   const interpolated = interpolateKeyframesOffsets(keyframes);
-  if (keyframes.length === 0) return '';
 
   let keyframeBlocks = interpolated
     .map((kf) => {
       const offset = kf.offset as number;
       const percentage = roundNumber(offset * 100);
 
-      const properties = Object.entries(kf)
-        .filter(([key, value]) => key !== 'offset' && value !== undefined && value !== null)
-        .map(([key, value]) => {
-          const cssKey = keyframePropertyToCSS(key);
-          return `${cssKey}: ${value};`;
-        })
-        .join(' ');
-
-      return `${percentage}% { ${properties} }`;
+      return keyframeObjectToKeyframeCSS(kf, `${percentage}%`);
     })
     .join(' ');
 
   if (initial) {
-    const fromFrame = Object.entries(initial)
-      .map(([key, value]) => {
-        return `${key}: ${value};`;
-      })
-      .join(' ');
-    keyframeBlocks = `from { ${fromFrame} } ${keyframeBlocks}`;
+    const fromFrame = keyframeObjectToKeyframeCSS(initial, 'from');
+    keyframeBlocks = `${fromFrame} ${keyframeBlocks}`;
   }
 
   return `@keyframes ${name} { ${keyframeBlocks} }`;
