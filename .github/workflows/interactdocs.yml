@@ -36,6 +36,9 @@ jobs:
           yarn set version 4.10.3
           NPQ_PKG_MGR=yarn npx npq install
 
+      - name: Build motion package
+        run: yarn workspace @wix/motion build
+
       - name: Build interact package
         run: yarn workspace @wix/interact build
 

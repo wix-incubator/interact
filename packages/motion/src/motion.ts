@@ -81,9 +81,14 @@ function getScrubScene(
   animationOptions: AnimationOptions,
   trigger: Partial<TriggerVariant> & { element?: HTMLElement },
   sceneOptions: Record<string, any> = {},
-): ScrubScrollScene[] | ScrubPointerScene {
+): ScrubScrollScene[] | ScrubPointerScene | null {
   const { disabled, allowActiveEvent, ...rest } = sceneOptions;
   const animation = getWebAnimation(target, animationOptions, trigger, rest);
+
+  // Return null if animation could not be created
+  if (!animation) {
+    return null;
+  }
 
   let typeSpecificOptions = {} as Record<string, any>;
 
