@@ -583,7 +583,8 @@ export type Progress = {
   y: number;
   v?: { x: number; y: number };
   active?: boolean;
-};
+} | number;
+
 export interface MouseAnimationInstance {
   target: HTMLElement;
   play: () => void;

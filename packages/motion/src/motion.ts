@@ -134,8 +134,10 @@ function getScrubScene(
     const axis = (trigger as { axis?: PointerMoveAxis }).axis;
 
     if (scrubOptions.keyframeEffect) {
-      if (!(animation as AnimationGroup).animations || (animation as AnimationGroup).animations.length === 0) {
-        return [] as ScrubPointerScene[];
+      const animationGroup = animation as AnimationGroup;
+
+      if (animationGroup.animations?.length === 0) {
+        return null;
       }
 
       let currentProgress = 0;
@@ -143,21 +145,18 @@ function getScrubScene(
       const scene: ScrubPointerScene = {
         target: undefined,
         centeredToTarget,
-        ready: (animation as AnimationGroup).ready,
+        ready: animationGroup.ready,
         getProgress() {
-          return {
-            x: axis === 'x' ? currentProgress : 0.5,
-            y: axis === 'y' ? currentProgress : 0.5,
-          };
+          return currentProgress;
         },
         effect(_scene: any, p: { x: number; y: number }) {
           const linearProgress = axis === 'x' ? p.x : p.y;
           currentProgress = linearProgress;
-          (animation as AnimationGroup).progress(linearProgress);
+          animationGroup.progress(linearProgress);
         },
         disabled: disabled ?? false,
         destroy() {
-          animation.cancel();
+          animationGroup.cancel();
         },
       };
 

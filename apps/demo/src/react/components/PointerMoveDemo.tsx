@@ -31,7 +31,7 @@ export const PointerMoveDemo = () => {
             name: 'slide-x',
             keyframes: [
               { transform: 'translateX(0px)' },
-              { transform: 'translateX(280px)' },
+              { transform: 'translateX(220px)' },
             ],
           },
           fill: 'both',
