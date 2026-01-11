@@ -5,7 +5,12 @@ vi.mock('@wix/motion', () => ({
       play: vi.fn(),
       cancel: vi.fn(),
       onFinish: vi.fn(),
+      pause: vi.fn(),
+      reverse: vi.fn(),
+      progress: vi.fn(),
+      persist: vi.fn(),
       isCSS: false,
+      playState: 'idle',
       ready: Promise.resolve(),
     }),
   }));
@@ -22,11 +27,16 @@ vi.mock('@wix/motion', () => ({
     let fastdom: any;
     let element: HTMLElement;
     let target: HTMLElement;
-    let observerCallback: (entries: Partial<IntersectionObserverEntry>[]) => void;
+    let observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void>;
     let observerMock: any;
     let observeSpy: MockInstance;
     let unobserveSpy: MockInstance;
     let IntersectionObserverMock: MockInstance;
+
+    // Helper to get the main (entry) observer callback
+    const getMainObserverCallback = () => observerCallbacks[0];
+    // Helper to get the exit observer callback (for repeat/state types)
+    const getExitObserverCallback = () => observerCallbacks[1];
   
     beforeEach(async () => {
       vi.resetModules();
@@ -44,6 +54,7 @@ vi.mock('@wix/motion', () => ({
   
       observeSpy = vi.fn();
       unobserveSpy = vi.fn();
+      observerCallbacks = [];
       observerMock = {
         observe: observeSpy,
         unobserve: unobserveSpy,
@@ -51,7 +62,7 @@ vi.mock('@wix/motion', () => ({
       };
   
       IntersectionObserverMock = vi.fn(function(this: any, cb: any, _options: any) {
-        observerCallback = cb;
+        observerCallbacks.push(cb);
         this.observe = observeSpy;
         this.unobserve = unobserveSpy;
         this.disconnect = vi.fn();
@@ -111,7 +122,7 @@ vi.mock('@wix/motion', () => ({
         );
 
         const entry = createEntry();
-        observerCallback([entry]);
+        getMainObserverCallback()([entry]);
 
         expect(unobserveSpy).toHaveBeenCalledWith(element);
       });
@@ -132,7 +143,7 @@ vi.mock('@wix/motion', () => ({
           boundingClientRect: { height: 1000 } as DOMRectReadOnly,
           rootBounds: { height: 400 } as DOMRectReadOnly,
         });
-        observerCallback([entry]);
+        getMainObserverCallback()([entry]);
 
         expect(fastdom.measure).toHaveBeenCalled();
       });
@@ -156,7 +167,7 @@ vi.mock('@wix/motion', () => ({
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
 
-        observerCallback([entry]);
+        getMainObserverCallback()([entry]);
 
         expect(fastdom.mutate).toHaveBeenCalled();
         expect(unobserveSpy).toHaveBeenCalledWith(element);
@@ -187,7 +198,7 @@ vi.mock('@wix/motion', () => ({
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
 
-        observerCallback([entry]);
+        getMainObserverCallback()([entry]);
 
         expect(fastdom.measure).toHaveBeenCalled();
         expect(fastdom.mutate).not.toHaveBeenCalled();
@@ -214,9 +225,352 @@ vi.mock('@wix/motion', () => ({
           rootBounds: { height: rootHeight } as DOMRectReadOnly,
         });
 
-        observerCallback([entry]);
+        getMainObserverCallback()([entry]);
 
         expect(fastdom.measure).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('Alternate type', () => {
+      it('should play animation on first entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'alternate' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(mockAnimation.play).toHaveBeenCalled();
+      });
+
+      it('should reverse animation on exit', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'alternate' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        mockAnimation.reverse.mockClear();
+
+        // Exit (alternate uses same observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getMainObserverCallback()([entryOut]);
+
+        expect(mockAnimation.reverse).toHaveBeenCalled();
+      });
+
+      it('should reverse animation on subsequent re-entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'alternate' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        // Exit
+        const entryOut = createEntry({ isIntersecting: false });
+        getMainObserverCallback()([entryOut]);
+
+        mockAnimation.reverse.mockClear();
+
+        // Re-entry - should reverse (not play)
+        getMainObserverCallback()([entryIn]);
+
+        expect(mockAnimation.reverse).toHaveBeenCalled();
+      });
+
+      it('should NOT unobserve after first intersection', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'alternate' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(unobserveSpy).not.toHaveBeenCalled();
+      });
+
+      it('should persist the animation', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'alternate' },
+          {},
+        );
+
+        expect(mockAnimation.persist).toHaveBeenCalled();
+      });
+    });
+
+    describe('Repeat type', () => {
+      it('should play animation from 0 on entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'repeat' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(mockAnimation.progress).toHaveBeenCalledWith(0);
+        expect(mockAnimation.play).toHaveBeenCalled();
+      });
+
+      it('should pause and reset progress to 0 on exit', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'repeat' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        mockAnimation.pause.mockClear();
+        mockAnimation.progress.mockClear();
+
+        // Exit (repeat uses separate exit observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getExitObserverCallback()([entryOut]);
+
+        expect(mockAnimation.pause).toHaveBeenCalled();
+        expect(mockAnimation.progress).toHaveBeenCalledWith(0);
+      });
+
+      it('should play from 0 on subsequent re-entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'repeat' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        // Exit (repeat uses separate exit observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getExitObserverCallback()([entryOut]);
+
+        mockAnimation.progress.mockClear();
+        mockAnimation.play.mockClear();
+
+        // Re-entry
+        getMainObserverCallback()([entryIn]);
+
+        expect(mockAnimation.progress).toHaveBeenCalledWith(0);
+        expect(mockAnimation.play).toHaveBeenCalled();
+      });
+
+      it('should NOT unobserve after first intersection', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'repeat' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(unobserveSpy).not.toHaveBeenCalled();
+      });
+
+      it('should persist the animation', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'repeat' },
+          {},
+        );
+
+        expect(mockAnimation.persist).toHaveBeenCalled();
+      });
+    });
+
+    describe('State type', () => {
+      it('should play animation on first entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(mockAnimation.play).toHaveBeenCalled();
+      });
+
+      it('should pause animation on exit', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        mockAnimation.pause.mockClear();
+
+        // Exit (state uses separate exit observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getExitObserverCallback()([entryOut]);
+
+        expect(mockAnimation.pause).toHaveBeenCalled();
+      });
+
+      it('should resume animation on subsequent re-entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        // Exit (state uses separate exit observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getExitObserverCallback()([entryOut]);
+
+        mockAnimation.play.mockClear();
+
+        // Re-entry - should resume (calling .play() resumes)
+        getMainObserverCallback()([entryIn]);
+
+        expect(mockAnimation.play).toHaveBeenCalled();
+      });
+
+      it('should NOT reset progress on re-entry', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        // First entry
+        const entryIn = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entryIn]);
+
+        // Exit (state uses separate exit observer)
+        const entryOut = createEntry({ isIntersecting: false });
+        getExitObserverCallback()([entryOut]);
+
+        mockAnimation.progress.mockClear();
+
+        // Re-entry
+        getMainObserverCallback()([entryIn]);
+
+        // Should NOT call progress(0) - just resume
+        expect(mockAnimation.progress).not.toHaveBeenCalled();
+      });
+
+      it('should NOT unobserve after first intersection', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        const entry = createEntry({ isIntersecting: true });
+        getMainObserverCallback()([entry]);
+
+        expect(unobserveSpy).not.toHaveBeenCalled();
+      });
+
+      it('should persist the animation', async () => {
+        const { getAnimation } = await import('@wix/motion');
+        const mockAnimation = (getAnimation as any)();
+
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { type: 'state' },
+          {},
+        );
+
+        expect(mockAnimation.persist).toHaveBeenCalled();
       });
     });
   });
