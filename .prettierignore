@@ -7,3 +7,4 @@ package-lock.json
 **/dist/**
 **/build/**
 index.html
+.yarnrc.yml
