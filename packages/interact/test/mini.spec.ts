@@ -321,6 +321,8 @@ describe('interact (mini)', () => {
       }
     };
 
+    (window as any).CSSAnimation = class CSSAnimation extends (window as any).Animation {};
+
     // Mock IntersectionObserver
     (window as any).IntersectionObserver = class IntersectionObserver {
       constructor(callback: any, options: any) {
@@ -3204,6 +3206,64 @@ describe('interact (mini)', () => {
         // Should not throw when animation is null
         expect(() => add(testElement, 'null-viewprogress-test')).not.toThrow();
       });
+    });
+  });
+
+  describe('namedEffect registry (integration)', () => {
+    it('should use a registered namedEffect implementation', async () => {
+      vi.resetModules();
+      vi.doUnmock('@wix/motion');
+
+      const { registerEffects } = await import('@wix/motion');
+
+      const registeredKeyframes = [{ opacity: 0 }, { opacity: 1 }];
+      const webSpy = vi.fn(() => [
+        {
+          name: 'RegisteredTestEffect',
+          duration: 123,
+          keyframes: registeredKeyframes,
+        },
+      ]);
+
+      registerEffects({
+        RegisteredTestEffect: {
+          web: webSpy,
+          getNames: () => ['RegisteredTestEffect'],
+        },
+      });
+
+      const { Interact: RealInteract, add: realAdd } = await import('../src/index');
+
+      RealInteract.create({
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'namedEffect-source',
+            effects: [
+              {
+                key: 'namedEffect-target',
+                effectId: 'registered-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'registered-effect': {
+            namedEffect: { type: 'RegisteredTestEffect' } as NamedEffect,
+            duration: 123,
+          },
+        },
+      });
+
+      const sourceElement = document.createElement('div');
+      const targetElement = document.createElement('div');
+      (targetElement as any).getAnimations = () => [];
+
+      realAdd(sourceElement, 'namedEffect-source');
+      realAdd(targetElement, 'namedEffect-target');
+
+      // If the effect wasn't resolved from the registry, Motion would never call this factory.
+      expect(webSpy).toHaveBeenCalled();
     });
   });
 });
