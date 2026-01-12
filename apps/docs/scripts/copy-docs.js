@@ -20,4 +20,3 @@ console.log('✓ Docs copied to dist/docs');
 
 // Note: Rules are NOT copied here - they are deployed separately to /rules/
 // in the GitHub Actions workflow (not under /docs/rules/)
-

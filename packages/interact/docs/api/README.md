@@ -55,7 +55,7 @@ Complete reference documentation for all public APIs in `@wix/interact`.
 
 - [**TriggerType**](types.md#triggertype) - Union of all supported triggers
 - [**ViewEnterParams**](types.md#viewenterparams) - Viewport entry configuration
-- [**StateParams**](types.md#stateparams) - State transition parameters  
+- [**StateParams**](types.md#stateparams) - State transition parameters
 - [**PointerMoveParams**](types.md#pointermoveparams) - Pointer movement configuration
 - [**AnimationEndParams**](types.md#animationendparams) - Animation completion triggers
 
@@ -76,22 +76,31 @@ Complete reference documentation for all public APIs in `@wix/interact`.
 ## Quick Reference
 
 ### Essential Imports
+
 ```typescript
-import { 
-  Interact,           // Main class
-  add, remove,        // Standalone functions
-  generate,           // CSS generation for entrance animations
-  InteractConfig,     // Configuration type
-  IInteractElement // Custom element interface
+import {
+  Interact, // Main class
+  add,
+  remove, // Standalone functions
+  generate, // CSS generation for entrance animations
+  InteractConfig, // Configuration type
+  IInteractElement, // Custom element interface
 } from '@wix/interact';
 ```
 
 ### Basic Pattern
+
 ```typescript
 // 1. Create configuration
 const config: InteractConfig = {
-  interactions: [{ /* ... */ }],
-  effects: { /* ... */ }
+  interactions: [
+    {
+      /* ... */
+    },
+  ],
+  effects: {
+    /* ... */
+  },
 };
 
 // 2. Initialize
@@ -112,7 +121,7 @@ InteractConfig
 │   ├── key: string
 │   ├── selector?: string
 │   ├── listContainer?: string
-│   ├── params?: TriggerParams  
+│   ├── params?: TriggerParams
 │   ├── conditions?: string[]
 │   └── effects: (Effect | EffectRef)[]
 ├── effects?: Record<string, Effect>
@@ -133,6 +142,7 @@ The `@wix/interact` package provides a declarative layer on top of `@wix/motion`
 - `customEffect` - Custom animation functions with full control
 
 **Example Integration:**
+
 ```typescript
 {
   effects: {

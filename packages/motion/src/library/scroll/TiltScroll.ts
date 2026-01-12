@@ -1,8 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  TiltScroll,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll } from '../../types';
 import { cssEasings as easings } from '../../easings';
 
 const MAX_Y_TRAVEL = 40;
@@ -66,14 +62,10 @@ const RANGES_MAP = {
   },
 };
 
-function getYTravel(
-  distance: number,
-  power?: keyof typeof TRANSLATE_Y_POWER_MAP,
-) {
+function getYTravel(distance: number, power?: keyof typeof TRANSLATE_Y_POWER_MAP) {
   return (
-    (power && power in TRANSLATE_Y_POWER_MAP
-      ? TRANSLATE_Y_POWER_MAP[power]
-      : distance) * MAX_Y_TRAVEL
+    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance) *
+    MAX_Y_TRAVEL
   );
 }
 
@@ -101,8 +93,7 @@ export default function create(options: ScrubAnimationOptions) {
   const { from, to } = RANGES_MAP[range];
 
   const dir = DIRECTIONS_MAP[direction];
-  const rotateZFrom =
-    Math.abs(from.z) * ROTATION_Z * dir * (from.z < 0 ? -1 : 1);
+  const rotateZFrom = Math.abs(from.z) * ROTATION_Z * dir * (from.z < 0 ? -1 : 1);
   const rotateZTo = Math.abs(to.z) * ROTATION_Z * dir * (to.z < 0 ? -1 : 1);
 
   const travelY = getYTravel(distance, power);

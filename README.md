@@ -9,29 +9,34 @@ This repository hosts the Interact library, accompanying docs, and any supportin
 ## Getting Started
 
 ### Install dependencies
-   ```bash
-   npm install
-   ```
+
+```bash
+npm install
+```
 
 ### Building
-   ```bash
-   npm run build
-   ```
+
+```bash
+npm run build
+```
 
 ### Testing
-   ```bash
-   npm run test
-   ```
+
+```bash
+npm run test
+```
 
 ## Running demo app
-   ```bash
-   npm run dev:demo
-   ```
+
+```bash
+npm run dev:demo
+```
 
 ## Running documentation app
-   ```bash
-   npm run dev:docs
-   ```
+
+```bash
+npm run dev:docs
+```
 
 ## Tooling
 

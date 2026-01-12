@@ -1,8 +1,4 @@
-import {
-  getClipPolygonParams,
-  getAdjustedDirection,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import { getClipPolygonParams, getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { WinkIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -48,10 +44,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,
@@ -102,8 +95,7 @@ export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      const rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
+      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
       const rotatedDirection = getAdjustedDirection(
         DIRECTIONS,
         direction,

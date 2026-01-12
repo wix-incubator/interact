@@ -1,21 +1,11 @@
-import type {
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getTimingFactor } from '../../utils';
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, _asWeb = false) {
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const easing = getEasing(options.easing || 'cubicInOut');
@@ -55,9 +45,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-flash-${timingFactor}`];

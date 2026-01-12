@@ -10,6 +10,7 @@ When working with lists, you have two main approaches:
 2. **List Container** - Use `listContainer` to target all items in a collection
 
 The `listContainer` approach is **highly recommended** for:
+
 - Dynamic lists that change (items added/removed)
 - Large lists (100+ items)
 - Staggered animations
@@ -20,6 +21,7 @@ The `listContainer` approach is **highly recommended** for:
 ### Using listContainer
 
 The `listContainer` property tells `@wix/interact` to:
+
 1. Find the container element
 2. Automatically track all its child elements
 3. Apply interactions to each child
@@ -29,25 +31,29 @@ The `listContainer` property tells `@wix/interact` to:
 import { Interact } from '@wix/interact';
 
 const config = {
-    interactions: [{
-        key: 'product-grid',
-        listContainer: '.grid',           // Container selector
-        trigger: 'viewEnter',
-        params: { type: 'once', threshold: 0.1 },
-        effects: [{
-            key: 'product-grid',
-            listContainer: '.grid',       // Target the same container
-            keyframeEffect: {
-                name: 'fade-slide',
-                keyframes: [
-                    { opacity: '0', transform: 'translateY(20px)' },
-                    { opacity: '1', transform: 'translateY(0)' }
-                ]
-            },
-            duration: 600,
-            easing: 'ease-out'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'product-grid',
+      listContainer: '.grid', // Container selector
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.1 },
+      effects: [
+        {
+          key: 'product-grid',
+          listContainer: '.grid', // Target the same container
+          keyframeEffect: {
+            name: 'fade-slide',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(20px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 600,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
@@ -55,12 +61,12 @@ Interact.create(config);
 
 ```html
 <interact-element data-interact-key="product-grid">
-    <div class="grid">
-        <div class="item">Product 1</div>
-        <div class="item">Product 2</div>
-        <div class="item">Product 3</div>
-        <!-- More items... -->
-    </div>
+  <div class="grid">
+    <div class="item">Product 1</div>
+    <div class="item">Product 2</div>
+    <div class="item">Product 3</div>
+    <!-- More items... -->
+  </div>
 </interact-element>
 ```
 
@@ -92,17 +98,17 @@ Use both properties to target specific elements within each list item:
 
 ```html
 <interact-element data-interact-key="gallery">
-    <div class="gallery-grid">
-        <div class="gallery-item">
-            <img src="image1.jpg" />
-            <div class="overlay">View Details</div>
-        </div>
-        <div class="gallery-item">
-            <img src="image2.jpg" />
-            <div class="overlay">View Details</div>
-        </div>
-        <!-- More items... -->
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <img src="image1.jpg" />
+      <div class="overlay">View Details</div>
     </div>
+    <div class="gallery-item">
+      <img src="image2.jpg" />
+      <div class="overlay">View Details</div>
+    </div>
+    <!-- More items... -->
+  </div>
 </interact-element>
 ```
 
@@ -136,15 +142,25 @@ Create sequential entrance animations for list items using delays:
 
 ```css
 /* Add stagger delay via CSS */
-.features > *:nth-child(1) { animation-delay: 0ms; }
-.features > *:nth-child(2) { animation-delay: 100ms; }
-.features > *:nth-child(3) { animation-delay: 200ms; }
-.features > *:nth-child(4) { animation-delay: 300ms; }
-.features > *:nth-child(5) { animation-delay: 400ms; }
+.features > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.features > *:nth-child(2) {
+  animation-delay: 100ms;
+}
+.features > *:nth-child(3) {
+  animation-delay: 200ms;
+}
+.features > *:nth-child(4) {
+  animation-delay: 300ms;
+}
+.features > *:nth-child(5) {
+  animation-delay: 400ms;
+}
 
 /* Or use a formula for unlimited items */
 .features > * {
-    animation-delay: calc(var(--stagger-index, 0) * 100ms);
+  animation-delay: calc(var(--stagger-index, 0) * 100ms);
 }
 ```
 
@@ -154,11 +170,11 @@ For more control, use data attributes:
 
 ```html
 <interact-element data-interact-key="animated-list">
-    <ul class="list">
-        <li data-delay="0">Item 1</li>
-        <li data-delay="100">Item 2</li>
-        <li data-delay="200">Item 3</li>
-    </ul>
+  <ul class="list">
+    <li data-delay="0">Item 1</li>
+    <li data-delay="100">Item 2</li>
+    <li data-delay="200">Item 3</li>
+  </ul>
 </interact-element>
 ```
 
@@ -195,23 +211,27 @@ For more control, use data attributes:
 ```typescript
 // Configuration
 const config = {
-    interactions: [{
-        key: 'todo-list',
-        listContainer: '.todos',
-        trigger: 'viewEnter',
-        effects: [{
-            key: 'todo-list',
-            listContainer: '.todos',
-            keyframeEffect: {
-                name: 'slide-in',
-                keyframes: [
-                    { opacity: '0', transform: 'translateX(-20px)' },
-                    { opacity: '1', transform: 'translateX(0)' }
-                ]
-            },
-            duration: 300
-        }]
-    }]
+  interactions: [
+    {
+      key: 'todo-list',
+      listContainer: '.todos',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          key: 'todo-list',
+          listContainer: '.todos',
+          keyframeEffect: {
+            name: 'slide-in',
+            keyframes: [
+              { opacity: '0', transform: 'translateX(-20px)' },
+              { opacity: '1', transform: 'translateX(0)' },
+            ],
+          },
+          duration: 300,
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
@@ -220,17 +240,17 @@ Interact.create(config);
 ```javascript
 // Add new item - animation applies automatically
 function addTodoItem(text) {
-    const todoList = document.querySelector('.todos');
-    const newItem = document.createElement('div');
-    newItem.className = 'todo-item';
-    newItem.textContent = text;
-    
-    todoList.appendChild(newItem); // Automatically triggers animation
+  const todoList = document.querySelector('.todos');
+  const newItem = document.createElement('div');
+  newItem.className = 'todo-item';
+  newItem.textContent = text;
+
+  todoList.appendChild(newItem); // Automatically triggers animation
 }
 
 // Remove item - cleanup happens automatically
 function removeTodoItem(item) {
-    item.remove(); // Automatically cleaned up
+  item.remove(); // Automatically cleaned up
 }
 ```
 
@@ -243,13 +263,13 @@ import { addListItems, removeListItems } from '@wix/interact';
 
 // Add specific items
 function addItems(containerElement, items) {
-    const root = document.querySelector('interact-element[data-interact-key="my-list"]');
-    addListItems(root, 'my-list', '.list-container', items);
+  const root = document.querySelector('interact-element[data-interact-key="my-list"]');
+  addListItems(root, 'my-list', '.list-container', items);
 }
 
 // Remove specific items
 function removeItems(items) {
-    removeListItems(items);
+  removeListItems(items);
 }
 ```
 
@@ -267,6 +287,7 @@ element.watchChildList('.dynamic-list');
 ```
 
 **How it works:**
+
 1. Creates a `MutationObserver` for the container
 2. Tracks `childList` mutations (additions/removals)
 3. Automatically calls `addListItems` for new elements
@@ -279,6 +300,7 @@ element.watchChildList('.dynamic-list');
 ### Entrance Animations
 
 #### Fade In Sequence
+
 ```typescript
 {
     key: 'cards',
@@ -302,6 +324,7 @@ element.watchChildList('.dynamic-list');
 ```
 
 #### Slide Up Cascade
+
 ```typescript
 {
     key: 'features',
@@ -325,6 +348,7 @@ element.watchChildList('.dynamic-list');
 ```
 
 #### Scale and Rotate
+
 ```typescript
 {
     key: 'photos',
@@ -412,26 +436,26 @@ element.watchChildList('.dynamic-list');
 ```javascript
 // Infinite scroll implementation
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            loadMoreItems(); // New items automatically get animations
-        }
-    });
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      loadMoreItems(); // New items automatically get animations
+    }
+  });
 });
 
 observer.observe(document.querySelector('.loading-sentinel'));
 
 function loadMoreItems() {
-    const container = document.querySelector('.items');
-    
-    // Fetch and add new items
-    fetchItems().then(items => {
-        items.forEach(item => {
-            const element = createItemElement(item);
-            container.appendChild(element);
-            // Animation triggers automatically via mutation observer
-        });
+  const container = document.querySelector('.items');
+
+  // Fetch and add new items
+  fetchItems().then((items) => {
+    items.forEach((item) => {
+      const element = createItemElement(item);
+      container.appendChild(element);
+      // Animation triggers automatically via mutation observer
     });
+  });
 }
 ```
 
@@ -440,6 +464,7 @@ function loadMoreItems() {
 ### When to Use listContainer
 
 **✅ Use listContainer for:**
+
 - Lists with 2+ items
 - Dynamic lists (items added/removed)
 - Consistent interactions across all items
@@ -449,6 +474,7 @@ function loadMoreItems() {
 ### Performance Best Practices
 
 #### Efficient Animations
+
 ```typescript
 // ✅ Good - GPU-accelerated properties
 {
@@ -474,15 +500,16 @@ function loadMoreItems() {
 ```
 
 #### Limit Active Observers
+
 ```typescript
 // ✅ Good - One container for all items
 {
-    listContainer: '.products'  // One observer
+  listContainer: '.products'; // One observer
 }
 
 // ❌ Avoid - Multiple containers
 {
-    listContainer: '.product-1' // Creates many observers
+  listContainer: '.product-1'; // Creates many observers
 }
 ```
 
@@ -492,54 +519,58 @@ function loadMoreItems() {
 
 ```typescript
 const layoutConfig = {
-    conditions: {
-        'grid-view': {
-            type: 'media',
-            predicate: '(min-width: 768px)'
-        },
-        'list-view': {
-            type: 'media',
-            predicate: '(max-width: 767px)'
-        }
+  conditions: {
+    'grid-view': {
+      type: 'media',
+      predicate: '(min-width: 768px)',
     },
-    interactions: [
+    'list-view': {
+      type: 'media',
+      predicate: '(max-width: 767px)',
+    },
+  },
+  interactions: [
+    {
+      key: 'adaptive-items',
+      listContainer: '.items',
+      trigger: 'viewEnter',
+      conditions: ['grid-view'],
+      effects: [
         {
-            key: 'adaptive-items',
-            listContainer: '.items',
-            trigger: 'viewEnter',
-            conditions: ['grid-view'],
-            effects: [{
-                key: 'adaptive-items',
-                listContainer: '.items',
-                keyframeEffect: {
-                    name: 'grid-fade',
-                    keyframes: [
-                        { opacity: '0', transform: 'scale(0.9)' },
-                        { opacity: '1', transform: 'scale(1)' }
-                    ]
-                },
-                duration: 500
-            }]
+          key: 'adaptive-items',
+          listContainer: '.items',
+          keyframeEffect: {
+            name: 'grid-fade',
+            keyframes: [
+              { opacity: '0', transform: 'scale(0.9)' },
+              { opacity: '1', transform: 'scale(1)' },
+            ],
+          },
+          duration: 500,
         },
+      ],
+    },
+    {
+      key: 'adaptive-items',
+      listContainer: '.items',
+      trigger: 'viewEnter',
+      conditions: ['list-view'],
+      effects: [
         {
-            key: 'adaptive-items',
-            listContainer: '.items',
-            trigger: 'viewEnter',
-            conditions: ['list-view'],
-            effects: [{
-                key: 'adaptive-items',
-                listContainer: '.items',
-                keyframeEffect: {
-                    name: 'list-slide',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateX(-20px)' },
-                        { opacity: '1', transform: 'translateX(0)' }
-                    ]
-                },
-                duration: 400
-            }]
-        }
-    ]
+          key: 'adaptive-items',
+          listContainer: '.items',
+          keyframeEffect: {
+            name: 'list-slide',
+            keyframes: [
+              { opacity: '0', transform: 'translateX(-20px)' },
+              { opacity: '1', transform: 'translateX(0)' },
+            ],
+          },
+          duration: 400,
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -549,63 +580,62 @@ const layoutConfig = {
 
 ```typescript
 const productGridConfig = {
-    interactions: [
-        // Entrance animation
+  interactions: [
+    // Entrance animation
+    {
+      key: 'products',
+      listContainer: '.product-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.1 },
+      effects: [
         {
-            key: 'products',
-            listContainer: '.product-grid',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.1 },
-            effects: [{
-                key: 'products',
-                listContainer: '.product-grid',
-                keyframeEffect: {
-                    name: 'product-entrance',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(40px) scale(0.95)' },
-                        { opacity: '1', transform: 'translateY(0) scale(1)' }
-                    ]
-                },
-                duration: 700,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
-            }]
+          key: 'products',
+          listContainer: '.product-grid',
+          keyframeEffect: {
+            name: 'product-entrance',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(40px) scale(0.95)' },
+              { opacity: '1', transform: 'translateY(0) scale(1)' },
+            ],
+          },
+          duration: 700,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
         },
-        // Hover effect
+      ],
+    },
+    // Hover effect
+    {
+      key: 'products',
+      listContainer: '.product-grid',
+      selector: '.product-card',
+      trigger: 'hover',
+      effects: [
         {
-            key: 'products',
-            listContainer: '.product-grid',
-            selector: '.product-card',
-            trigger: 'hover',
-            effects: [
-                {
-                    key: 'products',
-                    listContainer: '.product-grid',
-                    selector: '.product-card',
-                    keyframeEffect: {
-                        name: 'card-lift',
-                        keyframes: [
-                            { transform: 'translateY(0)', boxShadow: '0 4px 12px rgb(0 0 0 / 0.1)' },
-                            { transform: 'translateY(-8px)', boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)' }
-                        ]
-                    },
-                    duration: 250
-                },
-                {
-                    key: 'products',
-                    listContainer: '.product-grid',
-                    selector: '.product-image img',
-                    keyframeEffect: {
-                        name: 'image-zoom',
-                        keyframes: [
-                            { transform: 'scale(1)' },
-                            { transform: 'scale(1.05)' }
-                        ]
-                    },
-                    duration: 300
-                }
-            ]
-        }
-    ]
+          key: 'products',
+          listContainer: '.product-grid',
+          selector: '.product-card',
+          keyframeEffect: {
+            name: 'card-lift',
+            keyframes: [
+              { transform: 'translateY(0)', boxShadow: '0 4px 12px rgb(0 0 0 / 0.1)' },
+              { transform: 'translateY(-8px)', boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)' },
+            ],
+          },
+          duration: 250,
+        },
+        {
+          key: 'products',
+          listContainer: '.product-grid',
+          selector: '.product-image img',
+          keyframeEffect: {
+            name: 'image-zoom',
+            keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }],
+          },
+          duration: 300,
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -613,47 +643,51 @@ const productGridConfig = {
 
 ```typescript
 const todoConfig = {
-    interactions: [
-        // New item animation
+  interactions: [
+    // New item animation
+    {
+      key: 'todos',
+      listContainer: '.todo-list',
+      trigger: 'viewEnter',
+      params: { type: 'repeat' },
+      effects: [
         {
-            key: 'todos',
-            listContainer: '.todo-list',
-            trigger: 'viewEnter',
-            params: { type: 'repeat' },
-            effects: [{
-                key: 'todos',
-                listContainer: '.todo-list',
-                keyframeEffect: {
-                    name: 'todo-add',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateX(-30px) scale(0.9)' },
-                        { opacity: '1', transform: 'translateX(0) scale(1)' }
-                    ]
-                },
-                duration: 400,
-                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-            }]
+          key: 'todos',
+          listContainer: '.todo-list',
+          keyframeEffect: {
+            name: 'todo-add',
+            keyframes: [
+              { opacity: '0', transform: 'translateX(-30px) scale(0.9)' },
+              { opacity: '1', transform: 'translateX(0) scale(1)' },
+            ],
+          },
+          duration: 400,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         },
-        // Complete animation
+      ],
+    },
+    // Complete animation
+    {
+      key: 'todos',
+      listContainer: '.todo-list',
+      selector: '.todo-checkbox',
+      trigger: 'click',
+      effects: [
         {
-            key: 'todos',
-            listContainer: '.todo-list',
-            selector: '.todo-checkbox',
-            trigger: 'click',
-            effects: [{
-                key: 'todos',
-                listContainer: '.todo-list',
-                selector: '.todo-item',
-                transition: {
-                    duration: 300,
-                    styleProperties: [
-                        { name: 'opacity', value: '0.5' },
-                        { name: 'text-decoration', value: 'line-through' }
-                    ]
-                }
-            }]
-        }
-    ]
+          key: 'todos',
+          listContainer: '.todo-list',
+          selector: '.todo-item',
+          transition: {
+            duration: 300,
+            styleProperties: [
+              { name: 'opacity', value: '0.5' },
+              { name: 'text-decoration', value: 'line-through' },
+            ],
+          },
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -661,47 +695,48 @@ const todoConfig = {
 
 ```typescript
 const galleryConfig = {
-    interactions: [
-        // Grid entrance
+  interactions: [
+    // Grid entrance
+    {
+      key: 'gallery',
+      listContainer: '.gallery-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.1 },
+      effects: [
         {
-            key: 'gallery',
-            listContainer: '.gallery-grid',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.1 },
-            effects: [{
-                key: 'gallery',
-                listContainer: '.gallery-grid',
-                keyframeEffect: {
-                    name: 'gallery-fade',
-                    keyframes: [
-                        { opacity: '0', filter: 'blur(10px)' },
-                        { opacity: '1', filter: 'blur(0)' }
-                    ]
-                },
-                duration: 800
-            }]
+          key: 'gallery',
+          listContainer: '.gallery-grid',
+          keyframeEffect: {
+            name: 'gallery-fade',
+            keyframes: [
+              { opacity: '0', filter: 'blur(10px)' },
+              { opacity: '1', filter: 'blur(0)' },
+            ],
+          },
+          duration: 800,
         },
-        // Hover overlay
+      ],
+    },
+    // Hover overlay
+    {
+      key: 'gallery',
+      listContainer: '.gallery-grid',
+      selector: '.gallery-item',
+      trigger: 'hover',
+      effects: [
         {
-            key: 'gallery',
-            listContainer: '.gallery-grid',
-            selector: '.gallery-item',
-            trigger: 'hover',
-            effects: [{
-                key: 'gallery',
-                listContainer: '.gallery-grid',
-                selector: '.gallery-overlay',
-                keyframeEffect: {
-                    name: 'overlay-reveal',
-                    keyframes: [
-                        { opacity: '0' },
-                        { opacity: '1' }
-                    ]
-                },
-                duration: 250
-            }]
-        }
-    ]
+          key: 'gallery',
+          listContainer: '.gallery-grid',
+          selector: '.gallery-overlay',
+          keyframeEffect: {
+            name: 'overlay-reveal',
+            keyframes: [{ opacity: '0' }, { opacity: '1' }],
+          },
+          duration: 250,
+        },
+      ],
+    },
+  ],
 };
 ```
 

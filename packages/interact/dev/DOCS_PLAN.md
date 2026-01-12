@@ -53,12 +53,14 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 ### **Stage 1: Foundation Documentation Structure**
 
 **What:** Create the core documentation framework and main README
-**Where:** 
+**Where:**
+
 - Update `packages/interact/README.md`
 - Create `packages/interact/docs/` directory structure
-**Why:** Establish clear information architecture and entry points for different user types
+  **Why:** Establish clear information architecture and entry points for different user types
 
 **Deliverables:**
+
 - Enhanced main README with quick start, installation, and overview
 - Documentation directory structure following monorepo patterns
 - Table of contents and navigation structure
@@ -70,6 +72,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 **Why:** Developers need detailed reference documentation for all classes, methods, and types
 
 **Deliverables:**
+
 - `Interact` class documentation (static methods, instance methods, properties)
   - Document `Interact.forceReducedMotion` static property
 - Function documentation (`add()`, `remove()`)
@@ -90,6 +93,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 **Why:** Users need to understand the mental model and design philosophy
 
 **Deliverables:**
+
 - "Getting Started" tutorial with first interaction ✅ (complete)
 - "Understanding Triggers" - all 7 trigger types with examples (expand/complete)
 - "Effects and Animations" - integration with @wix/motion ✅ (complete)
@@ -113,6 +117,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 **Why:** Developers learn best from working examples and common use cases
 
 **Deliverables:**
+
 - Prefer using examples of Effects using `keyframeEffect` over `namedEffect`
 - Basic examples for each trigger type (extracted from playground)
 - Advanced patterns (chaining animations, conditional effects)
@@ -121,6 +126,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 - Common pitfalls and troubleshooting
 
 **NEW: Expanded Example Categories:**
+
 - **List Patterns** (HIGH PRIORITY):
   - Staggered entrance animations for list items (10+ variations)
   - Add/remove item animations with smooth transitions
@@ -128,7 +134,6 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
   - Infinite scroll integration patterns
   - Grid-to-list layout transitions
   - Drag-and-drop with visual feedback
-  
 - **Selector Pattern Examples:**
   - Complex component targeting strategies
   - `listContainer` + `selector` combinations with real use cases
@@ -157,6 +162,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 **Why:** Teams need guidance on how to adopt this into existing projects
 
 **Deliverables:**
+
 - Integration with different frameworks (React, vanilla JS, Vue, Angular, Svelte)
 - Migration from other animation libraries (GSAP, Framer Motion, CSS-only)
   - Side-by-side comparison examples
@@ -167,6 +173,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 - Debugging and development tools
 
 **NEW: Server-Side Rendering (SSR) Guide** (HIGH PRIORITY):
+
 - Hydration strategies and timing
 - When to initialize Interact (useEffect, componentDidMount, etc.)
 - Avoiding hydration mismatches
@@ -186,6 +193,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 **Why:** Power users and contributors need detailed technical information
 
 **Deliverables:**
+
 - Architecture overview and design decisions
 - Custom trigger development guide
 - Browser compatibility and polyfills
@@ -197,6 +205,7 @@ Based on my comprehensive analysis, I'll create a detailed plan for writing comp
 Given that significant documentation already exists, prioritize work as follows:
 
 **🔴 High Priority (Complete First):**
+
 1. Lists and Dynamic Content guide (new, critical missing feature)
 2. List management API documentation (`addListItems`, `removeListItems`, `watchChildList`)
 3. SSR integration patterns (common pain point for modern frameworks)
@@ -205,19 +214,9 @@ Given that significant documentation already exists, prioritize work as follows:
 6. Complete "Understanding Triggers" guide (expand existing)
 7. Expand "State Management" guide with list-specific patterns
 
-**🟡 Medium Priority:**
-8. Selector pattern examples (complex targeting strategies)
-9. Effect cascading examples with conditions
-10. Migration guides from GSAP/Framer Motion
-11. Framework-specific integration examples (Vue, Angular)
-12. Performance optimization patterns for lists
-13. Troubleshooting sections for each major feature
+**🟡 Medium Priority:** 8. Selector pattern examples (complex targeting strategies) 9. Effect cascading examples with conditions 10. Migration guides from GSAP/Framer Motion 11. Framework-specific integration examples (Vue, Angular) 12. Performance optimization patterns for lists 13. Troubleshooting sections for each major feature
 
-**🟢 Lower Priority:**
-14. Advanced topics (custom trigger development)
-15. Browser compatibility deep-dives
-16. Contributing guidelines
-17. Experimental features documentation
+**🟢 Lower Priority:** 14. Advanced topics (custom trigger development) 15. Browser compatibility deep-dives 16. Contributing guidelines 17. Experimental features documentation
 
 ### **Check-in Points:**
 
@@ -230,6 +229,7 @@ Given that significant documentation already exists, prioritize work as follows:
 ### **Success Criteria:**
 
 **User Experience Metrics:**
+
 - ✅ New developers can get first interaction working in under 10 minutes
 - ✅ Developer can implement a staggered list animation in under 5 minutes
 - ✅ Zero ambiguity in element selection priority behavior (flowchart/decision tree)
@@ -237,6 +237,7 @@ Given that significant documentation already exists, prioritize work as follows:
 - ✅ SSR/hydration works first time for Next.js, Remix, SvelteKit
 
 **Documentation Coverage:**
+
 - ✅ All public APIs have comprehensive documentation with examples
 - ✅ All 7 trigger types fully documented with real-world examples
 - ✅ List management features completely documented (mutation observers, etc.)
@@ -245,6 +246,7 @@ Given that significant documentation already exists, prioritize work as follows:
 - ✅ Common framework integrations (React, Vue, Vanilla) all documented
 
 **Quality Standards:**
+
 - ✅ Performance best practices clearly stated for each pattern
 - ✅ Accessibility considerations documented for all interaction types
 - ✅ Browser compatibility clearly stated with workarounds
@@ -253,6 +255,7 @@ Given that significant documentation already exists, prioritize work as follows:
 - ✅ Documentation follows monorepo standards and patterns
 
 **Validation Tests:**
+
 - ✅ 5+ external developers test documentation and provide feedback
 - ✅ All code examples validated in TypeScript strict mode
 - ✅ Examples tested in React, Vue, and vanilla JS environments
@@ -273,6 +276,7 @@ Given that significant documentation already exists, prioritize work as follows:
 ### **Critical Missing Documentation**
 
 1. **`listContainer` Feature** (🔴 High Priority)
+
    ```typescript
    // This pattern is used throughout the codebase but poorly documented
    {
@@ -283,6 +287,7 @@ Given that significant documentation already exists, prioritize work as follows:
      effects: [/* ... */]
    }
    ```
+
    **Required Coverage:**
    - How `listContainer` works with mutation observers
    - When to use vs multiple separate elements
@@ -291,31 +296,32 @@ Given that significant documentation already exists, prioritize work as follows:
    - Memory management for large lists
 
 2. **Element Selection Priority** (🔴 High Priority)
-   
+
    **Resolution Order (needs clear flowchart):**
+
    ```
    1. listContainer specified?
       → Yes: Match children using selector (or all immediate children)
       → No: Continue to step 2
-   
+
    2. selector specified?
       → Yes: querySelector within interact-element
       → No: Use first child element (fallback)
    ```
-   
+
    **Edge Cases to Document:**
    - What happens when `listContainer` + `selector` matches nothing?
    - Inheritance behavior from Interaction to Effect
    - Selector specificity and combinators
 
 3. **Dynamic List Management** (🔴 High Priority)
-   
+
    **API Methods Missing Docs:**
    - `watchChildList(listContainer: string): void`
    - `addListItems(root, key, listContainer, elements)`
    - `removeListItems(elements)`
    - `_observers` WeakMap structure
-   
+
    **Behavior to Document:**
    - Automatic mutation tracking setup
    - When observers are created/destroyed
@@ -323,31 +329,32 @@ Given that significant documentation already exists, prioritize work as follows:
    - Interaction with frameworks' virtual DOM
 
 4. **Effect Cascading with Conditions** (🟡 Medium Priority)
-   
+
    **Pattern to Document:**
+
    ```typescript
    // Effects cascade like CSS - last matching wins
    effects: [
      {
        key: 'card',
        effectId: 'slide-mobile',
-       conditions: ['mobile']  // Applies on mobile
-     },
-     {
-       key: 'card', 
-       effectId: 'slide-tablet',
-       conditions: ['tablet']  // Overrides on tablet
+       conditions: ['mobile'], // Applies on mobile
      },
      {
        key: 'card',
-       effectId: 'slide-desktop', 
-       conditions: ['desktop']  // Overrides on desktop
-     }
-   ]
+       effectId: 'slide-tablet',
+       conditions: ['tablet'], // Overrides on tablet
+     },
+     {
+       key: 'card',
+       effectId: 'slide-desktop',
+       conditions: ['desktop'], // Overrides on desktop
+     },
+   ];
    ```
 
 5. **SSR and Hydration** (🔴 High Priority)
-   
+
    **Framework Patterns Needed:**
    - Next.js App Router (use client boundaries)
    - Next.js Pages Router (useEffect timing)
@@ -356,7 +363,7 @@ Given that significant documentation already exists, prioritize work as follows:
    - Common hydration pitfalls
 
 6. **Performance Best Practices**
-   
+
    **Topics to Cover:**
    - When to use `listContainer` (100+ items → use listContainer)
    - Transform/opacity vs layout properties
@@ -373,18 +380,23 @@ Given that significant documentation already exists, prioritize work as follows:
    - Performance profiling guidance
 
 2. **Enhance All Code Examples:**
+
    ```typescript
    // ✅ GOOD: Complete, typed, copy-paste ready
    import { Interact, type InteractConfig } from '@wix/interact';
-   
+
    const config: InteractConfig = {
-     interactions: [{
-       key: 'my-button',
-       trigger: 'hover',
-       effects: [/* ... */]
-     }]
+     interactions: [
+       {
+         key: 'my-button',
+         trigger: 'hover',
+         effects: [
+           /* ... */
+         ],
+       },
+     ],
    };
-   
+
    // Initialize in useEffect for React
    useEffect(() => {
      const instance = Interact.create(config);
@@ -393,7 +405,7 @@ Given that significant documentation already exists, prioritize work as follows:
      };
    }, []);
    ```
-   
+
    **Every example should include:**
    - TypeScript types
    - Framework context (vanilla/React/Vue)
@@ -401,14 +413,14 @@ Given that significant documentation already exists, prioritize work as follows:
    - Common gotchas as comments
 
 3. **Add Migration Guides:**
-   
-   | From | To @wix/interact | Difficulty |
-   |------|------------------|------------|
-   | GSAP Timeline | Chained interactions | Medium |
-   | Framer Motion variants | Effect configurations | Easy |
-   | CSS animations only | Time effects | Easy |
-   | IntersectionObserver | viewEnter trigger | Easy |
-   | ScrollTrigger | viewProgress trigger | Medium |
+
+   | From                   | To @wix/interact      | Difficulty |
+   | ---------------------- | --------------------- | ---------- |
+   | GSAP Timeline          | Chained interactions  | Medium     |
+   | Framer Motion variants | Effect configurations | Easy       |
+   | CSS animations only    | Time effects          | Easy       |
+   | IntersectionObserver   | viewEnter trigger     | Easy       |
+   | ScrollTrigger          | viewProgress trigger  | Medium     |
 
 ### **Quick Reference Additions Needed**
 
@@ -435,25 +447,16 @@ Given that significant documentation already exists, prioritize work as follows:
 ## **Next Steps to Execute Plan**
 
 **Phase 1: High Priority Documentation (Week 1-2)**
+
 1. Create "Lists and Dynamic Content" guide
 2. Document list management APIs
 3. Create element selection flowchart
 4. Write SSR integration guide
 5. Create 10+ list animation examples
 
-**Phase 2: Medium Priority Completion (Week 3-4)**
-6. Complete "Understanding Triggers" guide
-7. Expand selector pattern examples
-8. Add troubleshooting sections
-9. Create migration guides
-10. Framework integration examples
+**Phase 2: Medium Priority Completion (Week 3-4)** 6. Complete "Understanding Triggers" guide 7. Expand selector pattern examples 8. Add troubleshooting sections 9. Create migration guides 10. Framework integration examples
 
-**Phase 3: Quality & Polish (Week 5-6)**
-11. Validate all examples in strict TypeScript
-12. Test with external developers
-13. Add performance profiling guides
-14. Create quick reference cards
-15. Final review and team feedback
+**Phase 3: Quality & Polish (Week 5-6)** 11. Validate all examples in strict TypeScript 12. Test with external developers 13. Add performance profiling guides 14. Create quick reference cards 15. Final review and team feedback
 
 ---
 

@@ -93,15 +93,9 @@ export default function create(
   const transX = TRANSLATE_X_MAP[direction];
   const rotateZ = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
   const scaleFactors =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : { scaleFrom: scale, scaleTo: scale };
+    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
 
-  const { fromValues, toValues } = RANGES_MAP[range](
-    rotateZ,
-    scaleFactors,
-    transX,
-  );
+  const { fromValues, toValues } = RANGES_MAP[range](rotateZ, scaleFactors, transX);
 
   let left = 0;
   if (dom) {

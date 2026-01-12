@@ -13,9 +13,7 @@ export function remove(controller: IInteractionController, removeFromCache: bool
     return;
   }
 
-  const selectors = [...(instance.get(key)?.selectors.values() || [])]
-    .filter(Boolean)
-    .join(',');
+  const selectors = [...(instance.get(key)?.selectors.values() || [])].filter(Boolean).join(',');
   let elements;
 
   if (selectors) {

@@ -1,11 +1,6 @@
 import { getScrubScene } from '@wix/motion';
 import { Pointer } from 'kuliso';
-import type {
-  PointerMoveParams,
-  ScrubEffect,
-  HandlerObjectMap,
-  InteractOptions,
-} from '../types';
+import type { PointerMoveParams, ScrubEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -35,11 +30,7 @@ function addPointerMoveHandler(
     element: source,
   };
 
-  const scene = getScrubScene(
-    target,
-    effectToAnimationOptions(effect),
-    triggerParams,
-  );
+  const scene = getScrubScene(target, effectToAnimationOptions(effect), triggerParams);
 
   if (scene) {
     const pointer = new Pointer({

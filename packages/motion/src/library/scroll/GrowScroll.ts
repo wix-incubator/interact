@@ -1,8 +1,4 @@
-import {
-  AnimationFillMode,
-  GrowScroll,
-  ScrubAnimationOptions,
-} from '../../types';
+import { AnimationFillMode, GrowScroll, ScrubAnimationOptions } from '../../types';
 
 const MAX_Y_TRAVEL = 40;
 const POWER_MAP = {
@@ -40,9 +36,7 @@ const RANGES_MAP = {
 
 function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
   const offset =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power].travelY
-      : Math.abs(speed) * MAX_Y_TRAVEL;
+    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -72,11 +66,7 @@ export default function create(options: ScrubAnimationOptions) {
           travelY: speed,
         };
 
-  const { fromValues, toValues } = RANGES_MAP[range](
-    scaleFrom,
-    scaleTo,
-    travelY * -MAX_Y_TRAVEL,
-  );
+  const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
 
   const { start, end } = getScrubOffsets(options.namedEffect as GrowScroll);
   const [trnsX, trnsY] = directionMap[direction];
@@ -90,16 +80,12 @@ export default function create(options: ScrubAnimationOptions) {
       endOffsetAdd: end,
       keyframes: [
         {
-          transform: `translateY(${
-            fromValues.travel
-          }vh) translate(${trnsX}%, ${trnsY}%) scale(${
+          transform: `translateY(${fromValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
             fromValues.scale
           }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
         },
         {
-          transform: `translateY(${
-            toValues.travel
-          }vh) translate(${trnsX}%, ${trnsY}%) scale(${
+          transform: `translateY(${toValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
             toValues.scale
           }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
         },

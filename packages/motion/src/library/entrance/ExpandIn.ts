@@ -30,11 +30,7 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    power,
-    initialScale = 0,
-    direction = 'center',
-  } = options.namedEffect as ExpandIn;
+  const { power, initialScale = 0, direction = 'center' } = options.namedEffect as ExpandIn;
   const [fadeIn, expandIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
@@ -57,10 +53,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: fadeIn,
       easing: 'linear',
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

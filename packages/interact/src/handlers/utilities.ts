@@ -33,11 +33,7 @@ function resolveRangeOffsets(
 }
 
 export function effectToAnimationOptions(effect: TimeEffect | ScrubEffect) {
-  if (
-    'keyframeEffect' in effect &&
-    !effect.keyframeEffect.name &&
-    'effectId' in effect
-  ) {
+  if ('keyframeEffect' in effect && !effect.keyframeEffect.name && 'effectId' in effect) {
     effect.keyframeEffect.name = effect.effectId as string;
   }
 
@@ -74,10 +70,7 @@ export function addHandlerToMap(
   handlers.add(handlerObj);
 }
 
-export function removeElementFromHandlerMap(
-  handlerMap: HandlerObjectMap,
-  element: HTMLElement,
-) {
+export function removeElementFromHandlerMap(handlerMap: HandlerObjectMap, element: HTMLElement) {
   const handlers = handlerMap.get(element);
 
   handlers?.forEach((handlerObj) => {

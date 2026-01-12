@@ -1,9 +1,4 @@
-import type {
-  BgFade,
-  DomApi,
-  RangeOffset,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { BgFade, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
 import { measureCompHeight } from './utils';
 
 const EASE_IN = 'sineIn';

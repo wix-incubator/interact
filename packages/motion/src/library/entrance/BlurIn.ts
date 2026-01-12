@@ -20,8 +20,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, blurIn] = getNames(options);
 
   const easing = options.easing || 'linear';
-  const blurFactor =
-    power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;
+  const blurFactor = power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;
 
   const custom = {
     '--motion-blur': `${blurFactor}px`,
@@ -34,10 +33,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       easing: 'sineIn',
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

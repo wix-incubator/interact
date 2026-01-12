@@ -35,22 +35,16 @@ class SwivelMouseAnimation extends CustomMouse {
     let invertVertical = -1;
 
     const { pivotAxis, angle, invert, perspective } = this.options;
-    if (
-      pivotAxis === 'center-horizontal' ||
-      pivotAxis === 'right' ||
-      pivotAxis === 'left'
-    ) {
+    if (pivotAxis === 'center-horizontal' || pivotAxis === 'right' || pivotAxis === 'left') {
       rotateAxis = 'rotateY';
       progress = progressX;
       invertVertical = 1;
     }
 
     // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
-    const rotate =
-      mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
+    const rotate = mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
 
-    const [translateX, translateY] =
-      transformOrigins[pivotAxis as MousePivotAxis];
+    const [translateX, translateY] = transformOrigins[pivotAxis as MousePivotAxis];
     const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--comp-rotate-z, 0deg))`;
 
     this.target.style.transform = transform;
@@ -62,9 +56,7 @@ class SwivelMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -86,6 +78,5 @@ export default function create(
     pivotAxis,
   };
 
-  return (target: HTMLElement) =>
-    new SwivelMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new SwivelMouseAnimation(target, animationOptions);
 }

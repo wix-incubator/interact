@@ -75,10 +75,7 @@ describe('BlurIn', () => {
         custom: {
           '--motion-blur': '6px',
         },
-        keyframes: [
-          { filter: 'blur(var(--motion-blur))' },
-          { filter: 'blur(0px)' },
-        ],
+        keyframes: [{ filter: 'blur(var(--motion-blur))' }, { filter: 'blur(0px)' }],
       },
     ];
 
@@ -113,10 +110,7 @@ describe('BlurIn', () => {
         custom: {
           '--motion-blur': '25px',
         },
-        keyframes: [
-          { filter: 'blur(var(--motion-blur))' },
-          { filter: 'blur(0px)' },
-        ],
+        keyframes: [{ filter: 'blur(var(--motion-blur))' }, { filter: 'blur(0px)' }],
       },
     ];
 

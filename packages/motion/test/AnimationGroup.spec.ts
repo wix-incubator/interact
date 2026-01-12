@@ -27,7 +27,7 @@ const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
     reverse: vi.fn(),
     playbackRate: 1,
     ...overrides,
-  } as Animation);
+  }) as Animation;
 
 describe('AnimationGroup', () => {
   describe('Constructor', () => {
@@ -176,10 +176,7 @@ describe('AnimationGroup', () => {
         } as any,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       const progress = animationGroup.getProgress();
 
@@ -194,10 +191,7 @@ describe('AnimationGroup', () => {
       });
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimationNoEffect,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimationNoEffect, mockAnimation2]);
 
       const progress = animationGroup.getProgress();
 
@@ -245,11 +239,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       await animationGroup.play();
 
@@ -292,10 +282,7 @@ describe('AnimationGroup', () => {
       const mockAnimation1 = createMockAnimation();
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.play(callback);
 
@@ -353,11 +340,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.pause();
 
@@ -403,11 +386,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       await animationGroup.reverse();
 
@@ -450,10 +429,7 @@ describe('AnimationGroup', () => {
       const mockAnimation1 = createMockAnimation();
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.reverse(callback);
 
@@ -524,10 +500,7 @@ describe('AnimationGroup', () => {
         } as any,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       animationGroup.progress(0.5);
 
@@ -691,11 +664,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.cancel();
 
@@ -741,11 +710,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.setPlaybackRate(2.0);
 
@@ -810,10 +775,7 @@ describe('AnimationGroup', () => {
         }),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Start onFinish but don't await yet
       const finishPromise = animationGroup.onFinish(callback);
@@ -842,15 +804,10 @@ describe('AnimationGroup', () => {
         finished: Promise.resolve(undefined as any),
       });
       const mockAnimation2 = createMockAnimation({
-        finished: new Promise((resolve) =>
-          setTimeout(() => resolve(undefined as any), 10),
-        ),
+        finished: new Promise((resolve) => setTimeout(() => resolve(undefined as any), 10)),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -868,10 +825,7 @@ describe('AnimationGroup', () => {
         finished: Promise.reject(new Error('Animation interrupted')),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -904,10 +858,7 @@ describe('AnimationGroup', () => {
         finished: Promise.reject(new Error('Animation was cancelled')),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -949,10 +900,7 @@ describe('AnimationGroup', () => {
         playState: 'paused' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       expect(animationGroup.playState).toBe('running');
     });
@@ -967,12 +915,7 @@ describe('AnimationGroup', () => {
     });
 
     test('should return correct state for different animation states', () => {
-      const testStates: AnimationPlayState[] = [
-        'idle',
-        'running',
-        'paused',
-        'finished',
-      ];
+      const testStates: AnimationPlayState[] = ['idle', 'running', 'paused', 'finished'];
 
       testStates.forEach((state) => {
         const mockAnimation = createMockAnimation({
@@ -1008,10 +951,7 @@ describe('AnimationGroup', () => {
         playState: 'running' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Test multiple operations on the group
       expect(animationGroup.getProgress()).toBe(0.3); // From first animation
@@ -1071,10 +1011,7 @@ describe('AnimationGroup', () => {
         measured: Promise.resolve(),
       };
 
-      const animationGroup = new AnimationGroup(
-        [mockAnimation1, mockAnimation2],
-        mockOptions,
-      );
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2], mockOptions);
 
       // Test full lifecycle
       await animationGroup.play();
@@ -1135,10 +1072,7 @@ describe('AnimationGroup', () => {
         playState: 'idle' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Initial state
       expect(animationGroup.playState).toBe('idle');
@@ -1153,10 +1087,7 @@ describe('AnimationGroup', () => {
       const updatedAnimation1 = createMockAnimation({
         playState: 'running' as AnimationPlayState,
       });
-      const updatedGroup = new AnimationGroup([
-        updatedAnimation1,
-        mockAnimation2,
-      ]);
+      const updatedGroup = new AnimationGroup([updatedAnimation1, mockAnimation2]);
       expect(updatedGroup.playState).toBe('running');
 
       // Multiple coordinated operations

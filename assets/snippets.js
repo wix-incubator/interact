@@ -1,7 +1,7 @@
 // Code Snippet Logic
 // Define specific snippets for each interaction
 const snippets = {
-    hover: `trigger: 'hover',
+  hover: `trigger: 'hover',
 params: { type: 'alternate' },
 effects: [{
   keyframeEffect: {
@@ -12,10 +12,9 @@ effects: [{
   },
   duration: 400,
   easing: 'ease-out',
-  fill: 'both',
-  composite: 'add'
+  fill: 'both'
 }]`,
-    click: `trigger: 'click',
+  click: `trigger: 'click',
 effects: [
   { 
     selector: '.fill-circle', 
@@ -37,7 +36,7 @@ effects: [
     } 
   }
 ]`,
-    entrance: `trigger: 'viewEnter',
+  entrance: `trigger: 'viewEnter',
 effects: [{
   fill: 'both', 
   keyframeEffect: {
@@ -50,7 +49,7 @@ effects: [{
   duration: 1000,
   easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
 }]`,
-    mouseTrack: `trigger: 'pointerMove',
+  mouseTrack: `trigger: 'pointerMove',
 params: { hitArea: 'self' },
 effects: [
   {
@@ -70,7 +69,7 @@ effects: [
     }
   }
 ]`,
-    scrollytelling: `
+  scrollytelling: `
   trigger: 'viewProgress', 
 effects: [
 // 1. Vertical Spin
@@ -132,48 +131,47 @@ effects: [
     }
 }
 ]           
-            `
+            `,
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Populate code blocks with plain text
-    const displays = document.querySelectorAll('.codeDisplay');
-    displays.forEach(d => {
-        const id = d.getAttribute('data-snippet');
-        if (snippets[id]) {
-            d.textContent = snippets[id];
+  // 1. Populate code blocks with plain text
+  const displays = document.querySelectorAll('.codeDisplay');
+  displays.forEach((d) => {
+    const id = d.getAttribute('data-snippet');
+    if (snippets[id]) {
+      d.textContent = snippets[id];
+    }
+  });
+
+  // 2. Updated Copy Logic: Copies the specific code for the card
+  document.querySelectorAll('.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // Find the sibling code block
+      const container = btn.closest('.group'); // Find parent container
+      const codeElement = container.querySelector('.codeDisplay');
+
+      if (codeElement) {
+        const codeText = codeElement.textContent;
+
+        // Create temp element to copy
+        const textArea = document.createElement('textarea');
+        textArea.value = codeText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          const textSpan = btn.querySelector('.copy-text');
+          const originalText = textSpan.innerText;
+          textSpan.innerText = 'COPIED!';
+          setTimeout(() => {
+            textSpan.innerText = originalText;
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy', err);
         }
+        document.body.removeChild(textArea);
+      }
     });
-
-    // 2. Updated Copy Logic: Copies the specific code for the card
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Find the sibling code block
-            const container = btn.closest('.group'); // Find parent container
-            const codeElement = container.querySelector('.codeDisplay');
-            
-            if (codeElement) {
-                const codeText = codeElement.textContent;
-                
-                // Create temp element to copy
-                const textArea = document.createElement("textarea");
-                textArea.value = codeText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    const textSpan = btn.querySelector('.copy-text');
-                    const originalText = textSpan.innerText;
-                    textSpan.innerText = 'COPIED!';
-                    setTimeout(() => {
-                        textSpan.innerText = originalText;
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy', err);
-                }
-                document.body.removeChild(textArea);
-            }
-        });
-    });
+  });
 });
-
