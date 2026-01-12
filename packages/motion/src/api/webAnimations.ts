@@ -89,6 +89,10 @@ function getWebAnimation(
       options,
     ) as MouseAnimationFactory;
 
+    if (typeof mouseAnimationFactory !== 'function') {
+      return null;
+    }
+
     return mouseAnimationFactory(element as HTMLElement);
   }
 

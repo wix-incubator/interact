@@ -140,18 +140,17 @@ function getScrubScene(
         return null;
       }
 
-      let currentProgress = 0;
-
-      const scene: ScrubPointerScene = {
+      const scene = {
         target: undefined,
         centeredToTarget,
         ready: animationGroup.ready,
+        _currentProgress: 0,
         getProgress() {
-          return currentProgress;
+          return this._currentProgress;
         },
         effect(_scene: any, p: { x: number; y: number }) {
           const linearProgress = axis === 'x' ? p.x : p.y;
-          currentProgress = linearProgress;
+          this._currentProgress = linearProgress;
           animationGroup.progress(linearProgress);
         },
         disabled: disabled ?? false,
@@ -160,7 +159,7 @@ function getScrubScene(
         },
       };
 
-      return scene;
+      return scene as ScrubPointerScene;
     }
 
     typeSpecificOptions = {

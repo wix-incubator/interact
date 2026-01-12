@@ -1064,7 +1064,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { [PROPERTY]: '[END_VALUE]' }
                 ]
             },
-            axis: '[AXIS]',
+            axis: '[AXIS]',  // 'x' or 'y'
             fill: '[FILL_MODE]',
             centeredToTarget: [CENTERED_TO_TARGET]
         }
@@ -1080,7 +1080,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 - `[PROPERTY]`: CSS property to animate (transform, opacity, etc.)
 - `[START_VALUE]`: Value at progress 0 (left/top edge)
 - `[END_VALUE]`: Value at progress 1 (right/bottom edge)
-- `[AXIS]`: 'horizontal' (maps x position) or 'vertical' (maps y position) - **defaults to 'vertical'**
+- `[AXIS]`: 'x' (maps x position) or 'y' (maps y position) - **defaults to 'y'**
 - `[FILL_MODE]`: 'none', 'forwards', 'backwards', 'both'
 - `[CENTERED_TO_TARGET]`: true or false
 
@@ -1102,7 +1102,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { transform: 'translateX(200px)' }
                 ]
             },
-            axis: 'horizontal',
+            axis: 'x',
             fill: 'both'
         }
     ]
@@ -1127,7 +1127,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { transform: 'scaleY(1)', opacity: 1 }
                 ]
             },
-            axis: 'vertical',
+            axis: 'y',
             fill: 'both'
         }
     ]
@@ -1153,7 +1153,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { backgroundColor: '#0000ff' }
                 ]
             },
-            axis: 'horizontal',
+            axis: 'x',
             fill: 'both'
         }
     ]
@@ -1178,7 +1178,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { clipPath: 'inset(0 0 0 0)' }
                 ]
             },
-            axis: 'horizontal',
+            axis: 'x',
             fill: 'both'
         }
     ]
@@ -1186,9 +1186,9 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 ```
 
 **Important Notes**:
-- `axis` defaults to `'vertical'` when using `keyframeEffect` with `pointerMove`
-- `axis: 'horizontal'` maps `progress.x` (0=left, 1=right) to animation progress
-- `axis: 'vertical'` maps `progress.y` (0=top, 1=bottom) to animation progress
+- `axis` defaults to `'y'` when using `keyframeEffect` with `pointerMove`
+- `axis: 'x'` maps `progress.x` (0=left, 1=right) to animation progress
+- `axis: 'y'` maps `progress.y` (0=top, 1=bottom) to animation progress
 - For 2D effects that need both axes, use `namedEffect` or `customEffect` instead
 
 ---
@@ -1483,12 +1483,12 @@ Controlling movement direction for specific design needs:
 |-------------|----------|-----|
 | Standard 3D tilt | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested |
 | Cursor following | `namedEffect: { type: 'TrackMouse' }` | Built-in physics |
-| Horizontal progress control | `keyframeEffect` + `axis: 'horizontal'` | Maps x position to keyframes |
-| Vertical progress control | `keyframeEffect` + `axis: 'vertical'` | Maps y position to keyframes |
+| Horizontal progress control | `keyframeEffect` + `axis: 'x'` | Maps x position to keyframes |
+| Vertical progress control | `keyframeEffect` + `axis: 'y'` | Maps y position to keyframes |
 | Custom physics | `customEffect` | Full control over calculations |
 | Velocity-based effects | `customEffect` | Access to `progress.v` |
 | Grid/particle systems | `customEffect` | Can manipulate many elements |
 
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframeEffect, and custom effect patterns.
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframe effects, and custom effect patterns.
