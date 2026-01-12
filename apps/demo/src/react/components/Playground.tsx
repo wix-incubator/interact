@@ -10,7 +10,7 @@ const easingCatalog = [
   'cubic-bezier(0.4, 0, 0.2, 1)',
   'cubic-bezier(0.34, 1.56, 0.64, 1)',
   'cubic-bezier(0.22, 1, 0.36, 1)',
-  'linear'
+  'linear',
 ];
 
 const triggerOptions: TriggerType[] = ['hover', 'click', 'viewEnter'];
@@ -27,7 +27,7 @@ const createEffectConfig = (
   effect: EffectOption,
   duration: number,
   easing: string,
-  delay: number
+  delay: number,
 ) => {
   switch (effect) {
     case 'pulse':
@@ -42,9 +42,9 @@ const createEffectConfig = (
             { transform: 'scale(1)', opacity: 1 },
             { transform: 'scale(0.95)', opacity: 0.9 },
             { transform: 'scale(1.02)', opacity: 1 },
-            { transform: 'scale(1)', opacity: 1 }
-          ]
-        }
+            { transform: 'scale(1)', opacity: 1 },
+          ],
+        },
       } satisfies InteractConfig['effects'][string];
     case 'tilt':
       return {
@@ -56,9 +56,9 @@ const createEffectConfig = (
           keyframes: [
             { transform: 'rotate3d(1, 0, 0, 0deg)', filter: 'brightness(100%)' },
             { transform: 'rotate3d(1, 0.3, 0, 8deg)', filter: 'brightness(130%)' },
-            { transform: 'rotate3d(0, 0, 0, 0deg)', filter: 'brightness(100%)' }
-          ]
-        }
+            { transform: 'rotate3d(0, 0, 0, 0deg)', filter: 'brightness(100%)' },
+          ],
+        },
       } satisfies InteractConfig['effects'][string];
     default:
       return {
@@ -69,16 +69,16 @@ const createEffectConfig = (
             value: 'translateY(-12px)',
             duration,
             delay,
-            easing
+            easing,
           },
           {
             name: 'box-shadow',
             value: '0 25px 60px rgb(59 130 246 / 0.35)',
             duration,
             delay,
-            easing
-          }
-        ]
+            easing,
+          },
+        ],
       } satisfies InteractConfig['effects'][string];
   }
 };
@@ -94,7 +94,7 @@ export const Playground = () => {
 
   const effectConfig = useMemo(
     () => createEffectConfig(effect, duration, easing, delay),
-    [effect, duration, easing, delay]
+    [effect, duration, easing, delay],
   );
 
   const config = useMemo<InteractConfig>(() => {
@@ -105,20 +105,19 @@ export const Playground = () => {
           key: 'demo-card',
           trigger,
           params: getTriggerParams(trigger),
-          effects: [{ effectId }]
-        }
+          effects: [{ effectId }],
+        },
       ],
       effects: {
-        [effectId]: effectConfig
-      }
+        [effectId]: effectConfig,
+      },
     };
   }, [effectConfig, trigger]);
 
   useInteractInstance(config);
 
   const handleRange =
-    (setter: (value: number) => void) =>
-    (event: ChangeEvent<HTMLInputElement>) => {
+    (setter: (value: number) => void) => (event: ChangeEvent<HTMLInputElement>) => {
       setter(Number(event.target.value));
     };
 
@@ -131,7 +130,10 @@ export const Playground = () => {
             Trigger
             <span>{trigger}</span>
           </label>
-          <select value={trigger} onChange={(event) => setTrigger(event.target.value as TriggerType)}>
+          <select
+            value={trigger}
+            onChange={(event) => setTrigger(event.target.value as TriggerType)}
+          >
             {triggerOptions.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -145,7 +147,10 @@ export const Playground = () => {
             Effect
             <span>{effect}</span>
           </label>
-          <select value={effect} onChange={(event) => setEffect(event.target.value as EffectOption)}>
+          <select
+            value={effect}
+            onChange={(event) => setEffect(event.target.value as EffectOption)}
+          >
             <option value="lift">Lift</option>
             <option value="pulse">Pulse</option>
             <option value="tilt">Tilt</option>
@@ -203,8 +208,8 @@ export const Playground = () => {
           <p className="scroll-label">Key demo-card</p>
           <h3>Atomic swap triggers</h3>
           <p>
-            Change the trigger or easing to feel the difference immediately. The preview listens
-            to the same config schema your product pages will consume.
+            Change the trigger or easing to feel the difference immediately. The preview listens to
+            the same config schema your product pages will consume.
           </p>
         </Interaction>
 
@@ -230,4 +235,3 @@ export const Playground = () => {
     </div>
   );
 };
-

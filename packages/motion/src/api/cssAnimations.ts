@@ -5,17 +5,10 @@ import type {
   AnimationOptions,
   TriggerVariant,
 } from '../types';
-import {
-  getEffectsData,
-  getRanges,
-  getNamedEffect,
-  isNotAScrubTrigger,
-} from './common';
+import { getEffectsData, getRanges, getNamedEffect, isNotAScrubTrigger } from './common';
 
 function getAnimationTarget(target: string | null, part: string | undefined) {
-  return target
-    ? `#${target}${part ? `[data-motion-part~="${part}"]` : ''}`
-    : '';
+  return target ? `#${target}${part ? `[data-motion-part~="${part}"]` : ''}` : '';
 }
 
 function getAnimationAsCSS(
@@ -27,14 +20,7 @@ function getAnimationAsCSS(
   },
   isRunning?: boolean,
 ) {
-  const {
-    duration,
-    delay,
-    iterations = 1,
-    fill,
-    easing = 'linear',
-    direction,
-  } = data.options;
+  const { duration, delay, iterations = 1, fill, easing = 'linear', direction } = data.options;
   const animationName = data.effect.name;
   const isAutoDuration = duration === 'auto';
 
@@ -42,9 +28,7 @@ function getAnimationAsCSS(
     isAutoDuration ? ' ' : ` ${delay || 1}ms `
   }${easing}${fill && fill !== 'none' ? ` ${fill}` : ''} ${
     !iterations || iterations === Infinity ? 'infinite' : iterations
-  }${direction === 'normal' ? '' : ` ${direction}`} ${
-    isRunning ? '' : 'paused'
-  }`;
+  }${direction === 'normal' ? '' : ` ${direction}`} ${isRunning ? '' : 'paused'}`;
 }
 
 function getCSSAnimationEffect(
@@ -70,16 +54,10 @@ function getCSSAnimation(
   trigger?: TriggerVariant,
 ) {
   // get the preset for the given animation options
-  const namedEffect = getNamedEffect(
-    animationOptions,
-  ) as AnimationEffectAPI<any> | null;
+  const namedEffect = getNamedEffect(animationOptions) as AnimationEffectAPI<any> | null;
 
   const animationsData = getCSSAnimationEffect(namedEffect, animationOptions);
-  const data = getEffectsData(
-    animationsData,
-    trigger,
-    animationOptions.effectId,
-  );
+  const data = getEffectsData(animationsData, trigger, animationOptions.effectId);
   const isViewProgress = trigger?.trigger === 'view-progress';
 
   return data.map((item, index) => {

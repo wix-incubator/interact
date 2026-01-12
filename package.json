@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "yarn dev --workspaces",
     "build": "yarn workspaces foreach --all --topological run build",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0",
+    "lint": "eslint . --max-warnings=0",
     "test": "yarn test --workspace packages/interact --workspace packages/motion",
     "dev:docs": "yarn dev --workspace apps/docs",
     "dev:demo": "yarn dev --workspace apps/demo",

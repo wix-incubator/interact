@@ -7,6 +7,7 @@ Continuous looping animations that add life and draw attention to elements. Perf
 Ongoing animations are **time-based** looping animations designed to create continuous movement and draw user attention. They typically run with infinite iterations and use alternating or repeating patterns. Duration ranges from 1-4 seconds with automatic looping.
 
 ### Key Characteristics
+
 - **Purpose**: Attention, emphasis, ambient motion
 - **Duration**: 1-4 seconds per cycle
 - **Iterations**: Infinite loops (configurable)
@@ -17,63 +18,70 @@ Ongoing animations are **time-based** looping animations designed to create cont
 ## Animation Categories
 
 ### 💓 **Rhythmic Scaling**
+
 Breathing, pulsing, and organic size changes.
 
 ### 🏃 **Movement & Position**
+
 Translation-based animations with directional flow.
 
 ### 🔄 **Rotation & Spin**
+
 Circular motion and rotation effects.
 
 ### ⚡ **Dynamic Effects**
+
 Complex multi-property animations with elastic movement.
 
 ### ✨ **Visual Effects**
+
 Opacity, visibility, and special visual transitions.
 
 ## Complete Preset Reference
 
-| Animation | Category | Complexity | Power Levels | Directions | Description |
-|-----------|----------|------------|--------------|------------|-------------|
-| **Pulse** | Rhythmic | Simple | ✓ | - | Smooth scale breathing effect |
-| **Breathe** | Rhythmic | Medium | - | 3-way | Organic movement with scaling |
-| **Bounce** | Dynamic | Medium | ✓ | - | Vertical bouncing motion |
-| **Spin** | Rotation | Simple | ✓ | 2-way | Continuous rotation |
-| **Wiggle** | Movement | Medium | ✓ | - | Random shake movement |
-| **Poke** | Movement | Medium | ✓ | 4-way | Directional poking motion |
-| **Flash** | Visual | Simple | - | - | Opacity blinking effect |
-| **Swing** | Movement | Complex | ✓ | 4-way | Pendulum swinging motion |
-| **Flip** | Rotation | Medium | ✓ | 2-way | 3D flip rotation |
-| **Rubber** | Dynamic | Medium | ✓ | - | Elastic scaling effect |
-| **Fold** | Rotation | Complex | ✓ | 4-way | 3D folding animation |
-| **Jello** | Dynamic | Medium | ✓ | - | Gelatinous wobble effect |
-| **Cross** | Movement | Complex | - | 8-way | Multi-directional crossing |
-| **Blink** | Visual | Complex | ✓ | - | Random blinking teleport* |
-| **DVD** | Movement | Medium | ✓ | - | Bouncing corner-to-corner* |
+| Animation   | Category | Complexity | Power Levels | Directions | Description                   |
+| ----------- | -------- | ---------- | ------------ | ---------- | ----------------------------- |
+| **Pulse**   | Rhythmic | Simple     | ✓            | -          | Smooth scale breathing effect |
+| **Breathe** | Rhythmic | Medium     | -            | 3-way      | Organic movement with scaling |
+| **Bounce**  | Dynamic  | Medium     | ✓            | -          | Vertical bouncing motion      |
+| **Spin**    | Rotation | Simple     | ✓            | 2-way      | Continuous rotation           |
+| **Wiggle**  | Movement | Medium     | ✓            | -          | Random shake movement         |
+| **Poke**    | Movement | Medium     | ✓            | 4-way      | Directional poking motion     |
+| **Flash**   | Visual   | Simple     | -            | -          | Opacity blinking effect       |
+| **Swing**   | Movement | Complex    | ✓            | 4-way      | Pendulum swinging motion      |
+| **Flip**    | Rotation | Medium     | ✓            | 2-way      | 3D flip rotation              |
+| **Rubber**  | Dynamic  | Medium     | ✓            | -          | Elastic scaling effect        |
+| **Fold**    | Rotation | Complex    | ✓            | 4-way      | 3D folding animation          |
+| **Jello**   | Dynamic  | Medium     | ✓            | -          | Gelatinous wobble effect      |
+| **Cross**   | Movement | Complex    | -            | 8-way      | Multi-directional crossing    |
+| **Blink**   | Visual   | Complex    | ✓            | -          | Random blinking teleport\*    |
+| **DVD**     | Movement | Medium     | ✓            | -          | Bouncing corner-to-corner\*   |
 
-*Currently disabled in production
+\*Currently disabled in production
 
 ## Configuration Patterns
 
 ### Basic Looping
+
 ```typescript
 const animation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'Pulse' },
   duration: 2000,
-  iterations: Infinity,  // Loop forever
-  alternate: true        // Ping-pong effect
+  iterations: Infinity, // Loop forever
+  alternate: true, // Ping-pong effect
 });
 ```
 
 ### Power Levels
+
 Control animation intensity across most ongoing animations:
 
 ```typescript
 // Soft - Subtle, gentle (10-30% intensity)
 { type: 'Pulse', power: 'soft' }
 
-// Medium - Balanced, noticeable (50-70% intensity)  
+// Medium - Balanced, noticeable (50-70% intensity)
 { type: 'Pulse', power: 'medium' }
 
 // Hard - Strong, attention-grabbing (80-100% intensity)
@@ -81,6 +89,7 @@ Control animation intensity across most ongoing animations:
 ```
 
 ### Intensity Control
+
 Fine-tune effect strength with intensity values:
 
 ```typescript
@@ -92,6 +101,7 @@ Fine-tune effect strength with intensity values:
 ```
 
 ### Directional Support
+
 Many animations support directional parameters:
 
 ```typescript
@@ -113,7 +123,9 @@ Many animations support directional parameters:
 ### 💓 Rhythmic Scaling
 
 #### Pulse
+
 **Best for**: Call-to-action buttons, notifications, heartbeat effects
+
 ```typescript
 {
   type: 'Pulse',
@@ -124,7 +136,9 @@ Many animations support directional parameters:
 ```
 
 #### Breathe
+
 **Best for**: Organic elements, meditation apps, ambient motion
+
 ```typescript
 {
   type: 'Breathe',
@@ -137,7 +151,9 @@ Many animations support directional parameters:
 ### 🏃 Movement & Position
 
 #### Wiggle
+
 **Best for**: Error states, playful elements, attention grabbing
+
 ```typescript
 {
   type: 'Wiggle',
@@ -148,7 +164,9 @@ Many animations support directional parameters:
 ```
 
 #### Poke
+
 **Best for**: Interactive hints, directional cues, button emphasis
+
 ```typescript
 {
   type: 'Poke',
@@ -160,7 +178,9 @@ Many animations support directional parameters:
 ```
 
 #### Cross
+
 **Best for**: Complex UI elements, dashboard widgets
+
 ```typescript
 {
   type: 'Cross',
@@ -172,7 +192,9 @@ Many animations support directional parameters:
 ### 🔄 Rotation & Spin
 
 #### Spin
+
 **Best for**: Loading indicators, refresh buttons, processing states
+
 ```typescript
 {
   type: 'Spin',
@@ -183,7 +205,9 @@ Many animations support directional parameters:
 ```
 
 #### Flip
+
 **Best for**: Cards, panels, toggle states
+
 ```typescript
 {
   type: 'Flip',
@@ -194,7 +218,9 @@ Many animations support directional parameters:
 ```
 
 #### Fold
+
 **Best for**: Paper-like elements, origami effects
+
 ```typescript
 {
   type: 'Fold',
@@ -208,7 +234,9 @@ Many animations support directional parameters:
 ### ⚡ Dynamic Effects
 
 #### Bounce
+
 **Best for**: Playful elements, game UI, spring animations
+
 ```typescript
 {
   type: 'Bounce',
@@ -219,7 +247,9 @@ Many animations support directional parameters:
 ```
 
 #### Rubber
+
 **Best for**: Elastic elements, cartoon-style effects
+
 ```typescript
 {
   type: 'Rubber',
@@ -230,7 +260,9 @@ Many animations support directional parameters:
 ```
 
 #### Jello
+
 **Best for**: Gelatinous effects, organic motion, fun elements
+
 ```typescript
 {
   type: 'Jello',
@@ -241,7 +273,9 @@ Many animations support directional parameters:
 ```
 
 #### Swing
+
 **Best for**: Hanging elements, pendulum effects, natural motion
+
 ```typescript
 {
   type: 'Swing',
@@ -255,17 +289,21 @@ Many animations support directional parameters:
 ### ✨ Visual Effects
 
 #### Flash
+
 **Best for**: Alerts, notifications, blinking indicators
+
 ```typescript
 {
-  type: 'Flash'
+  type: 'Flash';
   // Simple opacity blinking with no additional parameters
 }
 // Quick opacity flash effect
 ```
 
-#### Blink* (Experimental)
+#### Blink\* (Experimental)
+
 **Best for**: Glitch effects, teleportation, magical elements
+
 ```typescript
 {
   type: 'Blink',
@@ -276,32 +314,35 @@ Many animations support directional parameters:
 // Random position jumping with opacity flashes
 ```
 
-*Note: Currently disabled in production
+\*Note: Currently disabled in production
 
 ## Timing and Control
 
 ### Recommended Durations
+
 - **Fast attention**: 800-1200ms (Flash, Pulse)
 - **Standard rhythm**: 1500-2500ms (Breathe, Bounce, Wiggle)
 - **Slow ambient**: 3000-4000ms (Swing, Cross)
 - **Loading states**: 1000-1500ms (Spin)
 
 ### Loop Control
+
 ```typescript
 // Infinite looping (default)
-iterations: Infinity
+iterations: Infinity;
 
 // Limited repetitions
-iterations: 5
+iterations: 5;
 
 // Ping-pong effect
-alternate: true
+alternate: true;
 
 // Forward only
-alternate: false
+alternate: false;
 ```
 
 ### Start/Stop Control
+
 ```typescript
 const animation = getWebAnimation(element, options);
 
@@ -321,6 +362,7 @@ animation.cancel();
 ## Performance Optimization
 
 ### CSS Mode for Simple Effects
+
 ```typescript
 // Use CSS animations for better performance
 import { getCSSAnimation } from '@wix/motion';
@@ -329,15 +371,14 @@ const cssRules = getCSSAnimation('elementId', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'Pulse', power: 'soft' },
   duration: 2000,
-  iterations: Infinity
+  iterations: Infinity,
 });
 ```
 
 ### Respect Reduced Motion
+
 ```typescript
-const respectsReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const respectsReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (respectsReducedMotion) {
   // Disable ongoing animations or use gentler alternatives
@@ -350,16 +391,17 @@ if (respectsReducedMotion) {
 ## Common Patterns
 
 ### Button Call-to-Action
+
 ```typescript
 const ctaAnimation = getWebAnimation(button, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Pulse',
-    power: 'medium'
+    power: 'medium',
   },
   duration: 1500,
   iterations: Infinity,
-  alternate: true
+  alternate: true,
 });
 
 // Start on hover, stop on blur
@@ -368,16 +410,17 @@ button.addEventListener('mouseleave', () => ctaAnimation.pause());
 ```
 
 ### Loading Spinner
+
 ```typescript
 const loadingAnimation = getWebAnimation(spinner, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Spin',
     direction: 'clockwise',
-    power: 'medium'
+    power: 'medium',
   },
   duration: 1000,
-  iterations: Infinity
+  iterations: Infinity,
 });
 
 // Control with loading state
@@ -391,17 +434,18 @@ function setLoading(isLoading) {
 ```
 
 ### Attention-Seeking Element
+
 ```typescript
 const attentionAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Wiggle',
     power: 'soft',
-    intensity: 0.6
+    intensity: 0.6,
   },
   duration: 500,
-  iterations: 3,  // Limited repetitions
-  alternate: true
+  iterations: 3, // Limited repetitions
+  alternate: true,
 });
 
 // Trigger attention
@@ -409,17 +453,18 @@ attentionAnimation.play();
 ```
 
 ### Ambient Background Motion
+
 ```typescript
 const ambientAnimation = getWebAnimation(backgroundElement, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Breathe',
     direction: 'center',
-    distance: { value: 5, type: 'px' }
+    distance: { value: 5, type: 'px' },
   },
   duration: 4000,
   iterations: Infinity,
-  alternate: true
+  alternate: true,
 });
 
 // Continuous ambient motion
@@ -429,10 +474,12 @@ ambientAnimation.play();
 ## Battery and Performance Considerations
 
 ### Mobile Optimization
+
 ```typescript
 // Check if device likely has battery constraints
-const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-  .test(navigator.userAgent);
+const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+  navigator.userAgent,
+);
 
 if (isMobile) {
   // Use lighter animations
@@ -444,10 +491,11 @@ if (isMobile) {
 ```
 
 ### Intersection Observer Integration
+
 ```typescript
 // Only animate visible elements
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     const animation = entry.target.animation;
     if (entry.isIntersecting) {
       animation.play();
@@ -457,7 +505,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 });
 
-elements.forEach(el => observer.observe(el));
+elements.forEach((el) => observer.observe(el));
 ```
 
 ---

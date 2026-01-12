@@ -300,7 +300,6 @@ describe('interact (mini)', () => {
 
     // Mock Web Animations API
     (window as any).KeyframeEffect = class KeyframeEffect {
-      // eslint-disable-next-line @typescript-eslint/no-shadow
       constructor(element: Element | null, keyframes: any[], options: any) {
         return { element, keyframes, options };
       }
@@ -725,10 +724,11 @@ describe('interact (mini)', () => {
       it('should add handler for viewEnter trigger with alternate type and reverse on exit', async () => {
         const { getWebAnimation } = await import('@wix/motion');
         const mockAnimation = (getWebAnimation as any)();
-        
+
         // Capture observer callbacks
-        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> =
+          [];
+        const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
           observerCallbacks.push(cb);
           this.observe = vi.fn();
           this.unobserve = vi.fn();
@@ -786,10 +786,11 @@ describe('interact (mini)', () => {
 
         const { getWebAnimation } = await import('@wix/motion');
         const mockAnimation = (getWebAnimation as any)();
-        
+
         // Capture observer callbacks
-        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> =
+          [];
+        const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
           observerCallbacks.push(cb);
           this.observe = vi.fn();
           this.unobserve = vi.fn();
@@ -844,10 +845,11 @@ describe('interact (mini)', () => {
 
         const { getWebAnimation } = await import('@wix/motion');
         const mockAnimation = (getWebAnimation as any)();
-        
+
         // Capture observer callbacks
-        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-        const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+        const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> =
+          [];
+        const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
           observerCallbacks.push(cb);
           this.observe = vi.fn();
           this.unobserve = vi.fn();
@@ -939,7 +941,7 @@ describe('interact (mini)', () => {
           start: vi.fn(),
           destroy: vi.fn(),
         };
-        Pointer.mockImplementation(function(this: any) {
+        Pointer.mockImplementation(function (this: any) {
           Object.assign(this, pointerInstance);
         });
 
@@ -1218,7 +1220,7 @@ describe('interact (mini)', () => {
         start: vi.fn(),
         destroy: vi.fn(),
       };
-      Pointer.mockImplementation(function(this: any) {
+      Pointer.mockImplementation(function (this: any) {
         Object.assign(this, pointerInstance);
       });
 
@@ -2178,12 +2180,9 @@ describe('interact (mini)', () => {
         add(targetElement, 'inherit-target');
 
         // Effect should target firstElementChild, not the interaction's selector
-        expect(getWebAnimation).toHaveBeenCalledWith(
-          targetElement,
-          expect.any(Object),
-          undefined,
-          { reducedMotion: false },
-        );
+        expect(getWebAnimation).toHaveBeenCalledWith(targetElement, expect.any(Object), undefined, {
+          reducedMotion: false,
+        });
       });
     });
 
@@ -2253,10 +2252,7 @@ describe('interact (mini)', () => {
 
     it('should register scroll options getter', () => {
       const scrollOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(
-        TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress,
-        'registerOptionsGetter',
-      );
+      const spy = vi.spyOn(TRIGGER_TO_HANDLER_MODULE_MAP.viewProgress, 'registerOptionsGetter');
 
       Interact.setup({ scrollOptionsGetter });
 
@@ -2265,10 +2261,7 @@ describe('interact (mini)', () => {
 
     it('should register pointer options getter', () => {
       const pointerOptionsGetter = vi.fn().mockReturnValue({});
-      const spy = vi.spyOn(
-        TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove,
-        'registerOptionsGetter',
-      );
+      const spy = vi.spyOn(TRIGGER_TO_HANDLER_MODULE_MAP.pointerMove, 'registerOptionsGetter');
 
       Interact.setup({ pointerOptionsGetter });
 
@@ -2699,8 +2692,16 @@ describe('interact (mini)', () => {
       add(testElement, 'responsive-element');
 
       // Verify desktop interaction (click) is added, not mobile (hover)
-      expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
-      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+      expect(addEventListenerSpy).toHaveBeenCalledWith(
+        'click',
+        expect.any(Function),
+        expect.any(Object),
+      );
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+        'mouseenter',
+        expect.any(Function),
+        expect.any(Object),
+      );
 
       // Clear spies for next assertions
       addEventListenerSpy.mockClear();
@@ -2726,7 +2727,11 @@ describe('interact (mini)', () => {
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
 
       // The new hover handler should be added
-      expect(addEventListenerSpy).toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
+      expect(addEventListenerSpy).toHaveBeenCalledWith(
+        'mouseenter',
+        expect.any(Function),
+        expect.any(Object),
+      );
     });
   });
 
@@ -2758,9 +2763,7 @@ describe('interact (mini)', () => {
     describe('activate trigger', () => {
       it('should add both click and keydown listeners', () => {
         Interact.create(getA11yConfig('activate', 'activate-div'));
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2784,9 +2787,7 @@ describe('interact (mini)', () => {
         mockPlay.mockClear();
 
         Interact.create(getA11yConfig('activate', 'activate-handler-test'));
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const button = document.createElement('button');
         a11yElement.append(button);
@@ -2794,9 +2795,7 @@ describe('interact (mini)', () => {
         add(a11yElement, 'activate-handler-test');
 
         // Simulate browser behavior: Enter key triggers keydown AND synthesized click with no pointerType
-        button.dispatchEvent(
-          new KeyboardEvent('keydown', { code: 'Enter', bubbles: true }),
-        );
+        button.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', bubbles: true }));
         button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
         expect(mockPlay).toHaveBeenCalledTimes(1);
@@ -2806,9 +2805,7 @@ describe('interact (mini)', () => {
     describe('interest trigger', () => {
       it('should add focusin listener alongside mouseenter', () => {
         Interact.create(getA11yConfig('interest', 'interest-test'));
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2831,9 +2828,7 @@ describe('interact (mini)', () => {
       it('should NOT add keydown listener when flag is false', () => {
         Interact.create(getA11yConfig('click', 'click-no-flag'));
         Interact.setup({ allowA11yTriggers: false });
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2854,9 +2849,7 @@ describe('interact (mini)', () => {
       it('should add keydown listener when flag is true', () => {
         Interact.setup({ allowA11yTriggers: true });
         Interact.create(getA11yConfig('click', 'click-with-flag'));
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2879,9 +2872,7 @@ describe('interact (mini)', () => {
       it('should NOT add focusin listener when flag is false', () => {
         Interact.setup({ allowA11yTriggers: false });
         Interact.create(getA11yConfig('hover', 'hover-no-flag'));
-        a11yElement = document.createElement(
-          'interact-element',
-        ) as IInteractElement;
+        a11yElement = document.createElement('interact-element') as IInteractElement;
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2902,9 +2893,7 @@ describe('interact (mini)', () => {
       it('should add focusin listener when flag is true', () => {
         Interact.setup({ allowA11yTriggers: true });
         Interact.create(getA11yConfig('hover', 'hover-with-flag'));
-        a11yElement = document.createElement(
-          'div',
-        );
+        a11yElement = document.createElement('div');
 
         const addEventListenerSpy = vi.spyOn(a11yElement, 'addEventListener');
 
@@ -2923,7 +2912,7 @@ describe('interact (mini)', () => {
       });
     });
   });
-  
+
   describe('configuration defaults', () => {
     describe('scroll animation range defaults', () => {
       it('should use default range values when rangeStart and rangeEnd are not provided', () => {
@@ -2931,7 +2920,10 @@ describe('interact (mini)', () => {
           namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
         };
 
-        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+        const result = effectToAnimationOptions(scrubEffect) as {
+          startOffset: any;
+          endOffset: any;
+        };
 
         expect(result.startOffset).toEqual({
           name: 'cover',
@@ -2950,7 +2942,10 @@ describe('interact (mini)', () => {
           rangeEnd: { name: 'entry', offset: { value: 90, type: 'percentage' } },
         };
 
-        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+        const result = effectToAnimationOptions(scrubEffect) as {
+          startOffset: any;
+          endOffset: any;
+        };
 
         expect(result.startOffset).toEqual({
           name: 'contain',
@@ -2968,7 +2963,10 @@ describe('interact (mini)', () => {
           rangeStart: { name: 'entry', offset: { value: 25, type: 'percentage' } },
         };
 
-        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+        const result = effectToAnimationOptions(scrubEffect) as {
+          startOffset: any;
+          endOffset: any;
+        };
 
         expect(result.startOffset).toEqual({
           name: 'entry',
@@ -2986,7 +2984,10 @@ describe('interact (mini)', () => {
           rangeStart: { name: 'exit' },
         };
 
-        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+        const result = effectToAnimationOptions(scrubEffect) as {
+          startOffset: any;
+          endOffset: any;
+        };
 
         expect(result.startOffset).toEqual({
           name: 'exit',
@@ -3004,7 +3005,10 @@ describe('interact (mini)', () => {
           rangeEnd: { name: 'exit', offset: { value: 75, type: 'percentage' } },
         };
 
-        const result = effectToAnimationOptions(scrubEffect) as { startOffset: any; endOffset: any };
+        const result = effectToAnimationOptions(scrubEffect) as {
+          startOffset: any;
+          endOffset: any;
+        };
 
         expect(result.startOffset).toEqual({
           name: 'cover',
@@ -3027,7 +3031,9 @@ describe('interact (mini)', () => {
           effectId: 'my-effect-id',
         };
 
-        const result = effectToAnimationOptions(timeEffect as any) as { keyframeEffect?: { name?: string } };
+        const result = effectToAnimationOptions(timeEffect as any) as {
+          keyframeEffect?: { name?: string };
+        };
 
         expect(result.keyframeEffect?.name).toBe('my-effect-id');
       });
@@ -3040,7 +3046,9 @@ describe('interact (mini)', () => {
           duration: 500,
         };
 
-        const result = effectToAnimationOptions(timeEffect as any) as { keyframeEffect?: { name?: string } };
+        const result = effectToAnimationOptions(timeEffect as any) as {
+          keyframeEffect?: { name?: string };
+        };
 
         expect(result.keyframeEffect?.name).toBeUndefined();
       });
@@ -3083,7 +3091,11 @@ describe('interact (mini)', () => {
 
         add(testElement, 'null-click-test');
 
-        expect(addEventListenerSpy).not.toHaveBeenCalledWith('click', expect.any(Function), expect.any(Object));
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'click',
+          expect.any(Function),
+          expect.any(Object),
+        );
       });
     });
 
@@ -3122,8 +3134,16 @@ describe('interact (mini)', () => {
 
         add(testElement, 'null-hover-test');
 
-        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseenter', expect.any(Function), expect.any(Object));
-        expect(addEventListenerSpy).not.toHaveBeenCalledWith('mouseleave', expect.any(Function), expect.any(Object));
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).not.toHaveBeenCalledWith(
+          'mouseleave',
+          expect.any(Function),
+          expect.any(Object),
+        );
       });
     });
 
@@ -3206,4 +3226,3 @@ describe('interact (mini)', () => {
     });
   });
 });
-

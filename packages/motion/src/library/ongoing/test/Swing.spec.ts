@@ -251,9 +251,7 @@ describe('Swing', () => {
       // Check that keyframes contain actual computed values, not CSS variables
       const firstKeyframe = result[0].keyframes[0];
       expect(firstKeyframe.transform).toContain('translate(0%, -50%)');
-      expect(firstKeyframe.transform).toContain(
-        'translate(calc(0% * -1), calc(-50% * -1))',
-      );
+      expect(firstKeyframe.transform).toContain('translate(calc(0% * -1), calc(-50% * -1))');
       expect(firstKeyframe.transform).not.toContain('var(--motion-trans-x)');
       expect(firstKeyframe.transform).not.toContain('var(--motion-trans-y)');
 
@@ -293,9 +291,7 @@ describe('Swing', () => {
       const result = Swing.web(mockOptions);
 
       expect(result[0].keyframes[1].transform).toContain('rotate(40deg)');
-      expect(result[0].keyframes[2].transform).toContain(
-        'rotate(calc(40deg * -1))',
-      );
+      expect(result[0].keyframes[2].transform).toContain('rotate(calc(40deg * -1))');
     });
   });
 });

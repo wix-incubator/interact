@@ -31,27 +31,29 @@ interface MyCustomEffect extends BaseDataItemLike<'MyCustomEffect'> {
 // Implementation following Wix Motion patterns
 export function web(options: TimeAnimationOptions & { namedEffect: MyCustomEffect }) {
   const { intensity = 1, direction = 'in', color = '#ff0000' } = options.namedEffect;
-  
-  return [{
-    name: 'MyCustomEffect',
-    keyframes: [
-      { 
-        transform: direction === 'in' ? 'scale(0) rotate(0deg)' : 'scale(1) rotate(0deg)',
-        backgroundColor: direction === 'in' ? 'transparent' : color,
-        opacity: direction === 'in' ? 0 : 1
+
+  return [
+    {
+      name: 'MyCustomEffect',
+      keyframes: [
+        {
+          transform: direction === 'in' ? 'scale(0) rotate(0deg)' : 'scale(1) rotate(0deg)',
+          backgroundColor: direction === 'in' ? 'transparent' : color,
+          opacity: direction === 'in' ? 0 : 1,
+        },
+        {
+          transform: direction === 'in' ? 'scale(1) rotate(360deg)' : 'scale(0) rotate(360deg)',
+          backgroundColor: direction === 'in' ? color : 'transparent',
+          opacity: direction === 'in' ? 1 : 0,
+        },
+      ],
+      timing: {
+        duration: options.duration || 1000,
+        easing: options.easing || 'ease-out',
+        fill: 'forwards',
       },
-      { 
-        transform: direction === 'in' ? 'scale(1) rotate(360deg)' : 'scale(0) rotate(360deg)',
-        backgroundColor: direction === 'in' ? color : 'transparent',
-        opacity: direction === 'in' ? 1 : 0
-      }
-    ],
-    timing: {
-      duration: options.duration || 1000,
-      easing: options.easing || 'ease-out',
-      fill: 'forwards'
-    }
-  }];
+    },
+  ];
 }
 
 export function getNames(options: TimeAnimationOptions & { namedEffect: MyCustomEffect }) {
@@ -64,7 +66,10 @@ export function style(options: TimeAnimationOptions & { namedEffect: MyCustomEff
 }
 
 // Optional preparation function for measurements
-export function prepare(options: TimeAnimationOptions & { namedEffect: MyCustomEffect }, dom?: DomApi) {
+export function prepare(
+  options: TimeAnimationOptions & { namedEffect: MyCustomEffect },
+  dom?: DomApi,
+) {
   // Pre-calculate any measurements needed
   if (dom) {
     dom.measure((element) => {
@@ -86,21 +91,24 @@ interface DynamicWaveEffect extends BaseDataItemLike<'DynamicWaveEffect'> {
   axis?: 'x' | 'y' | 'both';
 }
 
-export function web(options: TimeAnimationOptions & { namedEffect: DynamicWaveEffect }, dom?: DomApi) {
+export function web(
+  options: TimeAnimationOptions & { namedEffect: DynamicWaveEffect },
+  dom?: DomApi,
+) {
   const { amplitude = 50, frequency = 2, phase = 0, axis = 'both' } = options.namedEffect;
   const duration = options.duration || 2000;
-  
+
   // Generate dynamic keyframes
   const keyframes = [];
   const steps = 20; // Number of keyframe steps
-  
+
   for (let i = 0; i <= steps; i++) {
     const progress = i / steps;
     const time = progress * duration;
-    
+
     // Calculate wave position
     const waveValue = Math.sin((time / duration) * frequency * 2 * Math.PI + phase) * amplitude;
-    
+
     let transform = '';
     switch (axis) {
       case 'x':
@@ -115,19 +123,21 @@ export function web(options: TimeAnimationOptions & { namedEffect: DynamicWaveEf
         transform = `translate(${xWave}px, ${yWave}px)`;
         break;
     }
-    
+
     keyframes.push({ transform, offset: progress });
   }
-  
-  return [{
-    name: 'DynamicWaveEffect',
-    keyframes,
-    timing: {
-      duration,
-      easing: 'linear',
-      iterations: options.iterations || 1
-    }
-  }];
+
+  return [
+    {
+      name: 'DynamicWaveEffect',
+      keyframes,
+      timing: {
+        duration,
+        easing: 'linear',
+        iterations: options.iterations || 1,
+      },
+    },
+  ];
 }
 ```
 
@@ -145,38 +155,42 @@ interface PhysicsScrollEffect extends BaseDataItemLike<'PhysicsScrollEffect'> {
   velocity?: number;
 }
 
-export default function create(options: ScrubAnimationOptions & { namedEffect: PhysicsScrollEffect }) {
+export default function create(
+  options: ScrubAnimationOptions & { namedEffect: PhysicsScrollEffect },
+) {
   const { mass = 1, stiffness = 100, damping = 10, velocity = 0 } = options.namedEffect;
-  
-  return [{
-    name: 'PhysicsScrollEffect',
-    keyframes: [
-      { transform: 'translateY(0px)', offset: 0 },
-      { transform: 'translateY(100px)', offset: 1 }
-    ],
-    timing: {
-      duration: { value: 100, type: 'percentage' }
+
+  return [
+    {
+      name: 'PhysicsScrollEffect',
+      keyframes: [
+        { transform: 'translateY(0px)', offset: 0 },
+        { transform: 'translateY(100px)', offset: 1 },
+      ],
+      timing: {
+        duration: { value: 100, type: 'percentage' },
+      },
+      custom: {
+        mass,
+        stiffness,
+        damping,
+        velocity,
+      },
+      // Custom progress calculation
+      progressFunction: (scrollProgress: number, customData: any) => {
+        // Implement spring physics
+        const { mass, stiffness, damping } = customData;
+
+        // Simplified spring equation
+        const springForce = -stiffness * scrollProgress;
+        const dampingForce = -damping * velocity;
+        const acceleration = (springForce + dampingForce) / mass;
+
+        // Apply physics-based transformation
+        return Math.min(Math.max(scrollProgress + acceleration * 0.016, 0), 1);
+      },
     },
-    custom: {
-      mass,
-      stiffness,
-      damping,
-      velocity
-    },
-    // Custom progress calculation
-    progressFunction: (scrollProgress: number, customData: any) => {
-      // Implement spring physics
-      const { mass, stiffness, damping } = customData;
-      
-      // Simplified spring equation
-      const springForce = -stiffness * scrollProgress;
-      const dampingForce = -damping * velocity;
-      const acceleration = (springForce + dampingForce) / mass;
-      
-      // Apply physics-based transformation
-      return Math.min(Math.max(scrollProgress + acceleration * 0.016, 0), 1);
-    }
-  }];
+  ];
 }
 ```
 
@@ -197,42 +211,46 @@ class AdvancedParallaxSystem {
       config,
       animation: this.createLayerAnimation(element, config),
       bounds: null,
-      isVisible: false
+      isVisible: false,
     };
 
     this.layers.push(layer);
     this.setupIntersectionObserver(layer);
-    
+
     return layer;
   }
 
   private createLayerAnimation(element: HTMLElement, config: ParallaxLayerConfig) {
-    return getScrubScene(element, {
-      type: 'ScrubAnimationOptions',
-      namedEffect: {
-        type: 'ParallaxScroll',
-        speed: config.speed
+    return getScrubScene(
+      element,
+      {
+        type: 'ScrubAnimationOptions',
+        namedEffect: {
+          type: 'ParallaxScroll',
+          speed: config.speed,
+        },
+        customEffect: {
+          ranges: [
+            { name: 'translateY', min: config.range.start, max: config.range.end },
+            { name: 'opacity', min: config.opacity?.start || 1, max: config.opacity?.end || 1 },
+            { name: 'scale', min: config.scale?.start || 1, max: config.scale?.end || 1 },
+          ],
+        },
       },
-      customEffect: {
-        ranges: [
-          { name: 'translateY', min: config.range.start, max: config.range.end },
-          { name: 'opacity', min: config.opacity?.start || 1, max: config.opacity?.end || 1 },
-          { name: 'scale', min: config.scale?.start || 1, max: config.scale?.end || 1 }
-        ]
-      }
-    }, {
-      trigger: 'view-progress',
-      element: config.viewport || document.body
-    });
+      {
+        trigger: 'view-progress',
+        element: config.viewport || document.body,
+      },
+    );
   }
 
   private setupIntersectionObserver(layer: ParallaxLayer) {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           layer.isVisible = entry.isIntersecting;
           layer.bounds = entry.boundingClientRect;
-          
+
           if (layer.isVisible) {
             this.enableLayerUpdates(layer);
           } else {
@@ -240,10 +258,10 @@ class AdvancedParallaxSystem {
           }
         });
       },
-      { 
+      {
         rootMargin: '50px',
-        threshold: [0, 0.1, 0.5, 0.9, 1]
-      }
+        threshold: [0, 0.1, 0.5, 0.9, 1],
+      },
     );
 
     observer.observe(layer.element);
@@ -265,7 +283,7 @@ class AdvancedParallaxSystem {
 
     const progress = this.calculateLayerProgress(layer, scrollData);
     const transforms = this.calculateLayerTransforms(layer, progress);
-    
+
     // Apply transforms efficiently
     layer.element.style.transform = `translate3d(${transforms.x}px, ${transforms.y}px, 0) scale(${transforms.scale})`;
     layer.element.style.opacity = transforms.opacity.toString();
@@ -274,12 +292,12 @@ class AdvancedParallaxSystem {
   private calculateLayerProgress(layer: ParallaxLayer, scrollData: ScrollData): number {
     const { scrollY, viewportHeight } = scrollData;
     const { top, height } = layer.bounds!;
-    
+
     // Calculate when element enters and exits viewport
     const enterY = top + scrollY - viewportHeight;
     const exitY = top + scrollY + height;
     const totalDistance = exitY - enterY;
-    
+
     // Current progress through the animation range
     const currentDistance = scrollY - enterY;
     return Math.max(0, Math.min(1, currentDistance / totalDistance));
@@ -287,12 +305,18 @@ class AdvancedParallaxSystem {
 
   private calculateLayerTransforms(layer: ParallaxLayer, progress: number) {
     const config = layer.config;
-    
+
     return {
-      x: this.interpolate(progress, config.range.start, config.range.end) * (config.axis?.includes('x') ? 1 : 0),
-      y: this.interpolate(progress, config.range.start, config.range.end) * (config.axis?.includes('y') !== false ? 1 : 0),
+      x:
+        this.interpolate(progress, config.range.start, config.range.end) *
+        (config.axis?.includes('x') ? 1 : 0),
+      y:
+        this.interpolate(progress, config.range.start, config.range.end) *
+        (config.axis?.includes('y') !== false ? 1 : 0),
       scale: config.scale ? this.interpolate(progress, config.scale.start, config.scale.end) : 1,
-      opacity: config.opacity ? this.interpolate(progress, config.opacity.start, config.opacity.end) : 1
+      opacity: config.opacity
+        ? this.interpolate(progress, config.opacity.start, config.opacity.end)
+        : 1,
     };
   }
 
@@ -301,7 +325,7 @@ class AdvancedParallaxSystem {
   }
 
   destroy() {
-    this.layers.forEach(layer => {
+    this.layers.forEach((layer) => {
       if (layer.observer) {
         layer.observer.disconnect();
       }
@@ -365,7 +389,7 @@ class ScrollManager {
   private startListening() {
     const onScroll = () => {
       if (this.rafId) return;
-      
+
       this.rafId = requestAnimationFrame(() => {
         this.updateCallbacks();
         this.rafId = null;
@@ -387,7 +411,7 @@ class ScrollManager {
     const currentScrollY = window.scrollY;
     const deltaY = currentScrollY - this.lastScrollY;
     const deltaTime = now - this.lastScrollTime;
-    
+
     // Calculate velocity (pixels per millisecond)
     this.velocity = deltaTime > 0 ? deltaY / deltaTime : 0;
 
@@ -397,10 +421,10 @@ class ScrollManager {
       viewportHeight: window.innerHeight,
       viewportWidth: window.innerWidth,
       deltaY,
-      velocity: this.velocity
+      velocity: this.velocity,
     };
 
-    this.callbacks.forEach(callback => {
+    this.callbacks.forEach((callback) => {
       try {
         callback(scrollData);
       } catch (error) {
@@ -435,16 +459,16 @@ class AnimationChoreographer {
       animation,
       startTime,
       duration: this.getAnimationDuration(animation),
-      status: 'pending'
+      status: 'pending',
     });
-    
+
     // Sort by start time
     this.timeline.sort((a, b) => a.startTime - b.startTime);
     return this;
   }
 
   parallel(animations: AnimationGroup[], startTime: number = 0): this {
-    animations.forEach(animation => {
+    animations.forEach((animation) => {
       this.sequence(animation, startTime);
     });
     return this;
@@ -452,16 +476,20 @@ class AnimationChoreographer {
 
   stagger(animations: AnimationGroup[], staggerDelay: number = 100, startTime: number = 0): this {
     animations.forEach((animation, index) => {
-      this.sequence(animation, startTime + (index * staggerDelay));
+      this.sequence(animation, startTime + index * staggerDelay);
     });
     return this;
   }
 
   // Advanced timing patterns
-  overlap(firstAnimation: AnimationGroup, secondAnimation: AnimationGroup, overlapAmount: number): this {
+  overlap(
+    firstAnimation: AnimationGroup,
+    secondAnimation: AnimationGroup,
+    overlapAmount: number,
+  ): this {
     const firstDuration = this.getAnimationDuration(firstAnimation);
     const secondStartTime = Math.max(0, firstDuration - overlapAmount);
-    
+
     this.sequence(firstAnimation, 0);
     this.sequence(secondAnimation, secondStartTime);
     return this;
@@ -471,45 +499,47 @@ class AnimationChoreographer {
   async play(): Promise<void> {
     this.isPlaying = true;
     const startTime = performance.now();
-    
+
     // Start all animations at their scheduled times
     const timeoutIds: number[] = [];
-    
-    this.timeline.forEach(item => {
+
+    this.timeline.forEach((item) => {
       const delay = item.startTime / this.globalSpeed;
-      
+
       const timeoutId = window.setTimeout(async () => {
         if (this.isPlaying) {
           item.status = 'playing';
           await item.animation.play();
-          
+
           // Mark as completed when finished
-          item.animation.finished.then(() => {
-            item.status = 'completed';
-          }).catch(() => {
-            item.status = 'failed';
-          });
+          item.animation.finished
+            .then(() => {
+              item.status = 'completed';
+            })
+            .catch(() => {
+              item.status = 'failed';
+            });
         }
       }, delay);
-      
+
       timeoutIds.push(timeoutId);
     });
 
     // Wait for all animations to complete
-    const allAnimations = this.timeline.map(item => item.animation.finished);
+    const allAnimations = this.timeline.map((item) => item.animation.finished);
     try {
       await Promise.all(allAnimations);
     } catch (error) {
       console.warn('Some animations failed:', error);
     } finally {
       this.isPlaying = false;
-      timeoutIds.forEach(id => clearTimeout(id));
+      timeoutIds.forEach((id) => clearTimeout(id));
     }
   }
 
   pause(): void {
     this.isPlaying = false;
-    this.timeline.forEach(item => {
+    this.timeline.forEach((item) => {
       if (item.status === 'playing') {
         item.animation.pause();
       }
@@ -518,7 +548,7 @@ class AnimationChoreographer {
 
   setSpeed(speed: number): void {
     this.globalSpeed = speed;
-    this.timeline.forEach(item => {
+    this.timeline.forEach((item) => {
       item.animation.setPlaybackRate(speed);
     });
   }
@@ -526,14 +556,14 @@ class AnimationChoreographer {
   // Get total duration of the timeline
   getTotalDuration(): number {
     if (this.timeline.length === 0) return 0;
-    
+
     const lastItem = this.timeline[this.timeline.length - 1];
     return lastItem.startTime + lastItem.duration;
   }
 
   // Reset timeline
   reset(): void {
-    this.timeline.forEach(item => {
+    this.timeline.forEach((item) => {
       item.animation.cancel();
       item.status = 'pending';
     });
@@ -565,10 +595,10 @@ const buttonAnimation = getWebAnimation('#cta-button', buttonOptions);
 
 // Create complex sequence
 await choreographer
-  .sequence(heroAnimation, 0)                    // Start hero immediately
-  .overlap(titleAnimation, heroAnimation, 200)   // Title overlaps hero by 200ms
+  .sequence(heroAnimation, 0) // Start hero immediately
+  .overlap(titleAnimation, heroAnimation, 200) // Title overlaps hero by 200ms
   .stagger([subtitleAnimation, buttonAnimation], 150, 500) // Stagger subtitle and button
-  .setSpeed(1.2)                                 // Play 20% faster
+  .setSpeed(1.2) // Play 20% faster
   .play();
 ```
 
@@ -607,7 +637,7 @@ class StateMachine {
         to: toState,
         condition: config.condition || (() => true),
         animation: config.animation,
-        duration: config.duration || 300
+        duration: config.duration || 300,
       };
     }
     return this;
@@ -620,7 +650,7 @@ class StateMachine {
 
     const currentState = this.currentState ? this.states.get(this.currentState) : null;
     const newState = this.states.get(toStateId);
-    
+
     if (!newState) return;
 
     // Check if transition is allowed
@@ -648,7 +678,6 @@ class StateMachine {
       // Enter new state
       await this.enterState(newState);
       this.currentState = toStateId;
-
     } catch (error) {
       console.error('State transition failed:', error);
     } finally {
@@ -663,7 +692,7 @@ class StateMachine {
     }
 
     // Reverse all state animations
-    const exitPromises = state.animations.map(animation => animation.reverse());
+    const exitPromises = state.animations.map((animation) => animation.reverse());
     await Promise.all(exitPromises);
   }
 
@@ -674,7 +703,7 @@ class StateMachine {
     }
 
     // Play all state animations
-    const enterPromises = state.animations.map(animation => animation.play());
+    const enterPromises = state.animations.map((animation) => animation.play());
     await Promise.all(enterPromises);
   }
 
@@ -684,7 +713,7 @@ class StateMachine {
 
   canTransitionTo(toStateId: string): boolean {
     if (!this.currentState) return true;
-    
+
     const currentState = this.states.get(this.currentState);
     if (!currentState) return false;
 
@@ -701,31 +730,31 @@ const loadingState: AnimationState = {
   id: 'loading',
   animations: [
     getWebAnimation('#loading-spinner', spinnerOptions),
-    getWebAnimation('#loading-text', fadeOptions)
+    getWebAnimation('#loading-text', fadeOptions),
   ],
   transitions: {},
   onEnter: () => console.log('Entering loading state'),
-  onExit: () => console.log('Exiting loading state')
+  onExit: () => console.log('Exiting loading state'),
 };
 
 const contentState: AnimationState = {
   id: 'content',
   animations: [
     getWebAnimation('#main-content', slideInOptions),
-    getWebAnimation('#navigation', fadeInOptions)
+    getWebAnimation('#navigation', fadeInOptions),
   ],
   transitions: {},
   onEnter: () => console.log('Content loaded'),
-  onExit: () => console.log('Leaving content')
+  onExit: () => console.log('Leaving content'),
 };
 
 const errorState: AnimationState = {
   id: 'error',
   animations: [
     getWebAnimation('#error-message', shakeOptions),
-    getWebAnimation('#retry-button', pulseOptions)
+    getWebAnimation('#retry-button', pulseOptions),
   ],
-  transitions: {}
+  transitions: {},
 };
 
 // Setup state machine
@@ -735,13 +764,13 @@ pageMachine
   .addState(errorState)
   .addTransition('loading', 'content', {
     condition: () => window.dataLoaded === true,
-    animation: getWebAnimation('#transition-overlay', fadeOutOptions)
+    animation: getWebAnimation('#transition-overlay', fadeOutOptions),
   })
   .addTransition('loading', 'error', {
-    condition: () => window.loadError === true
+    condition: () => window.loadError === true,
   })
   .addTransition('error', 'loading', {
-    animation: getWebAnimation('#retry-transition', slideUpOptions)
+    animation: getWebAnimation('#retry-transition', slideUpOptions),
   });
 
 // Use state machine
@@ -771,7 +800,7 @@ class GestureAnimationController {
   private setupGestureRecognition() {
     // Initialize HammerJS or similar gesture library
     this.hammerjs = new Hammer(this.element);
-    
+
     // Configure gestures
     this.hammerjs.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
     this.hammerjs.get('pan').set({ direction: Hammer.DIRECTION_ALL });
@@ -788,20 +817,20 @@ class GestureAnimationController {
   private handleSwipe(event: any) {
     const direction = this.getSwipeDirection(event.direction);
     const velocity = event.velocity;
-    
+
     // Create velocity-based animation
     const distance = Math.min(velocity * 200, 400); // Cap max distance
-    
+
     const animation = getWebAnimation(this.element, {
       type: 'TimeAnimationOptions',
       namedEffect: {
         type: 'GlideIn',
         direction: this.directionToAngle(direction),
         distance: { value: distance, type: 'px' },
-        power: velocity > 0.5 ? 'hard' : 'medium'
+        power: velocity > 0.5 ? 'hard' : 'medium',
       },
       duration: Math.max(300, 1000 / velocity), // Faster swipes = shorter duration
-      easing: 'easeOut'
+      easing: 'easeOut',
     });
 
     this.playAnimationWithFeedback(animation);
@@ -816,9 +845,9 @@ class GestureAnimationController {
           type: 'TrackMouse',
           distance: { value: 100, type: 'px' },
           axis: 'both',
-          power: 'medium'
+          power: 'medium',
         },
-        transitionDuration: 0 // Immediate response
+        transitionDuration: 0, // Immediate response
       }) as AnimationGroup;
     }
 
@@ -843,9 +872,9 @@ class GestureAnimationController {
       namedEffect: {
         type: 'DropIn',
         power: scale > 1 ? 'hard' : 'soft',
-        initialScale: scale
+        initialScale: scale,
       },
-      duration: 200
+      duration: 200,
     });
 
     this.playAnimationWithFeedback(scaleAnimation);
@@ -859,9 +888,9 @@ class GestureAnimationController {
         type: 'SpinIn',
         direction: rotation > 0 ? 'clockwise' : 'counter-clockwise',
         spins: Math.abs(rotation) / 360,
-        power: 'medium'
+        power: 'medium',
       },
-      duration: 500
+      duration: 500,
     });
 
     this.playAnimationWithFeedback(rotateAnimation);
@@ -875,7 +904,7 @@ class GestureAnimationController {
 
     // Add visual feedback
     this.element.style.filter = 'brightness(1.1)';
-    
+
     animation.play().then(() => {
       // Reset visual feedback
       this.element.style.filter = '';
@@ -884,11 +913,16 @@ class GestureAnimationController {
 
   private getSwipeDirection(hammerDirection: number): 'up' | 'down' | 'left' | 'right' {
     switch (hammerDirection) {
-      case Hammer.DIRECTION_UP: return 'up';
-      case Hammer.DIRECTION_DOWN: return 'down';
-      case Hammer.DIRECTION_LEFT: return 'left';
-      case Hammer.DIRECTION_RIGHT: return 'right';
-      default: return 'up';
+      case Hammer.DIRECTION_UP:
+        return 'up';
+      case Hammer.DIRECTION_DOWN:
+        return 'down';
+      case Hammer.DIRECTION_LEFT:
+        return 'left';
+      case Hammer.DIRECTION_RIGHT:
+        return 'right';
+      default:
+        return 'up';
     }
   }
 
@@ -934,10 +968,10 @@ class ScrollStorytellingEngine {
 
   private updateStory(scrollData: ScrollData) {
     const { scrollY, viewportHeight } = scrollData;
-    
+
     // Find current chapter based on scroll position
     const newChapter = this.findCurrentChapter(scrollY);
-    
+
     if (newChapter !== this.currentChapter) {
       this.transitionToChapter(newChapter);
       this.currentChapter = newChapter;
@@ -954,12 +988,12 @@ class ScrollStorytellingEngine {
       const chapter = this.chapters[i];
       const chapterStart = chapter.element.offsetTop;
       const chapterEnd = chapterStart + chapter.element.offsetHeight;
-      
+
       if (scrollY >= chapterStart && scrollY < chapterEnd) {
         return i;
       }
     }
-    
+
     // If past all chapters, stay on last chapter
     return Math.max(0, this.chapters.length - 1);
   }
@@ -975,7 +1009,7 @@ class ScrollStorytellingEngine {
 
     // Play chapter entrance animations
     if (chapter.entranceAnimations) {
-      const entrancePromises = chapter.entranceAnimations.map(anim => anim.play());
+      const entrancePromises = chapter.entranceAnimations.map((anim) => anim.play());
       await Promise.all(entrancePromises);
     }
 
@@ -989,8 +1023,8 @@ class ScrollStorytellingEngine {
     if (!chapter.scrollAnimations) return;
 
     const chapterProgress = this.calculateChapterProgress(chapter, scrollData.scrollY);
-    
-    chapter.scrollAnimations.forEach(animation => {
+
+    chapter.scrollAnimations.forEach((animation) => {
       // Update scroll-driven animations with current progress
       if (animation.progress) {
         animation.progress(chapterProgress);
@@ -1007,10 +1041,10 @@ class ScrollStorytellingEngine {
     const chapterStart = chapter.element.offsetTop;
     const chapterHeight = chapter.element.offsetHeight;
     const chapterEnd = chapterStart + chapterHeight;
-    
+
     if (scrollY <= chapterStart) return 0;
     if (scrollY >= chapterEnd) return 1;
-    
+
     return (scrollY - chapterStart) / chapterHeight;
   }
 
@@ -1018,28 +1052,32 @@ class ScrollStorytellingEngine {
   createChapterTransition(fromChapter: number, toChapter: number): AnimationGroup[] {
     const from = this.chapters[fromChapter];
     const to = this.chapters[toChapter];
-    
+
     if (!from || !to) return [];
 
     const transitions: AnimationGroup[] = [];
 
     // Fade out previous chapter
     if (from.element) {
-      transitions.push(getWebAnimation(from.element, {
-        type: 'TimeAnimationOptions',
-        namedEffect: { type: 'FadeIn' }, // Will be reversed
-        duration: 500
-      }));
+      transitions.push(
+        getWebAnimation(from.element, {
+          type: 'TimeAnimationOptions',
+          namedEffect: { type: 'FadeIn' }, // Will be reversed
+          duration: 500,
+        }),
+      );
     }
 
     // Fade in new chapter
     if (to.element) {
-      transitions.push(getWebAnimation(to.element, {
-        type: 'TimeAnimationOptions',
-        namedEffect: { type: 'FadeIn' },
-        duration: 500,
-        delay: 250 // Slight overlap
-      }));
+      transitions.push(
+        getWebAnimation(to.element, {
+          type: 'TimeAnimationOptions',
+          namedEffect: { type: 'FadeIn' },
+          duration: 500,
+          delay: 250, // Slight overlap
+        }),
+      );
     }
 
     return transitions;
@@ -1048,19 +1086,18 @@ class ScrollStorytellingEngine {
   // Get story progress
   getStoryProgress(): StoryProgress {
     const totalChapters = this.chapters.length;
-    const currentChapterProgress = this.chapters[this.currentChapter] 
+    const currentChapterProgress = this.chapters[this.currentChapter]
       ? this.calculateChapterProgress(this.chapters[this.currentChapter], window.scrollY)
       : 0;
 
-    const overallProgress = totalChapters > 0 
-      ? (this.currentChapter + currentChapterProgress) / totalChapters
-      : 0;
+    const overallProgress =
+      totalChapters > 0 ? (this.currentChapter + currentChapterProgress) / totalChapters : 0;
 
     return {
       currentChapter: this.currentChapter,
       currentChapterProgress,
       overallProgress,
-      chapterTitle: this.chapters[this.currentChapter]?.title || ''
+      chapterTitle: this.chapters[this.currentChapter]?.title || '',
     };
   }
 }
@@ -1087,28 +1124,24 @@ const story = new ScrollStorytellingEngine(true);
 
 story
   .addChapter({
-    title: "The Beginning",
+    title: 'The Beginning',
     element: document.getElementById('chapter-1')!,
     entranceAnimations: [
       getWebAnimation('#chapter-1 h1', titleFadeOptions),
-      getWebAnimation('#chapter-1 .content', contentSlideOptions)
+      getWebAnimation('#chapter-1 .content', contentSlideOptions),
     ],
-    scrollAnimations: [
-      getScrubScene('#chapter-1 .parallax-bg', parallaxOptions, scrollTrigger)[0]
-    ],
+    scrollAnimations: [getScrubScene('#chapter-1 .parallax-bg', parallaxOptions, scrollTrigger)[0]],
     onEnter: () => console.log('Story begins...'),
     onScroll: (progress) => {
       // Custom scroll behavior for this chapter
       document.getElementById('progress-bar')!.style.width = `${progress * 100}%`;
-    }
+    },
   })
   .addChapter({
-    title: "The Journey",
+    title: 'The Journey',
     element: document.getElementById('chapter-2')!,
-    entranceAnimations: [
-      getWebAnimation('#chapter-2', journeyAnimationOptions)
-    ],
-    onEnter: () => console.log('The journey begins...')
+    entranceAnimations: [getWebAnimation('#chapter-2', journeyAnimationOptions)],
+    onEnter: () => console.log('The journey begins...'),
   });
 ```
 
@@ -1126,7 +1159,7 @@ class AnimationPool {
   // Get animation from pool or create new one
   getAnimation(key: string, factory: () => AnimationGroup): AnimationGroup {
     let pool = this.pool.get(key) || [];
-    
+
     let animation: AnimationGroup;
     if (pool.length > 0) {
       animation = pool.pop()!;
@@ -1146,7 +1179,7 @@ class AnimationPool {
 
     // Reset animation state
     animation.cancel();
-    
+
     // Add to pool if not full
     let pool = this.pool.get(key) || [];
     if (pool.length < this.maxPoolSize) {
@@ -1157,14 +1190,14 @@ class AnimationPool {
 
   // Preload common animations
   preloadAnimations(preloadConfig: PreloadConfig[]) {
-    preloadConfig.forEach(config => {
+    preloadConfig.forEach((config) => {
       const pool: AnimationGroup[] = [];
-      
+
       for (let i = 0; i < config.count; i++) {
         const animation = config.factory();
         pool.push(animation);
       }
-      
+
       this.pool.set(config.key, pool);
       this.preloadedEffects.add(config.key);
     });
@@ -1173,14 +1206,14 @@ class AnimationPool {
   // Clean up unused animations
   cleanup() {
     const now = performance.now();
-    
+
     this.pool.forEach((animations, key) => {
       // Remove old unused animations
-      const activeAnimations = animations.filter(anim => {
+      const activeAnimations = animations.filter((anim) => {
         const lastUsed = (anim as any).lastUsed || now;
-        return (now - lastUsed) < 30000; // Keep for 30 seconds
+        return now - lastUsed < 30000; // Keep for 30 seconds
       });
-      
+
       if (activeAnimations.length === 0) {
         this.pool.delete(key);
       } else {
@@ -1197,14 +1230,13 @@ class AnimationPool {
 
   // Get pool statistics
   getStats(): PoolStats {
-    const totalPooled = Array.from(this.pool.values())
-      .reduce((sum, pool) => sum + pool.length, 0);
+    const totalPooled = Array.from(this.pool.values()).reduce((sum, pool) => sum + pool.length, 0);
 
     return {
       totalPooled,
       activeAnimations: this.activeAnimations.size,
       preloadedEffects: this.preloadedEffects.size,
-      poolKeys: Array.from(this.pool.keys())
+      poolKeys: Array.from(this.pool.keys()),
     };
   }
 }
@@ -1237,9 +1269,9 @@ class GlobalAnimationManager {
     setInterval(() => {
       const fps = this.performanceMonitor.getAverageFPS();
       const wasLowPerf = this.isLowPerformanceMode;
-      
+
       this.isLowPerformanceMode = fps < 45;
-      
+
       if (this.isLowPerformanceMode !== wasLowPerf) {
         this.handlePerformanceModeChange();
       }
@@ -1265,26 +1297,28 @@ class GlobalAnimationManager {
       {
         key: 'fadeIn',
         count: 5,
-        factory: () => getWebAnimation(document.createElement('div'), {
-          type: 'TimeAnimationOptions',
-          namedEffect: { type: 'FadeIn' }
-        })
+        factory: () =>
+          getWebAnimation(document.createElement('div'), {
+            type: 'TimeAnimationOptions',
+            namedEffect: { type: 'FadeIn' },
+          }),
       },
       {
         key: 'slideIn',
         count: 3,
-        factory: () => getWebAnimation(document.createElement('div'), {
-          type: 'TimeAnimationOptions',
-          namedEffect: { type: 'SlideIn', direction: 'bottom' }
-        })
-      }
+        factory: () =>
+          getWebAnimation(document.createElement('div'), {
+            type: 'TimeAnimationOptions',
+            namedEffect: { type: 'SlideIn', direction: 'bottom' },
+          }),
+      },
     ]);
   }
 
   // Public API
   createOptimizedAnimation(element: HTMLElement, options: AnimationOptions): AnimationGroup {
     const key = this.generateAnimationKey(options);
-    
+
     if (this.isLowPerformanceMode) {
       options = this.simplifyOptionsForPerformance(options);
     }
@@ -1311,7 +1345,7 @@ class GlobalAnimationManager {
       return {
         ...options,
         duration: Math.min(options.duration || 1000, 300),
-        namedEffect: { type: 'FadeIn' } // Use simplest animation
+        namedEffect: { type: 'FadeIn' }, // Use simplest animation
       };
     }
     return options;
@@ -1322,8 +1356,8 @@ class GlobalAnimationManager {
       pool: this.pool.getStats(),
       performance: {
         isLowPerformanceMode: this.isLowPerformanceMode,
-        currentFPS: this.performanceMonitor.getAverageFPS()
-      }
+        currentFPS: this.performanceMonitor.getAverageFPS(),
+      },
     };
   }
 }

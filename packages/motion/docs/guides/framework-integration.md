@@ -30,7 +30,7 @@ interface UseAnimationOptions {
 
 export function useAnimation(
   animationOptions: AnimationOptions,
-  options: UseAnimationOptions = {}
+  options: UseAnimationOptions = {},
 ): {
   ref: React.RefObject<HTMLElement>;
   animation: AnimationGroup | null;
@@ -44,10 +44,7 @@ export function useAnimation(
   const { autoPlay = false, dependencies = [], disabled = false } = options;
 
   // Memoize animation options to prevent unnecessary recreations
-  const memoizedOptions = useMemo(
-    () => animationOptions,
-    dependencies
-  );
+  const memoizedOptions = useMemo(() => animationOptions, dependencies);
 
   // Create animation when element and options are ready
   useEffect(() => {
@@ -106,7 +103,7 @@ export function useAnimation(
     play,
     pause,
     cancel,
-    progress
+    progress,
   };
 }
 ```
@@ -130,8 +127,8 @@ interface AnimatedElementProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const AnimatedElement = forwardRef<HTMLDivElement, AnimatedElementProps>(
   ({ animationOptions, autoPlay, disabled, onAnimationComplete, children, ...props }, forwardedRef) => {
-    const { ref, animation, play } = useAnimation(animationOptions, { 
-      autoPlay, 
+    const { ref, animation, play } = useAnimation(animationOptions, {
+      autoPlay,
       disabled,
       dependencies: [animationOptions]
     });
@@ -264,8 +261,8 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 // Basic usage
 function App() {
   return (
-    <AnimatedContainer 
-      animationType="slideIn" 
+    <AnimatedContainer
+      animationType="slideIn"
       direction="bottom"
       trigger="intersection"
       className="hero-section"
@@ -281,7 +278,7 @@ function CustomAnimatedComponent() {
   const { ref, play, pause, progress } = useAnimation({
     type: 'TimeAnimationOptions',
     namedEffect: { type: 'BounceIn', power: 'hard' },
-    duration: 1000
+    duration: 1000,
   });
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -300,13 +297,11 @@ function CustomAnimatedComponent() {
       <div ref={ref} className="animated-box">
         Animated Content
       </div>
-      <button onClick={handleToggle}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
-      <input 
-        type="range" 
-        min="0" 
-        max="1" 
+      <button onClick={handleToggle}>{isPlaying ? 'Pause' : 'Play'}</button>
+      <input
+        type="range"
+        min="0"
+        max="1"
         step="0.01"
         onChange={(e) => progress(parseFloat(e.target.value))}
       />
@@ -315,7 +310,7 @@ function CustomAnimatedComponent() {
 }
 
 // Scroll animation usage
-[TBD]
+[TBD];
 ```
 
 ## Vue Integration
@@ -333,7 +328,7 @@ export function useAnimation(
   options: {
     autoPlay?: boolean;
     disabled?: Ref<boolean> | boolean;
-  } = {}
+  } = {},
 ) {
   const animation = ref<AnimationGroup | null>(null);
   const isPlaying = ref(false);
@@ -343,15 +338,16 @@ export function useAnimation(
 
   function createAnimation() {
     if (!elementRef.value) return;
-    
+
     // Clean up existing animation
     if (animation.value) {
       animation.value.cancel();
     }
 
-    const options = typeof animationOptions === 'object' && 'value' in animationOptions
-      ? animationOptions.value
-      : animationOptions;
+    const options =
+      typeof animationOptions === 'object' && 'value' in animationOptions
+        ? animationOptions.value
+        : animationOptions;
 
     animation.value = getWebAnimation(elementRef.value, options);
 
@@ -391,11 +387,12 @@ export function useAnimation(
 
   // Watch for changes in animation options
   watch(
-    () => typeof animationOptions === 'object' && 'value' in animationOptions
-      ? animationOptions.value
-      : animationOptions,
+    () =>
+      typeof animationOptions === 'object' && 'value' in animationOptions
+        ? animationOptions.value
+        : animationOptions,
     createAnimation,
-    { deep: true }
+    { deep: true },
   );
 
   // Watch for element changes
@@ -403,14 +400,14 @@ export function useAnimation(
 
   // Watch for disabled state
   watch(
-    () => typeof disabled === 'object' && 'value' in disabled ? disabled.value : disabled,
+    () => (typeof disabled === 'object' && 'value' in disabled ? disabled.value : disabled),
     (isDisabled) => {
       if (isDisabled && animation.value) {
         animation.value.cancel();
       } else if (!isDisabled) {
         createAnimation();
       }
-    }
+    },
   );
 
   onMounted(createAnimation);
@@ -428,7 +425,7 @@ export function useAnimation(
     play,
     pause,
     cancel,
-    setProgress
+    setProgress,
   };
 }
 ```
@@ -462,7 +459,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   autoPlay: false,
-  disabled: false
+  disabled: false,
 });
 
 const emit = defineEmits<Emits>();
@@ -474,8 +471,8 @@ const { animation, play, pause, cancel, setProgress } = useAnimation(
   computed(() => props.animationOptions),
   {
     autoPlay: props.autoPlay,
-    disabled: computed(() => props.disabled)
-  }
+    disabled: computed(() => props.disabled),
+  },
 );
 
 // Watch for animation completion
@@ -492,7 +489,7 @@ defineExpose({
   play,
   pause,
   cancel,
-  setProgress
+  setProgress,
 });
 </script>
 ```
@@ -543,18 +540,18 @@ const controlledAnimation = ref();
 const fadeInOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
-  duration: 800
+  duration: 800,
 };
 
 const slideInOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'SlideIn', direction: 'left', power: 'medium' },
-  duration: 1000
+  duration: 1000,
 };
 
 const parallaxOptions = {
   type: 'ScrubAnimationOptions',
-  namedEffect: { type: 'ParallaxScroll', speed: 0.3 }
+  namedEffect: { type: 'ParallaxScroll', speed: 0.3 },
 };
 
 function onFadeComplete() {
@@ -575,10 +572,16 @@ function playControlled() {
 // animation.service.ts
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { getWebAnimation, getScrubScene, AnimationGroup, AnimationOptions, ScrubAnimationOptions } from '@wix/motion';
+import {
+  getWebAnimation,
+  getScrubScene,
+  AnimationGroup,
+  AnimationOptions,
+  ScrubAnimationOptions,
+} from '@wix/motion';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AnimationService implements OnDestroy {
   private animations = new Map<string, AnimationGroup>();
@@ -587,7 +590,7 @@ export class AnimationService implements OnDestroy {
   createAnimation(
     id: string,
     element: HTMLElement,
-    options: AnimationOptions
+    options: AnimationOptions,
   ): Observable<AnimationState> {
     // Clean up existing animation
     this.destroyAnimation(id);
@@ -599,7 +602,7 @@ export class AnimationService implements OnDestroy {
     const stateSubject = new BehaviorSubject<AnimationState>({
       id,
       state: 'idle',
-      progress: 0
+      progress: 0,
     });
     this.animationStates.set(id, stateSubject);
 
@@ -613,15 +616,19 @@ export class AnimationService implements OnDestroy {
     id: string,
     element: HTMLElement,
     options: ScrubAnimationOptions,
-    trigger?: any
+    trigger?: any,
   ): Observable<AnimationState> {
     // Clean up existing
     this.destroyAnimation(id);
 
-    const scene = getScrubScene(element, options, trigger || {
-      trigger: 'view-progress',
-      element: document.body
-    });
+    const scene = getScrubScene(
+      element,
+      options,
+      trigger || {
+        trigger: 'view-progress',
+        element: document.body,
+      },
+    );
 
     // Store scene reference
     (this.animations as any).set(id, scene);
@@ -629,7 +636,7 @@ export class AnimationService implements OnDestroy {
     const stateSubject = new BehaviorSubject<AnimationState>({
       id,
       state: 'idle',
-      progress: 0
+      progress: 0,
     });
     this.animationStates.set(id, stateSubject);
 
@@ -642,13 +649,13 @@ export class AnimationService implements OnDestroy {
   private monitorAnimation(
     id: string,
     animation: AnimationGroup,
-    stateSubject: BehaviorSubject<AnimationState>
+    stateSubject: BehaviorSubject<AnimationState>,
   ) {
     const updateState = () => {
       const state: AnimationState = {
         id,
         state: animation.playState,
-        progress: animation.getProgress()
+        progress: animation.getProgress(),
       };
       stateSubject.next(state);
 
@@ -665,7 +672,7 @@ export class AnimationService implements OnDestroy {
       stateSubject.next({
         id,
         state: 'finished',
-        progress: 1
+        progress: 1,
       });
     });
   }
@@ -673,7 +680,7 @@ export class AnimationService implements OnDestroy {
   private monitorScrollAnimation(
     id: string,
     scene: any,
-    stateSubject: BehaviorSubject<AnimationState>
+    stateSubject: BehaviorSubject<AnimationState>,
   ) {
     const updateProgress = () => {
       if (Array.isArray(scene) && scene[0]) {
@@ -681,7 +688,7 @@ export class AnimationService implements OnDestroy {
         stateSubject.next({
           id,
           state: 'running',
-          progress
+          progress,
         });
       }
 
@@ -749,23 +756,23 @@ interface AnimationState {
 
 ```typescript
 // animated.directive.ts
-import { 
-  Directive, 
-  ElementRef, 
-  Input, 
-  OnInit, 
-  OnDestroy, 
-  Output, 
+import {
+  Directive,
+  ElementRef,
+  Input,
+  OnInit,
+  OnDestroy,
+  Output,
   EventEmitter,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { AnimationService } from './animation.service';
 import { AnimationOptions } from '@wix/motion';
 import { Subscription } from 'rxjs';
 
 @Directive({
-  selector: '[appAnimated]'
+  selector: '[appAnimated]',
 })
 export class AnimatedDirective implements OnInit, OnDestroy, OnChanges {
   @Input('appAnimated') animationOptions!: AnimationOptions;
@@ -781,7 +788,7 @@ export class AnimatedDirective implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    private animationService: AnimationService
+    private animationService: AnimationService,
   ) {
     this.id = this.animationId || `animation_${Math.random().toString(36).substr(2, 9)}`;
   }
@@ -818,9 +825,9 @@ export class AnimatedDirective implements OnInit, OnDestroy, OnChanges {
 
     this.subscription = this.animationService
       .createAnimation(this.id, this.elementRef.nativeElement, this.animationOptions)
-      .subscribe(state => {
+      .subscribe((state) => {
         this.animationStateChange.emit(state);
-        
+
         if (state.state === 'finished') {
           this.animationComplete.emit();
         }
@@ -855,7 +862,7 @@ import { AnimationOptions } from '@wix/motion';
 @Component({
   selector: 'app-animated-container',
   template: `
-    <div 
+    <div
       [appAnimated]="animationOptions"
       [autoPlay]="autoPlay"
       [disabled]="disabled"
@@ -866,7 +873,7 @@ import { AnimationOptions } from '@wix/motion';
       <ng-content></ng-content>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnimatedContainerComponent {
   @Input() animationOptions!: AnimationOptions;
@@ -904,17 +911,15 @@ import { AnimationOptions } from '@wix/motion';
       </app-animated-container>
 
       <!-- Controlled animation -->
-      <div 
+      <div
         [appAnimated]="slideInOptions"
         #controlledAnimation="appAnimated"
         class="controlled-section"
       >
         <p>Controlled animation content</p>
       </div>
-      
-      <button (click)="controlledAnimation.play()">
-        Play Animation
-      </button>
+
+      <button (click)="controlledAnimation.play()">Play Animation</button>
 
       <!-- Dynamic animation -->
       <app-animated-container
@@ -927,19 +932,19 @@ import { AnimationOptions } from '@wix/motion';
 
       <button (click)="changeAnimation()">Change Animation</button>
     </div>
-  `
+  `,
 })
 export class AppComponent {
   fadeInOptions: AnimationOptions = {
     type: 'TimeAnimationOptions',
     namedEffect: { type: 'FadeIn' },
-    duration: 800
+    duration: 800,
   };
 
   slideInOptions: AnimationOptions = {
     type: 'TimeAnimationOptions',
     namedEffect: { type: 'SlideIn', direction: 'bottom', power: 'medium' },
-    duration: 1000
+    duration: 1000,
   };
 
   dynamicOptions: AnimationOptions = this.fadeInOptions;
@@ -954,9 +959,8 @@ export class AppComponent {
   }
 
   changeAnimation(): void {
-    this.dynamicOptions = this.dynamicOptions === this.fadeInOptions 
-      ? this.slideInOptions 
-      : this.fadeInOptions;
+    this.dynamicOptions =
+      this.dynamicOptions === this.fadeInOptions ? this.slideInOptions : this.fadeInOptions;
     this.shouldAutoPlay = true;
   }
 }
@@ -971,7 +975,7 @@ export class AppComponent {
 export function createSSRSafeAnimation(
   element: HTMLElement | null,
   options: AnimationOptions,
-  fallback?: () => void
+  fallback?: () => void,
 ): AnimationGroup | null {
   // Check if we're in browser environment
   if (typeof window === 'undefined' || typeof document === 'undefined') {
@@ -1023,12 +1027,12 @@ export class UniversalAnimationManager {
     config: {
       autoPlay?: boolean;
       dependencies?: any[];
-    } = {}
+    } = {},
   ) {
     const createFn = () => {
       const element = getElement();
       const options = getOptions();
-      
+
       if (!element) return;
 
       // Clean up existing
@@ -1042,7 +1046,7 @@ export class UniversalAnimationManager {
 
       if (animation) {
         this.animations.set(id, animation);
-        
+
         if (config.autoPlay) {
           animation.play();
         }
@@ -1072,7 +1076,7 @@ export class UniversalAnimationManager {
       play: () => this.animations.get(id)?.play(),
       pause: () => this.animations.get(id)?.pause(),
       cancel: () => this.destroyAnimation(id),
-      progress: (p: number) => this.animations.get(id)?.progress(p)
+      progress: (p: number) => this.animations.get(id)?.progress(p),
     };
   }
 
@@ -1085,7 +1089,7 @@ export class UniversalAnimationManager {
   }
 
   destroyAll() {
-    this.animations.forEach(animation => animation.cancel());
+    this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
   }
 }

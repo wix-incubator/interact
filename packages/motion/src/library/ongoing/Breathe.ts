@@ -1,9 +1,4 @@
-import type {
-  TimeAnimationOptions,
-  Breathe,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { TimeAnimationOptions, Breathe, DomApi, AnimationExtraOptions } from '../../types';
 import {
   getCssUnits,
   getEasing,
@@ -26,17 +21,11 @@ const FACTORS_SEQUENCE = [
   { translateFactor: 0.6, timeFactor: 0.3333 },
 ];
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { direction = 'vertical', distance = { value: 25, type: 'px' } } =
     options.namedEffect as Breathe;
 
@@ -44,23 +33,17 @@ export function style(
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(
-    duration,
-    totalDurationWithDelay - duration,
-  ) as number;
+  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   const [name] = getNames(options);
 
   const { x, y, z } = DIRECTION_MAP[direction];
   const ease = getEasingFamily(easing);
-  const perspectiveTransform =
-    direction === 'center' ? 'perspective(800px)' : '';
+  const perspectiveTransform = direction === 'center' ? 'perspective(800px)' : '';
 
   // Create CSS custom properties for the Breathe configuration
   const custom: Record<string, string | number> = {
     '--motion-breathe-perspective': perspectiveTransform,
-    '--motion-breathe-distance': `${distance.value}${getCssUnits(
-      distance.type || 'px',
-    )}`,
+    '--motion-breathe-distance': `${distance.value}${getCssUnits(distance.type || 'px')}`,
     '--motion-breathe-x': x,
     '--motion-breathe-y': y,
     '--motion-breathe-z': z,
@@ -75,11 +58,7 @@ export function style(
     asWeb,
     ' ',
   )}`;
-  const breatheDistance = `${toKeyframeValue(
-    custom,
-    '--motion-breathe-distance',
-    asWeb,
-  )}`;
+  const breatheDistance = `${toKeyframeValue(custom, '--motion-breathe-distance', asWeb)}`;
 
   let currentOffset = 0;
 
@@ -133,9 +112,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-breathe-${timingFactor}`];

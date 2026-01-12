@@ -1,9 +1,4 @@
-import type {
-  Cross,
-  DomApi,
-  TimeAnimationOptions,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions } from '../../types';
 import { getElementOffset, getTimingFactor } from '../../utils';
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
@@ -76,8 +71,7 @@ type VerticalOffsetByDirectionParams = {
   parentHeight: number;
 };
 
-type OffsetByDirectionParams = HorizontalOffsetByDirectionParams &
-  VerticalOffsetByDirectionParams;
+type OffsetByDirectionParams = HorizontalOffsetByDirectionParams & VerticalOffsetByDirectionParams;
 
 const GET_OFFSET_BY_DIRECTION_MAP = {
   // (width + left) / (100cqw + width)
@@ -172,10 +166,7 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
   };
 }
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   const { direction = 'right' } = options.namedEffect as Cross;
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -208,8 +199,7 @@ export function web(
         return;
       }
 
-      const { width: targetWidth, height: targetHeight } =
-        target.getBoundingClientRect();
+      const { width: targetWidth, height: targetHeight } = target.getBoundingClientRect();
       const parent = target.offsetParent as HTMLElement;
       const parentRect = parent?.getBoundingClientRect() || ({} as DOMRect);
       const offset = getElementOffset(target, parent);
@@ -255,13 +245,8 @@ export function web(
         let from, to;
         if (direction in TRANSLATE_BY_DIRECTION_MAP) {
           from =
-            TRANSLATE_BY_DIRECTION_MAP[
-              direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP
-            ].from;
-          to =
-            TRANSLATE_BY_DIRECTION_MAP[
-              direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP
-            ].to;
+            TRANSLATE_BY_DIRECTION_MAP[direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP].from;
+          to = TRANSLATE_BY_DIRECTION_MAP[direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP].to;
         } else {
           const cornerFromTo = generateTranslate(
             direction as keyof typeof FOUR_CORNERS_TRANSLATIONS,

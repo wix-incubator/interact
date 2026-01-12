@@ -23,8 +23,7 @@ describe('GlideIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            transform:
-              'translate(0%, -100%) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0%, -100%) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',
@@ -58,8 +57,7 @@ describe('GlideIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            transform:
-              'translate(141px, -141px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(141px, -141px) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',

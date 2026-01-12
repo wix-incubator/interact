@@ -1,8 +1,4 @@
-import type {
-  AnimationExtraOptions,
-  Progress,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { AnimationExtraOptions, Progress, ScrubAnimationOptions } from '../../types';
 
 export class CustomMouse {
   target: HTMLElement;

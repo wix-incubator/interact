@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  DomApi,
-  ScrubAnimationOptions,
-  SkewPanScroll,
-} from '../../types';
+import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll } from '../../types';
 
 const POWER_MAP = {
   soft: { skewX: 10 },
@@ -55,8 +50,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   ) as AnimationFillMode;
 
   const skewX =
-    (power && POWER_MAP[power] ? POWER_MAP[power!].skewX : skew) *
-    DIRECTION_MAP[direction];
+    (power && POWER_MAP[power] ? POWER_MAP[power!].skewX : skew) * DIRECTION_MAP[direction];
   const { startX, endX } = POSITIONS[direction];
   const { fromValues, toValues } = RANGES_MAP[range](skewX, startX, endX);
 

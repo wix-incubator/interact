@@ -22,23 +22,27 @@ Button pulses when clicked.
 import { Interact } from '@wix/interact';
 
 const config = {
-    interactions: [{
-        key: 'pulse-button',
-        trigger: 'click',
-        effects: [{
-            key: 'pulse-button',
-            keyframeEffect: {
-                name: 'pulse',
-                keyframes: [
-                    { transform: 'scale(1)' },
-                    { transform: 'scale(0.95)' },
-                    { transform: 'scale(1)' }
-                ]
-            },
-            duration: 200,
-            easing: 'ease-in-out'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'pulse-button',
+      trigger: 'click',
+      effects: [
+        {
+          key: 'pulse-button',
+          keyframeEffect: {
+            name: 'pulse',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(0.95)' },
+              { transform: 'scale(1)' },
+            ],
+          },
+          duration: 200,
+          easing: 'ease-in-out',
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
@@ -46,7 +50,7 @@ Interact.create(config);
 
 ```html
 <interact-element data-interact-key="pulse-button">
-    <button>Click Me</button>
+  <button>Click Me</button>
 </interact-element>
 ```
 
@@ -64,13 +68,13 @@ Material design-style ripple on click.
         keyframeEffect: {
             name: 'ripple',
             keyframes: [
-                { 
-                    transform: 'scale(0)', 
-                    opacity: '0.5' 
+                {
+                    transform: 'scale(0)',
+                    opacity: '0.5'
                 },
-                { 
-                    transform: 'scale(2)', 
-                    opacity: '0' 
+                {
+                    transform: 'scale(2)',
+                    opacity: '0'
                 }
             ]
         },
@@ -82,28 +86,28 @@ Material design-style ripple on click.
 
 ```html
 <interact-element data-interact-key="ripple-button">
-    <button class="ripple-btn">
-        <span class="btn-text">Click Me</span>
-        <span class="ripple-overlay"></span>
-    </button>
+  <button class="ripple-btn">
+    <span class="btn-text">Click Me</span>
+    <span class="ripple-overlay"></span>
+  </button>
 </interact-element>
 ```
 
 ```css
 .ripple-btn {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .ripple-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: 50%;
-    background: rgb(255 255 255 / 0.5);
-    pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.5);
+  pointer-events: none;
 }
 ```
 
@@ -186,36 +190,36 @@ Toggle between two states.
 
 ```html
 <interact-element data-interact-key="toggle-switch">
-    <div class="toggle-container">
-        <div class="toggle-knob"></div>
-    </div>
+  <div class="toggle-container">
+    <div class="toggle-knob"></div>
+  </div>
 </interact-element>
 ```
 
 ```css
 .toggle-container {
-    width: 48px;
-    height: 24px;
-    background: #d1d5db;
-    border-radius: 12px;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 48px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .toggle-knob {
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.3s;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
 }
 
 interact-element:state(toggle-on) .toggle-container {
-    background: #10b981;
+  background: #10b981;
 }
 ```
 
@@ -247,15 +251,15 @@ Custom checkbox with animation.
 
 ```html
 <interact-element data-interact-key="checkbox">
-    <label class="checkbox-label">
-        <input type="checkbox" hidden />
-        <div class="checkbox-box">
-            <svg class="checkmark" viewBox="0 0 24 24">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>
-        </div>
-        <span>Accept terms</span>
-    </label>
+  <label class="checkbox-label">
+    <input type="checkbox" hidden />
+    <div class="checkbox-box">
+      <svg class="checkmark" viewBox="0 0 24 24">
+        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+      </svg>
+    </div>
+    <span>Accept terms</span>
+  </label>
 </interact-element>
 ```
 
@@ -304,12 +308,12 @@ Click to reveal hidden content.
         keyframeEffect: {
             name: 'expand',
             keyframes: [
-                { 
+                {
                     maxHeight: '0',
                     opacity: '0',
                     transform: 'translateY(-10px)'
                 },
-                { 
+                {
                     maxHeight: '500px',
                     opacity: '1',
                     transform: 'translateY(0)'
@@ -325,15 +329,15 @@ Click to reveal hidden content.
 
 ```html
 <interact-element data-interact-key="accordion-trigger">
-    <div class="accordion">
-        <div class="accordion-header">
-            <h3>Click to expand</h3>
-            <span class="icon">▼</span>
-        </div>
-        <div class="accordion-content">
-            <p>This content is revealed when clicked</p>
-        </div>
+  <div class="accordion">
+    <div class="accordion-header">
+      <h3>Click to expand</h3>
+      <span class="icon">▼</span>
     </div>
+    <div class="accordion-content">
+      <p>This content is revealed when clicked</p>
+    </div>
+  </div>
 </interact-element>
 ```
 
@@ -384,46 +388,46 @@ Switch between tabs on click.
 
 ```typescript
 const tabsConfig = {
-    interactions: [
+  interactions: [
+    {
+      key: 'tab-1',
+      selector: '.tab-button',
+      trigger: 'click',
+      effects: [
         {
-            key: 'tab-1',
-            selector: '.tab-button',
-            trigger: 'click',
-            effects: [
-                {
-                    key: 'tab-content-1',
-                    keyframeEffect: {
-                        name: 'tab-fade-in',
-                        keyframes: [
-                            { opacity: '0', transform: 'translateY(10px)' },
-                            { opacity: '1', transform: 'translateY(0)' }
-                        ]
-                    },
-                    duration: 300,
-                    easing: 'ease-out'
-                }
-            ]
+          key: 'tab-content-1',
+          keyframeEffect: {
+            name: 'tab-fade-in',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(10px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 300,
+          easing: 'ease-out',
         },
+      ],
+    },
+    {
+      key: 'tab-2',
+      selector: '.tab-button',
+      trigger: 'click',
+      effects: [
         {
-            key: 'tab-2',
-            selector: '.tab-button',
-            trigger: 'click',
-            effects: [
-                {
-                    key: 'tab-content-2',
-                    keyframeEffect: {
-                        name: 'tab-fade-in',
-                        keyframes: [
-                            { opacity: '0', transform: 'translateY(10px)' },
-                            { opacity: '1', transform: 'translateY(0)' }
-                        ]
-                    },
-                    duration: 300,
-                    easing: 'ease-out'
-                }
-            ]
-        }
-    ]
+          key: 'tab-content-2',
+          keyframeEffect: {
+            name: 'tab-fade-in',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(10px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 300,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -512,17 +516,19 @@ Show loading spinner on click.
 
 ```css
 .spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 ```
 
@@ -596,13 +602,13 @@ Click button to show modal with animation.
             keyframeEffect: {
                 name: 'modal-scale',
                 keyframes: [
-                    { 
-                        opacity: '0', 
-                        transform: 'scale(0.9) translateY(-20px)' 
+                    {
+                        opacity: '0',
+                        transform: 'scale(0.9) translateY(-20px)'
                     },
-                    { 
-                        opacity: '1', 
-                        transform: 'scale(1) translateY(0)' 
+                    {
+                        opacity: '1',
+                        transform: 'scale(1) translateY(0)'
                     }
                 ]
             },
@@ -629,13 +635,13 @@ Click to close with exit animation.
             keyframeEffect: {
                 name: 'modal-exit',
                 keyframes: [
-                    { 
-                        opacity: '1', 
-                        transform: 'scale(1)' 
+                    {
+                        opacity: '1',
+                        transform: 'scale(1)'
                     },
-                    { 
-                        opacity: '0', 
-                        transform: 'scale(0.9)' 
+                    {
+                        opacity: '0',
+                        transform: 'scale(0.9)'
                     }
                 ]
             },
@@ -673,13 +679,13 @@ Show temporary notification on action.
         keyframeEffect: {
             name: 'toast-slide-in',
             keyframes: [
-                { 
-                    opacity: '0', 
-                    transform: 'translateY(100%) scale(0.9)' 
+                {
+                    opacity: '0',
+                    transform: 'translateY(100%) scale(0.9)'
                 },
-                { 
-                    opacity: '1', 
-                    transform: 'translateY(0) scale(1)' 
+                {
+                    opacity: '1',
+                    transform: 'translateY(0) scale(1)'
                 }
             ]
         },
@@ -762,13 +768,13 @@ Click to toggle dropdown.
             keyframeEffect: {
                 name: 'dropdown-appear',
                 keyframes: [
-                    { 
-                        opacity: '0', 
-                        transform: 'translateY(-10px) scale(0.95)' 
+                    {
+                        opacity: '0',
+                        transform: 'translateY(-10px) scale(0.95)'
                     },
-                    { 
-                        opacity: '1', 
-                        transform: 'translateY(0) scale(1)' 
+                    {
+                        opacity: '1',
+                        transform: 'translateY(0) scale(1)'
                     }
                 ]
             },
@@ -801,88 +807,85 @@ Complete add-to-cart interaction.
 
 ```typescript
 const addToCartConfig = {
-    interactions: [{
-        key: 'add-to-cart',
-        trigger: 'click',
-        effects: [
-            // Button scale feedback
-            {
-                key: 'add-to-cart',
-                keyframeEffect: {
-                    name: 'button-press',
-                    keyframes: [
-                        { transform: 'scale(1)' },
-                        { transform: 'scale(0.95)' },
-                        { transform: 'scale(1)' }
-                    ]
-                },
-                duration: 200,
-                easing: 'ease-out'
-            },
-            // Change button color
-            {
-                key: 'add-to-cart',
-                keyframeEffect: {
-                    name: 'success-color',
-                    keyframes: [
-                        { backgroundColor: '#3b82f6' },
-                        { backgroundColor: '#10b981' }
-                    ]
-                },
-                duration: 300,
-                delay: 200,
-                easing: 'ease-out',
-                effectId: 'added'
-            },
-            // Show cart badge update
-            {
-                key: 'cart-badge',
-                keyframeEffect: {
-                    name: 'badge-pop',
-                    keyframes: [
-                        { transform: 'scale(1)' },
-                        { transform: 'scale(1.5)' },
-                        { transform: 'scale(1)' }
-                    ]
-                },
-                duration: 400,
-                delay: 300,
-                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-            },
-            // Show success message
-            {
-                key: 'success-toast',
-                keyframeEffect: {
-                    name: 'toast-appear',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(20px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 300,
-                delay: 400,
-                easing: 'ease-out'
-            }
-        ]
-    }]
+  interactions: [
+    {
+      key: 'add-to-cart',
+      trigger: 'click',
+      effects: [
+        // Button scale feedback
+        {
+          key: 'add-to-cart',
+          keyframeEffect: {
+            name: 'button-press',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(0.95)' },
+              { transform: 'scale(1)' },
+            ],
+          },
+          duration: 200,
+          easing: 'ease-out',
+        },
+        // Change button color
+        {
+          key: 'add-to-cart',
+          keyframeEffect: {
+            name: 'success-color',
+            keyframes: [{ backgroundColor: '#3b82f6' }, { backgroundColor: '#10b981' }],
+          },
+          duration: 300,
+          delay: 200,
+          easing: 'ease-out',
+          effectId: 'added',
+        },
+        // Show cart badge update
+        {
+          key: 'cart-badge',
+          keyframeEffect: {
+            name: 'badge-pop',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.5)' },
+              { transform: 'scale(1)' },
+            ],
+          },
+          duration: 400,
+          delay: 300,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        },
+        // Show success message
+        {
+          key: 'success-toast',
+          keyframeEffect: {
+            name: 'toast-appear',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(20px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 300,
+          delay: 400,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```html
 <interact-element data-interact-key="add-to-cart">
-    <button class="add-to-cart-btn">
-        Add to Cart
-    </button>
+  <button class="add-to-cart-btn">Add to Cart</button>
 </interact-element>
 
 <interact-element data-interact-key="cart-badge">
-    <div class="cart-icon">
-        <span class="badge">2</span>
-    </div>
+  <div class="cart-icon">
+    <span class="badge">2</span>
+  </div>
 </interact-element>
 
 <interact-element data-interact-key="success-toast">
-    <div class="toast">Item added to cart!</div>
+  <div class="toast">Item added to cart!</div>
 </interact-element>
 ```
 
@@ -892,58 +895,60 @@ Form submission with validation feedback.
 
 ```typescript
 const formConfig = {
-    interactions: [{
-        key: 'submit-form',
-        trigger: 'click',
-        effects: [
-            // Disable button
-            {
-                key: 'submit-form',
-                transition: {
-                    duration: 200,
-                    styleProperties: [
-                        { name: 'opacity', value: '0.6' },
-                        { name: 'cursor', value: 'not-allowed' }
-                    ]
-                },
-                effectId: 'submitting'
-            },
-            // Show loading spinner
-            {
-                key: 'submit-form',
-                selector: '.spinner',
-                keyframeEffect: {
-                    name: 'spinner-show',
-                    keyframes: [
-                        { opacity: '0', transform: 'scale(0)' },
-                        { opacity: '1', transform: 'scale(1)' }
-                    ]
-                },
-                duration: 200,
-                easing: 'ease-out'
-            },
-            // Success message (after delay)
-            {
-                key: 'form-message',
-                keyframeEffect: {
-                    name: 'message-appear',
-                    keyframes: [
-                        { 
-                            opacity: '0', 
-                            transform: 'translateY(-10px) scale(0.95)' 
-                        },
-                        { 
-                            opacity: '1', 
-                            transform: 'translateY(0) scale(1)' 
-                        }
-                    ]
-                },
-                duration: 400,
-                delay: 1000,  // Wait for form processing
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
-            }
-        ]
-    }]
+  interactions: [
+    {
+      key: 'submit-form',
+      trigger: 'click',
+      effects: [
+        // Disable button
+        {
+          key: 'submit-form',
+          transition: {
+            duration: 200,
+            styleProperties: [
+              { name: 'opacity', value: '0.6' },
+              { name: 'cursor', value: 'not-allowed' },
+            ],
+          },
+          effectId: 'submitting',
+        },
+        // Show loading spinner
+        {
+          key: 'submit-form',
+          selector: '.spinner',
+          keyframeEffect: {
+            name: 'spinner-show',
+            keyframes: [
+              { opacity: '0', transform: 'scale(0)' },
+              { opacity: '1', transform: 'scale(1)' },
+            ],
+          },
+          duration: 200,
+          easing: 'ease-out',
+        },
+        // Success message (after delay)
+        {
+          key: 'form-message',
+          keyframeEffect: {
+            name: 'message-appear',
+            keyframes: [
+              {
+                opacity: '0',
+                transform: 'translateY(-10px) scale(0.95)',
+              },
+              {
+                opacity: '1',
+                transform: 'translateY(0) scale(1)',
+              },
+            ],
+          },
+          duration: 400,
+          delay: 1000, // Wait for form processing
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -958,6 +963,7 @@ const formConfig = {
 ### User Experience Tips
 
 ✅ **Do:**
+
 - Provide immediate visual feedback
 - Use appropriate timing for action type
 - Show loading states for async actions
@@ -965,6 +971,7 @@ const formConfig = {
 - Make interactive elements obvious (cursor, hover states)
 
 ❌ **Avoid:**
+
 - Delayed click responses (feels laggy)
 - Animations that block user actions
 - Multiple rapid clicks without debouncing

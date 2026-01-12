@@ -1,9 +1,4 @@
-import {
-  getEasingFamily,
-  getEasing,
-  toKeyframeValue,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -65,17 +60,8 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const easeIn_ = toKeyframeValue(custom, '--motion-ease-in', asWeb);
   const easeOut_ = toKeyframeValue(custom, '--motion-ease-out', asWeb);
-  const distanceFactor_ = toKeyframeValue(
-    custom,
-    '--motion-distance-factor',
-    asWeb,
-  );
-  const perspective_ = toKeyframeValue(
-    custom,
-    '--motion-perspective',
-    asWeb,
-    ' ',
-  );
+  const distanceFactor_ = toKeyframeValue(custom, '--motion-distance-factor', asWeb);
+  const perspective_ = toKeyframeValue(custom, '--motion-perspective', asWeb, ' ');
   const directionX = toKeyframeValue(custom, '--motion-direction-x', asWeb);
   const directionY = toKeyframeValue(custom, '--motion-direction-y', asWeb);
   const directionZ = toKeyframeValue(custom, '--motion-direction-z', asWeb);
@@ -101,10 +87,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: (options.duration! * BOUNCE_KEYFRAMES[3].offset) / 100,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

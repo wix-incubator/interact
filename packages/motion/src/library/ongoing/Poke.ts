@@ -1,9 +1,4 @@
-import type {
-  Poke,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
 const TRANSLATE_KEYFRAMES = [
@@ -29,22 +24,12 @@ const DIRECTION_MAP = {
   left: { x: -1, y: 0 },
 };
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
-  const {
-    power,
-    intensity = 0.5,
-    direction = 'right',
-  } = options.namedEffect as Poke;
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
+  const { power, intensity = 0.5, direction = 'right' } = options.namedEffect as Poke;
 
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
@@ -60,9 +45,7 @@ export function style(
     intensity,
   );
 
-  const pokeFactor = power
-    ? POWER_TO_POKE_FACTOR_MAP[power]
-    : responsivePokeFactor;
+  const pokeFactor = power ? POWER_TO_POKE_FACTOR_MAP[power] : responsivePokeFactor;
 
   // Create CSS custom properties for the poke configuration
   const custom: Record<string, string | number> = {
@@ -100,14 +83,8 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
-  const timingFactor = getTimingFactor(
-    options.duration!,
-    options.delay!,
-    true,
-  ) as string;
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
+  const timingFactor = getTimingFactor(options.duration!, options.delay!, true) as string;
 
   return [`motion-poke-${timingFactor}`];
 }

@@ -18,12 +18,10 @@ describe('TiltScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
           },
         ],
       },
@@ -61,12 +59,10 @@ describe('TiltScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
           },
         ],
       },
@@ -102,12 +98,10 @@ describe('TiltScroll', () => {
         endOffsetAdd: '0vh',
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
           },
         ],
       },
@@ -145,12 +139,10 @@ describe('TiltScroll', () => {
         endOffsetAdd: '0vh',
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(10deg) rotateY(12.5deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(10deg) rotateY(12.5deg)',
           },
         ],
       },
@@ -184,12 +176,10 @@ describe('TiltScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
           },
         ],
       },
@@ -222,12 +212,10 @@ describe('TiltScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'perspective(400px) translateY(20vh) rotateX(-10deg) rotateY(-25deg)',
+            transform: 'perspective(400px) translateY(20vh) rotateX(-10deg) rotateY(-25deg)',
           },
           {
-            transform:
-              'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
+            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
           },
         ],
       },

@@ -9,10 +9,7 @@ import { getClipPolygonParams, getAdjustedDirection } from '../../utils';
 
 const DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
 
-const OPPOSITE_DIRECTION_MAP: Record<
-  EffectFourDirections,
-  EffectFourDirections
-> = {
+const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
   top: 'bottom',
   bottom: 'top',
   left: 'right',
@@ -21,31 +18,23 @@ const OPPOSITE_DIRECTION_MAP: Record<
 
 const initialClip = getClipPolygonParams({ direction: 'initial' });
 
-function getClipFrom(
-  direction: EffectFourDirections,
-  range: RevealScroll['range'],
-) {
+function getClipFrom(direction: EffectFourDirections, range: RevealScroll['range']) {
   return range === 'out'
     ? initialClip
     : getClipPolygonParams({
         direction: OPPOSITE_DIRECTION_MAP[direction],
       });
 }
-function getClipTo(
-  direction: EffectFourDirections,
-  range: RevealScroll['range'],
-) {
+function getClipTo(direction: EffectFourDirections, range: RevealScroll['range']) {
   return range === 'in'
     ? initialClip
     : getClipPolygonParams({
-        direction:
-          range === 'out' ? OPPOSITE_DIRECTION_MAP[direction] : direction,
+        direction: range === 'out' ? OPPOSITE_DIRECTION_MAP[direction] : direction,
       });
 }
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const { direction = 'bottom', range = 'in' } =
-    options.namedEffect as RevealScroll;
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -60,8 +49,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      const rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
+      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
 
       dom.mutate(() => {
         const adjDirection = getAdjustedDirection(
