@@ -12,8 +12,7 @@ effects: [{
   },
   duration: 400,
   easing: 'ease-out',
-  fill: 'both',
-  composite: 'add'
+  fill: 'both'
 }]`,
   click: `trigger: 'click',
 effects: [
