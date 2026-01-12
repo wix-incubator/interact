@@ -140,7 +140,7 @@ function getScrubScene(
         return null;
       }
 
-      const scene = {
+      const scene: ScrubPointerScene & { _currentProgress: number } = {
         target: undefined,
         centeredToTarget,
         ready: animationGroup.ready,
@@ -159,7 +159,7 @@ function getScrubScene(
         },
       };
 
-      return scene as ScrubPointerScene;
+      return scene;
     }
 
     typeSpecificOptions = {
