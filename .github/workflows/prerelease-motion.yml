@@ -1,4 +1,4 @@
-name: Interact - Bump RC And Publish
+name: Motion - Bump RC And Publish
 
 on:
   workflow_dispatch:
@@ -38,20 +38,14 @@ jobs:
       - name: Build motion package
         run: yarn workspace @wix/motion build
 
-      - name: Build interact package
-        run: yarn workspace @wix/interact build
-
       - name: Test motion package
         run: yarn workspace @wix/motion test
-
-      - name: Test interact package
-        run: yarn workspace @wix/interact test
 
       # ---- BUMP VERSION ----
 
       - name: Bump RC version
         if: ${{ github.event.inputs.dry_run == 'false' }}
-        working-directory: packages/interact
+        working-directory: packages/motion
         run: yarn version prerelease
 
       - name: Commit and push version bump
@@ -60,17 +54,17 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/interact RC version [skip ci]"
+          git commit -m "chore: bump @wix/motion RC version [skip ci]"
           git push --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
-      - name: npm publish @wix/interact (trusted)
+      - name: npm publish @wix/motion (trusted)
         if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
-          cd packages/interact
+          cd packages/motion
           npm publish --tag next --provenance --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
