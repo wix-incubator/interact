@@ -6,4 +6,4 @@ package-lock.json
 *.log
 **/dist/**
 **/build/**
-
+index.html
