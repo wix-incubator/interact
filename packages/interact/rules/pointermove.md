@@ -1270,7 +1270,8 @@ Define two interactions on the same source/target pair—one for `axis: 'x'`, on
 ```
 
 ### When animating the SAME property (e.g. `transform`)
-Use `composite: 'accumulate'` on both effects to merge them (e.g. `scaleX` + `scaleY`).
+
+Use `composite: 'add'` for independent transforms like `scaleX` + `scaleY`:
 
 ```typescript
 effects: {
@@ -1279,12 +1280,33 @@ effects: {
             name: 'sx', 
             keyframes: [{ transform: 'scaleX(0.5)' }, { transform: 'scaleX(1.5)' }] 
         },
-        composite: 'accumulate'
+        composite: 'add'
     },
     'scale-y': {
         keyframeEffect: { 
             name: 'sy', 
             keyframes: [{ transform: 'scaleY(0.5)' }, { transform: 'scaleY(1.5)' }] 
+        },
+        composite: 'add'
+    }
+}
+```
+
+Use `composite: 'accumulate'` when values should add mathematically (e.g. two rotations):
+
+```typescript
+effects: {
+    'rotate-x': {
+        keyframeEffect: { 
+            name: 'rx', 
+            keyframes: [{ transform: 'rotate(-45deg)' }, { transform: 'rotate(45deg)' }] 
+        },
+        composite: 'accumulate'
+    },
+    'rotate-y': {
+        keyframeEffect: { 
+            name: 'ry', 
+            keyframes: [{ transform: 'rotate(-45deg)' }, { transform: 'rotate(45deg)' }] 
         },
         composite: 'accumulate'
     }
@@ -1469,7 +1491,7 @@ Controlling movement direction for specific design needs:
 **When to use `keyframeEffect`**:
 1. When you want single-axis control using the `axis` parameter ('x' or 'y')
 2. For slider-like interactions driven by pointer position along one axis
-3. For 2D control, use two `keyframeEffect` interactions with `composite: 'accumulate'` (see Rule 11)
+3. For 2D control, use two `keyframeEffect` interactions with `composite` (see Rule 11)
 
 ### Performance Guidelines
 
@@ -1645,7 +1667,7 @@ Controlling movement direction for specific design needs:
 | Cursor following            | `namedEffect: { type: 'TrackMouse' }`  | Built-in physics                                     |
 | Horizontal progress control | `keyframeEffect` + `axis: 'x'`         | Maps x position to keyframes                         |
 | Vertical progress control   | `keyframeEffect` + `axis: 'y'`         | Maps y position to keyframes                         |
-| Multi-axis keyframe (X + Y) | Two `keyframeEffect`                   | Use `composite: 'accumulate'` if animating same prop |
+| Multi-axis keyframe (X + Y) | Two `keyframeEffect`                   | Use `composite: 'add'` or `'accumulate'` for same prop |
 | Custom physics              | `customEffect`                         | Full control over calculations                       |
 | Velocity-based effects      | `customEffect`                         | Access to `progress.v`                               |
 | Grid/particle systems       | `customEffect`                         | Can manipulate many elements                         |

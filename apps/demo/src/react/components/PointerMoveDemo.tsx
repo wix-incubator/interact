@@ -50,27 +50,80 @@ export const PointerMoveDemo = () => {
     };
   }, [axis]);
 
-  const compositeConfig = useMemo<InteractConfig>(() => {
+  const compositeAccumulateConfig = useMemo<InteractConfig>(() => {
     return {
       interactions: [
         {
-          key: 'composite-container',
+          key: 'composite-accumulate-container',
           trigger: 'pointerMove',
           params: { hitArea: 'self', axis: 'x' },
           effects: [
             {
-              key: 'composite-ball',
+              key: 'composite-accumulate-ball',
+              effectId: 'rotate-x-effect',
+            },
+          ],
+        },
+        {
+          key: 'composite-accumulate-container',
+          trigger: 'pointerMove',
+          params: { hitArea: 'self', axis: 'y' },
+          effects: [
+            {
+              key: 'composite-accumulate-ball',
+              effectId: 'rotate-y-effect',
+            },
+          ],
+        },
+      ],
+      effects: {
+        'rotate-x-effect': {
+          keyframeEffect: {
+            name: 'rotate-x',
+            keyframes: [
+              { transform: 'rotate(-90deg)' },
+              { transform: 'rotate(90deg)' },
+            ],
+          },
+          fill: 'both',
+          composite: 'accumulate',
+        },
+        'rotate-y-effect': {
+          keyframeEffect: {
+            name: 'rotate-y',
+            keyframes: [
+              { transform: 'rotate(-90deg)' },
+              { transform: 'rotate(90deg)' },
+            ],
+          },
+          fill: 'both',
+          composite: 'accumulate',
+        },
+      },
+    };
+  }, []);
+
+  const compositeAddConfig = useMemo<InteractConfig>(() => {
+    return {
+      interactions: [
+        {
+          key: 'composite-add-container',
+          trigger: 'pointerMove',
+          params: { hitArea: 'self', axis: 'x' },
+          effects: [
+            {
+              key: 'composite-add-ball',
               effectId: 'scale-x-effect',
             },
           ],
         },
         {
-          key: 'composite-container',
+          key: 'composite-add-container',
           trigger: 'pointerMove',
           params: { hitArea: 'self', axis: 'y' },
           effects: [
             {
-              key: 'composite-ball',
+              key: 'composite-add-ball',
               effectId: 'scale-y-effect',
             },
           ],
@@ -86,7 +139,7 @@ export const PointerMoveDemo = () => {
             ],
           },
           fill: 'both',
-          composite: 'accumulate',
+          composite: 'add',
         },
         'scale-y-effect': {
           keyframeEffect: {
@@ -97,14 +150,15 @@ export const PointerMoveDemo = () => {
             ],
           },
           fill: 'both',
-          composite: 'accumulate',
+          composite: 'add',
         },
       },
     };
   }, []);
 
   useInteractInstance(config);
-  useInteractInstance(compositeConfig);
+  useInteractInstance(compositeAccumulateConfig);
+  useInteractInstance(compositeAddConfig);
 
   return (
     <>
@@ -159,24 +213,55 @@ export const PointerMoveDemo = () => {
       </section>
 
       <section className="panel pointer-demo-section">
-        <p className="scroll-label">Composite KeyframeEffect Demo</p>
+        <p className="scroll-label">Composite: accumulate (Rotation)</p>
         <div className="pointer-demo-header">
-          <h3>Composite KeyframeEffect (X + Y)</h3>
+          <h3>composite: 'accumulate'</h3>
           <p className="pointer-demo-description">
-            Two <code>keyframeEffect</code> animations with <code>composite: 'accumulate'</code>.
-            <code>axis: 'x'</code> controls scaleX, <code>axis: 'y'</code> controls scaleY.
+            Both axes control rotation—values add together mathematically.
           </p>
         </div>
 
         <Interaction
           tagName="div"
-          interactKey="composite-container"
+          interactKey="composite-accumulate-container"
           className="pointer-demo-composite-container"
         >
           <Interaction
             tagName="div"
-            interactKey="composite-ball"
+            interactKey="composite-accumulate-ball"
             className="pointer-demo-composite-ball"
+          />
+          <div className="pointer-demo-composite-guide">
+            <span className="guide-x">X → rotate</span>
+            <span className="guide-y">Y ↓ rotate</span>
+          </div>
+        </Interaction>
+
+        <div className="pointer-demo-info">
+          <p>
+            <code>accumulate</code> adds rotation values: move to corner for ±180°.
+          </p>
+        </div>
+      </section>
+
+      <section className="panel pointer-demo-section">
+        <p className="scroll-label">Composite: add (Scale)</p>
+        <div className="pointer-demo-header">
+          <h3>composite: 'add'</h3>
+          <p className="pointer-demo-description">
+            X controls scaleX, Y controls scaleY—transforms compose in sequence.
+          </p>
+        </div>
+
+        <Interaction
+          tagName="div"
+          interactKey="composite-add-container"
+          className="pointer-demo-composite-container"
+        >
+          <Interaction
+            tagName="div"
+            interactKey="composite-add-ball"
+            className="pointer-demo-composite-ball pointer-demo-composite-ball--scale"
           />
           <div className="pointer-demo-composite-guide">
             <span className="guide-x">X → scaleX</span>
@@ -186,8 +271,7 @@ export const PointerMoveDemo = () => {
 
         <div className="pointer-demo-info">
           <p>
-            <strong>Composite Pattern:</strong> Two animations target the same <code>transform</code> property.
-            <code>composite: 'accumulate'</code> allows both animations to contribute to <code>transform</code>.
+            <code>add</code> composes transforms: scaleX and scaleY apply independently.
           </p>
         </div>
       </section>

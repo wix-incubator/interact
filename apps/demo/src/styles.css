@@ -363,8 +363,30 @@ body {
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
-  border-radius: 8px;
+  border-radius: 50%;
   box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+}
+
+.pointer-demo-composite-ball::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 4px;
+  height: 26px;
+  margin-left: -2px;
+  background: #0f172a;
+  border-radius: 2px;
+}
+
+.pointer-demo-composite-ball--scale {
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+.pointer-demo-composite-ball--scale::after {
+  display: none;
 }
 
 .pointer-demo-composite-guide {
