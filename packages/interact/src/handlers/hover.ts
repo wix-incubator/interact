@@ -155,12 +155,24 @@ function addHoverHandler(
     return;
   }
 
+  // Store references to wrapper functions so we can remove them later
+  let focusinListener: ((event: FocusEvent) => void) | undefined;
+  let focusoutListener: ((event: FocusEvent) => void) | undefined;
+
+  if (allowA11yTriggers) {
+    focusinListener = (event: FocusEvent) => {
+      if (!source.contains(event.relatedTarget as HTMLElement)) {
+        handler(event);
+      }
+    };
+  }
+
   const cleanup = () => {
     source.removeEventListener('mouseenter', handler);
     source.removeEventListener('mouseleave', handler);
     if (allowA11yTriggers) {
-      source.removeEventListener('focusin', handler);
-      source.removeEventListener('focusout', handler);
+      if (focusinListener) source.removeEventListener('focusin', focusinListener);
+      if (focusoutListener) source.removeEventListener('focusout', focusoutListener);
     }
   };
 
@@ -169,17 +181,9 @@ function addHoverHandler(
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
-  if (allowA11yTriggers) {
+  if (allowA11yTriggers && focusinListener) {
     source.tabIndex = 0;
-    source.addEventListener(
-      'focusin',
-      (event) => {
-        if (!source.contains(event.relatedTarget as HTMLElement)) {
-          handler(event);
-        }
-      },
-      { once },
-    );
+    source.addEventListener('focusin', focusinListener, { once });
   }
 
   source.addEventListener('mouseenter', handler, { passive: true, once });
@@ -191,15 +195,12 @@ function addHoverHandler(
     source.addEventListener('mouseleave', handler, { passive: true });
 
     if (allowA11yTriggers) {
-      source.addEventListener(
-        'focusout',
-        (event) => {
-          if (!source.contains(event.relatedTarget as HTMLElement)) {
-            handler(event);
-          }
-        },
-        { once },
-      );
+      focusoutListener = (event: FocusEvent) => {
+        if (!source.contains(event.relatedTarget as HTMLElement)) {
+          handler(event);
+        }
+      };
+      source.addEventListener('focusout', focusoutListener, { once });
     }
   }
 }
