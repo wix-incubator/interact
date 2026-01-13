@@ -5,15 +5,18 @@ Practical examples and common interaction patterns for `@wix/interact`. All exam
 ## Quick Start Examples
 
 ### Basic Entrance Animation
+
 ```typescript
 import { Interact } from '@wix/interact';
 
 const config = {
-  interactions: [{
-    trigger: 'viewEnter',
-    key: 'hero',
-    effects: [{ effectId: 'fade-in' }]
-  }],
+  interactions: [
+    {
+      trigger: 'viewEnter',
+      key: 'hero',
+      effects: [{ effectId: 'fade-in' }],
+    },
+  ],
   effects: {
     'fade-in': {
       duration: 1000,
@@ -21,11 +24,11 @@ const config = {
         name: 'fade-in',
         keyframes: [
           { opacity: 0, transform: 'translateY(20px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ]
-      }
-    }
-  }
+          { opacity: 1, transform: 'translateY(0)' },
+        ],
+      },
+    },
+  },
 };
 
 Interact.create(config);
@@ -40,6 +43,7 @@ Interact.create(config);
 ## Example Categories
 
 ### 🎬 **Entrance Animations**
+
 Perfect for landing pages and content reveals.
 
 - [**Fade Animations**](entrance-animations.md#fade) - Opacity transitions
@@ -49,6 +53,7 @@ Perfect for landing pages and content reveals.
 - [**Complex Sequences**](entrance-animations.md#sequences) - Multi-step animations
 
 ### 🖱️ **Click Interactions**
+
 Interactive elements that respond to user clicks.
 
 - [**Button Feedback**](click-interactions.md#buttons) - Visual feedback on press
@@ -57,6 +62,7 @@ Interactive elements that respond to user clicks.
 - [**Action Confirmations**](click-interactions.md#confirmations) - Success states
 
 ### 🎯 **Hover Effects**
+
 Subtle feedback for interactive elements.
 
 - [**Card Hover Effects**](hover-effects.md#cards) - Elevation and highlighting
@@ -65,6 +71,7 @@ Subtle feedback for interactive elements.
 - [**Navigation Hovers**](hover-effects.md#navigation) - Menu interactions
 
 ### 📜 **Scroll Animations**
+
 Effects triggered by scroll position and progress.
 
 - [**Parallax Effects**](scroll-animations.md#parallax) - Background movement
@@ -73,6 +80,7 @@ Effects triggered by scroll position and progress.
 - [**Scroll-driven Timelines**](scroll-animations.md#timelines) - Complex sequences
 
 ### 📱 **Responsive Interactions**
+
 Adaptive animations for different screen sizes.
 
 - [**Mobile-first Animations**](responsive-interactions.md#mobile) - Touch-friendly effects
@@ -81,6 +89,7 @@ Adaptive animations for different screen sizes.
 - [**Container Queries**](responsive-interactions.md#container) - Element-based conditions
 
 ### 📋 **List Patterns**
+
 Comprehensive patterns for lists and dynamic content.
 
 - [**Entrance Animations**](list-patterns.md#entrance-animations) - Fade, slide, scale effects
@@ -95,6 +104,7 @@ Comprehensive patterns for lists and dynamic content.
 ## Advanced Patterns
 
 ### 🔄 **Animation Sequences**
+
 Complex multi-step animations.
 
 - [**Chained Effects**](advanced-patterns.md#chaining) - Sequential animations
@@ -103,6 +113,7 @@ Complex multi-step animations.
 - [**Loop Animations**](advanced-patterns.md#loops) - Repeating effects
 
 ### 🎭 **State Management**
+
 Managing complex interaction states.
 
 - [**Multi-state Elements**](advanced-patterns.md#multi-state) - Multiple effect states
@@ -111,6 +122,7 @@ Managing complex interaction states.
 - [**Persistent States**](advanced-patterns.md#persistent) - Maintaining state
 
 ### 🧩 **Component Patterns**
+
 Reusable interaction components.
 
 - [**Interactive Cards**](component-patterns.md#cards) - Complete card interactions
@@ -121,16 +133,19 @@ Reusable interaction components.
 ## Real-world Examples
 
 ### E-commerce
+
 - [**Product Gallery**](real-world.md#product-gallery) - Image hover and click effects
 - [**Add to Cart**](real-world.md#add-to-cart) - Button feedback and confirmation
 - [**Shopping Cart**](real-world.md#shopping-cart) - Item addition/removal animations
 
 ### Landing Pages
+
 - [**Hero Sections**](real-world.md#hero-sections) - Impressive entrance animations
 - [**Feature Highlights**](real-world.md#features) - Scroll-triggered reveals
 - [**Call-to-Action**](real-world.md#cta) - Engaging button interactions
 
 ### Dashboards
+
 - [**Data Visualization**](real-world.md#data-viz) - Chart and graph animations
 - [**Status Updates**](real-world.md#status) - Real-time feedback effects
 - [**Interactive Tables**](real-world.md#tables) - Row hover and selection
@@ -138,6 +153,7 @@ Reusable interaction components.
 ## Performance Examples
 
 ### Optimized Animations
+
 - [**GPU Acceleration**](performance-examples.md#gpu) - Transform-based animations
 - [**Efficient Selectors**](performance-examples.md#selectors) - Optimal element targeting
 - [**Minimal Reflows**](performance-examples.md#reflows) - Layout-safe animations
@@ -146,15 +162,18 @@ Reusable interaction components.
 ## Code Templates
 
 ### Basic Templates
+
 ```typescript
 // Entrance animation template
 const entranceConfig = {
-  interactions: [{
-    trigger: 'viewEnter',
-    key: 'element',
-    params: { type: 'once', threshold: 0.1 },
-    effects: [{ effectId: 'entrance-effect' }]
-  }],
+  interactions: [
+    {
+      trigger: 'viewEnter',
+      key: 'element',
+      params: { type: 'once', threshold: 0.1 },
+      effects: [{ effectId: 'entrance-effect' }],
+    },
+  ],
   effects: {
     'entrance-effect': {
       duration: 800,
@@ -163,19 +182,21 @@ const entranceConfig = {
         name: 'entrance-effect', // Put your effect's name here
         keyframes: [
           // Add your keyframes here
-        ]
-      }
-    }
-  }
+        ],
+      },
+    },
+  },
 };
 
 // Hover interaction template
 const hoverConfig = {
-  interactions: [{
-    trigger: 'hover',
-    key: 'element',
-    effects: [{ effectId: 'hover-effect' }]
-  }],
+  interactions: [
+    {
+      trigger: 'hover',
+      key: 'element',
+      effects: [{ effectId: 'hover-effect' }],
+    },
+  ],
   effects: {
     'hover-effect': {
       duration: 200,
@@ -183,21 +204,23 @@ const hoverConfig = {
         name: 'hover-effect', // Put your effect's name here
         keyframes: [
           // Add your hover keyframes here
-        ]
-      }
-    }
-  }
+        ],
+      },
+    },
+  },
 };
 ```
 
 ## Testing Examples
 
 ### Unit Tests
+
 - [**Testing Configurations**](testing-examples.md#config) - Validate interaction setup
 - [**Mock Animations**](testing-examples.md#mocks) - Testing without real animations
 - [**State Assertions**](testing-examples.md#state) - Verify effect states
 
 ### Integration Tests
+
 - [**End-to-end Tests**](testing-examples.md#e2e) - Full interaction testing
 - [**Performance Tests**](testing-examples.md#performance) - Animation performance
 - [**Accessibility Tests**](testing-examples.md#a11y) - Inclusive interaction testing

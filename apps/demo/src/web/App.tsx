@@ -14,7 +14,9 @@ function App() {
   return (
     <div className="demo-shell">
       <header className="demo-hero">
-        <a href="/" className="back-link">← Back to integrations</a>
+        <a href="/" className="back-link">
+          ← Back to integrations
+        </a>
         <span className="integration-badge integration-badge--web">Web Integration</span>
         <h1 className="demo-hero-title">Experiment faster</h1>
         <p className="demo-hero-body">
@@ -44,4 +46,3 @@ function App() {
 }
 
 export default App;
-

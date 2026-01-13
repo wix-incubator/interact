@@ -23,8 +23,7 @@ describe('FloatIn', () => {
           {
             offset: 0.000001,
             opacity: 0,
-            transform:
-              'translate(-120px, 0px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(-120px, 0px) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',
@@ -56,8 +55,7 @@ describe('FloatIn', () => {
           {
             offset: 0.000001,
             opacity: 0,
-            transform:
-              'translate(0px, -120px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0px, -120px) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',

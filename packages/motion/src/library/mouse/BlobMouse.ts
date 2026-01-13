@@ -9,10 +9,7 @@ import {
   ScrubTransitionEasing,
 } from '../../types';
 
-const paramsMap: Record<
-  EffectPower,
-  { scale: number; easing: ScrubTransitionEasing }
-> = {
+const paramsMap: Record<EffectPower, { scale: number; easing: ScrubTransitionEasing }> = {
   soft: { scale: 1.2, easing: 'easeOut' },
   medium: { scale: 1.6, easing: 'easeOut' },
   hard: { scale: 2.4, easing: 'easeOut' },
@@ -21,10 +18,8 @@ const paramsMap: Record<
 class BlobMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { distance, scale, invert } = this.options;
-    const translateX =
-      mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
-    const translateY =
-      mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+    const translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+    const translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
 
     // if progressX === 0 || progressX === 1, scaleX === scale, if progressX === 0.5, scaleX === 1
     const scaleX =
@@ -49,9 +44,7 @@ class BlobMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -71,6 +64,5 @@ export default function create(
     scale: power ? paramsMap[power].scale : scale,
   };
 
-  return (target: HTMLElement) =>
-    new BlobMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new BlobMouseAnimation(target, animationOptions);
 }

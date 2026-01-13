@@ -24,7 +24,7 @@ const config = {
   ],
   effects: {
     // ...
-  }
+  },
 };
 
 // Initialize the interact instance
@@ -34,10 +34,12 @@ const interact = Interact.create(config);
 #### 2. HTML Setup
 
 **Rules:**
+
 - MUST have a `data-interact-key` attribute with a value that is unique within the scope.
 - MUST contain at least one child element.
 
 **Usage:**
+
 ```html
 <!-- Wrap your target element with interact-element -->
 <interact-element data-interact-key="my-element">
@@ -50,6 +52,7 @@ const interact = Interact.create(config);
 #### 1. Basic Setup
 
 **Usage:**
+
 ```typescript
 import { Interact } from '@wix/interact/react';
 
@@ -60,7 +63,7 @@ const config = {
   ],
   effects: {
     // ...
-  }
+  },
 };
 
 // Initialize the interact instance
@@ -70,11 +73,13 @@ const interact = Interact.create(config);
 #### 2. HTML Setup
 
 **Rules:**
+
 - MUST replace the element itself with the `<Interaction/>` component.
 - MUST set the `tagName` prop with the tag of the replaced element.
 - MUST set the `interactKey` prop to a unique string within the scope.
 
 **Usage:**
+
 ```tsx
 import { Interaction } from '@wix/interact/react';
 
@@ -93,13 +98,14 @@ The `InteractConfig` object defines the behavior.
 
 ```typescript
 type InteractConfig = {
-  interactions: Interaction[];          // Required: Array of interaction definitions
-  effects?: Record<string, Effect>;     // Optional: Reusable named effects
+  interactions: Interaction[]; // Required: Array of interaction definitions
+  effects?: Record<string, Effect>; // Optional: Reusable named effects
   conditions?: Record<string, Condition>; // Optional: Reusable conditions (media queries)
 };
 ```
 
 ### Interaction Definition
+
 ```typescript
 {
   key: 'element-key',       // Matches data-interact-key
@@ -113,6 +119,7 @@ type InteractConfig = {
 ```
 
 ### Element Selection Hierarchy
+
 1. **`listContainer`**: If present, selects a container to target its immediate children as list items.
 2. **`selector`**: Matches elements within the root, or within each list item.
 3. **Fallback**: If neither is provided, targets the **first child** of `<interact-element>` in `web` or the root element in `react`.
@@ -120,17 +127,22 @@ type InteractConfig = {
 ## 4. Generating Critical CSS for Entrance Animations
 
 ### `generate(config)`
+
 Generates critical CSS styles that prevent flash-of-unstyled-content (FOUC) for elements with `viewEnter` entrance animations.
 
 **Rules:**
+
 - MUST be called server-side or at build time to generate static CSS.
 - MUST set `data-interact-initial="true"` on elements that have an entrance effect.
 
 **Usage:**
+
 ```javascript
 import { generate } from '@wix/interact/web';
 
-const config = {/*...*/};
+const config = {
+  /*...*/
+};
 
 // Generate CSS at build time or on server
 const css = generate(config);
@@ -155,29 +167,32 @@ const html = `
 ```
 
 **When to Use:**
+
 - For elements with an entrance efffect that is triggered a with `viewEnter`
 - To prevent elements from being visible before their entrance animation plays
 - For server-side rendering (SSR) or static site generation (SSG) scenarios
 
 ## 5. Triggers & Behaviors
 
-| Trigger | Description | Key Parameters | Rules File |
-| :--- | :--- | :--- | :--- |
-| `hover` | Mouse enter/leave | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./hover.md` |
-| `click` | Mouse click | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./click.md` |
-| `viewEnter` | Element enters viewport | `type`: 'once', 'alternate', 'repeat', 'state'; `threshold` (0-1) | `./viewEnter.md` |
-| `viewProgress` | Scroll-driven using ViewTimeline | (No specific params, uses effect ranges) | `./viewprogress.md` |
-| `pointerMove` | Mouse movement | `hitArea`: 'self' (default) or 'root' | `./pointermove.md` |
-| `animationEnd` | Chaining animations | `effectId`: ID of the previous effect | -- |
+| Trigger        | Description                      | Key Parameters                                                                                                            | Rules File          |
+| :------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------ |
+| `hover`        | Mouse enter/leave                | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./hover.md`        |
+| `click`        | Mouse click                      | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./click.md`        |
+| `viewEnter`    | Element enters viewport          | `type`: 'once', 'alternate', 'repeat', 'state'; `threshold` (0-1)                                                         | `./viewEnter.md`    |
+| `viewProgress` | Scroll-driven using ViewTimeline | (No specific params, uses effect ranges)                                                                                  | `./viewprogress.md` |
+| `pointerMove`  | Mouse movement                   | `hitArea`: 'self' (default) or 'root'                                                                                     | `./pointermove.md`  |
+| `animationEnd` | Chaining animations              | `effectId`: ID of the previous effect                                                                                     | --                  |
 
 ## 6. Effects & Animations
 
-Effects define *what* happens. They can be inline or referenced by ID.
+Effects define _what_ happens. They can be inline or referenced by ID.
 
 ### Effect Types
 
 #### 1. Named Effects (Pre-built)
+
 Use Motion effect presets for consistency.
+
 ```typescript
 {
   namedEffect: { type: 'FadeIn' },
@@ -187,7 +202,9 @@ Use Motion effect presets for consistency.
 ```
 
 #### 2. Keyframe Effects (Custom)
+
 Define explicit Web Animations API-like keyframes.
+
 ```typescript
 {
   keyframeEffect: {
@@ -202,7 +219,9 @@ Define explicit Web Animations API-like keyframes.
 ```
 
 #### 3. Transition Effects
+
 Smoothly transition CSS properties.
+
 ```typescript
 {
   transition: {
@@ -213,7 +232,9 @@ Smoothly transition CSS properties.
 ```
 
 #### 4. Scroll Effects
+
 Used with `viewProgress`, linked to scroll progress while element is inside viewport.
+
 ```typescript
 {
   keyframeEffect: { ... },
@@ -224,7 +245,9 @@ Used with `viewProgress`, linked to scroll progress while element is inside view
 ```
 
 #### 5. Mouse Effects
+
 Used with `pointerMove`, linked to mouse progress while moving over an element.
+
 ```typescript
 {
   namedEffect: { type: 'Track3DMouse' },
@@ -233,12 +256,14 @@ Used with `pointerMove`, linked to mouse progress while moving over an element.
 ```
 
 ### Targeting
+
 - **Self**: Omit `key` in the effect to target the trigger element. If using `selector` for trigger, also specify it again for the effect target.
 - **Cross-Targeting**: Specify a different `key` and/or `selector` in the effect to animate a different element.
 
 ## 7. Examples
 
 ### Basic Hover (Scale)
+
 ```typescript
 const config = {
   effects: {
@@ -249,55 +274,66 @@ const config = {
           value: 'scale(1.1)',
           duration: 300,
           delay: 100,
-          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-        }
-      ]
-    }
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        },
+      ],
+    },
   },
-  interactions: [{
-    key: 'btn',
-    trigger: 'hover',
-    effects: [{
-      effectId: 'scaleUp'
-    }]
-  }]
+  interactions: [
+    {
+      key: 'btn',
+      trigger: 'hover',
+      effects: [
+        {
+          effectId: 'scaleUp',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ### Viewport Entrance
+
 ```typescript
 const config = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    params: { type: 'once', threshold: 0.2 },
-    effects: [{
-      namedEffect: { type: 'FadeIn' },
-      duration: 800
-    }]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' },
+          duration: 800,
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ### Interactive Toggle (Click)
+
 ```typescript
 const config = {
-  interactions: [{
-    key: 'menu-btn',
-    trigger: 'click',
-    params: { type: 'alternate' },
-    effects: [{
-      key: 'menu-content',
-      effectId: 'menu-open', // Creates state 'menu-open'
-      keyframeEffect: {
-        name: 'slide',
-        keyframes: [
-          { transform: 'translateX(-100%)' },
-          { transform: 'translateX(0)' }
-        ]
-      },
-      duration: 300
-    }]
-  }]
+  interactions: [
+    {
+      key: 'menu-btn',
+      trigger: 'click',
+      params: { type: 'alternate' },
+      effects: [
+        {
+          key: 'menu-content',
+          effectId: 'menu-open', // Creates state 'menu-open'
+          keyframeEffect: {
+            name: 'slide',
+            keyframes: [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }],
+          },
+          duration: 300,
+        },
+      ],
+    },
+  ],
 };
 ```

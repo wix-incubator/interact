@@ -7,6 +7,7 @@ Entrance animations bring elements into view with impact and style. Perfect for 
 Entrance animations are **time-based** animations designed to reveal content with visual impact. They typically run once when triggered and range from 300-1500ms in duration. All entrance animations start with elements in a hidden or transformed state and animate them to their final visible position.
 
 ### Key Characteristics
+
 - **Purpose**: Element reveals and transitions
 - **Duration**: 300-1500ms (configurable)
 - **Trigger**: Manual, intersection observer, or page load
@@ -16,69 +17,76 @@ Entrance animations are **time-based** animations designed to reveal content wit
 ## Animation Categories
 
 ### 🌟 **Fade & Opacity**
+
 Simple opacity-based reveals for subtle entrances.
 
-### 🎯 **Directional Movement** 
+### 🎯 **Directional Movement**
+
 Elements slide, glide, or float in from specific directions.
 
 ### 🔄 **3D Transforms**
+
 Sophisticated perspective-based animations with rotation and depth.
 
 ### ⚡ **Dynamic & Bouncy**
+
 Spring-based animations with elastic movement and bouncing.
 
 ### 🎨 **Shape & Clip**
+
 Creative reveals using clip-path and shape morphing.
 
 ## Complete Preset Reference
 
-| Animation | Category | Complexity | Power Levels | Directions | Description |
-|-----------|----------|------------|--------------|------------|-------------|
-| **FadeIn** | Fade | Simple | - | - | Clean opacity transition |
-| **ArcIn** | 3D | Complex | ✓ | 4-way | Curved motion with 3D rotation |
-| **BounceIn** | Dynamic | Medium | ✓ | 5-way + center | Spring-based entrance with bounce |
-| **SlideIn** | Movement | Medium | ✓ | 4-way | Slide from edge with clip reveal |
-| **GlideIn** | Movement | Medium | ✓ | 360° | Smooth directional movement |
-| **FlipIn** | 3D | Medium | ✓ | 4-way | 3D flip rotation entrance |
-| **DropIn** | Dynamic | Simple | ✓ | - | Scale-based drop with easing |
-| **ExpandIn** | Dynamic | Medium | ✓ | 9-way | Scale from specific origin points |
-| **FloatIn** | Movement | Simple | - | 4-way | Gentle floating movement |
-| **SpinIn** | Dynamic | Medium | ✓ | 2-way | Rotation with scale entrance |
-| **FoldIn** | 3D | Complex | ✓ | 4-way | 3D fold with perspective |
-| **TurnIn** | 3D | Complex | ✓ | 4-corner | Complex 3D corner rotation |
-| **CircleIn** | Movement | Complex | - | 2-way | Circular arc movement |
-| **CurveIn** | 3D | Complex | - | 4-way | Curved 3D perspective entrance |
-| **PunchIn** | Dynamic | Complex | ✓ | 5-way | Multi-stage bouncing animation |
-| **RevealIn** | Clip | Medium | - | 4-way | Clean clip-path reveal |
-| **SlideIn** | Clip | Medium | ✓ | 4-way | Combined slide and clip |
-| **TiltIn** | 3D | Complex | - | 2-way | 3D tilt with clip reveal |
-| **WinkIn** | Clip | Medium | - | 2-way | Accordion-style reveal |
-| **ShapeIn** | Clip | Medium | - | 5 shapes | Morphing shape reveals |
-| **ShuttersIn** | Clip | Complex | ✓ | 4-way | Multi-segment shutter effect |
-| **GrowIn** | Movement | Medium | ✓ | 360° | Directional scale growth |
-| **BlurIn** | Filter | Simple | ✓ | - | Blur-to-focus transition |
-| **GlitchIn** | Movement | Medium | ✓ | 360° | Modified glide with glitch feel |
+| Animation      | Category | Complexity | Power Levels | Directions     | Description                       |
+| -------------- | -------- | ---------- | ------------ | -------------- | --------------------------------- |
+| **FadeIn**     | Fade     | Simple     | -            | -              | Clean opacity transition          |
+| **ArcIn**      | 3D       | Complex    | ✓            | 4-way          | Curved motion with 3D rotation    |
+| **BounceIn**   | Dynamic  | Medium     | ✓            | 5-way + center | Spring-based entrance with bounce |
+| **SlideIn**    | Movement | Medium     | ✓            | 4-way          | Slide from edge with clip reveal  |
+| **GlideIn**    | Movement | Medium     | ✓            | 360°           | Smooth directional movement       |
+| **FlipIn**     | 3D       | Medium     | ✓            | 4-way          | 3D flip rotation entrance         |
+| **DropIn**     | Dynamic  | Simple     | ✓            | -              | Scale-based drop with easing      |
+| **ExpandIn**   | Dynamic  | Medium     | ✓            | 9-way          | Scale from specific origin points |
+| **FloatIn**    | Movement | Simple     | -            | 4-way          | Gentle floating movement          |
+| **SpinIn**     | Dynamic  | Medium     | ✓            | 2-way          | Rotation with scale entrance      |
+| **FoldIn**     | 3D       | Complex    | ✓            | 4-way          | 3D fold with perspective          |
+| **TurnIn**     | 3D       | Complex    | ✓            | 4-corner       | Complex 3D corner rotation        |
+| **CircleIn**   | Movement | Complex    | -            | 2-way          | Circular arc movement             |
+| **CurveIn**    | 3D       | Complex    | -            | 4-way          | Curved 3D perspective entrance    |
+| **PunchIn**    | Dynamic  | Complex    | ✓            | 5-way          | Multi-stage bouncing animation    |
+| **RevealIn**   | Clip     | Medium     | -            | 4-way          | Clean clip-path reveal            |
+| **SlideIn**    | Clip     | Medium     | ✓            | 4-way          | Combined slide and clip           |
+| **TiltIn**     | 3D       | Complex    | -            | 2-way          | 3D tilt with clip reveal          |
+| **WinkIn**     | Clip     | Medium     | -            | 2-way          | Accordion-style reveal            |
+| **ShapeIn**    | Clip     | Medium     | -            | 5 shapes       | Morphing shape reveals            |
+| **ShuttersIn** | Clip     | Complex    | ✓            | 4-way          | Multi-segment shutter effect      |
+| **GrowIn**     | Movement | Medium     | ✓            | 360°           | Directional scale growth          |
+| **BlurIn**     | Filter   | Simple     | ✓            | -              | Blur-to-focus transition          |
+| **GlitchIn**   | Movement | Medium     | ✓            | 360°           | Modified glide with glitch feel   |
 
 ## Configuration Patterns
 
 ### Basic Usage
+
 ```typescript
 const animation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
   duration: 800,
-  easing: 'easeOut'
+  easing: 'easeOut',
 });
 ```
 
 ### Power Levels
+
 Many entrance animations support power intensity levels:
 
 ```typescript
 // Soft - Subtle, 10-30% intensity
 { type: 'BounceIn', power: 'soft' }
 
-// Medium - Balanced, 50-70% intensity  
+// Medium - Balanced, 50-70% intensity
 { type: 'BounceIn', power: 'medium' }
 
 // Hard - Dramatic, 80-100% intensity
@@ -86,6 +94,7 @@ Many entrance animations support power intensity levels:
 ```
 
 ### Directional Controls
+
 Animations with directional support:
 
 ```typescript
@@ -103,12 +112,13 @@ Animations with directional support:
 ```
 
 ### Custom Parameters
+
 Fine-tune animations with specific parameters:
 
 ```typescript
 // Distance control
-{ 
-  type: 'GlideIn', 
+{
+  type: 'GlideIn',
   direction: 270,
   distance: { value: 100, type: 'px' },
   startFromOffScreen: true
@@ -140,7 +150,9 @@ Fine-tune animations with specific parameters:
 ### 🌟 Simple Fades
 
 #### FadeIn
+
 **Best for**: Subtle content reveals, overlays, modals
+
 ```typescript
 {
   type: 'FadeIn',
@@ -148,8 +160,10 @@ Fine-tune animations with specific parameters:
 }
 ```
 
-#### BlurIn  
+#### BlurIn
+
 **Best for**: Focus transitions, image reveals
+
 ```typescript
 {
   type: 'BlurIn',
@@ -161,7 +175,9 @@ Fine-tune animations with specific parameters:
 ### 🎯 Directional Movement
 
 #### SlideIn
+
 **Best for**: Navigation, panels, content blocks
+
 ```typescript
 {
   type: 'SlideIn',
@@ -172,7 +188,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### GlideIn
+
 **Best for**: Hero elements, cards, flexible directional reveals
+
 ```typescript
 {
   type: 'GlideIn',
@@ -184,7 +202,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### FloatIn
+
 **Best for**: Lightweight content, tooltips, notifications
+
 ```typescript
 {
   type: 'FloatIn',
@@ -196,7 +216,9 @@ Fine-tune animations with specific parameters:
 ### 🔄 3D Transforms
 
 #### ArcIn
+
 **Best for**: Hero content, featured elements, dramatic reveals
+
 ```typescript
 {
   type: 'ArcIn',
@@ -206,7 +228,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### FlipIn
+
 **Best for**: Cards, panels, interactive elements
+
 ```typescript
 {
   type: 'FlipIn',
@@ -217,7 +241,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### FoldIn
+
 **Best for**: Paper-like elements, creative reveals
+
 ```typescript
 {
   type: 'FoldIn',
@@ -230,7 +256,9 @@ Fine-tune animations with specific parameters:
 ### ⚡ Dynamic & Bouncy
 
 #### BounceIn
+
 **Best for**: Buttons, icons, playful elements
+
 ```typescript
 {
   type: 'BounceIn',
@@ -241,7 +269,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### DropIn
+
 **Best for**: Modals, dropdowns, floating elements
+
 ```typescript
 {
   type: 'DropIn',
@@ -251,7 +281,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### PunchIn
+
 **Best for**: Attention-grabbing elements, call-to-actions
+
 ```typescript
 {
   type: 'PunchIn',
@@ -263,7 +295,9 @@ Fine-tune animations with specific parameters:
 ### 🎨 Shape & Clip Effects
 
 #### ShapeIn
+
 **Best for**: Creative reveals, masked content, artistic elements
+
 ```typescript
 {
   type: 'ShapeIn',
@@ -272,7 +306,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### RevealIn
+
 **Best for**: Content blocks, images, clean reveals
+
 ```typescript
 {
   type: 'RevealIn',
@@ -281,7 +317,9 @@ Fine-tune animations with specific parameters:
 ```
 
 #### ShuttersIn
+
 **Best for**: Dynamic reveals, segmented content
+
 ```typescript
 {
   type: 'ShuttersIn',
@@ -295,29 +333,32 @@ Fine-tune animations with specific parameters:
 ## Timing and Easing
 
 ### Recommended Durations
+
 - **Quick reveals**: 300-500ms (FadeIn, BlurIn)
 - **Standard entrances**: 600-900ms (SlideIn, GlideIn, DropIn)
 - **Complex 3D**: 800-1200ms (ArcIn, FlipIn, FoldIn)
 - **Bouncy effects**: 1000-1500ms (BounceIn, PunchIn)
 
 ### Easing Recommendations
+
 ```typescript
 // Smooth and natural
-easing: 'easeOutQuart'    // Quick start, slow end
+easing: 'easeOutQuart'; // Quick start, slow end
 
-// Bouncy and playful  
-easing: 'backOut'         // Overshoot effect
+// Bouncy and playful
+easing: 'backOut'; // Overshoot effect
 
 // Dramatic and strong
-easing: 'elasticOut'      // Spring effect
+easing: 'elasticOut'; // Spring effect
 
 // Clean and linear
-easing: 'cubicInOut'      // Balanced acceleration
+easing: 'cubicInOut'; // Balanced acceleration
 ```
 
 ## Performance Tips
 
 ### Batch Multiple Entrances
+
 ```typescript
 // Staggered entrance sequence
 const elements = document.querySelectorAll('.reveal-item');
@@ -326,13 +367,14 @@ elements.forEach((el, index) => {
     type: 'TimeAnimationOptions',
     namedEffect: { type: 'SlideIn', direction: 'bottom' },
     duration: 600,
-    delay: index * 100  // 100ms stagger
+    delay: index * 100, // 100ms stagger
   });
   animation.play();
 });
 ```
 
 ### CSS Mode for Simple Effects
+
 ```typescript
 // Use CSS animations for better mobile performance
 import { getCSSAnimation } from '@wix/motion';
@@ -340,52 +382,55 @@ import { getCSSAnimation } from '@wix/motion';
 const cssRules = getCSSAnimation('elementId', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
-  duration: 500
+  duration: 500,
 });
 ```
 
 ## Common Patterns
 
 ### Modal Entrance
+
 ```typescript
 const modalAnimation = getWebAnimation(modal, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'DropIn',
-    power: 'medium'
+    power: 'medium',
   },
   duration: 400,
-  easing: 'backOut'
+  easing: 'backOut',
 });
 ```
 
 ### Hero Section Reveal
+
 ```typescript
 const heroAnimation = getWebAnimation(heroElement, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'ArcIn',
     direction: 'bottom',
-    power: 'hard'
+    power: 'hard',
   },
   duration: 1200,
-  easing: 'quintOut'
+  easing: 'quintOut',
 });
 ```
 
 ### Card Grid Stagger
+
 ```typescript
 document.querySelectorAll('.card').forEach((card, i) => {
   getWebAnimation(card, {
     type: 'TimeAnimationOptions',
-    namedEffect: { 
+    namedEffect: {
       type: 'GlideIn',
       direction: 45,
-      distance: { value: 100, type: 'px' }
+      distance: { value: 100, type: 'px' },
     },
     duration: 800,
     delay: i * 150,
-    easing: 'cubicOut'
+    easing: 'cubicOut',
   }).play();
 });
 ```
@@ -393,6 +438,7 @@ document.querySelectorAll('.card').forEach((card, i) => {
 ## Accessibility Considerations
 
 ### Respect Motion Preferences
+
 ```typescript
 const respectsReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -401,6 +447,7 @@ const animationType = respectsReducedMotion ? 'FadeIn' : 'BounceIn';
 ```
 
 ### Focus Management
+
 ```typescript
 // Ensure focus is visible after animation
 await animation.play();

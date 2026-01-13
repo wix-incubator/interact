@@ -12,17 +12,20 @@
 **Mobile Friendly**: [Yes/No/With Optimization]
 
 ### Best Use Cases
+
 - [Primary use case]
 - [Secondary use case]
 - [Third use case]
 
 ### Target Elements
+
 - [Type of elements this works best with]
 - [Recommended containers/layouts]
 
 ## Configuration
 
 ### TypeScript Interface
+
 ```typescript
 export type [AnimationName] = BaseDataItemLike<'[AnimationName]'> & {
   [property]: [type]; // [description]
@@ -32,17 +35,19 @@ export type [AnimationName] = BaseDataItemLike<'[AnimationName]'> & {
 
 ### Parameters
 
-| Parameter | Type | Default | Description | Examples |
-|-----------|------|---------|-------------|----------|
+| Parameter  | Type     | Default     | Description   | Examples           |
+| ---------- | -------- | ----------- | ------------- | ------------------ |
 | `[param1]` | `[type]` | `[default]` | [Description] | `[example values]` |
 | `[param2]` | `[type]` | `[default]` | [Description] | `[example values]` |
 
 ### Power Levels (if applicable)
+
 - **`soft`** - [Description of soft power level]
-- **`medium`** - [Description of medium power level]  
+- **`medium`** - [Description of medium power level]
 - **`hard`** - [Description of hard power level]
 
 ### Directional Support (if applicable)
+
 - **Four directions**: `top`, `right`, `bottom`, `left`
 - **Eight directions**: Includes corners like `top-right`, `bottom-left`
 - **Angles**: Numeric degrees (0° = up, 90° = right, etc.)
@@ -50,81 +55,95 @@ export type [AnimationName] = BaseDataItemLike<'[AnimationName]'> & {
 ## Usage Examples
 
 ### Basic Usage
+
 ```typescript
 import { getWebAnimation } from '@wix/motion';
 
 const animation = getWebAnimation(element, {
   type: '[TimeAnimationOptions/ScrubAnimationOptions]',
-  namedEffect: { 
-    type: '[AnimationName]'
+  namedEffect: {
+    type: '[AnimationName]',
     // Basic configuration
   },
   duration: 1000, // For time-based animations
-  easing: 'easeOut'
+  easing: 'easeOut',
 });
 
 await animation.play();
 ```
 
 ### Advanced Configuration
+
 ```typescript
 const advancedAnimation = getWebAnimation(element, {
   type: '[TimeAnimationOptions/ScrubAnimationOptions]',
-  namedEffect: { 
+  namedEffect: {
     type: '[AnimationName]',
     [param1]: [value],
-    [param2]: [value]
+    [param2]: [value],
   },
   duration: 1200,
   delay: 200,
-  easing: 'backOut'
+  easing: 'backOut',
 });
 ```
 
 ### CSS Mode (if supported)
+
 ```typescript
 import { getCSSAnimation } from '@wix/motion';
 
 const cssRules = getCSSAnimation('elementId', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: '[AnimationName]' },
-  duration: 800
+  duration: 800,
 });
 
 // Insert CSS rules into stylesheet
 ```
 
 ### Scroll Animation (if applicable)
+
 ```typescript
-const animation = getWebAnimation(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: '[AnimationName]',
-    [scrollSpecificParams]: [values]
-  }
-}, {
-  trigger: 'view-progress',
-  element
-});
+const animation = getWebAnimation(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: '[AnimationName]',
+      [scrollSpecificParams]: [values],
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element,
+  },
+);
 ```
 
 ### Mouse Animation (if applicable)
+
 ```typescript
-const mouseAnimation = getWebAnimation(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: '[AnimationName]',
-    [mouseSpecificParams]: [values]
-  }
-}, {
-  trigger: 'pointer-move',
-  element: containerElement
-});
+const mouseAnimation = getWebAnimation(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: '[AnimationName]',
+      [mouseSpecificParams]: [values],
+    },
+  },
+  {
+    trigger: 'pointer-move',
+    element: containerElement,
+  },
+);
 ```
 
 ## Common Patterns
 
 ### [Pattern Name 1]
+
 ```typescript
 // [Description of when to use this pattern]
 const [patternExample] = getWebAnimation(element, {
@@ -133,6 +152,7 @@ const [patternExample] = getWebAnimation(element, {
 ```
 
 ### [Pattern Name 2]
+
 ```typescript
 // [Description of when to use this pattern]
 const [patternExample] = getWebAnimation(element, {
@@ -141,6 +161,7 @@ const [patternExample] = getWebAnimation(element, {
 ```
 
 ### Staggered Animation (if applicable)
+
 ```typescript
 // [Description of staggering approach]
 elements.forEach((el, index) => {
@@ -148,7 +169,7 @@ elements.forEach((el, index) => {
     type: 'TimeAnimationOptions',
     namedEffect: { type: '[AnimationName]' },
     duration: 600,
-    delay: index * 100 // 100ms stagger
+    delay: index * 100, // 100ms stagger
   });
   animation.play();
 });
@@ -157,27 +178,28 @@ elements.forEach((el, index) => {
 ## Framework Integration
 
 ### React
+
 ```typescript
 import React, { useEffect, useRef } from 'react';
 import { getWebAnimation } from '@wix/motion';
 
 function Animated[Component]({ children }) {
   const elementRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     if (!elementRef.current) return;
-    
+
     const animation = getWebAnimation(elementRef.current, {
       type: 'TimeAnimationOptions',
       namedEffect: { type: '[AnimationName]' },
       duration: 800
     });
-    
+
     animation.play();
-    
+
     return () => animation.cancel();
   }, []);
-  
+
   return (
     <div ref={elementRef}>
       {children}
@@ -187,6 +209,7 @@ function Animated[Component]({ children }) {
 ```
 
 ### Vue
+
 ```vue
 <template>
   <div ref="element">
@@ -202,12 +225,12 @@ export default {
     const animation = getWebAnimation(this.$refs.element, {
       type: 'TimeAnimationOptions',
       namedEffect: { type: '[AnimationName]' },
-      duration: 800
+      duration: 800,
     });
-    
+
     animation.play();
-  }
-}
+  },
+};
 </script>
 ```
 
@@ -218,6 +241,7 @@ export default {
 - [Performance tip 3]
 
 ### Mobile Optimization
+
 - [Mobile-specific optimization]
 - [Reduced motion alternative]
 - [Battery-conscious approach]
@@ -225,10 +249,9 @@ export default {
 ## Accessibility
 
 ### Reduced Motion Support
+
 ```typescript
-const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReducedMotion) {
   // Alternative approach or disabled animation
@@ -238,20 +261,24 @@ if (prefersReducedMotion) {
 ```
 
 ### Focus Management (if applicable)
+
 - [Guidelines for maintaining focus]
 - [Screen reader considerations]
 
 ## Related Animations
 
 ### Same Category
+
 - **[Related Animation 1]** - [Brief comparison]
 - **[Related Animation 2]** - [Brief comparison]
 
 ### Other Categories
+
 - **[Cross-category Animation 1]** - [When to use instead]
 - **[Cross-category Animation 2]** - [How to combine]
 
 ### Complementary Effects
+
 - **[Animation that works well before this]**
 - **[Animation that works well after this]**
 - **[Animation that works well alongside this]**
@@ -259,11 +286,13 @@ if (prefersReducedMotion) {
 ## Troubleshooting
 
 ### Common Issues
+
 - **[Issue 1]**: [Solution]
 - **[Issue 2]**: [Solution]
 - **[Issue 3]**: [Solution]
 
 ### Debug Tips
+
 - [Debug tip 1]
 - [Debug tip 2]
 

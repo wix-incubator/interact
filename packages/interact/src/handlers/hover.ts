@@ -155,12 +155,24 @@ function addHoverHandler(
     return;
   }
 
+  const focusinListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
+
+  const focusoutListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
+
   const cleanup = () => {
     source.removeEventListener('mouseenter', handler);
     source.removeEventListener('mouseleave', handler);
     if (allowA11yTriggers) {
-      source.removeEventListener('focusin', handler);
-      source.removeEventListener('focusout', handler);
+      source.removeEventListener('focusin', focusinListener);
+      source.removeEventListener('focusout', focusoutListener);
     }
   };
 
@@ -171,15 +183,7 @@ function addHoverHandler(
 
   if (allowA11yTriggers) {
     source.tabIndex = 0;
-    source.addEventListener(
-      'focusin',
-      (event) => {
-        if (!source.contains(event.relatedTarget as HTMLElement)) {
-          handler(event);
-        }
-      },
-      { once },
-    );
+    source.addEventListener('focusin', focusinListener, { once });
   }
 
   source.addEventListener('mouseenter', handler, { passive: true, once });
@@ -191,15 +195,7 @@ function addHoverHandler(
     source.addEventListener('mouseleave', handler, { passive: true });
 
     if (allowA11yTriggers) {
-      source.addEventListener(
-        'focusout',
-        (event) => {
-          if (!source.contains(event.relatedTarget as HTMLElement)) {
-            handler(event);
-          }
-        },
-        { once },
-      );
+      source.addEventListener('focusout', focusoutListener, { once });
     }
   }
 }

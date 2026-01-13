@@ -47,7 +47,7 @@ document.adoptedStyleSheets.push(sheet);
 // ✅ Interactive animations requiring control
 const interactiveAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { type: 'BounceIn', power: 'medium' }
+  namedEffect: { type: 'BounceIn', power: 'medium' },
 });
 
 // Control based on user interaction
@@ -67,7 +67,7 @@ if (performance.now() - lastFrame > 16) {
 const sequence = [
   getWebAnimation(intro, introOptions),
   getWebAnimation(main, mainOptions),
-  getWebAnimation(outro, outroOptions)
+  getWebAnimation(outro, outroOptions),
 ];
 
 for (const animation of sequence) {
@@ -92,10 +92,10 @@ class OptimizedAnimationManager {
   // Batch measurements
   queueMeasurement(fn: () => void) {
     this.measurementQueue.push(fn);
-    
+
     if (this.measurementQueue.length === 1) {
       fastdom.measure(() => {
-        this.measurementQueue.forEach(measurement => measurement());
+        this.measurementQueue.forEach((measurement) => measurement());
         this.measurementQueue = [];
       });
     }
@@ -104,10 +104,10 @@ class OptimizedAnimationManager {
   // Batch mutations
   queueMutation(fn: () => void) {
     this.mutationQueue.push(fn);
-    
+
     if (this.mutationQueue.length === 1) {
       fastdom.mutate(() => {
-        this.mutationQueue.forEach(mutation => mutation());
+        this.mutationQueue.forEach((mutation) => mutation());
         this.mutationQueue = [];
       });
     }
@@ -117,13 +117,13 @@ class OptimizedAnimationManager {
   prepareElements(elements: HTMLElement[], options: AnimationOptions[]) {
     // Batch all measurements first
     const measurements: any[] = [];
-    
+
     fastdom.measure(() => {
       elements.forEach((element, index) => {
         measurements[index] = {
           width: element.offsetWidth,
           height: element.offsetHeight,
-          bounds: element.getBoundingClientRect()
+          bounds: element.getBoundingClientRect(),
         };
       });
     });
@@ -150,10 +150,10 @@ const optimizedMove = getWebAnimation(element, {
     type: 'KeyframeEffect',
     name: 'optimizedMove',
     keyframes: [
-      { transform: 'translateX(0px)' },      // ✅ GPU accelerated
-      { transform: 'translateX(100px)' }
-    ]
-  }
+      { transform: 'translateX(0px)' }, // ✅ GPU accelerated
+      { transform: 'translateX(100px)' },
+    ],
+  },
 });
 
 // Use scale instead of width/height
@@ -163,10 +163,10 @@ const optimizedResize = getWebAnimation(element, {
     type: 'KeyframeEffect',
     name: 'optimizedResize',
     keyframes: [
-      { transform: 'scale(0.5)' },          // ✅ GPU accelerated
-      { transform: 'scale(1)' }
-    ]
-  }
+      { transform: 'scale(0.5)' }, // ✅ GPU accelerated
+      { transform: 'scale(1)' },
+    ],
+  },
 });
 ```
 
@@ -177,16 +177,16 @@ const optimizedResize = getWebAnimation(element, {
 const expensiveAnimation = {
   keyframes: [
     { width: '100px', height: '100px', left: '0px', top: '0px' },
-    { width: '200px', height: '200px', left: '50px', top: '50px' }
-  ]
+    { width: '200px', height: '200px', left: '50px', top: '50px' },
+  ],
 };
 
 // ✅ Use transforms instead
 const efficientAnimation = {
   keyframes: [
     { transform: 'translate(0px, 0px) scale(1)' },
-    { transform: 'translate(50px, 50px) scale(2)' }
-  ]
+    { transform: 'translate(50px, 50px) scale(2)' },
+  ],
 };
 ```
 
@@ -204,7 +204,7 @@ class AnimationProfiler {
       frameCount: 0,
       droppedFrames: 0,
       totalDuration: 0,
-      lastFrameTime: performance.now()
+      lastFrameTime: performance.now(),
     };
 
     this.profiles.set(animationId, profile);
@@ -218,17 +218,17 @@ class AnimationProfiler {
     const monitor = () => {
       const now = performance.now();
       const frameTime = now - profile.lastFrameTime;
-      
+
       profile.frameCount++;
       profile.totalDuration = now - profile.startTime;
-      
+
       // Detect dropped frames (> 16.67ms for 60fps)
       if (frameTime > 20) {
         profile.droppedFrames++;
       }
-      
+
       profile.lastFrameTime = now;
-      
+
       // Continue monitoring
       if (this.profiles.has(animationId)) {
         requestAnimationFrame(monitor);
@@ -254,7 +254,7 @@ class AnimationProfiler {
       frameDropRate: dropRate,
       totalFrames: profile.frameCount,
       droppedFrames: profile.droppedFrames,
-      performance: this.getPerformanceRating(avgFPS, dropRate)
+      performance: this.getPerformanceRating(avgFPS, dropRate),
     };
   }
 
@@ -308,21 +308,25 @@ class AnimationDebugger {
     console.log('State:', animation.playState);
     console.log('Progress:', animation.getProgress());
     console.log('Animation count:', animation.animations.length);
-    
+
     // Log individual animation details
     animation.animations.forEach((anim, index) => {
       console.log(`Animation ${index}:`, {
         effect: anim.effect,
         playState: anim.playState,
         currentTime: anim.currentTime,
-        startTime: anim.startTime
+        startTime: anim.startTime,
       });
     });
-    
+
     console.groupEnd();
   }
 
-  measureAnimationImpact(element: HTMLElement, beforeCallback: () => void, afterCallback: () => void) {
+  measureAnimationImpact(
+    element: HTMLElement,
+    beforeCallback: () => void,
+    afterCallback: () => void,
+  ) {
     if (!this.isDebugMode) return;
 
     // Measure before animation
@@ -340,23 +344,25 @@ class AnimationDebugger {
   private captureMetrics() {
     return {
       timestamp: performance.now(),
-      memory: (performance as any).memory ? {
-        used: (performance as any).memory.usedJSHeapSize,
-        total: (performance as any).memory.totalJSHeapSize
-      } : null,
-      timing: performance.getEntriesByType('measure').length
+      memory: (performance as any).memory
+        ? {
+            used: (performance as any).memory.usedJSHeapSize,
+            total: (performance as any).memory.totalJSHeapSize,
+          }
+        : null,
+      timing: performance.getEntriesByType('measure').length,
     };
   }
 
   private reportMetricsDiff(before: any, after: any) {
     console.group('📊 Performance Impact');
     console.log('Duration:', after.timestamp - before.timestamp, 'ms');
-    
+
     if (before.memory && after.memory) {
       const memoryDiff = after.memory.used - before.memory.used;
       console.log('Memory change:', memoryDiff, 'bytes');
     }
-    
+
     console.groupEnd();
   }
 
@@ -414,13 +420,13 @@ class AnimationDebugger {
     const measure = () => {
       frameCount++;
       const currentTime = performance.now();
-      
+
       if (currentTime - lastTime >= 1000) {
         fps = frameCount;
         frameCount = 0;
         lastTime = currentTime;
       }
-      
+
       requestAnimationFrame(measure);
     };
 

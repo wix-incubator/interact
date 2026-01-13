@@ -50,8 +50,7 @@ export const quadOut = (t: number) => 1 - (1 - t) ** 2;
  * @param t - The time value (between 0 and 1).
  * @returns The eased value.
  */
-export const quadInOut = (t: number) =>
-  t < 0.5 ? 2 * t ** 2 : 1 - (-2 * t + 2) ** 2 / 2;
+export const quadInOut = (t: number) => (t < 0.5 ? 2 * t ** 2 : 1 - (-2 * t + 2) ** 2 / 2);
 
 /**
  * Cubic-in easing function.
@@ -72,8 +71,7 @@ export const cubicOut = (t: number) => 1 - (1 - t) ** 3;
  * @param t - The time value (between 0 and 1).
  * @returns The eased value.
  */
-export const cubicInOut = (t: number) =>
-  t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+export const cubicInOut = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
 
 /**
  * Quartic-in easing function.
@@ -94,8 +92,7 @@ export const quartOut = (t: number) => 1 - (1 - t) ** 4;
  * @param t - The time value (between 0 and 1).
  * @returns The eased value.
  */
-export const quartInOut = (t: number) =>
-  t < 0.5 ? 8 * t ** 4 : 1 - (-2 * t + 2) ** 4 / 2;
+export const quartInOut = (t: number) => (t < 0.5 ? 8 * t ** 4 : 1 - (-2 * t + 2) ** 4 / 2);
 
 /**
  * Quintic-in easing function.
@@ -116,8 +113,7 @@ export const quintOut = (t: number) => 1 - (1 - t) ** 5;
  * @param t - The time value (between 0 and 1).
  * @returns The eased value.
  */
-export const quintInOut = (t: number) =>
-  t < 0.5 ? 16 * t ** 5 : 1 - (-2 * t + 2) ** 5 / 2;
+export const quintInOut = (t: number) => (t < 0.5 ? 16 * t ** 5 : 1 - (-2 * t + 2) ** 5 / 2);
 
 /**
  * Exponential-in easing function.
@@ -139,13 +135,7 @@ export const expoOut = (t: number) => (t === 1 ? 1 : 1 - 2 ** (-10 * t));
  * @returns The eased value.
  */
 export const expoInOut = (t: number) =>
-  t === 0
-    ? 0
-    : t === 1
-    ? 1
-    : t < 0.5
-    ? 2 ** (20 * t - 10) / 2
-    : (2 - 2 ** (-20 * t + 10)) / 2;
+  t === 0 ? 0 : t === 1 ? 1 : t < 0.5 ? 2 ** (20 * t - 10) / 2 : (2 - 2 ** (-20 * t + 10)) / 2;
 
 /**
  * Circular-in easing function.
@@ -167,9 +157,7 @@ export const circOut = (t: number) => Math.sqrt(1 - (t - 1) ** 2);
  * @returns The eased value.
  */
 export const circInOut = (t: number) =>
-  t < 0.5
-    ? (1 - Math.sqrt(1 - 4 * t ** 2)) / 2
-    : (Math.sqrt(-(2 * t - 3) * (2 * t - 1)) + 1) / 2;
+  t < 0.5 ? (1 - Math.sqrt(1 - 4 * t ** 2)) / 2 : (Math.sqrt(-(2 * t - 3) * (2 * t - 1)) + 1) / 2;
 
 /**
  * Back-in easing function.
@@ -183,8 +171,7 @@ export const backIn = (t: number) => 2.70158 * t ** 3 - 1.70158 * t ** 2;
  * @param t - The time value (between 0 and 1).
  * @returns The eased value.
  */
-export const backOut = (t: number) =>
-  1 + 2.70158 * (t - 1) ** 3 + 1.70158 * (t - 1) ** 2;
+export const backOut = (t: number) => 1 + 2.70158 * (t - 1) ** 3 + 1.70158 * (t - 1) ** 2;
 
 /**
  * Back-in-out easing function.

@@ -15,7 +15,7 @@ export const navigation: NavSection[] = [
     items: [
       { label: 'Introduction', path: '/' },
       { label: 'Getting Started', path: '/guides/getting-started' },
-    ]
+    ],
   },
   {
     title: 'Guides',
@@ -28,7 +28,7 @@ export const navigation: NavSection[] = [
       { label: 'Lists & Dynamic Content', path: '/guides/lists-and-dynamic-content' },
       { label: 'State Management', path: '/guides/state-management' },
       { label: 'Conditions & Media Queries', path: '/guides/conditions-and-media-queries' },
-    ]
+    ],
   },
   {
     title: 'API Reference',
@@ -40,7 +40,7 @@ export const navigation: NavSection[] = [
       { label: 'Custom Element', path: '/api/interact-element' },
       { label: 'Element Selection', path: '/api/element-selection' },
       { label: 'Type Definitions', path: '/api/types' },
-    ]
+    ],
   },
   {
     title: 'Examples',
@@ -50,21 +50,19 @@ export const navigation: NavSection[] = [
       { label: 'Click Interactions', path: '/examples/click-interactions' },
       { label: 'Hover Effects', path: '/examples/hover-effects' },
       { label: 'List Patterns', path: '/examples/list-patterns' },
-    ]
+    ],
   },
   {
     title: 'Integration',
     items: [
       { label: 'Overview', path: '/integration' },
       { label: 'React', path: '/integration/react' },
-    ]
+    ],
   },
   {
     title: 'Advanced',
-    items: [
-      { label: 'Overview', path: '/advanced' },
-    ]
-  }
+    items: [{ label: 'Overview', path: '/advanced' }],
+  },
 ];
 
 // Map URL paths to markdown file paths
@@ -72,17 +70,16 @@ export function getMarkdownPath(urlPath: string): string {
   if (urlPath === '/') {
     return 'README.md';
   }
-  
+
   // Handle index/readme paths
   const pathWithoutLeadingSlash = urlPath.replace(/^\//, '');
   const segments = pathWithoutLeadingSlash.split('/');
-  
+
   // Check if it's a category index (e.g., /guides, /api, /examples)
   if (segments.length === 1) {
     return `${segments[0]}/README.md`;
   }
-  
+
   // Regular file path
   return `${pathWithoutLeadingSlash}.md`;
 }
-

@@ -11,6 +11,7 @@ Welcome to Wix Motion! This guide will get you up and running with your first an
 ## Installation
 
 ### Option 1: NPM/Yarn
+
 ```bash
 npm install @wix/motion
 # or
@@ -18,9 +19,10 @@ yarn add @wix/motion
 ```
 
 ### Option 2: Script Tag (for quick prototyping)
+
 ```html
 <script type="module">
-import { getWebAnimation } from 'https://unpkg.com/@wix/motion@latest/dist/esm/index.js';
+  import { getWebAnimation } from 'https://unpkg.com/@wix/motion@latest/dist/esm/index.js';
 </script>
 ```
 
@@ -29,12 +31,14 @@ import { getWebAnimation } from 'https://unpkg.com/@wix/motion@latest/dist/esm/i
 Let's create a simple fade-in animation for an element:
 
 ### 1. HTML Setup
+
 ```html
 <div id="myElement">Hello, Motion!</div>
 <button id="animateBtn">Animate!</button>
 ```
 
 ### 2. JavaScript Implementation
+
 ```typescript
 import { getWebAnimation } from '@wix/motion';
 
@@ -47,7 +51,7 @@ const fadeInAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
   duration: 1000,
-  easing: 'easeOutCubic'
+  easing: 'easeOutCubic',
 });
 
 // Play animation on button click
@@ -64,6 +68,7 @@ button.addEventListener('click', async () => {
 Let's break down what happened:
 
 ### 1. `getWebAnimation()` Function
+
 This is the main function for creating time-based animations using the Web Animations API.
 
 ```typescript
@@ -76,6 +81,7 @@ getWebAnimation(
 ```
 
 ### 2. Animation Options Object
+
 ```typescript
 {
   type: 'TimeAnimationOptions',  // Animation type
@@ -86,7 +92,9 @@ getWebAnimation(
 ```
 
 ### 3. Named Effects
+
 Instead of defining keyframes manually, you use predefined animation presets:
+
 - `FadeIn` - Simple opacity transition
 - `SlideIn` - Slide from a direction
 - `BounceIn` - Spring-based entrance
@@ -95,42 +103,45 @@ Instead of defining keyframes manually, you use predefined animation presets:
 ## Try More Animations
 
 ### Slide In Animation
+
 ```typescript
 const slideAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'SlideIn',
     direction: 'left',
-    power: 'medium'
+    power: 'medium',
   },
-  duration: 800
+  duration: 800,
 });
 ```
 
 ### Bounce In Animation
+
 ```typescript
 const bounceAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'hard'
+    power: 'hard',
   },
-  duration: 1200
+  duration: 1200,
 });
 ```
 
 ### Spin Animation (Ongoing)
+
 ```typescript
 const spinAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Spin',
     direction: 'clockwise',
-    power: 'medium'
+    power: 'medium',
   },
   duration: 2000,
-  iterations: Infinity // Loop forever
+  iterations: Infinity, // Loop forever
 });
 ```
 
@@ -145,15 +156,15 @@ const scrollAnimation = getScrubScene(
   element,
   {
     type: 'ScrubAnimationOptions',
-    namedEffect: { 
+    namedEffect: {
       type: 'ParallaxScroll',
-      speed: 0.5
-    }
+      speed: 0.5,
+    },
   },
-  { 
+  {
     trigger: 'view-progress',
-    element: document.body // Scroll container
-  }
+    element: document.body, // Scroll container
+  },
 );
 ```
 
@@ -194,7 +205,7 @@ import { getCSSAnimation } from '@wix/motion';
 const cssAnimations = getCSSAnimation('myElementId', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
-  duration: 1000
+  duration: 1000,
 });
 
 // Apply to stylesheet
@@ -208,17 +219,13 @@ cssAnimations.forEach(({ target, animation, keyframes }) => {
 Wix Motion is built with TypeScript and provides excellent IntelliSense:
 
 ```typescript
-import type { 
-  TimeAnimationOptions, 
-  EntranceAnimation,
-  AnimationGroup 
-} from '@wix/motion';
+import type { TimeAnimationOptions, EntranceAnimation, AnimationGroup } from '@wix/motion';
 
 // Type-safe animation options
 const options: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' } as EntranceAnimation,
-  duration: 1000
+  duration: 1000,
 };
 
 // Typed return value
@@ -228,6 +235,7 @@ const animation: AnimationGroup = getWebAnimation(element, options);
 ## Common Patterns
 
 ### Sequential Animations
+
 ```typescript
 async function sequentialAnimations() {
   await fadeInAnimation.play();
@@ -237,17 +245,15 @@ async function sequentialAnimations() {
 ```
 
 ### Parallel Animations
+
 ```typescript
 async function parallelAnimations() {
-  await Promise.all([
-    fadeInAnimation.play(),
-    slideAnimation.play(),
-    bounceAnimation.play()
-  ]);
+  await Promise.all([fadeInAnimation.play(), slideAnimation.play(), bounceAnimation.play()]);
 }
 ```
 
 ### Animation Chaining
+
 ```typescript
 fadeInAnimation
   .play()
@@ -258,6 +264,7 @@ fadeInAnimation
 ## Performance Tips
 
 1. **Prepare animations** for better performance:
+
 ```typescript
 import { prepareAnimation } from '@wix/motion';
 
@@ -282,15 +289,18 @@ Now that you've created your first animation, explore more:
 ## Troubleshooting
 
 ### Animation Not Playing?
+
 - Check that the element exists in the DOM
 - Ensure the element is visible (not `display: none`)
 - Verify animation options are correctly formatted
 
 ### Performance Issues?
+
 - Consider CSS animations for simple effects
 - Avoid creating animations in tight loops
 
 ### TypeScript Errors?
+
 - Ensure you're importing types correctly
 - Check that animation options match the expected interface
 

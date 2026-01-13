@@ -5,109 +5,128 @@ Time-based looping animations designed to create continuous movement and draw us
 ## Complete Preset List (16 presets)
 
 ### 💓 Rhythmic Scaling
-| Animation | Complexity | Power Levels | Description |
-|-----------|------------|--------------|-------------|
-| **[Pulse](pulse.md)** | Simple | ✓ | Smooth scale breathing effect |
-| **[Breathe](breathe.md)** | Medium | - | Organic movement with scaling |
+
+| Animation                 | Complexity | Power Levels | Description                   |
+| ------------------------- | ---------- | ------------ | ----------------------------- |
+| **[Pulse](pulse.md)**     | Simple     | ✓            | Smooth scale breathing effect |
+| **[Breathe](breathe.md)** | Medium     | -            | Organic movement with scaling |
 
 ### 🏃 Movement & Position
-| Animation | Complexity | Power Levels | Directions | Description |
-|-----------|------------|--------------|------------|-------------|
-| **[Wiggle](wiggle.md)** | Medium | ✓ | - | Random shake movement |
-| **[Poke](poke.md)** | Medium | ✓ | 4-way | Directional poking motion |
-| **[Cross](cross.md)** | Complex | - | 8-way | Multi-directional crossing |
+
+| Animation               | Complexity | Power Levels | Directions | Description                |
+| ----------------------- | ---------- | ------------ | ---------- | -------------------------- |
+| **[Wiggle](wiggle.md)** | Medium     | ✓            | -          | Random shake movement      |
+| **[Poke](poke.md)**     | Medium     | ✓            | 4-way      | Directional poking motion  |
+| **[Cross](cross.md)**   | Complex    | -            | 8-way      | Multi-directional crossing |
 
 ### 🔄 Rotation & Spin
-| Animation | Complexity | Power Levels | Directions | Description |
-|-----------|------------|--------------|------------|-------------|
-| **[Spin](spin.md)** | Simple | ✓ | 2-way | Continuous rotation |
-| **[Flip](flip.md)** | Medium | ✓ | 2-way | 3D flip rotation |
-| **[Fold](fold.md)** | Complex | ✓ | 4-way | 3D folding animation |
+
+| Animation           | Complexity | Power Levels | Directions | Description          |
+| ------------------- | ---------- | ------------ | ---------- | -------------------- |
+| **[Spin](spin.md)** | Simple     | ✓            | 2-way      | Continuous rotation  |
+| **[Flip](flip.md)** | Medium     | ✓            | 2-way      | 3D flip rotation     |
+| **[Fold](fold.md)** | Complex    | ✓            | 4-way      | 3D folding animation |
 
 ### ⚡ Dynamic Effects
-| Animation | Complexity | Power Levels | Description |
-|-----------|------------|--------------|-------------|
-| **[Bounce](bounce.md)** | Medium | ✓ | Vertical bouncing motion |
-| **[Rubber](rubber.md)** | Medium | ✓ | Elastic scaling effect |
-| **[Jello](jello.md)** | Medium | ✓ | Gelatinous wobble effect |
-| **[Swing](swing.md)** | Complex | ✓ | Pendulum swinging motion |
+
+| Animation               | Complexity | Power Levels | Description              |
+| ----------------------- | ---------- | ------------ | ------------------------ |
+| **[Bounce](bounce.md)** | Medium     | ✓            | Vertical bouncing motion |
+| **[Rubber](rubber.md)** | Medium     | ✓            | Elastic scaling effect   |
+| **[Jello](jello.md)**   | Medium     | ✓            | Gelatinous wobble effect |
+| **[Swing](swing.md)**   | Complex    | ✓            | Pendulum swinging motion |
 
 ### ✨ Visual Effects
-| Animation | Complexity | Power Levels | Description |
-|-----------|------------|--------------|-------------|
-| **[Flash](flash.md)** | Simple | - | Opacity blinking effect |
+
+| Animation             | Complexity | Power Levels | Description             |
+| --------------------- | ---------- | ------------ | ----------------------- |
+| **[Flash](flash.md)** | Simple     | -            | Opacity blinking effect |
 
 ### 🎪 Special Effects (Experimental)
-| Animation | Complexity | Power Levels | Description | Status |
-|-----------|------------|--------------|-------------|---------|
-| **[Blink](blink.md)** | Complex | ✓ | Random blinking teleport | ⚠️ Disabled |
-| **[DVD](dvd.md)** | Medium | ✓ | Bouncing corner-to-corner | ⚠️ Disabled |
 
-*Note: Experimental animations are currently disabled in production but available in development environments.*
+| Animation             | Complexity | Power Levels | Description               | Status      |
+| --------------------- | ---------- | ------------ | ------------------------- | ----------- |
+| **[Blink](blink.md)** | Complex    | ✓            | Random blinking teleport  | ⚠️ Disabled |
+| **[DVD](dvd.md)**     | Medium     | ✓            | Bouncing corner-to-corner | ⚠️ Disabled |
+
+_Note: Experimental animations are currently disabled in production but available in development environments._
 
 ## Quick Reference
 
 ### By Use Case
 
 #### Call-to-Action Elements
+
 **Best**: Pulse, Bounce, Wiggle  
 **Alternative**: Flash, Poke
 
 #### Loading & Processing States
+
 **Best**: Spin, Pulse, Flash  
 **Alternative**: Rubber, Breathe
 
 #### Ambient Interface Motion
+
 **Best**: Breathe, Pulse (soft), Swing (soft)  
 **Alternative**: Float, Cross
 
 #### Attention & Notifications
+
 **Best**: Wiggle, Flash, Bounce  
 **Alternative**: Poke, Pulse (hard)
 
 #### Creative & Playful Elements
+
 **Best**: Jello, Rubber, Bounce  
 **Alternative**: Flip, Fold, Cross
 
 ### By Power Level Support
 
 #### Full Power Control
+
 - Pulse, Spin, Poke, Bounce, Rubber, Jello, Wiggle, Swing, Flip, Fold
 
 #### Fixed Configuration
+
 - Breathe, Flash, Cross
 
 #### Experimental
+
 - Blink, DVD (disabled in production)
 
 ### By Performance
 
 #### Lightweight (GPU Optimized)
+
 - Pulse, Spin, Flash, Bounce
 
 #### Moderate Performance
+
 - Wiggle, Poke, Rubber, Jello, Breathe
 
 #### Resource Intensive
+
 - Swing, Flip, Fold, Cross
 
 ## Common Configuration Patterns
 
 ### Basic Looping Animation
+
 ```typescript
 const animation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Pulse',
-    power: 'medium'
+    power: 'medium',
   },
   duration: 2000,
-  iterations: Infinity,  // Loop forever
-  alternate: true        // Ping-pong effect
+  iterations: Infinity, // Loop forever
+  alternate: true, // Ping-pong effect
 });
 ```
 
 ### Controlled Loop Count
+
 ```typescript
 // Run animation 5 times then stop
 const limitedAnimation = getWebAnimation(element, {
@@ -115,50 +134,52 @@ const limitedAnimation = getWebAnimation(element, {
   namedEffect: { type: 'Bounce', power: 'soft' },
   duration: 1000,
   iterations: 5,
-  alternate: true
+  alternate: true,
 });
 ```
 
 ### Attention Sequence
+
 ```typescript
 // Wiggle 3 times to get attention
 function drawAttention(element) {
   return getWebAnimation(element, {
     type: 'TimeAnimationOptions',
-    namedEffect: { 
+    namedEffect: {
       type: 'Wiggle',
       power: 'medium',
-      intensity: 0.8
+      intensity: 0.8,
     },
     duration: 500,
     iterations: 3,
-    alternate: true
+    alternate: true,
   });
 }
 ```
 
 ### Loading State Management
+
 ```typescript
 class LoadingSpinner {
   constructor(element) {
     this.element = element;
     this.animation = null;
   }
-  
+
   start() {
     this.animation = getWebAnimation(this.element, {
       type: 'TimeAnimationOptions',
-      namedEffect: { 
+      namedEffect: {
         type: 'Spin',
         direction: 'clockwise',
-        power: 'medium'
+        power: 'medium',
       },
       duration: 1000,
-      iterations: Infinity
+      iterations: Infinity,
     });
     this.animation.play();
   }
-  
+
   stop() {
     if (this.animation) {
       this.animation.cancel();
@@ -171,6 +192,7 @@ class LoadingSpinner {
 ## Framework Integration Patterns
 
 ### React Hook for Ongoing Animations
+
 ```typescript
 import { useEffect, useRef } from 'react';
 import { getWebAnimation } from '@wix/motion';
@@ -182,10 +204,10 @@ function useOngoingAnimation(
 ) {
   const elementRef = useRef<HTMLElement>(null);
   const animationRef = useRef<any>(null);
-  
+
   useEffect(() => {
     if (!elementRef.current || !enabled) return;
-    
+
     animationRef.current = getWebAnimation(elementRef.current, {
       type: 'TimeAnimationOptions',
       namedEffect: { type: animationType, ...options },
@@ -193,23 +215,23 @@ function useOngoingAnimation(
       iterations: Infinity,
       alternate: true
     });
-    
+
     animationRef.current.play();
-    
+
     return () => {
       if (animationRef.current) {
         animationRef.current.cancel();
       }
     };
   }, [animationType, enabled, JSON.stringify(options)]);
-  
+
   return elementRef;
 }
 
 // Usage
 function PulsingButton({ children }) {
   const buttonRef = useOngoingAnimation('Pulse', { power: 'soft' }, true);
-  
+
   return (
     <button ref={buttonRef}>
       {children}
@@ -219,6 +241,7 @@ function PulsingButton({ children }) {
 ```
 
 ### Vue Composition API
+
 ```typescript
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { getWebAnimation } from '@wix/motion';
@@ -226,43 +249,46 @@ import { getWebAnimation } from '@wix/motion';
 export function useOngoingAnimation(
   animationType: string,
   options: any = {},
-  enabled: boolean = true
+  enabled: boolean = true,
 ) {
   const elementRef = ref<HTMLElement>();
   let animation: any = null;
-  
+
   const startAnimation = () => {
     if (!elementRef.value || !enabled) return;
-    
+
     animation = getWebAnimation(elementRef.value, {
       type: 'TimeAnimationOptions',
       namedEffect: { type: animationType, ...options },
       duration: options.duration || 2000,
       iterations: Infinity,
-      alternate: true
+      alternate: true,
     });
-    
+
     animation.play();
   };
-  
+
   const stopAnimation = () => {
     if (animation) {
       animation.cancel();
       animation = null;
     }
   };
-  
-  watch(() => enabled, (newEnabled) => {
-    if (newEnabled) {
-      startAnimation();
-    } else {
-      stopAnimation();
-    }
-  });
-  
+
+  watch(
+    () => enabled,
+    (newEnabled) => {
+      if (newEnabled) {
+        startAnimation();
+      } else {
+        stopAnimation();
+      }
+    },
+  );
+
   onMounted(startAnimation);
   onUnmounted(stopAnimation);
-  
+
   return { elementRef, startAnimation, stopAnimation };
 }
 ```
@@ -270,19 +296,20 @@ export function useOngoingAnimation(
 ## Performance Considerations
 
 ### Battery & Resource Management
+
 ```typescript
 // Pause animations when page is hidden
 document.addEventListener('visibilitychange', () => {
   const ongoingAnimations = document.querySelectorAll('[data-ongoing-animation]');
-  
+
   if (document.hidden) {
     // Pause all ongoing animations
-    ongoingAnimations.forEach(el => {
+    ongoingAnimations.forEach((el) => {
       if (el.animation) el.animation.pause();
     });
   } else {
     // Resume animations
-    ongoingAnimations.forEach(el => {
+    ongoingAnimations.forEach((el) => {
       if (el.animation) el.animation.play();
     });
   }
@@ -290,12 +317,13 @@ document.addEventListener('visibilitychange', () => {
 ```
 
 ### Intersection Observer Integration
+
 ```typescript
 // Only animate visible elements
 const animationObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     const animation = entry.target.ongoingAnimation;
-    
+
     if (entry.isIntersecting) {
       animation?.play();
     } else {
@@ -305,7 +333,7 @@ const animationObserver = new IntersectionObserver((entries) => {
 });
 
 // Observe ongoing animation elements
-document.querySelectorAll('[data-ongoing]').forEach(el => {
+document.querySelectorAll('[data-ongoing]').forEach((el) => {
   animationObserver.observe(el);
 });
 ```
@@ -313,6 +341,7 @@ document.querySelectorAll('[data-ongoing]').forEach(el => {
 ## Framework Integration
 
 ### React Hook
+
 ```typescript
 import React, { useEffect, useRef } from 'react';
 import { getWebAnimation } from '@wix/motion';
@@ -326,8 +355,8 @@ interface PulseProps {
   onHover?: 'pause' | 'stop' | 'continue';
 }
 
-function Pulse({ 
-  children, 
+function Pulse({
+  children,
   power = 'medium',
   intensity = 1.0,
   duration = 1500,
@@ -336,13 +365,13 @@ function Pulse({
 }: PulseProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<any>(null);
-  
+
   useEffect(() => {
     if (!elementRef.current || !enabled) return;
-    
+
     animationRef.current = getWebAnimation(elementRef.current, {
       type: 'TimeAnimationOptions',
-      namedEffect: { 
+      namedEffect: {
         type: 'Pulse',
         power,
         intensity
@@ -351,16 +380,16 @@ function Pulse({
       iterations: Infinity,
       alternate: true
     });
-    
+
     animationRef.current.play();
-    
+
     return () => {
       if (animationRef.current) {
         animationRef.current.cancel();
       }
     };
   }, [power, intensity, duration, enabled]);
-  
+
   const handleMouseEnter = () => {
     if (onHover === 'pause' && animationRef.current) {
       animationRef.current.pause();
@@ -368,15 +397,15 @@ function Pulse({
       animationRef.current.cancel();
     }
   };
-  
+
   const handleMouseLeave = () => {
     if ((onHover === 'pause' || onHover === 'stop') && animationRef.current) {
       animationRef.current.play();
     }
   };
-  
+
   return (
-    <div 
+    <div
       ref={elementRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -388,13 +417,10 @@ function Pulse({
 ```
 
 ### Vue Component
+
 ```vue
 <template>
-  <div 
-    ref="element"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-  >
+  <div ref="element" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <slot />
   </div>
 </template>
@@ -408,15 +434,15 @@ export default {
     intensity: { type: Number, default: 1.0 },
     duration: { type: Number, default: 1500 },
     enabled: { type: Boolean, default: true },
-    pauseOnHover: { type: Boolean, default: false }
+    pauseOnHover: { type: Boolean, default: false },
   },
-  
+
   data() {
     return {
-      animation: null
+      animation: null,
     };
   },
-  
+
   watch: {
     enabled(newValue) {
       if (newValue) {
@@ -424,58 +450,58 @@ export default {
       } else {
         this.stopPulse();
       }
-    }
+    },
   },
-  
+
   mounted() {
     if (this.enabled) {
       this.startPulse();
     }
   },
-  
+
   beforeUnmount() {
     this.stopPulse();
   },
-  
+
   methods: {
     startPulse() {
       if (!this.$refs.element) return;
-      
+
       this.animation = getWebAnimation(this.$refs.element, {
         type: 'TimeAnimationOptions',
-        namedEffect: { 
+        namedEffect: {
           type: 'Pulse',
           power: this.power,
-          intensity: this.intensity
+          intensity: this.intensity,
         },
         duration: this.duration,
         iterations: Infinity,
-        alternate: true
+        alternate: true,
       });
-      
+
       this.animation.play();
     },
-    
+
     stopPulse() {
       if (this.animation) {
         this.animation.cancel();
         this.animation = null;
       }
     },
-    
+
     handleMouseEnter() {
       if (this.pauseOnHover && this.animation) {
         this.animation.pause();
       }
     },
-    
+
     handleMouseLeave() {
       if (this.pauseOnHover && this.animation) {
         this.animation.play();
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 ```
 
@@ -487,6 +513,7 @@ export default {
 - **Use shorter durations** on mobile for better perceived performance
 
 ### CSS Mode Alternative
+
 ```typescript
 import { getCSSAnimation } from '@wix/motion';
 
@@ -496,17 +523,16 @@ const cssRules = getCSSAnimation('elementId', {
   namedEffect: { type: 'Pulse', power: 'soft' },
   duration: 2000,
   iterations: Infinity,
-  alternate: true
+  alternate: true,
 });
 ```
 
 ## Accessibility
 
 ### Reduced Motion Support
+
 ```typescript
-const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReducedMotion) {
   // No pulsing - maybe just a subtle opacity change

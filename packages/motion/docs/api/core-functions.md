@@ -7,7 +7,7 @@ Complete reference for Wix Motion's primary animation creation and management fu
 Wix Motion provides four core functions for creating and managing animations:
 
 - **`getWebAnimation()`** - Create Web Animations API instances
-- **`getScrubScene()`** - Generate scroll/pointer-driven scenes  
+- **`getScrubScene()`** - Generate scroll/pointer-driven scenes
 - **`getCSSAnimation()`** - Generate CSS animation rules
 - **`prepareAnimation()`** - Pre-calculate measurements where needed for CSS Animations
 
@@ -23,14 +23,16 @@ function getWebAnimation(
   animationOptions: TimeAnimationOptions | ScrubAnimationOptions,
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
   options?: Record<string, any>,
-  ownerDocument?: Document
-): AnimationGroup | MouseAnimationInstance
+  ownerDocument?: Document,
+): AnimationGroup | MouseAnimationInstance;
 ```
 
 ### Parameters
 
 #### `target` (required)
+
 The element to animate. Can be:
+
 - **HTMLElement** - Direct element reference
 - **string** - Element ID or CSS selector
 - **null** - For measurement-only operations
@@ -48,6 +50,7 @@ getWebAnimation('.my-class', options);
 ```
 
 #### `animationOptions` (required)
+
 Animation configuration object. Must be either `TimeAnimationOptions` for time-based animations or `ScrubAnimationOptions` for scrub-based animations.
 
 ```typescript
@@ -56,7 +59,7 @@ const timeOptions: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
   duration: 1000,
-  easing: 'easeOut'
+  easing: 'easeOut',
 };
 
 // Scrub-based animation
@@ -64,11 +67,12 @@ const scrubOptions: ScrubAnimationOptions = {
   type: 'ScrubAnimationOptions',
   namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
   startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } }
+  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } },
 };
 ```
 
 #### `trigger` (optional)
+
 Trigger configuration for scrub-based animations:
 
 ```typescript
@@ -86,6 +90,7 @@ Trigger configuration for scrub-based animations:
 ```
 
 #### `options` (optional)
+
 Additional configuration options:
 
 ```typescript
@@ -96,27 +101,30 @@ Additional configuration options:
 ```
 
 #### `ownerDocument` (optional)
+
 Document context for the animation (defaults to `document`).
 
 ### Return Value
 
 Returns either:
+
 - **`AnimationGroup`** - For time-based animations and scroll animations
 - **`MouseAnimationInstance`** - For mouse-driven animations
 
 ### Examples
 
 #### Basic Entrance Animation
+
 ```typescript
 import { getWebAnimation } from '@wix/motion';
 
 const animation = getWebAnimation('#hero-title', {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
-    type: 'FadeIn'
+  namedEffect: {
+    type: 'FadeIn',
   },
   duration: 800,
-  easing: 'easeOut'
+  easing: 'easeOut',
 });
 
 // Play the animation
@@ -124,55 +132,71 @@ await animation.play();
 ```
 
 #### Scroll-Driven Animation
+
 ```typescript
 const element = document.querySelector('#parallax-element');
-const scrollAnimation = getWebAnimation(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ParallaxScroll',
-    speed: 0.3
-  }
-}, {
-  trigger: 'view-progress',
-  element
-});
+const scrollAnimation = getWebAnimation(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ParallaxScroll',
+      speed: 0.3,
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element,
+  },
+);
 
 // Animation automatically responds to scroll
 ```
 
 #### Mouse Interaction
+
 ```typescript
-const mouseAnimation = getWebAnimation('#interactive-card', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 15,
-    perspective: 800,
-    power: 'medium'
-  }
-}, {
-  trigger: 'pointer-move',
-  element: document.querySelector('#card-container')
-});
+const mouseAnimation = getWebAnimation(
+  '#interactive-card',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 15,
+      perspective: 800,
+      power: 'medium',
+    },
+  },
+  {
+    trigger: 'pointer-move',
+    element: document.querySelector('#card-container'),
+  },
+);
 
 // Animation responds to mouse movement
 ```
 
 #### Complex Multi-Effect Animation
+
 ```typescript
-const multiAnimation = getWebAnimation('#complex-element', {
-  type: 'TimeAnimationOptions',
-  namedEffect: { 
-    type: 'ArcIn',
-    direction: 'bottom',
-    power: 'hard'
+const multiAnimation = getWebAnimation(
+  '#complex-element',
+  {
+    type: 'TimeAnimationOptions',
+    namedEffect: {
+      type: 'ArcIn',
+      direction: 'bottom',
+      power: 'hard',
+    },
+    duration: 1200,
+    delay: 300,
+    easing: 'backOut',
   },
-  duration: 1200,
-  delay: 300,
-  easing: 'backOut'
-}, undefined, {
-  effectId: 'hero-entrance'
-});
+  undefined,
+  {
+    effectId: 'hero-entrance',
+  },
+);
 ```
 
 ## getScrubScene()
@@ -186,19 +210,22 @@ function getScrubScene(
   target: HTMLElement | string | null,
   animationOptions: ScrubAnimationOptions,
   trigger: Partial<TriggerVariant> & { element?: HTMLElement },
-  sceneOptions?: Record<string, any>
-): ScrubScrollScene[] | ScrubPointerScene
+  sceneOptions?: Record<string, any>,
+): ScrubScrollScene[] | ScrubPointerScene;
 ```
 
 ### Parameters
 
 #### `target` (required)
+
 Element to animate (same as `getWebAnimation`).
 
 #### `animationOptions` (required)
+
 Must be `ScrubAnimationOptions` configuration.
 
 #### `trigger` (required)
+
 Trigger configuration specifying how the animation responds:
 
 ```typescript
@@ -218,6 +245,7 @@ Trigger configuration specifying how the animation responds:
 ```
 
 #### `sceneOptions` (optional)
+
 Additional scene configuration:
 
 ```typescript
@@ -231,67 +259,83 @@ Additional scene configuration:
 ### Return Value
 
 Returns either:
+
 - **`ScrubScrollScene[]`** - Array of scroll scenes
 - **`ScrubPointerScene`** - Single pointer scene
 
 ### Examples
 
 #### Parallax Scroll Scene
+
 ```typescript
 import { getScrubScene } from '@wix/motion';
 
 const element = document.querySelector('#sliding-image');
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ParallaxScroll',
-    speed: 0.5
-  }
-}, {
-  trigger: 'view-progress',
-  element
-});
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ParallaxScroll',
+      speed: 0.5,
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element,
+  },
+);
 ```
 
 #### Advanced Scroll Range Control
+
 ```typescript
-const preciseScene = getScrubScene('#text-reveal', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'RevealScroll',
-    direction: 'bottom',
-    range: 'in'
+const preciseScene = getScrubScene(
+  '#text-reveal',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'RevealScroll',
+      direction: 'bottom',
+      range: 'in',
+    },
+    startOffset: {
+      name: 'entry',
+      offset: { value: 30, type: 'percentage' },
+    },
+    endOffset: {
+      name: 'cover',
+      offset: { value: 70, type: 'percentage' },
+    },
   },
-  startOffset: { 
-    name: 'entry', 
-    offset: { value: 30, type: 'percentage' } 
+  {
+    trigger: 'view-progress',
+    element: document.querySelector('#content-section'),
   },
-  endOffset: { 
-    name: 'cover', 
-    offset: { value: 70, type: 'percentage' } 
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.querySelector('#content-section')
-});
+);
 ```
 
 #### Mouse Scene with Transitions
+
 ```typescript
-const mouseScene = getScrubScene('#hover-element', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ScaleMouse',
-    distance: { value: 100, type: 'px' },
-    scale: 1.1,
-    power: 'soft'
+const mouseScene = getScrubScene(
+  '#hover-element',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ScaleMouse',
+      distance: { value: 100, type: 'px' },
+      scale: 1.1,
+      power: 'soft',
+    },
+    transitionDuration: 200,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 200,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: document.querySelector('#interaction-area')
-});
+  {
+    trigger: 'pointer-move',
+    element: document.querySelector('#interaction-area'),
+  },
+);
 ```
 
 ## getCSSAnimation()
@@ -304,19 +348,22 @@ Generates CSS animation rules for stylesheet-based animations, optimized for per
 function getCSSAnimation(
   target: string | null,
   animationOptions: AnimationOptions,
-  trigger?: TriggerVariant
-): string
+  trigger?: TriggerVariant,
+): string;
 ```
 
 ### Parameters
 
 #### `target` (required)
+
 Element ID (string) or null. Unlike `getWebAnimation`, this only accepts string IDs since CSS rules target selectors.
 
 #### `animationOptions` (required)
+
 Animation configuration (same as `getWebAnimation`).
 
 #### `trigger` (optional)
+
 Trigger configuration for scrub-based animations.
 
 ### Return Value
@@ -326,6 +373,7 @@ Returns a **string** containing CSS rules that can be inserted into a stylesheet
 ### Examples
 
 #### Basic CSS Animation
+
 ```typescript
 import { getCSSAnimation } from '@wix/motion';
 
@@ -358,69 +406,83 @@ Pre-calculates measurements and prepares elements for using CSS Animations where
 function prepareAnimation(
   target: HTMLElement | string | null,
   animation: AnimationOptions,
-  callback?: () => void
-): void
+  callback?: () => void,
+): void;
 ```
 
 ### Parameters
 
 #### `target` (required)
+
 Element to prepare (same as `getWebAnimation`).
 
 #### `animation` (required)
+
 Animation configuration to prepare for.
 
 #### `callback` (optional)
+
 Function called when preparation is complete.
 
 ### Examples
 
 #### Basic Preparation
+
 ```typescript
 import { prepareAnimation, getElementCSSAnimation } from '@wix/motion';
 
 // Prepare element before animating
-prepareAnimation('#complex-element', {
-  type: 'TimeAnimationOptions',
-  namedEffect: { 
-    type: 'ArcIn',
-    direction: 'bottom',
-    power: 'hard'
-  }
-}, () => {
-  console.log('Element prepared for animation');
-  
-  // Now create the animation
-  const animation = getElementCSSAnimation('#complex-element', animationOptions);
-  animation.play();
-});
+prepareAnimation(
+  '#complex-element',
+  {
+    type: 'TimeAnimationOptions',
+    namedEffect: {
+      type: 'ArcIn',
+      direction: 'bottom',
+      power: 'hard',
+    },
+  },
+  () => {
+    console.log('Element prepared for animation');
+
+    // Now create the animation
+    const animation = getElementCSSAnimation('#complex-element', animationOptions);
+    animation.play();
+  },
+);
 ```
 
 #### Batch Preparation for Multiple Elements
+
 ```typescript
 const elements = document.querySelectorAll('.animate-on-scroll');
-const preparations = elements.map(element => {
-  return new Promise(resolve => {
-    prepareAnimation(element, {
-      type: 'ScrubAnimationOptions',
-      namedEffect: { 
-        type: 'RevealScroll',
-        direction: 'bottom'
-      }
-    }, resolve);
+const preparations = elements.map((element) => {
+  return new Promise((resolve) => {
+    prepareAnimation(
+      element,
+      {
+        type: 'ScrubAnimationOptions',
+        namedEffect: {
+          type: 'RevealScroll',
+          direction: 'bottom',
+        },
+      },
+      resolve,
+    );
   });
 });
 
 // Wait for all preparations to complete
 Promise.all(preparations).then(() => {
   // Create animations after all measurements are done
-  elements.forEach(element => {
+  elements.forEach((element) => {
     getScrubScene(element, animationOptions, trigger);
   });
 });
 ```
 
 #### Performance-Critical Preparation
+
 ```typescript
 // Prepare during idle time
 if ('requestIdleCallback' in window) {
@@ -473,7 +535,7 @@ class AnimationManager {
   }
 
   destroyAll() {
-    this.animations.forEach(animation => animation.cancel());
+    this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
   }
 }
@@ -484,9 +546,7 @@ class AnimationManager {
 ```typescript
 function createResponsiveAnimation(element: HTMLElement) {
   const isMobile = window.innerWidth < 768;
-  const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
-  ).matches;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let options: TimeAnimationOptions;
 
@@ -495,14 +555,14 @@ function createResponsiveAnimation(element: HTMLElement) {
     options = {
       type: 'TimeAnimationOptions',
       namedEffect: { type: 'FadeIn' },
-      duration: 200
+      duration: 200,
     };
   } else if (isMobile) {
     // Lighter animation for mobile
     options = {
       type: 'TimeAnimationOptions',
       namedEffect: { type: 'SlideIn', direction: 'bottom', power: 'soft' },
-      duration: 600
+      duration: 600,
     };
   } else {
     // Full animation for desktop
@@ -510,7 +570,7 @@ function createResponsiveAnimation(element: HTMLElement) {
       type: 'TimeAnimationOptions',
       namedEffect: { type: 'ArcIn', direction: 'bottom', power: 'hard' },
       duration: 1000,
-      easing: 'backOut'
+      easing: 'backOut',
     };
   }
 
@@ -552,14 +612,12 @@ class ComponentWithAnimations {
   private animations: AnimationGroup[] = [];
 
   createAnimations() {
-    this.animations.push(
-      getWebAnimation(this.element, options)
-    );
+    this.animations.push(getWebAnimation(this.element, options));
   }
 
   destroy() {
     // Clean up all animations
-    this.animations.forEach(animation => {
+    this.animations.forEach((animation) => {
       animation.cancel();
     });
     this.animations = [];

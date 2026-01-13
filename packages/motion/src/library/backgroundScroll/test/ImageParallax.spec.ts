@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import { backgroundScrollAnimations } from '../index';
 import { baseMockOptions } from './testUtils';
-import type {
-  BackgroundScrollAnimation,
-  AnimationData,
-} from '../../../types';
+import type { BackgroundScrollAnimation, AnimationData } from '../../../types';
 
 describe('ImageParallax', () => {
   test('Default values', () => {
@@ -16,10 +13,7 @@ describe('ImageParallax', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: 'translateY(-33%)' },
-          { transform: 'translateY(0%)' },
-        ],
+        keyframes: [{ transform: 'translateY(-33%)' }, { transform: 'translateY(0%)' }],
       },
     ];
 
@@ -37,10 +31,7 @@ describe('ImageParallax', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: 'translateY(0%)' },
-          { transform: 'translateY(-33%)' },
-        ],
+        keyframes: [{ transform: 'translateY(0%)' }, { transform: 'translateY(-33%)' }],
       },
     ];
 
@@ -58,10 +49,7 @@ describe('ImageParallax', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: 'translateY(-50%)' },
-          { transform: 'translateY(0%)' },
-        ],
+        keyframes: [{ transform: 'translateY(-50%)' }, { transform: 'translateY(0%)' }],
       },
     ];
 

@@ -7,13 +7,6 @@
     "declaration": true,
     "composite": true
   },
-  "include": [
-    "src/**/*",
-    "src"
-  ],
-  "files": [
-    "./src/external-types.d.ts",
-    "./src/test-types.d.ts"
-  ]
+  "include": ["src/**/*", "src"],
+  "files": ["./src/external-types.d.ts", "./src/test-types.d.ts"]
 }
-

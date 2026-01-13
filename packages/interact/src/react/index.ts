@@ -7,4 +7,3 @@ export { Interact } from '../core/Interact';
 
 export type { InteractRef } from './interactRef';
 export * from '../types';
-

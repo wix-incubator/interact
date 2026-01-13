@@ -1,8 +1,4 @@
-import type {
-  AnimationFillMode,
-  FlipScroll,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../../types';
 
 const ROTATE_POWER_MAP = {
   soft: 60,
@@ -24,8 +20,7 @@ export default function create(options: ScrubAnimationOptions) {
   } = options.namedEffect as FlipScroll;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
-  const flipValue =
-    power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
+  const flipValue = power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
 
   // const { fromValue, toValue } = rangeValues[range](rotation);
   const fromValue = range === 'out' ? 0 : -flipValue;

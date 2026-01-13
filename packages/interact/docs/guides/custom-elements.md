@@ -14,26 +14,29 @@ The `<interact-element>` custom element is the foundation of `@wix/interact`. Th
 ## Basic Usage
 
 ### HTML Structure
+
 ```html
 <interact-element data-interact-key="my-button">
-    <button id="my-button">Click me</button>
+  <button id="my-button">Click me</button>
 </interact-element>
 ```
 
 ### React/JSX Usage
+
 ```tsx
 import React from 'react';
 
 function InteractiveButton() {
-    return (
-        <interact-element data-interact-key="my-button">
-            <button id="my-button">Click me</button>
-        </interact-element>
-    );
+  return (
+    <interact-element data-interact-key="my-button">
+      <button id="my-button">Click me</button>
+    </interact-element>
+  );
 }
 ```
 
 ### Key Requirements
+
 1. **Unique `data-interact-key`** - Must match your interaction `key` property
 2. **Child element** - The custom element must contain at least one child
 
@@ -42,6 +45,7 @@ function InteractiveButton() {
 The `data-interact-key` attribute is crucial - it connects your HTML to your interaction configuration.
 
 ### Matching Keys
+
 The key must match your interaction's key property:
 
 ```typescript
@@ -56,7 +60,7 @@ The key must match your interaction's key property:
 ```html
 <!-- Must match this key -->
 <interact-element data-interact-key="my-button">
-    <button id="my-button">Hover me</button>
+  <button id="my-button">Hover me</button>
 </interact-element>
 ```
 
@@ -73,31 +77,34 @@ When `<interact-element>` connects to the DOM:
 ## State Management
 
 ### CSS Custom States
+
 `<interact-element>` uses modern CSS custom states for effect management:
 
 ```css
 /* Target elements in specific states */
 interact-element:state(hover-active) .my-element {
-    transform: scale(1.1);
-    transition: transform 0.2s ease;
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
 
 interact-element:state(clicked) .my-element {
-    background-color: #blue;
+  background-color: #blue;
 }
 ```
 
 ### Legacy Browser Support
+
 For browsers without custom state support, falls back to CSS classes:
 
 ```css
 /* Legacy fallback */
 interact-element.--hover-active .my-element {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 ```
 
 ### State Toggle Methods
+
 The element provides methods to manage states:
 
 1. `add`: adds a state named by `effectId`
@@ -112,59 +119,61 @@ The element provides methods to manage states:
 TBD
 
 ### Vue Integration
+
 ```vue
 <template>
-    <interact-element :data-interact-key="`${elementId}`">
-        <div :id="elementId" class="interactive-element">
-            <slot />
-        </div>
-    </interact-element>
+  <interact-element :data-interact-key="`${elementId}`">
+    <div :id="elementId" class="interactive-element">
+      <slot />
+    </div>
+  </interact-element>
 </template>
 
 <script>
 import { Interact } from '@wix/interact';
 
 export default {
-    props: ['elementId'],
-    mounted() {
-        const config = {
-            interactions: [
-                {
-                    key: this.elementId,
-                    trigger: 'hover',
-                    effects: [
-                        {
-                            key: this.elementId,
-                            namedEffect: {
-                              type: 'FadeIn'
-                            },
-                            duration: 300
-                        }
-                    ]
-                }
-            ]
-        };
-        
-        Interact.create(config);
-    }
+  props: ['elementId'],
+  mounted() {
+    const config = {
+      interactions: [
+        {
+          key: this.elementId,
+          trigger: 'hover',
+          effects: [
+            {
+              key: this.elementId,
+              namedEffect: {
+                type: 'FadeIn',
+              },
+              duration: 300,
+            },
+          ],
+        },
+      ],
+    };
+
+    Interact.create(config);
+  },
 };
 </script>
 ```
 
 ### Vanilla JavaScript
+
 ```javascript
 // Create element programmatically
 function createInteractiveElement(id, content) {
-    const wixElement = document.createElement('interact-element');
-    wixElement.dataset.wixPath = id;
-    
-    const childElement = document.createElement('div');
-    childElement.id = id;
-    childElement.innerHTML = content;
-    
-    wixElement.appendChild(childElement);
-    
-    return wixElement;
+  const wixElement = document.createElement('interact-element');
+  wixElement.dataset.wixPath = id;
+
+  const childElement = document.createElement('div');
+  childElement.id = id;
+  childElement.innerHTML = content;
+
+  wixElement.appendChild(childElement);
+
+  return wixElement;
 }
 
 // Usage
@@ -175,31 +184,34 @@ document.body.appendChild(interactive);
 ## Advanced Usage
 
 ### Multiple Children
+
 You can have multiple children, but only the first one is used for interaction targeting:
 
 ```html
 <interact-element data-interact-key="main-target">
-    <div id="main-target">Primary interactive element</div>
-    <div>Supporting content (not interactive)</div>
-    <span>Additional content</span>
+  <div id="main-target">Primary interactive element</div>
+  <div>Supporting content (not interactive)</div>
+  <span>Additional content</span>
 </interact-element>
 ```
 
 ### Nested interact-elements
+
 Nesting is supported for complex interactions:
 
 ```html
 <interact-element data-interact-key="outer-container">
-    <div id="outer-container">
-        <interact-element data-interact-key="inner-button">
-            <button id="inner-button">Nested interactive button</button>
-        </interact-element>
-        <p>Other content in outer container</p>
-    </div>
+  <div id="outer-container">
+    <interact-element data-interact-key="inner-button">
+      <button id="inner-button">Nested interactive button</button>
+    </interact-element>
+    <p>Other content in outer container</p>
+  </div>
 </interact-element>
 ```
 
 ### Dynamic Key Updates
+
 You can change the key dynamically:
 
 ```javascript
@@ -207,7 +219,7 @@ const element = document.querySelector('interact-element');
 
 // Remove old interactions
 if (element.dataset.wixPath) {
-    remove(element.dataset.wixPath);
+  remove(element.dataset.wixPath);
 }
 
 // Update key
@@ -220,28 +232,30 @@ element.connect('new-target');
 ## Styling interact-element
 
 ### Default Display
+
 The custom element has minimal default styling:
 
 ```css
 interact-element {
-    display: contents; /* Doesn't affect layout */
+  display: contents; /* Doesn't affect layout */
 }
 ```
 
 ### Custom Styling
+
 You can style the element wrapper if needed:
 
 ```css
 /* Make wrapper a block container */
 interact-element.card-wrapper {
-    display: block;
-    padding: 1rem;
-    border-radius: 8px;
+  display: block;
+  padding: 1rem;
+  border-radius: 8px;
 }
 
 /* Style based on state */
 interact-element:state(hover-active) {
-    background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 ```
 
@@ -250,39 +264,42 @@ interact-element:state(hover-active) {
 ### Common Issues
 
 #### "No key provided" Warning
+
 ```html
 <!-- Wrong - missing data-interact-key -->
 <interact-element>
-    <div>Content</div>
+  <div>Content</div>
 </interact-element>
 
 <!-- Correct -->
 <interact-element data-interact-key="my-element">
-    <div id="my-element">Content</div>
+  <div id="my-element">Content</div>
 </interact-element>
 ```
 
 #### "No child element found" Warning
+
 ```html
 <!-- Wrong - empty element -->
 <interact-element data-interact-key="my-element"></interact-element>
 
 <!-- Correct -->
 <interact-element data-interact-key="my-element">
-    <div id="my-element">Content</div>
+  <div id="my-element">Content</div>
 </interact-element>
 ```
 
 ### Debugging Tips
 
 #### Check Element Registration
+
 ```javascript
 // Verify custom element is registered
-console.log('interact-element registered:', 
-    customElements.get('interact-element') !== undefined);
+console.log('interact-element registered:', customElements.get('interact-element') !== undefined);
 ```
 
 #### Inspect Element State
+
 ```javascript
 const element = document.querySelector('interact-element');
 console.log('Connected:', element.connected);
@@ -291,21 +308,24 @@ console.log('Has child:', element.firstElementChild !== null);
 ```
 
 #### Monitor State Changes
+
 ```javascript
 const element = document.querySelector('interact-element');
 if (element._internals) {
-    console.log('Current states:', Array.from(element._internals.states));
+  console.log('Current states:', Array.from(element._internals.states));
 }
 ```
 
 ## Performance Considerations
 
 ### Element Creation
+
 - Custom elements are lightweight but avoid creating thousands
 - Use the `selector` property to target elements inside a single custom element component
 - Consider using event delegation for dynamic content
 
 ### Memory Management
+
 - Elements automatically clean up when removed from DOM
 - For SPA routing, ensure proper cleanup during navigation
 - Use `remove()` explicitly if needed for manual cleanup
@@ -313,6 +333,7 @@ if (element._internals) {
 ## Browser Support
 
 ### Modern Browsers
+
 - Adopted style sheets for dynamic CSS
 
 ## Best Practices
@@ -322,6 +343,7 @@ TBD
 ## Next Steps
 
 Now that you understand custom elements:
+
 - **[State Management](./state-management.md)** - Learn about CSS states vs data attributes
 - **[Conditions and Media Queries](./conditions-and-media-queries.md)** - Create responsive interactions
 - **[Understanding Triggers](./understanding-triggers.md)** - Master trigger types and behaviors

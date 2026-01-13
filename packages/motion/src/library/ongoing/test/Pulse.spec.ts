@@ -417,15 +417,10 @@ describe('Pulse', () => {
       expect(styleResult[0].keyframes![0].transform).toBe(
         'scale(calc(0.96 - var(--motion-pulse-offset)))',
       );
-      expect(styleResult[0].custom).toHaveProperty(
-        '--motion-pulse-offset',
-        0.06,
-      );
+      expect(styleResult[0].custom).toHaveProperty('--motion-pulse-offset', 0.06);
 
       // Web method should use direct values
-      expect(webResult[0].keyframes![0].transform).toBe(
-        'scale(calc(0.96 - 0.06))',
-      );
+      expect(webResult[0].keyframes![0].transform).toBe('scale(calc(0.96 - 0.06))');
       expect(webResult[0].custom).toHaveProperty('--motion-pulse-offset', 0.06);
     });
 

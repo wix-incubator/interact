@@ -6,9 +6,7 @@ export function Layout({ children }: PropsWithChildren) {
     <div className="layout">
       <Sidebar />
       <main className="main-content">
-        <div className="content-container">
-          {children}
-        </div>
+        <div className="content-container">{children}</div>
       </main>
     </div>
   );

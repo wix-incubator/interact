@@ -1,9 +1,4 @@
-import {
-  getCssUnits,
-  getMouseTransitionEasing,
-  distance2d,
-  mapRange,
-} from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange } from '../../utils';
 import { quadInOut } from '../../easings';
 import { CustomMouse } from './CustomMouse';
 import {
@@ -27,10 +22,8 @@ class BlurMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { distance, angle, scale, invert, blur, perspective } = this.options;
 
-    const translateX =
-      mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
-    const translateY =
-      mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+    const translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+    const translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
 
     // if progressX === 0 || progressX === 1, scaleX === scale, if progressX === 0.5, scaleX === 1
     const scaleX =
@@ -55,9 +48,7 @@ class BlurMouseAnimation extends CustomMouse {
     const transform = `perspective(${perspective}px) translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${maxScale}, ${maxScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--comp-rotate-z, 0deg))`;
 
     const progressDistance = distance2d([0.5, 0.5], [progressX, progressY]);
-    const blurFilter = Math.round(
-      mapRange(0, 1, 0, blur, quadInOut(progressDistance)),
-    );
+    const blurFilter = Math.round(mapRange(0, 1, 0, blur, quadInOut(progressDistance)));
 
     const filter = `blur(${blurFilter}px)`;
 
@@ -72,9 +63,7 @@ class BlurMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -102,6 +91,5 @@ export default function create(
     invert,
   };
 
-  return (target: HTMLElement) =>
-    new BlurMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new BlurMouseAnimation(target, animationOptions);
 }

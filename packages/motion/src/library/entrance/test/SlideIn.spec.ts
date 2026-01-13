@@ -25,8 +25,7 @@ describe('SlideIn', () => {
           {
             transform:
               'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
           },
           {
             transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
@@ -58,8 +57,7 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start':
-            'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
           '--motion-translate-x': '100%',
           '--motion-translate-y': '0%',
         },
@@ -74,8 +72,7 @@ describe('SlideIn', () => {
             opacity: 'var(--comp-opacity, 1)',
             transform:
               'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath:
-              'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
@@ -110,8 +107,7 @@ describe('SlideIn', () => {
           {
             transform:
               'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
           },
           {
             transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
@@ -143,8 +139,7 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start':
-            'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
           '--motion-translate-x': '100%',
           '--motion-translate-y': '0%',
         },
@@ -159,8 +154,7 @@ describe('SlideIn', () => {
             opacity: 'var(--comp-opacity, 1)',
             transform:
               'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath:
-              'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',

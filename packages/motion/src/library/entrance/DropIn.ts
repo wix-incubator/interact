@@ -16,13 +16,11 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, initialScale = PARAMS_MAP.medium.scale } =
-    options.namedEffect as DropIn;
+  const { power, initialScale = PARAMS_MAP.medium.scale } = options.namedEffect as DropIn;
   const [fadeIn, dropIn] = getNames(options);
 
   const scale = (power && PARAMS_MAP[power].scale) || initialScale;
-  const easing =
-    (power && PARAMS_MAP[power].ease) || options.easing || 'quintInOut';
+  const easing = (power && PARAMS_MAP[power].ease) || options.easing || 'quintInOut';
 
   const custom = {
     '--motion-scale': `${scale}`,
@@ -35,10 +33,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: options.duration! * 0.8,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

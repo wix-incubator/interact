@@ -1,9 +1,4 @@
-import type {
-  Jello,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Jello, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
 const POWER_TO_JELLO_FACTOR_MAP = {
@@ -20,17 +15,11 @@ const SKEW_Y_KEYFRAMES = [
   { keyframe: 100, skewY: 0 },
 ];
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { power, intensity = 0.25 } = options.namedEffect as Jello;
 
   const duration = options.duration || 1;
@@ -45,8 +34,7 @@ export function style(
     POWER_TO_JELLO_FACTOR_MAP.hard,
     intensity,
   );
-  const jelloFactor =
-    (power && POWER_TO_JELLO_FACTOR_MAP[power]) || responsiveJelloFactor;
+  const jelloFactor = (power && POWER_TO_JELLO_FACTOR_MAP[power]) || responsiveJelloFactor;
 
   // Create CSS custom properties for the jello configuration
   const custom: Record<string, string | number> = {
@@ -79,9 +67,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-jello-${timingFactor}`];

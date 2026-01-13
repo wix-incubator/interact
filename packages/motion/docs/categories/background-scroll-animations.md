@@ -7,6 +7,7 @@ Specialized effects designed for background media elements and hero sections. Pe
 Background scroll animations are **scrub-based** animations specifically optimized for background media elements. They target elements with `data-motion-part` attributes and automatically measure container dimensions for accurate calculations. These animations create immersive, large-scale visual effects.
 
 ### Key Characteristics
+
 - **Purpose**: Hero sections, background media, immersive experiences
 - **Trigger**: Scroll position with viewport intersection
 - **Target**: Background media layers (`BG_LAYER`, `BG_MEDIA`, `BG_IMG`)
@@ -16,42 +17,48 @@ Background scroll animations are **scrub-based** animations specifically optimiz
 ## Animation Categories
 
 ### 🌊 **Parallax & Movement**
+
 Classic parallax scrolling and directional movement effects.
 
 ### 🔍 **Zoom & Scale**
+
 Dynamic scaling and perspective zoom effects.
 
 ### 🎭 **Fade & Opacity**
+
 Sophisticated opacity transitions and layered fading.
 
 ### 🔄 **Rotation & Transform**
+
 Rotational effects and complex transformations.
 
 ### 🎨 **Advanced 3D**
+
 Complex perspective effects with multi-layer interactions.
 
 ## Complete Preset Reference
 
-| Animation | Category | Complexity | Direction Support | Measurement | Description |
-|-----------|----------|------------|-------------------|-------------|-------------|
-| **BgParallax** | Parallax | Simple | - | ✓ | Classic background parallax movement |
-| **ImageParallax** | Parallax | Medium | - | ✓ | Enhanced image parallax with options |
-| **BgPan** | Movement | Simple | 2-way | ✓ | Horizontal panning movement |
-| **BgZoom** | Zoom | Complex | 2-way | ✓ | Dynamic zoom in/out effects |
-| **BgCloseUp** | Zoom | Medium | - | ✓ | Perspective zoom with fade |
-| **BgPullBack** | Zoom | Medium | - | ✓ | 3D pull-back effect |
-| **BgFade** | Fade | Simple | - | ✓ | Directional fade transitions |
-| **BgFadeBack** | Fade | Medium | - | ✓ | Scale + fade combination |
-| **BgRotate** | Transform | Simple | 2-way | - | Smooth rotation effects |
-| **BgSkew** | Transform | Medium | 2-way | ✓ | Skewing transformation |
-| **BgFake3D** | 3D | Complex | - | ✓ | Multi-layer 3D parallax |
-| **BgReveal** | Special | Simple | - | ✓ | Measurement-only reveal |
+| Animation         | Category  | Complexity | Direction Support | Measurement | Description                          |
+| ----------------- | --------- | ---------- | ----------------- | ----------- | ------------------------------------ |
+| **BgParallax**    | Parallax  | Simple     | -                 | ✓           | Classic background parallax movement |
+| **ImageParallax** | Parallax  | Medium     | -                 | ✓           | Enhanced image parallax with options |
+| **BgPan**         | Movement  | Simple     | 2-way             | ✓           | Horizontal panning movement          |
+| **BgZoom**        | Zoom      | Complex    | 2-way             | ✓           | Dynamic zoom in/out effects          |
+| **BgCloseUp**     | Zoom      | Medium     | -                 | ✓           | Perspective zoom with fade           |
+| **BgPullBack**    | Zoom      | Medium     | -                 | ✓           | 3D pull-back effect                  |
+| **BgFade**        | Fade      | Simple     | -                 | ✓           | Directional fade transitions         |
+| **BgFadeBack**    | Fade      | Medium     | -                 | ✓           | Scale + fade combination             |
+| **BgRotate**      | Transform | Simple     | 2-way             | -           | Smooth rotation effects              |
+| **BgSkew**        | Transform | Medium     | 2-way             | ✓           | Skewing transformation               |
+| **BgFake3D**      | 3D        | Complex    | -                 | ✓           | Multi-layer 3D parallax              |
+| **BgReveal**      | Special   | Simple     | -                 | ✓           | Measurement-only reveal              |
 
 ## Target Elements
 
 Background scroll animations target specific element parts:
 
 ### Data Attributes
+
 ```html
 <!-- container -->
 <section id="hero-section">
@@ -59,34 +66,41 @@ Background scroll animations target specific element parts:
   <div data-motion-part="BG_LAYER">
     <!-- Background media layer -->
     <div data-motion-part="BG_MEDIA">
-        <img src="background.jpg" data-motion-part="BG_IMG" />
+      <img src="background.jpg" data-motion-part="BG_IMG" />
     </div>
   </div>
 </section>
 ```
 
 ### Motion Parts
+
 - **`BG_LAYER`** - Background container layer
 - **`BG_MEDIA`** - Main background media container
-- **`BG_IMG`** - Background image element  
+- **`BG_IMG`** - Background image element
 
 ## Configuration Patterns
 
 ### Basic Background Animation
+
 ```typescript
-const bgScene = getWebAnimation('#hero-background', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgParallax',
-    speed: 0.3  // 30% of scroll speed
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+const bgScene = getWebAnimation(
+  '#hero-background',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgParallax',
+      speed: 0.3, // 30% of scroll speed
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 ```
 
 ### Speed Control
+
 ```typescript
 {
   type: 'BgParallax',
@@ -100,6 +114,7 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 ### Direction Control
+
 ```typescript
 // Two-way directions
 { type: 'BgPan', direction: 'left' | 'right' }
@@ -111,6 +126,7 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 ### Scale and Intensity
+
 ```typescript
 {
   type: 'BgZoom',
@@ -124,7 +140,7 @@ const bgScene = getWebAnimation('#hero-background', {
 }
 
 {
-  type: 'BgSkew', 
+  type: 'BgSkew',
   angle: 20        // Skew angle in degrees
 }
 ```
@@ -134,7 +150,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ### 🌊 Parallax & Movement
 
 #### BgParallax
+
 **Best for**: Hero backgrounds, landscape imagery, layered compositions
+
 ```typescript
 {
   type: 'BgParallax',
@@ -144,7 +162,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### ImageParallax
+
 **Best for**: Enhanced parallax with additional control options
+
 ```typescript
 {
   type: 'ImageParallax',
@@ -156,7 +176,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgPan
+
 **Best for**: Wide backgrounds, horizontal movement, cinematic panning
+
 ```typescript
 {
   type: 'BgPan',
@@ -169,7 +191,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ### 🔍 Zoom & Scale
 
 #### BgZoom
+
 **Best for**: Hero sections, dramatic reveals, immersive experiences
+
 ```typescript
 {
   type: 'BgZoom',
@@ -180,7 +204,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgCloseUp
+
 **Best for**: Perspective reveals, depth effects, layered backgrounds
+
 ```typescript
 {
   type: 'BgCloseUp',
@@ -190,7 +216,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgPullBack
+
 **Best for**: 3D reveal effects, depth transitions
+
 ```typescript
 {
   type: 'BgPullBack',
@@ -202,7 +230,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ### 🎭 Fade & Opacity
 
 #### BgFade
+
 **Best for**: Simple background transitions, overlay effects
+
 ```typescript
 {
   type: 'BgFade',
@@ -212,7 +242,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgFadeBack
+
 **Best for**: Scale + fade combinations, gentle transitions
+
 ```typescript
 {
   type: 'BgFadeBack',
@@ -224,7 +256,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ### 🔄 Rotation & Transform
 
 #### BgRotate
+
 **Best for**: Rotating backgrounds, dynamic orientations
+
 ```typescript
 {
   type: 'BgRotate',
@@ -235,7 +269,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgSkew
+
 **Best for**: Dynamic layouts, creative distortions
+
 ```typescript
 {
   type: 'BgSkew',
@@ -248,7 +284,9 @@ const bgScene = getWebAnimation('#hero-background', {
 ### 🎨 Advanced 3D
 
 #### BgFake3D
+
 **Best for**: Complex 3D effects, multi-layer parallax, showcase backgrounds
+
 ```typescript
 {
   type: 'BgFake3D',
@@ -259,10 +297,12 @@ const bgScene = getWebAnimation('#hero-background', {
 ```
 
 #### BgReveal
+
 **Best for**: Measurement-based reveals, container preparations
+
 ```typescript
 {
-  type: 'BgReveal'
+  type: 'BgReveal';
   // No visual effect - performs measurements for other animations
 }
 // Utility animation for measurement and preparation
@@ -271,53 +311,68 @@ const bgScene = getWebAnimation('#hero-background', {
 ## Advanced Configuration
 
 ### Multi-Layer Effects
+
 ```typescript
 // Layer 1: Background parallax
-getWebAnimation('#bg-layer-1', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgParallax',
-    speed: 0.2
-  }
-}, triggerConfig);
+getWebAnimation(
+  '#bg-layer-1',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgParallax',
+      speed: 0.2,
+    },
+  },
+  triggerConfig,
+);
 
 // Layer 2: Faster parallax
-getWebAnimation('#bg-layer-2', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgParallax',
-    speed: 0.5
-  }
-}, triggerConfig);
+getWebAnimation(
+  '#bg-layer-2',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgParallax',
+      speed: 0.5,
+    },
+  },
+  triggerConfig,
+);
 
 // Layer 3: Zoom effect
-getWebAnimation('#bg-layer-3', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgZoom',
-    direction: 'in',
-    zoom: 30
-  }
-}, triggerConfig);
+getWebAnimation(
+  '#bg-layer-3',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgZoom',
+      direction: 'in',
+      zoom: 30,
+    },
+  },
+  triggerConfig,
+);
 ```
 
 ### Custom Range Control
+
 ```typescript
 {
   type: 'BgFade',
   range: 'in',
-  startOffset: { 
-    name: 'cover', 
-    offset: { value: 0, type: 'percentage' } 
+  startOffset: {
+    name: 'cover',
+    offset: { value: 0, type: 'percentage' }
   },
-  endOffset: { 
-    name: 'cover', 
-    offset: { value: 50, type: 'percentage' } 
+  endOffset: {
+    name: 'cover',
+    offset: { value: 50, type: 'percentage' }
   }
 }
 ```
 
 ### Measurement Integration
+
 ```typescript
 // Auto-measurement for responsive effects
 {
@@ -331,34 +386,36 @@ getWebAnimation('#bg-layer-3', {
 ## Performance Optimization
 
 ### Efficient Background Animations
+
 ```typescript
 // Best performance: Transform-only animations
 const efficientAnimations = [
-  'BgParallax',   // translateY only
-  'BgPan',        // translateX only  
-  'BgRotate',     // rotate only
-  'BgZoom'        // perspective + translateZ
+  'BgParallax', // translateY only
+  'BgPan', // translateX only
+  'BgRotate', // rotate only
+  'BgZoom', // perspective + translateZ
 ];
 
 // Moderate performance: Multi-property animations
 const moderateAnimations = [
-  'BgFake3D',     // Multiple transform layers
-  'BgCloseUp',    // Perspective + opacity
-  'BgSkew'        // Skew + position
+  'BgFake3D', // Multiple transform layers
+  'BgCloseUp', // Perspective + opacity
+  'BgSkew', // Skew + position
 ];
 ```
 
 ### Measurement Batching
+
 ```typescript
 // Batch measurements for multiple background animations
 import { prepareAnimation } from '@wix/motion';
 
-elements.forEach(element => {
+elements.forEach((element) => {
   prepareAnimation(element, backgroundAnimationConfig);
 });
 
 // Then create animations after measurements complete
-elements.forEach(element => {
+elements.forEach((element) => {
   getWebAnimation(element, backgroundAnimationConfig, trigger);
 });
 ```
@@ -366,6 +423,7 @@ elements.forEach(element => {
 ## Common Patterns
 
 ### Hero Section Setup
+
 ```html
 <section id="hero">
   <div class="hero-background">
@@ -382,96 +440,119 @@ elements.forEach(element => {
 
 ```typescript
 // Background parallax
-getWebAnimation('.hero-background', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgParallax',
-    speed: 0.3
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+getWebAnimation(
+  '.hero-background',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgParallax',
+      speed: 0.3,
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 
 // Overlay fade
-getWebAnimation('.hero-background', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgFade',
-    range: 'out'
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.querySelector('#hero')
-});
+getWebAnimation(
+  '.hero-background',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgFade',
+      range: 'out',
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.querySelector('#hero'),
+  },
+);
 ```
 
 ### Full-Page Background
+
 ```typescript
-const fullPageBg = getWebAnimation('#page-background', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ImageParallax',
-    speed: 1.2,
-    isPage: true  // Full page scope
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+const fullPageBg = getWebAnimation(
+  '#page-background',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ImageParallax',
+      speed: 1.2,
+      isPage: true, // Full page scope
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 ```
 
 ### Gallery Background Effects
+
 ```typescript
-document.querySelectorAll('.gallery-item').forEach(item => {
-  getWebAnimation(item, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'BgZoom',
-      direction: 'in',
-      zoom: 25
-    }
-  }, {
-    trigger: 'view-progress',
-    element: item
-  });
+document.querySelectorAll('.gallery-item').forEach((item) => {
+  getWebAnimation(
+    item,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'BgZoom',
+        direction: 'in',
+        zoom: 25,
+      },
+    },
+    {
+      trigger: 'view-progress',
+      element: item,
+    },
+  );
 });
 ```
 
 ### Complex 3D Scene
+
 ```typescript
-const scene3D = getWebAnimation('#showcase-bg', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'BgFake3D',
-    stretch: 1.4,
-    zoom: 20
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+const scene3D = getWebAnimation(
+  '#showcase-bg',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'BgFake3D',
+      stretch: 1.4,
+      zoom: 20,
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 ```
 
 ## Mobile and Responsive Considerations
 
 ### Mobile Optimization
+
 ```typescript
 const isMobile = window.innerWidth < 768;
 
 const bgConfig = {
   type: 'ScrubAnimationOptions',
-  namedEffect: isMobile 
-    ? { type: 'BgFade', range: 'in' }        // Simple fade on mobile
-    : { type: 'BgFake3D', stretch: 1.3 }    // Complex 3D on desktop
+  namedEffect: isMobile
+    ? { type: 'BgFade', range: 'in' } // Simple fade on mobile
+    : { type: 'BgFake3D', stretch: 1.3 }, // Complex 3D on desktop
 };
 ```
 
 ### Reduced Motion Support
+
 ```typescript
-const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReducedMotion) {
   // Use simple, non-moving backgrounds
@@ -483,6 +564,7 @@ if (prefersReducedMotion) {
 ```
 
 ### Viewport-Aware Effects
+
 ```typescript
 // Scale effects based on viewport size
 const viewportMultiplier = Math.min(window.innerWidth / 1920, 1);
@@ -497,6 +579,7 @@ const viewportMultiplier = Math.min(window.innerWidth / 1920, 1);
 ## CSS Integration
 
 ### Style Requirements
+
 ```css
 .hero-background {
   position: relative;
@@ -504,7 +587,7 @@ const viewportMultiplier = Math.min(window.innerWidth / 1920, 1);
   overflow: hidden;
 }
 
-[data-motion-part="BG_MEDIA"] {
+[data-motion-part='BG_MEDIA'] {
   position: absolute;
   top: 0;
   left: 0;
@@ -513,13 +596,13 @@ const viewportMultiplier = Math.min(window.innerWidth / 1920, 1);
   will-change: transform;
 }
 
-[data-motion-part="BG_IMG"] {
+[data-motion-part='BG_IMG'] {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-[data-motion-part="BG_LAYER"] {
+[data-motion-part='BG_LAYER'] {
   position: absolute;
   top: 0;
   left: 0;
@@ -530,9 +613,10 @@ const viewportMultiplier = Math.min(window.innerWidth / 1920, 1);
 ```
 
 ### Custom Properties Integration
+
 ```css
 /* Motion generates CSS custom properties */
-[data-motion-part="BG_MEDIA"] {
+[data-motion-part='BG_MEDIA'] {
   transform: translateY(var(--motion-translate-y, 0));
 }
 

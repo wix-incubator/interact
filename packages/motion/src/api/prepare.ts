@@ -1,8 +1,4 @@
-import type {
-  AnimationEffectAPI,
-  AnimationOptions,
-  TimeAnimationOptions,
-} from '../types';
+import type { AnimationEffectAPI, AnimationOptions, TimeAnimationOptions } from '../types';
 import { getElement, getNamedEffect, measure, mutate } from './common';
 import fastdom from 'fastdom';
 
@@ -17,10 +13,7 @@ function prepareAnimation(
   if (preset && (preset as AnimationEffectAPI<'time'>).prepare && element) {
     const domApi = { measure: measure(element), mutate: mutate(element) };
 
-    (preset as AnimationEffectAPI<'time'>).prepare!(
-      animation as TimeAnimationOptions,
-      domApi,
-    );
+    (preset as AnimationEffectAPI<'time'>).prepare!(animation as TimeAnimationOptions, domApi);
   }
 
   callback && fastdom.mutate(callback);

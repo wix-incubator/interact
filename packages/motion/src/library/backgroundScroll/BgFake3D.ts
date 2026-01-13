@@ -1,9 +1,4 @@
-import type {
-  BgFake3D,
-  RangeOffset,
-  ScrubAnimationOptions,
-  DomApi,
-} from '../../types';
+import type { BgFake3D, RangeOffset, ScrubAnimationOptions, DomApi } from '../../types';
 import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
 const PERSPECTIVE = 100;
@@ -92,9 +87,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
           transform: `perspective(${PERSPECTIVE}px) translateZ(0px)`,
         },
         {
-          transform: `perspective(${PERSPECTIVE}px) translateZ(${parseFloat(
-            zoom.toFixed(2),
-          )}px)`,
+          transform: `perspective(${PERSPECTIVE}px) translateZ(${parseFloat(zoom.toFixed(2))}px)`,
         },
       ],
     },

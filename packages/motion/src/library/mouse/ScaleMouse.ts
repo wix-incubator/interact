@@ -35,8 +35,7 @@ class ScaleMouseAnimation extends CustomMouse {
     let scaleY = 1;
 
     if (axis === 'both' || axis === 'horizontal') {
-      translateX =
-        mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+      translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
       scaleX =
         progressX < 0.5
           ? mapRange(0, 0.5, scale, 1, progressX)
@@ -44,8 +43,7 @@ class ScaleMouseAnimation extends CustomMouse {
     }
 
     if (axis === 'both' || axis === 'vertical') {
-      translateY =
-        mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+      translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
       scaleY =
         progressY < 0.5
           ? mapRange(0, 0.5, scale, 1, progressY)
@@ -54,8 +52,7 @@ class ScaleMouseAnimation extends CustomMouse {
 
     // scale is uniform so we use the smaller scale value if scale < 1
     // and the bigger scale value if scale > 1
-    const scaleBoth =
-      scale < 1 ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
+    const scaleBoth = scale < 1 ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
 
     const units = getCssUnits(distance.type);
 
@@ -68,9 +65,7 @@ class ScaleMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -93,6 +88,5 @@ export default function create(
     scale: power ? paramsMap[scaleDirection][power].scale : scale,
   };
 
-  return (target: HTMLElement) =>
-    new ScaleMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new ScaleMouseAnimation(target, animationOptions);
 }

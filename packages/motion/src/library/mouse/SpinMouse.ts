@@ -1,9 +1,4 @@
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  SpinMouse,
-  Progress,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, SpinMouse, Progress } from '../../types';
 import { getMouseTransitionEasing, getAngleInDeg } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
@@ -14,10 +9,7 @@ class SpinMouseAnimation extends CustomMouse {
     const rotation =
       getAngleInDeg(
         [0.5, 0.5],
-        [
-          axis === 'vertical' ? 0 : progressX,
-          axis === 'horizontal' ? 0 : progressY,
-        ],
+        [axis === 'vertical' ? 0 : progressX, axis === 'horizontal' ? 0 : progressY],
         90,
       ) * invert;
 
@@ -30,22 +22,17 @@ class SpinMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing = 'linear' } = options;
   const { inverted = false, axis = 'both' } = options.namedEffect as SpinMouse;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     axis,
   };
 
-  return (target: HTMLElement) =>
-    new SpinMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new SpinMouseAnimation(target, animationOptions);
 }

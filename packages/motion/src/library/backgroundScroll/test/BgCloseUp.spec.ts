@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import { backgroundScrollAnimations } from '../index';
 import { baseMockOptions } from './testUtils';
-import type {
-  BackgroundScrollAnimation,
-  AnimationData,
-} from '../../../types';
+import type { BackgroundScrollAnimation, AnimationData } from '../../../types';
 
 describe('BgCloseUp', () => {
   test('Default values', () => {

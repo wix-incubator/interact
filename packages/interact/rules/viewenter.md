@@ -6,13 +6,15 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 **Use Case**: One-time entrance animations that play when elements first become visible (e.g., hero sections, content blocks, images, cards)
 
-**When to Apply**: 
+**When to Apply**:
+
 - For entrance animations that should only happen once
 - When you want elements to stay in their final animated state
 - For progressive content reveal as user scrolls
 - When implementing lazy-loading visual effects
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_SELECTOR]',
@@ -36,6 +38,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 ```
 
 **Variables**:
+
 - `[SOURCE_SELECTOR]`: Unique identifier for element that triggers when visible (often same as target key)
 - `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
 - `[VISIBILITY_THRESHOLD]`: Number between 0-1 indicating how much of element must be visible (e.g., 0.3 = 30%)
@@ -48,6 +51,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier for animation chaining
 
 **Example - Hero Section Entrance**:
+
 ```typescript
 {
     key: 'hero-section',
@@ -77,6 +81,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 ```
 
 **Example - Content Block Fade In**:
+
 ```typescript
 {
     key: 'content-block',
@@ -106,12 +111,14 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Use Case**: Animations that retrigger every time elements enter the viewport, often with separate trigger and target elements (e.g., scroll-triggered counters, image reveals, interactive sections)
 
 **When to Apply**:
+
 - When animations should replay on each scroll encounter
 - For scroll-triggered interactive elements
 - When using separate observer and animation targets
 - For elements that might leave and re-enter viewport
 
 **Pattern**:
+
 ```typescript
 {
     key: '[OBSERVER_SELECTOR]',
@@ -135,11 +142,13 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 ```
 
 **Variables**:
+
 - `[OBSERVER_SELECTOR]`: CSS selector for element that acts as scroll trigger
 - `[ANIMATION_TARGET_SELECTOR]`: CSS selector for element that gets animated (different from observer)
 - Other variables same as Rule 1
 
 **Example - Image Reveal on Scroll**:
+
 ```typescript
 {
     key: 'image-trigger-zone',
@@ -168,6 +177,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 ```
 
 **Example - Counter Animation Repeat**:
+
 ```typescript
 {
     key: 'stats-section',
@@ -199,12 +209,14 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 **Use Case**: Animations that play forward when entering viewport and reverse when leaving, using separate observer and target elements (e.g., parallax effects, reveal/hide content, scroll-responsive UI elements)
 
 **When to Apply**:
+
 - For animations that should reverse when element exits viewport
 - When creating scroll-responsive reveals
 - For elements that animate in and out smoothly
 - When observer element is different from animated element
 
 **Pattern**:
+
 ```typescript
 {
     key: '[OBSERVER_SELECTOR]',
@@ -230,6 +242,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 Same as Rule 2
 
 **Example - Content Reveal with Hide**:
+
 ```typescript
 {
     key: 'content-trigger',
@@ -258,6 +271,7 @@ Same as Rule 2
 ```
 
 **Example - Navigation Bar Reveal**:
+
 ```typescript
 {
     key: 'page-content',
@@ -292,12 +306,14 @@ Same as Rule 2
 **Use Case**: Looping animations that start when element enters viewport and can be paused/resumed (e.g., ambient animations, loading states, decorative effects)
 
 **When to Apply**:
+
 - For continuous animations that should start on viewport enter
 - When you need pause/resume control over scroll-triggered loops
 - For ambient or decorative animations
 - When creating scroll-activated background effects
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_SELECTOR]',
@@ -322,11 +338,13 @@ Same as Rule 2
 ```
 
 **Variables**:
+
 - `[ITERATION_COUNT]`: Number of iterations or Infinity for continuous looping
 - `[ALTERNATE_BOOLEAN]`: true/false - whether to reverse on alternate iterations
 - Other variables same as Rule 1
 
 **Example - Floating Animation Loop**:
+
 ```typescript
 {
     key: 'floating-elements',
@@ -357,6 +375,7 @@ Same as Rule 2
 ```
 
 **Example - Breathing Light Effect**:
+
 ```typescript
 {
     key: 'ambient-section',
@@ -388,12 +407,14 @@ Same as Rule 2
 **Use Case**: Fine-tuning when animations trigger based on element visibility and viewport positioning (e.g., early triggers, late triggers, precise timing)
 
 **When to Apply**:
+
 - When default triggering timing isn't optimal
 - For elements that need early or late animation triggers
 - When working with very tall or very short elements
 - For precise scroll timing control
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_SELECTOR]',
@@ -415,12 +436,14 @@ Same as Rule 2
 ```
 
 **Variables**:
+
 - `[PRECISE_THRESHOLD]`: Decimal between 0-1 for exact visibility percentage
 - `[VIEWPORT_ADJUSTMENT]`: Pixel or percentage adjustment to viewport detection area
 - `[BEHAVIOR_TYPE]`: 'once', 'repeat', 'alternate', or 'state'
 - Other variables same as Rule 1
 
 **Example - Early Trigger for Tall Elements**:
+
 ```typescript
 {
     key: 'tall-hero-section',
@@ -444,6 +467,7 @@ Same as Rule 2
 ```
 
 **Example - Late Trigger for Precise Timing**:
+
 ```typescript
 {
     key: 'precision-content',
@@ -472,6 +496,7 @@ Same as Rule 2
 ```
 
 **Example - Mobile vs Desktop Thresholds**:
+
 ```typescript
 {
     key: 'responsive-element',
@@ -501,200 +526,205 @@ Same as Rule 2
 **Use Case**: Sequential entrance animations where multiple elements animate with delays (e.g., card grids, list items, team member cards, feature sections)
 
 **When to Apply**:
+
 - When multiple elements should animate in sequence
 - For creating wave or cascade effects
 - When animating lists, grids, or collections
 - For progressive content revelation
 
 **Pattern**:
+
 ```typescript
 [
-    {
-        key: '[ELEMENT_1_SELECTOR]',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: [SHARED_THRESHOLD],
-            inset: '[SHARED_INSET]'
-        },
-        effects: [
-            {
-                [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-                duration: [SHARED_DURATION],
-                easing: '[SHARED_EASING]',
-                delay: [DELAY_1]
-            }
-        ]
+  {
+    key: '[ELEMENT_1_SELECTOR]',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: [SHARED_THRESHOLD],
+      inset: '[SHARED_INSET]',
     },
-    {
-        key: '[ELEMENT_2_SELECTOR]',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: [SHARED_THRESHOLD],
-            inset: '[SHARED_INSET]'
-        },
-        effects: [
-            {
-                [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-                duration: [SHARED_DURATION],
-                easing: '[SHARED_EASING]',
-                delay: [DELAY_2]
-            }
-        ]
-    }
-    // ... additional elements with increasing delays
-]
+    effects: [
+      {
+        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
+        duration: [SHARED_DURATION],
+        easing: '[SHARED_EASING]',
+        delay: [DELAY_1],
+      },
+    ],
+  },
+  {
+    key: '[ELEMENT_2_SELECTOR]',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: [SHARED_THRESHOLD],
+      inset: '[SHARED_INSET]',
+    },
+    effects: [
+      {
+        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
+        duration: [SHARED_DURATION],
+        easing: '[SHARED_EASING]',
+        delay: [DELAY_2],
+      },
+    ],
+  },
+  // ... additional elements with increasing delays
+];
 ```
 
 **Variables**:
+
 - `[ELEMENT_N_SELECTOR]`: CSS selector for each individual element in sequence
 - `[DELAY_N]`: Progressive delay values (e.g., 0, 100, 200, 300ms)
 - `[SHARED_*]`: Common values used across all elements in the sequence
 - Other variables same as Rule 1
 
 **Example - Card Grid Stagger**:
+
 ```typescript
 [
-    {
-        key: 'card-1',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.3
-        },
-        effects: [
-            {
-                namedEffect: {
-                    type: 'SlideIn',
-                    direction: 'bottom',
-                    power: 'medium'
-                },
-                duration: 600,
-                easing: 'ease-out',
-                fill: 'backwards',
-                delay: 0
-            }
-        ]
+  {
+    key: 'card-1',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.3,
     },
-    {
-        key: 'card-2',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.3
+    effects: [
+      {
+        namedEffect: {
+          type: 'SlideIn',
+          direction: 'bottom',
+          power: 'medium',
         },
-        effects: [
-            {
-                namedEffect: {
-                    type: 'SlideIn',
-                    direction: 'bottom',
-                    power: 'medium'
-                },
-                duration: 600,
-                easing: 'ease-out',
-                fill: 'backwards',
-                delay: 150
-            }
-        ]
+        duration: 600,
+        easing: 'ease-out',
+        fill: 'backwards',
+        delay: 0,
+      },
+    ],
+  },
+  {
+    key: 'card-2',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.3,
     },
-    {
-        key: 'card-3',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.3
+    effects: [
+      {
+        namedEffect: {
+          type: 'SlideIn',
+          direction: 'bottom',
+          power: 'medium',
         },
-        effects: [
-            {
-                namedEffect: {
-                    type: 'SlideIn',
-                    direction: 'bottom',
-                    power: 'medium'
-                },
-                duration: 600,
-                easing: 'ease-out',
-                fill: 'backwards',
-                delay: 300
-            }
-        ]
-    }
-]
+        duration: 600,
+        easing: 'ease-out',
+        fill: 'backwards',
+        delay: 150,
+      },
+    ],
+  },
+  {
+    key: 'card-3',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.3,
+    },
+    effects: [
+      {
+        namedEffect: {
+          type: 'SlideIn',
+          direction: 'bottom',
+          power: 'medium',
+        },
+        duration: 600,
+        easing: 'ease-out',
+        fill: 'backwards',
+        delay: 300,
+      },
+    ],
+  },
+];
 ```
 
 **Example - Feature List Cascade**:
+
 ```typescript
 [
-    {
-        key: 'feature-item:nth-child(1)',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.4
-        },
-        effects: [
-            {
-                keyframeEffect: {
-                    name: 'item-kf-1',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateX(-30px)' },
-                        { opacity: '1', transform: 'translateX(0)' }
-                    ]
-                },
-                duration: 500,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                fill: 'backwards',
-                delay: 0
-            }
-        ]
+  {
+    key: 'feature-item:nth-child(1)',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.4,
     },
-    {
-        key: 'feature-item:nth-child(2)',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.4
+    effects: [
+      {
+        keyframeEffect: {
+          name: 'item-kf-1',
+          keyframes: [
+            { opacity: '0', transform: 'translateX(-30px)' },
+            { opacity: '1', transform: 'translateX(0)' },
+          ],
         },
-        effects: [
-            {
-                keyframeEffect: {
-                    name: 'item-kf-2',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateX(-30px)' },
-                        { opacity: '1', transform: 'translateX(0)' }
-                    ]
-                },
-                duration: 500,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                fill: 'backwards',
-                delay: 100
-            }
-        ]
+        duration: 500,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        fill: 'backwards',
+        delay: 0,
+      },
+    ],
+  },
+  {
+    key: 'feature-item:nth-child(2)',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.4,
     },
-    {
-        key: 'feature-item:nth-child(3)',
-        trigger: 'viewEnter',
-        params: {
-            type: 'once',
-            threshold: 0.4
+    effects: [
+      {
+        keyframeEffect: {
+          name: 'item-kf-2',
+          keyframes: [
+            { opacity: '0', transform: 'translateX(-30px)' },
+            { opacity: '1', transform: 'translateX(0)' },
+          ],
         },
-        effects: [
-            {
-                keyframeEffect: {
-                    name: 'item-kf-3',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateX(-30px)' },
-                        { opacity: '1', transform: 'translateX(0)' }
-                    ]
-                },
-                duration: 500,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                fill: 'backwards',
-                delay: 200
-            }
-        ]
-    }
-]
+        duration: 500,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        fill: 'backwards',
+        delay: 100,
+      },
+    ],
+  },
+  {
+    key: 'feature-item:nth-child(3)',
+    trigger: 'viewEnter',
+    params: {
+      type: 'once',
+      threshold: 0.4,
+    },
+    effects: [
+      {
+        keyframeEffect: {
+          name: 'item-kf-3',
+          keyframes: [
+            { opacity: '0', transform: 'translateX(-30px)' },
+            { opacity: '1', transform: 'translateX(0)' },
+          ],
+        },
+        duration: 500,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        fill: 'backwards',
+        delay: 200,
+      },
+    ],
+  },
+];
 ```
 
 ---
@@ -702,6 +732,7 @@ Same as Rule 2
 ## Advanced Patterns and Combinations
 
 ### ViewEnter with Animation Chaining
+
 Using effectId to trigger subsequent animations:
 
 ```typescript
@@ -745,6 +776,7 @@ Using effectId to trigger subsequent animations:
 ```
 
 ### Multi-Effect ViewEnter
+
 Animating multiple targets from single viewport trigger:
 
 ```typescript
@@ -806,6 +838,7 @@ Animating multiple targets from single viewport trigger:
 ```
 
 ### Conditional ViewEnter Animations
+
 Combining with conditions for responsive behavior:
 
 ```typescript
@@ -857,7 +890,8 @@ When using `viewEnter` with for entrance animations, elements may briefly appear
 ### Using the `generate` Function
 
 **Import and generate CSS:**
-```typescript
+
+````typescript
 import { generate } from '@wix/interact';
 
 const config: InteractConfig = {
@@ -904,7 +938,7 @@ const html = `
 </body>
 </html>
 `;
-```
+````
 
 ### Generated CSS Behavior
 
@@ -919,14 +953,17 @@ The `generate` function produces CSS that:
 ## Best Practices for ViewEnter Interactions
 
 ### Behavior Guildelines
+
 1. **Use `alternate` and `repeat` types only with a separate source `key` and target `key`** to avoid re-triggering when animation starts or not triggering at all if animated target is out of viewport or clipped
 
 ### Performance Guidelines
+
 1. **Use `once` type for entrance animations** to avoid repeated triggers
 2. **Be careful with separate source/target patterns** - ensure source doesn't get clipped
 3. **Use appropriate thresholds** - avoid triggering too early or too late
 
 ### User Experience Guidelines
+
 1. **Use realistic thresholds** (0.1-0.5) for natural timing
 2. **Use tiny thresholds for huge elements** 0.01-0.05 for elements much larger than viewport
 3. **Provide adequate inset margins** for mobile viewports
@@ -935,6 +972,7 @@ The `generate` function produces CSS that:
 6. **Ensure content is readable** during animations
 
 ### Accessibility Considerations
+
 1. **Respect `prefers-reduced-motion`** for all entrance animations
 2. **Don't rely solely on animations** to convey important information
 3. **Ensure sufficient contrast** during fade-in effects
@@ -943,6 +981,7 @@ The `generate` function produces CSS that:
 ### Threshold and Timing Guidelines
 
 **Recommended Thresholds by Content Type**:
+
 - **Hero sections**: 0.1-0.3 (early trigger)
 - **Content blocks**: 0.3-0.5 (balanced trigger)
 - **Small elements**: 0.5-0.8 (late trigger)
@@ -950,6 +989,7 @@ The `generate` function produces CSS that:
 - **HUge sections**: 0.01-0.05 (ensure trigger)
 
 **Recommended Insets by Device**:
+
 - **Desktop**: '-50px' to '-200px'
 - **Mobile**: '-20px' to '-100px'
 - **Positive insets**: '50px' for precise timing
@@ -957,6 +997,7 @@ The `generate` function produces CSS that:
 ### Common Use Cases by Pattern
 
 **Once Pattern**:
+
 - Hero section entrances
 - Content block reveals
 - Image lazy loading
@@ -964,6 +1005,7 @@ The `generate` function produces CSS that:
 - Call-to-action reveals
 
 **Repeat Pattern**:
+
 - Interactive counters
 - Scroll-triggered galleries
 - Progressive content loading
@@ -971,6 +1013,7 @@ The `generate` function produces CSS that:
 - Dynamic content sections
 
 **Alternate Pattern**:
+
 - Scroll-responsive UI elements
 - Reversible content reveals
 - Navigation state changes
@@ -978,6 +1021,7 @@ The `generate` function produces CSS that:
 - Progressive disclosure
 
 **State Pattern**:
+
 - Ambient animations
 - Background effects
 - Decorative elements
@@ -985,6 +1029,7 @@ The `generate` function produces CSS that:
 - Atmospheric content
 
 **Staggered Animations**:
+
 - Card grids and lists
 - Team member sections
 - Feature comparisons
@@ -994,17 +1039,20 @@ The `generate` function produces CSS that:
 ### Troubleshooting Common Issues
 
 **ViewEnter not triggering**:
+
 - Check if source element is clipped by parent overflow
 - Verify element exists when `Interact.create()` is called
 - Ensure threshold and inset values are appropriate
 - Check for conflicting CSS that might hide elements
 
 **ViewEnter triggering multiple times**:
+
 - Use `once` type for entrance animations
 - Avoid animating the source element if it's also the target
 - Consider using separate source and target elements
 
 **Animation performance issues**:
+
 - Limit concurrent viewEnter observers
 - Use hardware-accelerated properties
 - Avoid animating layout properties

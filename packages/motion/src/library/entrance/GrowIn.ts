@@ -1,9 +1,5 @@
 import type { GrowIn, TimeAnimationOptions } from '../../types';
-import {
-  getCssUnits,
-  INITIAL_FRAME_OFFSET,
-  toKeyframeValue,
-} from '../../utils';
+import { getCssUnits, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-growIn'];
@@ -49,10 +45,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * scale,
       name: fadeIn,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,
@@ -77,8 +70,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
           )})`,
         },
         {
-          transform:
-            'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
+          transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
         },
       ],
     },

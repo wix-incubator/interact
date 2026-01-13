@@ -1,8 +1,4 @@
-import type {
-  ScrubAnimationOptions,
-  ParallaxScroll,
-  AnimationFillMode,
-} from '../../types';
+import type { ScrubAnimationOptions, ParallaxScroll, AnimationFillMode } from '../../types';
 
 const DEFAULT_SPEED = 0.5;
 
