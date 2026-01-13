@@ -27,15 +27,12 @@ export class CustomAnimation {
 
     this._tickCbId = null;
     this.progress = null;
-    this.customEffect = (progress: number | null) =>
-      customEffect(effect.target, progress);
+    this.customEffect = (progress: number | null) => customEffect(effect.target, progress);
 
     // stop loop if animation is removed from the DOM after finish (does not fire 'remove' event)
     this._finishHandler = (_: any) => {
       if (
-        !(this.effect as KeyframeEffect).target
-          ?.getAnimations()
-          .find((a) => a === this._animation)
+        !(this.effect as KeyframeEffect).target?.getAnimations().find((a) => a === this._animation)
       ) {
         this.cancel();
       }
@@ -126,17 +123,13 @@ export class CustomAnimation {
   get oncancel() {
     return this._animation.oncancel;
   }
-  set oncancel(
-    cb: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null,
-  ) {
+  set oncancel(cb: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null) {
     this._animation.oncancel = cb;
   }
   get onfinish() {
     return this._animation.onfinish;
   }
-  set onfinish(
-    cb: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null,
-  ) {
+  set onfinish(cb: ((this: Animation, ev: AnimationPlaybackEvent) => any) | null) {
     this._animation.onfinish = cb;
   }
   get onremove() {

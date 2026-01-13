@@ -12,10 +12,7 @@ const DIRECTIONS: Record<EffectTwoSides, number> = {
   right: -1,
 };
 
-const OFFSCREEN_POSITIONS: Record<
-  EffectTwoSides,
-  Record<'startX' | 'endX', string>
-> = {
+const OFFSCREEN_POSITIONS: Record<EffectTwoSides, Record<'startX' | 'endX', string>> = {
   left: {
     startX: `calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)`,
     endX: `calc(100vw - var(--motion-left, 0px))`,

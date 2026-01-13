@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import BgCloseUp from '../BgCloseUp';
 import { baseMockOptions } from './testUtils';
-import type {
-  BgCloseUp as BgCloseUpType,
-  AnimationData,
-} from '../../../types';
+import type { BgCloseUp as BgCloseUpType, AnimationData } from '../../../types';
 
 describe('BgCloseUp', () => {
   test('Default values', () => {

@@ -18,8 +18,7 @@ describe('MoveScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
@@ -71,8 +70,7 @@ describe('MoveScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'translate(283px, -283px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(283px, -283px) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
@@ -98,8 +96,7 @@ describe('MoveScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'translate(-75px, 130px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-75px, 130px) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
@@ -125,8 +122,7 @@ describe('MoveScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
@@ -152,8 +148,7 @@ describe('MoveScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'translate(-400px, 693px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-400px, 693px) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
@@ -183,8 +178,7 @@ describe('MoveScroll', () => {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -207,12 +201,10 @@ describe('MoveScroll', () => {
         endOffsetAdd: '0px',
         keyframes: [
           {
-            transform:
-              'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(-200px, 346px) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translate(200px, -346px) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translate(200px, -346px) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },

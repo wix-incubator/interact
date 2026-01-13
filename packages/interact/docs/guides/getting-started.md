@@ -58,11 +58,11 @@ Interact.create(config);
 
 `@wix/interact` provides three entry points for different use cases:
 
-| Entry Point | Use Case | Key Exports |
-|-------------|----------|-------------|
-| `@wix/interact/react` | React applications | `Interaction`, `createInteractRef`, `Interact` |
-| `@wix/interact/web` | Web Components | `Interact`, `defineInteractElement`, `add`, `remove` |
-| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove` |
+| Entry Point           | Use Case           | Key Exports                                          |
+| --------------------- | ------------------ | ---------------------------------------------------- |
+| `@wix/interact/react` | React applications | `Interaction`, `createInteractRef`, `Interact`       |
+| `@wix/interact/web`   | Web Components     | `Interact`, `defineInteractElement`, `add`, `remove` |
+| `@wix/interact`       | Vanilla JS         | `Interact`, `add`, `remove`                          |
 
 Choose the entry point that matches your framework:
 
@@ -92,23 +92,21 @@ import { Interact, Interaction, InteractConfig } from '@wix/interact/react';
 const config: InteractConfig = {
   interactions: [
     {
-      key: 'my-image',            // What element triggers the interaction
-      trigger: 'hover',           // What user action starts it
+      key: 'my-image', // What element triggers the interaction
+      trigger: 'hover', // What user action starts it
       effects: [
         {
           keyframeEffect: {
             name: 'scale',
-            keyframes: [
-              { scale: 2 }
-            ]
+            keyframes: [{ scale: 2 }],
           },
-          duration: 300,          // Animation duration in milliseconds
-          easing: 'ease-out'      // Animation timing
-        }
-      ]
-    }
+          duration: 300, // Animation duration in milliseconds
+          easing: 'ease-out', // Animation timing
+        },
+      ],
+    },
   ],
-  effects: {}
+  effects: {},
 };
 ```
 
@@ -144,20 +142,21 @@ For vanilla JavaScript or non-React frameworks, use the `interact-element` custo
 ```html
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>My First Interaction</title>
-</head>
-<body>
+  </head>
+  <body>
     <interact-element data-interact-key="my-image">
-        <img id="my-image" src="logo.png" alt="Logo" />
+      <img id="my-image" src="logo.png" alt="Logo" />
     </interact-element>
 
     <script type="module" src="./main.js"></script>
-</body>
+  </body>
 </html>
 ```
 
 **Key points:**
+
 - Wrap your element in `<interact-element>`
 - Use `data-interact-key` to identify the element (must be unique)
 - The key in your interaction config should be a unique string that matches the value of `data-interact-key` for that element
@@ -170,25 +169,23 @@ import { Interact } from '@wix/interact/web';
 
 // Create the interaction configuration
 const config = {
-    interactions: [
+  interactions: [
+    {
+      key: 'my-image', // What element triggers the interaction
+      trigger: 'hover', // What user action starts it
+      effects: [
         {
-            key: 'my-image',            // What element triggers the interaction
-            trigger: 'hover',           // What user action starts it
-            effects: [
-                {
-                    keyframeEffect: {
-                        name: 'scale',
-                        keyframes: [
-                            { scale: 2 }
-                        ]
-                    },
-                    duration: 300,          // Animation duration in milliseconds
-                    easing: 'ease-out'      // Animation timing
-                }
-            ]
-        }
-    ],
-    effects: {}
+          keyframeEffect: {
+            name: 'scale',
+            keyframes: [{ scale: 2 }],
+          },
+          duration: 300, // Animation duration in milliseconds
+          easing: 'ease-out', // Animation timing
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 // Initialize the interaction
@@ -202,12 +199,15 @@ Interact.create(config);
 Let's break down what each part does:
 
 ### The `interactions` Array
+
 This contains all your interactions. Each interaction defines:
+
 - **key**: Which element triggers the interaction
 - **trigger**: What user action starts it
 - **effects**: What animations happen
 
 ### The `effects` Object
+
 Define reusable effects that can be referenced by `effectId`:
 
 ```typescript
@@ -217,25 +217,24 @@ const config = {
       duration: 1000,
       keyframeEffect: {
         name: 'fade-in',
-        keyframes: [
-          { opacity: 0 },
-          { opacity: 1 }
-        ]
-      }
-    }
+        keyframes: [{ opacity: 0 }, { opacity: 1 }],
+      },
+    },
   },
   interactions: [
     {
       key: 'hero',
       trigger: 'viewEnter',
-      effects: [{ effectId: 'fade-in' }]  // Reference the effect
-    }
-  ]
+      effects: [{ effectId: 'fade-in' }], // Reference the effect
+    },
+  ],
 };
 ```
 
 ### Effect Properties
+
 Each effect defines:
+
 - **key**: Which element gets animated (if missing it defaults to source)
 - **keyframeEffect**: An object containing a `keyframes` property that maps to an array of keyframe objects, and a `name` containing a unique name for that effect
 - **duration**: How long the animation takes
@@ -246,6 +245,7 @@ Each effect defines:
 ## Common Patterns
 
 ### Hover with Scale and Rotation
+
 ```javascript
 {
     key: 'my-element',
@@ -268,6 +268,7 @@ Each effect defines:
 ```
 
 ### Click to Toggle State
+
 ```javascript
 {
     key: 'my-button',
@@ -283,6 +284,7 @@ Each effect defines:
 ```
 
 ### Entrance Animation on Viewport Entry
+
 ```javascript
 {
     key: 'my-element',
@@ -306,11 +308,11 @@ Each effect defines:
 
 ## React vs Web Components
 
-| Approach | When to Use |
-|----------|-------------|
-| **React (`Interaction` component)** | React applications, automatic cleanup |
-| **Web Components (`interact-element`)** | Framework-agnostic projects, declerative creation and automatic DOM-changes handling |
-| **Mini** | Framework-agnostic projects, if no need for dynamic DOM changes or integrating with other frameworks |
+| Approach                                | When to Use                                                                                          |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **React (`Interaction` component)**     | React applications, automatic cleanup                                                                |
+| **Web Components (`interact-element`)** | Framework-agnostic projects, declerative creation and automatic DOM-changes handling                 |
+| **Mini**                                | Framework-agnostic projects, if no need for dynamic DOM changes or integrating with other frameworks |
 
 ### React Example (Recommended for React)
 
@@ -361,19 +363,19 @@ const config: InteractConfig = {
   interactions: [
     {
       key: 'hero',
-      trigger: 'viewEnter',  // TypeScript validates trigger types
+      trigger: 'viewEnter', // TypeScript validates trigger types
       effects: [
         {
           duration: 1000,
           keyframeEffect: {
             name: 'fade',
-            keyframes: [{ opacity: 0 }, { opacity: 1 }]
-          }
-        }
-      ]
-    }
+            keyframes: [{ opacity: 0 }, { opacity: 1 }],
+          },
+        },
+      ],
+    },
   ],
-  effects: {}
+  effects: {},
 };
 
 // Full type inference
@@ -387,6 +389,7 @@ const instance = Interact.create(config);
 Always clean up interactions when components unmount or pages change:
 
 ### React
+
 ```tsx
 useEffect(() => {
   const instance = Interact.create(config);
@@ -395,6 +398,7 @@ useEffect(() => {
 ```
 
 ### Vanilla JavaScript
+
 ```javascript
 // On page unload or SPA navigation
 window.addEventListener('beforeunload', () => {

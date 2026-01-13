@@ -5,6 +5,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Architecture & Design
 
 ### System Architecture
+
 - [**Architecture Overview**](architecture.md) - High-level system design
   - [Core Components](architecture.md#components) - Main classes and modules
   - [Data Flow](architecture.md#data-flow) - How interactions are processed
@@ -12,6 +13,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Memory Management](architecture.md#memory) - Lifecycle and cleanup
 
 ### Design Decisions
+
 - [**Design Philosophy**](design-decisions.md) - Why we built it this way
   - [Configuration-driven Approach](design-decisions.md#config-driven) - Declarative vs imperative
   - [Custom Elements Choice](design-decisions.md#custom-elements) - Web standards adoption
@@ -21,6 +23,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Extending the System
 
 ### Custom Triggers
+
 - [**Creating Custom Triggers**](custom-triggers.md) - Build your own trigger types
   - [Trigger Handler Interface](custom-triggers.md#interface) - Required implementation
   - [Event Registration](custom-triggers.md#events) - DOM event handling
@@ -29,6 +32,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Testing Custom Triggers](custom-triggers.md#testing) - Testing strategies
 
 ### Custom Effects
+
 - [**Creating Custom Effects**](custom-effects.md) - Extend animation capabilities
   - [Effect Interface](custom-effects.md#interface) - Effect implementation
   - [Motion Integration](custom-effects.md#motion) - Using @wix/motion APIs
@@ -36,6 +40,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [State Management](custom-effects.md#state) - Effect state handling
 
 ### Plugin System
+
 - [**Plugin Architecture**](plugins.md) - Extensible plugin system
   - [Plugin Interface](plugins.md#interface) - Plugin development
   - [Lifecycle Hooks](plugins.md#hooks) - Plugin integration points
@@ -45,6 +50,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Performance Deep Dive
 
 ### Optimization Strategies
+
 - [**Performance Optimization**](performance-optimization.md) - Advanced performance techniques
   - [GPU Acceleration](performance-optimization.md#gpu) - Hardware acceleration
   - [Batching Operations](performance-optimization.md#batching) - Efficient DOM updates
@@ -52,6 +58,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Memory Pooling](performance-optimization.md#pooling) - Object reuse strategies
 
 ### Profiling and Analysis
+
 - [**Performance Profiling**](performance-profiling.md) - Measuring and analyzing performance
   - [Browser DevTools](performance-profiling.md#devtools) - Built-in profiling tools
   - [Custom Metrics](performance-profiling.md#metrics) - Application-specific measurements
@@ -59,6 +66,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Real-world Monitoring](performance-profiling.md#monitoring) - Production monitoring
 
 ### Optimization Patterns
+
 - [**Animation Patterns**](optimization-patterns.md) - Performant animation techniques
   - [Transform-based Animations](optimization-patterns.md#transforms) - GPU-friendly animations
   - [Composite Layers](optimization-patterns.md#compositing) - Layer management
@@ -68,6 +76,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Browser Compatibility
 
 ### Polyfills and Fallbacks
+
 - [**Browser Support**](browser-support.md) - Comprehensive compatibility guide
   - [Required Polyfills](browser-support.md#polyfills) - Essential polyfills
   - [Feature Detection](browser-support.md#detection) - Runtime capability checking
@@ -75,6 +84,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Progressive Enhancement](browser-support.md#enhancement) - Feature layering
 
 ### Platform-Specific Issues
+
 - [**Platform Considerations**](platform-issues.md) - Platform-specific challenges
   - [iOS Safari](platform-issues.md#ios) - iOS-specific issues and workarounds
   - [Android Chrome](platform-issues.md#android) - Android considerations
@@ -84,6 +94,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Debugging and Troubleshooting
 
 ### Advanced Debugging
+
 - [**Deep Debugging**](debugging.md) - Advanced debugging techniques
   - [Animation Inspector](debugging.md#inspector) - Browser animation tools
   - [Custom Logging](debugging.md#logging) - Debug output strategies
@@ -91,6 +102,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Performance Debugging](debugging.md#performance) - Performance issue diagnosis
 
 ### Common Issues
+
 - [**Troubleshooting Guide**](troubleshooting.md) - Solving complex problems
   - [Memory Leaks](troubleshooting.md#memory-leaks) - Identifying and fixing leaks
   - [Performance Issues](troubleshooting.md#performance) - Performance problem solving
@@ -100,6 +112,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Security Considerations
 
 ### Security Best Practices
+
 - [**Security Guide**](security.md) - Security considerations for interactions
   - [XSS Prevention](security.md#xss) - Cross-site scripting prevention
   - [Content Security Policy](security.md#csp) - CSP compatibility
@@ -109,6 +122,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Contributing
 
 ### Development Setup
+
 - [**Contributing Guide**](contributing.md) - How to contribute to the project
   - [Development Environment](contributing.md#environment) - Local setup
   - [Code Standards](contributing.md#standards) - Coding conventions
@@ -116,6 +130,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Documentation Standards](contributing.md#docs) - Documentation guidelines
 
 ### Release Process
+
 - [**Release Management**](release-process.md) - How releases are managed
   - [Versioning Strategy](release-process.md#versioning) - Semantic versioning
   - [Change Management](release-process.md#changes) - Breaking change policies
@@ -125,12 +140,14 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Experimental Features
 
 ### Upcoming Features
+
 - [**Experimental APIs**](experimental.md) - Preview of future features
   - [WebGL Integration](experimental.md#webgl) - 3D animation support
   - [AI-driven Animations](experimental.md#ai) - Machine learning integration
   - [Voice/Gesture Triggers](experimental.md#voice-gesture) - Alternative input methods
 
 ### Feature Flags
+
 - [**Feature Flags**](feature-flags.md) - Experimental feature control
   - [Enabling Features](feature-flags.md#enabling) - How to enable experimental features
   - [Stability Warnings](feature-flags.md#stability) - Usage considerations
@@ -139,6 +156,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Technical Specifications
 
 ### API Contracts
+
 - [**API Specifications**](api-specs.md) - Detailed API contracts
   - [Type Definitions](api-specs.md#types) - Complete TypeScript definitions
   - [Interface Contracts](api-specs.md#contracts) - Implementation requirements
@@ -146,6 +164,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
   - [Backwards Compatibility](api-specs.md#compatibility) - API stability guarantees
 
 ### Internal APIs
+
 - [**Internal Documentation**](internal-apis.md) - Internal implementation details
   - [Private Methods](internal-apis.md#private) - Internal method documentation
   - [State Management](internal-apis.md#state) - Internal state handling
@@ -155,6 +174,7 @@ Deep-dive technical documentation for power users, contributors, and developers 
 ## Research and Background
 
 ### Industry Best Practices
+
 - [**Industry Analysis**](industry.md) - How we compare to industry standards
   - [Competitive Analysis](industry.md#competition) - Comparison with other libraries
   - [Best Practices](industry.md#practices) - Industry-standard practices

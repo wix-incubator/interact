@@ -68,67 +68,64 @@ function getObserver(options: ViewEnterParams, isSafeMode: boolean = false) {
   }
 
   const config: IntersectionObserverInit = isSafeMode
-  ? SAFE_OBSERVER_CONFIG
-  : {
-      root: null,
-      rootMargin: options.inset
-        ? `${options.inset} 0px ${options.inset}`
-        : '0px',
-      threshold: options.threshold,
-    };
+    ? SAFE_OBSERVER_CONFIG
+    : {
+        root: null,
+        rootMargin: options.inset ? `${options.inset} 0px ${options.inset}` : '0px',
+        threshold: options.threshold,
+      };
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    const target = entry.target as HTMLElement;
-    const isFirstRun = !elementFirstRun.has(target);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const target = entry.target as HTMLElement;
+      const isFirstRun = !elementFirstRun.has(target);
 
-    if (isFirstRun) {
-      elementFirstRun.add(target);
+      if (isFirstRun) {
+        elementFirstRun.add(target);
 
-      if (options.useSafeViewEnter && !entry.isIntersecting) {
-        fastdom.measure(() => {
-          const sourceHeight = entry.boundingClientRect.height;
-          const rootHeight = entry.rootBounds?.height;
+        if (options.useSafeViewEnter && !entry.isIntersecting) {
+          fastdom.measure(() => {
+            const sourceHeight = entry.boundingClientRect.height;
+            const rootHeight = entry.rootBounds?.height;
 
-          if (!rootHeight) {
-            return;
-          }
+            if (!rootHeight) {
+              return;
+            }
 
-          const threshold = Array.isArray(options.threshold)
-            ? Math.min(...options.threshold)
-            : options.threshold;
+            const threshold = Array.isArray(options.threshold)
+              ? Math.min(...options.threshold)
+              : options.threshold;
 
-          const needsSafeObserver =
-            threshold && sourceHeight * threshold > rootHeight;
+            const needsSafeObserver = threshold && sourceHeight * threshold > rootHeight;
 
-          if (needsSafeObserver) {
-            fastdom.mutate(() => {
-              observer.unobserve(target);
-              const safeObserver = getObserver(options, true);
-              elementObserverMap.set(target, safeObserver);
-              safeObserver.observe(target);
-            });
-          }
-        });
-        return;
+            if (needsSafeObserver) {
+              fastdom.mutate(() => {
+                observer.unobserve(target);
+                const safeObserver = getObserver(options, true);
+                elementObserverMap.set(target, safeObserver);
+                safeObserver.observe(target);
+              });
+            }
+          });
+          return;
+        }
       }
-    }
 
-    const type = options.type || 'once';
+      const type = options.type || 'once';
 
-    if (entry.isIntersecting || (type === 'alternate' && !isFirstRun)) {
-      // For alternate type, handle exit using same observer as entry
-      invokeHandlers(target, entry.isIntersecting);
+      if (entry.isIntersecting || (type === 'alternate' && !isFirstRun)) {
+        // For alternate type, handle exit using same observer as entry
+        invokeHandlers(target, entry.isIntersecting);
 
-      if (type === 'once') {
-        observer.unobserve(entry.target);
-        elementFirstRun.delete(target);
+        if (type === 'once') {
+          observer.unobserve(entry.target);
+          elementFirstRun.delete(target);
+        }
       }
-    }
-    // Note: repeat and state exit handling is done by a separate exit observer
-    // that watches when element is completely out of view
-  });
-}, config);
+      // Note: repeat and state exit handling is done by a separate exit observer
+      // that watches when element is completely out of view
+    });
+  }, config);
 
   observers[key] = observer;
 

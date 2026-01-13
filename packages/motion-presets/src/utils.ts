@@ -1,7 +1,5 @@
-import { cssEasings, getCssUnits, getEasing } from '@wix/motion';
+import { cssEasings, jsEasings } from '@wix/motion';
 import type { EffectFourDirections, Point, ScrubTransitionEasing } from '@wix/motion';
-
-export { getCssUnits, getEasing };
 
 export const INITIAL_FRAME_OFFSET = 1e-6;
 
@@ -138,6 +136,22 @@ export function transformPolarToXY(angle: number, distance: number) {
   const x = Math.cos(radians) * distance;
   const y = Math.sin(radians) * distance;
   return [x, y];
+}
+
+export function getCssUnits(type: 'percentage' | string) {
+  return type === 'percentage' ? '%' : type || 'px';
+}
+
+export function getEasing(easing?: keyof typeof cssEasings | string): string {
+  return easing
+    ? cssEasings[easing as keyof typeof cssEasings] || easing
+    : cssEasings.linear;
+}
+
+export function getJsEasing(
+  easing?: keyof typeof jsEasings | string,
+): ((t: number) => number) | undefined {
+  return easing ? jsEasings[easing as keyof typeof jsEasings] : undefined;
 }
 
 export function getCssUnitValue(length: { value: number; type: string }) {

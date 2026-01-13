@@ -27,8 +27,7 @@ describe('Breathe', () => {
             {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
@@ -44,8 +43,7 @@ describe('Breathe', () => {
             },
             {
               offset: 1,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
           ],
         },
@@ -79,8 +77,7 @@ describe('Breathe', () => {
             {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
@@ -114,8 +111,7 @@ describe('Breathe', () => {
             },
             {
               offset: 1,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
           ],
         },
@@ -146,8 +142,7 @@ describe('Breathe', () => {
             {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
@@ -163,8 +158,7 @@ describe('Breathe', () => {
             },
             {
               offset: 1,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
           ],
         },
@@ -197,8 +191,7 @@ describe('Breathe', () => {
             {
               easing: 'ease-out',
               offset: 0,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
             {
               easing: 'ease-in-out',
@@ -214,8 +207,7 @@ describe('Breathe', () => {
             },
             {
               offset: 1,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
           ],
         },
@@ -247,8 +239,7 @@ describe('Breathe', () => {
             {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
@@ -264,8 +255,7 @@ describe('Breathe', () => {
             },
             {
               offset: 1,
-              transform:
-                ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
+              transform: ' translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))',
             },
           ],
         },

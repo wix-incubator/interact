@@ -44,11 +44,7 @@ export type AnimationFillMode = 'none' | 'backwards' | 'forwards' | 'both';
 export type EffectTwoSides = 'left' | 'right';
 
 export type EffectFourDirections = 'top' | 'right' | 'bottom' | 'left';
-export type EffectFourCorners =
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left';
+export type EffectFourCorners = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 export type EffectEightDirections = EffectFourDirections | EffectFourCorners;
 export type EffectPower = 'soft' | 'medium' | 'hard';
 export type EffectScrollRange = 'in' | 'out' | 'continuous';
@@ -69,9 +65,7 @@ export type AnimationEffectAPI<Enum extends keyof AnimationOptionsTypes> = {
   prepare?: (options: AnimationOptionsTypes[Enum], dom?: DomApi) => void;
 };
 
-export type WebAnimationEffectFactory<
-  Enum extends keyof AnimationOptionsTypes,
-> = (
+export type WebAnimationEffectFactory<Enum extends keyof AnimationOptionsTypes> = (
   animationOptions: AnimationOptionsTypes[Enum],
   dom?: DomApi,
   options?: Record<string, any>,
@@ -94,9 +88,7 @@ export interface CustomMouseAnimationInstance extends MouseAnimationInstance {
   getProgress: () => Progress;
 }
 
-export type MouseAnimationFactory = (
-  element: HTMLElement,
-) => MouseAnimationInstance;
+export type MouseAnimationFactory = (element: HTMLElement) => MouseAnimationInstance;
 
 export type MouseAnimationFactoryCreate = (
   options: ScrubAnimationOptions,
@@ -114,9 +106,7 @@ export type CustomEffect =
 
 export type AnimationExtraOptions = {
   effectId?: string;
-  effect?: (
-    progress: () => number | { x: number | undefined; y: number | undefined },
-  ) => void;
+  effect?: (progress: () => number | { x: number | undefined; y: number | undefined }) => void;
 };
 
 export type AnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> = (
@@ -128,9 +118,7 @@ export type AnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> = (
 export type MotionAnimationOptions<T extends keyof AnimationOptionsTypes> =
   AnimationOptionsTypes[T];
 
-export type MeasureCallback = (
-  fn: (target: HTMLElement | null) => void,
-) => void;
+export type MeasureCallback = (fn: (target: HTMLElement | null) => void) => void;
 export type DomApi = { measure: MeasureCallback; mutate: MeasureCallback };
 
 export type NamedEffectFunction<TNamedEffect extends NamedEffect = NamedEffect> = (
@@ -139,21 +127,10 @@ export type NamedEffectFunction<TNamedEffect extends NamedEffect = NamedEffect> 
   config?: Record<string, any>,
 ) => AnimationData[];
 
-export type ScrubTransitionEasing =
-  | 'linear'
-  | 'hardBackOut'
-  | 'easeOut'
-  | 'elastic'
-  | 'bounce';
+export type ScrubTransitionEasing = 'linear' | 'hardBackOut' | 'easeOut' | 'elastic' | 'bounce';
 
 export type RangeOffset = {
-  name?:
-    | 'entry'
-    | 'exit'
-    | 'contain'
-    | 'cover'
-    | 'entry-crossing'
-    | 'exit-crossing';
+  name?: 'entry' | 'exit' | 'contain' | 'cover' | 'entry-crossing' | 'exit-crossing';
   offset?: LengthPercentage;
 };
 
@@ -216,8 +193,7 @@ export type AnimationDataForScrub = ScrubAnimationDataBase & {
   endOffsetAdd?: string;
 };
 
-export type AnimationData = (TimeAnimationOptions | AnimationDataForScrub) &
-  AnimationDataExtra;
+export type AnimationData = (TimeAnimationOptions | AnimationDataForScrub) & AnimationDataExtra;
 
 // TODO: need it?
 export type AnimationProperties = {

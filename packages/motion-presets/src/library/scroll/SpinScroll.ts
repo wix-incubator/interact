@@ -1,8 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  SpinScroll,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll } from '../../types';
 
 const POWER_MAP = {
   soft: 1,
@@ -43,16 +39,12 @@ export default function create(options: ScrubAnimationOptions) {
       easing,
       keyframes: [
         {
-          transform: `scale(${
-            isIn ? scaleFactor : 1
-          }) rotate(calc(var(--comp-rotate-z, 0deg) + ${
+          transform: `scale(${isIn ? scaleFactor : 1}) rotate(calc(var(--comp-rotate-z, 0deg) + ${
             fromValue * spinDirection
           }deg))`,
         },
         {
-          transform: `scale(${
-            isIn ? 1 : scaleFactor
-          }) rotate(calc(var(--comp-rotate-z, 0deg) + ${
+          transform: `scale(${isIn ? 1 : scaleFactor}) rotate(calc(var(--comp-rotate-z, 0deg) + ${
             toValue * spinDirection
           }deg))`,
         },

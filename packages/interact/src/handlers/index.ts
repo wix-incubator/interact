@@ -1,4 +1,11 @@
-import type { Effect, InteractOptions, PointerTriggerParams, StateParams, TriggerHandlerMap, TriggerType } from '../types';
+import type {
+  Effect,
+  InteractOptions,
+  PointerTriggerParams,
+  StateParams,
+  TriggerHandlerMap,
+  TriggerType,
+} from '../types';
 import viewEnterHandler from './viewEnter';
 import viewProgressHandler from './viewProgress';
 import hoverHandler from './hover';
@@ -6,9 +13,7 @@ import clickHandler from './click';
 import pointerMoveHandler from './pointerMove';
 import animationEndHandler from './animationEnd';
 
-function withA11y<T extends typeof clickHandler | typeof hoverHandler>(
-  handler: T,
-): T {
+function withA11y<T extends typeof clickHandler | typeof hoverHandler>(handler: T): T {
   return {
     add: (
       source: HTMLElement,

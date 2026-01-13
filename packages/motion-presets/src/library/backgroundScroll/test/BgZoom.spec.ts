@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import BgZoom from '../BgZoom';
 import { baseMockOptions } from './testUtils';
-import type {
-  BgZoom as BgZoomType,
-  AnimationData,
-} from '../../../types';
+import type { BgZoom as BgZoomType, AnimationData } from '../../../types';
 
 describe('BgZoom', () => {
   test('Default values', () => {

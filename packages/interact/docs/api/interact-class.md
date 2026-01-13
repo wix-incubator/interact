@@ -24,12 +24,12 @@ class Interact {
   static controllerCache: Map<string, IInteractionController>
   static forceReducedMotion: boolean
   static defineInteractElement?: () => boolean  // Only on web entry
-  
+
   // Instance properties
   dataCache: InteractCache
   addedInteractions: { [interactionId: string]: boolean }
   controllers: Set<IInteractionController>
-  
+
   // Static methods
   static create(config: InteractConfig): Interact
   static getInstance(key: string): Interact | undefined
@@ -60,38 +60,40 @@ class Interact {
 Creates a new `Interact` instance with the provided configuration and initializes it.
 
 **Parameters:**
+
 - `config: InteractConfig` - The interaction configuration object
 
 **Returns:** `Interact` - The initialized interact instance
 
 **Example:**
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 
 const config = {
-  interactions: [{
-    trigger: 'viewEnter',
-    key: 'hero',
-    effects: [{ effectId: 'fade-in' }]
-  }],
+  interactions: [
+    {
+      trigger: 'viewEnter',
+      key: 'hero',
+      effects: [{ effectId: 'fade-in' }],
+    },
+  ],
   effects: {
     'fade-in': {
       duration: 1000,
       keyframeEffect: {
         name: 'fade-in',
-        keyframes: [
-          { opacity: 0 },
-          { opacity: 1 }
-        ]
-      }
-    }
-  }
+        keyframes: [{ opacity: 0 }, { opacity: 1 }],
+      },
+    },
+  },
 };
 
 const interact = Interact.create(config);
 ```
 
 **Details:**
+
 - Automatically calls `init()` on the created instance
 - Adds the instance to the global instances array
 - When using the web entry point, registers the custom `interact-element` if not already registered
@@ -102,11 +104,13 @@ const interact = Interact.create(config);
 Retrieves the `Interact` instance that manages interactions for a specific element key.
 
 **Parameters:**
+
 - `key: string` - The element key to search for
 
 **Returns:** `Interact | undefined` - The instance managing this key, or undefined if not found
 
 **Example:**
+
 ```typescript
 // Get the instance managing interactions for 'hero'
 const instance = Interact.getInstance('hero');
@@ -118,6 +122,7 @@ if (instance) {
 ```
 
 **Use Cases:**
+
 - Finding which instance manages a specific element
 - Debugging interaction configuration
 - Checking if an element has active interactions
@@ -128,11 +133,13 @@ if (instance) {
 Retrieves a cached `InteractionController` by its key.
 
 **Parameters:**
+
 - `key: string | undefined` - The element key to retrieve
 
 **Returns:** `IInteractionController | undefined` - The cached controller, or undefined if not found
 
 **Example:**
+
 ```typescript
 // Get a cached controller
 const controller = Interact.getController('my-element');
@@ -140,10 +147,10 @@ const controller = Interact.getController('my-element');
 if (controller) {
   console.log('Controller found in cache');
   console.log('Connected:', controller.connected);
-  
+
   // You can interact with the controller directly
   controller.toggleEffect('my-effect', 'add');
-  
+
   // Get active effects
   const activeEffects = controller.getActiveEffects();
   console.log('Active effects:', activeEffects);
@@ -151,6 +158,7 @@ if (controller) {
 ```
 
 **Details:**
+
 - Controllers are automatically cached when `add()` is called or when elements connect
 - Cache is cleared when `remove()` is called or when elements disconnect
 - Useful for programmatic element manipulation
@@ -161,12 +169,14 @@ if (controller) {
 Manually sets a controller in the cache. This is typically used internally but can be useful for advanced use cases.
 
 **Parameters:**
+
 - `key: string` - The key to associate with the controller
 - `controller: IInteractionController` - The controller to cache
 
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 import { InteractionController } from '@wix/interact/web';
 
@@ -185,11 +195,13 @@ if (element) {
 Removes a controller from the cache.
 
 **Parameters:**
+
 - `key: string` - The key of the controller to remove
 
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 // Remove a controller from cache
 Interact.deleteController('my-element');
@@ -202,6 +214,7 @@ Destroys all `Interact` instances and clears all cached controllers.
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 // Clean up everything
 Interact.destroy();
@@ -215,24 +228,28 @@ console.log('Cache cleared:', Interact.controllerCache.size === 0);
 Configures global settings for the Interact system.
 
 **Parameters:**
+
 - `options: { forceReducedMotion?: boolean, viewEnter?: object, viewProgress?: object, pointerMove?: object, allowA11yTriggers?: boolean}`
 
 **Example:**
+
 ```typescript
 // Force reduced motion globally
 Interact.setup({
-  forceReducedMotion: true
+  forceReducedMotion: true,
 });
 
 // Configure trigger-specific options
 Interact.setup({
   viewEnter: { threshold: 0.5 },
-  viewProgress: { /* scroll options */ }
+  viewProgress: {
+    /* scroll options */
+  },
 });
 
 // Enable accessibility for click and hover triggers
 Interact.setup({
-  allowA11yTriggers: true
+  allowA11yTriggers: true,
 });
 ```
 
@@ -300,6 +317,7 @@ Available only when importing from `@wix/interact/web`. Defines the `interact-el
 **Returns:** `boolean` - `true` if the element was newly defined, `false` if already defined
 
 **Example:**
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 
@@ -317,6 +335,7 @@ console.log('Was newly defined:', wasNewlyDefined);
 Creates a new `Interact` instance with empty caches.
 
 **Example:**
+
 ```typescript
 // Create an empty instance (typically you'd use Interact.create() instead)
 const instance = new Interact();
@@ -326,6 +345,7 @@ instance.init(config);
 ```
 
 **Details:**
+
 - Initializes empty `dataCache` with effects, conditions, and interactions
 - Initializes empty `addedInteractions` tracking object
 - Does not register with global instances array (use `Interact.create()` for that)
@@ -335,11 +355,13 @@ instance.init(config);
 Initializes the instance with a configuration object.
 
 **Parameters:**
+
 - `config: InteractConfig` - The interaction configuration
 
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 const instance = new Interact();
 
@@ -348,21 +370,22 @@ const config = {
     {
       trigger: 'click',
       key: 'button',
-      effects: [{ effectId: 'bounce' }]
-    }
+      effects: [{ effectId: 'bounce' }],
+    },
   ],
   effects: {
     bounce: {
       duration: 500,
-      namedEffect: 'bounce'
-    }
-  }
+      namedEffect: 'bounce',
+    },
+  },
 };
 
 instance.init(config);
 ```
 
 **Details:**
+
 - Parses and caches the configuration for efficient lookup
 - When using web entry, registers the custom element if not already registered
 - Connects any already-cached controllers to their interactions
@@ -375,6 +398,7 @@ Destroys this instance and cleans up all its resources.
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 const instance = Interact.create(config);
 
@@ -383,6 +407,7 @@ instance.destroy();
 ```
 
 **Details:**
+
 - Disconnects all controllers managed by this instance
 - Removes all media query listeners
 - Clears all interaction state
@@ -393,11 +418,13 @@ instance.destroy();
 Checks if the instance has interactions configured for a specific element key.
 
 **Parameters:**
+
 - `key: string` - The element key to check
 
 **Returns:** `boolean` - True if interactions exist for this key
 
 **Example:**
+
 ```typescript
 const instance = Interact.create(config);
 
@@ -416,6 +443,7 @@ if (instance.has('optional-animation')) {
 ```
 
 **Use Cases:**
+
 - Conditional element creation
 - Debugging configuration issues
 - Dynamic interaction management
@@ -426,11 +454,13 @@ if (instance.has('optional-animation')) {
 Gets the cached interaction data for a specific element key.
 
 **Parameters:**
+
 - `key: string` - The element key to retrieve
 
 **Returns:** `CachedInteractionData | undefined` - The cached data or undefined
 
 **Example:**
+
 ```typescript
 const instance = Interact.create(config);
 
@@ -447,6 +477,7 @@ if (data) {
 Associates a controller with this instance.
 
 **Parameters:**
+
 - `key: string` - The element key
 - `controller: IInteractionController` - The controller to associate
 
@@ -457,6 +488,7 @@ Associates a controller with this instance.
 Removes a controller from this instance and cleans up its state.
 
 **Parameters:**
+
 - `key: string` - The element key to remove
 
 **Returns:** `void`
@@ -466,11 +498,13 @@ Removes a controller from this instance and cleans up its state.
 Clears all interaction state for a specific element key, removing any active interactions and resetting state.
 
 **Parameters:**
+
 - `key: string` - The element key to clear
 
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 // Clear all interaction state for an element
 instance.clearInteractionStateForKey('hero');
@@ -482,6 +516,7 @@ instance.clearInteractionStateForKey('dynamic-element');
 ```
 
 **Details:**
+
 - Removes all interaction IDs associated with the key
 - Clears the `addedInteractions` tracking for those interactions
 - Does not remove the controller from cache (use `deleteController()` for that)
@@ -492,6 +527,7 @@ instance.clearInteractionStateForKey('dynamic-element');
 Clears all media query listeners for a specific element key.
 
 **Parameters:**
+
 - `key: string` - The element key to clear listeners for
 
 **Returns:** `void`
@@ -503,6 +539,7 @@ Clears all media query listeners for a specific element key.
 Contains the parsed and cached interaction configuration.
 
 **Structure:**
+
 ```typescript
 {
   effects: { [effectId: string]: Effect },
@@ -519,6 +556,7 @@ Contains the parsed and cached interaction configuration.
 ```
 
 **Example:**
+
 ```typescript
 const instance = Interact.create(config);
 
@@ -540,13 +578,14 @@ if (heroData) {
 Tracks which interactions have been added to prevent duplicates.
 
 **Example:**
+
 ```typescript
 // Check if specific interactions are active
 const instance = Interact.getInstance('hero');
 if (instance) {
   const interactionIds = Object.keys(instance.addedInteractions);
   console.log('Active interactions:', interactionIds);
-  
+
   // Check specific interaction
   const specificId = 'hero::fade-in::1';
   if (instance.addedInteractions[specificId]) {
@@ -560,14 +599,15 @@ if (instance) {
 Set of all controllers managed by this instance.
 
 **Example:**
+
 ```typescript
 const instance = Interact.create(config);
 
 // Iterate through controllers
-instance.controllers.forEach(controller => {
+instance.controllers.forEach((controller) => {
   console.log(`Controller for ${controller.key}:`, {
     connected: controller.connected,
-    element: controller.element
+    element: controller.element,
   });
 });
 ```
@@ -579,14 +619,15 @@ instance.controllers.forEach(controller => {
 Array of all created `Interact` instances.
 
 **Example:**
+
 ```typescript
 // Get all instances
 console.log('Total instances:', Interact.instances.length);
 
 // Find instances with specific configurations
-const instancesWithHover = Interact.instances.filter(instance => {
-  return Object.values(instance.dataCache.interactions).some(data =>
-    data.triggers.some(trigger => trigger.trigger === 'hover')
+const instancesWithHover = Interact.instances.filter((instance) => {
+  return Object.values(instance.dataCache.interactions).some((data) =>
+    data.triggers.some((trigger) => trigger.trigger === 'hover'),
   );
 });
 
@@ -598,6 +639,7 @@ console.log('Instances with hover interactions:', instancesWithHover.length);
 Global cache of all `InteractionController` instances by key.
 
 **Example:**
+
 ```typescript
 // Get all cached controllers
 console.log('Cached controllers:', Interact.controllerCache.size);
@@ -606,7 +648,7 @@ console.log('Cached controllers:', Interact.controllerCache.size);
 Interact.controllerCache.forEach((controller, key) => {
   console.log(`Controller at ${key}:`, {
     connected: controller.connected,
-    hasElement: !!controller.element
+    hasElement: !!controller.element,
   });
 });
 ```
@@ -616,6 +658,7 @@ Interact.controllerCache.forEach((controller, key) => {
 Global flag to force reduced motion for all interactions.
 
 **Example:**
+
 ```typescript
 // Check or set reduced motion
 console.log('Reduced motion:', Interact.forceReducedMotion);
@@ -631,11 +674,13 @@ The `Interact` class includes built-in error handling and validation:
 ```typescript
 // Configuration validation
 const config = {
-  interactions: [{
-    // Missing key will log an error
-    trigger: 'click',
-    effects: [{ effectId: 'missing-effect' }]
-  }]
+  interactions: [
+    {
+      // Missing key will log an error
+      trigger: 'click',
+      effects: [{ effectId: 'missing-effect' }],
+    },
+  ],
 };
 
 const instance = Interact.create(config);
@@ -645,6 +690,7 @@ const instance = Interact.create(config);
 ## Best Practices
 
 ### 1. Use `Interact.create()` for Standard Usage
+
 ```typescript
 // ✅ Recommended
 const interact = Interact.create(config);
@@ -655,6 +701,7 @@ interact.init(config);
 ```
 
 ### 2. Check Instance Existence
+
 ```typescript
 // ✅ Safe access
 const instance = Interact.getInstance('element');
@@ -668,6 +715,7 @@ instance.clearInteractionStateForKey('element'); // Could throw
 ```
 
 ### 3. Clean Up When Needed
+
 ```typescript
 // ✅ Clean up when removing elements
 instance.destroy();
@@ -677,6 +725,7 @@ instance.deleteController('removed-element');
 ```
 
 ### 4. Use Appropriate Entry Point
+
 ```typescript
 // ✅ For web components (vanilla JS, custom elements)
 import { Interact } from '@wix/interact/web';
@@ -693,19 +742,18 @@ The `Interact` class provides full TypeScript support with proper type inference
 import { Interact, InteractConfig, TimeEffect } from '@wix/interact/web';
 
 const config: InteractConfig = {
-  interactions: [/* ... */],
+  interactions: [
+    /* ... */
+  ],
   effects: {
-    'fade': {
+    fade: {
       duration: 1000,
       keyframeEffect: {
         name: 'fade',
-        keyframes: [
-          { opacity: 0 },
-          { opacity: 1 }
-        ]
-      }
-    } satisfies TimeEffect
-  }
+        keyframes: [{ opacity: 0 }, { opacity: 1 }],
+      },
+    } satisfies TimeEffect,
+  },
 };
 
 const interact: Interact = Interact.create(config);

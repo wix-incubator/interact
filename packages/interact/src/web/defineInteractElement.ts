@@ -10,4 +10,3 @@ export function defineInteractElement() {
 
   return false;
 }
-  

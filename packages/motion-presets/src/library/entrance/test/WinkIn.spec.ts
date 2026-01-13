@@ -159,8 +159,7 @@ describe('WinkIn', () => {
         },
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -219,8 +218,7 @@ describe('WinkIn', () => {
         },
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -280,8 +278,7 @@ describe('WinkIn', () => {
         },
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(50% 0%, 50% 0%, 50% 100%, 50% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',

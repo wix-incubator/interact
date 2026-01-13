@@ -96,10 +96,7 @@ describe('ShapeIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {},
       {
-        keyframes: [
-          { clipPath: 'ellipse(0% 0%)' },
-          { clipPath: 'ellipse(75% 75%)' },
-        ],
+        keyframes: [{ clipPath: 'ellipse(0% 0%)' }, { clipPath: 'ellipse(75% 75%)' }],
       },
     ];
 
@@ -189,8 +186,7 @@ describe('ShapeIn', () => {
         name: 'motion-shapeIn',
         custom: {
           '--motion-shape-start': 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)',
-          '--motion-shape-end':
-            'polygon(50% -50%, 150% 50%, 50% 150%, -50% 50%)',
+          '--motion-shape-end': 'polygon(50% -50%, 150% 50%, 50% 150%, -50% 50%)',
         },
         keyframes: [
           { clipPath: 'var(--motion-shape-start)' },

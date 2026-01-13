@@ -35,9 +35,7 @@ class Tilt3DMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -57,6 +55,5 @@ export default function create(
     perspective: power ? paramsMap[power].perspective : perspective,
   };
 
-  return (target: HTMLElement) =>
-    new Tilt3DMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new Tilt3DMouseAnimation(target, animationOptions);
 }

@@ -5,6 +5,7 @@
 - Create the full configuration up‑front and pass it in a single `create` call to avoid unintended overrides; subsequent calls replace the previous config.
 
 **For web (Custom Elements):**
+
 ```ts
 import { Interact } from '@wix/interact/web';
 import type { InteractConfig } from '@wix/interact';
@@ -17,6 +18,7 @@ Interact.create(config);
 ```
 
 **For React:**
+
 ```ts
 import { Interact } from '@wix/interact/react';
 import type { InteractConfig } from '@wix/interact';
@@ -50,10 +52,13 @@ Interact.create(config);
 - Do NOT use for `hover` or `click` interactions.
 
 **Usage:**
+
 ```javascript
 import { generate } from '@wix/interact/web';
 
-const config = {/*...*/};
+const config = {
+  /*...*/
+};
 
 // Generate CSS at build time or on server
 const css = generate(config);
@@ -79,6 +84,7 @@ const html = `
 ```
 
 ### General guidelines (avoiding common pitfalls)
+
 - Missing required fields or invalid references SHOULD be treated as no-ops for the offending interaction/effect while leaving the rest of the config functional.
 - Params with incorrect types or shapes (especially for `namedEffect` preset options) can produce console errors. If you do not know the expected type/structure for a param, omit it and rely on defaults rather than guessing.
 - Using `overflow: hidden` or `overflow: auto` can break viewProgress animations. Prefer `overflow: clip` for clipping semantics while preserving normal ViewTimeline.
@@ -90,6 +96,7 @@ const html = `
 This configuration declares what user/system triggers occur on which source element(s), and which visual effects should be applied to which target element(s). It is composed of three top-level sections: `effects`, `conditions`, and `interactions`.
 
 ### Global rules
+
 - **Required/Optional**: You MUST provide an `interactions` array. You SHOULD provide an `effects` registry when you want to reference reusable effects by id. `conditions` are OPTIONAL.
 - **Cross-references**: All cross-references (by id) MUST point to existing entries (e.g., an `EffectRef.effectId` MUST exist in `effects`).
 - **Element keys**: All element keys (`key` fields) refer to the element path string (e.g., the value used in `data-interact-key`) and MUST be stable for the lifetime of the configuration.
@@ -98,6 +105,7 @@ This configuration declares what user/system triggers occur on which source elem
 - **Element binding**: Do NOT add observers/listeners manually. For web, wrap the DOM subtree with `<interact-element>` and set `data-interact-key` to the element key. For React, use the `<Interaction>` component with `interactKey` prop. Use the same key in your config (`Interaction.key`/`Effect.key`). The runtime binds triggers/effects via this attribute.
 
 ### Structure
+
 - **effects: Record<string, Effect>**
   - **Purpose**: A registry of reusable, named effect definitions that can be referenced from interactions via `EffectRef`.
   - **Key (string)**: The effect id. MUST be unique across the registry.
@@ -167,11 +175,12 @@ This configuration declares what user/system triggers occur on which source elem
           - When using `customEffect` with `pointerMove`, the progress parameter is an object:
             - ```typescript
               type Progress = {
-                x: number;      // 0-1: horizontal position (0 = left edge, 1 = right edge)
-                y: number;      // 0-1: vertical position (0 = top edge, 1 = bottom edge)
-                v?: {           // Velocity (optional)
-                  x: number;    // Horizontal velocity
-                  y: number;    // Vertical velocity
+                x: number; // 0-1: horizontal position (0 = left edge, 1 = right edge)
+                y: number; // 0-1: vertical position (0 = top edge, 1 = bottom edge)
+                v?: {
+                  // Velocity (optional)
+                  x: number; // Horizontal velocity
+                  y: number; // Vertical velocity
                 };
                 active?: boolean; // Whether mouse is currently in the hit area
               };
@@ -187,6 +196,7 @@ This configuration declares what user/system triggers occur on which source elem
 ### Working with elements
 
 #### Web: `<interact-element>` custom element
+
 - Wrap the interactive DOM subtree with the custom element and set `data-interact-key` to a stable key. Reference that same key from your config via `Interaction.key` (and optionally `Effect.key`). No observers/listeners or manual DOM querying are needed—the runtime binds triggers and effects via this attribute.
 - If an effect targets an element that is not the interaction's source, you MUST also wrap that target element's subtree with its own `<interact-element>` and set `data-interact-key` to the target's key (the value used in `Effect.key` or the referenced registry Effect's `key`). This is required so the runtime can locate and apply effects to non-source targets.
 - MUST have a `data-interact-key` attribute with a value that is unique within the scope.
@@ -247,6 +257,7 @@ const config: InteractConfig = {
 ```
 
 #### React: `<Interaction>` component
+
 - MUST replace the element itself with the `<Interaction/>` component.
 - MUST set the `tagName` prop with the tag of the replaced element.
 - MUST set the `interactKey` prop to a unique string within the scope.
@@ -286,12 +297,13 @@ function MyComponent() {
 The config remains the same for both integrations—only the HTML/JSX setup differs.
 
 ### Effect rules (applies to both registry-defined Effect and inline Effect within interactions)
+
 - Common fields (`EffectBase`):
   - **key?: string**
     - OPTIONAL. Target element path. If omitted, resolution follows TARGET CASCADE:
-      1) `Effect.key` (if provided)
-      2) If Effect is an `EffectRef`: lookup registry by `effectId` and use that registry Effect’s `key`
-      3) Fallback to the `Interaction.key` (i.e., source acts as target)
+      1. `Effect.key` (if provided)
+      2. If Effect is an `EffectRef`: lookup registry by `effectId` and use that registry Effect’s `key`
+      3. Fallback to the `Interaction.key` (i.e., source acts as target)
   - **listContainer?: string, listItemSelector?: string**
     - OPTIONAL. If provided, MUST match the interaction's list context when both exist.
   - **conditions?: string[]**
@@ -300,7 +312,6 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
     - OPTIONAL. Additional CSS selector to refine the target element's descendants.
   - **effectId?: string**
     - For `EffectRef` this field is REQUIRED and MUST reference an entry in `effects`.
-
 
 - Composition and fill usage
   - **composite** (similar to CSS `animation-composition` / WAAPI `composite`):
@@ -317,7 +328,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
     - For scroll-driven animations (`viewProgress`), prefer `fill: 'both'` to preserve start/end states around the active range and avoid flicker on rapid scroll.
 
 - Types of `Effect` (exactly one MUST be provided via discriminated fields):
-  1) **TimeEffect** (discrete animation over time)
+  1. **TimeEffect** (discrete animation over time)
      - `duration`: number (REQUIRED)
      - `easing?`: string (CSS/WAAPI easing)
      - `iterations?`: number (>=1 or Infinity)
@@ -331,7 +342,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
        - `namedEffect`: `NamedEffect` (from `@wix/motion`)
        - `customEffect`: `(element: Element, progress: any) => void`
 
-  2) **ScrubEffect** (animation driven by scroll/progress)
+  2. **ScrubEffect** (animation driven by scroll/progress)
      - `easing?`: string
      - `iterations?`: number (NOT Infinity)
      - `alternate?`: boolean
@@ -365,7 +376,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
          - Start when the element is 20% inside the viewport: `rangeStart: { name: 'entry', offset: { value: 20, type: 'percentage' } }`
          - End when the element is leaving: `rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } }`
 
-  3) **TransitionEffect** (CSS transition-style state toggles)
+  3. **TransitionEffect** (CSS transition-style state toggles)
      - `key?`: string (target override; see TARGET CASCADE)
      - `effectId?`: string (when used as a reference identity)
      - One of:
@@ -375,27 +386,30 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
          - Allows per-property transition options. If both `transition` and `transitionProperties` are provided, the system SHOULD apply both with per-property entries taking precedence for overlapping properties.
 
 ### Authoring rules for animation payloads (`namedEffect`, `keyframeEffect`, `customEffect`):
-  - **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion` that are GPU-friendly and tuned.
-    - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), power ('soft'|'medium'|'hard'), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
-    - Short list of common preset names:
-      - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`
-      - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
-      - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`
-      - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity.
-      - Mouse: For `pointerMove` (mouse-effects), prefer `namedEffect` presets (e.g., `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`); avoid `keyframeEffect` with `pointerMove` since progress is two‑dimensional.
-      - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`
-  - **keyframeEffect (Default for custom animations)**: Prefer this when you need a custom-made animation.
-    - Structure: `keyframeEffect: { name: string; keyframes: Keyframe[] }` (keyframes use standard CSS/WAAPI properties).
-    - Not compatible with `pointerMove` (mouse-effects) because pointer progress is two‑dimensional; use `customEffect` for custom pointer‑driven animations.
-  - **customEffect (Last resort)**: Use only when you must perform DOM manipulation or produce randomized/non-deterministic visuals that cannot be expressed as keyframes or presets.
-    - Structure: `customEffect: (element: Element, progress: any) => void`
+
+- **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion` that are GPU-friendly and tuned.
+  - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), power ('soft'|'medium'|'hard'), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
+  - Short list of common preset names:
+    - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`
+    - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
+    - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`
+    - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity.
+    - Mouse: For `pointerMove` (mouse-effects), prefer `namedEffect` presets (e.g., `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`); avoid `keyframeEffect` with `pointerMove` since progress is two‑dimensional.
+    - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`
+- **keyframeEffect (Default for custom animations)**: Prefer this when you need a custom-made animation.
+  - Structure: `keyframeEffect: { name: string; keyframes: Keyframe[] }` (keyframes use standard CSS/WAAPI properties).
+  - Not compatible with `pointerMove` (mouse-effects) because pointer progress is two‑dimensional; use `customEffect` for custom pointer‑driven animations.
+- **customEffect (Last resort)**: Use only when you must perform DOM manipulation or produce randomized/non-deterministic visuals that cannot be expressed as keyframes or presets.
+  - Structure: `customEffect: (element: Element, progress: any) => void`
 
 ### Target resolution and list context
+
 - When applying an effect, the system resolves the final target as:
   `Effect.key -> registry Effect.key (for EffectRef) -> Interaction.key`.
 - If a `listContainer` is present on the interaction, the selector resolution may be widened to include list items (optionally filtered by `listItemSelector`), and then further refined by any provided `selector`.
 
 ### Reduced motion
+
 - The runtime MAY force reduced motion globally. Authors SHOULD keep effects resilient to reduced motion by avoiding reliance on specific durations or continuous motion.
 - Use `conditions` to provide responsive and accessible behavior:
   - Define media conditions such as `'(prefers-reduced-motion: reduce)'` and breakpoint queries, and attach them to interactions/effects to disable, simplify, or swap animations when appropriate.

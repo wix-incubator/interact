@@ -1,17 +1,8 @@
-import type {
-  DomApi,
-  ImageParallax,
-  RangeOffset,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { DomApi, ImageParallax, RangeOffset, ScrubAnimationOptions } from '../../types';
 import { measureCompHeight, measureSiteHeight } from './utils';
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const {
-    speed = 1.5,
-    reverse = false,
-    isPage = false,
-  } = options.namedEffect as ImageParallax;
+  const { speed = 1.5, reverse = false, isPage = false } = options.namedEffect as ImageParallax;
 
   const measures = { compHeight: 0, siteHeight: 0 };
   if (dom) {
@@ -44,9 +35,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return isPage
-          ? `${measures.siteHeight}px`
-          : `calc(100vh + ${measures.compHeight}px)`;
+        return isPage ? `${measures.siteHeight}px` : `calc(100vh + ${measures.compHeight}px)`;
       },
       keyframes: [
         {

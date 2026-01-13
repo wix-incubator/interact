@@ -15,12 +15,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -41,12 +39,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-180deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-180deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(180deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(180deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -67,12 +63,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateX(-240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateX(-240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateX(240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateX(240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -93,12 +87,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-60deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-60deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(60deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(60deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -119,12 +111,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-120deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-120deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(120deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(120deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -145,12 +135,10 @@ describe('FlipScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-420deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-420deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(420deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(420deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -172,12 +160,10 @@ describe('FlipScroll', () => {
         fill: 'backwards',
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(-240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(-240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(0deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(0deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },
@@ -199,12 +185,10 @@ describe('FlipScroll', () => {
         fill: 'forwards',
         keyframes: [
           {
-            transform:
-              'perspective(800px) rotateY(0deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(0deg) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            transform:
-              'perspective(800px) rotateY(240deg) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'perspective(800px) rotateY(240deg) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
       },

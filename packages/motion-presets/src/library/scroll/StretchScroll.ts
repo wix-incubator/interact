@@ -1,9 +1,5 @@
 import { cssEasings as easings } from '@wix/motion';
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  StretchScroll,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, StretchScroll } from '../../types';
 
 const POWER_MAP = {
   soft: { scaleY: 1.2, scaleX: 0.8 },
@@ -67,20 +63,14 @@ const opacityKeyframesMap = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const {
-    power,
-    stretch = 0.6,
-    range = 'out',
-  } = options.namedEffect as StretchScroll;
+  const { power, stretch = 0.6, range = 'out' } = options.namedEffect as StretchScroll;
   const easing = range === 'continuous' ? 'linear' : 'backInOut';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
   const { scaleX, scaleY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : { scaleX: 1 - stretch, scaleY: 1 + stretch };
+    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleX: 1 - stretch, scaleY: 1 + stretch };
 
   const animations = KEYFRAMES_RANGE_MAP[range](scaleX, scaleY);
 

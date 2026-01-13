@@ -13,10 +13,7 @@ describe('BgSkew', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: `skewY(20deg)` },
-          { transform: `skewY(-20deg)` },
-        ],
+        keyframes: [{ transform: `skewY(20deg)` }, { transform: `skewY(-20deg)` }],
       },
     ];
 
@@ -34,10 +31,7 @@ describe('BgSkew', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: `skewY(20deg)` },
-          { transform: `skewY(-20deg)` },
-        ],
+        keyframes: [{ transform: `skewY(20deg)` }, { transform: `skewY(-20deg)` }],
       },
     ];
 
@@ -55,10 +49,7 @@ describe('BgSkew', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: `skewY(-20deg)` },
-          { transform: `skewY(20deg)` },
-        ],
+        keyframes: [{ transform: `skewY(-20deg)` }, { transform: `skewY(20deg)` }],
       },
     ];
 

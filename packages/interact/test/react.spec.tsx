@@ -315,7 +315,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="section" interactKey="logo-click">
           <div>Content</div>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(container.querySelector('section')).not.toBeNull();
@@ -325,7 +325,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-click">
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       const element = container.firstChild as HTMLElement;
@@ -342,7 +342,7 @@ describe('interact (react)', () => {
           data-testid="custom-data"
         >
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       const element = container.firstChild as HTMLElement;
@@ -356,7 +356,7 @@ describe('interact (react)', () => {
         <Interaction tagName="div" interactKey="logo-click">
           <span className="child-1">First</span>
           <span className="child-2">Second</span>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(container.querySelector('.child-1')).not.toBeNull();
@@ -393,7 +393,7 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="div" interactKey="logo-hover">
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(addSpy).toHaveBeenCalledWith(expect.any(HTMLElement), 'logo-hover');
@@ -405,7 +405,7 @@ describe('interact (react)', () => {
       const { unmount } = render(
         <Interaction tagName="div" interactKey="logo-hover">
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       removeSpy.mockClear();
@@ -420,7 +420,7 @@ describe('interact (react)', () => {
       const { rerender } = render(
         <Interaction tagName="div" interactKey="logo-click">
           <span>Content 1</span>
-        </Interaction>
+        </Interaction>,
       );
 
       const initialAddCount = addSpy.mock.calls.length;
@@ -429,7 +429,7 @@ describe('interact (react)', () => {
       rerender(
         <Interaction tagName="div" interactKey="logo-click">
           <span>Content 2</span>
-        </Interaction>
+        </Interaction>,
       );
 
       // add() should not be called again on re-render
@@ -446,7 +446,7 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="div" interactKey="logo-hover">
           <div className="inner">Hover me</div>
-        </Interaction>
+        </Interaction>,
       );
 
       // The interaction should already be set up
@@ -455,7 +455,7 @@ describe('interact (react)', () => {
         expect.any(HTMLElement),
         expect.any(Object),
         undefined,
-        { reducedMotion: false }
+        { reducedMotion: false },
       );
     });
 
@@ -467,7 +467,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-click">
           <button className="btn">Click me</button>
-        </Interaction>
+        </Interaction>,
       );
 
       const btnElement = container.querySelector('.btn') as HTMLElement;
@@ -480,7 +480,7 @@ describe('interact (react)', () => {
         expect.any(HTMLElement),
         expect.any(Object),
         undefined,
-        { reducedMotion: false }
+        { reducedMotion: false },
       );
     });
 
@@ -492,24 +492,24 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="div" interactKey="logo-entrance">
           <div>Entrance animation target</div>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(getWebAnimation).toHaveBeenCalledWith(
         expect.any(HTMLElement),
         expect.any(Object),
         undefined,
-        { reducedMotion: false }
+        { reducedMotion: false },
       );
     });
 
     it('should set up viewEnter interactions with alternate type and reverse on exit', async () => {
       const { getWebAnimation } = await import('@wix/motion');
       const mockAnimation = (getWebAnimation as any)();
-      
+
       // Capture observer callbacks
       const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+      const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
         observerCallbacks.push(cb);
         this.observe = vi.fn();
         this.unobserve = vi.fn();
@@ -539,7 +539,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-alternate">
           <div>Alternate animation target</div>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(getWebAnimation).toHaveBeenCalled();
@@ -571,10 +571,10 @@ describe('interact (react)', () => {
 
       const { getWebAnimation } = await import('@wix/motion');
       const mockAnimation = (getWebAnimation as any)();
-      
+
       // Capture observer callbacks
       const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+      const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
         observerCallbacks.push(cb);
         this.observe = vi.fn();
         this.unobserve = vi.fn();
@@ -604,7 +604,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-repeat">
           <div>Repeat animation target</div>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(getWebAnimation).toHaveBeenCalled();
@@ -633,10 +633,10 @@ describe('interact (react)', () => {
 
       const { getWebAnimation } = await import('@wix/motion');
       const mockAnimation = (getWebAnimation as any)();
-      
+
       // Capture observer callbacks
       const observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void> = [];
-      const IntersectionObserverMock = vi.fn(function(this: any, cb: any) {
+      const IntersectionObserverMock = vi.fn(function (this: any, cb: any) {
         observerCallbacks.push(cb);
         this.observe = vi.fn();
         this.unobserve = vi.fn();
@@ -666,7 +666,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-state">
           <div>State animation target</div>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(getWebAnimation).toHaveBeenCalled();
@@ -695,7 +695,7 @@ describe('interact (react)', () => {
       const { unmount } = render(
         <Interaction tagName="div" interactKey="logo-click">
           <div>Content</div>
-        </Interaction>
+        </Interaction>,
       );
 
       const controller = Interact.getController('logo-click');
@@ -746,7 +746,7 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="button" interactKey="responsive-button">
           <span>Click me</span>
-        </Interaction>
+        </Interaction>,
       );
 
       // Verify matchMedia was called
@@ -793,7 +793,7 @@ describe('interact (react)', () => {
           <Interaction tagName="div" interactKey="target-element">
             <span>Target</span>
           </Interaction>
-        </>
+        </>,
       );
 
       // Both controllers should be registered
@@ -805,7 +805,7 @@ describe('interact (react)', () => {
         expect.any(HTMLElement),
         expect.any(Object),
         undefined,
-        { reducedMotion: false }
+        { reducedMotion: false },
       );
     });
   });
@@ -817,13 +817,13 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="div" interactKey="logo-hover">
           <span>Hover</span>
-        </Interaction>
+        </Interaction>,
       );
 
       render(
         <Interaction tagName="div" interactKey="logo-click">
           <span>Click</span>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(Interact.controllerCache.size).toBeGreaterThan(0);
@@ -845,14 +845,14 @@ describe('interact (react)', () => {
       render(
         <Interaction tagName="div" interactKey="logo-hover">
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(getWebAnimation).toHaveBeenCalledWith(
         expect.any(HTMLElement),
         expect.any(Object),
         undefined,
-        { reducedMotion: true }
+        { reducedMotion: true },
       );
     });
   });
@@ -869,7 +869,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="div" interactKey="logo-click" ref={refCallback}>
           <span>Content</span>
-        </Interaction>
+        </Interaction>,
       );
 
       expect(capturedElement).toBe(container.firstChild);
@@ -904,7 +904,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="button" interactKey="logo-click">
           Click
-        </Interaction>
+        </Interaction>,
       );
 
       expect(container.querySelector('button')).not.toBeNull();
@@ -914,7 +914,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="span" interactKey="logo-click">
           Text
-        </Interaction>
+        </Interaction>,
       );
 
       expect(container.querySelector('span')).not.toBeNull();
@@ -924,7 +924,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="article" interactKey="logo-click">
           Article content
-        </Interaction>
+        </Interaction>,
       );
 
       expect(container.querySelector('article')).not.toBeNull();
@@ -935,7 +935,7 @@ describe('interact (react)', () => {
       const { container } = render(
         <Interaction tagName="a" interactKey="logo-click" {...{ href: 'https://example.com' }}>
           Link
-        </Interaction>
+        </Interaction>,
       );
 
       const anchor = container.querySelector('a');
@@ -944,4 +944,3 @@ describe('interact (react)', () => {
     });
   });
 });
-

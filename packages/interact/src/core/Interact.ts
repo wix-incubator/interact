@@ -69,7 +69,9 @@ export class Interact {
       // (e.g., in React where useEffect runs after render), or when an instance is recreated
       // (e.g., in React StrictMode where effects run twice).
       // The connect() method has a guard to skip if already connected.
-      Interact.controllerCache.forEach((controller: IInteractionController, key) => controller.connect(key));
+      Interact.controllerCache.forEach((controller: IInteractionController, key) =>
+        controller.connect(key),
+      );
     }
   }
 
@@ -133,7 +135,6 @@ export class Interact {
 
     interactionIds.forEach((interactionId_) => {
       const interactionId = getInterpolatedKey(interactionId_, key);
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.addedInteractions[interactionId];
     });
   }
@@ -187,11 +188,13 @@ export class Interact {
       );
     }
 
-    if(options.viewEnter) {
-      (TRIGGER_TO_HANDLER_MODULE_MAP.viewEnter as ViewEnterHandlerModule).setOptions(options.viewEnter);
+    if (options.viewEnter) {
+      (TRIGGER_TO_HANDLER_MODULE_MAP.viewEnter as ViewEnterHandlerModule).setOptions(
+        options.viewEnter,
+      );
     }
 
-    if(options.allowA11yTriggers !== undefined) {
+    if (options.allowA11yTriggers !== undefined) {
       Interact.allowA11yTriggers = options.allowA11yTriggers;
     }
   }
@@ -275,7 +278,9 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
     const interaction = { ...rest, effects };
 
     interactions[source].triggers.push(interaction);
-    interactions[source].selectors.add(getSelector(interaction, { useFirstChild: useCutsomElement }));
+    interactions[source].selectors.add(
+      getSelector(interaction, { useFirstChild: useCutsomElement }),
+    );
 
     const listContainer = interaction.listContainer;
 

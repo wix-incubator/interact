@@ -22,28 +22,32 @@ Card lifts with shadow when hovered.
 import { Interact } from '@wix/interact';
 
 const config = {
-    interactions: [{
-        key: 'card',
-        trigger: 'hover',
-        effects: [{
-            key: 'card',
-            keyframeEffect: {
-                name: 'card-lift',
-                keyframes: [
-                    { 
-                        transform: 'translateY(0)', 
-                        boxShadow: '0 2px 8px rgb(0 0 0 / 0.1)' 
-                    },
-                    { 
-                        transform: 'translateY(-8px)', 
-                        boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)' 
-                    }
-                ]
-            },
-            duration: 250,
-            easing: 'ease-out'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'card',
+      trigger: 'hover',
+      effects: [
+        {
+          key: 'card',
+          keyframeEffect: {
+            name: 'card-lift',
+            keyframes: [
+              {
+                transform: 'translateY(0)',
+                boxShadow: '0 2px 8px rgb(0 0 0 / 0.1)',
+              },
+              {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)',
+              },
+            ],
+          },
+          duration: 250,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
@@ -51,10 +55,10 @@ Interact.create(config);
 
 ```html
 <interact-element data-interact-key="card">
-    <div class="card">
-        <h3>Card Title</h3>
-        <p>Card content</p>
-    </div>
+  <div class="card">
+    <h3>Card Title</h3>
+    <p>Card content</p>
+  </div>
 </interact-element>
 ```
 
@@ -71,13 +75,13 @@ Card scales slightly and glows on hover.
         keyframeEffect: {
             name: 'scale-glow',
             keyframes: [
-                { 
-                    transform: 'scale(1)', 
-                    boxShadow: '0 0 0 rgba(59, 130, 246, 0)' 
+                {
+                    transform: 'scale(1)',
+                    boxShadow: '0 0 0 rgba(59, 130, 246, 0)'
                 },
-                { 
-                    transform: 'scale(1.02)', 
-                    boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' 
+                {
+                    transform: 'scale(1.02)',
+                    boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
                 }
             ]
         },
@@ -135,7 +139,7 @@ Animated border on hover.
 
 ```css
 .tilt-card {
-    transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 ```
 
@@ -212,32 +216,27 @@ Light shines across button on hover.
 
 ```html
 <interact-element data-interact-key="shine-button">
-    <button class="shine-btn">
-        <span>Hover Me</span>
-        <div class="shine-overlay"></div>
-    </button>
+  <button class="shine-btn">
+    <span>Hover Me</span>
+    <div class="shine-overlay"></div>
+  </button>
 </interact-element>
 ```
 
 ```css
 .shine-btn {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .shine-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 30%;
-    height: 100%;
-    background: linear-gradient(
-        90deg, 
-        transparent, 
-        rgba(255,255,255,0.5), 
-        transparent
-    );
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  pointer-events: none;
 }
 ```
 
@@ -311,32 +310,32 @@ Image zooms while overlay appears.
 
 ```html
 <interact-element data-interact-key="image-zoom">
-    <div class="image-container">
-        <img src="photo.jpg" alt="Photo" />
-        <div class="overlay">
-            <h3>View Details</h3>
-        </div>
+  <div class="image-container">
+    <img src="photo.jpg" alt="Photo" />
+    <div class="overlay">
+      <h3>View Details</h3>
     </div>
+  </div>
 </interact-element>
 ```
 
 ```css
 .image-container {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 ```
 
@@ -442,25 +441,25 @@ Underline slides in on hover.
 
 ```html
 <interact-element data-interact-key="nav-link">
-    <a class="nav-item">
-        <span>About</span>
-        <span class="underline"></span>
-    </a>
+  <a class="nav-item">
+    <span>About</span>
+    <span class="underline"></span>
+  </a>
 </interact-element>
 ```
 
 ```css
 .nav-item {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .underline {
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    height: 2px;
-    background: currentColor;
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  height: 2px;
+  background: currentColor;
 }
 ```
 
@@ -608,11 +607,11 @@ Text color gradient wipes on hover.
 
 ```css
 .gradient-text {
-    background: linear-gradient(90deg, #333 0%, #3b82f6 50%, #333 100%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, #333 0%, #3b82f6 50%, #333 100%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 ```
 
@@ -697,75 +696,74 @@ Complete product card with multiple hover effects.
 
 ```typescript
 const productCard = {
-    interactions: [{
-        key: 'product',
-        selector: '.product-card',
-        trigger: 'hover',
-        effects: [
-            // Lift card
-            {
-                key: 'product',
-                selector: '.product-card',
-                keyframeEffect: {
-                    name: 'card-lift',
-                    keyframes: [
-                        { 
-                            transform: 'translateY(0)', 
-                            boxShadow: '0 4px 12px rgb(0 0 0 / 0.1)' 
-                        },
-                        { 
-                            transform: 'translateY(-8px)', 
-                            boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)' 
-                        }
-                    ]
-                },
-                duration: 250,
-                easing: 'ease-out'
-            },
-            // Zoom image
-            {
-                key: 'product',
-                selector: '.product-image img',
-                keyframeEffect: {
-                    name: 'image-zoom',
-                    keyframes: [
-                        { transform: 'scale(1)' },
-                        { transform: 'scale(1.05)' }
-                    ]
-                },
-                duration: 300,
-                easing: 'ease-out'
-            },
-            // Show quick view button
-            {
-                key: 'product',
-                selector: '.quick-view-btn',
-                keyframeEffect: {
-                    name: 'button-reveal',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(10px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 200,
-                delay: 100,
-                easing: 'ease-out'
-            }
-        ]
-    }]
+  interactions: [
+    {
+      key: 'product',
+      selector: '.product-card',
+      trigger: 'hover',
+      effects: [
+        // Lift card
+        {
+          key: 'product',
+          selector: '.product-card',
+          keyframeEffect: {
+            name: 'card-lift',
+            keyframes: [
+              {
+                transform: 'translateY(0)',
+                boxShadow: '0 4px 12px rgb(0 0 0 / 0.1)',
+              },
+              {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 32px rgb(0 0 0 / 0.15)',
+              },
+            ],
+          },
+          duration: 250,
+          easing: 'ease-out',
+        },
+        // Zoom image
+        {
+          key: 'product',
+          selector: '.product-image img',
+          keyframeEffect: {
+            name: 'image-zoom',
+            keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }],
+          },
+          duration: 300,
+          easing: 'ease-out',
+        },
+        // Show quick view button
+        {
+          key: 'product',
+          selector: '.quick-view-btn',
+          keyframeEffect: {
+            name: 'button-reveal',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(10px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 200,
+          delay: 100,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```html
 <interact-element data-interact-key="product">
-    <div class="product-card">
-        <div class="product-image">
-            <img src="product.jpg" alt="Product" />
-            <button class="quick-view-btn">Quick View</button>
-        </div>
-        <h3>Product Name</h3>
-        <p class="price">$99.00</p>
+  <div class="product-card">
+    <div class="product-image">
+      <img src="product.jpg" alt="Product" />
+      <button class="quick-view-btn">Quick View</button>
     </div>
+    <h3>Product Name</h3>
+    <p class="price">$99.00</p>
+  </div>
 </interact-element>
 ```
 
@@ -775,35 +773,34 @@ Social icon with color and scale effect.
 
 ```typescript
 const socialLink = {
-    interactions: [{
-        key: 'social-icon',
-        trigger: 'hover',
-        effects: [
-            // Scale icon
-            {
-                key: 'social-icon',
-                keyframeEffect: {
-                    name: 'icon-grow',
-                    keyframes: [
-                        { transform: 'scale(1)' },
-                        { transform: 'scale(1.2)' }
-                    ]
-                },
-                duration: 200,
-                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-            },
-            // Change color
-            {
-                key: 'social-icon',
-                transition: {
-                    duration: 200,
-                    styleProperties: [
-                        { name: 'color', value: '#1DA1F2' }  // Twitter blue
-                    ]
-                }
-            }
-        ]
-    }]
+  interactions: [
+    {
+      key: 'social-icon',
+      trigger: 'hover',
+      effects: [
+        // Scale icon
+        {
+          key: 'social-icon',
+          keyframeEffect: {
+            name: 'icon-grow',
+            keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.2)' }],
+          },
+          duration: 200,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        },
+        // Change color
+        {
+          key: 'social-icon',
+          transition: {
+            duration: 200,
+            styleProperties: [
+              { name: 'color', value: '#1DA1F2' }, // Twitter blue
+            ],
+          },
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -813,53 +810,50 @@ Feature section with icon and text effects.
 
 ```typescript
 const featureBlock = {
-    interactions: [{
-        key: 'feature',
-        selector: '.feature-block',
-        trigger: 'hover',
-        effects: [
-            // Icon bounce
-            {
-                key: 'feature',
-                selector: '.feature-icon',
-                keyframeEffect: {
-                    name: 'icon-bounce',
-                    keyframes: [
-                        { transform: 'translateY(0)' },
-                        { transform: 'translateY(-8px)' },
-                        { transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 400,
-                easing: 'ease-out'
-            },
-            // Text color change
-            {
-                key: 'feature',
-                selector: '.feature-title',
-                transition: {
-                    duration: 200,
-                    styleProperties: [
-                        { name: 'color', value: '#3b82f6' }
-                    ]
-                }
-            },
-            // Border highlight
-            {
-                key: 'feature',
-                selector: '.feature-block',
-                keyframeEffect: {
-                    name: 'border-glow',
-                    keyframes: [
-                        { borderColor: '#e5e7eb' },
-                        { borderColor: '#3b82f6' }
-                    ]
-                },
-                duration: 200,
-                easing: 'ease-out'
-            }
-        ]
-    }]
+  interactions: [
+    {
+      key: 'feature',
+      selector: '.feature-block',
+      trigger: 'hover',
+      effects: [
+        // Icon bounce
+        {
+          key: 'feature',
+          selector: '.feature-icon',
+          keyframeEffect: {
+            name: 'icon-bounce',
+            keyframes: [
+              { transform: 'translateY(0)' },
+              { transform: 'translateY(-8px)' },
+              { transform: 'translateY(0)' },
+            ],
+          },
+          duration: 400,
+          easing: 'ease-out',
+        },
+        // Text color change
+        {
+          key: 'feature',
+          selector: '.feature-title',
+          transition: {
+            duration: 200,
+            styleProperties: [{ name: 'color', value: '#3b82f6' }],
+          },
+        },
+        // Border highlight
+        {
+          key: 'feature',
+          selector: '.feature-block',
+          keyframeEffect: {
+            name: 'border-glow',
+            keyframes: [{ borderColor: '#e5e7eb' }, { borderColor: '#3b82f6' }],
+          },
+          duration: 200,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -877,18 +871,22 @@ const featureBlock = {
 ```typescript
 // Only apply hover on devices with hover capability
 const config = {
-    conditions: {
-        'has-hover': {
-            type: 'media',
-            predicate: '(hover: hover) and (pointer: fine)'
-        }
+  conditions: {
+    'has-hover': {
+      type: 'media',
+      predicate: '(hover: hover) and (pointer: fine)',
     },
-    interactions: [{
-        key: 'hover-element',
-        trigger: 'hover',
-        conditions: ['has-hover'],  // Only on mouse devices
-        effects: [/* ... */]
-    }]
+  },
+  interactions: [
+    {
+      key: 'hover-element',
+      trigger: 'hover',
+      conditions: ['has-hover'], // Only on mouse devices
+      effects: [
+        /* ... */
+      ],
+    },
+  ],
 };
 ```
 
@@ -897,28 +895,32 @@ const config = {
 ```css
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-    }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 ```
 
 ```typescript
 // Configuration with reduced motion support
 const config = {
-    conditions: {
-        'motion-ok': {
-            type: 'media',
-            predicate: '(prefers-reduced-motion: no-preference)'
-        }
+  conditions: {
+    'motion-ok': {
+      type: 'media',
+      predicate: '(prefers-reduced-motion: no-preference)',
     },
-    interactions: [{
-        key: 'animated-hover',
-        trigger: 'hover',
-        conditions: ['motion-ok'],
-        effects: [/* complex animations */]
-    }]
+  },
+  interactions: [
+    {
+      key: 'animated-hover',
+      trigger: 'hover',
+      conditions: ['motion-ok'],
+      effects: [
+        /* complex animations */
+      ],
+    },
+  ],
 };
 ```
 

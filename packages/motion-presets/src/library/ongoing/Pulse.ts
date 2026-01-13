@@ -1,9 +1,4 @@
-import type {
-  Pulse,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Pulse, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
 const POWER_TO_PULSE_OFFSET_MAP = {
@@ -19,17 +14,11 @@ const SCALE_KEYFRAMES = [
   { keyframe: 100, scale: 1 },
 ];
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { power, intensity = 0 } = options.namedEffect as Pulse;
 
   const duration = options.duration || 1;
@@ -46,9 +35,7 @@ export function style(
   );
 
   const pulseOffset =
-    typeof power !== 'undefined'
-      ? POWER_TO_PULSE_OFFSET_MAP[power]
-      : responsivePulseOffset;
+    typeof power !== 'undefined' ? POWER_TO_PULSE_OFFSET_MAP[power] : responsivePulseOffset;
 
   // Create CSS custom properties for the pulse configuration
   const custom: Record<string, string | number> = {
@@ -62,11 +49,7 @@ export function style(
       offset,
       transform: `scale(${
         scale < 1
-          ? `calc(${scale} - ${toKeyframeValue(
-              custom,
-              '--motion-pulse-offset',
-              asWeb,
-            )})`
+          ? `calc(${scale} - ${toKeyframeValue(custom, '--motion-pulse-offset', asWeb)})`
           : '1'
       })`,
     };
@@ -92,9 +75,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-pulse-${timingFactor}`];

@@ -653,7 +653,7 @@ export type MouseAnimation =
   | Track3DMouse
   | TrackMouse;
 
-export type MouseAnimations = Record<
+  export type MouseAnimations = Record<
   MouseAnimation['type'],
   MouseAnimationFactoryCreate
 >;

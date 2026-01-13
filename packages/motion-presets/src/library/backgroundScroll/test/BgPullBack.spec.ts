@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import BgPullBack from '../BgPullBack';
 import { baseMockOptions } from './testUtils';
-import type {
-  BgPullBack as BgPullBackType,
-  AnimationData,
-} from '../../../types';
+import type { BgPullBack as BgPullBackType, AnimationData } from '../../../types';
 
 describe('BgPullBack', () => {
   test('Default values', () => {

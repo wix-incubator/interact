@@ -25,8 +25,7 @@ describe('TiltIn', () => {
         duration: 800,
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             transform: `rotateZ(30deg)`,
           },
           {
@@ -62,8 +61,7 @@ describe('TiltIn', () => {
         duration: 800,
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             transform: `rotateZ(-30deg)`,
           },
           {
@@ -126,8 +124,7 @@ describe('TiltIn', () => {
         },
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             transform: 'rotateZ(var(--motion-rotate-z))',
           },
           {
@@ -193,8 +190,7 @@ describe('TiltIn', () => {
         },
         keyframes: [
           {
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             transform: 'rotateZ(var(--motion-rotate-z))',
           },
           {

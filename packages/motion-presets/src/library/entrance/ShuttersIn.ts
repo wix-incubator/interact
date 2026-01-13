@@ -22,11 +22,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   } = options.namedEffect as ShuttersIn;
   const [shuttersIn] = getNames(options);
 
-  const { clipStart, clipEnd } = getShuttersClipPaths(
-    direction,
-    shutters,
-    staggered,
-  );
+  const { clipStart, clipEnd } = getShuttersClipPaths(direction, shutters, staggered);
 
   const custom = {
     '--motion-shutters-start': clipStart,

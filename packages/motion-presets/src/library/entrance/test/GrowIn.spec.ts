@@ -14,21 +14,16 @@ describe('GrowIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
-        keyframes: [
-          { offset: 0, opacity: 0 },
-          { opacity: 'var(--comp-opacity, 1)' },
-        ],
+        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
       },
       {
         easing: 'cubicInOut',
         keyframes: [
           {
-            transform:
-              'translate(0%, -120%) rotate(var(--comp-rotate-z, 0deg)) scale(0)',
+            transform: 'translate(0%, -120%) rotate(var(--comp-rotate-z, 0deg)) scale(0)',
           },
           {
-            transform:
-              'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
+            transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
           },
         ],
       },
@@ -48,21 +43,16 @@ describe('GrowIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
-        keyframes: [
-          { offset: 0, opacity: 0 },
-          { opacity: 'var(--comp-opacity, 1)' },
-        ],
+        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
       },
       {
         easing: 'cubicInOut',
         keyframes: [
           {
-            transform:
-              'translate(84%, -84%) rotate(var(--comp-rotate-z, 0deg)) scale(0)',
+            transform: 'translate(84%, -84%) rotate(var(--comp-rotate-z, 0deg)) scale(0)',
           },
           {
-            transform:
-              'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
+            transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
           },
         ],
       },
@@ -84,10 +74,7 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [
-          { offset: 0, opacity: 0 },
-          { opacity: 'var(--comp-opacity, 1)' },
-        ],
+        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
       },
       {
         easing: 'cubicInOut',
@@ -103,8 +90,7 @@ describe('GrowIn', () => {
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale))',
           },
           {
-            transform:
-              'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
+            transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
           },
         ],
       },
@@ -126,10 +112,7 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [
-          { offset: 0, opacity: 0 },
-          { opacity: 'var(--comp-opacity, 1)' },
-        ],
+        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
       },
       {
         easing: 'cubicInOut',
@@ -145,8 +128,7 @@ describe('GrowIn', () => {
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale))',
           },
           {
-            transform:
-              'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
+            transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
           },
         ],
       },

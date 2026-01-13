@@ -7,6 +7,7 @@ Scroll-driven effects that respond to viewport position for immersive storytelli
 Scroll animations are **scrub-based** animations that respond to scroll position using the ViewTimeline API or scroll event listeners. They create smooth, synchronized effects tied to the user's scroll progress, enabling immersive storytelling and progressive content reveals.
 
 ### Key Characteristics
+
 - **Purpose**: Storytelling, parallax, progressive disclosure
 - **Trigger**: Scroll position and viewport intersection
 - **Duration**: Based on scroll distance, not time
@@ -16,67 +17,78 @@ Scroll animations are **scrub-based** animations that respond to scroll position
 ## Animation Categories
 
 ### 📐 **Transform-Based**
+
 Position, scale, and rotation effects synchronized to scroll.
 
 ### 🎭 **Opacity & Visibility**
+
 Fade and reveal effects triggered by scroll position.
 
 ### 📺 **3D Perspective**
+
 Complex 3D transformations with depth and perspective.
 
 ### ✂️ **Clip & Shape**
+
 Creative reveals using clip-path and shape morphing.
 
 ### 🎢 **Specialized Motion**
+
 Complex movement patterns and specialized scroll behaviors.
 
 ## Complete Preset Reference
 
-| Animation | Category | Complexity | Range Support | Directions | Description |
-|-----------|----------|------------|---------------|------------|-------------|
-| **ParallaxScroll** | Transform | Simple | ✓ | - | Classic parallax movement |
-| **FadeScroll** | Opacity | Simple | ✓ | - | Opacity changes on scroll |
-| **MoveScroll** | Transform | Medium | ✓ | 360° | Directional movement |
-| **GrowScroll** | Transform | Medium | ✓ | 9-way | Scale from specific origins |
-| **ShrinkScroll** | Transform | Medium | ✓ | 9-way | Scale shrinking effects |
-| **RevealScroll** | Clip | Medium | ✓ | 4-way | Clean clip-path reveals |
-| **SlideScroll** | Transform | Medium | ✓ | 4-way | Sliding movement effects |
-| **BlurScroll** | Filter | Simple | ✓ | - | Blur-to-focus transitions |
-| **ArcScroll** | 3D | Complex | ✓ | 2-way | Curved 3D motion paths |
-| **FlipScroll** | 3D | Medium | ✓ | 2-way | 3D flip rotations |
-| **SpinScroll** | Transform | Medium | ✓ | 2-way | Rotation with scaling |
-| **Spin3dScroll** | 3D | Complex | ✓ | - | 3D rotation with depth |
-| **TiltScroll** | 3D | Complex | ✓ | 2-way | Perspective tilting effects |
-| **TurnScroll** | 3D | Complex | ✓ | 2-way | Complex 3D turning |
-| **PanScroll** | Transform | Medium | ✓ | 2-way | Horizontal panning motion |
-| **SkewPanScroll** | Transform | Medium | ✓ | 2-way | Skewed panning effects |
-| **StretchScroll** | Transform | Medium | ✓ | - | Vertical stretching effects |
-| **ShapeScroll** | Clip | Complex | ✓ | 5 shapes | Morphing shape reveals |
-| **ShuttersScroll** | Clip | Complex | ✓ | 4-way | Multi-segment reveals |
+| Animation          | Category  | Complexity | Range Support | Directions | Description                 |
+| ------------------ | --------- | ---------- | ------------- | ---------- | --------------------------- |
+| **ParallaxScroll** | Transform | Simple     | ✓             | -          | Classic parallax movement   |
+| **FadeScroll**     | Opacity   | Simple     | ✓             | -          | Opacity changes on scroll   |
+| **MoveScroll**     | Transform | Medium     | ✓             | 360°       | Directional movement        |
+| **GrowScroll**     | Transform | Medium     | ✓             | 9-way      | Scale from specific origins |
+| **ShrinkScroll**   | Transform | Medium     | ✓             | 9-way      | Scale shrinking effects     |
+| **RevealScroll**   | Clip      | Medium     | ✓             | 4-way      | Clean clip-path reveals     |
+| **SlideScroll**    | Transform | Medium     | ✓             | 4-way      | Sliding movement effects    |
+| **BlurScroll**     | Filter    | Simple     | ✓             | -          | Blur-to-focus transitions   |
+| **ArcScroll**      | 3D        | Complex    | ✓             | 2-way      | Curved 3D motion paths      |
+| **FlipScroll**     | 3D        | Medium     | ✓             | 2-way      | 3D flip rotations           |
+| **SpinScroll**     | Transform | Medium     | ✓             | 2-way      | Rotation with scaling       |
+| **Spin3dScroll**   | 3D        | Complex    | ✓             | -          | 3D rotation with depth      |
+| **TiltScroll**     | 3D        | Complex    | ✓             | 2-way      | Perspective tilting effects |
+| **TurnScroll**     | 3D        | Complex    | ✓             | 2-way      | Complex 3D turning          |
+| **PanScroll**      | Transform | Medium     | ✓             | 2-way      | Horizontal panning motion   |
+| **SkewPanScroll**  | Transform | Medium     | ✓             | 2-way      | Skewed panning effects      |
+| **StretchScroll**  | Transform | Medium     | ✓             | -          | Vertical stretching effects |
+| **ShapeScroll**    | Clip      | Complex    | ✓             | 5 shapes   | Morphing shape reveals      |
+| **ShuttersScroll** | Clip      | Complex    | ✓             | 4-way      | Multi-segment reveals       |
 
 ## Configuration Patterns
 
 ### Basic Scroll Animation
+
 ```typescript
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
-  startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
+    startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
+    endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 ```
 
 ### Range Control
+
 Most scroll animations support range modifiers:
 
 ```typescript
 // In - Animation plays as element enters viewport
 { type: 'FadeScroll', range: 'in' }
 
-// Out - Animation plays as element exits viewport  
+// Out - Animation plays as element exits viewport
 { type: 'FadeScroll', range: 'out' }
 
 // Continuous - Animation spans full scroll interaction
@@ -84,6 +96,7 @@ Most scroll animations support range modifiers:
 ```
 
 ### Speed and Intensity
+
 Fine-tune animation responsiveness:
 
 ```typescript
@@ -91,8 +104,8 @@ Fine-tune animation responsiveness:
 { type: 'ParallaxScroll', speed: 0.3 }
 
 // Movement distance
-{ 
-  type: 'MoveScroll', 
+{
+  type: 'MoveScroll',
   distance: { value: 200, type: 'px' },
   angle: 45
 }
@@ -102,6 +115,7 @@ Fine-tune animation responsiveness:
 ```
 
 ### Directional Controls
+
 ```typescript
 // Four directions
 { type: 'RevealScroll', direction: 'left' | 'right' | 'top' | 'bottom' }
@@ -121,7 +135,9 @@ Fine-tune animation responsiveness:
 ### 📐 Transform-Based
 
 #### ParallaxScroll
+
 **Best for**: Background elements, hero sections, layered content
+
 ```typescript
 {
   type: 'ParallaxScroll',
@@ -132,7 +148,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### MoveScroll
+
 **Best for**: Directional reveals, dynamic positioning
+
 ```typescript
 {
   type: 'MoveScroll',
@@ -145,7 +163,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### GrowScroll / ShrinkScroll
+
 **Best for**: Scale-based reveals, size transitions
+
 ```typescript
 {
   type: 'GrowScroll',
@@ -159,7 +179,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### SlideScroll
+
 **Best for**: Content blocks, panel reveals
+
 ```typescript
 {
   type: 'SlideScroll',
@@ -172,7 +194,9 @@ Fine-tune animation responsiveness:
 ### 🎭 Opacity & Visibility
 
 #### FadeScroll
+
 **Best for**: Simple reveals, content blocks, images
+
 ```typescript
 {
   type: 'FadeScroll',
@@ -183,7 +207,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### BlurScroll
+
 **Best for**: Focus transitions, image reveals, depth effects
+
 ```typescript
 {
   type: 'BlurScroll',
@@ -197,7 +223,9 @@ Fine-tune animation responsiveness:
 ### 📺 3D Perspective
 
 #### ArcScroll
+
 **Best for**: Hero content, featured elements, dramatic reveals
+
 ```typescript
 {
   type: 'ArcScroll',
@@ -208,7 +236,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### FlipScroll
+
 **Best for**: Cards, panels, interactive elements
+
 ```typescript
 {
   type: 'FlipScroll',
@@ -221,7 +251,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### TiltScroll
+
 **Best for**: Interactive cards, 3D UI elements
+
 ```typescript
 {
   type: 'TiltScroll',
@@ -234,7 +266,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### Spin3dScroll
+
 **Best for**: Loading states, decorative elements, logos
+
 ```typescript
 {
   type: 'Spin3dScroll',
@@ -249,7 +283,9 @@ Fine-tune animation responsiveness:
 ### ✂️ Clip & Shape Effects
 
 #### RevealScroll
+
 **Best for**: Content blocks, images, text reveals
+
 ```typescript
 {
   type: 'RevealScroll',
@@ -260,7 +296,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### ShapeScroll
+
 **Best for**: Creative reveals, artistic elements, featured content
+
 ```typescript
 {
   type: 'ShapeScroll',
@@ -273,7 +311,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### ShuttersScroll
+
 **Best for**: Dynamic reveals, segmented content, galleries
+
 ```typescript
 {
   type: 'ShuttersScroll',
@@ -288,7 +328,9 @@ Fine-tune animation responsiveness:
 ### 🎢 Specialized Motion
 
 #### PanScroll / SkewPanScroll
+
 **Best for**: Wide content, horizontal scrolling sections
+
 ```typescript
 {
   type: 'PanScroll',
@@ -308,7 +350,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### StretchScroll
+
 **Best for**: Elastic elements, rubber-band effects
+
 ```typescript
 {
   type: 'StretchScroll',
@@ -320,7 +364,9 @@ Fine-tune animation responsiveness:
 ```
 
 #### TurnScroll
+
 **Best for**: Complex 3D interactions, showcase elements
+
 ```typescript
 {
   type: 'TurnScroll',
@@ -336,45 +382,48 @@ Fine-tune animation responsiveness:
 ## Viewport and Offset Control
 
 ### Intersection Ranges
+
 ```typescript
 // Named viewport ranges
 startOffset: { name: 'cover' }      // Element covers viewport
-startOffset: { name: 'contain' }    // Element contained in viewport  
+startOffset: { name: 'contain' }    // Element contained in viewport
 startOffset: { name: 'entry' }      // Element entering viewport
 startOffset: { name: 'exit' }       // Element leaving viewport
 
 // With percentage offsets
-startOffset: { 
-  name: 'cover', 
-  offset: { value: 20, type: 'percentage' } 
+startOffset: {
+  name: 'cover',
+  offset: { value: 20, type: 'percentage' }
 }
 
 // With pixel offsets
-endOffset: { 
-  name: 'exit', 
-  offset: { value: 100, type: 'px' } 
+endOffset: {
+  name: 'exit',
+  offset: { value: 100, type: 'px' }
 }
 ```
 
 ### Custom Scroll Ranges
+
 ```typescript
 // Start animation when element is 20% visible
 const scene = getScrubScene(element, animationOptions, {
   trigger: 'view-progress',
-  startOffset: { 
-    name: 'entry', 
-    offset: { value: 20, type: 'percentage' } 
+  startOffset: {
+    name: 'entry',
+    offset: { value: 20, type: 'percentage' },
   },
-  endOffset: { 
-    name: 'exit', 
-    offset: { value: 0, type: 'percentage' } 
-  }
+  endOffset: {
+    name: 'exit',
+    offset: { value: 0, type: 'percentage' },
+  },
 });
 ```
 
 ## Performance Optimization
 
 ### ViewTimeline API Usage
+
 ```typescript
 // Automatic detection and fallback
 if (window.ViewTimeline) {
@@ -388,115 +437,139 @@ if (window.ViewTimeline) {
 ```
 
 ### Efficient Scroll Animations
+
 ```typescript
 // Use transform-only properties for best performance
 const efficientAnimations = [
-  'ParallaxScroll',   // transform: translateY
-  'MoveScroll',       // transform: translate
-  'SpinScroll',       // transform: rotate + scale
-  'FadeScroll'        // opacity
+  'ParallaxScroll', // transform: translateY
+  'MoveScroll', // transform: translate
+  'SpinScroll', // transform: rotate + scale
+  'FadeScroll', // opacity
 ];
 
 // Avoid layout-triggering properties in scroll animations
 const heavierAnimations = [
-  'StretchScroll',    // Uses scaling that may demand extensive memory usage for large media
-  'ShapeScroll'       // Clip-path can be expensive if not hardware accelerated by the browser
+  'StretchScroll', // Uses scaling that may demand extensive memory usage for large media
+  'ShapeScroll', // Clip-path can be expensive if not hardware accelerated by the browser
 ];
 ```
 
 ## Common Patterns
 
 ### Hero Section Parallax
-```typescript
-const heroBackground = getScrubScene('#hero-bg', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ParallaxScroll',
-    speed: 0.3  // Slow background movement
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
 
-const heroContent = getScrubScene('#hero-content', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'FadeScroll',
-    range: 'out',
-    opacity: 0.8
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.querySelector('#hero')
-});
+```typescript
+const heroBackground = getScrubScene(
+  '#hero-bg',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ParallaxScroll',
+      speed: 0.3, // Slow background movement
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
+
+const heroContent = getScrubScene(
+  '#hero-content',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'FadeScroll',
+      range: 'out',
+      opacity: 0.8,
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.querySelector('#hero'),
+  },
+);
 ```
 
 ### Staggered Content Reveals
+
 ```typescript
 document.querySelectorAll('.reveal-item').forEach((item, index) => {
-  getScrubScene(item, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'RevealScroll',
-      direction: 'bottom',
-      range: 'in'
+  getScrubScene(
+    item,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'RevealScroll',
+        direction: 'bottom',
+        range: 'in',
+      },
+      // Stagger timing with offset
+      startOffset: {
+        name: 'entry',
+        offset: { value: index * 10, type: 'percentage' },
+      },
     },
-    // Stagger timing with offset
-    startOffset: { 
-      name: 'entry', 
-      offset: { value: index * 10, type: 'percentage' } 
-    }
-  }, {
-    trigger: 'view-progress',
-    element: item
-  });
+    {
+      trigger: 'view-progress',
+      element: item,
+    },
+  );
 });
 ```
 
 ### Gallery Scroll Effects
+
 ```typescript
 const galleryItems = document.querySelectorAll('.gallery-item');
 galleryItems.forEach((item, i) => {
-  getScrubScene(item, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'GrowScroll',
-      direction: 'center',
-      power: 'medium',
-      range: 'in'
-    }
-  }, {
-    trigger: 'view-progress',
-    element: item
-  });
+  getScrubScene(
+    item,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'GrowScroll',
+        direction: 'center',
+        power: 'medium',
+        range: 'in',
+      },
+    },
+    {
+      trigger: 'view-progress',
+      element: item,
+    },
+  );
 });
 ```
 
 ### Continuous Scroll Story
+
 ```typescript
 // Long-form content with continuous effects
-const storyContainer = getScrubScene('#story', {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'MoveScroll',
-    angle: 90,  // Vertical movement
-    distance: { value: 500, type: 'px' },
-    range: 'continuous'
-  }
-}, {
-  trigger: 'view-progress',
-  element: document.body
-});
+const storyContainer = getScrubScene(
+  '#story',
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'MoveScroll',
+      angle: 90, // Vertical movement
+      distance: { value: 500, type: 'px' },
+      range: 'continuous',
+    },
+  },
+  {
+    trigger: 'view-progress',
+    element: document.body,
+  },
+);
 ```
 
 ## Accessibility and UX
 
 ### Respect Motion Preferences
+
 ```typescript
-const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReducedMotion) {
   // Use gentler scroll effects or disable entirely
@@ -507,6 +580,7 @@ if (prefersReducedMotion) {
 ```
 
 ### Progressive Enhancement
+
 ```typescript
 // Check for scroll animation support
 const supportsScrollAnimations = 'ViewTimeline' in window;

@@ -4,11 +4,11 @@ Effects define what visual changes happen when a trigger fires. `@wix/interact` 
 
 ## Overview of Effect Types
 
-| Effect Type | Best For | Timing | Use Cases |
-|-------------|----------|---------|-----------|
-| **Time Effects** | Traditional animations | time-based | Entrance animations, Loop animations |
-| **Scrub Effects** | Scroll-driven and Pointer-driven animations | Progress-based | Parallax effects, horizontal-sliding effect |
-| **Transition Effects** | CSS property changes | Duration-based | Micro-interactions, simple state changes |
+| Effect Type            | Best For                                    | Timing         | Use Cases                                   |
+| ---------------------- | ------------------------------------------- | -------------- | ------------------------------------------- |
+| **Time Effects**       | Traditional animations                      | time-based     | Entrance animations, Loop animations        |
+| **Scrub Effects**      | Scroll-driven and Pointer-driven animations | Progress-based | Parallax effects, horizontal-sliding effect |
+| **Transition Effects** | CSS property changes                        | Duration-based | Micro-interactions, simple state changes    |
 
 ## Time Effects
 
@@ -90,6 +90,7 @@ For custom animations, use keyframe effects:
 ```
 
 ### Real-World Example: Card Entrance
+
 ```typescript
 {
     key: 'product-card',
@@ -117,6 +118,7 @@ For custom animations, use keyframe effects:
 Scrub effects are progress-based animations that respond to scroll position or pointer position.
 
 ### Basic Scrub Effect
+
 ```typescript
 {
     key: 'parallax-bg',
@@ -135,6 +137,7 @@ Scrub effects are progress-based animations that respond to scroll position or p
 ```
 
 ### Range Configuration
+
 Control when the animation starts and stops:
 
 ```typescript
@@ -157,6 +160,7 @@ Control when the animation starts and stops:
 TBD
 
 ### Real-World Example: Parallax Hero
+
 ```typescript
 {
     key: 'hero-section',
@@ -197,6 +201,7 @@ TBD
 Transition effects create smooth CSS property changes with automatic transitions.
 
 ### Basic Transition Effect
+
 ```typescript
 {
     key: 'theme-button',
@@ -214,6 +219,7 @@ Transition effects create smooth CSS property changes with automatic transitions
 ```
 
 ### Individual Property Transitions
+
 For different timing per property:
 
 ```typescript
@@ -239,6 +245,7 @@ For different timing per property:
 ```
 
 ### Real-World Example: Theme Switcher
+
 ```typescript
 {
     key: 'theme-toggle',
@@ -273,7 +280,7 @@ For complete control, use custom effects with JavaScript functions:
         // progress is 0-1 for scrub effects, or animation timing for time effects
         const scale = 1 + (progress * 0.2);
         const rotation = progress * 360;
-        
+
         element.style.transform = `scale(${scale}) rotate(${rotation}deg)`;
         element.style.filter = `hue-rotate(${progress * 180}deg)`;
     }
@@ -281,16 +288,17 @@ For complete control, use custom effects with JavaScript functions:
 ```
 
 ### Advanced Custom Effect
+
 ```typescript
 {
     key: 'particle-system',
     customEffect: (element, progress, params) => {
         const particles = element.querySelectorAll('.particle');
-        
+
         particles.forEach((particle, index) => {
             const delay = index * 0.1;
             const adjustedProgress = Math.max(0, progress - delay);
-            
+
             particle.style.opacity = adjustedProgress;
             particle.style.transform = `
                 translateY(${(1 - adjustedProgress) * 50}px)
@@ -362,7 +370,9 @@ You can apply multiple effects to different targets from a single trigger:
 ## Animation Targeting
 
 ### Self-Targeting
+
 Most common pattern - effect applies to the trigger element:
+
 ```typescript
 {
     key: 'my-button',
@@ -380,7 +390,9 @@ Most common pattern - effect applies to the trigger element:
 ```
 
 ### Cross-Targeting
+
 Effect applies to different elements:
+
 ```typescript
 {
     key: 'menu-trigger',
@@ -410,6 +422,7 @@ Effect applies to different elements:
 ```
 
 ### Multiple Targets with Same Effect
+
 ```typescript
 {
     key: 'master-control',
@@ -443,18 +456,22 @@ Effect applies to different elements:
 ## Performance Optimization
 
 ### Use Efficient Properties
+
 Prefer these properties for smooth animations:
+
 - `transform` (translate, scale, rotate)
 - `opacity`
 - `filter`
 - Custom CSS properties
 
 Avoid animating:
+
 - Layout properties (`width`, `height`, `margin`, `padding`)
 - Position properties (`top`, `left`)
 - Properties that trigger reflow
 
 ### Named Effects vs Keyframes
+
 ```typescript
 // Preferred - optimized by @wix/motion
 {
@@ -480,6 +497,7 @@ Avoid animating:
 ## Real-World Examples
 
 ### Image Gallery Hover Effect
+
 ```typescript
 {
     key: 'gallery-item',
@@ -514,6 +532,7 @@ Avoid animating:
 ```
 
 ### Loading Animation Sequence
+
 ```typescript
 {
     key: 'app-loader',
@@ -553,6 +572,7 @@ Avoid animating:
 ```
 
 ### Scroll-Triggered Counter
+
 ```typescript
 {
     key: 'stats-section',
@@ -576,18 +596,21 @@ Avoid animating:
 ## Best Practices
 
 ### Animation Timing
+
 - **Micro-interactions**: 100-300ms (hover, clicks)
 - **Page transitions**: 300-500ms
 - **Entrance animations**: 500-800ms
 - **Complex sequences**: 800-1200ms
 
 ### Easing Functions
+
 - **Entrances**: `ease-out` or `cubic-bezier(0.16, 1, 0.3, 1)`
 - **Exits**: `ease-in` or `cubic-bezier(0.4, 0, 1, 1)`
 - **Interactions**: `ease-in-out`
 - **Elastic effects**: `cubic-bezier(0.34, 1.56, 0.64, 1)`
 
 ### Accessibility
+
 ```typescript
 // Respect user preferences
 {
@@ -608,7 +631,7 @@ Avoid animating:
                     namedEffect: {
                         type: 'SlideIn'
                     },
-                    duration: 600   
+                    duration: 600
                 },
                 {
                     effectId: 'reduced-motion-entry',
@@ -629,6 +652,7 @@ Avoid animating:
 ## Next Steps
 
 Now that you understand effects and animations:
+
 - **[Configuration Structure](./configuration-structure.md)** - Organize complex interactions
 - **[State Management](./state-management.md)** - Advanced state handling
 - **[Conditions and Media Queries](./conditions-and-media-queries.md)** - Responsive animations

@@ -10,10 +10,7 @@ import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
 import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; easing: ScrubTransitionEasing }
-> = {
+const paramsMap: Record<EffectPower, { angle: number; easing: ScrubTransitionEasing }> = {
   soft: { angle: 10, easing: 'easeOut' },
   medium: { angle: 20, easing: 'easeOut' },
   hard: { angle: 45, easing: 'easeOut' },
@@ -29,13 +26,11 @@ class SkewMouseAnimation extends CustomMouse {
 
     // distance
     if (axis !== 'vertical') {
-      translateX =
-        mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+      translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
       skewX = mapRange(0, 1, angle, -angle, progressX) * invert;
     }
     if (axis !== 'horizontal') {
-      translateY =
-        mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+      translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
       skewY = mapRange(0, 1, angle, -angle, progressY) * invert;
     }
     if (axis === 'both') {
@@ -63,9 +58,7 @@ class SkewMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -87,6 +80,5 @@ export default function create(
     axis,
   };
 
-  return (target: HTMLElement) =>
-    new SkewMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new SkewMouseAnimation(target, animationOptions);
 }

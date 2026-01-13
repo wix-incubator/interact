@@ -7,10 +7,7 @@ import {
 import { getEasing } from '../../utils';
 import { getShuttersClipPaths } from '../../utils';
 
-const OPPOSITE_DIRECTION_MAP: Record<
-  EffectFourDirections,
-  EffectFourDirections
-> = {
+const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
   top: 'bottom',
   right: 'left',
   bottom: 'top',
@@ -40,8 +37,12 @@ export default function create(options: ScrubAnimationOptions) {
   let keyframes;
 
   if (range === 'continuous') {
-    const { clipStart: oppClipStart, clipEnd: oppClipEnd } =
-      getShuttersClipPaths(directionOpp, shutters, staggered, true);
+    const { clipStart: oppClipStart, clipEnd: oppClipEnd } = getShuttersClipPaths(
+      directionOpp,
+      shutters,
+      staggered,
+      true,
+    );
 
     keyframes = [
       {

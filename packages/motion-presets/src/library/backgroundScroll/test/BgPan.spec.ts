@@ -14,10 +14,7 @@ describe('BgPan', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         ...baseMockOptions,
-        keyframes: [
-          { transform: 'translateX(8%)' },
-          { transform: 'translateX(-8%)' },
-        ],
+        keyframes: [{ transform: 'translateX(8%)' }, { transform: 'translateX(-8%)' }],
       },
     ];
 
@@ -35,10 +32,7 @@ describe('BgPan', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: 'translateX(-8%)' },
-          { transform: 'translateX(8%)' },
-        ],
+        keyframes: [{ transform: 'translateX(-8%)' }, { transform: 'translateX(8%)' }],
       },
     ];
 
@@ -56,10 +50,7 @@ describe('BgPan', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
-        keyframes: [
-          { transform: 'translateX(16%)' },
-          { transform: 'translateX(-16%)' },
-        ],
+        keyframes: [{ transform: 'translateX(16%)' }, { transform: 'translateX(-16%)' }],
       },
     ];
 

@@ -1,9 +1,4 @@
-import type {
-  SlideIn,
-  AnimationExtraOptions,
-  DomApi,
-  TimeAnimationOptions,
-} from '../../types';
+import type { SlideIn, AnimationExtraOptions, DomApi, TimeAnimationOptions } from '../../types';
 import {
   getAdjustedDirection,
   getClipPolygonParams,
@@ -13,9 +8,7 @@ import {
 
 export function getNames(options: TimeAnimationOptions) {
   const { power } = options.namedEffect as SlideIn;
-  return power !== 'hard'
-    ? ['motion-slideIn', 'motion-fadeIn']
-    : ['motion-slideIn'];
+  return power !== 'hard' ? ['motion-slideIn', 'motion-fadeIn'] : ['motion-slideIn'];
 }
 
 const PARAM_MAP = {
@@ -25,12 +18,7 @@ const PARAM_MAP = {
   left: { dx: -1, dy: 0, clip: 'right' },
 };
 
-const DIRECTIONS = [
-  'top',
-  'right',
-  'bottom',
-  'left',
-] as (keyof typeof PARAM_MAP)[];
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as (keyof typeof PARAM_MAP)[];
 
 const INITIAL_TRANSLATE_MAP = {
   soft: 0.2,
@@ -38,10 +26,7 @@ const INITIAL_TRANSLATE_MAP = {
   hard: 1,
 };
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   const animations = style(options);
 
   prepare(options, dom);
@@ -50,11 +35,7 @@ export function web(
 }
 
 export function style(options: TimeAnimationOptions) {
-  const {
-    direction = 'left',
-    power,
-    initialTranslate = 1,
-  } = options.namedEffect as SlideIn;
+  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
   const [slideIn, fadeIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
@@ -121,11 +102,7 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const {
-    direction = 'left',
-    power,
-    initialTranslate = 1,
-  } = options.namedEffect as SlideIn;
+  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
 
   const scale = (power && INITIAL_TRANSLATE_MAP[power]) || initialTranslate;
   const minimum = 100 - scale * 100;

@@ -1,8 +1,4 @@
-import type {
-  TurnIn,
-  TimeAnimationOptions,
-  EffectFourCorners,
-} from '../../types';
+import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -53,10 +49,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const { direction = 'top-left', power } = options.namedEffect as TurnIn;
   const [fadeIn, turnIn] = getNames(options);
 
-  const easing =
-    power && EASING_MAP[power]
-      ? EASING_MAP[power]
-      : options.easing || 'backOut';
+  const easing = power && EASING_MAP[power] ? EASING_MAP[power] : options.easing || 'backOut';
   const { x, y } = DIRECTION_TO_TRANSFORM_MAP[direction];
   const transformRotate = DIRECTION_TO_TRANSFORM_MAP[direction].angle;
 
@@ -67,11 +60,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   };
 
   const origin = toKeyframeValue(custom, '--motion-origin', asWeb);
-  const invertedOrigin = toKeyframeValue(
-    custom,
-    '--motion-origin-invert',
-    asWeb,
-  );
+  const invertedOrigin = toKeyframeValue(custom, '--motion-origin-invert', asWeb);
 
   return [
     {
@@ -80,10 +69,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.6,
       easing: 'sineIn',
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

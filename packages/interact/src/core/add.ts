@@ -14,15 +14,17 @@ import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
 
-type InteractionsToApply = Array<[
-  string,
-  InteractionTrigger,
-  Effect,
-  HTMLElement | HTMLElement[],
-  HTMLElement | HTMLElement[],
-  string | undefined,
-  boolean,
-]>;
+type InteractionsToApply = Array<
+  [
+    string,
+    InteractionTrigger,
+    Effect,
+    HTMLElement | HTMLElement[],
+    HTMLElement | HTMLElement[],
+    string | undefined,
+    boolean,
+  ]
+>;
 
 function _getElementsFromData(
   data: Interaction | Effect,
@@ -55,7 +57,9 @@ function _getElementsFromData(
     }
   }
 
-  return useFirstChild ? root.firstElementChild as HTMLElement | null : root as HTMLElement | null;
+  return useFirstChild
+    ? (root.firstElementChild as HTMLElement | null)
+    : (root as HTMLElement | null);
 }
 
 function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]): HTMLElement[] {
@@ -101,7 +105,7 @@ function _applyInteraction(
   if (isSourceArray) {
     sourceElements.forEach((sourceEl, index) => {
       const targetEl = isTargetArray ? targetElements[index] : targetElements;
-      
+
       if (targetEl) {
         addInteraction(
           targetKey,
@@ -142,7 +146,7 @@ function _addInteraction(
   const interactionVariations: Record<string, boolean> = {};
 
   const interactionsToApply: InteractionsToApply = [];
-  
+
   interaction.effects.forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 

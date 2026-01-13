@@ -21,8 +21,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -47,8 +46,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-20deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -73,8 +71,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) skewX(10deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -99,8 +96,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -125,8 +121,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-17deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -151,8 +146,7 @@ describe('SkewPanScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-24deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
         ],
       },
@@ -174,8 +168,7 @@ describe('SkewPanScroll', () => {
         fill: 'forwards',
         keyframes: [
           {
-            transform:
-              'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+            transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
           },
           {
             transform:

@@ -21,7 +21,7 @@ vi.mock('fastdom', () => ({
   default: {
     measure: vi.fn((fn) => fn()),
     mutate: vi.fn((fn) => fn()),
-  }
+  },
 }));
 
 vi.mock('../src/AnimationGroup', () => ({
@@ -93,6 +93,8 @@ const mockFadeScrollPreset = {
         fill: 'both',
         easing: 'linear',
         iterations: 1,
+        startOffsetAdd: (options as any).startOffsetAdd,
+        endOffsetAdd: (options as any).endOffsetAdd,
         startOffset,
         endOffset,
       },
@@ -182,14 +184,10 @@ registerEffects({
 
 // Don't mock getEasing for getEasing() tests - we want to test the real implementation
 vi.mock('../src/utils', async () => {
-  const originalUtils = await vi.importActual<typeof import('../src/utils')>(
-    '../src/utils',
-  );
+  const originalUtils = await vi.importActual<typeof import('../src/utils')>('../src/utils');
   return {
     ...originalUtils,
-    getCssUnits: vi.fn((type) =>
-      type === 'percentage' ? '%' : type || 'px',
-    ),
+    getCssUnits: vi.fn((type) => (type === 'percentage' ? '%' : type || 'px')),
     getJsEasing: vi.fn(),
   };
 });
@@ -242,11 +240,7 @@ describe('motion.ts', () => {
           componentId: 'comp-123',
         };
 
-        const result = getCSSAnimation(
-          'test-target',
-          animationOptions,
-          trigger,
-        );
+        const result = getCSSAnimation('test-target', animationOptions, trigger);
 
         expect(result).toHaveLength(1);
         expect(result[0]).toMatchObject({
@@ -280,11 +274,7 @@ describe('motion.ts', () => {
           componentId: 'comp-123',
         };
 
-        const result = getCSSAnimation(
-          'test-target',
-          animationOptions,
-          trigger,
-        );
+        const result = getCSSAnimation('test-target', animationOptions, trigger);
 
         expect(result[0].animationRange).toContain('entry 20%');
         expect(result[0].animationRange).toContain('exit 80%');
@@ -345,10 +335,7 @@ describe('motion.ts', () => {
         const result = getCSSAnimation('test-target', animationOptions);
 
         expect(result[0].name).toBe('glitch-in');
-        expect(result[0].keyframes).toEqual([
-          { translate: '-100%' },
-          { translate: 0 },
-        ]);
+        expect(result[0].keyframes).toEqual([{ translate: '-100%' }, { translate: 0 }]);
       });
 
       test('should handle keyframe effects', () => {
@@ -445,7 +432,9 @@ describe('motion.ts', () => {
           Object.assign(mockViewTimeline, options);
           return mockViewTimeline;
         });
-        (global as any).KeyframeEffect = vi.fn(function () { return mockKeyframeEffect; });
+        (global as any).KeyframeEffect = vi.fn(function () {
+          return mockKeyframeEffect;
+        });
         (global as any).Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
           return {
             ready: Promise.resolve(),
@@ -468,9 +457,9 @@ describe('motion.ts', () => {
 
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(
-          function () { return mockAnimationGroup; },
-        );
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement, animationOptions);
 
@@ -491,7 +480,9 @@ describe('motion.ts', () => {
         const div = document.createElement('div');
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(div, animationOptions);
 
@@ -526,8 +517,10 @@ describe('motion.ts', () => {
         });
 
         CustomMouse.mockImplementation(function (options: any) {
-          return vi.fn(function (target_: any) { return new (CustomMouseMock as any)(target_, options); });
+        return vi.fn(function (target_: any) {
+          return new (CustomMouseMock as any)(target_, options);
         });
+      });
 
         const result = getWebAnimation(mockElement.id, animationOptions, {
           element: mockElement,
@@ -571,9 +564,7 @@ describe('motion.ts', () => {
           expect.objectContaining(animationOptions),
         );
         expect(result).toBe(mockAnimationGroup);
-        expect(mockAnimationGroup.animations[0].timeline).toBe(
-          mockViewTimeline,
-        );
+        expect(mockAnimationGroup.animations[0].timeline).toBe(mockViewTimeline);
 
         (AnimationGroup as Mock).mockRestore();
       });
@@ -607,7 +598,9 @@ describe('motion.ts', () => {
         expect(mockAnimationGroup.animations[0].timeline).toBeUndefined();
 
         // Restore for other tests
-        (global as any).ViewTimeline = vi.fn(function () { return mockViewTimeline; });
+        (global as any).ViewTimeline = vi.fn(function () {
+          return mockViewTimeline;
+        });
       });
 
       test('should set animation ranges for view-progress', async () => {
@@ -645,9 +638,7 @@ describe('motion.ts', () => {
         expect(result).toBe(mockAnimationGroup);
         expect(mockAnimationGroup.animations[0].rangeStart).toBe('cover 10%');
         expect(mockAnimationGroup.animations[0].rangeEnd).toBe('cover 90%');
-        expect(mockAnimationGroup.animations[0].timeline).toBe(
-          mockViewTimeline,
-        );
+        expect(mockAnimationGroup.animations[0].timeline).toBe(mockViewTimeline);
 
         (AnimationGroup as Mock).mockRestore();
       });
@@ -674,16 +665,14 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
-        expect(mockElement.matches).toHaveBeenCalledWith(
-          '[data-motion-part~="bg"]',
-        );
-        expect(mockElement.querySelector).toHaveBeenCalledWith(
-          '[data-motion-part~="bg"]',
-        );
+        expect(mockElement.matches).toHaveBeenCalledWith('[data-motion-part~="bg"]');
+        expect(mockElement.querySelector).toHaveBeenCalledWith('[data-motion-part~="bg"]');
         expect(KeyframeEffect).toHaveBeenCalledWith(
           partElement,
           expect.any(Array),
@@ -708,13 +697,13 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
-        expect(mockElement.matches).toHaveBeenCalledWith(
-          '[data-motion-part~="bg"]',
-        );
+        expect(mockElement.matches).toHaveBeenCalledWith('[data-motion-part~="bg"]');
         expect(mockElement.querySelector).not.toHaveBeenCalled();
         expect(KeyframeEffect).toHaveBeenCalledWith(
           mockElement,
@@ -731,7 +720,9 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
         const fastdom = (await import('fastdom')).default;
 
         const result = getWebAnimation(mockElement, animationOptions);
@@ -743,9 +734,7 @@ describe('motion.ts', () => {
         mutateCallback();
 
         expect(mockKeyframeEffect.setKeyframes).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            expect.objectContaining({ opacity: expect.any(Number) }),
-          ]),
+          expect.arrayContaining([expect.objectContaining({ opacity: expect.any(Number) })]),
         );
         expect(result).toBe(mockAnimationGroup);
 
@@ -768,7 +757,9 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(elementWithCustomDoc, animationOptions);
 
@@ -813,7 +804,9 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -842,7 +835,9 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -862,13 +857,12 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         // Test entrance animation
-        const entranceResult = getWebAnimation(
-          mockElement.id,
-          animationOptions,
-        );
+        const entranceResult = getWebAnimation(mockElement.id, animationOptions);
         expect(entranceResult).toBe(mockAnimationGroup);
 
         // Test scroll animation
@@ -897,7 +891,9 @@ describe('motion.ts', () => {
         };
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getWebAnimation(mockElement.id, animationOptions);
 
@@ -1062,7 +1058,9 @@ describe('motion.ts', () => {
 
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getElementCSSAnimation('test-element', animationOptions);
 
@@ -1217,10 +1215,7 @@ describe('motion.ts', () => {
         const result = getElementAnimation(mockElement, 'fade-in');
 
         // Should only include animations with IDs starting with 'fade-in'
-        expect(AnimationGroup).toHaveBeenCalledWith([
-          animationsWithIds[0],
-          animationsWithIds[1],
-        ]);
+        expect(AnimationGroup).toHaveBeenCalledWith([animationsWithIds[0], animationsWithIds[1]]);
         expect(result).toBe(mockAnimationGroup);
       });
 
@@ -1249,10 +1244,7 @@ describe('motion.ts', () => {
         const result = getElementAnimation(mockElement, 'bounce-in');
 
         // Should only include CSSAnimations with names starting with 'bounce-in'
-        expect(AnimationGroup).toHaveBeenCalledWith([
-          cssAnimations[0],
-          cssAnimations[1],
-        ]);
+        expect(AnimationGroup).toHaveBeenCalledWith([cssAnimations[0], cssAnimations[1]]);
         expect(result).toBe(mockAnimationGroup);
       });
 
@@ -1268,7 +1260,9 @@ describe('motion.ts', () => {
       test('should handle string target', async () => {
         const { AnimationGroup } = await import('../src/AnimationGroup');
 
-        (AnimationGroup as Mock).mockImplementation(function () { return mockAnimationGroup; });
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getElementAnimation('test-element', 'effect-123');
 
@@ -1305,10 +1299,7 @@ describe('motion.ts', () => {
         const result = getElementAnimation(mockElement, 'target-effect');
 
         // Should only include animations without IDs/names (fallback case)
-        expect(AnimationGroup).toHaveBeenCalledWith([
-          mixedAnimations[2],
-          mixedAnimations[3],
-        ]);
+        expect(AnimationGroup).toHaveBeenCalledWith([mixedAnimations[2], mixedAnimations[3]]);
         expect(result).toBe(mockAnimationGroup);
       });
 
@@ -1319,14 +1310,9 @@ describe('motion.ts', () => {
           writable: true,
         });
 
-        const result = getElementAnimation(
-          'non-existent-element',
-          'effect-123',
-        );
+        const result = getElementAnimation('non-existent-element', 'effect-123');
 
-        expect(document.getElementById).toHaveBeenCalledWith(
-          'non-existent-element',
-        );
+        expect(document.getElementById).toHaveBeenCalledWith('non-existent-element');
         expect(result).toBeNull();
       });
 
@@ -1350,10 +1336,7 @@ describe('motion.ts', () => {
         const result = getElementAnimation(mockElement, 'web-anim');
 
         // Should include both Animation objects with matching IDs
-        expect(AnimationGroup).toHaveBeenCalledWith([
-          mixedAnimations[0],
-          mixedAnimations[2],
-        ]);
+        expect(AnimationGroup).toHaveBeenCalledWith([mixedAnimations[0], mixedAnimations[2]]);
         expect(result).toBe(mockAnimationGroup);
       });
     });
@@ -1377,9 +1360,15 @@ describe('motion.ts', () => {
             composite: 'replace',
             iterationComposite: 'replace',
             pseudoElement: null,
-            getKeyframes: vi.fn(function () { return []; }),
-            getComputedTiming: vi.fn(function () { return { activeDuration: 1000 }; }),
-            getTiming: vi.fn(function () { return { delay: 0 }; }),
+            getKeyframes: vi.fn(function () {
+              return [];
+            }),
+            getComputedTiming: vi.fn(function () {
+              return { activeDuration: 1000 };
+            }),
+            getTiming: vi.fn(function () {
+              return { delay: 0 };
+            }),
           };
         }) as any;
         global.Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
@@ -1500,12 +1489,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-          sceneOptions,
-        ) as any[];
+        const result = getScrubScene(mockElement, animationOptions, trigger, sceneOptions) as any[];
 
         expect(Array.isArray(result)).toBe(true);
         expect(result).toHaveLength(2);
@@ -1555,12 +1539,7 @@ describe('motion.ts', () => {
         const getWebAnimationSpy = vi.spyOn(webAnimations, 'getWebAnimation');
         getWebAnimationSpy.mockReturnValue(mockMouseAnimation);
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-          sceneOptions,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger, sceneOptions) as any;
 
         expect(Array.isArray(result)).toBe(false);
         expect(result.target).toBe(mockElement);
@@ -1618,11 +1597,7 @@ describe('motion.ts', () => {
         };
         getWebAnimationSpy.mockReturnValue(mockMouseAnimationWithTarget);
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any;
 
         expect(result.transitionDuration).toBe(500);
         expect(result.transitionEasing).toBe(mockJsEasing);
@@ -1650,12 +1625,7 @@ describe('motion.ts', () => {
         const getWebAnimationSpy = vi.spyOn(webAnimations, 'getWebAnimation');
         getWebAnimationSpy.mockReturnValue(mockMouseAnimation);
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-          sceneOptions,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger, sceneOptions) as any;
 
         expect(result.disabled).toBe(true);
         expect(result.allowActiveEvent).toBe(false);
@@ -1680,11 +1650,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any;
 
         expect(typeof result[0].getProgress).toBe('function');
         expect(result[0].getProgress()).toBe(0.5);
@@ -1709,11 +1675,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any;
 
         expect(typeof result[0].effect).toBe('function');
 
@@ -1744,11 +1706,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any;
 
         expect(typeof result.destroy).toBe('function');
         result.destroy();
@@ -1779,12 +1737,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-          sceneOptions,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger, sceneOptions) as any;
 
         // disabled should be extracted and included
         expect(result.disabled).toBe(true);
@@ -1817,12 +1770,7 @@ describe('motion.ts', () => {
         };
         getWebAnimationSpy.mockReturnValue(mockMouseAnimationWithTarget);
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-          sceneOptions,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger, sceneOptions) as any;
 
         expect(result.centeredToTarget).toBe(false);
         expect(result.allowActiveEvent).toBe(true);
@@ -1855,11 +1803,7 @@ describe('motion.ts', () => {
         };
         getWebAnimationSpy.mockReturnValue(mockMouseAnimationWithTarget);
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any;
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any;
 
         expect(result.transitionDuration).toBe(750);
         expect(result.transitionEasing).toBe(mockJsEasing);
@@ -1884,11 +1828,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        ) as any[];
+        const result = getScrubScene(mockElement, animationOptions, trigger) as any[];
 
         expect(Array.isArray(result)).toBe(true);
 
@@ -1920,11 +1860,7 @@ describe('motion.ts', () => {
           componentId: 'view-source',
         };
 
-        const result = getScrubScene(
-          mockElement,
-          animationOptions,
-          trigger,
-        );
+        const result = getScrubScene(mockElement, animationOptions, trigger);
 
         expect(result).toBeNull();
       });
@@ -2102,7 +2038,7 @@ describe('motion.ts', () => {
         expect(prepareFn).not.toHaveBeenCalled();
 
         // Callback should still be executed
-          const fastdom = (await import('fastdom')).default;
+        const fastdom = (await import('fastdom')).default;
         expect(fastdom.mutate).toHaveBeenCalledWith(mockCallback);
       });
 
@@ -2149,15 +2085,9 @@ describe('motion.ts', () => {
 
         // Test custom easings from cssEasings object
         expect(getEasing('sineIn')).toBe('cubic-bezier(0.47, 0, 0.745, 0.715)');
-        expect(getEasing('quadOut')).toBe(
-          'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        );
-        expect(getEasing('cubicInOut')).toBe(
-          'cubic-bezier(0.645, 0.045, 0.355, 1)',
-        );
-        expect(getEasing('backOut')).toBe(
-          'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        );
+        expect(getEasing('quadOut')).toBe('cubic-bezier(0.25, 0.46, 0.45, 0.94)');
+        expect(getEasing('cubicInOut')).toBe('cubic-bezier(0.645, 0.045, 0.355, 1)');
+        expect(getEasing('backOut')).toBe('cubic-bezier(0.175, 0.885, 0.32, 1.275)');
       });
 
       test('should return custom easing string when not found in presets', () => {
@@ -2245,14 +2175,13 @@ describe('motion.ts', () => {
           return mockViewTimeline;
         });
         (global as any).KeyframeEffect = vi.fn(function (
-            _target: Element | null,
-            _keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
-            options: KeyframeEffectOptions | number | undefined,
-          ) {
-            mockKeyframeEffectOptions = options;
-            return mockKeyframeEffect;
-          },
-        ) as any;
+          _target: Element | null,
+          _keyframes: Keyframe[] | PropertyIndexedKeyframes | null,
+          options: KeyframeEffectOptions | number | undefined,
+        ) {
+          mockKeyframeEffectOptions = options;
+          return mockKeyframeEffect;
+        }) as any;
         (global as any).Animation = vi.fn(function (keyframeEffect: any, timeline: any) {
           return {
             ready: Promise.resolve(),
@@ -2297,12 +2226,7 @@ describe('motion.ts', () => {
           return mockAnimationGroup;
         });
 
-        const result = getAnimation(
-          mockElement,
-          animationOptions,
-          undefined,
-          true,
-        );
+        const result = getAnimation(mockElement, animationOptions, undefined, true);
 
         expect(AnimationGroup).toHaveBeenCalledWith(
           expect.arrayContaining([expect.anything()]),
@@ -2339,9 +2263,9 @@ describe('motion.ts', () => {
 
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(
-          function () { return mockAnimationGroup; },
-        );
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getAnimation(mockElement, animationOptions);
 
@@ -2368,9 +2292,9 @@ describe('motion.ts', () => {
 
         // Mock AnimationGroup constructor
         const { AnimationGroup } = await import('../src/AnimationGroup');
-        (AnimationGroup as Mock).mockImplementation(
-          function () { return mockAnimationGroup; },
-        );
+        (AnimationGroup as Mock).mockImplementation(function () {
+          return mockAnimationGroup;
+        });
 
         const result = getAnimation(mockElement, animationOptions);
 

@@ -2,10 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import BgFake3D from '../BgFake3D';
 import { baseMockOptions } from './testUtils';
-import type {
-  BgFake3D as BgFake3DType,
-  AnimationData,
-} from '../../../types';
+import type { BgFake3D as BgFake3DType, AnimationData } from '../../../types';
 
 describe('BgFake3D', () => {
   test('Default values', () => {

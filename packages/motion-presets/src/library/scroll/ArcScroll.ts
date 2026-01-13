@@ -1,8 +1,4 @@
-import type {
-  ScrubAnimationOptions,
-  ArcScroll,
-  AnimationFillMode,
-} from '../../types';
+import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode } from '../../types';
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -18,8 +14,7 @@ const RANGES_MAP = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const { direction = 'horizontal', range = 'in' } =
-    options.namedEffect as ArcScroll;
+  const { direction = 'horizontal', range = 'in' } = options.namedEffect as ArcScroll;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;

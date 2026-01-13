@@ -36,11 +36,7 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const {
-    direction = 'top',
-    power,
-    initialRotate = 90,
-  } = options.namedEffect as FlipIn;
+  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
   const [fadeIn, flipIn] = getNames(options);
   const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
   const easing = options.easing || 'backOut';
@@ -58,10 +54,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,
@@ -82,11 +75,7 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const {
-    direction = 'top',
-    power,
-    initialRotate = 90,
-  } = options.namedEffect as FlipIn;
+  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
 
   const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
 
@@ -98,8 +87,7 @@ export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      const rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
+      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
       adjustedDirection = getAdjustedDirection(
         DIRECTIONS,
         direction,

@@ -1,9 +1,4 @@
-import {
-  getEasingFamily,
-  getEasing,
-  toKeyframeValue,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { PunchIn, TimeAnimationOptions, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 
@@ -11,10 +6,7 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-punchIn'];
 }
 
-const TRANSLATION_FACTORS_MAP: Record<
-  PunchIn['direction'],
-  { x: number; y: number }
-> = {
+const TRANSLATION_FACTORS_MAP: Record<PunchIn['direction'], { x: number; y: number }> = {
   'top-left': { y: -1, x: -1 },
   'top-right': { y: -1, x: 1 },
   'bottom-right': { y: 1, x: 1 },
@@ -42,8 +34,7 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-right', power = 'medium' } =
-    options.namedEffect as PunchIn;
+  const { direction = 'top-right', power = 'medium' } = options.namedEffect as PunchIn;
   const [fadeIn, punchIn] = getNames(options);
   const translationFactors = TRANSLATION_FACTORS_MAP[direction];
 
@@ -68,11 +59,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   ];
 
   const keyframes = KEYFRAMES.map(({ offset, scale, ease, factor }) => {
-    const { x, y } = getMidPoint(
-      translationFactors.x,
-      translationFactors.y,
-      factor,
-    );
+    const { x, y } = getMidPoint(translationFactors.x, translationFactors.y, factor);
 
     return {
       offset: offset / 100,
@@ -93,10 +80,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.3,
       name: fadeIn,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

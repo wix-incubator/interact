@@ -12,10 +12,7 @@ import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
 import { getRegisteredEffect } from './registry';
 
-function getElement(
-  id: string | null,
-  ownerDocument?: Document,
-): HTMLElement | null {
+function getElement(id: string | null, ownerDocument?: Document): HTMLElement | null {
   return id ? (ownerDocument || document).getElementById(id) : null;
 }
 
@@ -26,14 +23,10 @@ function getElementMotionPart(element: Element | null, part: string) {
   return element?.querySelector(`[data-motion-part~="${part}"]`);
 }
 
-function getDirection(
-  effect: AnimationData,
-): KeyframeEffectOptions['direction'] {
+function getDirection(effect: AnimationData): KeyframeEffectOptions['direction'] {
   const alternate = effect.alternate ? 'alternate' : '';
   return effect.reversed
-    ? (`${alternate ? `${alternate}-` : ''}reverse` as
-        | 'reverse'
-        | 'alternate-reverse')
+    ? (`${alternate ? `${alternate}-` : ''}reverse` as 'reverse' | 'alternate-reverse')
     : alternate || 'normal';
 }
 
@@ -41,19 +34,15 @@ function getLength(length: UnitLengthPercentage): string {
   return `${length.value}${getCssUnits(length.type)}`;
 }
 
-function getRange(
-  range: RangeOffset,
-  add: string | undefined,
-  isEnd?: boolean,
-) {
+function getRange(range: RangeOffset, add: string | undefined, isEnd?: boolean) {
   // according to the CSS spec if the end range is a <length> then it is calculated from the start of the named range
   // our model assumes that <length> in end range is calculated from the end of the named range
   return `${range.name || 'cover'} ${
     isEnd && range.offset!.type !== 'percentage'
       ? `calc(100% + ${getLength(range.offset!)}${add ? ` + ${add}` : ''})`
       : add
-      ? `calc(${getLength(range.offset!)} + ${add})`
-      : getLength(range.offset!)
+        ? `calc(${getLength(range.offset!)} + ${add})`
+        : getLength(range.offset!)
   }`;
 }
 
@@ -139,10 +128,7 @@ function getEffectsData(
 }
 
 function isNotAScrubTrigger(trigger?: Partial<TriggerVariant>) {
-  return (
-    !trigger ||
-    (trigger.trigger !== 'pointer-move' && trigger.trigger !== 'view-progress')
-  );
+  return !trigger || (trigger.trigger !== 'pointer-move' && trigger.trigger !== 'view-progress');
 }
 
 export {

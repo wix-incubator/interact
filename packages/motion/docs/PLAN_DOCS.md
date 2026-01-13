@@ -1,24 +1,28 @@
 ## Context Summary
 
 ### Tools Utilized & Key Discoveries:
+
 Used `read_file` on `types.ts` (781 lines), animation index files, and implementation examples. Used `list_dir` to map complete library structure. Used `file_search` to find documentation patterns in other packages. Examined simple (`FadeIn.ts`) and complex (`ArcIn.ts`) animation implementations, plus test patterns.
 
 **Key Findings:**
+
 - **82+ animation presets** organized in 5 categories
-- **Comprehensive TypeScript definitions** with detailed configuration options  
+- **Comprehensive TypeScript definitions** with detailed configuration options
 - **Consistent API structure** across all animations (`web()`, `style()`, `getNames()`, `prepare()`)
 - **Current documentation is minimal** (motion README only has 4 lines)
 - **Rich reference pattern exists** in `interact` package (98-line structured docs)
 
 ### Confirmation of User's Problem Statement:
+
 The motion package contains a sophisticated animation system with extensive presets but **lacks comprehensive documentation**. The current README is essentially empty, while the codebase contains 82+ well-structured animation presets across 5 distinct categories, each with specific configuration options and usage patterns.
 
 ### Key Files, Functions, Types & Structures Involved:
+
 1. **Main structure**: `packages/motion/src/`
 2. **Type definitions**: `types.ts` - Complete type system with detailed interfaces
 3. **Five animation categories**:
    - **Entrance animations**: 24 presets (ArcIn, BlurIn, BounceIn, etc.)
-   - **Ongoing animations**: 16 presets (Bounce, Breathe, Cross, etc.)  
+   - **Ongoing animations**: 16 presets (Bounce, Breathe, Cross, etc.)
    - **Scroll animations**: 19 presets (ArcScroll, BlurScroll, FadeScroll, etc.)
    - **Mouse animations**: 12 presets (AiryMouse, BlobMouse, BlurMouse, etc.)
    - **Background scroll animations**: 12 presets (BgCloseUp, BgFade, BgParallax, etc.)
@@ -26,6 +30,7 @@ The motion package contains a sophisticated animation system with extensive pres
 5. **Test structure**: Comprehensive test files with usage examples
 
 ### Current Data Flow & Observed Patterns:
+
 - **Animation structure**: Each preset exports `web()`, `style()`, `getNames()`, optional `prepare()`
 - **Type hierarchy**: All animations inherit from `BaseDataItemLike<Type>` with specific configuration interfaces
 - **Configuration system**: Common properties like `power`, `direction`, `intensity` with preset-specific options
@@ -33,12 +38,14 @@ The motion package contains a sophisticated animation system with extensive pres
 - **Playground integration**: Storybook stories demonstrate interactive usage
 
 ### Reference Implementations/Utilities Found:
+
 - **Documentation pattern**: `interact` package provides excellent structured documentation template
 - **Test patterns**: Extensive test suites showing configuration examples and expected outputs
 - **Playground demos**: Interactive Storybook implementations showing real usage
 - **Type definitions**: Complete TypeScript interfaces for all configuration options
 
 ### Potential Challenges, Risks & Considerations:
+
 1. **Scale complexity**: 82+ presets require systematic organization to avoid overwhelming users
 2. **Technical depth**: Each animation has multiple configuration options requiring clear explanation
 3. **Multiple audiences**: Need to serve both quick-reference and deep-dive use cases
@@ -57,12 +64,14 @@ Based on the thorough exploration, I propose creating a complete documentation e
 #### **Stage 1: Foundation & Structure (Week 1-2)**
 
 **What:** Create the core documentation architecture and main overview
-**Where:** 
+**Where:**
+
 - `packages/motion/README.md` (complete rewrite)
 - `packages/motion/docs/` (new directory structure)
-**Why:** Establish the foundation for all subsequent documentation and provide immediate value
+  **Why:** Establish the foundation for all subsequent documentation and provide immediate value
 
 **Deliverables:**
+
 1. **Enhanced Main README** - Replace 4-line README with comprehensive overview
 2. **Documentation Structure** - Create organized directory hierarchy following `interact` package pattern
 3. **Getting Started Guide** - Quick setup and first animation implementation
@@ -78,12 +87,13 @@ Based on the thorough exploration, I propose creating a complete documentation e
 **Why:** Help users navigate the large number of presets by understanding categories first
 
 **Deliverables:**
+
 1. **Entrance Animations Guide** (24 presets)
    - Category overview and use cases
    - Comparison table with visual descriptions
    - Common configuration patterns
 2. **Ongoing Animations Guide** (16 presets)
-3. **Scroll Animations Guide** (19 presets) 
+3. **Scroll Animations Guide** (19 presets)
 4. **Mouse Animations Guide** (12 presets)
 5. **Background Scroll Animations Guide** (12 presets)
 
@@ -97,6 +107,7 @@ Based on the thorough exploration, I propose creating a complete documentation e
 **Why:** Provide complete reference for every available animation with examples
 
 **Deliverables:**
+
 1. **Standardized preset documentation template**
    - Description and visual behavior
    - Configuration options with examples
@@ -116,6 +127,7 @@ Based on the thorough exploration, I propose creating a complete documentation e
 **Why:** Support power users and complex integration scenarios
 
 **Deliverables:**
+
 1. **API Reference**
    - Core functions (`getWebAnimation`, `getScrubScene`, etc.)
    - AnimationGroup class
@@ -136,6 +148,7 @@ Based on the thorough exploration, I propose creating a complete documentation e
 **Why:** Maximize usability and ensure long-term documentation quality
 
 **Deliverables:**
+
 1. **Interactive Elements**
    - Embedded playground examples
    - Live configuration editors
@@ -185,8 +198,9 @@ packages/motion/
 ```
 
 ### **Check-in Points:**
+
 - **End of Stage 1:** Review foundation structure and core concepts clarity
-- **End of Stage 2:** Validate category organization and navigation effectiveness  
+- **End of Stage 2:** Validate category organization and navigation effectiveness
 - **End of Stage 3:** Sample review of 10 preset documentation pages for consistency
 - **End of Stage 4:** API documentation completeness review
 - **End of Stage 5:** Full documentation system testing and feedback integration

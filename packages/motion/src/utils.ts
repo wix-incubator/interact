@@ -4,9 +4,7 @@ export function getCssUnits(type: 'percentage' | string) {
 }
 
 export function getEasing(easing?: keyof typeof cssEasings | string): string {
-  return easing
-    ? cssEasings[easing as keyof typeof cssEasings] || easing
-    : cssEasings.linear;
+  return easing ? cssEasings[easing as keyof typeof cssEasings] || easing : cssEasings.linear;
 }
 
 export function getJsEasing(

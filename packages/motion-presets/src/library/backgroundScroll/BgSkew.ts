@@ -1,9 +1,4 @@
-import type {
-  BgSkew,
-  DomApi,
-  RangeOffset,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { BgSkew, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
 import { measureCompHeight } from './utils';
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
@@ -12,8 +7,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
     measureCompHeight(measures, dom);
   }
 
-  const { angle = 20, direction = 'counter-clockwise' } =
-    options.namedEffect as BgSkew;
+  const { angle = 20, direction = 'counter-clockwise' } = options.namedEffect as BgSkew;
 
   return [
     {
@@ -32,14 +26,10 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       },
       keyframes: [
         {
-          transform: `skewY(${
-            direction === 'counter-clockwise' ? angle : -angle
-          }deg)`,
+          transform: `skewY(${direction === 'counter-clockwise' ? angle : -angle}deg)`,
         },
         {
-          transform: `skewY(${
-            direction === 'counter-clockwise' ? -angle : angle
-          }deg)`,
+          transform: `skewY(${direction === 'counter-clockwise' ? -angle : angle}deg)`,
         },
       ],
     },
