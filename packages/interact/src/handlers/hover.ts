@@ -155,24 +155,24 @@ function addHoverHandler(
     return;
   }
 
-  // Store references to wrapper functions so we can remove them later
-  let focusinListener: ((event: FocusEvent) => void) | undefined;
-  let focusoutListener: ((event: FocusEvent) => void) | undefined;
+  const focusinListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
 
-  if (allowA11yTriggers) {
-    focusinListener = (event: FocusEvent) => {
-      if (!source.contains(event.relatedTarget as HTMLElement)) {
-        handler(event);
-      }
-    };
-  }
+  const focusoutListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
 
   const cleanup = () => {
     source.removeEventListener('mouseenter', handler);
     source.removeEventListener('mouseleave', handler);
     if (allowA11yTriggers) {
-      if (focusinListener) source.removeEventListener('focusin', focusinListener);
-      if (focusoutListener) source.removeEventListener('focusout', focusoutListener);
+      source.removeEventListener('focusin', focusinListener);
+      source.removeEventListener('focusout', focusoutListener);
     }
   };
 
@@ -181,7 +181,7 @@ function addHoverHandler(
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
-  if (allowA11yTriggers && focusinListener) {
+  if (allowA11yTriggers) {
     source.tabIndex = 0;
     source.addEventListener('focusin', focusinListener, { once });
   }
@@ -195,11 +195,6 @@ function addHoverHandler(
     source.addEventListener('mouseleave', handler, { passive: true });
 
     if (allowA11yTriggers) {
-      focusoutListener = (event: FocusEvent) => {
-        if (!source.contains(event.relatedTarget as HTMLElement)) {
-          handler(event);
-        }
-      };
       source.addEventListener('focusout', focusoutListener, { once });
     }
   }

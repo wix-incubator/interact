@@ -147,21 +147,18 @@ function addClickHandler(
     }
   };
 
-  let keydownListener: ((event: KeyboardEvent) => void) | undefined;
-  if (allowA11yTriggers) {
-    keydownListener = (event: KeyboardEvent) => {
-      if (event.code === 'Space') {
-        event.preventDefault();
-        handler(event);
-      } else if (event.code === 'Enter') {
-        handler(event);
-      }
-    };
-  }
+  const keydownListener = (event: KeyboardEvent) => {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      handler(event);
+    } else if (event.code === 'Enter') {
+      handler(event);
+    }
+  };
 
   const cleanup = () => {
     source.removeEventListener('click', clickListener);
-    if (allowA11yTriggers && keydownListener) {
+    if (allowA11yTriggers) {
       source.removeEventListener('keydown', keydownListener);
     }
   };
@@ -173,7 +170,7 @@ function addClickHandler(
 
   source.addEventListener('click', clickListener, { passive: true, once });
 
-  if (allowA11yTriggers && keydownListener) {
+  if (allowA11yTriggers) {
     source.tabIndex = 0;
     source.addEventListener('keydown', keydownListener, { once });
   }
