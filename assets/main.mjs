@@ -1,5 +1,5 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6';
+import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6/dist/es/web.js';
 // import { Interact } from './packages/interact/dist/es/web.js';
 
 // =============================================================================
