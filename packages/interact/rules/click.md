@@ -6,13 +6,15 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 **Use Case**: Toggle animations that play forward on first click and reverse on subsequent clicks (e.g., menu toggles, accordion expand/collapse, modal open/close)
 
-**When to Apply**: 
+**When to Apply**:
+
 - When you need reversible animations
 - For toggle states that should animate back to original position
 - When creating expand/collapse functionality
 - For modal or sidebar open/close animations
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_IDENTIFIER]',
@@ -35,6 +37,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
+
 - `[SOURCE_IDENTIFIER]`: Unique identifier for clickable element (e.g., 'menu-button', 'accordion-header'). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
 - `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
@@ -45,6 +48,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier for animation chaining
 
 **Example - Menu Toggle**:
+
 ```typescript
 {
     key: 'hamburger-menu',
@@ -71,6 +75,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Example - Accordion Expand**:
+
 ```typescript
 {
     key: 'accordion-header',
@@ -104,12 +109,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Use Case**: Animations that can be paused and resumed with clicks (e.g., video controls, loading animations, slideshow controls)
 
 **When to Apply**:
+
 - When you need play/pause functionality
 - For controlling ongoing animations
 - When users should be able to interrupt and resume animations
 - For interactive media controls
 
 **Pattern**:
+
 ```typescript
 {
     source: '[SOURCE_IDENTIFIER]',
@@ -134,11 +141,13 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
+
 - `[ITERATION_COUNT]`: Number of iterations or Infinity for infinite looping animations
 - `[ALTERNATE_BOOL]`: Optional boolean value indicating whether to alternate/toggle the playing direction of the animation on each iterations. Relevant only if `[ITERATION_COUNT]` is not 1.
 - Other variables same as Rule 1
 
 **Example - Loading Spinner Control**:
+
 ```typescript
 {
     key: 'loading-control',
@@ -166,6 +175,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Example - Slideshow Pause**:
+
 ```typescript
 {
     key: 'slideshow-toggle',
@@ -193,12 +203,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Use Case**: Animations that restart from the beginning each time clicked (e.g., pulse effects, notification badges, emphasis animations)
 
 **When to Apply**:
+
 - When you want fresh animation on each click
 - For attention-grabbing effects
 - When animation should always start from initial state
 - For feedback animations that confirm user actions
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_IDENTIFIER]',
@@ -220,10 +232,12 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
+
 - `[DELAY_MS]`: Optional delay before animation starts (useful for sequencing)
 - Other variables same as Rule 1
 
 **Example - Button Pulse Feedback**:
+
 ```typescript
 {
     key: 'action-button',
@@ -250,6 +264,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Example - Success Notification**:
+
 ```typescript
 {
     key: 'save-button',
@@ -260,7 +275,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     effects: [
         {
             key: 'success-badge',
-            namedEffect: { 
+            namedEffect: {
                 type: 'BounceIn',
                 direction: 'center',
                 power: 'medium'
@@ -281,12 +296,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 **Use Case**: CSS property changes that toggle between states (e.g., theme switching, style variations, color changes)
 
 **When to Apply**:
+
 - When animating CSS properties directly
 - For theme toggles and style switches
 - When you need precise control over CSS transitions
 - For simple property changes without complex keyframes
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_IDENTIFIER]',
@@ -313,11 +330,13 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Variables**:
+
 - `[CSS_PROPERTY_N]`: CSS property name (e.g., 'background-color', 'color', 'border-radius')
 - `[VALUE_N]`: CSS property value (e.g., '#2563eb', 'white', '12px')
 - Other variables same as previous rules
 
 **Example - Theme Toggle**:
+
 ```typescript
 {
     key: 'theme-switcher',
@@ -345,6 +364,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Example - Button Style Toggle**:
+
 ```typescript
 {
     key: 'style-toggle',
@@ -371,6 +391,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ```
 
 **Example - Card State Toggle**:
+
 ```typescript
 {
     key: 'interactive-card',
@@ -400,6 +421,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 ## Advanced Patterns and Combinations
 
 ### Multi-Target Click Effects
+
 When one click should animate multiple elements:
 
 ```typescript
@@ -439,6 +461,7 @@ When one click should animate multiple elements:
 ```
 
 ### Click with Animation Chaining
+
 Using effectId for sequential animations:
 
 ```typescript
@@ -481,12 +504,14 @@ Using effectId for sequential animations:
 ## Best Practices for Click Interactions
 
 ### Performance Guidelines
+
 1. **Keep click animations short** (100-500ms) for immediate feedback
 2. **Use `transform` and `opacity`** for smooth animations
 3. **Avoid animating layout properties** like width/height in clicks
 4. **Consider using `will-change`** for complex click animations
 
 ### User Experience Guidelines
+
 1. **Provide immediate visual feedback** (within 100ms)
 2. **Use alternate pattern** for toggle states
 3. **Use repeat pattern** for confirmation actions
@@ -494,6 +519,7 @@ Using effectId for sequential animations:
 5. **Ensure click targets are accessible** (minimum 44px touch target)
 
 ### Accessibility Considerations
+
 1. **Respect `prefers-reduced-motion`** setting
 2. **Provide alternative interaction methods** (keyboard support)
 3. **Ensure sufficient color contrast** during transitions
@@ -502,6 +528,7 @@ Using effectId for sequential animations:
 ### Common Use Cases by Pattern
 
 **Alternate Pattern**:
+
 - Navigation menus
 - Accordion sections
 - Modal dialogs
@@ -509,12 +536,14 @@ Using effectId for sequential animations:
 - Dropdown menus
 
 **State Pattern**:
+
 - Video/audio controls
 - Loading animations
 - Slideshow controls
 - Progress indicators
 
 **Repeat Pattern**:
+
 - Action confirmations
 - Notification badges
 - Button feedback
@@ -522,6 +551,7 @@ Using effectId for sequential animations:
 - Error indicators
 
 **Transition Effects**:
+
 - Theme switching
 - Style variations
 - Color changes

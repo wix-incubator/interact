@@ -5,7 +5,7 @@ import { MarkdownPage } from './components/MarkdownPage';
 function App() {
   // Remove trailing slash from BASE_URL for router basename
   const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
-  
+
   return (
     <BrowserRouter basename={basename}>
       <Layout>

@@ -23,8 +23,7 @@ describe('GlitchIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            transform:
-              'translate(-100%, 0%) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(-100%, 0%) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',
@@ -104,8 +103,7 @@ describe('GlitchIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            transform:
-              'translate(141px, -141px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(141px, -141px) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',
@@ -172,10 +170,8 @@ describe('GlitchIn', () => {
         easing: 'quintInOut',
         name: 'motion-glideIn',
         custom: {
-          '--motion-translate-x':
-            'calc(calc((-1 * var(--motion-left, 0px) - 100%) / -1) * -1)',
-          '--motion-translate-y':
-            'calc(calc((-1 * var(--motion-left, 0px) - 100%) / -1) * 0)',
+          '--motion-translate-x': 'calc(calc((-1 * var(--motion-left, 0px) - 100%) / -1) * -1)',
+          '--motion-translate-y': 'calc(calc((-1 * var(--motion-left, 0px) - 100%) / -1) * 0)',
         },
         keyframes: [
           {

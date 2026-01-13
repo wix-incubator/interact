@@ -1,8 +1,4 @@
-import type {
-  FadeScroll,
-  ScrubAnimationOptions,
-  AnimationFillMode,
-} from '../../types';
+import type { FadeScroll, ScrubAnimationOptions, AnimationFillMode } from '../../types';
 
 export default function create(options: ScrubAnimationOptions) {
   const { opacity = 0, range = 'in' } = options.namedEffect as FadeScroll;

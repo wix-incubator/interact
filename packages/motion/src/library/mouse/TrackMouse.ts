@@ -25,13 +25,11 @@ class TrackMouseAnimation extends CustomMouse {
     // if progressX === 0.5, translateX === 0
     // if progressX === 1, translateX === distance
     if (axis === 'both' || axis === 'horizontal') {
-      translateX =
-        mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+      translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     }
 
     if (axis === 'both' || axis === 'vertical') {
-      translateY =
-        mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+      translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
     }
 
     const units = getCssUnits(distance.type);
@@ -44,9 +42,7 @@ class TrackMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -66,6 +62,5 @@ export default function create(
     axis,
   };
 
-  return (target: HTMLElement) =>
-    new TrackMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new TrackMouseAnimation(target, animationOptions);
 }

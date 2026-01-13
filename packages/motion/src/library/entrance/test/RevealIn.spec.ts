@@ -23,8 +23,7 @@ describe('RevealIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -55,8 +54,7 @@ describe('RevealIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            clipPath:
-              'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -91,8 +89,7 @@ describe('RevealIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            clipPath:
-              'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
@@ -115,8 +112,7 @@ describe('RevealIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         custom: {
-          '--motion-clip-start':
-            'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
         },
         keyframes: [
           {
@@ -127,8 +123,7 @@ describe('RevealIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            clipPath:
-              'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',

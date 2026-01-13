@@ -5,7 +5,7 @@ export default defineConfig({
   // plugins: [react()],
   test: {
     environment: 'jsdom',
-    setupFiles: []
-  }
+    setupFiles: [],
+    exclude: ['dist/*'],
+  },
 });
-

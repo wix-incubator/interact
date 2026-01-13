@@ -9,10 +9,7 @@ import type {
 } from '../../types';
 import { CustomMouse } from './CustomMouse';
 
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; easing: ScrubTransitionEasing }
-> = {
+const paramsMap: Record<EffectPower, { angle: number; easing: ScrubTransitionEasing }> = {
   soft: { angle: 10, easing: 'easeOut' },
   medium: { angle: 50, easing: 'easeOut' },
   hard: { angle: 85, easing: 'easeOut' },
@@ -25,12 +22,10 @@ class AiryMouseAnimation extends CustomMouse {
     const { distance, invert, angle, axis } = this.options;
 
     if (axis !== 'vertical') {
-      translateX =
-        mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
+      translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     }
     if (axis !== 'horizontal') {
-      translateY =
-        mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
+      translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
     }
 
     // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
@@ -46,9 +41,7 @@ class AiryMouseAnimation extends CustomMouse {
   }
 }
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-) {
+export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
@@ -70,6 +63,5 @@ export default function create(
     axis,
   };
 
-  return (target: HTMLElement) =>
-    new AiryMouseAnimation(target, animationOptions);
+  return (target: HTMLElement) => new AiryMouseAnimation(target, animationOptions);
 }

@@ -19,28 +19,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg)) translateY(-25px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg)) translateY(-25px)',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -20deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -20deg)) translateY(0px)',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 15deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 15deg)) translateY(0px)',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -10deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -10deg)) translateY(0px)',
             },
             {
               offset: 1,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -66,28 +61,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.1206,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 34deg)) translateY(-34px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 34deg)) translateY(-34px)',
             },
             {
               offset: 0.2345,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -27.2deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -27.2deg)) translateY(0px)',
             },
             {
               offset: 0.3551,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 20.4deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 20.4deg)) translateY(0px)',
             },
             {
               offset: 0.48910000000000003,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -13.6deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -13.6deg)) translateY(0px)',
             },
             {
               offset: 0.67,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -110,28 +100,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 10deg)) translateY(-10px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 10deg)) translateY(-10px)',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -8deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -8deg)) translateY(0px)',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 6deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 6deg)) translateY(0px)',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -4deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -4deg)) translateY(0px)',
             },
             {
               offset: 1,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -154,28 +139,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 20deg)) translateY(-20px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 20deg)) translateY(-20px)',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -16deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -16deg)) translateY(0px)',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 12deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 12deg)) translateY(0px)',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -8deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -8deg)) translateY(0px)',
             },
             {
               offset: 1,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -198,28 +178,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 40deg)) translateY(-40px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 40deg)) translateY(-40px)',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -32deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -32deg)) translateY(0px)',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 24deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 24deg)) translateY(0px)',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + -16deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -16deg)) translateY(0px)',
             },
             {
               offset: 1,
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -257,23 +232,19 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
+              transform: 'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
+              transform: 'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
+              transform: 'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
+              transform: 'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
             },
             {
               offset: 1,
@@ -316,23 +287,19 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.1206,
-              transform:
-                'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
+              transform: 'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
             },
             {
               offset: 0.2345,
-              transform:
-                'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
+              transform: 'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
             },
             {
               offset: 0.3551,
-              transform:
-                'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
+              transform: 'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
             },
             {
               offset: 0.48910000000000003,
-              transform:
-                'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
+              transform: 'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
             },
             {
               offset: 0.67,
@@ -372,23 +339,19 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
+              transform: 'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
+              transform: 'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
+              transform: 'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
+              transform: 'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
             },
             {
               offset: 1,
@@ -428,23 +391,19 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
+              transform: 'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
+              transform: 'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
+              transform: 'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
+              transform: 'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
             },
             {
               offset: 1,
@@ -484,23 +443,19 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform:
-                'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
+              transform: 'rotate(var(--motion-rotate-18)) translateY(var(--motion-translate-y-18))',
             },
             {
               offset: 0.35,
-              transform:
-                'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
+              transform: 'rotate(var(--motion-rotate-35)) translateY(var(--motion-translate-y-35))',
             },
             {
               offset: 0.53,
-              transform:
-                'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
+              transform: 'rotate(var(--motion-rotate-53)) translateY(var(--motion-translate-y-53))',
             },
             {
               offset: 0.73,
-              transform:
-                'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
+              transform: 'rotate(var(--motion-rotate-73)) translateY(var(--motion-translate-y-73))',
             },
             {
               offset: 1,
@@ -533,10 +488,7 @@ describe('Wiggle', () => {
         '--motion-rotate-18',
         'calc(var(--comp-rotate-z, 0deg) + 20deg)',
       );
-      expect(styleResult[0].custom).toHaveProperty(
-        '--motion-translate-y-18',
-        '-20px',
-      );
+      expect(styleResult[0].custom).toHaveProperty('--motion-translate-y-18', '-20px');
 
       // Web method should use direct values in transform
       expect(webResult[0].keyframes[0].transform).toBe(
@@ -546,10 +498,7 @@ describe('Wiggle', () => {
         '--motion-rotate-18',
         'calc(var(--comp-rotate-z, 0deg) + 20deg)',
       );
-      expect(webResult[0].custom).toHaveProperty(
-        '--motion-translate-y-18',
-        '-20px',
-      );
+      expect(webResult[0].custom).toHaveProperty('--motion-translate-y-18', '-20px');
     });
 
     test('style method should populate custom properties correctly', () => {
@@ -574,9 +523,7 @@ describe('Wiggle', () => {
 
       // Verify the custom properties contain the expected calculated values
       expect(typeof result[0].custom!['--motion-rotate-18']).toBe('string');
-      expect(typeof result[0].custom!['--motion-translate-y-18']).toBe(
-        'string',
-      );
+      expect(typeof result[0].custom!['--motion-translate-y-18']).toBe('string');
     });
   });
 });

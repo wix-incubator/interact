@@ -11,7 +11,9 @@ Wix Motion is built around several key concepts that work together to provide a 
 There are two main animation types in Wix Motion:
 
 #### 1. Time-Based Animations (`TimeAnimationOptions`)
+
 These are traditional animations that run for a specific duration:
+
 - **Entrance animations** - Elements appearing on screen
 - **Ongoing animations** - Continuous looping effects
 
@@ -27,7 +29,9 @@ These are traditional animations that run for a specific duration:
 ```
 
 #### 2. Scrub-Based Animations (`ScrubAnimationOptions`)
+
 These animations are driven by external progress (scroll, mouse movement):
+
 - **Scroll animations** - Respond to scroll position
 - **Mouse animations** - Follow pointer movement
 - **Background scroll animations** - Specialized for background media
@@ -44,11 +48,13 @@ These animations are driven by external progress (scroll, mouse movement):
 ## Animation Categories
 
 ### 🎭 Entrance Animations
+
 **Purpose**: Reveal elements with impact and style
 **Duration**: Typically 300-1500ms
 **Use Cases**: Page loads, modal openings, content reveals
 
 **Common Patterns**:
+
 - **Power levels**: `soft`, `medium`, `hard` affect intensity
 - **Directional**: `top`, `right`, `bottom`, `left`, `center`
 - **Scale-based**: Start from different sizes
@@ -58,7 +64,7 @@ These animations are driven by external progress (scroll, mouse movement):
 // Example: Arc entrance from the right
 {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'ArcIn',
     direction: 'right',
     power: 'medium'
@@ -67,12 +73,14 @@ These animations are driven by external progress (scroll, mouse movement):
 }
 ```
 
-### 🔄 Ongoing Animations  
+### 🔄 Ongoing Animations
+
 **Purpose**: Continuous effects for attention and life
 **Duration**: Usually 1-4 seconds with infinite iterations
 **Use Cases**: Call-to-action emphasis, breathing UI, ambient motion
 
 **Common Patterns**:
+
 - **Intensity control**: Scale the effect strength
 - **Bidirectional**: Many support `alternate` for back-and-forth motion
 - **Power scaling**: Consistent power levels across presets
@@ -81,7 +89,7 @@ These animations are driven by external progress (scroll, mouse movement):
 // Example: Gentle pulsing effect
 {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Pulse',
     power: 'soft',
     intensity: 0.8
@@ -93,11 +101,13 @@ These animations are driven by external progress (scroll, mouse movement):
 ```
 
 ### 📜 Scroll Animations
+
 **Purpose**: Scroll-synchronized effects for storytelling
 **Triggers**: `view-progress` with ViewTimeline API
 **Use Cases**: Parallax, reveal-on-scroll, progressive disclosure
 
 **Common Patterns**:
+
 - **Range control**: `in`, `out`, `continuous`
 - **Speed modifiers**: Control animation rate relative to scroll
 - **Viewport binding**: Animations tied to element visibility
@@ -106,7 +116,7 @@ These animations are driven by external progress (scroll, mouse movement):
 // Example: Parallax background movement
 {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'ParallaxScroll',
     speed: 0.3,
     range: 'continuous'
@@ -115,11 +125,13 @@ These animations are driven by external progress (scroll, mouse movement):
 ```
 
 ### 🖱️ Mouse Animations
+
 **Purpose**: Interactive pointer-driven effects
 **Triggers**: `pointer-move` events
 **Use Cases**: Hover effects, cursor following, 3D interactions
 
 **Common Patterns**:
+
 - **Distance control**: How far effects extend from pointer
 - **Axis constraints**: `horizontal`, `vertical`, `both`
 - **Inversion**: Opposite direction movement
@@ -129,7 +141,7 @@ These animations are driven by external progress (scroll, mouse movement):
 // Example: 3D tilt following mouse
 {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Tilt3DMouse',
     angle: 15,
     perspective: 800,
@@ -139,11 +151,13 @@ These animations are driven by external progress (scroll, mouse movement):
 ```
 
 ### 🖼️ Background Scroll Animations
+
 **Purpose**: Specialized effects for background media
 **Targets**: Elements with `data-motion-part` attributes
 **Use Cases**: Hero sections, full-screen backgrounds, video overlays
 
 **Common Patterns**:
+
 - **Multi-layer**: Target different background layers
 - **Measurement-aware**: Auto-calculate component dimensions
 - **Perspective effects**: Advanced 3D transformations
@@ -152,7 +166,7 @@ These animations are driven by external progress (scroll, mouse movement):
 // Example: Background zoom on scroll
 {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'BgZoom',
     direction: 'in',
     zoom: 40
@@ -165,9 +179,11 @@ These animations are driven by external progress (scroll, mouse movement):
 ### Named Effects vs Custom Effects
 
 #### Named Effects (Recommended)
+
 Use predefined animation presets:
+
 ```typescript
-namedEffect: { 
+namedEffect: {
   type: 'BounceIn',
   direction: 'bottom',
   power: 'medium'
@@ -175,7 +191,9 @@ namedEffect: {
 ```
 
 #### Custom Keyframe Effects
+
 Define your own keyframes:
+
 ```typescript
 keyframeEffect: {
   name: 'myCustomAnimation',
@@ -187,21 +205,24 @@ keyframeEffect: {
 ```
 
 #### Custom Script Effects
+
 Full programmatic control:
+
 ```typescript
 customEffect: {
   ranges: [
     { name: 'opacity', min: 0, max: 1 },
-    { name: 'scale', min: 0, max: 1.2 }
-  ]
+    { name: 'scale', min: 0, max: 1.2 },
+  ];
 }
 ```
 
 ### Power Levels
+
 Many animations support consistent power levels:
 
 - **`soft`** - Subtle, gentle effects (10-30% intensity)
-- **`medium`** - Balanced, noticeable effects (50-70% intensity)  
+- **`medium`** - Balanced, noticeable effects (50-70% intensity)
 - **`hard`** - Strong, dramatic effects (80-100% intensity)
 
 ```typescript
@@ -217,18 +238,20 @@ Many animations support consistent power levels:
 Wix Motion provides both CSS and JavaScript easing functions:
 
 #### CSS Easings (Performance Optimized)
+
 ```typescript
-easing: 'easeInOut'     // CSS cubic-bezier
-easing: 'linear'        // No acceleration
-easing: 'backOut'       // Overshoot effect
-easing: 'elasticOut'    // Bounce effect
+easing: 'easeInOut'; // CSS cubic-bezier
+easing: 'linear'; // No acceleration
+easing: 'backOut'; // Overshoot effect
+easing: 'elasticOut'; // Bounce effect
 ```
 
 #### JavaScript Easings (Full Control)
+
 ```typescript
-easing: 'quintInOut'    // Smooth acceleration/deceleration
-easing: 'circOut'       // Circular motion feel
-easing: 'expoIn'        // Exponential acceleration
+easing: 'quintInOut'; // Smooth acceleration/deceleration
+easing: 'circOut'; // Circular motion feel
+easing: 'expoIn'; // Exponential acceleration
 ```
 
 ### Units and Measurements
@@ -254,7 +277,9 @@ duration: { value: 50, type: 'percentage' } // Scrub-based
 ## Rendering Modes
 
 ### Web Animations API (Default)
+
 High-performance, JavaScript-controlled animations:
+
 ```typescript
 import { getWebAnimation } from '@wix/motion';
 
@@ -263,18 +288,22 @@ await animation.play();
 ```
 
 **Advantages**:
+
 - Fine-grained control
 - Precise timing
 - Dynamic modifications
 - Event callbacks
 
 **Use When**:
+
 - Need animation control
 - Complex timing requirements
 - Interactive animations
 
 ### CSS Animations
+
 Stylesheet-based animations for maximum performance:
+
 ```typescript
 import { getCSSAnimation } from '@wix/motion';
 
@@ -283,12 +312,14 @@ const cssRules = getCSSAnimation('elementId', options);
 ```
 
 **Advantages**:
+
 - GPU acceleration
 - Better mobile performance
 - Runs on compositor thread
 - Survives JavaScript freezes
 
 **Use When**:
+
 - Simple, fire-and-forget animations
 - Mobile-first applications
 - Performance is critical
@@ -296,11 +327,13 @@ const cssRules = getCSSAnimation('elementId', options);
 ## Advanced Concepts
 
 ### Animation Groups
+
 Multiple related animations managed together:
+
 ```typescript
 const group = getWebAnimation(element, [
   { namedEffect: { type: 'FadeIn' }, duration: 500 },
-  { namedEffect: { type: 'SlideIn' }, duration: 800, delay: 200 }
+  { namedEffect: { type: 'SlideIn' }, duration: 800, delay: 200 },
 ]);
 
 // Control all animations together
@@ -310,7 +343,9 @@ group.setPlaybackRate(2);
 ```
 
 ### Measurement and Preparation
+
 Pre-calculate layout for better performance:
+
 ```typescript
 import { prepareAnimation } from '@wix/motion';
 
@@ -322,16 +357,18 @@ prepareAnimation(element, animationOptions, () => {
 ```
 
 ### Scroll Ranges and Offsets
+
 Fine-tune when scroll animations trigger:
+
 ```typescript
 {
   type: 'ScrubAnimationOptions',
   namedEffect: { type: 'FadeScroll' },
-  startOffset: { 
+  startOffset: {
     name: 'cover',                    // Viewport intersection
     offset: { value: 20, type: 'percentage' }  // Start at 20% intersection
   },
-  endOffset: { 
+  endOffset: {
     name: 'exit-crossing',            // Element leaving viewport
     offset: { value: 0, type: 'percentage' }   // End immediately
   }
@@ -339,7 +376,9 @@ Fine-tune when scroll animations trigger:
 ```
 
 ### CSS Custom Properties
+
 Dynamic values through CSS variables:
+
 ```typescript
 // Animation generates:
 // --motion-scale: 1.2
@@ -348,7 +387,7 @@ Dynamic values through CSS variables:
 
 // Use in your CSS:
 .my-element {
-  transform: 
+  transform:
     scale(var(--motion-scale, 1))
     rotate(var(--motion-rotate, 0deg))
     translateX(var(--motion-translate-x, 0px));
@@ -358,18 +397,21 @@ Dynamic values through CSS variables:
 ## Performance Considerations
 
 ### Animation Lifecycle
+
 1. **Preparation** - Measure elements, calculate values
 2. **Creation** - Generate keyframes and effects
 3. **Execution** - Run animations with optimal timing
 4. **Cleanup** - Remove event listeners and references
 
 ### Best Practices
+
 - Prefer CSS animations for simple, non-interactive effects
 - Batch DOM measurements using `fastdom`
 - Avoid creating animations in render loops
 - Clean up animations when components unmount
 
 ### Browser Compatibility
+
 - **Web Animations API**: Baseline - Wide Availability
 - **ViewTimeline API**: Chrome 115+, Firefox/Safari with polyfill
 - **CSS Animations**: Baseline - Wide Availability
@@ -384,14 +426,14 @@ import type {
   ScrubAnimationOptions,
   EntranceAnimation,
   ScrollAnimation,
-  AnimationGroup
+  AnimationGroup,
 } from '@wix/motion';
 
 // Type-safe configuration
 const config: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' } as EntranceAnimation,
-  duration: 1000
+  duration: 1000,
 };
 
 // Typed return values
@@ -403,6 +445,6 @@ const animation: AnimationGroup = getWebAnimation(element, config);
 Now that you understand the core concepts:
 
 - **[Explore Categories](categories/)** - Dive deep into each animation category
-- **[API Reference](api/)** - Complete function documentation  
+- **[API Reference](api/)** - Complete function documentation
 - **[Performance Guide](guides/performance.md)** - Optimization techniques
 - **[Advanced Patterns](guides/advanced-patterns.md)** - Complex animation scenarios

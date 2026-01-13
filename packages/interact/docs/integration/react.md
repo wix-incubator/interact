@@ -15,6 +15,7 @@ import { Interact, Interaction, createInteractRef } from '@wix/interact/react';
 ```
 
 The `@wix/interact/react` entry point exports:
+
 - `Interact` - Main interaction manager class
 - `Interaction` - React component for interactive elements
 - `createInteractRef` - Function to create interact-aware refs
@@ -28,17 +29,21 @@ import React, { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
 
 const config = {
-  interactions: [{
-    key: 'my-button',
-    trigger: 'hover',
-    effects: [{
-      keyframeEffect: {
-        name: 'scale-up',
-        keyframes: [{ transform: 'scale(1.1)' }]
-      },
-      duration: 200
-    }]
-  }]
+  interactions: [
+    {
+      key: 'my-button',
+      trigger: 'hover',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'scale-up',
+            keyframes: [{ transform: 'scale(1.1)' }],
+          },
+          duration: 200,
+        },
+      ],
+    },
+  ],
 };
 
 function Button() {
@@ -55,9 +60,7 @@ function App() {
     return () => instance.destroy();
   }, []);
 
-  return (
-    <Button />
-  );
+  return <Button />;
 }
 ```
 
@@ -69,13 +72,13 @@ The `Interaction` component is a wrapper that automatically manages interaction 
 
 ### Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `tagName` | `keyof JSX.IntrinsicElements` | Yes | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`) |
-| `interactKey` | `string` | Yes | Unique identifier matching the interaction configuration |
-| `children` | `React.ReactNode` | No | Child elements to render |
-| `ref` | `React.Ref<any>` | No | Forwarded ref to the underlying DOM element |
-| `...rest` | `JSX.IntrinsicElements[T]` | No | Any valid props for the specified `tagName` |
+| Prop          | Type                          | Required | Description                                                      |
+| ------------- | ----------------------------- | -------- | ---------------------------------------------------------------- |
+| `tagName`     | `keyof JSX.IntrinsicElements` | Yes      | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`) |
+| `interactKey` | `string`                      | Yes      | Unique identifier matching the interaction configuration         |
+| `children`    | `React.ReactNode`             | No       | Child elements to render                                         |
+| `ref`         | `React.Ref<any>`              | No       | Forwarded ref to the underlying DOM element                      |
+| `...rest`     | `JSX.IntrinsicElements[T]`    | No       | Any valid props for the specified `tagName`                      |
 
 ### Basic Usage
 
@@ -117,12 +120,7 @@ function AnimatedCard() {
   }, []);
 
   return (
-    <Interaction 
-      tagName="div" 
-      interactKey="card" 
-      ref={cardRef}
-      className="card"
-    >
+    <Interaction tagName="div" interactKey="card" ref={cardRef} className="card">
       <h2>Interactive Card</h2>
     </Interaction>
   );
@@ -137,8 +135,8 @@ The component is fully typed and provides type inference for the `tagName` prop:
 import { Interaction } from '@wix/interact/react';
 
 // TypeScript knows these are valid button props
-<Interaction 
-  tagName="button" 
+<Interaction
+  tagName="button"
   interactKey="btn"
   type="submit"
   disabled={false}
@@ -148,8 +146,8 @@ import { Interaction } from '@wix/interact/react';
 </Interaction>
 
 // TypeScript knows these are valid anchor props
-<Interaction 
-  tagName="a" 
+<Interaction
+  tagName="a"
   interactKey="link"
   href="/about"
   target="_blank"
@@ -167,7 +165,7 @@ For more control over ref management, use `createInteractRef` to create a ref ca
 ### Signature
 
 ```typescript
-function createInteractRef(interactKey: string): InteractRef
+function createInteractRef(interactKey: string): InteractRef;
 
 type InteractRef = (node: Element | null) => () => void;
 ```
@@ -223,10 +221,10 @@ function CombinedRefExample() {
   const combinedRef = useCallback((node: HTMLDivElement | null) => {
     // Set local ref
     localRef.current = node;
-    
+
     // Call interact ref
     const cleanup = interactRef.current(node);
-    
+
     // Return cleanup for React 19+
     return cleanup;
   }, []);
@@ -254,25 +252,27 @@ const config: InteractConfig = {
     {
       key: 'fade-card',
       trigger: 'viewEnter',
-      effects: [{
-        keyframeEffect: {
-          name: 'fade-in',
-          keyframes: [
-            { opacity: 0, transform: 'translateY(20px)' },
-            { opacity: 1, transform: 'translateY(0)' }
-          ]
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'fade-in',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(20px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 600,
+          easing: 'ease-out',
         },
-        duration: 600,
-        easing: 'ease-out'
-      }]
-    }
-  ]
+      ],
+    },
+  ],
 };
 
 function App() {
   useEffect(() => {
     const instance = Interact.create(config);
-    
+
     // Cleanup on unmount
     return () => {
       instance.destroy();
@@ -299,7 +299,7 @@ export function useInteract(config: InteractConfig) {
 
   useEffect(() => {
     instanceRef.current = Interact.create(config);
-    
+
     return () => {
       instanceRef.current?.destroy();
       instanceRef.current = null;
@@ -312,7 +312,7 @@ export function useInteract(config: InteractConfig) {
 // Usage
 function MyComponent() {
   useInteract(config);
-  
+
   return (
     <Interaction tagName="div" interactKey="my-element">
       Content
@@ -328,26 +328,34 @@ import React, { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
 
 const heroConfig = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    effects: [/* ... */]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        /* ... */
+      ],
+    },
+  ],
 };
 
 const cardsConfig = {
-  interactions: [{
-    key: 'card',
-    trigger: 'hover',
-    effects: [/* ... */]
-  }]
+  interactions: [
+    {
+      key: 'card',
+      trigger: 'hover',
+      effects: [
+        /* ... */
+      ],
+    },
+  ],
 };
 
 function App() {
   useEffect(() => {
     const heroInstance = Interact.create(heroConfig);
     const cardsInstance = Interact.create(cardsConfig);
-    
+
     return () => {
       heroInstance.destroy();
       cardsInstance.destroy();
@@ -359,11 +367,11 @@ function App() {
       <Interaction tagName="section" interactKey="hero">
         <h1>Welcome</h1>
       </Interaction>
-      
+
       <Interaction tagName="article" interactKey="card">
         <h2>Card 1</h2>
       </Interaction>
-      
+
       <Interaction tagName="article" interactKey="card">
         <h2>Card 2</h2>
       </Interaction>
@@ -384,21 +392,23 @@ import { Interact, Interaction, InteractConfig } from '@wix/interact/react';
 
 const config: InteractConfig = {
   effects: {
-    'expanded': {
+    expanded: {
       transitionEffect: {
         properties: ['max-height', 'padding'],
         from: { maxHeight: '0px', padding: '0' },
-        to: { maxHeight: '200px', padding: '16px' }
+        to: { maxHeight: '200px', padding: '16px' },
       },
-      duration: 300
-    }
+      duration: 300,
+    },
   },
-  interactions: [{
-    key: 'accordion',
-    trigger: 'click',
-    selector: '.accordion-header',
-    effects: [{ effectId: 'expanded', method: 'toggle' }]
-  }]
+  interactions: [
+    {
+      key: 'accordion',
+      trigger: 'click',
+      selector: '.accordion-header',
+      effects: [{ effectId: 'expanded', method: 'toggle' }],
+    },
+  ],
 };
 
 function Accordion() {
@@ -436,12 +446,7 @@ function EffectAwareComponent() {
   };
 
   return (
-    <Interaction 
-      tagName="div" 
-      interactKey="my-element"
-      ref={elementRef}
-      onClick={checkEffects}
-    >
+    <Interaction tagName="div" interactKey="my-element" ref={elementRef} onClick={checkEffects}>
       Click to check effects
     </Interaction>
   );
@@ -459,29 +464,33 @@ import React, { useEffect, useState } from 'react';
 import { Interact, Interaction, InteractConfig } from '@wix/interact/react';
 
 const config: InteractConfig = {
-  interactions: [{
-    key: 'product-list',
-    trigger: 'viewEnter',
-    listContainer: '.products',
-    effects: [{
-      keyframeEffect: {
-        name: 'slide-up',
-        keyframes: [
-          { opacity: 0, transform: 'translateY(30px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ]
-      },
-      duration: 400,
-      stagger: 100 // Stagger animation for list items
-    }]
-  }]
+  interactions: [
+    {
+      key: 'product-list',
+      trigger: 'viewEnter',
+      listContainer: '.products',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'slide-up',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(30px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 400,
+          stagger: 100, // Stagger animation for list items
+        },
+      ],
+    },
+  ],
 };
 
 function ProductList() {
   const [products, setProducts] = useState([
     { id: 1, name: 'Product A' },
     { id: 2, name: 'Product B' },
-    { id: 3, name: 'Product C' }
+    { id: 3, name: 'Product C' },
   ]);
 
   useEffect(() => {
@@ -490,17 +499,20 @@ function ProductList() {
   }, []);
 
   const addProduct = () => {
-    setProducts(prev => [...prev, { 
-      id: Date.now(), 
-      name: `Product ${prev.length + 1}` 
-    }]);
+    setProducts((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        name: `Product ${prev.length + 1}`,
+      },
+    ]);
   };
 
   return (
     <Interaction tagName="div" interactKey="product-list">
       <button onClick={addProduct}>Add Product</button>
       <div className="products">
-        {products.map(product => (
+        {products.map((product) => (
           <div key={product.id} className="product-card">
             {product.name}
           </div>
@@ -524,7 +536,9 @@ function ProductList() {
 import { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
 
-const config = {/* ... */};
+const config = {
+  /* ... */
+};
 
 export function InteractiveCard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -547,7 +561,9 @@ export function InteractiveCard({ children }: { children: React.ReactNode }) {
 import { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
 
-const config = {/* ... */};
+const config = {
+  /* ... */
+};
 
 export default function Home() {
   useEffect(() => {
@@ -585,7 +601,7 @@ Always clean up instances:
 ```tsx
 useEffect(() => {
   const instance = Interact.create(config);
-  
+
   // Always return cleanup function
   return () => {
     instance.destroy();
@@ -602,4 +618,3 @@ useEffect(() => {
 - [InteractionController](../api/interaction-controller.md) - Controller API
 - [Configuration Guide](../guides/configuration-structure.md) - Configuration options
 - [Type Definitions](../api/types.md) - TypeScript types
-

@@ -63,9 +63,8 @@ function getWebAnimation(
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
   options?: Record<string, any>,
   ownerDocument?: Document,
-): AnimationGroup | MouseAnimationInstance {
-  const element =
-    target instanceof HTMLElement ? target : getElement(target, ownerDocument);
+): AnimationGroup | MouseAnimationInstance | null {
+  const element = target instanceof HTMLElement ? target : getElement(target, ownerDocument);
 
   if (trigger?.trigger === 'pointer-move') {
     let effectOptions = animationOptions;
@@ -89,13 +88,16 @@ function getWebAnimation(
       options,
     ) as MouseAnimationFactory;
 
+    // Return null if mouseAnimationFactory is not callable
+    if (typeof mouseAnimationFactory !== 'function') {
+      return null;
+    }
+
     return mouseAnimationFactory(element as HTMLElement);
   }
 
   // get the preset for the given animation options
-  const namedEffect = getNamedEffect(
-    animationOptions,
-  ) as AnimationEffectAPI<any> | null;
+  const namedEffect = getNamedEffect(animationOptions) as AnimationEffectAPI<any> | null;
 
   const animationsData = getWebAnimationEffect(
     namedEffect,
@@ -104,11 +106,13 @@ function getWebAnimation(
     trigger,
     options,
   ) as AnimationData[];
-  const data = getEffectsData(
-    animationsData,
-    trigger,
-    animationOptions.effectId,
-  );
+
+  // Return null if animation data cannot be generated
+  if (!animationsData || animationsData.length === 0) {
+    return null;
+  }
+
+  const data = getEffectsData(animationsData, trigger, animationOptions.effectId);
 
   let timeline: typeof window.ViewTimeline | undefined;
   const isViewProgress = trigger?.trigger === 'view-progress';
@@ -123,86 +127,75 @@ function getWebAnimation(
   }
 
   // generate an Animation object for each data object
-  const animations = data.map(
-    ({ effect, options: effectOptions, id, part }) => {
-      const effectTarget = part ? getElementMotionPart(element, part) : element;
+  const animations = data.map(({ effect, options: effectOptions, id, part }) => {
+    const effectTarget = part ? getElementMotionPart(element, part) : element;
 
-      const keyframeEffect = new KeyframeEffect(
-        effectTarget || null,
-        [],
-        effectOptions,
-      );
+    const keyframeEffect = new KeyframeEffect(effectTarget || null, [], effectOptions);
 
-      // set the keyframes for the KeyframeEffect after measurements and mutations
-      fastdom.mutate(() => {
-        if ('timing' in effect) {
-          keyframeEffect.updateTiming(effect.timing as OptionalEffectTiming);
-        }
-
-        keyframeEffect.setKeyframes(effect.keyframes);
-      });
-
-      const timingOptions =
-        isViewProgress && timeline
-          ? { timeline: timeline as AnimationTimeline }
-          : {};
-      const animation: Animation | CustomAnimation =
-        typeof effect.customEffect === 'function'
-          ? (new CustomAnimation(
-              effect.customEffect,
-              effectTarget || null,
-              effectOptions,
-              timingOptions,
-            ) as Animation)
-          : new Animation(keyframeEffect, timingOptions.timeline);
-
-      // if this is a ScrubAnimation with view-progress trigger and the browser supports the ViewTimeline API
-      if (isViewProgress) {
-        if (timeline) {
-          // set the ranges for the animation after measurements and mutations
-          fastdom.mutate(() => {
-            const { start, end } = getRanges(effect as AnimationDataForScrub);
-            // @ts-expect-error
-            animation.rangeStart = start;
-            // @ts-expect-error
-            animation.rangeEnd = end;
-
-            animation.play();
-          });
-        } else {
-          const { startOffset, endOffset } =
-            animationOptions as ScrubAnimationOptions;
-
-          // set the ranges for the animation after measurements and mutations
-          fastdom.mutate(() => {
-            const startOffsetToWrite =
-              (effect as AnimationDataForScrub).startOffset || startOffset;
-            const endOffsetToWrite =
-              (effect as AnimationDataForScrub).endOffset || endOffset;
-
-            Object.assign(animation, {
-              start: {
-                name: startOffsetToWrite!.name,
-                offset: startOffsetToWrite!.offset?.value,
-                add: (effect as AnimationDataForScrub)!.startOffsetAdd,
-              },
-              end: {
-                name: endOffsetToWrite!.name,
-                offset: endOffsetToWrite!.offset?.value,
-                add: (effect as AnimationDataForScrub)!.endOffsetAdd,
-              },
-            });
-          });
-        }
+    // set the keyframes for the KeyframeEffect after measurements and mutations
+    fastdom.mutate(() => {
+      if ('timing' in effect) {
+        keyframeEffect.updateTiming(effect.timing as OptionalEffectTiming);
       }
 
-      if (id) {
-        animation.id = id;
-      }
+      keyframeEffect.setKeyframes(effect.keyframes);
+    });
 
-      return animation;
-    },
-  );
+    const timingOptions =
+      isViewProgress && timeline ? { timeline: timeline as AnimationTimeline } : {};
+    const animation: Animation | CustomAnimation =
+      typeof effect.customEffect === 'function'
+        ? (new CustomAnimation(
+            effect.customEffect,
+            effectTarget || null,
+            effectOptions,
+            timingOptions,
+          ) as Animation)
+        : new Animation(keyframeEffect, timingOptions.timeline);
+
+    // if this is a ScrubAnimation with view-progress trigger and the browser supports the ViewTimeline API
+    if (isViewProgress) {
+      if (timeline) {
+        // set the ranges for the animation after measurements and mutations
+        fastdom.mutate(() => {
+          const { start, end } = getRanges(effect as AnimationDataForScrub);
+          // @ts-expect-error
+          animation.rangeStart = start;
+          // @ts-expect-error
+          animation.rangeEnd = end;
+
+          animation.play();
+        });
+      } else {
+        const { startOffset, endOffset } = animationOptions as ScrubAnimationOptions;
+
+        // set the ranges for the animation after measurements and mutations
+        fastdom.mutate(() => {
+          const startOffsetToWrite = (effect as AnimationDataForScrub).startOffset || startOffset;
+          const endOffsetToWrite = (effect as AnimationDataForScrub).endOffset || endOffset;
+
+          Object.assign(animation, {
+            start: {
+              name: startOffsetToWrite!.name,
+              offset: startOffsetToWrite!.offset?.value,
+              add: (effect as AnimationDataForScrub)!.startOffsetAdd,
+            },
+            end: {
+              name: endOffsetToWrite!.name,
+              offset: endOffsetToWrite!.offset?.value,
+              add: (effect as AnimationDataForScrub)!.endOffsetAdd,
+            },
+          });
+        });
+      }
+    }
+
+    if (id) {
+      animation.id = id;
+    }
+
+    return animation;
+  });
 
   // create an AnimationGroup with the generate animations
   return new AnimationGroup(animations, {

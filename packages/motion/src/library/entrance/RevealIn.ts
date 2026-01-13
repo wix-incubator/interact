@@ -1,14 +1,5 @@
-import type {
-  RevealIn,
-  AnimationExtraOptions,
-  DomApi,
-  TimeAnimationOptions,
-} from '../../types';
-import {
-  getAdjustedDirection,
-  getClipPolygonParams,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import type { RevealIn, AnimationExtraOptions, DomApi, TimeAnimationOptions } from '../../types';
+import { getAdjustedDirection, getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { Direction } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -30,10 +21,7 @@ function getClipStart(rotateZ: number, direction: Direction) {
   });
 }
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   prepare(options, dom);
 
   return style(options);
@@ -87,8 +75,7 @@ export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
+      rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
     });
 
     dom.mutate((target_) => {

@@ -26,21 +26,21 @@ class AnimationGroup {
   ready: Promise<void>;
 
   constructor(animations: Animation[], options?: AnimationGroupOptions);
-  
+
   // Control methods
   async play(callback?: () => void): Promise<void>;
   pause(): void;
   async reverse(callback?: () => void): Promise<void>;
   cancel(): void;
-  
+
   // Progress and state
   getProgress(): number;
   progress(p: number): void;
   setPlaybackRate(rate: number): void;
-  
+
   // Event handling
   async onFinish(callback: () => void): Promise<void>;
-  
+
   // State properties
   get finished(): Promise<Animation>;
   get playState(): AnimationPlayState;
@@ -53,7 +53,7 @@ class AnimationGroup {
 
 ```typescript
 constructor(
-  animations: Animation[], 
+  animations: Animation[],
   options?: AnimationGroupOptions
 )
 ```
@@ -61,9 +61,11 @@ constructor(
 ### Parameters
 
 #### `animations` (required)
+
 Array of Web Animations API `Animation` instances to manage.
 
 #### `options` (optional)
+
 Configuration options for the group:
 
 ```typescript
@@ -116,7 +118,7 @@ if (group.options?.trigger) {
 ### `ready`
 
 ```typescript
-ready: Promise<void>
+ready: Promise<void>;
 ```
 
 Promise that resolves when all animations are prepared and ready to play.
@@ -159,7 +161,7 @@ Promise that resolves when all animations begin playing.
 const animation = getWebAnimation('#element', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'FadeIn' },
-  duration: 1000
+  duration: 1000,
 });
 
 await animation.play();
@@ -243,7 +245,7 @@ Promise that resolves when reverse playback begins.
 const animation = getWebAnimation('#modal', {
   type: 'TimeAnimationOptions',
   namedEffect: { type: 'DropIn', power: 'medium' },
-  duration: 400
+  duration: 400,
 });
 
 // Show modal
@@ -337,7 +339,7 @@ await animation.play();
 const progressInterval = setInterval(() => {
   const progress = animation.getProgress();
   console.log(`Animation ${Math.round(progress * 100)}% complete`);
-  
+
   if (progress >= 1) {
     clearInterval(progressInterval);
   }
@@ -353,7 +355,7 @@ const animation = getWebAnimation('#content', options);
 const updateProgress = () => {
   const progress = animation.getProgress();
   progressBar.style.width = `${progress * 100}%`;
-  
+
   if (progress < 1) {
     requestAnimationFrame(updateProgress);
   }
@@ -402,9 +404,9 @@ scrubSlider.addEventListener('input', (e) => {
 window.addEventListener('scroll', () => {
   const scrollProgress = Math.min(
     window.scrollY / (document.body.scrollHeight - window.innerHeight),
-    1
+    1,
   );
-  
+
   animation.progress(scrollProgress);
 });
 ```
@@ -591,7 +593,7 @@ const animation = getWebAnimation('#element', options);
 
 function updateUI() {
   const state = animation.playState;
-  
+
   switch (state) {
     case 'idle':
       playButton.textContent = 'Play';
@@ -638,16 +640,16 @@ class AnimationSequence {
       await animation.play();
       return animation.finished;
     });
-    
+
     await Promise.all(promises);
   }
 
   pause() {
-    this.animations.forEach(animation => animation.pause());
+    this.animations.forEach((animation) => animation.pause());
   }
 
   cancel() {
-    this.animations.forEach(animation => animation.cancel());
+    this.animations.forEach((animation) => animation.cancel());
   }
 }
 
@@ -673,29 +675,24 @@ class SynchronizedAnimations {
 
   async play() {
     // Start all animations
-    await Promise.all(
-      this.groups.map(group => group.play())
-    );
+    await Promise.all(this.groups.map((group) => group.play()));
   }
 
   syncProgress(progress: number) {
     // Set all animations to same progress
-    this.groups.forEach(group => {
+    this.groups.forEach((group) => {
       group.progress(progress);
     });
   }
 
   setSpeed(rate: number) {
-    this.groups.forEach(group => {
+    this.groups.forEach((group) => {
       group.setPlaybackRate(rate);
     });
   }
 
   getAverageProgress(): number {
-    const total = this.groups.reduce(
-      (sum, group) => sum + group.getProgress(), 
-      0
-    );
+    const total = this.groups.reduce((sum, group) => sum + group.getProgress(), 0);
     return total / this.groups.length;
   }
 }
@@ -715,13 +712,13 @@ class StatefulComponent {
     this.enterAnimation = getWebAnimation(element, {
       type: 'TimeAnimationOptions',
       namedEffect: { type: 'FadeIn' },
-      duration: 300
+      duration: 300,
     });
 
     this.exitAnimation = getWebAnimation(element, {
       type: 'TimeAnimationOptions',
-      namedEffect: { type: 'FadeIn' },  // Will be reversed
-      duration: 300
+      namedEffect: { type: 'FadeIn' }, // Will be reversed
+      duration: 300,
     });
 
     this.setupAnimationHandlers();
@@ -741,14 +738,14 @@ class StatefulComponent {
 
   async show() {
     if (this.state !== 'idle') return;
-    
+
     this.state = 'entering';
     await this.enterAnimation.play();
   }
 
   async hide() {
     if (this.state !== 'active') return;
-    
+
     this.state = 'exiting';
     await this.exitAnimation.reverse();
   }
@@ -784,8 +781,8 @@ class OptimizedAnimationMonitor {
 
     const monitor = () => {
       const progress = this.group.getProgress();
-      
-      this.callbacks.forEach(callback => {
+
+      this.callbacks.forEach((callback) => {
         try {
           callback(progress);
         } catch (error) {

@@ -15,10 +15,7 @@ const DIRECTIONS = ['top', 'right', 'bottom', 'left'];
 
 type Direction = (typeof DIRECTIONS)[number];
 
-const PARAM_MAP: Record<
-  Direction,
-  { x: number; y: number; origin: { x: number; y: number } }
-> = {
+const PARAM_MAP: Record<Direction, { x: number; y: number; origin: { x: number; y: number } }> = {
   top: { x: -1, y: 0, origin: { x: 0, y: -50 } },
   right: { x: 0, y: -1, origin: { x: 50, y: 0 } },
   bottom: { x: 1, y: 0, origin: { x: 0, y: 50 } },
@@ -39,11 +36,7 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const {
-    direction = 'top',
-    power,
-    initialRotate = 90,
-  } = options.namedEffect as FoldIn;
+  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
   const [fadeIn, foldIn] = getNames(options);
   const easing = options.easing || 'backOut';
   const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
@@ -64,10 +57,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,
@@ -88,11 +78,7 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const {
-    direction = 'top',
-    power,
-    initialRotate = 90,
-  } = options.namedEffect as FoldIn;
+  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
   const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
 
   if (dom) {
@@ -103,8 +89,7 @@ export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      const rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
+      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
 
       adjustedDirection = getAdjustedDirection(
         DIRECTIONS,

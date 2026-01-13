@@ -87,9 +87,7 @@ export const ResponsiveDemo = () => {
   return (
     <section className="panel responsive-demo-panel">
       <p className="scroll-label">Responsive Demo</p>
-      <div className="responsive-demo-width-display">
-        screen width: {width}px
-      </div>
+      <div className="responsive-demo-width-display">screen width: {width}px</div>
       <div className="responsive-demo-content">
         <h3 className="responsive-demo-title">Responsive Interactions</h3>
         <p className="responsive-demo-description">
@@ -102,7 +100,11 @@ export const ResponsiveDemo = () => {
 
         <div className="responsive-demo-button-wrapper">
           {/* Trigger */}
-          <Interaction tagName="button" interactKey="multi-source-1" className="responsive-demo-button">
+          <Interaction
+            tagName="button"
+            interactKey="multi-source-1"
+            className="responsive-demo-button"
+          >
             Trigger Animation
           </Interaction>
         </div>
@@ -110,29 +112,35 @@ export const ResponsiveDemo = () => {
         <div className="responsive-demo-targets">
           {/* Target 1 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Desktop Target
-            </p>
-            <Interaction tagName="div" interactKey="cascade-target-1" className="responsive-demo-target-card responsive-demo-target-card--desktop">
+            <p className="responsive-demo-target-label">Desktop Target</p>
+            <Interaction
+              tagName="div"
+              interactKey="cascade-target-1"
+              className="responsive-demo-target-card responsive-demo-target-card--desktop"
+            >
               Slide In
             </Interaction>
           </div>
 
           {/* Target 2 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Tablet Target
-            </p>
-            <Interaction tagName="div" interactKey="cascade-target-2" className="responsive-demo-target-card responsive-demo-target-card--tablet">
+            <p className="responsive-demo-target-label">Tablet Target</p>
+            <Interaction
+              tagName="div"
+              interactKey="cascade-target-2"
+              className="responsive-demo-target-card responsive-demo-target-card--tablet"
+            >
               Flip In
             </Interaction>
           </div>
           {/* Target 3 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Mobile Target
-            </p>
-            <Interaction tagName="div" interactKey="cascade-target-3" className="responsive-demo-target-card responsive-demo-target-card--mobile">
+            <p className="responsive-demo-target-label">Mobile Target</p>
+            <Interaction
+              tagName="div"
+              interactKey="cascade-target-3"
+              className="responsive-demo-target-card responsive-demo-target-card--mobile"
+            >
               Bounce In
             </Interaction>
           </div>

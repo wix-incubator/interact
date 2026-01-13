@@ -34,10 +34,10 @@ jobs:
           corepack enable
           corepack prepare yarn@4.10.3 --activate
           yarn set version 4.10.3
-          NPQ_PKG_MGR=yarn npx npq install
 
-      - name: Build interact package
-        run: yarn workspace @wix/interact build
+      - name: Install dependencies
+        run: |
+          NPQ_PKG_MGR=yarn npx npq install
 
       - name: Build docs app
         run: yarn workspace @wix/interact-docs build
@@ -54,18 +54,18 @@ jobs:
           # /           -> root index.html and assets
           # /docs/      -> docs app
           # /rules/     -> rules markdown files
-          
+
           mkdir -p _site/docs
           mkdir -p _site/rules
           mkdir -p _site/assets
-          
+
           # Copy root landing page and assets
           cp index.html _site/
           cp -r assets/* _site/assets/
-          
+
           # Copy docs app
           cp -r apps/docs/dist/* _site/docs/
-          
+
           # Copy rules from source (served at /rules/, not /docs/rules/)
           cp -r packages/interact/rules/* _site/rules/
 

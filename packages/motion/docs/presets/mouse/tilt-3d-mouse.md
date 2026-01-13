@@ -10,6 +10,7 @@
 **Mobile Friendly**: Disable on touch devices
 
 ### Best Use Cases
+
 - Interactive cards and product showcases
 - Portfolio pieces and gallery items
 - Premium UI elements requiring depth
@@ -17,6 +18,7 @@
 - Hero sections with interactive elements
 
 ### Target Elements
+
 - Cards, panels, and content blocks
 - Images and media elements
 - Buttons and interactive components
@@ -25,6 +27,7 @@
 ## Configuration
 
 ### TypeScript Interface
+
 ```typescript
 export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
   angle?: number;
@@ -35,23 +38,26 @@ export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
 
 ### Parameters
 
-| Parameter | Type | Default | Description | Examples |
-|-----------|------|---------|-------------|----------|
-| `angle` | `number` | `15` | Maximum tilt angle in degrees | `5`, `15`, `25`, `45` |
-| `perspective` | `number` | `800` | 3D perspective distance in pixels | `400`, `800`, `1200` |
-| `power` | `string` | `'medium'` | Tilt sensitivity and responsiveness | `'soft'`, `'medium'`, `'hard'` |
+| Parameter     | Type     | Default    | Description                         | Examples                       |
+| ------------- | -------- | ---------- | ----------------------------------- | ------------------------------ |
+| `angle`       | `number` | `15`       | Maximum tilt angle in degrees       | `5`, `15`, `25`, `45`          |
+| `perspective` | `number` | `800`      | 3D perspective distance in pixels   | `400`, `800`, `1200`           |
+| `power`       | `string` | `'medium'` | Tilt sensitivity and responsiveness | `'soft'`, `'medium'`, `'hard'` |
 
 ### Power Levels
+
 - **`soft`** - Gentle, minimal tilt response (30% sensitivity)
 - **`medium`** - Balanced, natural tilt feel (60% sensitivity)
 - **`hard`** - Strong, dramatic tilt response (100% sensitivity)
 
 ### Angle Guidelines
+
 - **`5-10°`** - Subtle depth for professional interfaces
 - **`15-20°`** - Noticeable but natural tilt effect
 - **`25-45°`** - Dramatic perspective for creative showcases
 
 ### Perspective Guidelines
+
 - **`400-600px`** - Strong perspective, pronounced 3D effect
 - **`800-1000px`** - Balanced perspective, natural depth
 - **`1200px+`** - Subtle perspective, gentle 3D feel
@@ -59,91 +65,115 @@ export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
 ## Usage Examples
 
 ### Basic Usage
+
 ```typescript
 import { getScrubScene } from '@wix/motion';
 
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 15,
-    perspective: 800,
-    power: 'medium'
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 15,
+      perspective: 800,
+      power: 'medium',
+    },
+    transitionDuration: 200,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 200,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: element
-});
+  {
+    trigger: 'pointer-move',
+    element: element,
+  },
+);
 ```
 
 ### Angle Variations
+
 ```typescript
 // Subtle tilt for professional cards
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 8,
-    perspective: 1000,
-    power: 'soft'
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 8,
+      perspective: 1000,
+      power: 'soft',
+    },
+    transitionDuration: 300,
   },
-  transitionDuration: 300
-}, {
-  trigger: 'pointer-move',
-  element: element
-});
+  {
+    trigger: 'pointer-move',
+    element: element,
+  },
+);
 
 // Dramatic tilt for creative showcases
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 30,
-    perspective: 600,
-    power: 'hard'
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 30,
+      perspective: 600,
+      power: 'hard',
+    },
+    transitionDuration: 150,
   },
-  transitionDuration: 150
-}, {
-  trigger: 'pointer-move',
-  element: element
-});
+  {
+    trigger: 'pointer-move',
+    element: element,
+  },
+);
 ```
 
 ### Perspective Control
+
 ```typescript
 // Strong perspective for cards
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 20,
-    perspective: 500,  // Closer perspective = stronger effect
-    power: 'medium'
-  }
-}, triggerConfig);
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 20,
+      perspective: 500, // Closer perspective = stronger effect
+      power: 'medium',
+    },
+  },
+  triggerConfig,
+);
 
 // Gentle perspective for large elements
-const scene = getScrubScene(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 15,
-    perspective: 1200,  // Distant perspective = gentler effect
-    power: 'medium'
-  }
-}, triggerConfig);
+const scene = getScrubScene(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 15,
+      perspective: 1200, // Distant perspective = gentler effect
+      power: 'medium',
+    },
+  },
+  triggerConfig,
+);
 ```
 
 ### Power Level Examples
+
 ```typescript
 // Professional interface - minimal response
 const professionalTilt = {
   type: 'Tilt3DMouse',
   angle: 10,
   perspective: 1000,
-  power: 'soft'  // 30% sensitivity
+  power: 'soft', // 30% sensitivity
 };
 
 // Creative interface - maximum response
@@ -151,37 +181,42 @@ const creativeTilt = {
   type: 'Tilt3DMouse',
   angle: 25,
   perspective: 600,
-  power: 'hard'  // 100% sensitivity
+  power: 'hard', // 100% sensitivity
 };
 ```
 
 ## Common Patterns
 
 ### Interactive Card Grid
+
 ```typescript
 // Apply consistent tilt to all cards
-document.querySelectorAll('.tilt-card').forEach(card => {
-  const scene = getScrubScene(card, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'Tilt3DMouse',
-      angle: 12,
-      perspective: 1000,
-      power: 'soft'
+document.querySelectorAll('.tilt-card').forEach((card) => {
+  const scene = getScrubScene(
+    card,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: 12,
+        perspective: 1000,
+        power: 'soft',
+      },
+      transitionDuration: 200,
+      transitionEasing: 'easeOut',
     },
-    transitionDuration: 200,
-    transitionEasing: 'easeOut'
-  }, {
-    trigger: 'pointer-move',
-    element: card
-  });
-  
+    {
+      trigger: 'pointer-move',
+      element: card,
+    },
+  );
+
   // Enhanced hover state
   card.addEventListener('pointerenter', () => {
     card.style.boxShadow = '0 20px 40px rgb(0 0 0 / 0.1)';
     card.style.transform = 'translateZ(10px)';
   });
-  
+
   card.addEventListener('pointerleave', () => {
     card.style.boxShadow = '';
     card.style.transform = '';
@@ -190,30 +225,35 @@ document.querySelectorAll('.tilt-card').forEach(card => {
 ```
 
 ### Product Showcase
+
 ```typescript
 // Premium product display with dramatic tilt
 function createProductShowcase(productElement) {
-  const scene = getScrubScene(productElement, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'Tilt3DMouse',
-      angle: 25,
-      perspective: 800,
-      power: 'medium'
+  const scene = getScrubScene(
+    productElement,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: 25,
+        perspective: 800,
+        power: 'medium',
+      },
+      transitionDuration: 250,
+      transitionEasing: 'easeOut',
     },
-    transitionDuration: 250,
-    transitionEasing: 'easeOut'
-  }, {
-    trigger: 'pointer-move',
-    element: productElement.parentElement
-  });
-  
+    {
+      trigger: 'pointer-move',
+      element: productElement.parentElement,
+    },
+  );
+
   return showcase;
 }
 
 // Usage
 const productCards = document.querySelectorAll('.product-card');
-productCards.forEach(card => {
+productCards.forEach((card) => {
   const productImage = card.querySelector('.product-image');
   if (productImage) {
     createProductShowcase(productImage);
@@ -222,6 +262,7 @@ productCards.forEach(card => {
 ```
 
 ### Portfolio Gallery
+
 ```typescript
 // Portfolio items with varied tilt intensities
 const portfolioItems = document.querySelectorAll('.portfolio-item');
@@ -229,80 +270,95 @@ const portfolioItems = document.querySelectorAll('.portfolio-item');
 portfolioItems.forEach((item, index) => {
   // Alternate between subtle and strong tilts
   const isStrong = index % 2 === 0;
-  
-  getScrubScene(item, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'Tilt3DMouse',
-      angle: isStrong ? 20 : 12,
-      perspective: isStrong ? 600 : 1000,
-      power: isStrong ? 'medium' : 'soft'
+
+  getScrubScene(
+    item,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: isStrong ? 20 : 12,
+        perspective: isStrong ? 600 : 1000,
+        power: isStrong ? 'medium' : 'soft',
+      },
+      transitionDuration: 200,
     },
-    transitionDuration: 200
-  }, {
-    trigger: 'pointer-move',
-    element: item
-  });
+    {
+      trigger: 'pointer-move',
+      element: item,
+    },
+  );
 });
 ```
 
 ### Interactive Button
+
 ```typescript
 // CTA button with subtle tilt feedback
 function createTiltButton(button) {
-  const scene = getScrubScene(button, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'Tilt3DMouse',
-      angle: 8,
-      perspective: 800,
-      power: 'soft'
+  const scene = getScrubScene(
+    button,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: 8,
+        perspective: 800,
+        power: 'soft',
+      },
+      transitionDuration: 150,
+      transitionEasing: 'easeOut',
     },
-    transitionDuration: 150,
-    transitionEasing: 'easeOut'
-  }, {
-    trigger: 'pointer-move',
-    element: button
-  });
-  
+    {
+      trigger: 'pointer-move',
+      element: button,
+    },
+  );
+
   // Add scale effect
   button.addEventListener('pointerenter', () => {
     button.style.transform = 'scale(1.05)';
   });
-  
+
   button.addEventListener('pointerleave', () => {
     button.style.transform = '';
   });
-  
+
   return scene;
 }
 ```
 
 ### Modal with 3D Tilt
+
 ```typescript
 // Modal content with tilt interaction
 function setupModalTilt(modal) {
   const modalContent = modal.querySelector('.modal-content');
-  
-  return getScrubScene(modalContent, {
-    type: 'ScrubAnimationOptions',
-    namedEffect: { 
-      type: 'Tilt3DMouse',
-      angle: 15,
-      perspective: 1000,
-      power: 'medium'
+
+  return getScrubScene(
+    modalContent,
+    {
+      type: 'ScrubAnimationOptions',
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: 15,
+        perspective: 1000,
+        power: 'medium',
+      },
+      transitionDuration: 300,
     },
-    transitionDuration: 300
-  }, {
-    trigger: 'pointer-move',
-    element: modal  // Track mouse over entire modal
-  });
+    {
+      trigger: 'pointer-move',
+      element: modal, // Track mouse over entire modal
+    },
+  );
 }
 ```
 
 ## Framework Integration
 
 ### React Component
+
 ```typescript
 import React, { useEffect, useRef } from 'react';
 import { getScrubScene } from '@wix/motion';
@@ -317,8 +373,8 @@ interface Tilt3DProps {
   disabled?: boolean;
 }
 
-function Tilt3D({ 
-  children, 
+function Tilt3D({
+  children,
   angle = 15,
   perspective = 800,
   power = 'medium',
@@ -328,17 +384,17 @@ function Tilt3D({
 }: Tilt3DProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<any>(null);
-  
+
   useEffect(() => {
     if (!elementRef.current || disabled) return;
-    
+
     // Check if device supports hover
     const supportsHover = window.matchMedia('(hover: hover)').matches;
     if (!supportsHover) return;
-    
+
     animationRef.current = getScrubScene(elementRef.current, {
       type: 'ScrubAnimationOptions',
-      namedEffect: { 
+      namedEffect: {
         type: 'Tilt3DMouse',
         angle,
         perspective,
@@ -350,17 +406,17 @@ function Tilt3D({
       trigger: 'pointer-move',
       element: elementRef.current
     });
-    
+
     return () => {
       if (animationRef.current) {
         animationRef.current.cancel();
       }
     };
   }, [angle, perspective, power, transitionDuration, disabled]);
-  
+
   return (
-    <div 
-      ref={elementRef} 
+    <div
+      ref={elementRef}
       className={className}
       style={{ transformStyle: 'preserve-3d' }}
     >
@@ -372,9 +428,9 @@ function Tilt3D({
 // Usage
 function ProductCard({ product }) {
   return (
-    <Tilt3D 
-      angle={20} 
-      perspective={600} 
+    <Tilt3D
+      angle={20}
+      perspective={600}
       power="medium"
       className="product-card"
     >
@@ -387,13 +443,10 @@ function ProductCard({ product }) {
 ```
 
 ### Vue Component
+
 ```vue
 <template>
-  <div 
-    ref="element"
-    :class="className"
-    :style="{ transformStyle: 'preserve-3d' }"
-  >
+  <div ref="element" :class="className" :style="{ transformStyle: 'preserve-3d' }">
     <slot />
   </div>
 </template>
@@ -408,23 +461,23 @@ export default {
     power: { type: String, default: 'medium' },
     transitionDuration: { type: Number, default: 200 },
     className: { type: String, default: '' },
-    disabled: { type: Boolean, default: false }
+    disabled: { type: Boolean, default: false },
   },
-  
+
   data() {
     return {
-      animation: null
+      animation: null,
     };
   },
-  
+
   mounted() {
     this.setupTilt();
   },
-  
+
   beforeUnmount() {
     this.destroyTilt();
   },
-  
+
   watch: {
     disabled(newValue) {
       if (newValue) {
@@ -432,41 +485,45 @@ export default {
       } else {
         this.setupTilt();
       }
-    }
+    },
   },
-  
+
   methods: {
     setupTilt() {
       if (!this.$refs.element || this.disabled) return;
-      
+
       // Check hover support
       const supportsHover = window.matchMedia('(hover: hover)').matches;
       if (!supportsHover) return;
-      
-      this.animation = getWebAnimation(this.$refs.element, {
-        type: 'ScrubAnimationOptions',
-        namedEffect: { 
-          type: 'Tilt3DMouse',
-          angle: this.angle,
-          perspective: this.perspective,
-          power: this.power
+
+      this.animation = getWebAnimation(
+        this.$refs.element,
+        {
+          type: 'ScrubAnimationOptions',
+          namedEffect: {
+            type: 'Tilt3DMouse',
+            angle: this.angle,
+            perspective: this.perspective,
+            power: this.power,
+          },
+          transitionDuration: this.transitionDuration,
+          transitionEasing: 'easeOut',
         },
-        transitionDuration: this.transitionDuration,
-        transitionEasing: 'easeOut'
-      }, {
-        trigger: 'pointer-move',
-        element: this.$refs.element
-      });
+        {
+          trigger: 'pointer-move',
+          element: this.$refs.element,
+        },
+      );
     },
-    
+
     destroyTilt() {
       if (this.animation) {
         this.animation.cancel();
         this.animation = null;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 ```
 
@@ -480,15 +537,18 @@ export default {
 ## Related Animations
 
 ### Same Category
+
 - **[Track3DMouse](track-3d-mouse.md)** - 3D tracking with movement
 - **[SwivelMouse](swivel-mouse.md)** - Pivot-based 3D rotation
 - **[ScaleMouse](scale-mouse.md)** - Scaling without 3D effects
 
 ### Other Categories
+
 - **[ArcIn](../entrance/arc-in.md)** - 3D entrance animation
 - **[TiltScroll](../scroll/tilt-scroll.md)** - Scroll-driven 3D tilting
 
 ### Complementary Effects
+
 - **Before**: Element entrance animations
 - **After**: Click animations, state changes
 - **Alongside**: Box shadow transitions, scale effects

@@ -15,10 +15,7 @@ describe('CircleIn', () => {
       const expectedResult: Partial<AnimationData>[] = [
         {
           easing: 'circOut',
-          keyframes: [
-            { translate: 'calc(100vw - var(--motion-left, 0px))' },
-            {},
-          ],
+          keyframes: [{ translate: 'calc(100vw - var(--motion-left, 0px))' }, {}],
         },
         {
           easing: 'linear',
@@ -116,8 +113,7 @@ describe('CircleIn', () => {
           easing: 'linear',
           name: 'motion-circleYIn',
           custom: {
-            '--motion-translate-y':
-              'min(calc(100% * -1.5), max(-300px, calc(100% * -5.5)))',
+            '--motion-translate-y': 'min(calc(100% * -1.5), max(-300px, calc(100% * -5.5)))',
             '--motion-rotate-z': '45deg',
           },
           keyframes: [
@@ -169,8 +165,7 @@ describe('CircleIn', () => {
         {
           name: 'motion-circleYIn',
           custom: {
-            '--motion-translate-y':
-              'min(calc(100% * -1.5), max(-300px, calc(100% * -5.5)))',
+            '--motion-translate-y': 'min(calc(100% * -1.5), max(-300px, calc(100% * -5.5)))',
             '--motion-rotate-z': '-45deg',
           },
           keyframes: [

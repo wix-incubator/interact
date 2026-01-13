@@ -15,12 +15,7 @@ const ROTATION_MAP = {
   right: -30,
 };
 
-const DIRECTIONS = [
-  'top',
-  'right',
-  'bottom',
-  'left',
-] as (keyof typeof ROTATION_MAP)[];
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as (keyof typeof ROTATION_MAP)[];
 
 function getClipStart(rotateZ: number) {
   const clipDirection = getAdjustedDirection(
@@ -63,10 +58,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.2,
       easing: 'cubicOut',
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,
@@ -99,11 +91,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
         {
           offset: INITIAL_FRAME_OFFSET,
           clipPath: `var(--motion-clip-start, ${clipCustom['--motion-clip-start']})`,
-          transform: `rotateZ(${toKeyframeValue(
-            clipCustom,
-            '--motion-rotate-z',
-            asWeb,
-          )})`,
+          transform: `rotateZ(${toKeyframeValue(clipCustom, '--motion-rotate-z', asWeb)})`,
         },
         {
           clipPath: clipEnd,
@@ -122,15 +110,11 @@ export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
       if (!target) {
         return;
       }
-      rotation =
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
+      rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
     });
 
     dom.mutate((target_) => {
-      target_?.style.setProperty(
-        '--motion-clip-start',
-        getClipStart(parseInt(rotation, 10)),
-      );
+      target_?.style.setProperty('--motion-clip-start', getClipStart(parseInt(rotation, 10)));
     });
   }
 }

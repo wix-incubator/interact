@@ -1,9 +1,4 @@
-import type {
-  AnimationExtraOptions,
-  DomApi,
-  TimeAnimationOptions,
-  GlideIn,
-} from '../../types';
+import type { AnimationExtraOptions, DomApi, TimeAnimationOptions, GlideIn } from '../../types';
 import {
   getCssUnits,
   getOutOfScreenDistance,
@@ -21,10 +16,7 @@ const EASING_MAP = {
   hard: 'backOut',
 };
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   prepare(options, dom);
 
   return style(options, true);
@@ -104,8 +96,7 @@ export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
         return;
       }
 
-      const { left: targetLeft, top: targetTop } =
-        target.getBoundingClientRect();
+      const { left: targetLeft, top: targetTop } = target.getBoundingClientRect();
       left = targetLeft;
       top = targetTop;
     });

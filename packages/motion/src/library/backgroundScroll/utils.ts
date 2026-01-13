@@ -13,16 +13,12 @@ export function measureCompHeight(
   });
   if (assignToCss) {
     dom.mutate((target) => {
-      target?.style.setProperty(
-        '--motion-comp-height',
-        `${measures.compHeight}px`,
-      );
+      target?.style.setProperty('--motion-comp-height', `${measures.compHeight}px`);
     });
   }
 }
 
-const getMasterPage = (): HTMLElement | null =>
-  window!.document.getElementById('masterPage');
+const getMasterPage = (): HTMLElement | null => window!.document.getElementById('masterPage');
 
 const getWixAdsHeight = () => {
   const wixAds = window!.document.getElementById('WIX_ADS');
@@ -34,10 +30,7 @@ const getSiteHeight = (): number => {
   return masterPage ? masterPage.offsetHeight + getWixAdsHeight() : 0; // probably tests that don't have masterPage created
 };
 
-export function measureSiteHeight(
-  measures: { siteHeight: number },
-  dom: DomApi,
-) {
+export function measureSiteHeight(measures: { siteHeight: number }, dom: DomApi) {
   dom.measure(() => {
     measures.siteHeight = getSiteHeight();
   });

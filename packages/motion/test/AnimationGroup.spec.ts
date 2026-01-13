@@ -15,10 +15,10 @@ const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
     effect: {
       getComputedTiming: vi.fn().mockReturnValue({
         progress: 0.5,
-        activeDuration: 1000,
       }),
       getTiming: vi.fn().mockReturnValue({
         delay: 0,
+        duration: 1000,
       }),
     } as any,
     play: vi.fn(),
@@ -27,7 +27,7 @@ const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
     reverse: vi.fn(),
     playbackRate: 1,
     ...overrides,
-  } as Animation);
+  }) as Animation;
 
 describe('AnimationGroup', () => {
   describe('Constructor', () => {
@@ -165,25 +165,18 @@ describe('AnimationGroup', () => {
     test('should return progress from first animation effect', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            progress: 0.75,
-          }),
-          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.75 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
         } as any,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            progress: 0.25, // Different progress - should not be used
-          }),
-          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.25 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
         } as any,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       const progress = animationGroup.getProgress();
 
@@ -198,10 +191,7 @@ describe('AnimationGroup', () => {
       });
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimationNoEffect,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimationNoEffect, mockAnimation2]);
 
       const progress = animationGroup.getProgress();
 
@@ -230,10 +220,8 @@ describe('AnimationGroup', () => {
       testCases.forEach(({ inputProgress, expectedProgress }) => {
         const mockAnimation = createMockAnimation({
           effect: {
-            getComputedTiming: vi.fn().mockReturnValue({
-              progress: inputProgress,
-            }),
-            getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+            getComputedTiming: vi.fn().mockReturnValue({ progress: inputProgress }),
+            getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
           } as any,
         });
 
@@ -251,11 +239,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       await animationGroup.play();
 
@@ -298,10 +282,7 @@ describe('AnimationGroup', () => {
       const mockAnimation1 = createMockAnimation();
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.play(callback);
 
@@ -359,11 +340,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.pause();
 
@@ -409,11 +386,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       await animationGroup.reverse();
 
@@ -456,10 +429,7 @@ describe('AnimationGroup', () => {
       const mockAnimation1 = createMockAnimation();
       const mockAnimation2 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.reverse(callback);
 
@@ -515,73 +485,62 @@ describe('AnimationGroup', () => {
     test('should set currentTime on all animations based on progress value', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 2000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 100,
+            duration: 2000,
           }),
         } as any,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       animationGroup.progress(0.5);
 
-      // Expected calculation: (delay + activeDuration) * progress
+      // Expected calculation: (delay + duration * progress) * progress
       // Animation 1: (200 + 1000) * 0.5 = 600
       // Animation 2: (100 + 2000) * 0.5 = 1050
       expect(mockAnimation1.currentTime).toBe(600);
       expect(mockAnimation2.currentTime).toBe(1050);
-      expect(mockAnimation1.effect!.getComputedTiming).toHaveBeenCalled();
       expect(mockAnimation1.effect!.getTiming).toHaveBeenCalled();
-      expect(mockAnimation2.effect!.getComputedTiming).toHaveBeenCalled();
       expect(mockAnimation2.effect!.getTiming).toHaveBeenCalled();
     });
 
-    test('should calculate currentTime using activeDuration and delay', () => {
+    test('should calculate currentTime using , progress, and delay', () => {
       const testCases = [
         {
-          activeDuration: 1000,
+          duration: 1000,
           delay: 500,
           progress: 0.75,
           expected: 1125, // (500 + 1000) * 0.75
         },
         {
-          activeDuration: 800,
+          duration: 800,
           delay: 0,
           progress: 0.25,
           expected: 200, // (0 + 800) * 0.25
         },
         {
-          activeDuration: 0,
+          duration: 0,
           delay: 300,
           progress: 1.0,
           expected: 300, // (300 + 0) * 1.0
         },
       ];
 
-      testCases.forEach(({ activeDuration, delay, progress, expected }) => {
+      testCases.forEach(({ duration, delay, progress, expected }) => {
         const mockAnimation = createMockAnimation({
           effect: {
-            getComputedTiming: vi.fn().mockReturnValue({
-              activeDuration,
-            }),
             getTiming: vi.fn().mockReturnValue({
               delay,
+              duration,
             }),
           } as any,
         });
@@ -596,11 +555,9 @@ describe('AnimationGroup', () => {
     test('should handle progress value of 0', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -614,11 +571,9 @@ describe('AnimationGroup', () => {
     test('should handle progress value of 1', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -632,11 +587,9 @@ describe('AnimationGroup', () => {
     test('should handle progress values greater than 1', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -650,11 +603,9 @@ describe('AnimationGroup', () => {
     test('should handle negative progress values', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 1000,
           }),
         } as any,
       });
@@ -668,11 +619,9 @@ describe('AnimationGroup', () => {
     test('should handle animations with no delay', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: undefined,
+            duration: 1000,
           }),
         } as any,
       });
@@ -684,14 +633,12 @@ describe('AnimationGroup', () => {
       expect(mockAnimation.currentTime).toBe(500);
     });
 
-    test('should handle animations with zero activeDuration', () => {
+    test('should handle animations with zero duration', () => {
       const mockAnimation = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 0,
-          }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 0,
           }),
         } as any,
       });
@@ -717,11 +664,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.cancel();
 
@@ -767,11 +710,7 @@ describe('AnimationGroup', () => {
       const mockAnimation2 = createMockAnimation();
       const mockAnimation3 = createMockAnimation();
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-        mockAnimation3,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2, mockAnimation3]);
 
       animationGroup.setPlaybackRate(2.0);
 
@@ -836,10 +775,7 @@ describe('AnimationGroup', () => {
         }),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Start onFinish but don't await yet
       const finishPromise = animationGroup.onFinish(callback);
@@ -868,15 +804,10 @@ describe('AnimationGroup', () => {
         finished: Promise.resolve(undefined as any),
       });
       const mockAnimation2 = createMockAnimation({
-        finished: new Promise((resolve) =>
-          setTimeout(() => resolve(undefined as any), 10),
-        ),
+        finished: new Promise((resolve) => setTimeout(() => resolve(undefined as any), 10)),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -885,7 +816,7 @@ describe('AnimationGroup', () => {
 
     test('should catch and log errors when animations are interrupted', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation1 = createMockAnimation({
         finished: Promise.resolve(undefined as any),
@@ -894,10 +825,7 @@ describe('AnimationGroup', () => {
         finished: Promise.reject(new Error('Animation interrupted')),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -921,7 +849,7 @@ describe('AnimationGroup', () => {
 
     test('should not execute callback if any animation is cancelled', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation1 = createMockAnimation({
         finished: Promise.resolve(undefined as any),
@@ -930,10 +858,7 @@ describe('AnimationGroup', () => {
         finished: Promise.reject(new Error('Animation was cancelled')),
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       await animationGroup.onFinish(callback);
 
@@ -945,7 +870,7 @@ describe('AnimationGroup', () => {
 
     test('should handle promise rejections gracefully', async () => {
       const callback = vi.fn();
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       const mockAnimation = createMockAnimation({
         finished: Promise.reject(new Error('Unexpected animation error')),
@@ -975,10 +900,7 @@ describe('AnimationGroup', () => {
         playState: 'paused' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       expect(animationGroup.playState).toBe('running');
     });
@@ -993,12 +915,7 @@ describe('AnimationGroup', () => {
     });
 
     test('should return correct state for different animation states', () => {
-      const testStates: AnimationPlayState[] = [
-        'idle',
-        'running',
-        'paused',
-        'finished',
-      ];
+      const testStates: AnimationPlayState[] = ['idle', 'running', 'paused', 'finished'];
 
       testStates.forEach((state) => {
         const mockAnimation = createMockAnimation({
@@ -1015,33 +932,26 @@ describe('AnimationGroup', () => {
     test('should coordinate multiple animations with different timings', () => {
       const mockAnimation1 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 1000,
-            progress: 0.3,
-          }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.3 }),
           getTiming: vi.fn().mockReturnValue({
             delay: 100,
+            duration: 1000,
           }),
         } as any,
         playState: 'running' as AnimationPlayState,
       });
       const mockAnimation2 = createMockAnimation({
         effect: {
-          getComputedTiming: vi.fn().mockReturnValue({
-            activeDuration: 2000,
-            progress: 0.7,
-          }),
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.7 }),
           getTiming: vi.fn().mockReturnValue({
             delay: 200,
+            duration: 2000,
           }),
         } as any,
         playState: 'running' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Test multiple operations on the group
       expect(animationGroup.getProgress()).toBe(0.3); // From first animation
@@ -1101,10 +1011,7 @@ describe('AnimationGroup', () => {
         measured: Promise.resolve(),
       };
 
-      const animationGroup = new AnimationGroup(
-        [mockAnimation1, mockAnimation2],
-        mockOptions,
-      );
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2], mockOptions);
 
       // Test full lifecycle
       await animationGroup.play();
@@ -1165,10 +1072,7 @@ describe('AnimationGroup', () => {
         playState: 'idle' as AnimationPlayState,
       });
 
-      const animationGroup = new AnimationGroup([
-        mockAnimation1,
-        mockAnimation2,
-      ]);
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
 
       // Initial state
       expect(animationGroup.playState).toBe('idle');
@@ -1183,10 +1087,7 @@ describe('AnimationGroup', () => {
       const updatedAnimation1 = createMockAnimation({
         playState: 'running' as AnimationPlayState,
       });
-      const updatedGroup = new AnimationGroup([
-        updatedAnimation1,
-        mockAnimation2,
-      ]);
+      const updatedGroup = new AnimationGroup([updatedAnimation1, mockAnimation2]);
       expect(updatedGroup.playState).toBe('running');
 
       // Multiple coordinated operations

@@ -17,12 +17,10 @@ describe('SpinScroll', () => {
         easing: 'linear',
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -43,12 +41,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -180deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -180deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -69,12 +65,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(0.5) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+            transform: 'scale(0.5) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -95,12 +89,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -121,12 +113,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -147,12 +137,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(0.7) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+            transform: 'scale(0.7) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -173,12 +161,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(0.4) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+            transform: 'scale(0.4) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -200,12 +186,10 @@ describe('SpinScroll', () => {
         fill: 'forwards',
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
           },
         ],
       },
@@ -226,12 +210,10 @@ describe('SpinScroll', () => {
       {
         keyframes: [
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -27deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -27deg))',
           },
           {
-            transform:
-              'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 27deg))',
+            transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 27deg))',
           },
         ],
       },

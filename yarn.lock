@@ -1370,7 +1370,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.4"
     "@vitest/coverage-v8": "npm:^4.0.14"
-    "@wix/motion": "npm:^1.0.0"
+    "@wix/motion": "npm:^2.0.0-rc.2"
     fastdom: "npm:^1.0.12"
     fizban: "npm:^0.7.2"
     jsdom: "npm:^24.0.0"
@@ -1402,17 +1402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wix/motion@npm:^1.0.0":
-  version: 1.658.0
-  resolution: "@wix/motion@npm:1.658.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-    fastdom: "npm:^1.0.12"
-  checksum: 10/988a17f1ca0f3a992004d09c9ce383bd89b56bd91ba1cb25793d12e22ab864a046a949f857caf0df180265bb7ce264d6cb6959888e07095b59ac31fbdbe5e06c
-  languageName: node
-  linkType: hard
-
-"@wix/motion@workspace:packages/motion":
+"@wix/motion@npm:^2.0.0-rc.2, @wix/motion@workspace:packages/motion":
   version: 0.0.0-use.local
   resolution: "@wix/motion@workspace:packages/motion"
   dependencies:

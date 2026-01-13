@@ -28,21 +28,21 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
       │    │ within  │  │ element     │
       │    │ element │  │             │
       │    └─────────┘  └─────────────┘
-      │             
-      ▼             
+      │
+      ▼
 ┌─────────────┐
-│ Is selector |       
-│ specified?  |       
+│ Is selector |
+│ specified?  |
 └────────┬────┘
-    ┌────┴───────────────┐        
-    │ YES                │ NO     
-    ▼                    ▼        
+    ┌────┴───────────────┐
+    │ YES                │ NO
+    ▼                    ▼
 ┌─────────────┐      ┌───────────────┐
 | Query       |      │ Use each item │
 | selector    |      │  as-is        │
 | within each |      └───────────────┘
 | item        |
-└─────────────┘                 
+└─────────────┘
 ```
 
 ## Priority Levels
@@ -52,11 +52,13 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
 When `listContainer` is specified, it takes precedence over all other selectors.
 
 **Behavior:**
+
 - Finds the container element using the CSS selector
 - Targets all direct children of that container
 - If `selector` is also specified, applies it on each child or within each child
 
 **Example:**
+
 ```typescript
 {
     key: 'gallery',
@@ -69,14 +71,19 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 
 ```html
 <interact-element data-interact-key="gallery">
-    <div class="gallery-grid">               <!-- listContainer targets this -->
-        <div class="gallery-item">           <!-- Each child is processed -->
-            <img src="1.jpg" />              <!-- selector finds this -->
-        </div>
-        <div class="gallery-item">           <!-- Each child is processed -->
-            <img src="2.jpg" />              <!-- selector finds this -->
-        </div>
+  <div class="gallery-grid">
+    <!-- listContainer targets this -->
+    <div class="gallery-item">
+      <!-- Each child is processed -->
+      <img src="1.jpg" />
+      <!-- selector finds this -->
     </div>
+    <div class="gallery-item">
+      <!-- Each child is processed -->
+      <img src="2.jpg" />
+      <!-- selector finds this -->
+    </div>
+  </div>
 </interact-element>
 ```
 
@@ -87,10 +94,12 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 When only `selector` is specified (no `listContainer`), it selects a single element within the `interact-element`.
 
 **Behavior:**
+
 - Queries for the first matching element within the custom element
 - Uses `querySelector()` internally
 
 **Example:**
+
 ```typescript
 {
     key: 'card',
@@ -102,13 +111,14 @@ When only `selector` is specified (no `listContainer`), it selects a single elem
 
 ```html
 <interact-element data-interact-key="card">
-    <div class="card">
-        <div class="card-header">Title</div>
-        <div class="card-image">           <!-- selector targets this -->
-            <img src="photo.jpg" />
-        </div>
-        <div class="card-footer">Footer</div>
+  <div class="card">
+    <div class="card-header">Title</div>
+    <div class="card-image">
+      <!-- selector targets this -->
+      <img src="photo.jpg" />
     </div>
+    <div class="card-footer">Footer</div>
+  </div>
 </interact-element>
 ```
 
@@ -119,9 +129,11 @@ When only `selector` is specified (no `listContainer`), it selects a single elem
 When neither `listContainer` nor `selector` is specified, the system uses the first child element.
 
 **Behavior:**
+
 - Uses `firstElementChild` of the `interact-element`
 
 **Example:**
+
 ```typescript
 {
     key: 'button',
@@ -133,7 +145,8 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 
 ```html
 <interact-element data-interact-key="button">
-    <button class="primary-btn">Click Me</button>    <!-- First child is used -->
+  <button class="primary-btn">Click Me</button>
+  <!-- First child is used -->
 </interact-element>
 ```
 
@@ -144,6 +157,7 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ### Scenario 1: Simple Element (No Selectors)
 
 **Configuration:**
+
 ```typescript
 {
     key: 'hero',
@@ -163,12 +177,13 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ```
 
 **HTML:**
+
 ```html
 <interact-element data-interact-key="hero">
-    <section class="hero-section">
-        <h1>Welcome</h1>
-        <p>Subtitle</p>
-    </section>
+  <section class="hero-section">
+    <h1>Welcome</h1>
+    <p>Subtitle</p>
+  </section>
 </interact-element>
 ```
 
@@ -177,6 +192,7 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ### Scenario 2: Using selector
 
 **Configuration:**
+
 ```typescript
 {
     key: 'card',
@@ -198,16 +214,19 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ```
 
 **HTML:**
+
 ```html
 <interact-element data-interact-key="card">
-    <div class="card">
-        <div class="card-image">
-            <img src="product.jpg" />      <!-- Effect applies here -->
-        </div>
-        <div class="card-content">         <!-- Trigger listens here -->
-            <h3>Product Name</h3>
-        </div>
+  <div class="card">
+    <div class="card-image">
+      <img src="product.jpg" />
+      <!-- Effect applies here -->
     </div>
+    <div class="card-content">
+      <!-- Trigger listens here -->
+      <h3>Product Name</h3>
+    </div>
+  </div>
 </interact-element>
 ```
 
@@ -216,6 +235,7 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ### Scenario 3: Using listContainer
 
 **Configuration:**
+
 ```typescript
 {
     key: 'products',
@@ -237,13 +257,17 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ```
 
 **HTML:**
+
 ```html
 <interact-element data-interact-key="products">
-    <div class="product-grid">
-        <div class="product-card">Product 1</div>   <!-- Effect applies -->
-        <div class="product-card">Product 2</div>   <!-- Effect applies -->
-        <div class="product-card">Product 3</div>   <!-- Effect applies -->
-    </div>
+  <div class="product-grid">
+    <div class="product-card">Product 1</div>
+    <!-- Effect applies -->
+    <div class="product-card">Product 2</div>
+    <!-- Effect applies -->
+    <div class="product-card">Product 3</div>
+    <!-- Effect applies -->
+  </div>
 </interact-element>
 ```
 
@@ -252,6 +276,7 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ### Scenario 4: listContainer + selector
 
 **Configuration:**
+
 ```typescript
 {
     key: 'gallery',
@@ -275,18 +300,23 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ```
 
 **HTML:**
+
 ```html
 <interact-element data-interact-key="gallery">
-    <div class="gallery-grid">
-        <div class="gallery-item">              <!-- Hover trigger -->
-            <img src="photo1.jpg" />            <!-- Zoom effect -->
-            <div class="overlay">View</div>
-        </div>
-        <div class="gallery-item">              <!-- Hover trigger -->
-            <img src="photo2.jpg" />            <!-- Zoom effect -->
-            <div class="overlay">View</div>
-        </div>
+  <div class="gallery-grid">
+    <div class="gallery-item">
+      <!-- Hover trigger -->
+      <img src="photo1.jpg" />
+      <!-- Zoom effect -->
+      <div class="overlay">View</div>
     </div>
+    <div class="gallery-item">
+      <!-- Hover trigger -->
+      <img src="photo2.jpg" />
+      <!-- Zoom effect -->
+      <div class="overlay">View</div>
+    </div>
+  </div>
 </interact-element>
 ```
 
@@ -327,6 +357,7 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
 ## Common Patterns
 
 ### Pattern 1: Self-Targeting
+
 Element triggers effect on itself.
 
 ```typescript
@@ -342,6 +373,7 @@ Element triggers effect on itself.
 ```
 
 ### Pattern 2: Cross-Element Targeting
+
 One element triggers effect on another.
 
 ```typescript
@@ -357,6 +389,7 @@ One element triggers effect on another.
 ```
 
 ### Pattern 3: Multiple Targets
+
 One trigger affects multiple elements.
 
 ```typescript
@@ -372,6 +405,7 @@ One trigger affects multiple elements.
 ```
 
 ### Pattern 4: Specific Within Generic
+
 Use selector to target specific elements.
 
 ```typescript
@@ -388,6 +422,7 @@ Use selector to target specific elements.
 ```
 
 ### Pattern 5: List with Specific Targets
+
 Combine listContainer with selector for complex lists.
 
 ```typescript
@@ -417,6 +452,7 @@ Combine listContainer with selector for complex lists.
 ### Problem: Effect Not Applying
 
 **Check 1: Verify Selector Matches**
+
 ```javascript
 const element = document.querySelector('[data-interact-key="my-key"]');
 const target = element.querySelector('.my-selector');
@@ -424,14 +460,15 @@ console.log('Target found:', !!target);
 ```
 
 **Check 2: Inspect Element Structure**
+
 ```javascript
 function debugSelection(key, selector) {
-    const element = Interact.getElement(key);
-    console.log({
-        element,
-        firstChild: element?.firstElementChild,
-        selectorMatch: element?.querySelector(selector)
-    });
+  const element = Interact.getElement(key);
+  console.log({
+    element,
+    firstChild: element?.firstElementChild,
+    selectorMatch: element?.querySelector(selector),
+  });
 }
 
 debugSelection('my-key', '.my-selector');
@@ -445,25 +482,27 @@ debugSelection('my-key', '.my-selector');
 
 ```typescript
 // ❌ Too generic
-selector: '.item'
+selector: '.item';
 
 // ✅ More specific
-selector: '.product-grid > .item'
+selector: '.product-grid > .item';
 ```
 
 ### Problem: listContainer Not Working
 
 **Check Container Exists:**
+
 ```javascript
 const element = document.querySelector('[data-interact-key="my-list"]');
 const container = element?.querySelector('.list-container');
 console.log({
-    containerExists: !!container,
-    childCount: container?.children.length
+  containerExists: !!container,
+  childCount: container?.children.length,
 });
 ```
 
 **Verify Configuration:**
+
 ```typescript
 // Both interaction and effect need listContainer
 {
@@ -481,24 +520,27 @@ console.log({
 ## Best Practices
 
 ### 1. Use Descriptive Selectors
+
 ```typescript
 // ✅ Good: Clear intent
-selector: '.product-card .primary-image'
+selector: '.product-card .primary-image';
 
 // ❌ Avoid: Ambiguous
-selector: '.image'
+selector: '.image';
 ```
 
 ### 2. Keep Selectors Specific but Flexible
+
 ```typescript
 // ✅ Good: Works with structure changes
-selector: '.card-image img'
+selector: '.card-image img';
 
 // ❌ Avoid: Too rigid
-selector: 'div > div.card > div.image > img:first-child'
+selector: 'div > div.card > div.image > img:first-child';
 ```
 
 ### 3. Use listContainer for Repeating Elements
+
 ```typescript
 // ✅ Good: Scales automatically
 {
@@ -519,6 +561,7 @@ selector: 'div > div.card > div.image > img:first-child'
 ```
 
 ### 4. Document Complex Selections
+
 ```typescript
 {
     key: 'gallery',
@@ -534,6 +577,7 @@ selector: 'div > div.card > div.image > img:first-child'
 ## Visual Reference
 
 ### Simple Selection (No Selectors)
+
 ```
 <interact-element>
     <div> ← Selected (first child)
@@ -543,6 +587,7 @@ selector: 'div > div.card > div.image > img:first-child'
 ```
 
 ### With Selector
+
 ```
 <interact-element>
     <div>
@@ -553,6 +598,7 @@ selector: 'div > div.card > div.image > img:first-child'
 ```
 
 ### With listContainer
+
 ```
 <interact-element>
     <div class="container">  ← Container found
@@ -564,6 +610,7 @@ selector: 'div > div.card > div.image > img:first-child'
 ```
 
 ### With listContainer + selector
+
 ```
 <interact-element>
     <div class="container">  ← Container found
@@ -580,21 +627,25 @@ selector: 'div > div.card > div.image > img:first-child'
 ## Quick Decision Guide
 
 **Use First Child when:**
+
 - Single element per interaction
 - Simple structure
 - Element is direct child
 
 **Use selector when:**
+
 - Need specific element within structure
 - Multiple potential targets
 - Element is nested
 
 **Use listContainer when:**
+
 - Repeating elements (lists, grids)
 - Dynamic content (items added/removed)
 - Same interaction for multiple items
 
 **Use listContainer + selector when:**
+
 - Repeating complex structures
 - Need specific element in each item
 - Need to filter items

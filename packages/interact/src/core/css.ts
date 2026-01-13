@@ -10,7 +10,7 @@ export function generate(_config: InteractConfig): string {
     scale: none;
     rotate: none;
   }
-}`
+}`,
   ];
 
   return css.join('\n');

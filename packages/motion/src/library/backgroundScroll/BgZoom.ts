@@ -1,9 +1,4 @@
-import type {
-  BgZoom,
-  RangeOffset,
-  ScrubAnimationOptions,
-  DomApi,
-} from '../../types';
+import type { BgZoom, RangeOffset, ScrubAnimationOptions, DomApi } from '../../types';
 import { roundNumber } from '../../utils';
 import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
@@ -78,13 +73,9 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       },
       get keyframes() {
         const toY = isIn
-          ? `calc(-0.2 * var(--motion-comp-height, ${
-              measures.compHeight
-            }px) + 0.5 * ${
+          ? `calc(-0.2 * var(--motion-comp-height, ${measures.compHeight}px) + 0.5 * ${
               zoom / PERSPECTIVE
-            } * max(0px, 100lvh - var(--motion-comp-height, ${
-              measures.compHeight
-            }px)))`
+            } * max(0px, 100lvh - var(--motion-comp-height, ${measures.compHeight}px)))`
           : '0px';
         return [
           {

@@ -1,9 +1,4 @@
-import type {
-  BgPullBack,
-  DomApi,
-  RangeOffset,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { BgPullBack, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
 import { measureCompHeight } from './utils';
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
@@ -33,9 +28,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       },
       keyframes: [
         {
-          transform: `perspective(100px) translate3d(0px, -${
-            (scale / 3) | 0
-          }%, ${scale}px)`,
+          transform: `perspective(100px) translate3d(0px, -${(scale / 3) | 0}%, ${scale}px)`,
         },
         {
           transform: 'perspective(100px) translate3d(0px, 0px, 0px)',
