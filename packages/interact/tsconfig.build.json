@@ -11,5 +11,10 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../motion/tsconfig.build.json"
+    }
+  ]
 }

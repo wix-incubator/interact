@@ -12,3 +12,4 @@ test/e2e/screenshots
 .env*.local
 storybook-static
 .vscode
+*.d.ts*
