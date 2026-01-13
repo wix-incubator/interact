@@ -1,11 +1,6 @@
 import type { AnimationGroup } from '@wix/motion';
 import { getAnimation } from '@wix/motion';
-import type {
-  AnimationEndParams,
-  TimeEffect,
-  HandlerObjectMap,
-  InteractOptions,
-} from '../types';
+import type { AnimationEndParams, TimeEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,

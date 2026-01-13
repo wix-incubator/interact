@@ -1,8 +1,4 @@
-import type {
-  SpinIn,
-  AnimationExtraOptions,
-  TimeAnimationOptions,
-} from '../../types';
+import type { SpinIn, AnimationExtraOptions, TimeAnimationOptions } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -49,10 +45,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'cubicIn',
       duration: options.duration! * scale,
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

@@ -20,9 +20,7 @@ function getElementCSSAnimation(
   target: HTMLElement | string | null,
   animationOptions: AnimationOptions,
 ): AnimationGroup | null {
-  const namedEffect = getNamedEffect(
-    animationOptions,
-  ) as AnimationEffectAPI<any> | null;
+  const namedEffect = getNamedEffect(animationOptions) as AnimationEffectAPI<any> | null;
 
   if (!namedEffect) {
     return null;
@@ -41,23 +39,18 @@ function getElementCSSAnimation(
   const element = typeof target === 'string' ? getElement(target) : target;
   const animations = element?.getAnimations();
   const animationNames =
-    animations?.map((anim) => (anim as CSSAnimation).animationName) ||
-    ([] as string[]);
+    animations?.map((anim) => (anim as CSSAnimation).animationName) || ([] as string[]);
   const filteredAnimations: CSSAnimation[] = [];
 
   effectNames.forEach((name) => {
     if (animationNames.includes(name)) {
       filteredAnimations.push(
-        animations?.find(
-          (anim) => (anim as CSSAnimation).animationName === name,
-        ) as CSSAnimation,
+        animations?.find((anim) => (anim as CSSAnimation).animationName === name) as CSSAnimation,
       );
     }
   });
 
-  return filteredAnimations?.length
-    ? new AnimationGroup(filteredAnimations)
-    : null;
+  return filteredAnimations?.length ? new AnimationGroup(filteredAnimations) : null;
 }
 
 function getElementAnimation(
@@ -66,13 +59,11 @@ function getElementAnimation(
 ): AnimationGroup | null {
   const element = typeof target === 'string' ? getElement(target) : target;
   // somehow get the right animations
-  const animations = element
-    ?.getAnimations()
-    .filter((anim: Animation | CSSAnimation) => {
-      const id = anim.id || (anim as CSSAnimation).animationName;
-      // if no id/name just return all animations
-      return id ? id.startsWith(effectId) : true;
-    });
+  const animations = element?.getAnimations().filter((anim: Animation | CSSAnimation) => {
+    const id = anim.id || (anim as CSSAnimation).animationName;
+    // if no id/name just return all animations
+    return id ? id.startsWith(effectId) : true;
+  });
 
   return animations?.length ? new AnimationGroup(animations) : null;
 }
@@ -114,12 +105,10 @@ function getScrubScene(
           return (animation as AnimationGroup).getProgress();
         },
         effect(__: any, p: number) {
-          const { activeDuration } =
-            partialAnimation.effect!.getComputedTiming();
+          const { activeDuration } = partialAnimation.effect!.getComputedTiming();
           const { delay } = partialAnimation.effect!.getTiming();
 
-          partialAnimation.currentTime =
-            ((delay || 0) + ((activeDuration as number) || 0)) * p;
+          partialAnimation.currentTime = ((delay || 0) + ((activeDuration as number) || 0)) * p;
         },
         disabled,
         destroy() {
@@ -177,9 +166,7 @@ function getScrubScene(
   return {
     ...typeSpecificOptions,
     getProgress() {
-      return (
-        animation as AnimationGroup | CustomMouseAnimationInstance
-      ).getProgress();
+      return (animation as AnimationGroup | CustomMouseAnimationInstance).getProgress();
     },
     effect(
       __: any,

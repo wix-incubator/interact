@@ -5,7 +5,7 @@ A powerful, declarative interaction library for creating engaging web animations
 ## Features
 
 - 🎯 **Declarative Configuration** - Define complex interactions through simple JSON configuration
-- 🎨 **Rich Animation Support** - Integration with `@wix/motion` for high-performance animations  
+- 🎨 **Rich Animation Support** - Integration with `@wix/motion` for high-performance animations
 - 🖱️ **Multiple Trigger Types** - Support for hover, click, scroll, viewport, and custom triggers
 - 📱 **Responsive Conditions** - Media query and container-based conditional interactions
 - 🔧 **Custom Elements** - Web Components API for easy framework integration
@@ -23,6 +23,7 @@ npm install @wix/interact
 ### Using Custom Elements
 
 #### 1. Basic Setup
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 
@@ -35,19 +36,19 @@ const config = {
       effects: [
         {
           effectId: 'fade-in',
-        }
-      ]
-    }
+        },
+      ],
+    },
   ],
   effects: {
     'fade-in': {
       duration: 1000,
       keyframeEffect: {
         name: 'fade',
-        keyframes: {opacity: [0, 1]}
-      }
-    }
-  }
+        keyframes: { opacity: [0, 1] },
+      },
+    },
+  },
 };
 
 // Initialize the interact instance
@@ -66,6 +67,7 @@ const interact = Interact.create(config);
 ### Using React
 
 #### 1. Basic Setup
+
 ```typescript
 import { Interact } from '@wix/interact/react';
 
@@ -78,19 +80,19 @@ const config = {
       effects: [
         {
           effectId: 'fade-in',
-        }
-      ]
-    }
+        },
+      ],
+    },
   ],
   effects: {
     'fade-in': {
       duration: 1000,
       keyframeEffect: {
         name: 'fade',
-        keyframes: {opacity: [0, 1]}
-      }
-    }
-  }
+        keyframes: { opacity: [0, 1] },
+      },
+    },
+  },
 };
 
 // Initialize the interact instance
@@ -114,6 +116,7 @@ function MyComponent() {
 ### Vanilla usage
 
 #### 1. Basic Setup
+
 ```typescript
 import { Interact, add } from '@wix/interact';
 
@@ -126,19 +129,19 @@ const config = {
       effects: [
         {
           effectId: 'fade-in',
-        }
-      ]
-    }
+        },
+      ],
+    },
   ],
   effects: {
     'fade-in': {
       duration: 1000,
       keyframeEffect: {
         name: 'fade',
-        keyframes: {opacity: [0, 1]}
-      }
-    }
-  }
+        keyframes: { opacity: [0, 1] },
+      },
+    },
+  },
 };
 
 // add element
@@ -151,15 +154,15 @@ const interact = Interact.create(config);
 #### 2. HTML Setup
 
 ```html
-<div data-interact-key="my-element" class="animated-content">
-  Hello, animated world!
-</div>
+<div data-interact-key="my-element" class="animated-content">Hello, animated world!</div>
 ```
 
 ## Core Concepts
 
 ### Triggers
+
 Define when interactions should occur:
+
 - `viewEnter` - When element enters viewport
 - `click` - On element click
 - `hover` - On element hover
@@ -168,7 +171,9 @@ Define when interactions should occur:
 - `animationEnd` - When another animation completes
 
 ### Effects
+
 Define what should happen:
+
 - **Time-based animations** - Duration-based effects with easing
 - **Scroll-driven animations** - Progress-based effects tied to scroll
 - **Pointer-driven animations** - Progress-based effects linked to pointer position
@@ -176,6 +181,7 @@ Define what should happen:
 - **Custom effects** - Integration with `@wix/motion`
 
 ### Configuration Structure
+
 ```typescript
 {
   interactions: [    // Define trigger → effect relationships
@@ -208,12 +214,14 @@ Define what should happen:
 ### Interact Class
 
 #### Static Methods
+
 ```typescript
 // Create a new instance with configuration
 Interact.create(config: InteractConfig): Interact
 ```
 
 ### Standalone Functions
+
 ```typescript
 // Add interactions to an element
 add(element: IInteractElement, key: string): boolean
@@ -225,6 +233,7 @@ remove(key: string): void
 ## Examples
 
 ### Entrance Animation
+
 ```typescript
 {
   interactions: [{
@@ -249,6 +258,7 @@ remove(key: string): void
 ```
 
 ### Click Interaction
+
 ```typescript
 {
   interactions: [{
@@ -268,6 +278,7 @@ remove(key: string): void
 ```
 
 ### Scroll-driven Animation
+
 ```typescript
 {
   interactions: [{
@@ -294,6 +305,7 @@ remove(key: string): void
 ```
 
 ### Responsive Interactions
+
 ```typescript
 {
   interactions: [{

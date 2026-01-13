@@ -49,7 +49,7 @@ export function getInteractElement() {
 
       this.controller.connect(key);
     }
-  
+
     disconnect(options?: { removeFromCache?: boolean }) {
       this.controller.disconnect(options);
     }

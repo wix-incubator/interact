@@ -21,8 +21,7 @@ describe('TurnScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
           },
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -47,8 +46,7 @@ describe('TurnScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
           },
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -73,8 +71,7 @@ describe('TurnScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 45deg))',
           },
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -99,8 +96,7 @@ describe('TurnScroll', () => {
               'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
           },
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -125,8 +121,7 @@ describe('TurnScroll', () => {
               'translateX(calc(100vw - var(--motion-left, 0px))) scale(0.5) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
           },
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
         ],
       },
@@ -148,8 +143,7 @@ describe('TurnScroll', () => {
         fill: 'forwards',
         keyframes: [
           {
-            transform:
-              'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
           },
           {
             transform:

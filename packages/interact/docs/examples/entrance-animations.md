@@ -22,23 +22,24 @@ The most basic entrance - element fades from invisible to visible.
 import { Interact } from '@wix/interact';
 
 const config = {
-    interactions: [{
-        key: 'content',
-        trigger: 'viewEnter',
-        params: { type: 'once', threshold: 0.2 },
-        effects: [{
-            key: 'content',
-            keyframeEffect: {
-                name: 'fade-in',
-                keyframes: [
-                    { opacity: '0' },
-                    { opacity: '1' }
-                ]
-            },
-            duration: 800,
-            easing: 'ease-out'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'content',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          key: 'content',
+          keyframeEffect: {
+            name: 'fade-in',
+            keyframes: [{ opacity: '0' }, { opacity: '1' }],
+          },
+          duration: 800,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
@@ -46,10 +47,10 @@ Interact.create(config);
 
 ```html
 <interact-element data-interact-key="content">
-    <section class="hero">
-        <h1>Welcome to Our Site</h1>
-        <p>This content fades in smoothly</p>
-    </section>
+  <section class="hero">
+    <h1>Welcome to Our Site</h1>
+    <p>This content fades in smoothly</p>
+  </section>
 </interact-element>
 ```
 
@@ -340,13 +341,13 @@ Element rotates in 3D space.
         keyframeEffect: {
             name: 'rotate-3d',
             keyframes: [
-                { 
-                    opacity: '0', 
-                    transform: 'perspective(600px) rotateX(-90deg) translateY(50px)' 
+                {
+                    opacity: '0',
+                    transform: 'perspective(600px) rotateX(-90deg) translateY(50px)'
                 },
-                { 
-                    opacity: '1', 
-                    transform: 'perspective(600px) rotateX(0deg) translateY(0)' 
+                {
+                    opacity: '1',
+                    transform: 'perspective(600px) rotateX(0deg) translateY(0)'
                 }
             ]
         },
@@ -372,13 +373,13 @@ Combine multiple transformations for rich effects.
         keyframeEffect: {
             name: 'fade-slide-scale',
             keyframes: [
-                { 
-                    opacity: '0', 
-                    transform: 'translateY(40px) scale(0.9)' 
+                {
+                    opacity: '0',
+                    transform: 'translateY(40px) scale(0.9)'
                 },
-                { 
-                    opacity: '1', 
-                    transform: 'translateY(0) scale(1)' 
+                {
+                    opacity: '1',
+                    transform: 'translateY(0) scale(1)'
                 }
             ]
         },
@@ -402,13 +403,13 @@ Element transitions from blurred to sharp.
         keyframeEffect: {
             name: 'blur-reveal',
             keyframes: [
-                { 
-                    opacity: '0', 
+                {
+                    opacity: '0',
                     filter: 'blur(20px)',
                     transform: 'translateY(20px) scale(1.05)'
                 },
-                { 
-                    opacity: '1', 
+                {
+                    opacity: '1',
                     filter: 'blur(0)',
                     transform: 'translateY(0) scale(1)'
                 }
@@ -434,13 +435,13 @@ Element slides and rotates simultaneously.
         keyframeEffect: {
             name: 'slide-spin',
             keyframes: [
-                { 
-                    opacity: '0', 
-                    transform: 'translateX(-50px) rotate(-15deg)' 
+                {
+                    opacity: '0',
+                    transform: 'translateX(-50px) rotate(-15deg)'
                 },
-                { 
-                    opacity: '1', 
-                    transform: 'translateX(0) rotate(0deg)' 
+                {
+                    opacity: '1',
+                    transform: 'translateX(0) rotate(0deg)'
                 }
             ]
         },
@@ -458,79 +459,85 @@ Animate multiple elements in sequence.
 
 ```typescript
 const config = {
-    interactions: [
-        // First element
+  interactions: [
+    // First element
+    {
+      key: 'hero-title',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.3 },
+      effects: [
         {
-            key: 'hero-title',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.3 },
-            effects: [{
-                key: 'hero-title',
-                keyframeEffect: {
-                    name: 'title-enter',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(30px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 800,
-                delay: 0,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                effectId: 'title-animation'
-            }]
+          key: 'hero-title',
+          keyframeEffect: {
+            name: 'title-enter',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(30px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          delay: 0,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          effectId: 'title-animation',
         },
-        // Second element - triggered after first completes
+      ],
+    },
+    // Second element - triggered after first completes
+    {
+      key: 'hero-title',
+      trigger: 'animationEnd',
+      params: { effectId: 'title-animation' },
+      effects: [
         {
-            key: 'hero-title',
-            trigger: 'animationEnd',
-            params: { effectId: 'title-animation' },
-            effects: [{
-                key: 'hero-subtitle',
-                keyframeEffect: {
-                    name: 'subtitle-enter',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(20px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 600,
-                easing: 'ease-out',
-                effectId: 'subtitle-animation'
-            }]
+          key: 'hero-subtitle',
+          keyframeEffect: {
+            name: 'subtitle-enter',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(20px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 600,
+          easing: 'ease-out',
+          effectId: 'subtitle-animation',
         },
-        // Third element
+      ],
+    },
+    // Third element
+    {
+      key: 'hero-subtitle',
+      trigger: 'animationEnd',
+      params: { effectId: 'subtitle-animation' },
+      effects: [
         {
-            key: 'hero-subtitle',
-            trigger: 'animationEnd',
-            params: { effectId: 'subtitle-animation' },
-            effects: [{
-                key: 'hero-button',
-                keyframeEffect: {
-                    name: 'button-enter',
-                    keyframes: [
-                        { opacity: '0', transform: 'scale(0.8)' },
-                        { opacity: '1', transform: 'scale(1)' }
-                    ]
-                },
-                duration: 500,
-                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-            }]
-        }
-    ]
+          key: 'hero-button',
+          keyframeEffect: {
+            name: 'button-enter',
+            keyframes: [
+              { opacity: '0', transform: 'scale(0.8)' },
+              { opacity: '1', transform: 'scale(1)' },
+            ],
+          },
+          duration: 500,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```html
 <interact-element data-interact-key="hero-title">
-    <h1>Welcome</h1>
+  <h1>Welcome</h1>
 </interact-element>
 
 <interact-element data-interact-key="hero-subtitle">
-    <p>Your journey starts here</p>
+  <p>Your journey starts here</p>
 </interact-element>
 
 <interact-element data-interact-key="hero-button">
-    <button>Get Started</button>
+  <button>Get Started</button>
 </interact-element>
 ```
 
@@ -540,62 +547,68 @@ Multiple elements animate with staggered delays.
 
 ```typescript
 const config = {
-    interactions: [
+  interactions: [
+    {
+      key: 'feature-1',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'feature-1',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'feature-1',
-                keyframeEffect: {
-                    name: 'feature-fade',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(30px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 700,
-                delay: 0,
-                easing: 'ease-out'
-            }]
+          key: 'feature-1',
+          keyframeEffect: {
+            name: 'feature-fade',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(30px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 700,
+          delay: 0,
+          easing: 'ease-out',
         },
+      ],
+    },
+    {
+      key: 'feature-2',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'feature-2',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'feature-2',
-                keyframeEffect: {
-                    name: 'feature-fade',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(30px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 700,
-                delay: 150,  // Delayed start
-                easing: 'ease-out'
-            }]
+          key: 'feature-2',
+          keyframeEffect: {
+            name: 'feature-fade',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(30px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 700,
+          delay: 150, // Delayed start
+          easing: 'ease-out',
         },
+      ],
+    },
+    {
+      key: 'feature-3',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'feature-3',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'feature-3',
-                keyframeEffect: {
-                    name: 'feature-fade',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(30px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 700,
-                delay: 300,  // More delayed
-                easing: 'ease-out'
-            }]
-        }
-    ]
+          key: 'feature-3',
+          keyframeEffect: {
+            name: 'feature-fade',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(30px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 700,
+          delay: 300, // More delayed
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
@@ -607,102 +620,110 @@ Complete hero with multiple animated elements.
 
 ```typescript
 const heroConfig = {
-    interactions: [
-        // Background image
+  interactions: [
+    // Background image
+    {
+      key: 'hero-bg',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.1 },
+      effects: [
         {
-            key: 'hero-bg',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.1 },
-            effects: [{
-                key: 'hero-bg',
-                keyframeEffect: {
-                    name: 'bg-reveal',
-                    keyframes: [
-                        { opacity: '0', transform: 'scale(1.1)' },
-                        { opacity: '1', transform: 'scale(1)' }
-                    ]
-                },
-                duration: 1200,
-                easing: 'ease-out'
-            }]
+          key: 'hero-bg',
+          keyframeEffect: {
+            name: 'bg-reveal',
+            keyframes: [
+              { opacity: '0', transform: 'scale(1.1)' },
+              { opacity: '1', transform: 'scale(1)' },
+            ],
+          },
+          duration: 1200,
+          easing: 'ease-out',
         },
-        // Title
+      ],
+    },
+    // Title
+    {
+      key: 'hero-content',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'hero-content',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'hero-title',
-                selector: '.hero-title',
-                keyframeEffect: {
-                    name: 'title-reveal',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(40px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 900,
-                delay: 300,
-                easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
-            }]
+          key: 'hero-title',
+          selector: '.hero-title',
+          keyframeEffect: {
+            name: 'title-reveal',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(40px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 900,
+          delay: 300,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
         },
-        // Subtitle
+      ],
+    },
+    // Subtitle
+    {
+      key: 'hero-content',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'hero-content',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'hero-content',
-                selector: '.hero-subtitle',
-                keyframeEffect: {
-                    name: 'subtitle-reveal',
-                    keyframes: [
-                        { opacity: '0', transform: 'translateY(30px)' },
-                        { opacity: '1', transform: 'translateY(0)' }
-                    ]
-                },
-                duration: 800,
-                delay: 600,
-                easing: 'ease-out'
-            }]
+          key: 'hero-content',
+          selector: '.hero-subtitle',
+          keyframeEffect: {
+            name: 'subtitle-reveal',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(30px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          delay: 600,
+          easing: 'ease-out',
         },
-        // CTA Button
+      ],
+    },
+    // CTA Button
+    {
+      key: 'hero-content',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'hero-content',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [{
-                key: 'hero-content',
-                selector: '.hero-cta',
-                keyframeEffect: {
-                    name: 'cta-reveal',
-                    keyframes: [
-                        { opacity: '0', transform: 'scale(0.8)' },
-                        { opacity: '1', transform: 'scale(1)' }
-                    ]
-                },
-                duration: 600,
-                delay: 900,
-                easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-            }]
-        }
-    ]
+          key: 'hero-content',
+          selector: '.hero-cta',
+          keyframeEffect: {
+            name: 'cta-reveal',
+            keyframes: [
+              { opacity: '0', transform: 'scale(0.8)' },
+              { opacity: '1', transform: 'scale(1)' },
+            ],
+          },
+          duration: 600,
+          delay: 900,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```html
 <interact-element data-interact-key="hero-bg">
-    <div class="hero-background">
-        <img src="hero-bg.jpg" alt="Hero Background" />
-    </div>
+  <div class="hero-background">
+    <img src="hero-bg.jpg" alt="Hero Background" />
+  </div>
 </interact-element>
 
 <interact-element data-interact-key="hero-content">
-    <div class="hero-content">
-        <h1 class="hero-title">Transform Your Business</h1>
-        <p class="hero-subtitle">Innovative solutions for modern challenges</p>
-        <button class="hero-cta">Get Started Today</button>
-    </div>
+  <div class="hero-content">
+    <h1 class="hero-title">Transform Your Business</h1>
+    <p class="hero-subtitle">Innovative solutions for modern challenges</p>
+    <button class="hero-cta">Get Started Today</button>
+  </div>
 </interact-element>
 ```
 
@@ -712,57 +733,67 @@ Grid of feature cards with staggered entrance.
 
 ```typescript
 const featureConfig = {
-    interactions: [{
-        key: 'features',
-        listContainer: '.feature-grid',
-        trigger: 'viewEnter',
-        params: { type: 'once', threshold: 0.15 },
-        effects: [{
-            key: 'features',
-            listContainer: '.feature-grid',
-            keyframeEffect: {
-                name: 'card-entrance',
-                keyframes: [
-                    { 
-                        opacity: '0', 
-                        transform: 'translateY(50px) scale(0.9)' 
-                    },
-                    { 
-                        opacity: '1', 
-                        transform: 'translateY(0) scale(1)' 
-                    }
-                ]
-            },
-            duration: 800,
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'features',
+      listContainer: '.feature-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.15 },
+      effects: [
+        {
+          key: 'features',
+          listContainer: '.feature-grid',
+          keyframeEffect: {
+            name: 'card-entrance',
+            keyframes: [
+              {
+                opacity: '0',
+                transform: 'translateY(50px) scale(0.9)',
+              },
+              {
+                opacity: '1',
+                transform: 'translateY(0) scale(1)',
+              },
+            ],
+          },
+          duration: 800,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```html
 <interact-element data-interact-key="features">
-    <div class="feature-grid">
-        <div class="feature-card">
-            <h3>Fast Performance</h3>
-            <p>Lightning-fast load times</p>
-        </div>
-        <div class="feature-card">
-            <h3>Secure</h3>
-            <p>Enterprise-grade security</p>
-        </div>
-        <div class="feature-card">
-            <h3>Scalable</h3>
-            <p>Grows with your business</p>
-        </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>Fast Performance</h3>
+      <p>Lightning-fast load times</p>
     </div>
+    <div class="feature-card">
+      <h3>Secure</h3>
+      <p>Enterprise-grade security</p>
+    </div>
+    <div class="feature-card">
+      <h3>Scalable</h3>
+      <p>Grows with your business</p>
+    </div>
+  </div>
 </interact-element>
 ```
 
 ```css
-.feature-grid > *:nth-child(1) { animation-delay: 0ms; }
-.feature-grid > *:nth-child(2) { animation-delay: 150ms; }
-.feature-grid > *:nth-child(3) { animation-delay: 300ms; }
+.feature-grid > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.feature-grid > *:nth-child(2) {
+  animation-delay: 150ms;
+}
+.feature-grid > *:nth-child(3) {
+  animation-delay: 300ms;
+}
 ```
 
 ### Testimonials Section
@@ -771,40 +802,50 @@ Testimonials that fade and slide in sequence.
 
 ```typescript
 const testimonialConfig = {
-    interactions: [{
-        key: 'testimonials',
-        listContainer: '.testimonial-list',
-        trigger: 'viewEnter',
-        params: { type: 'once', threshold: 0.2 },
-        effects: [{
-            key: 'testimonials',
-            listContainer: '.testimonial-list',
-            keyframeEffect: {
-                name: 'testimonial-reveal',
-                keyframes: [
-                    { 
-                        opacity: '0', 
-                        transform: 'translateX(-30px)',
-                        filter: 'blur(10px)'
-                    },
-                    { 
-                        opacity: '1', 
-                        transform: 'translateX(0)',
-                        filter: 'blur(0)'
-                    }
-                ]
-            },
-            duration: 900,
-            easing: 'ease-out'
-        }]
-    }]
+  interactions: [
+    {
+      key: 'testimonials',
+      listContainer: '.testimonial-list',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          key: 'testimonials',
+          listContainer: '.testimonial-list',
+          keyframeEffect: {
+            name: 'testimonial-reveal',
+            keyframes: [
+              {
+                opacity: '0',
+                transform: 'translateX(-30px)',
+                filter: 'blur(10px)',
+              },
+              {
+                opacity: '1',
+                transform: 'translateX(0)',
+                filter: 'blur(0)',
+              },
+            ],
+          },
+          duration: 900,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
 };
 ```
 
 ```css
-.testimonial-list > *:nth-child(1) { animation-delay: 0ms; }
-.testimonial-list > *:nth-child(2) { animation-delay: 200ms; }
-.testimonial-list > *:nth-child(3) { animation-delay: 400ms; }
+.testimonial-list > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.testimonial-list > *:nth-child(2) {
+  animation-delay: 200ms;
+}
+.testimonial-list > *:nth-child(3) {
+  animation-delay: 400ms;
+}
 ```
 
 ## Preventing Flash of Unstyled Content (FOUC)
@@ -820,22 +861,26 @@ For the best experience, generate the CSS on the server and include it in the in
 import { generate } from '@wix/interact';
 
 const config = {
-    interactions: [{
-        key: 'hero',
-        trigger: 'viewEnter',
-        params: { type: 'once', threshold: 0.2 },
-        effects: [{
-            keyframeEffect: {
-                name: 'fade-in',
-                keyframes: [
-                    { opacity: '0', transform: 'translateY(40px)' },
-                    { opacity: '1', transform: 'translateY(0)' }
-                ]
-            },
-            duration: 800
-        }]
-    }],
-    effects: {}
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'fade-in',
+            keyframes: [
+              { opacity: '0', transform: 'translateY(40px)' },
+              { opacity: '1', transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 // Generate CSS at build time or on server
@@ -867,10 +912,10 @@ Add `data-interact-initial="true"` to the `<interact-element>` that has a child 
 
 ```html
 <interact-element data-interact-key="hero" data-interact-initial="true">
-    <section class="hero">
-        <h1>Welcome to Our Site</h1>
-        <p>This content fades in smoothly without flash</p>
-    </section>
+  <section class="hero">
+    <h1>Welcome to Our Site</h1>
+    <p>This content fades in smoothly without flash</p>
+  </section>
 </interact-element>
 ```
 
@@ -894,18 +939,20 @@ See the [generate() function documentation](../api/functions.md#generate) for mo
 ### Easing Functions
 
 - **Ease-out**: Best for entrances (starts fast, ends slow)
+
   ```typescript
-  easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+  easing: 'cubic-bezier(0.16, 1, 0.3, 1)';
   ```
 
 - **Elastic**: For playful, bouncy effects
+
   ```typescript
-  easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+  easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)';
   ```
 
 - **Linear**: For continuous motion (avoid for entrances)
   ```typescript
-  easing: 'linear'
+  easing: 'linear';
   ```
 
 ### Threshold Values
@@ -918,12 +965,14 @@ See the [generate() function documentation](../api/functions.md#generate) for mo
 ### Performance Tips
 
 ✅ **Do:**
+
 - Use `transform` and `opacity`
 - Keep durations under 1000ms
 - Use `threshold` to control when animations fire
 - Test on mobile devices
 
 ❌ **Avoid:**
+
 - Animating `width`, `height`, `top`, `left`
 - Too many simultaneous animations
 

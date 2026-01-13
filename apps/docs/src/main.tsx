@@ -8,7 +8,4 @@ if (!rootElement) {
   throw new Error('Docs root element not found');
 }
 
-ReactDOM.createRoot(rootElement).render(
-  <App />
-);
-
+ReactDOM.createRoot(rootElement).render(<App />);

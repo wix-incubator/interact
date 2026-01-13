@@ -166,11 +166,7 @@ describe('Flip', () => {
       const expectedResult: Partial<AnimationData>[] = [
         {
           name: 'motion-flip-1',
-          keyframes: [
-            { easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' },
-            {},
-            {},
-          ],
+          keyframes: [{ easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' }, {}, {}],
         },
       ];
 
@@ -363,11 +359,7 @@ describe('Flip', () => {
             '--motion-rotate-x': '0',
             '--motion-rotate-y': '1',
           },
-          keyframes: [
-            { easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' },
-            {},
-            {},
-          ],
+          keyframes: [{ easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' }, {}, {}],
         },
       ];
 

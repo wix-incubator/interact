@@ -1,8 +1,4 @@
-import {
-  AnimationExtraOptions,
-  DomApi,
-  TimeAnimationOptions,
-} from '../../types';
+import { AnimationExtraOptions, DomApi, TimeAnimationOptions } from '../../types';
 import type { GlitchIn } from '../../types';
 import { web as glideInWeb, style as glideInStyle } from './GlideIn';
 
@@ -22,10 +18,7 @@ function getFixedDirection(options: TimeAnimationOptions) {
   return duplicate;
 }
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   return glideInWeb(getFixedDirection(options), dom);
 }
 

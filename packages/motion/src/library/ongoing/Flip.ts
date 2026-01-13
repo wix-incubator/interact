@@ -1,9 +1,4 @@
-import type {
-  Flip,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Flip, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
 
 const POWER_EASING_MAP = {
@@ -17,17 +12,11 @@ const DIRECTION_MAP = {
   horizontal: { x: '0', y: '1' },
 };
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { direction = 'horizontal', power } = options.namedEffect as Flip;
 
   const duration = options.duration || 1;
@@ -36,8 +25,7 @@ export function style(
   const [name] = getNames(options);
 
   const rotationAxes = DIRECTION_MAP[direction];
-  const easing =
-    (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
+  const easing = (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
 
   const custom = {
     '--motion-rotate-x': rotationAxes.x,
@@ -83,9 +71,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-flip-${timingFactor}`];

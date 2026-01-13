@@ -7,12 +7,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Animations applied to list containers that are sticky-positioned within their wrapper, using pre-built named effects for smooth scroll-driven transformations (e.g., horizontal sliding galleries, parallax backgrounds, container reveals)
 
 **When to Apply**:
+
 - For sticky container horizontal sliding during scroll
 - When creating parallax container effects
 - For container-level background transformations
 - When using pre-built motion effects for container animations
 
 **Pattern**:
+
 ```typescript
 {
     key: '[CONTAINER_SELECTOR]',
@@ -33,6 +35,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[CONTAINER_KEY]`: Unique identifier for sticky list container
 - `[CONTAINER_NAMED_EFFECT]`: Container-level scroll effects ('BgParallax', 'PanScroll', 'MoveScroll', 'ParallaxScroll') or background effects ('BgPan', 'BgZoom', 'BgFade', 'BgReveal')
 - `[START_PERCENTAGE]`: Start point in contain range (typically 0)
@@ -40,6 +43,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier
 
 **Example - Horizontal Sliding Gallery Container**:
+
 ```typescript
 {
     key: 'gallery-container',
@@ -60,6 +64,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Parallax Container Background**:
+
 ```typescript
 {
     key: 'sticky-list-wrapper',
@@ -86,12 +91,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Animations on individual list items that are sticky-positioned within the container, using named effects for entrance/exit animations as items enter sticky positioning (e.g., progressive item reveals, item transformation sequences)
 
 **When to Apply**:
+
 - For item entrance/exit animations during sticky phases
 - When creating progressive item reveals
 - For individual item transformations
 - When using pre-built item-level effects
 
 **Pattern**:
+
 ```typescript
 {
     key: '[ITEM_KEY]',
@@ -112,6 +119,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[ITEM_KEY]`: Unique identifier for individual list items
 - `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion scroll animations:
   - **Reveal/Fade**: 'FadeScroll', 'BlurScroll', 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
@@ -125,6 +133,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 - `[EASING_FUNCTION]`: Timing function
 
 **Example - Item Entrance Reveal**:
+
 ```typescript
 {
     key: 'list-item',
@@ -146,6 +155,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Item Scale During Sticky**:
+
 ```typescript
 {
     key: 'sticky-list-item',
@@ -172,12 +182,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Animations on content within sticky list items, using named effects with each individual item being the viewProgress trigger (e.g., text reveals within cards, image animations within items, progressive content disclosure)
 
 **When to Apply**:
+
 - For content animations within sticky items
 - When creating staggered content reveals
 - For text/image animations inside list items
 - When coordinating multiple content elements
 
 **Pattern**:
+
 ```typescript
 {
     key: '[ITEM_CONTAINER_SELECTOR]',
@@ -198,6 +210,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[ITEM_CONTAINER_SELECTOR]`: CSS selector for the containing list item
 - `[CONTENT_SELECTOR]`: CSS selector for content within the item
 - `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion:
@@ -209,6 +222,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 - Other variables same as Rule 2
 
 **Example - Staggered Text Content Reveal**:
+
 ```typescript
 {
     key: 'list-item-1',
@@ -247,6 +261,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Image Animation Within List Item**:
+
 ```typescript
 {
     key: 'product-card',
@@ -274,12 +289,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Custom scroll-driven container animations using keyframe effects for precise control over sticky container behaviors (e.g., multi-property container transformations, responsive container animations, complex background effects)
 
 **When to Apply**:
+
 - For custom container effects not available in named effects
 - When combining multiple CSS properties in container animations
 - For responsive container behaviors
 - When creating unique container visual effects
 
 **Pattern**:
+
 ```typescript
 {
     key: '[CONTAINER_SELECTOR]',
@@ -306,6 +323,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[CONTAINER_KEY]`: Unique identifier for list container
 - `[UNIQUE_KEYFRAME_EFFECT_NAME]`: unique name for the CSS keyframe effect (can equal `[UNIQUE_EFFECT_ID]` if provided)
 - `[CSS_PROPERTY_N]`: CSS property names ('transform', 'filter', 'opacity', 'backgroundColor')
@@ -313,6 +331,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 - Other variables same as Rule 1
 
 **Example - Multi-Property Container Animation**:
+
 ```typescript
 {
     key: 'feature-list-container',
@@ -339,6 +358,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Container Background Transformation**:
+
 ```typescript
 {
     key: 'gallery-wrapper',
@@ -370,12 +390,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Custom entrance and exit animations for list items using keyframe effects for precise control over item reveals and dismissals (e.g., complex item entrances, item position flow, responsive item animations)
 
 **When to Apply**:
+
 - For complex item entrance effects beyond named effects
 - When creating unique item position flows
 - For multi-stage item animations
 - When coordinating item wrapper with content animations
 
 **Pattern**:
+
 ```typescript
 {
     key: '[ITEM_KEY]',
@@ -402,12 +424,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[ITEM_KEY]`: Unique identifier for individual list items
 - `[RANGE_TYPE]`: 'entry', 'exit', or 'contain' depending on animation phase
 - `[EASING_FUNCTION]`: Easing function to use
 - Other variables same as Rule 4
 
 **Example - Complex Item Entrance**:
+
 ```typescript
 {
     key: 'timeline-item',
@@ -434,6 +458,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Item Exit Sequence**:
+
 ```typescript
 {
     key: 'card-item',
@@ -466,11 +491,13 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: Coordinated animations across multiple list items with each individual item used as the viewProgress trigger and custom timing patterns (e.g., wave animations, linear stagger, exponential stagger, reverse stagger)
 
 **When to Apply**:
+
 - For creating wave-like animation propagation
 - When implementing linear or exponential stagger patterns
 - For reverse-order animations (exit effects)
 
 **Pattern**:
+
 ```typescript
 {
     effects: {
@@ -497,6 +524,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Linear Staggered Card Entrance**:
+
 ```typescript
 {
     effects: {
@@ -542,6 +570,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Exponential Stagger for Dramatic Effect**:
+
 ```typescript
 {
     effects: {
@@ -598,12 +627,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Use Case**: JavaScript-powered list animations with custom effects for complex interactions that require calculations or dynamic content updates (e.g., scroll counters, progress tracking, data visualization, dynamic text updates)
 
 **When to Apply**:
+
 - For animations requiring complex calculations
 - When integrating with data visualization
 - For dynamic content updates based on scroll
 - When creating interactive scroll-driven counters
 
 **Pattern**:
+
 ```typescript
 {
     key: '[LIST_CONTAINER_SELECTOR]',
@@ -627,6 +658,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Variables**:
+
 - `[LIST_CONTAINER_KEY]`: Unique identifier for list or section containing dynamic content
 - `[DYNAMIC_CONTENT_KEY]`: Unique identifier for elements that will be dynamically updated
 - `[CUSTOM_CALCULATION_LOGIC]`: JavaScript calculations based on progress
@@ -634,6 +666,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 - `[VISUAL_PROPERTY_UPDATES]`: Code to update visual properties
 
 **Example - Scroll-Driven Counter in List**:
+
 ```typescript
 {
     key: 'stats-list-container',
@@ -645,14 +678,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                 const targetValue = parseInt(element.dataset.targetValue) || 100;
                 const currentValue = Math.floor(targetValue * progress);
                 const percentage = Math.floor(progress * 100);
-                
+
                 // Update counter text
                 element.textContent = currentValue.toLocaleString();
-                
+
                 // Update visual properties based on progress
                 element.style.color = `hsl(${progress * 120}, 70%, 50%)`; // Green to red progression
                 element.style.transform = `scale(${0.8 + progress * 0.2})`; // Subtle scale effect
-                
+
                 // Update progress bar if exists
                 const progressBar = element.querySelector('.progress-bar');
                 if (progressBar) {
@@ -669,6 +702,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ```
 
 **Example - Interactive List Progress Tracking**:
+
 ```typescript
 {
     key: 'task-list',
@@ -680,33 +714,33 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                 const items = element.closest('interact-element')?.querySelectorAll('.task-item') || [];
                 const totalItems = items.length;
                 const elementIndex = Array.from(items).indexOf(element);
-                
+
                 // Calculate staggered progress for each item
                 const itemStartProgress = elementIndex / totalItems;
                 const itemEndProgress = (elementIndex + 1) / totalItems;
-                
+
                 // Calculate individual item progress
                 let itemProgress = 0;
                 if (progress > itemStartProgress) {
                     itemProgress = Math.min(1, (progress - itemStartProgress) / (itemEndProgress - itemStartProgress));
                 }
-                
+
                 // Update visual state
                 const checkbox = element.querySelector('.task-checkbox');
                 const taskText = element.querySelector('.task-text');
-                
+
                 if (itemProgress > 0.5) {
                     element.classList.add('active');
                     checkbox.style.transform = `scale(${0.8 + itemProgress * 0.4})`;
                     checkbox.style.opacity = itemProgress;
                 }
-                
+
                 if (itemProgress > 0.8) {
                     element.classList.add('completed');
                     taskText.style.textDecoration = 'line-through';
                     taskText.style.opacity = '0.7';
                 }
-                
+
                 // Update overall progress indicator
                 const progressIndicator = document.querySelector('#overall-progress');
                 if (progressIndicator && elementIndex === 0) {
@@ -728,6 +762,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 ## Advanced Patterns and Combinations
 
 ### Multi-Layer List Coordination
+
 Coordinating container, items, and content simultaneously:
 
 ```typescript
@@ -785,6 +820,7 @@ Coordinating container, items, and content simultaneously:
 ```
 
 ### Responsive List Animations
+
 Adaptive patterns based on screen size and device capabilities:
 
 ```typescript
@@ -839,23 +875,27 @@ Adaptive patterns based on screen size and device capabilities:
 ## Best Practices for List Scroll Animations
 
 ### Performance Guidelines
+
 1. **Use hardware-accelerated properties**: `transform`, `opacity`, `filter` for smooth animations
 2. **Limit concurrent animations**: Avoid animating too many items simultaneously
 3. **Use position:sticky for scrolling effects**: Animate elements while they're stuck in position and not scrolling with the page
 4. **Consider `will-change` property**: When doing complex style animations inside custom effects that the browser can not predict automatically
 
 ### Range Selection Guidelines
+
 1. **Container animations**: Use `contain` range for sticky container effects
 2. **Item entrance**: Use `entry` range (0-60%) for natural reveals
 3. **Item exit**: Use `exit` range (20-100%) for smooth dismissals
 4. **Content coordination**: Use same timeline with `cover`/`contain` range and staggered offsets, or use a different timeline per item with same range and offsets
 
 ### User Experience Guidelines
+
 1. **Keep animations subtle**: Avoid overwhelming users with excessive motion
 2. **Maintain content readability**: Ensure text remains legible during animations
 3. **Provide reduced motion alternatives**: Respect `prefers-reduced-motion` setting
 
 ### Accessibility Considerations
+
 1. **Respect motion preferences**: Include `prefers-motion` conditions
 2. **Provide keyboard navigation**: Ensure list remains navigable during animations
 3. **Maintain focus management**: Don't break focus states with animations
@@ -864,36 +904,42 @@ Adaptive patterns based on screen size and device capabilities:
 ### Common Use Cases by Pattern
 
 **Sticky Container (Rule 1)**:
+
 - Horizontal scrolling galleries
 - Timeline navigation
 - Product showcase carousels
 - Feature comparison tables
 
 **Sticky Items (Rule 2)**:
+
 - Progressive story reveals
 - Step-by-step processes
 - Card-based layouts
 - Interactive portfolios
 
 **Content Animations (Rule 3)**:
+
 - Text reveals within cards
 - Image animations in galleries
 - Icon animations in feature lists
 - Progressive data visualization
 
 **Keyframe Effects (Rules 4-5)**:
+
 - Complex brand animations
 - Multi-property transformations
 - Responsive design adaptations
 - Advanced visual effects
 
 **Staggered Animations (Rule 6)**:
+
 - Team member introductions
 - Product grid reveals
 - Feature list presentations
 - Testimonial carousels
 
 **Dynamic Content (Rule 7)**:
+
 - Statistics counters
 - Progress tracking
 - Data visualization

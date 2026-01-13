@@ -36,13 +36,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
+              translate: 'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
             },
             {
               offset: 0,
-              translate:
-                'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
+              translate: 'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
             },
             {
               offset: 1,
@@ -93,13 +91,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
+              translate: 'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
             },
             {
               offset: 0,
-              translate:
-                'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
+              translate: 'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
             },
             {
               offset: 0.67,
@@ -148,13 +144,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                '0 calc(var(--motion-top, 0px) * -1 - var(--motion-height, 100%))',
+              translate: '0 calc(var(--motion-top, 0px) * -1 - var(--motion-height, 100%))',
             },
             {
               offset: 0,
-              translate:
-                '0 calc(var(--motion-parent-height, 100vh) - var(--motion-top, 0px))',
+              translate: '0 calc(var(--motion-parent-height, 100vh) - var(--motion-top, 0px))',
             },
             {
               offset: 1,
@@ -203,13 +197,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                '0 calc(var(--motion-parent-height, 100vh) - var(--motion-top, 0px))',
+              translate: '0 calc(var(--motion-parent-height, 100vh) - var(--motion-top, 0px))',
             },
             {
               offset: 0,
-              translate:
-                '0 calc(var(--motion-top, 0px) * -1 - var(--motion-height, 100%))',
+              translate: '0 calc(var(--motion-top, 0px) * -1 - var(--motion-height, 100%))',
             },
             {
               offset: 1,
@@ -258,13 +250,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
+              translate: 'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
             },
             {
               offset: 0,
-              translate:
-                'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
+              translate: 'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
             },
             {
               offset: 1,
@@ -566,13 +556,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
+              translate: 'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
             },
             {
               offset: 0,
-              translate:
-                'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
+              translate: 'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
             },
             {
               offset: 0.5,
@@ -623,13 +611,11 @@ describe('Cross', () => {
             {
               easing: 'step-start',
               offset: 0,
-              translate:
-                'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
+              translate: 'calc(var(--motion-parent-width, 100vw) - var(--motion-left, 0px)) 0',
             },
             {
               offset: 0,
-              translate:
-                'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
+              translate: 'calc(var(--motion-left, 0px) * -1 - var(--motion-width, 100%)) 0',
             },
             {
               offset: 0.25,

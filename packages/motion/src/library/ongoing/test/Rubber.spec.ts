@@ -110,8 +110,7 @@ describe('Rubber', () => {
           },
           {
             offset: 0.56,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.875, 1.055)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.875, 1.055)',
           },
           {
             offset: 0.66,
@@ -119,13 +118,11 @@ describe('Rubber', () => {
           },
           {
             offset: 0.78,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.955, 1.045)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.955, 1.045)',
           },
           {
             offset: 0.89,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.055, 0.9495)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.055, 0.9495)',
           },
           {
             offset: 1,
@@ -253,8 +250,7 @@ describe('Rubber', () => {
           },
           {
             offset: 0.445,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.085, 0.9195)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.085, 0.9195)',
           },
           {
             offset: 0.5,
@@ -386,8 +382,7 @@ describe('Rubber', () => {
           },
           {
             offset: 0.89,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.005, 0.9995)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.005, 0.9995)',
           },
           {
             offset: 1,
@@ -507,8 +502,7 @@ describe('Rubber', () => {
           },
           {
             offset: 0.56,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.875, 1.055)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.875, 1.055)',
           },
           {
             offset: 0.66,
@@ -516,13 +510,11 @@ describe('Rubber', () => {
           },
           {
             offset: 0.78,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.955, 1.045)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.955, 1.045)',
           },
           {
             offset: 0.89,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.055, 0.9495)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.055, 0.9495)',
           },
           {
             offset: 1,
@@ -654,8 +646,7 @@ describe('Rubber', () => {
           },
           {
             offset: 0.89,
-            transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.105, 0.8995)',
+            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.105, 0.8995)',
           },
           {
             offset: 1,

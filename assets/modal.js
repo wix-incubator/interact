@@ -3,7 +3,7 @@ const modal = document.getElementById('code-modal');
 const modalCode = document.getElementById('modal-code');
 
 const codeSnippets = {
-    spread: `
+  spread: `
 key: 'spread-section',
 trigger: 'viewProgress',
 effects: [
@@ -74,25 +74,24 @@ effects: [
         }
     }
 ]
-            `
+            `,
 };
 
 function openModal(type) {
-    modalCode.textContent = codeSnippets[type];
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  modalCode.textContent = codeSnippets[type];
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
 }
 
 modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+  if (e.target === modal) closeModal();
 });
 
 // Export for global access
 window.openModal = openModal;
 window.closeModal = closeModal;
-

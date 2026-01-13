@@ -87,9 +87,7 @@ export const ResponsiveDemo = () => {
   return (
     <section className="panel responsive-demo-panel">
       <p className="scroll-label">Responsive Demo</p>
-      <div className="responsive-demo-width-display">
-        screen width: {width}px
-      </div>
+      <div className="responsive-demo-width-display">screen width: {width}px</div>
       <div className="responsive-demo-content">
         <h3 className="responsive-demo-title">Responsive Interactions</h3>
         <p className="responsive-demo-description">
@@ -103,18 +101,14 @@ export const ResponsiveDemo = () => {
         <div className="responsive-demo-button-wrapper">
           {/* Trigger */}
           <interact-element data-interact-key="multi-source-1" className="responsive-demo-trigger">
-            <button className="responsive-demo-button">
-              Trigger Animation
-            </button>
+            <button className="responsive-demo-button">Trigger Animation</button>
           </interact-element>
         </div>
 
         <div className="responsive-demo-targets">
           {/* Target 1 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Desktop Target
-            </p>
+            <p className="responsive-demo-target-label">Desktop Target</p>
             <interact-element data-interact-key="cascade-target-1">
               <div className="responsive-demo-target-card responsive-demo-target-card--desktop">
                 Slide In
@@ -124,9 +118,7 @@ export const ResponsiveDemo = () => {
 
           {/* Target 2 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Tablet Target
-            </p>
+            <p className="responsive-demo-target-label">Tablet Target</p>
             <interact-element data-interact-key="cascade-target-2">
               <div className="responsive-demo-target-card responsive-demo-target-card--tablet">
                 Flip In
@@ -135,9 +127,7 @@ export const ResponsiveDemo = () => {
           </div>
           {/* Target 3 */}
           <div className="responsive-demo-target">
-            <p className="responsive-demo-target-label">
-              Mobile Target
-            </p>
+            <p className="responsive-demo-target-label">Mobile Target</p>
             <interact-element data-interact-key="cascade-target-3">
               <div className="responsive-demo-target-card responsive-demo-target-card--mobile">
                 Bounce In

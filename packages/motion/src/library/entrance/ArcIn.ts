@@ -1,16 +1,8 @@
-import type {
-  ArcIn,
-  TimeAnimationOptions,
-  EffectFourDirections,
-  DomApi,
-} from '../../types';
+import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 const ROTATION_ANGLE = 80;
-const DIRECTION_MAP: Record<
-  EffectFourDirections,
-  { x: number; y: number; sign: number }
-> = {
+const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
   right: { x: 0, y: 1, sign: 1 },
   bottom: { x: 1, y: 0, sign: -1 },
@@ -60,10 +52,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       easing: 'sineIn',
       custom: {},
-      keyframes: [
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
     },
     {
       ...options,

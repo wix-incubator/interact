@@ -74,8 +74,7 @@ const KEYFRAMES_RANGE_MAP: Record<
 };
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const { direction = 'bottom', range = 'in' } =
-    options.namedEffect as SlideScroll;
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as SlideScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -109,11 +108,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       );
 
       dom.mutate(() => {
-        const adjDirection = getAdjustedDirection(
-          DIRECTIONS,
-          direction,
-          rotation,
-        ) as Direction;
+        const adjDirection = getAdjustedDirection(DIRECTIONS, direction, rotation) as Direction;
         target.style.setProperty(
           '--motion-clip-from',
           getClipPolygonParams({
