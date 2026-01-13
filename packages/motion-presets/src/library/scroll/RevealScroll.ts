@@ -5,7 +5,7 @@ import {
   DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getClipPolygonParams, getAdjustedDirection } from '@wix/motion';
+import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
 
 const DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
 

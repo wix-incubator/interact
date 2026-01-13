@@ -3,7 +3,7 @@ import {
   getEasing,
   toKeyframeValue,
   INITIAL_FRAME_OFFSET,
-} from '@wix/motion';
+} from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {

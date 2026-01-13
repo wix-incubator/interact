@@ -3,7 +3,7 @@ import {
   getEasing,
   toKeyframeValue,
   INITIAL_FRAME_OFFSET,
-} from '@wix/motion';
+} from '../../utils';
 import type { PunchIn, TimeAnimationOptions, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 

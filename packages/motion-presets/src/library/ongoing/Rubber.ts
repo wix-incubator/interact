@@ -9,7 +9,7 @@ import {
   roundNumber,
   toKeyframeValue,
   mapRange,
-} from '@wix/motion';
+} from '../../utils';
 
 const POWER_TO_RUBBER_OFFSET_MAP = {
   soft: 0,

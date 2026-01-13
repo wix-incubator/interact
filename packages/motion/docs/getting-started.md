@@ -26,7 +26,7 @@ import { getWebAnimation } from 'https://unpkg.com/@wix/motion@latest/dist/esm/i
 
 ### Installing Animation Presets
 
-`@wix/motion` provides core animation utilities, while `@wix/motion-presets` provides ready-to-use animation presets.
+`@wix/motion` provides core animation utilities and an effects registry, while `@wix/motion-presets` provides ready-to-use effect modules you can register and reference via `namedEffect`.
 
 ```bash
 npm install @wix/motion-presets
@@ -40,6 +40,19 @@ import { FadeIn } from '@wix/motion-presets';
 
 // Register preset
 registerEffects({ FadeIn });
+```
+
+You can also register a custom-made effect module (as long as it matches the expected module shape):
+
+```typescript
+import { registerEffects } from '@wix/motion';
+
+registerEffects({
+  CustomFadeIn: {
+    web: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }],
+    getNames: () => ['CustomFadeIn'],
+  },
+});
 ```
 
 ## Your First Animation

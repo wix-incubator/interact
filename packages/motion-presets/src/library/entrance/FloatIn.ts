@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions, FloatIn } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '@wix/motion';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-floatIn'];

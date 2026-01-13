@@ -2,7 +2,7 @@ import {
   getClipPolygonParams,
   getAdjustedDirection,
   INITIAL_FRAME_OFFSET,
-} from '@wix/motion';
+} from '../../utils';
 import type { WinkIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {

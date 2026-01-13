@@ -3,7 +3,7 @@ import {
   getMouseTransitionEasing,
   distance2d,
   mapRange,
-} from '@wix/motion';
+} from '../../utils';
 import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import {

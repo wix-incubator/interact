@@ -238,10 +238,10 @@ Interact.setup({
 
 ### `Interact.registerEffects(effects)`
 
-Registers animation presets from `@wix/motion-presets` in order to use them in the config.
+Registers named-effect (or presets) modules so you can reference them via `namedEffect` (e.g. presets from `@wix/motion-presets` or your own custom-made effects).
 
 **Parameters:**
-- `effects: Record<string, NamedEffect>` - An object mapping effect names to effect definitions
+- `effects: Record<string, EffectModule>` - An object mapping effect names (used as `namedEffect.type`) to effect modules
 
 **Returns:** `void`
 
@@ -275,6 +275,18 @@ import { FadeIn, SlideIn } from '@wix/motion-presets';
 
 // Register only the effects you need (smaller bundle)
 Interact.registerEffects({ FadeIn, SlideIn });
+```
+
+**Custom effect registration:**
+```typescript
+import { Interact } from '@wix/interact/web';
+
+Interact.registerEffects({
+  CustomFadeIn: {
+    web: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }],
+    getNames: () => ['CustomFadeIn'],
+  },
+});
 ```
 
 **Details:**

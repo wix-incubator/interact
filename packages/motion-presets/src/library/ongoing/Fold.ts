@@ -9,7 +9,7 @@ import {
   getEasingFamily,
   getTimingFactor,
   toKeyframeValue,
-} from '@wix/motion';
+} from '../../utils';
 
 const POWER_TO_ROTATION_FACTOR_MAP = {
   soft: 1,

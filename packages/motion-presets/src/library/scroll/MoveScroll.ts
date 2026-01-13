@@ -4,7 +4,8 @@ import type {
   MoveScroll,
   ScrubAnimationOptions,
 } from '../../types';
-import { getCssUnits, transformPolarToXY } from '@wix/motion';
+import { getCssUnits } from '../../utils';
+import { transformPolarToXY } from '../../utils';
 
 const POWER_MAP = {
   soft: { value: 150, type: 'px' },

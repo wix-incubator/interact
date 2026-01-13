@@ -9,7 +9,7 @@ import {
   roundNumber,
   toKeyframeValue,
   mapRange,
-} from '@wix/motion';
+} from '../../utils';
 
 const POWER_TO_WIGGLE_FACTOR_MAP = {
   soft: 1,

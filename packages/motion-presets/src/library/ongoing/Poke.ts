@@ -4,7 +4,7 @@ import type {
   DomApi,
   AnimationExtraOptions,
 } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '@wix/motion';
+import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },

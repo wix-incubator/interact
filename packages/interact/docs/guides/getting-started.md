@@ -22,7 +22,7 @@ npm install @wix/interact
 
 ### Optional: Animation Presets
 
-To use named animation effects like `FadeIn`, `SlideIn`, `BounceIn`, etc., also install the presets package:
+To use `namedEffect` presets (e.g. `FadeIn`, `SlideIn`, `BounceIn`, etc.), you can register effect modules from `@wix/motion-presets` or register your own custom-made effects.
 
 ```bash
 npm install @wix/motion-presets
@@ -298,7 +298,7 @@ Each effect defines:
 }
 ```
 
-> **Note**: Using `namedEffect` requires registering presets first with `Interact.registerEffects(presets)`. See [Installation](#optional-animation-presets).
+> **Note**: Using `namedEffect` requires registering effects first with `Interact.registerEffects(...)` (presets from `@wix/motion-presets` or your own custom-made effects). See [Installation](#optional-animation-presets).
 
 > **Tip**: To prevent a flash of content before entrance animations start, use the `generate()` function to create CSS that hides elements until their animation triggers. See [Entrance Animations](../examples/entrance-animations.md#preventing-flash-of-unstyled-content-fouc) for details.
 

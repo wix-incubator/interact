@@ -10,7 +10,7 @@ import {
   getEasingFamily,
   getTimingFactor,
   toKeyframeValue,
-} from '@wix/motion';
+} from '../../utils';
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },

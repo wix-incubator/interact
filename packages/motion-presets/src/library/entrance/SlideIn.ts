@@ -5,11 +5,11 @@ import type {
   TimeAnimationOptions,
 } from '../../types';
 import {
-  Direction,
   getAdjustedDirection,
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
-} from '@wix/motion';
+  type Direction,
+} from '../../utils';
 
 export function getNames(options: TimeAnimationOptions) {
   const { power } = options.namedEffect as SlideIn;

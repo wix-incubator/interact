@@ -4,7 +4,7 @@ import type {
   DomApi,
   AnimationExtraOptions,
 } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '@wix/motion';
+import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
 const POWER_TO_PULSE_OFFSET_MAP = {
   soft: 0,

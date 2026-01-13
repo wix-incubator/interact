@@ -4,7 +4,8 @@ import {
   ScrubAnimationOptions,
   AnimationFillMode,
 } from '../../types';
-import { getShuttersClipPaths, getEasing } from '@wix/motion';
+import { getEasing } from '../../utils';
+import { getShuttersClipPaths } from '../../utils';
 
 const OPPOSITE_DIRECTION_MAP: Record<
   EffectFourDirections,
