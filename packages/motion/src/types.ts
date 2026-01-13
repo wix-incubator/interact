@@ -568,7 +568,7 @@ export type Progress = {
   y: number;
   v?: { x: number; y: number };
   active?: boolean;
-} | number;
+};
 
 export interface MouseAnimationInstance {
   target: HTMLElement;
@@ -743,7 +743,7 @@ export interface ScrubPointerScene {
   centeredToTarget?: boolean;
   transitionDuration?: number;
   transitionEasing?: ScrubTransitionEasing;
-  getProgress(): Progress;
+  getProgress(): Progress | number;
   effect(scene: any, p: Progress): void;
   disabled: boolean;
   destroy(): void;
