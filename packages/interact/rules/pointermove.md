@@ -1189,7 +1189,81 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 - `axis` defaults to `'y'` when using `keyframeEffect` with `pointerMove`
 - `axis: 'x'` maps `progress.x` (0=left, 1=right) to animation progress
 - `axis: 'y'` maps `progress.y` (0=top, 1=bottom) to animation progress
-- For 2D effects that need both axes, use `namedEffect` or `customEffect` instead
+- For 2D effects that need both axes, you can use composite animations (Rule 11), `namedEffect`, or `customEffect`
+
+---
+
+## Rule 11: Multi-Axis KeyframeEffect (X + Y)
+
+**Use Case**: Independent X/Y axis control using two `keyframeEffect` animations on the same target.
+
+**Pattern**:
+Define two interactions on the same source/target pair—one for `axis: 'x'`, one for `axis: 'y'`.
+
+```typescript
+{
+    interactions: [
+        {
+            key: 'container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'x' },
+            effects: [{ key: 'target', effectId: 'x-anim' }]
+        },
+        {
+            key: 'container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'y' },
+            effects: [{ key: 'target', effectId: 'y-anim' }]
+        }
+    ],
+    effects: {
+        'x-anim': { /* keyframeEffect config */ },
+        'y-anim': { /* keyframeEffect config */ }
+    }
+}
+```
+
+### When animating the SAME property (e.g. `transform`)
+Use `composite: 'accumulate'` on both effects to merge them (e.g. `scaleX` + `scaleY`).
+
+```typescript
+effects: {
+    'scale-x': {
+        keyframeEffect: { 
+            name: 'sx', 
+            keyframes: [{ transform: 'scaleX(0.5)' }, { transform: 'scaleX(1.5)' }] 
+        },
+        composite: 'accumulate'
+    },
+    'scale-y': {
+        keyframeEffect: { 
+            name: 'sy', 
+            keyframes: [{ transform: 'scaleY(0.5)' }, { transform: 'scaleY(1.5)' }] 
+        },
+        composite: 'accumulate'
+    }
+}
+```
+
+### When animating DIFFERENT properties
+No special configuration needed.
+
+```typescript
+effects: {
+    'move-x': {
+        keyframeEffect: { 
+            name: 'move', 
+            keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(100px)' }] 
+        }
+    },
+    'color-y': {
+        keyframeEffect: { 
+            name: 'color', 
+            keyframes: [{ opacity: 0.5 }, { opacity: 1 }] 
+        }
+    }
+}
+```
 
 ---
 
@@ -1341,7 +1415,10 @@ Controlling movement direction for specific design needs:
 5. For grid/particle systems with many elements
 6. For controlling WebGL/WebGPU effects
 
-**Never use `keyframeEffect`** with `pointerMove` - pointer progress is 2D and cannot map to linear keyframes.
+**When to use `keyframeEffect`**:
+1. When you want single-axis control using the `axis` parameter ('x' or 'y')
+2. For slider-like interactions driven by pointer position along one axis
+3. For 2D control, use two `keyframeEffect` interactions with `composite: 'accumulate'` (see Rule 11)
 
 ### Performance Guidelines
 1. **Use hardware-accelerated properties** - prefer transforms over position changes
@@ -1435,6 +1512,18 @@ Controlling movement direction for specific design needs:
 - Combined transform effects per layer
 - Custom easing per element
 
+**Single-Axis Keyframe Control (Rule 10)** - `keyframeEffect`:
+- Horizontal slider interactions
+- Vertical progress indicators
+- Single-axis reveal effects
+- Linear interpolation along one axis
+
+**Composite Keyframe (Rule 11)** - Two `keyframeEffect` + `composite`:
+- 2D element positioning with pointer
+- Combined X/Y transform animations
+- Independent axis control with keyframes
+- Declarative 2D animations without customEffect
+
 ### Troubleshooting Common Issues
 
 **Poor pointer responsiveness**:
@@ -1485,10 +1574,11 @@ Controlling movement direction for specific design needs:
 | Cursor following | `namedEffect: { type: 'TrackMouse' }` | Built-in physics |
 | Horizontal progress control | `keyframeEffect` + `axis: 'x'` | Maps x position to keyframes |
 | Vertical progress control | `keyframeEffect` + `axis: 'y'` | Maps y position to keyframes |
+| Multi-axis keyframe (X + Y) | Two `keyframeEffect` | Use `composite: 'accumulate'` if animating same prop |
 | Custom physics | `customEffect` | Full control over calculations |
 | Velocity-based effects | `customEffect` | Access to `progress.v` |
 | Grid/particle systems | `customEffect` | Can manipulate many elements |
 
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframe effects, and custom effect patterns.
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframe effects, composite animations, and custom effect patterns.

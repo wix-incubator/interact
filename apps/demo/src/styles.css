@@ -338,6 +338,55 @@ body {
   color: #a5b4fc;
 }
 
+/* Composite PointerMove Demo */
+.pointer-demo-composite-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  background: 
+    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background-size: 30px 30px, 30px 30px, 100% 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: crosshair;
+  border: 1px solid rgb(148 163 184 / 0.15);
+}
+
+.pointer-demo-composite-ball {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -30px;
+  margin-left: -30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+}
+
+.pointer-demo-composite-guide {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.pointer-demo-composite-guide .guide-x {
+  color: #3b82f6;
+}
+
+.pointer-demo-composite-guide .guide-y {
+  color: #a855f7;
+}
+
 /* Integration badges and back link */
 .back-link {
   display: inline-block;
