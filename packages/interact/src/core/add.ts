@@ -36,7 +36,6 @@ function isTimeBasedEffect(effect: Effect): effect is Effect & TimeEffect {
   return 'duration' in effect && typeof effect.duration === 'number';
 }
 
-
 function _getElementsFromData(
   data: Interaction | Effect,
   root: HTMLElement,

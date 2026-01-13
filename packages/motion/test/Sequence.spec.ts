@@ -208,14 +208,14 @@ describe('Sequence class', () => {
 describe('real-world scenarios', () => {
   test('staggered entrance animation with 10 cards', () => {
     const result = calculateSequenceOffsets(10, { offset: 100, offsetEasing: 'quadOut' });
-    
+
     // Should have 10 values
     expect(result.length).toBe(10);
-    
+
     // First should be 0, last should be 9 * 100 = 900
     expect(result[0]).toBe(0);
     expect(result[9]).toBe(900);
-    
+
     // With quadOut, early items should have larger gaps
     const firstGap = result[1] - result[0];
     const lastGap = result[9] - result[8];
@@ -224,12 +224,12 @@ describe('real-world scenarios', () => {
 
   test('list animation with base delay', () => {
     const result = calculateSequenceOffsets(5, { delay: 300, offset: 100 });
-    
+
     // All items should be delayed by at least 300ms
     result.forEach((value) => {
       expect(value).toBeGreaterThanOrEqual(300);
     });
-    
+
     // First item at 300ms, last at 700ms
     expect(result[0]).toBe(300);
     expect(result[4]).toBe(700);
@@ -240,4 +240,3 @@ describe('real-world scenarios', () => {
     expect(result).toEqual([0, 50, 100]);
   });
 });
-
