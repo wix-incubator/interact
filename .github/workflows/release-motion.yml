@@ -67,4 +67,4 @@ jobs:
           cd packages/motion
           npm publish --tag next --provenance --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
