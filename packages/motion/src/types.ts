@@ -746,3 +746,11 @@ export interface ScrubPointerScene {
   destroy(): void;
   allowActiveEvent?: boolean;
 }
+
+export type SequenceOffsetEasing = string | ((p: number) => number);
+
+export type SequenceOptions = {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: SequenceOffsetEasing;
+};

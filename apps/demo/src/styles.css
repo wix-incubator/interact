@@ -360,3 +360,159 @@ body {
   background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
   color: #333;
 }
+
+/* Stagger Demo */
+.stagger-demo-section {
+  margin-top: 2rem;
+}
+
+.stagger-demo-header {
+  margin-bottom: 1.5rem;
+}
+
+.stagger-demo-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.stagger-demo-description {
+  color: rgb(148 163 184 / 0.9);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.stagger-demo-description code {
+  background: rgb(30 41 59 / 0.8);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #a5b4fc;
+}
+
+.stagger-demo-controls {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgb(30 41 59 / 0.5);
+  border-radius: 0.75rem;
+}
+
+.stagger-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 150px;
+}
+
+.stagger-control-group label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stagger-control-value {
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.stagger-control-group input[type='range'] {
+  width: 100%;
+  accent-color: #3b82f6;
+}
+
+.stagger-control-group select {
+  padding: 0.5rem;
+  background: rgb(15 23 42 / 0.9);
+  border: 1px solid rgb(148 163 184 / 0.3);
+  border-radius: 0.5rem;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.stagger-reset-button {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.stagger-reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.stagger-demo-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.stagger-demo-card {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    var(--card-color) 0%,
+    color-mix(in srgb, var(--card-color) 70%, black) 100%
+  );
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stagger-demo-index {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.stagger-demo-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.stagger-demo-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgb(30 41 59 / 0.5);
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.stagger-demo-info p {
+  margin: 0.5rem 0;
+}
+
+.stagger-demo-config-preview code {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgb(15 23 42 / 0.9);
+  border-radius: 0.25rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #10b981;
+}
+
+.stagger-demo-delays {
+  color: #94a3b8;
+}

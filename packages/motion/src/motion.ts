@@ -7,8 +7,10 @@ import type {
   CustomMouseAnimationInstance,
   ScrubScrollScene,
   ScrubPointerScene,
+  SequenceOptions,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
+import { Sequence, calculateSequenceOffsets } from './Sequence';
 import { getEasing, getJsEasing } from './utils';
 import { getWebAnimation } from './api/webAnimations';
 import { getCSSAnimation } from './api/cssAnimations';
@@ -191,3 +193,5 @@ export {
 };
 
 export type { AnimationGroup };
+export type { SequenceOptions };
+export { Sequence, calculateSequenceOffsets };
