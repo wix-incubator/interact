@@ -50,59 +50,6 @@ export const PointerMoveDemo = () => {
     };
   }, [axis]);
 
-  const compositeAccumulateConfig = useMemo<InteractConfig>(() => {
-    return {
-      interactions: [
-        {
-          key: 'composite-accumulate-container',
-          trigger: 'pointerMove',
-          params: { hitArea: 'self', axis: 'x' },
-          effects: [
-            {
-              key: 'composite-accumulate-ball',
-              effectId: 'rotate-x-effect',
-            },
-          ],
-        },
-        {
-          key: 'composite-accumulate-container',
-          trigger: 'pointerMove',
-          params: { hitArea: 'self', axis: 'y' },
-          effects: [
-            {
-              key: 'composite-accumulate-ball',
-              effectId: 'rotate-y-effect',
-            },
-          ],
-        },
-      ],
-      effects: {
-        'rotate-x-effect': {
-          keyframeEffect: {
-            name: 'rotate-x',
-            keyframes: [
-              { transform: 'rotate(-90deg)' },
-              { transform: 'rotate(90deg)' },
-            ],
-          },
-          fill: 'both',
-          composite: 'accumulate',
-        },
-        'rotate-y-effect': {
-          keyframeEffect: {
-            name: 'rotate-y',
-            keyframes: [
-              { transform: 'rotate(-90deg)' },
-              { transform: 'rotate(90deg)' },
-            ],
-          },
-          fill: 'both',
-          composite: 'accumulate',
-        },
-      },
-    };
-  }, []);
-
   const compositeAddConfig = useMemo<InteractConfig>(() => {
     return {
       interactions: [
@@ -157,7 +104,6 @@ export const PointerMoveDemo = () => {
   }, []);
 
   useInteractInstance(config);
-  useInteractInstance(compositeAccumulateConfig);
   useInteractInstance(compositeAddConfig);
 
   return (
@@ -213,41 +159,9 @@ export const PointerMoveDemo = () => {
       </section>
 
       <section className="panel pointer-demo-section">
-        <p className="scroll-label">Composite: accumulate (Rotation)</p>
+        <p className="scroll-label">Composite (Scale)</p>
         <div className="pointer-demo-header">
-          <h3>composite: 'accumulate'</h3>
-          <p className="pointer-demo-description">
-            Both axes control rotation—values add together mathematically.
-          </p>
-        </div>
-
-        <Interaction
-          tagName="div"
-          interactKey="composite-accumulate-container"
-          className="pointer-demo-composite-container"
-        >
-          <Interaction
-            tagName="div"
-            interactKey="composite-accumulate-ball"
-            className="pointer-demo-composite-ball"
-          />
-          <div className="pointer-demo-composite-guide">
-            <span className="guide-x">X → rotate</span>
-            <span className="guide-y">Y ↓ rotate</span>
-          </div>
-        </Interaction>
-
-        <div className="pointer-demo-info">
-          <p>
-            <code>accumulate</code> adds rotation values: move to corner for ±180°.
-          </p>
-        </div>
-      </section>
-
-      <section className="panel pointer-demo-section">
-        <p className="scroll-label">Composite: add (Scale)</p>
-        <div className="pointer-demo-header">
-          <h3>composite: 'add'</h3>
+          <h3>composite</h3>
           <p className="pointer-demo-description">
             X controls scaleX, Y controls scaleY—transforms compose in sequence.
           </p>

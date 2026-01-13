@@ -1098,7 +1098,8 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
     key: '[SOURCE_KEY]',
     trigger: 'pointerMove',
     params: {
-        hitArea: '[HIT_AREA]'
+        hitArea: '[HIT_AREA]',
+        axis: '[AXIS]'  // 'x' or 'y'
     },
     effects: [
         {
@@ -1110,7 +1111,6 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
                     { [PROPERTY]: '[END_VALUE]' }
                 ]
             },
-            axis: '[AXIS]',  // 'x' or 'y'
             fill: '[FILL_MODE]',
             centeredToTarget: [CENTERED_TO_TARGET]
         }
@@ -1122,119 +1122,54 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 - `[SOURCE_KEY]`: Unique identifier for source element tracking mouse movement
 - `[TARGET_KEY]`: Unique identifier for target element to animate
 - `[HIT_AREA]`: 'self' or 'root'
+- `[AXIS]`: 'x' (maps x position) or 'y' (maps y position) - **defaults to 'y'** (in `params`)
 - `[ANIMATION_NAME]`: Name for the keyframe animation
 - `[PROPERTY]`: CSS property to animate (transform, opacity, etc.)
 - `[START_VALUE]`: Value at progress 0 (left/top edge)
 - `[END_VALUE]`: Value at progress 1 (right/bottom edge)
-- `[AXIS]`: 'x' (maps x position) or 'y' (maps y position) - **defaults to 'y'**
 - `[FILL_MODE]`: 'none', 'forwards', 'backwards', 'both'
 - `[CENTERED_TO_TARGET]`: true or false
 
-**Example - Horizontal Slider Control**:
-```typescript
-{
-    key: 'slider-track',
-    trigger: 'pointerMove',
-    params: {
-        hitArea: 'self'
-    },
-    effects: [
-        {
-            key: 'slider-thumb',
-            keyframeEffect: {
-                name: 'slide-horizontal',
-                keyframes: [
-                    { transform: 'translateX(0)' },
-                    { transform: 'translateX(200px)' }
-                ]
-            },
-            axis: 'x',
-            fill: 'both'
-        }
-    ]
-}
-```
+**Example - Horizontal Slider with Multiple Targets**:
 
-**Example - Vertical Progress Indicator**:
-```typescript
-{
-    key: 'progress-container',
-    trigger: 'pointerMove',
-    params: {
-        hitArea: 'self'
-    },
-    effects: [
-        {
-            key: 'progress-fill',
-            keyframeEffect: {
-                name: 'fill-vertical',
-                keyframes: [
-                    { transform: 'scaleY(0)', opacity: 0.5 },
-                    { transform: 'scaleY(1)', opacity: 1 }
-                ]
-            },
-            axis: 'y',
-            fill: 'both'
-        }
-    ]
-}
-```
+This example shows a pointer-driven slider where the X position controls both a sliding element and an indicator's opacity/scale.
 
-**Example - Horizontal Color Transition**:
 ```typescript
 {
-    key: 'color-picker',
-    trigger: 'pointerMove',
-    params: {
-        hitArea: 'self'
-    },
-    effects: [
+    interactions: [
         {
-            key: 'color-display',
+            key: 'pointer-container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'x' },
+            effects: [
+                {
+                    key: 'pointer-slider',
+                    effectId: 'slide-effect',
+                },
+                {
+                    key: 'pointer-indicator',
+                    effectId: 'indicator-effect',
+                },
+            ],
+        },
+    ],
+    effects: {
+        'slide-effect': {
             keyframeEffect: {
-                name: 'color-gradient',
+                name: 'slide-x',
                 keyframes: [
-                    { backgroundColor: '#ff0000' },
-                    { backgroundColor: '#00ff00', offset: 0.5 },
-                    { backgroundColor: '#0000ff' }
-                ]
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(220px)' },
+                ],
             },
-            axis: 'x',
-            fill: 'both'
-        }
-    ]
-}
-```
-
-**Example - Reveal on Hover with Axis**:
-```typescript
-{
-    key: 'reveal-container',
-    trigger: 'pointerMove',
-    params: {
-        hitArea: 'self'
+            fill: 'both',
+        },
     },
-    effects: [
-        {
-            key: 'reveal-content',
-            keyframeEffect: {
-                name: 'reveal-left-right',
-                keyframes: [
-                    { clipPath: 'inset(0 100% 0 0)' },
-                    { clipPath: 'inset(0 0 0 0)' }
-                ]
-            },
-            axis: 'x',
-            fill: 'both'
-        }
-    ]
 }
 ```
 
 **Important Notes**:
 - `axis` defaults to `'y'` when using `keyframeEffect` with `pointerMove`
-- `axis: 'x'` maps `progress.x` (0=left, 1=right) to animation progress
-- `axis: 'y'` maps `progress.y` (0=top, 1=bottom) to animation progress
 - For 2D effects that need both axes, you can use composite animations (Rule 11), `namedEffect`, or `customEffect`
 
 ---
@@ -1244,92 +1179,62 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 **Use Case**: Independent X/Y axis control using two `keyframeEffect` animations on the same target.
 
 **Pattern**:
-Define two interactions on the same source/target pair—one for `axis: 'x'`, one for `axis: 'y'`.
+Define two interactions on the same source/target pair—one for `axis: 'x'`, one for `axis: 'y'`. When animating the same CSS property (e.g. `transform`), use the `composite` option to combine the effects.
+
+**Example - 2D Scale Control**:
+
+X axis controls `scaleX`, Y axis controls `scaleY`.
 
 ```typescript
 {
     interactions: [
         {
-            key: 'container',
+            key: 'composite-add-container',
             trigger: 'pointerMove',
             params: { hitArea: 'self', axis: 'x' },
-            effects: [{ key: 'target', effectId: 'x-anim' }]
+            effects: [
+                {
+                    key: 'composite-add-ball',
+                    effectId: 'scale-x-effect',
+                },
+            ],
         },
         {
-            key: 'container',
+            key: 'composite-add-container',
             trigger: 'pointerMove',
             params: { hitArea: 'self', axis: 'y' },
-            effects: [{ key: 'target', effectId: 'y-anim' }]
-        }
+            effects: [
+                {
+                    key: 'composite-add-ball',
+                    effectId: 'scale-y-effect',
+                },
+            ],
+        },
     ],
     effects: {
-        'x-anim': { /* keyframeEffect config */ },
-        'y-anim': { /* keyframeEffect config */ }
-    }
-}
-```
-
-### When animating the SAME property (e.g. `transform`)
-
-Use `composite: 'add'` for independent transforms like `scaleX` + `scaleY`:
-
-```typescript
-effects: {
-    'scale-x': {
-        keyframeEffect: { 
-            name: 'sx', 
-            keyframes: [{ transform: 'scaleX(0.5)' }, { transform: 'scaleX(1.5)' }] 
+        'scale-x-effect': {
+            keyframeEffect: {
+                name: 'scale-x',
+                keyframes: [
+                    { transform: 'scaleX(0.5)' },
+                    { transform: 'scaleX(1.5)' },
+                ],
+            },
+            fill: 'both',
+            composite: 'add',
         },
-        composite: 'add'
+        'scale-y-effect': {
+            keyframeEffect: {
+                name: 'scale-y',
+                keyframes: [
+                    { transform: 'scaleY(0.5)' },
+                    { transform: 'scaleY(1.5)' },
+                ],
+            },
+            fill: 'both',
+            composite: 'add',
+        },
     },
-    'scale-y': {
-        keyframeEffect: { 
-            name: 'sy', 
-            keyframes: [{ transform: 'scaleY(0.5)' }, { transform: 'scaleY(1.5)' }] 
-        },
-        composite: 'add'
-    }
-}
-```
-
-Use `composite: 'accumulate'` when values should add mathematically (e.g. two rotations):
-
-```typescript
-effects: {
-    'rotate-x': {
-        keyframeEffect: { 
-            name: 'rx', 
-            keyframes: [{ transform: 'rotate(-45deg)' }, { transform: 'rotate(45deg)' }] 
-        },
-        composite: 'accumulate'
-    },
-    'rotate-y': {
-        keyframeEffect: { 
-            name: 'ry', 
-            keyframes: [{ transform: 'rotate(-45deg)' }, { transform: 'rotate(45deg)' }] 
-        },
-        composite: 'accumulate'
-    }
-}
-```
-
-### When animating DIFFERENT properties
-No special configuration needed.
-
-```typescript
-effects: {
-    'move-x': {
-        keyframeEffect: { 
-            name: 'move', 
-            keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(100px)' }] 
-        }
-    },
-    'color-y': {
-        keyframeEffect: { 
-            name: 'color', 
-            keyframes: [{ opacity: 0.5 }, { opacity: 1 }] 
-        }
-    }
 }
 ```
 
@@ -1661,16 +1566,16 @@ Controlling movement direction for specific design needs:
 
 ## Quick Reference: Effect Type Selection
 
-| Requirement                 | Use This                               | Why                                                  |
-| --------------------------- | -------------------------------------- | ---------------------------------------------------- |
-| Standard 3D tilt            | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested                         |
-| Cursor following            | `namedEffect: { type: 'TrackMouse' }`  | Built-in physics                                     |
-| Horizontal progress control | `keyframeEffect` + `axis: 'x'`         | Maps x position to keyframes                         |
-| Vertical progress control   | `keyframeEffect` + `axis: 'y'`         | Maps y position to keyframes                         |
-| Multi-axis keyframe (X + Y) | Two `keyframeEffect`                   | Use `composite: 'add'` or `'accumulate'` for same prop |
-| Custom physics              | `customEffect`                         | Full control over calculations                       |
-| Velocity-based effects      | `customEffect`                         | Access to `progress.v`                               |
-| Grid/particle systems       | `customEffect`                         | Can manipulate many elements                         |
+| Requirement                 | Use This                                       | Why                                                  |
+| --------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
+| Standard 3D tilt            | `namedEffect: { type: 'Tilt3DMouse' }`         | GPU-optimized, battle-tested                         |
+| Cursor following            | `namedEffect: { type: 'TrackMouse' }`          | Built-in physics                                     |
+| Horizontal progress control | `keyframeEffect` + `params: { axis: 'x' }`     | Maps x position to keyframes                         |
+| Vertical progress control   | `keyframeEffect` + `params: { axis: 'y' }`     | Maps y position to keyframes                         |
+| Multi-axis keyframe (X + Y) | Two interactions with `keyframeEffect`         | Use `composite: 'add'` or `'accumulate'` for same prop |
+| Custom physics              | `customEffect`                                 | Full control over calculations                       |
+| Velocity-based effects      | `customEffect`                                 | Access to `progress.v`                               |
+| Grid/particle systems       | `customEffect`                                 | Can manipulate many elements                         |
 
 ---
 
