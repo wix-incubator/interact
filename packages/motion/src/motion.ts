@@ -136,7 +136,7 @@ function getScrubScene(
         getProgress() {
           return this._currentProgress;
         },
-        effect(_scene: any, p: { x: number; y: number }) {
+        effect(__: any, p: { x: number; y: number }) {
           const linearProgress = axis === 'x' ? p.x : p.y;
           this._currentProgress = linearProgress;
           animationGroup.progress(linearProgress);

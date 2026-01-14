@@ -744,7 +744,7 @@ export interface ScrubPointerScene {
   transitionDuration?: number;
   transitionEasing?: ScrubTransitionEasing;
   getProgress(): Progress | number;
-  effect(scene: any, p: Progress): void;
+  effect(__: any, p: Progress): void;
   disabled: boolean;
   destroy(): void;
   allowActiveEvent?: boolean;

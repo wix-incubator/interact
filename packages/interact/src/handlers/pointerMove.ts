@@ -28,7 +28,7 @@ function addPointerMoveHandler(
   const triggerParams = {
     trigger: 'pointer-move' as const,
     element: source,
-    axis: options.axis,
+    axis: options.axis ?? 'y',
   };
 
   const scene = getScrubScene(target, effectToAnimationOptions(effect), triggerParams);
