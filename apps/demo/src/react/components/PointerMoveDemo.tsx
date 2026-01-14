@@ -29,10 +29,7 @@ export const PointerMoveDemo = () => {
         'slide-effect': {
           keyframeEffect: {
             name: 'slide-x',
-            keyframes: [
-              { transform: 'translateX(0px)' },
-              { transform: 'translateX(220px)' },
-            ],
+            keyframes: [{ transform: 'translateX(0px)' }, { transform: 'translateX(220px)' }],
           },
           fill: 'both',
         },
@@ -80,10 +77,7 @@ export const PointerMoveDemo = () => {
         'scale-x-effect': {
           keyframeEffect: {
             name: 'scale-x',
-            keyframes: [
-              { transform: 'scaleX(0.5)' },
-              { transform: 'scaleX(1.5)' },
-            ],
+            keyframes: [{ transform: 'scaleX(0.5)' }, { transform: 'scaleX(1.5)' }],
           },
           fill: 'both',
           composite: 'add',
@@ -91,10 +85,7 @@ export const PointerMoveDemo = () => {
         'scale-y-effect': {
           keyframeEffect: {
             name: 'scale-y',
-            keyframes: [
-              { transform: 'scaleY(0.5)' },
-              { transform: 'scaleY(1.5)' },
-            ],
+            keyframes: [{ transform: 'scaleY(0.5)' }, { transform: 'scaleY(1.5)' }],
           },
           fill: 'both',
           composite: 'add',
@@ -136,11 +127,7 @@ export const PointerMoveDemo = () => {
           interactKey="pointer-container"
           className="pointer-demo-container"
         >
-          <Interaction
-            tagName="div"
-            interactKey="pointer-slider"
-            className="pointer-demo-slider"
-          />
+          <Interaction tagName="div" interactKey="pointer-slider" className="pointer-demo-slider" />
           <Interaction
             tagName="div"
             interactKey="pointer-indicator"
@@ -152,8 +139,9 @@ export const PointerMoveDemo = () => {
 
         <div className="pointer-demo-info">
           <p>
-            <strong>New Feature:</strong> Using <code>keyframeEffect</code> with <code>pointerMove</code> trigger.
-            The <code>axis</code> prop maps pointer position to animation progress.
+            <strong>New Feature:</strong> Using <code>keyframeEffect</code> with{' '}
+            <code>pointerMove</code> trigger. The <code>axis</code> prop maps pointer position to
+            animation progress.
           </p>
         </div>
       </section>
@@ -192,4 +180,3 @@ export const PointerMoveDemo = () => {
     </>
   );
 };
-

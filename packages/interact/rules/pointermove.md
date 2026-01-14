@@ -1087,12 +1087,14 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 **Use Case**: When you want to use standard keyframe animations driven by pointer movement along a single axis (e.g., horizontal sliders, vertical progress indicators, single-axis parallax effects)
 
 **When to Apply**:
+
 - For slider-like interactions driven by horizontal mouse position
 - For vertical scroll-like effects driven by vertical mouse position
 - When you have existing keyframe animations you want to control with pointer movement
 - For simple linear interpolation effects along one axis
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_KEY]',
@@ -1119,6 +1121,7 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 ```
 
 **Variables**:
+
 - `[SOURCE_KEY]`: Unique identifier for source element tracking mouse movement
 - `[TARGET_KEY]`: Unique identifier for target element to animate
 - `[HIT_AREA]`: 'self' or 'root'
@@ -1169,6 +1172,7 @@ This example shows a pointer-driven slider where the X position controls both a 
 ```
 
 **Important Notes**:
+
 - `axis` defaults to `'y'` when using `keyframeEffect` with `pointerMove`
 - For 2D effects that need both axes, you can use composite animations (Rule 11), `namedEffect`, or `customEffect`
 
@@ -1394,6 +1398,7 @@ Controlling movement direction for specific design needs:
 6. For controlling WebGL/WebGPU effects
 
 **When to use `keyframeEffect`**:
+
 1. When you want single-axis control using the `axis` parameter ('x' or 'y')
 2. For slider-like interactions driven by pointer position along one axis
 3. For 2D control, use two `keyframeEffect` interactions with `composite` (see Rule 11)
@@ -1505,12 +1510,14 @@ Controlling movement direction for specific design needs:
 - Custom easing per element
 
 **Single-Axis Keyframe Control (Rule 10)** - `keyframeEffect`:
+
 - Horizontal slider interactions
 - Vertical progress indicators
 - Single-axis reveal effects
 - Linear interpolation along one axis
 
 **Composite Keyframe (Rule 11)** - Two `keyframeEffect` + `composite`:
+
 - 2D element positioning with pointer
 - Combined X/Y transform animations
 - Independent axis control with keyframes
@@ -1566,16 +1573,16 @@ Controlling movement direction for specific design needs:
 
 ## Quick Reference: Effect Type Selection
 
-| Requirement                 | Use This                                       | Why                                                  |
-| --------------------------- | ---------------------------------------------- | ---------------------------------------------------- |
-| Standard 3D tilt            | `namedEffect: { type: 'Tilt3DMouse' }`         | GPU-optimized, battle-tested                         |
-| Cursor following            | `namedEffect: { type: 'TrackMouse' }`          | Built-in physics                                     |
-| Horizontal progress control | `keyframeEffect` + `params: { axis: 'x' }`     | Maps x position to keyframes                         |
-| Vertical progress control   | `keyframeEffect` + `params: { axis: 'y' }`     | Maps y position to keyframes                         |
-| Multi-axis keyframe (X + Y) | Two interactions with `keyframeEffect`         | Use `composite: 'add'` or `'accumulate'` for same prop |
-| Custom physics              | `customEffect`                                 | Full control over calculations                       |
-| Velocity-based effects      | `customEffect`                                 | Access to `progress.v`                               |
-| Grid/particle systems       | `customEffect`                                 | Can manipulate many elements                         |
+| Requirement                 | Use This                                   | Why                                                    |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| Standard 3D tilt            | `namedEffect: { type: 'Tilt3DMouse' }`     | GPU-optimized, battle-tested                           |
+| Cursor following            | `namedEffect: { type: 'TrackMouse' }`      | Built-in physics                                       |
+| Horizontal progress control | `keyframeEffect` + `params: { axis: 'x' }` | Maps x position to keyframes                           |
+| Vertical progress control   | `keyframeEffect` + `params: { axis: 'y' }` | Maps y position to keyframes                           |
+| Multi-axis keyframe (X + Y) | Two interactions with `keyframeEffect`     | Use `composite: 'add'` or `'accumulate'` for same prop |
+| Custom physics              | `customEffect`                             | Full control over calculations                         |
+| Velocity-based effects      | `customEffect`                             | Access to `progress.v`                                 |
+| Grid/particle systems       | `customEffect`                             | Can manipulate many elements                           |
 
 ---
 

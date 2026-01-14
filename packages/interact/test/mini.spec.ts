@@ -815,8 +815,6 @@ describe('interact (mini)', () => {
           },
         };
 
-
-
         Interact.destroy();
         Interact.create(repeatConfig);
 
@@ -1022,10 +1020,7 @@ describe('interact (mini)', () => {
             expect.objectContaining({
               keyframeEffect: expect.objectContaining({
                 name: 'custom-pointer-move',
-                keyframes: [
-                  { transform: 'translateX(-50px)' },
-                  { transform: 'translateX(50px)' },
-                ],
+                keyframes: [{ transform: 'translateX(-50px)' }, { transform: 'translateX(50px)' }],
               }),
             }),
             expect.objectContaining({

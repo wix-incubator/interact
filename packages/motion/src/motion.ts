@@ -118,8 +118,7 @@ function getScrubScene(
     });
   } else if (trigger.trigger === 'pointer-move') {
     const scrubOptions = animationOptions as ScrubAnimationOptions;
-    const { centeredToTarget, transitionDuration, transitionEasing } =
-      scrubOptions;
+    const { centeredToTarget, transitionDuration, transitionEasing } = scrubOptions;
     const axis = (trigger as { axis?: PointerMoveAxis }).axis;
 
     if (scrubOptions.keyframeEffect) {
