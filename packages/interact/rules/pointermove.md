@@ -6,12 +6,11 @@ These rules help generate pointer-driven interactions using the `@wix/interact` 
 
 ### Effect Types for PointerMove
 
-**IMPORTANT**: The `pointerMove` trigger provides 2D progress (x and y coordinates), which is incompatible with linear `keyframeEffect` animations. Only use:
+The `pointerMove` trigger provides 2D progress (x and y coordinates). You can use:
 
 1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion` that handle 2D progress internally
 2. **`customEffect`** (Advanced): Custom function receiving the 2D progress object for full control
-
-**Never use `keyframeEffect` with `pointerMove`** - keyframes require linear 0-1 progress and cannot handle 2D coordinates.
+3. **`keyframeEffect`** (Single-axis): The pointer position on a single axis is mapped to linear 0-1 progress for keyframe animations. Use `axis: 'x'` or `axis: 'y'` (defaults to `'y'`)
 
 ### Hit Area Configuration (`hitArea`)
 
@@ -1083,6 +1082,168 @@ For smoother animations, you can use `transitionDuration` and `transitionEasing`
 
 ---
 
+## Rule 10: KeyframeEffect with Axis Mapping
+
+**Use Case**: When you want to use standard keyframe animations driven by pointer movement along a single axis (e.g., horizontal sliders, vertical progress indicators, single-axis parallax effects)
+
+**When to Apply**:
+
+- For slider-like interactions driven by horizontal mouse position
+- For vertical scroll-like effects driven by vertical mouse position
+- When you have existing keyframe animations you want to control with pointer movement
+- For simple linear interpolation effects along one axis
+
+**Pattern**:
+
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'pointerMove',
+    params: {
+        hitArea: '[HIT_AREA]',
+        axis: '[AXIS]'  // 'x' or 'y'
+    },
+    effects: [
+        {
+            key: '[TARGET_KEY]',
+            keyframeEffect: {
+                name: '[ANIMATION_NAME]',
+                keyframes: [
+                    { [PROPERTY]: '[START_VALUE]' },
+                    { [PROPERTY]: '[END_VALUE]' }
+                ]
+            },
+            fill: '[FILL_MODE]',
+            centeredToTarget: [CENTERED_TO_TARGET]
+        }
+    ]
+}
+```
+
+**Variables**:
+
+- `[SOURCE_KEY]`: Unique identifier for source element tracking mouse movement
+- `[TARGET_KEY]`: Unique identifier for target element to animate
+- `[HIT_AREA]`: 'self' or 'root'
+- `[AXIS]`: 'x' (maps x position) or 'y' (maps y position) - **defaults to 'y'** (in `params`)
+- `[ANIMATION_NAME]`: Name for the keyframe animation
+- `[PROPERTY]`: CSS property to animate (transform, opacity, etc.)
+- `[START_VALUE]`: Value at progress 0 (left/top edge)
+- `[END_VALUE]`: Value at progress 1 (right/bottom edge)
+- `[FILL_MODE]`: 'none', 'forwards', 'backwards', 'both'
+- `[CENTERED_TO_TARGET]`: true or false
+
+**Example - Horizontal Slider with Multiple Targets**:
+
+This example shows a pointer-driven slider where the X position controls both a sliding element and an indicator's opacity/scale.
+
+```typescript
+{
+    interactions: [
+        {
+            key: 'pointer-container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'x' },
+            effects: [
+                {
+                    key: 'pointer-slider',
+                    effectId: 'slide-effect',
+                },
+                {
+                    key: 'pointer-indicator',
+                    effectId: 'indicator-effect',
+                },
+            ],
+        },
+    ],
+    effects: {
+        'slide-effect': {
+            keyframeEffect: {
+                name: 'slide-x',
+                keyframes: [
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(220px)' },
+                ],
+            },
+            fill: 'both',
+        },
+    },
+}
+```
+
+**Important Notes**:
+
+- `axis` defaults to `'y'` when using `keyframeEffect` with `pointerMove`
+- For 2D effects that need both axes, you can use composite animations (Rule 11), `namedEffect`, or `customEffect`
+
+---
+
+## Rule 11: Multi-Axis KeyframeEffect (X + Y)
+
+**Use Case**: Independent X/Y axis control using two `keyframeEffect` animations on the same target.
+
+**Pattern**:
+Define two interactions on the same source/target pair—one for `axis: 'x'`, one for `axis: 'y'`. When animating the same CSS property (e.g. `transform`), use the `composite` option to combine the effects.
+
+**Example - 2D Scale Control**:
+
+X axis controls `scaleX`, Y axis controls `scaleY`.
+
+```typescript
+{
+    interactions: [
+        {
+            key: 'composite-add-container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'x' },
+            effects: [
+                {
+                    key: 'composite-add-ball',
+                    effectId: 'scale-x-effect',
+                },
+            ],
+        },
+        {
+            key: 'composite-add-container',
+            trigger: 'pointerMove',
+            params: { hitArea: 'self', axis: 'y' },
+            effects: [
+                {
+                    key: 'composite-add-ball',
+                    effectId: 'scale-y-effect',
+                },
+            ],
+        },
+    ],
+    effects: {
+        'scale-x-effect': {
+            keyframeEffect: {
+                name: 'scale-x',
+                keyframes: [
+                    { transform: 'scaleX(0.5)' },
+                    { transform: 'scaleX(1.5)' },
+                ],
+            },
+            fill: 'both',
+            composite: 'add',
+        },
+        'scale-y-effect': {
+            keyframeEffect: {
+                name: 'scale-y',
+                keyframes: [
+                    { transform: 'scaleY(0.5)' },
+                    { transform: 'scaleY(1.5)' },
+                ],
+            },
+            fill: 'both',
+            composite: 'add',
+        },
+    },
+}
+```
+
+---
+
 ## Advanced Patterns and Combinations
 
 ### Responsive Pointer Effects
@@ -1236,7 +1397,11 @@ Controlling movement direction for specific design needs:
 5. For grid/particle systems with many elements
 6. For controlling WebGL/WebGPU effects
 
-**Never use `keyframeEffect`** with `pointerMove` - pointer progress is 2D and cannot map to linear keyframes.
+**When to use `keyframeEffect`**:
+
+1. When you want single-axis control using the `axis` parameter ('x' or 'y')
+2. For slider-like interactions driven by pointer position along one axis
+3. For 2D control, use two `keyframeEffect` interactions with `composite` (see Rule 11)
 
 ### Performance Guidelines
 
@@ -1344,6 +1509,20 @@ Controlling movement direction for specific design needs:
 - Combined transform effects per layer
 - Custom easing per element
 
+**Single-Axis Keyframe Control (Rule 10)** - `keyframeEffect`:
+
+- Horizontal slider interactions
+- Vertical progress indicators
+- Single-axis reveal effects
+- Linear interpolation along one axis
+
+**Composite Keyframe (Rule 11)** - Two `keyframeEffect` + `composite`:
+
+- 2D element positioning with pointer
+- Combined X/Y transform animations
+- Independent axis control with keyframes
+- Declarative 2D animations without customEffect
+
 ### Troubleshooting Common Issues
 
 **Poor pointer responsiveness**:
@@ -1390,24 +1569,21 @@ Controlling movement direction for specific design needs:
 - Ensure proper hit area configuration
 - Test mouse event propagation
 
-**keyframeEffect not working with pointerMove**:
-
-- This is expected! `keyframeEffect` requires linear 0-1 progress
-- `pointerMove` provides 2D progress (x, y object)
-- Use `namedEffect` or `customEffect` instead
-
 ---
 
 ## Quick Reference: Effect Type Selection
 
-| Requirement            | Use This                               | Why                            |
-| ---------------------- | -------------------------------------- | ------------------------------ |
-| Standard 3D tilt       | `namedEffect: { type: 'Tilt3DMouse' }` | GPU-optimized, battle-tested   |
-| Cursor following       | `namedEffect: { type: 'TrackMouse' }`  | Built-in physics               |
-| Custom physics         | `customEffect`                         | Full control over calculations |
-| Velocity-based effects | `customEffect`                         | Access to `progress.v`         |
-| Grid/particle systems  | `customEffect`                         | Can manipulate many elements   |
+| Requirement                 | Use This                                   | Why                                                    |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| Standard 3D tilt            | `namedEffect: { type: 'Tilt3DMouse' }`     | GPU-optimized, battle-tested                           |
+| Cursor following            | `namedEffect: { type: 'TrackMouse' }`      | Built-in physics                                       |
+| Horizontal progress control | `keyframeEffect` + `params: { axis: 'x' }` | Maps x position to keyframes                           |
+| Vertical progress control   | `keyframeEffect` + `params: { axis: 'y' }` | Maps y position to keyframes                           |
+| Multi-axis keyframe (X + Y) | Two interactions with `keyframeEffect`     | Use `composite: 'add'` or `'accumulate'` for same prop |
+| Custom physics              | `customEffect`                             | Full control over calculations                         |
+| Velocity-based effects      | `customEffect`                             | Access to `progress.v`                                 |
+| Grid/particle systems       | `customEffect`                             | Can manipulate many elements                           |
 
 ---
 
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, and custom effect patterns as outlined in the development plan Stage 1.5.
+These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframe effects, composite animations, and custom effect patterns.

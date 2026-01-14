@@ -569,6 +569,7 @@ export type Progress = {
   v?: { x: number; y: number };
   active?: boolean;
 };
+
 export interface MouseAnimationInstance {
   target: HTMLElement;
   play: () => void;
@@ -662,6 +663,8 @@ export type TimeAnimationOptions = {
   reversed?: boolean;
 };
 
+export type PointerMoveAxis = 'x' | 'y';
+
 type ScrubAnimationDataBase = {
   id?: string;
   keyframeEffect?: MotionKeyframeEffect;
@@ -740,9 +743,10 @@ export interface ScrubPointerScene {
   centeredToTarget?: boolean;
   transitionDuration?: number;
   transitionEasing?: ScrubTransitionEasing;
-  getProgress(): Progress;
-  effect(p: Progress): void;
+  getProgress(): Progress | number;
+  effect(__: any, p: Progress): void;
   disabled: boolean;
   destroy(): void;
   allowActiveEvent?: boolean;
+  ready?: Promise<void>;
 }
