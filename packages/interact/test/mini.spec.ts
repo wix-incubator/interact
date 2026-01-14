@@ -3240,7 +3240,7 @@ describe('interact (mini)', () => {
       const webSpy = vi.fn(() => [
         {
           name: 'RegisteredTestEffect',
-          duration: 123,
+          duration: 100,
           keyframes: registeredKeyframes,
         },
       ]);
@@ -3270,7 +3270,7 @@ describe('interact (mini)', () => {
         effects: {
           'registered-effect': {
             namedEffect: { type: 'RegisteredTestEffect' } as NamedEffect,
-            duration: 123,
+            duration: 100,
           },
         },
       });

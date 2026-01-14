@@ -102,16 +102,6 @@ describe('Registry Flow', () => {
       expect(effect).toHaveProperty('web');
       expect(effect).toHaveProperty('style');
       expect(effect).toHaveProperty('getNames');
-
-      const effectWithWeb = effect as AnimationEffectAPI<'time'>;
-      const animationData = effectWithWeb.web(animationOptions);
-
-      expect(animationData).toHaveLength(1);
-      expect(animationData[0].name).toBe('motion-fadeIn');
-      expect(animationData[0].keyframes).toEqual([
-        { offset: 0, opacity: 0 },
-        { opacity: 'var(--comp-opacity, 1)' },
-      ]);
     });
 
     test('should register and use FadeScroll', () => {

@@ -380,8 +380,6 @@ describe('motion.ts', () => {
       let mockKeyframeEffect: any;
       let mockViewTimeline: any;
 
-      // CustomMouse is registered at module scope for the entire suite.
-
       beforeEach(() => {
         vi.clearAllMocks();
         // Create mock HTMLElement
@@ -517,10 +515,10 @@ describe('motion.ts', () => {
         });
 
         CustomMouse.mockImplementation(function (options: any) {
-        return vi.fn(function (target_: any) {
-          return new (CustomMouseMock as any)(target_, options);
+          return vi.fn(function (target_: any) {
+            return new (CustomMouseMock as any)(target_, options);
+          });
         });
-      });
 
         const result = getWebAnimation(mockElement.id, animationOptions, {
           element: mockElement,
