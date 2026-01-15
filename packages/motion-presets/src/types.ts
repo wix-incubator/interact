@@ -186,10 +186,7 @@ export type EntranceAnimation =
   | GrowIn
   | RevealIn
   | BlurIn;
-export type EntranceAnimations = Record<
-  EntranceAnimation['type'],
-  AnimationEffectAPI<'time'>
->;
+export type EntranceAnimations = Record<EntranceAnimation['type'], AnimationEffectAPI<'time'>>;
 
 export type Breathe = {
   type: 'Breathe';
@@ -282,10 +279,7 @@ export type OngoingAnimation =
   | Bounce
   | Cross
   | DVD;
-export type OngoingAnimations = Record<
-  OngoingAnimation['type'],
-  AnimationEffectAPI<'time'>
->;
+export type OngoingAnimations = Record<OngoingAnimation['type'], AnimationEffectAPI<'time'>>;
 
 export type ArcScroll = {
   type: 'ArcScroll';
@@ -440,10 +434,7 @@ export type ScrollPreset = (
   config?: Record<string, any>,
 ) => AnimationData[];
 
-export type ScrollAnimations = Record<
-  ScrollAnimation['type'],
-  WebAnimationEffectFactory<'scrub'>
->;
+export type ScrollAnimations = Record<ScrollAnimation['type'], WebAnimationEffectFactory<'scrub'>>;
 
 export type BgCloseUp = {
   type: 'BgCloseUp';
@@ -626,10 +617,7 @@ export type MouseAnimation =
   | Track3DMouse
   | TrackMouse;
 
-  export type MouseAnimations = Record<
-  MouseAnimation['type'],
-  MouseAnimationFactoryCreate
->;
+export type MouseAnimations = Record<MouseAnimation['type'], MouseAnimationFactoryCreate>;
 
 export type NamedEffect =
   | EntranceAnimation
@@ -638,6 +626,5 @@ export type NamedEffect =
   | MouseAnimation
   | BackgroundScrollAnimation;
 
-export type MotionPresetsAnimationOptions<
-  TNamedEffect extends NamedEffect = NamedEffect,
-> = AnimationOptions & { namedEffect?: TNamedEffect };
+export type MotionPresetsAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> =
+  AnimationOptions & { namedEffect?: TNamedEffect };

@@ -1,7 +1,14 @@
 import { describe, expect, test, vi } from 'vitest';
 import { registerEffects, getRegisteredEffect } from '../src/api/registry';
 import { getNamedEffect } from '../src/api/common';
-import type { AnimationOptions, AnimationEffectAPI, TimeAnimationOptions, AnimationExtraOptions, ScrollEffectModule, WebAnimationEffectFactory } from '../src/types';
+import type {
+  AnimationOptions,
+  AnimationEffectAPI,
+  TimeAnimationOptions,
+  AnimationExtraOptions,
+  ScrollEffectModule,
+  WebAnimationEffectFactory,
+} from '../src/types';
 import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
 import type { ScrubAnimationOptions } from '@wix/motion-presets/types';
 
@@ -10,7 +17,7 @@ vi.mock('fastdom', () => ({
   default: {
     measure: vi.fn((fn) => fn()),
     mutate: vi.fn((fn) => fn()),
-  }
+  },
 }));
 
 describe('Registry Flow', () => {
@@ -27,14 +34,14 @@ describe('Registry Flow', () => {
 
     test('should return null for unregistered effects', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      
+
       const result = getRegisteredEffect('NonExistent' as any);
-      
+
       expect(result).toBeNull();
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('NonExistent not found in registry')
+        expect.stringContaining('NonExistent not found in registry'),
       );
-      
+
       consoleWarnSpy.mockRestore();
     });
   });

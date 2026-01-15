@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import ShapeScroll from '../ShapeScroll';
 import type { ShapeScroll as ShapeScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
-    
+
 describe('ShapeScroll', () => {
   test('default values', () => {
     const mockOptions: ScrubAnimationOptions = {

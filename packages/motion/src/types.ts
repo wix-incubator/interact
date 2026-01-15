@@ -96,8 +96,7 @@ export type MouseAnimationFactoryCreate = (
   dom?: DomApi,
 ) => MouseAnimationFactory;
 
-export type NamedEffect =
-  {type: string} & Record<string, unknown>;
+export type NamedEffect = { type: string } & Record<string, unknown>;
 
 export type CustomEffect =
   | {
@@ -157,7 +156,6 @@ export type TimeAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect>
 
 export type PointerMoveAxis = 'x' | 'y';
 
-
 type ScrubAnimationDataBase<TNamedEffect extends NamedEffect = NamedEffect> = {
   id?: string;
   keyframeEffect?: MotionKeyframeEffect;
@@ -179,8 +177,8 @@ type ScrubAnimationDataBase<TNamedEffect extends NamedEffect = NamedEffect> = {
 
 export type ScrubAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> =
   ScrubAnimationDataBase<TNamedEffect> & {
-  duration?: LengthPercentage;
-};
+    duration?: LengthPercentage;
+  };
 
 type AnimationDataExtra = {
   name?: string; // TODO:  need to be added to all animations and then be made required
@@ -269,4 +267,4 @@ export type EffectModule =
   | ScrollEffectModule
   | MouseEffectModule
   | WebAnimationEffectFactory<'scrub'>
-  | BackgroundScrollEffectModule
+  | BackgroundScrollEffectModule;

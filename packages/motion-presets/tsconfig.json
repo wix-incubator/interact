@@ -7,11 +7,5 @@
     "declaration": true,
     "composite": true
   },
-  "include": [
-    "src/**/*",
-    "src"
-  ]
+  "include": ["src/**/*", "src"]
 }
-
-
-

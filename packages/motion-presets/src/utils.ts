@@ -23,21 +23,14 @@ export function mapRange(
   targetMax: number,
   num: number,
 ): number {
-  return (
-    ((num - sourceMin) * (targetMax - targetMin)) / (sourceMax - sourceMin) +
-    targetMin
-  );
+  return ((num - sourceMin) * (targetMax - targetMin)) / (sourceMax - sourceMin) + targetMin;
 }
 
 export function distance2d([x1, y1]: Point, [x2, y2]: Point): number {
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
 }
 
-export function getAngleInDeg(
-  p1: Point = [0, 0],
-  p2: Point = [0, 0],
-  offset: number = 0,
-): number {
+export function getAngleInDeg(p1: Point = [0, 0], p2: Point = [0, 0], offset: number = 0): number {
   const angle = (Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * 180) / Math.PI;
   return (360 + offset + angle) % 360;
 }
@@ -52,16 +45,11 @@ type ClipPolygonTemplateParams = {
   minimum: number;
 };
 
-const CLIP_POLYGON_TEMPLATES: Record<
-  Direction,
-  (params: ClipPolygonTemplateParams) => string
-> = {
+const CLIP_POLYGON_TEMPLATES: Record<Direction, (params: ClipPolygonTemplateParams) => string> = {
   initial: ({ top, bottom, left, right }) =>
     `${left}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${left}% ${bottom}%`,
   top: ({ top, left, right, minimum }) =>
-    `${left}% ${top}%, ${right}% ${top}%, ${right}% ${
-      top + minimum
-    }%, ${left}% ${top + minimum}%`,
+    `${left}% ${top}%, ${right}% ${top}%, ${right}% ${top + minimum}%, ${left}% ${top + minimum}%`,
   right: ({ top, bottom, right, minimum }) =>
     `${right - minimum}% ${top}%, ${right}% ${top}%, ${right}% ${bottom}%, ${
       right - minimum
@@ -143,9 +131,7 @@ export function getCssUnits(type: 'percentage' | string) {
 }
 
 export function getEasing(easing?: keyof typeof cssEasings | string): string {
-  return easing
-    ? cssEasings[easing as keyof typeof cssEasings] || easing
-    : cssEasings.linear;
+  return easing ? cssEasings[easing as keyof typeof cssEasings] || easing : cssEasings.linear;
 }
 
 export function getJsEasing(
@@ -208,15 +194,11 @@ export function getTransformParams(
 ) {
   const x = `calc(var(--motion-height, 100%) * ${
     scale * originDirection.dy * Math.sin(-angleInRad)
-  } + var(--motion-width, 100%) * ${
-    scale * originDirection.dx * Math.cos(angleInRad)
-  })`;
+  } + var(--motion-width, 100%) * ${scale * originDirection.dx * Math.cos(angleInRad)})`;
 
   const y = `calc(var(--motion-height, 100%) * ${
     scale * originDirection.dy * Math.cos(-angleInRad)
-  } + var(--motion-width, 100%) * ${
-    scale * originDirection.dx * Math.sin(angleInRad)
-  })`;
+  } + var(--motion-width, 100%) * ${scale * originDirection.dx * Math.sin(angleInRad)})`;
 
   return { x, y };
 }
@@ -268,8 +250,7 @@ export function keyframesToDuration(
   duration: number,
 ) {
   return keyframes_translation.map(({ keyframe }, idx) => {
-    const stepDuration =
-      keyframe - (idx > 0 ? keyframes_translation[idx - 1].keyframe : 0);
+    const stepDuration = keyframe - (idx > 0 ? keyframes_translation[idx - 1].keyframe : 0);
     return duration * (stepDuration / 100);
   });
 }
@@ -330,16 +311,12 @@ const generateShuttersClipPath = (
       clipPathStart.push(
         `0% ${clipStart}%, 100% ${clipStart}%, 100% ${clipStart}%, 0% ${clipStart}%`,
       );
-      clipPathEnd.push(
-        `0% ${clipStart}%, 100% ${clipStart}%, 100% ${clipEnd}%, 0% ${clipEnd}%`,
-      );
+      clipPathEnd.push(`0% ${clipStart}%, 100% ${clipStart}%, 100% ${clipEnd}%, 0% ${clipEnd}%`);
     } else {
       clipPathStart.push(
         `${clipStart}% 0%, ${clipStart}% 100%, ${clipStart}% 100%, ${clipStart}% 0%`,
       );
-      clipPathEnd.push(
-        `${clipStart}% 0%, ${clipStart}% 100%, ${clipEnd}% 100%, ${clipEnd}% 0%`,
-      );
+      clipPathEnd.push(`${clipStart}% 0%, ${clipStart}% 100%, ${clipEnd}% 100%, ${clipEnd}% 0%`);
     }
   }
 
@@ -352,11 +329,7 @@ export function getShuttersClipPaths(
   staggered: boolean,
   reverse?: boolean,
 ) {
-  const { start, end } = generateShuttersClipPath(
-    direction,
-    shutterCount,
-    staggered,
-  );
+  const { start, end } = generateShuttersClipPath(direction, shutterCount, staggered);
 
   if (reverse) {
     start.reverse();
@@ -379,9 +352,7 @@ export function toKeyframeValue(
   useValue = false,
   fallback = '',
 ) {
-  return useValue
-    ? custom[key]
-    : `var(${key}${fallback ? `,${fallback}` : ''})`;
+  return useValue ? custom[key] : `var(${key}${fallback ? `,${fallback}` : ''})`;
 }
 
 export function getTimingFactor(

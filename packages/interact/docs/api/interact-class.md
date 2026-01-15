@@ -39,7 +39,7 @@ class Interact {
   static destroy(): void
   static setup(options: { forceReducedMotion?: boolean, ... }): void
   static registerEffects(effects: Record<string, NamedEffect>): void
-  
+
   // Instance methods
   constructor()
   init(config: InteractConfig): void
@@ -258,11 +258,13 @@ Interact.setup({
 Registers named-effect (or presets) modules so you can reference them via `namedEffect` (e.g. presets from `@wix/motion-presets` or your own custom-made effects).
 
 **Parameters:**
+
 - `effects: Record<string, EffectModule>` - An object mapping effect names (used as `namedEffect.type`) to effect modules
 
 **Returns:** `void`
 
 **Example:**
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 import * as presets from '@wix/motion-presets';
@@ -272,20 +274,25 @@ Interact.registerEffects(presets);
 
 // Now you can use namedEffect in your configuration
 const config = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    effects: [{
-      namedEffect: { type: 'FadeIn' },  // Works because FadeIn is registered
-      duration: 1000
-    }]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' }, // Works because FadeIn is registered
+          duration: 1000,
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);
 ```
 
 **Selective Registration:**
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 import { FadeIn, SlideIn } from '@wix/motion-presets';
@@ -295,19 +302,25 @@ Interact.registerEffects({ FadeIn, SlideIn });
 ```
 
 **Custom effect registration:**
+
 ```typescript
 import { Interact } from '@wix/interact/web';
 
 Interact.registerEffects({
   CustomFadeIn: {
-    web: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }],
+    web: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
     getNames: () => ['CustomFadeIn'],
-    style: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }]
+    style: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
   },
 });
 ```
 
 **Details:**
+
 - Effects must be registered before calling `Interact.create()` with configurations that reference them
 - Registration is global — once registered, effects are available to all Interact instances
 

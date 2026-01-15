@@ -39,14 +39,18 @@ Interact.registerEffects({ FadeIn });
 
 // Now you can use namedEffect in your config
 const config = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    effects: [{
-      namedEffect: { type: 'FadeIn' },
-      duration: 1000
-    }]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' },
+          duration: 1000,
+        },
+      ],
+    },
+  ],
 };
 
 Interact.create(config);

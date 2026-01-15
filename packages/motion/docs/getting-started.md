@@ -51,9 +51,13 @@ import { registerEffects } from '@wix/motion';
 
 registerEffects({
   CustomFadeIn: {
-    web: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }],
+    web: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
     getNames: () => ['CustomFadeIn'],
-    style: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }]
+    style: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
   },
 });
 ```

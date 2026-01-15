@@ -4,7 +4,7 @@ import * as DropIn from '../DropIn';
 import { baseMockOptions } from './testUtils';
 import type { DropIn as DropInType, AnimationData } from '../../../types';
 
-  describe('DropIn', () => {
+describe('DropIn', () => {
   describe('web method', () => {
     test('DropIn animation with default options', () => {
       const duration = 1000;
@@ -150,7 +150,7 @@ import type { DropIn as DropInType, AnimationData } from '../../../types';
         },
       ];
 
-    const result = DropIn.style?.(mockOptions);
+      const result = DropIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

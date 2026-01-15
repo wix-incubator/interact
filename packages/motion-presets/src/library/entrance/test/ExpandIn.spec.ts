@@ -183,7 +183,7 @@ describe('ExpandIn', () => {
         },
       ];
 
-    const result = ExpandIn.style?.(mockOptions);
+      const result = ExpandIn.style?.(mockOptions);
 
       expect(result).toMatchObject(expectedResult);
     });

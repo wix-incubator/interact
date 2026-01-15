@@ -821,7 +821,7 @@ describe('BounceIn style method', () => {
       },
     ];
 
-    const result =  BounceIn.style?.(mockOptions);
+    const result = BounceIn.style?.(mockOptions);
 
     expect(result).toMatchObject(expectedResult);
   });
@@ -925,7 +925,7 @@ describe('BounceIn style method', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('BounceIn style with left direction', () => {  
+  test('BounceIn style with left direction', () => {
     const duration = 1000;
     const mockOptions = {
       ...baseMockOptions,

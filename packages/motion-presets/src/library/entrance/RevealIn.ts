@@ -1,15 +1,6 @@
-import type {
-  RevealIn,
-  AnimationExtraOptions,
-  DomApi,
-  TimeAnimationOptions,
-} from '../../types';
+import type { RevealIn, AnimationExtraOptions, DomApi, TimeAnimationOptions } from '../../types';
 import type { Direction } from '../../utils';
-import {
-  getAdjustedDirection,
-  getClipPolygonParams,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import { getAdjustedDirection, getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-revealIn'];
