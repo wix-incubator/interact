@@ -3,8 +3,7 @@ const modal = document.getElementById('code-modal');
 const modalCode = document.getElementById('modal-code');
 
 const codeSnippets = {
-    spread:
-`const mobileEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
+  spread: `const mobileEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
 ...
 ...
 {
@@ -162,16 +161,16 @@ effects: [
     }
 ]
 },
- `
+ `,
 };
 
 function openModal(type) {
-    modalCode.textContent = codeSnippets[type];
-    // Syntax highlight (highlight.js) after injecting text
-    modalCode.classList.add('language-javascript');
-    if (window.hljs) window.hljs.highlightElement(modalCode);
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  modalCode.textContent = codeSnippets[type];
+  // Syntax highlight (highlight.js) after injecting text
+  modalCode.classList.add('language-javascript');
+  if (window.hljs) window.hljs.highlightElement(modalCode);
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {

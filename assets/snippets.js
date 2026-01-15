@@ -135,17 +135,17 @@ effects: [
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Populate code blocks with plain text
-    const displays = document.querySelectorAll('.codeDisplay');
-    displays.forEach(d => {
-        const id = d.getAttribute('data-snippet');
-        if (snippets[id]) {
-            d.textContent = snippets[id];
-            // Syntax highlight (highlight.js) after injecting text
-            d.classList.add('language-javascript');
-            if (window.hljs) window.hljs.highlightElement(d);
-        }
-    });
+  // 1. Populate code blocks with plain text
+  const displays = document.querySelectorAll('.codeDisplay');
+  displays.forEach((d) => {
+    const id = d.getAttribute('data-snippet');
+    if (snippets[id]) {
+      d.textContent = snippets[id];
+      // Syntax highlight (highlight.js) after injecting text
+      d.classList.add('language-javascript');
+      if (window.hljs) window.hljs.highlightElement(d);
+    }
+  });
 
   // 2. Updated Copy Logic: Copies the specific code for the card
   document.querySelectorAll('.copy-btn').forEach((btn) => {

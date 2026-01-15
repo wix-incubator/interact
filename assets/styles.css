@@ -30,24 +30,22 @@ interact-element {
 
 /* HERO GRID STYLES */
 .hero-grid-container {
-    display: grid;
-    /* Dense grid of small lines */
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
-    width: 100%;
-    height: 100%;
-    /* Masking the edges slightly */
-    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-    
+  display: grid;
+  /* Dense grid of small lines */
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+  width: 100%;
+  height: 100%;
+  /* Masking the edges slightly */
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 
-
 .text-stroke-black {
-    -webkit-text-stroke-width: 12px;
-    -webkit-text-stroke-color: #111111;
-    paint-order: stroke fill;
-    filter: drop-shadow( 0px 0px 2px #111111);
+  -webkit-text-stroke-width: 12px;
+  -webkit-text-stroke-color: #111111;
+  paint-order: stroke fill;
+  filter: drop-shadow(0px 0px 2px #111111);
 }
 
 .grid-cell {
@@ -59,18 +57,18 @@ interact-element {
 }
 
 .grid-line {
-    width: 2px;
-    height: 24px; 
-    background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, #FFFFFF 100%);
-    transform-origin: top; 
-    will-change: transform;
-    border-radius: 2px;
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, #ffffff 100%);
+  transform-origin: top;
+  will-change: transform;
+  border-radius: 2px;
 }
 
 @media (max-width: 1000px) {
-    .grid-line {
-        height: 12px;
-    }
+  .grid-line {
+    height: 12px;
+  }
 }
 
 /* CRITICAL ANIMATION STYLES (Preserved for other sections) */
@@ -102,51 +100,60 @@ interact-element {
   transform: translate(-50%, -50%);
 }
 /* Z-Index desktop card spread */
-[data-interact-key="spread-card-0"] .spread-card { z-index: 5; }
-[data-interact-key="spread-card-1"] .spread-card { z-index: 4; }
-[data-interact-key="spread-card-2"] .spread-card { z-index: 3; }
-[data-interact-key="spread-card-3"] .spread-card { z-index: 2; }
-[data-interact-key="spread-card-4"] .spread-card { z-index: 1; }
+[data-interact-key='spread-card-0'] .spread-card {
+  z-index: 5;
+}
+[data-interact-key='spread-card-1'] .spread-card {
+  z-index: 4;
+}
+[data-interact-key='spread-card-2'] .spread-card {
+  z-index: 3;
+}
+[data-interact-key='spread-card-3'] .spread-card {
+  z-index: 2;
+}
+[data-interact-key='spread-card-4'] .spread-card {
+  z-index: 1;
+}
 
 /* Mobile overrides for card spread */
 @media (max-width: 1000px) {
-    #spread-section {
-        height: 500vh !important;
-    }
+  #spread-section {
+    height: 500vh !important;
+  }
 
-    .spread-card {
-        top: 15vh; 
-        left: 50%;
-        width: 85vw;
-        height: 65vh;
-        max-width: 400px;
-        background-size: contain;
-        box-shadow: none; 
-        border-radius: 0; 
-        transform: translateX(-50%);
-    }
-    [data-interact-key="spread-card-0"] .spread-card {
-        transform: translateX(-50%) translateY(0);
-        z-index: 1;
-    }
-    [data-interact-key="spread-card-1"] .spread-card {
-        transform: translateX(-50%) translateY(100vh);
-        z-index: 2;
-    }
-    [data-interact-key="spread-card-2"] .spread-card {
-        transform: translateX(-50%) translateY(100vh);
-        z-index: 3;
-    }
-    [data-interact-key="spread-card-3"] .spread-card {
-        transform: translateX(-50%) translateY(100vh);
-        z-index: 4;
-    }
-    [data-interact-key="spread-card-4"] .spread-card {
-        transform: translateX(-50%) translateY(100vh);
-        z-index: 5;
-    }
+  .spread-card {
+    top: 15vh;
+    left: 50%;
+    width: 85vw;
+    height: 65vh;
+    max-width: 400px;
+    background-size: contain;
+    box-shadow: none;
+    border-radius: 0;
+    transform: translateX(-50%);
+  }
+  [data-interact-key='spread-card-0'] .spread-card {
+    transform: translateX(-50%) translateY(0);
+    z-index: 1;
+  }
+  [data-interact-key='spread-card-1'] .spread-card {
+    transform: translateX(-50%) translateY(100vh);
+    z-index: 2;
+  }
+  [data-interact-key='spread-card-2'] .spread-card {
+    transform: translateX(-50%) translateY(100vh);
+    z-index: 3;
+  }
+  [data-interact-key='spread-card-3'] .spread-card {
+    transform: translateX(-50%) translateY(100vh);
+    z-index: 4;
+  }
+  [data-interact-key='spread-card-4'] .spread-card {
+    transform: translateX(-50%) translateY(100vh);
+    z-index: 5;
+  }
 }
-
 
 /* TUNNEL EFFECT STYLES */
 .tunnel-container {
@@ -207,35 +214,34 @@ interact-element {
 }
 
 .h-card {
-    width: 600px;
-    height: 400px;
-    flex-shrink: 0;
-    background-size: cover;
-    background-position: center;
-    border-radius: 4px;
-    transform-origin: center center;
-    will-change: transform;
-    /* Added for hover content */
-    position: relative;
-    overflow: hidden; 
-    border: 1px solid rgba(255, 255, 255, 0.8);
+  width: 600px;
+  height: 400px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  transform-origin: center center;
+  will-change: transform;
+  /* Added for hover content */
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 /* Mobile responsive for horizontal scroll cards */
 @media (max-width: 1000px) {
-    .horizontal-track {
-        gap: 4vw;
-        padding-left: 2.5vw; /* Centers 95vw card: 50vw - 47.5vw */
-        padding-right: 50vw;
-    }
-    
-    .h-card {
-        width: 95vw;
-        height: 63.33vw; /* Maintains 1.5:1 aspect ratio */
-        border-radius: 12px;
-    }
-}
+  .horizontal-track {
+    gap: 4vw;
+    padding-left: 2.5vw; /* Centers 95vw card: 50vw - 47.5vw */
+    padding-right: 50vw;
+  }
 
+  .h-card {
+    width: 95vw;
+    height: 63.33vw; /* Maintains 1.5:1 aspect ratio */
+    border-radius: 12px;
+  }
+}
 
 /* NEW COMPONENT STYLES */
 .custom-scrollbar::-webkit-scrollbar {
@@ -333,10 +339,10 @@ interact-element {
   transform-origin: center;
 }
 @media (max-width: 740px) {
-    .pyramid-wrapper {
-        transform-origin: top center;
-        transform: scale(0.45);
-    }
+  .pyramid-wrapper {
+    transform-origin: top center;
+    transform: scale(0.45);
+  }
 }
 
 /* Target Element for Rotation */
@@ -460,42 +466,42 @@ interact-element {
 }
 
 .hljs {
-    background: transparent !important;
+  background: transparent !important;
 }
 
 /* --- MENGER SPONGE STYLES --- */
 
 /* Mobile fix: Give sections more vertical space to prevent clipping */
 @media (max-width: 1000px) {
-    /* Cube section */
-    [data-interact-key="cube-section"] > section {
-        min-height: 100vh;
-        height: auto;
-        padding-bottom: 6rem;
-    }
-    
-    [data-interact-key="cube-section"] .sticky-wrapper {
-        position: relative;
-        height: auto;
-        min-height: 100vh;
-        padding-top: 2rem;
-        padding-bottom: 6rem;
-    }
+  /* Cube section */
+  [data-interact-key='cube-section'] > section {
+    min-height: 100vh;
+    height: auto;
+    padding-bottom: 6rem;
+  }
 
-    /* Performance section */
-    [data-interact-key="performance-section"] > section {
-        min-height: 100vh;
-        height: auto;
-        padding-bottom: 4rem;
-    }
-    
-    [data-interact-key="performance-section"] .sticky-wrapper {
-        position: relative;
-        height: auto;
-        min-height: 100vh;
-        padding-top: 2rem;
-        padding-bottom: 6rem;
-    }
+  [data-interact-key='cube-section'] .sticky-wrapper {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 6rem;
+  }
+
+  /* Performance section */
+  [data-interact-key='performance-section'] > section {
+    min-height: 100vh;
+    height: auto;
+    padding-bottom: 4rem;
+  }
+
+  [data-interact-key='performance-section'] .sticky-wrapper {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    padding-top: 2rem;
+    padding-bottom: 6rem;
+  }
 }
 
 .scene-container-2 {
