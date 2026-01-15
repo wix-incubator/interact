@@ -127,7 +127,7 @@ export function getAdjustedDirection(
   const index = availableDirections.indexOf(direction);
   const length = availableDirections.length;
   const shiftBy = Math.round(((angleInDeg || 0) / 360) * length);
-  const newIndex = (index + (length - 1) * shiftBy) % length; // eslint-disable-line no-mixed-operators
+  const newIndex = (index + (length - 1) * shiftBy) % length;
   return availableDirections[newIndex];
 }
 
