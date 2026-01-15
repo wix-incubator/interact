@@ -127,6 +127,7 @@ export default function create(options: ScrubAnimationOptions) {
     {
       ...options,
       fill,
+      // TODO: refactor easings
       easing: easings.sineInOut,
       startOffsetAdd,
       endOffsetAdd,

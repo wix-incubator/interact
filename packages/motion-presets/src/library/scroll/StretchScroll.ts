@@ -32,11 +32,13 @@ const KEYFRAMES_RANGE_MAP = {
     {
       scale: `${scaleX} ${scaleY}`,
       translate: `0 ${100 * (scaleY - 1)}%`,
+      // TODO: refactor easings
       easing: easings.backInOut,
     },
     {
       scale: '1 1',
       translate: '0 0',
+      // TODO: refactor easings
       easing: easings.backInOut,
     },
     {

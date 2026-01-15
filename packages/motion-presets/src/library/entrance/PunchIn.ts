@@ -92,6 +92,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
           offset: INITIAL_FRAME_OFFSET,
           translate: toKeyframeValue(custom, '--motion-translate', asWeb),
           scale: '0',
+          // TODO: refactor easings
           easing: easings.expoIn,
         },
         ...keyframes,

@@ -53,6 +53,7 @@ registerEffects({
   CustomFadeIn: {
     web: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }],
     getNames: () => ['CustomFadeIn'],
+    style: (options) => [{ ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] }]
   },
 });
 ```
