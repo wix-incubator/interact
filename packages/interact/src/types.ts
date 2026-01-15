@@ -7,6 +7,8 @@ import type {
 
 export type { RangeOffset };
 
+export type PointerMoveAxis = 'x' | 'y';
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
@@ -32,7 +34,7 @@ export type TriggerType =
   | 'activate'
   | 'interest';
 
-export type ViewEnterType = 'once' | 'repeat' | 'alternate';
+export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 
 export type TransitionMethod = 'add' | 'remove' | 'toggle' | 'clear';
 
@@ -53,6 +55,7 @@ export type ViewEnterParams = {
 
 export type PointerMoveParams = {
   hitArea?: 'root' | 'self';
+  axis?: PointerMoveAxis;
 };
 
 export type AnimationEndParams = {
@@ -169,8 +172,8 @@ export type InteractConfig = {
   interactions: Interaction[];
 };
 
-export type AnimationOptions<T extends 'time' | 'scrub'> =
-  MotionAnimationOptions<T> & EffectEffectProperty;
+export type AnimationOptions<T extends 'time' | 'scrub'> = MotionAnimationOptions<T> &
+  EffectEffectProperty;
 
 /// ////////////////////////////////////////////////////////
 /// ////////////////////////////////////////////////////////
@@ -181,11 +184,17 @@ export interface IInteractionController {
   key: string | undefined;
   connected: boolean;
   sheet: CSSStyleSheet | null;
+  useFirstChild: boolean;
   _observers: WeakMap<HTMLElement, MutationObserver>;
   connect(key?: string): void;
-  disconnect(): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
   update(): void;
-  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean): void;
+  toggleEffect(
+    effectId: string,
+    method: StateParams['method'],
+    item?: HTMLElement | null,
+    isLegacy?: boolean,
+  ): void;
   getActiveEffects(): string[];
   renderStyle(cssRules: string[]): void;
   watchChildList(listContainer: string): void;
@@ -198,12 +207,8 @@ export interface IInteractElement extends HTMLElement {
   connectedCallback(): void;
   disconnectedCallback(): void;
   connect(key?: string): void;
-  disconnect(): void;
-  toggleEffect(
-    effectId: string,
-    method: StateParams['method'],
-    item?: HTMLElement | null,
-  ): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
+  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null): void;
   getActiveEffects(): string[];
 }
 
@@ -250,7 +255,7 @@ export type HandlerObject = {
   source: HTMLElement;
   target: HTMLElement;
   cleanup: () => void;
-  handler?: () => void;
+  handler?: (isIntersecting?: boolean) => void;
 };
 
 export type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
@@ -265,10 +270,7 @@ export type InteractCache = {
   interactions: {
     [path: string]: {
       triggers: Interaction[];
-      effects: Record<
-        string,
-        (InteractionTrigger & { effect: Effect | EffectRef })[]
-      >;
+      effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
       interactionIds: Set<string>;
       selectors: Set<string>;
     };
@@ -282,4 +284,5 @@ export type CreateTransitionCSSParams = {
   properties?: TransitionProperty[];
   childSelector?: string;
   selectorCondition?: string;
+  useFirstChild?: boolean;
 };

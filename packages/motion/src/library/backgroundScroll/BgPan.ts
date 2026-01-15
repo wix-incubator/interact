@@ -1,9 +1,4 @@
-import type {
-  BgPan,
-  DomApi,
-  RangeOffset,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { BgPan, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
 import { measureCompHeight } from './utils';
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {

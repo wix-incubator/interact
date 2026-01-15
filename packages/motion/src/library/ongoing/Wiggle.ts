@@ -1,15 +1,5 @@
-import type {
-  Wiggle,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
-import {
-  getTimingFactor,
-  roundNumber,
-  toKeyframeValue,
-  mapRange,
-} from '../../utils';
+import type { Wiggle, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
+import { getTimingFactor, roundNumber, toKeyframeValue, mapRange } from '../../utils';
 
 const POWER_TO_WIGGLE_FACTOR_MAP = {
   soft: 1,
@@ -25,17 +15,11 @@ const TRANSFORM_KEYFRAMES = [
   { keyframe: 100, transY: 0, accRotate: 4 },
 ];
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { power, intensity = 0.5 } = options.namedEffect as Wiggle;
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -49,8 +33,7 @@ export function style(
     POWER_TO_WIGGLE_FACTOR_MAP.hard,
     intensity,
   );
-  const wiggleFactor =
-    (power && POWER_TO_WIGGLE_FACTOR_MAP[power]) || responsiveWiggleFactor;
+  const wiggleFactor = (power && POWER_TO_WIGGLE_FACTOR_MAP[power]) || responsiveWiggleFactor;
 
   let currentRotation = 0;
 
@@ -59,33 +42,31 @@ export function style(
     '--motion-wiggle-factor': wiggleFactor,
   };
 
-  const keyframes = TRANSFORM_KEYFRAMES.map(
-    ({ keyframe, transY, accRotate }) => {
-      const offset = (keyframe / 100) * timingFactor;
-      const rotateValue = `calc(var(--comp-rotate-z, 0deg) + ${roundNumber(
-        currentRotation + accRotate * wiggleFactor,
-      )}deg)`;
-      const translateYValue = `${transY * wiggleFactor}px`;
+  const keyframes = TRANSFORM_KEYFRAMES.map(({ keyframe, transY, accRotate }) => {
+    const offset = (keyframe / 100) * timingFactor;
+    const rotateValue = `calc(var(--comp-rotate-z, 0deg) + ${roundNumber(
+      currentRotation + accRotate * wiggleFactor,
+    )}deg)`;
+    const translateYValue = `${transY * wiggleFactor}px`;
 
-      const rotateKey = `--motion-rotate-${keyframe}`;
-      const translateYKey = `--motion-translate-y-${keyframe}`;
+    const rotateKey = `--motion-rotate-${keyframe}`;
+    const translateYKey = `--motion-translate-y-${keyframe}`;
 
-      // For non-web usage, add the values to custom properties
-      custom[rotateKey] = rotateValue;
-      custom[translateYKey] = translateYValue;
+    // For non-web usage, add the values to custom properties
+    custom[rotateKey] = rotateValue;
+    custom[translateYKey] = translateYValue;
 
-      currentRotation += accRotate * wiggleFactor;
+    currentRotation += accRotate * wiggleFactor;
 
-      return {
-        offset,
-        transform: `rotate(${toKeyframeValue(
-          custom,
-          rotateKey,
-          asWeb,
-        )}) translateY(${toKeyframeValue(custom, translateYKey, asWeb)})`,
-      };
-    },
-  );
+    return {
+      offset,
+      transform: `rotate(${toKeyframeValue(
+        custom,
+        rotateKey,
+        asWeb,
+      )}) translateY(${toKeyframeValue(custom, translateYKey, asWeb)})`,
+    };
+  });
 
   return [
     {
@@ -100,9 +81,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-wiggle-${timingFactor}`];

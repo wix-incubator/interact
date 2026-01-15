@@ -30,7 +30,13 @@ function createTimeEffectHandler(
     effectToAnimationOptions(effect),
     undefined,
     reducedMotion,
-  ) as AnimationGroup;
+  ) as AnimationGroup | null;
+
+  // Return null if animation could not be created
+  if (!animation) {
+    return null;
+  }
+
   const type = options.type || 'alternate';
   let initialPlay = true;
 
@@ -117,7 +123,7 @@ function addHoverHandler(
   options: StateParams | PointerTriggerParams = {},
   { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
-  let handler: (event: MouseEvent | FocusEvent) => void;
+  let handler: ((event: MouseEvent | FocusEvent) => void) | null;
   let isStateTrigger = false;
   let once = false;
 
@@ -144,12 +150,29 @@ function addHoverHandler(
     once = (options as PointerTriggerParams).type === 'once';
   }
 
+  // Early return if animation is null, no event listeners added
+  if (!handler) {
+    return;
+  }
+
+  const focusinListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
+
+  const focusoutListener = (event: FocusEvent) => {
+    if (!source.contains(event.relatedTarget as HTMLElement)) {
+      handler(event);
+    }
+  };
+
   const cleanup = () => {
     source.removeEventListener('mouseenter', handler);
     source.removeEventListener('mouseleave', handler);
     if (allowA11yTriggers) {
-      source.removeEventListener('focusin', handler);
-      source.removeEventListener('focusout', handler);
+      source.removeEventListener('focusin', focusinListener);
+      source.removeEventListener('focusout', focusoutListener);
     }
   };
 
@@ -160,15 +183,7 @@ function addHoverHandler(
 
   if (allowA11yTriggers) {
     source.tabIndex = 0;
-    source.addEventListener(
-      'focusin',
-      (event) => {
-        if (!source.contains(event.relatedTarget as HTMLElement)) {
-          handler(event);
-        }
-      },
-      { once },
-    );
+    source.addEventListener('focusin', focusinListener, { once });
   }
 
   source.addEventListener('mouseenter', handler, { passive: true, once });
@@ -180,15 +195,7 @@ function addHoverHandler(
     source.addEventListener('mouseleave', handler, { passive: true });
 
     if (allowA11yTriggers) {
-      source.addEventListener(
-        'focusout',
-        (event) => {
-          if (!source.contains(event.relatedTarget as HTMLElement)) {
-            handler(event);
-          }
-        },
-        { once },
-      );
+      source.addEventListener('focusout', focusoutListener, { once });
     }
   }
 }

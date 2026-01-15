@@ -2,11 +2,7 @@ import { describe, expect, test } from 'vitest';
 
 import { backgroundScrollAnimations } from '../index';
 import { baseMockOptions } from './testUtils';
-import type {
-  BgParallax,
-  AnimationData,
-  BackgroundScrollAnimation,
-} from '../../../types';
+import type { BgParallax, AnimationData, BackgroundScrollAnimation } from '../../../types';
 
 describe('BgParallax', () => {
   test('Default values', () => {

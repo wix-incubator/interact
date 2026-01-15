@@ -14,18 +14,22 @@ import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
 
-type InteractionsToApply = Array<[
-  string,
-  InteractionTrigger,
-  Effect,
-  HTMLElement | HTMLElement[],
-  HTMLElement | HTMLElement[],
-  string | undefined
-]>;
+type InteractionsToApply = Array<
+  [
+    string,
+    InteractionTrigger,
+    Effect,
+    HTMLElement | HTMLElement[],
+    HTMLElement | HTMLElement[],
+    string | undefined,
+    boolean,
+  ]
+>;
 
 function _getElementsFromData(
   data: Interaction | Effect,
   root: HTMLElement,
+  useFirstChild: boolean,
 ): HTMLElement | HTMLElement[] | null {
   if (data.listContainer) {
     const container = root.querySelector(data.listContainer);
@@ -53,7 +57,9 @@ function _getElementsFromData(
     }
   }
 
-  return root.firstElementChild as HTMLElement | null;
+  return useFirstChild
+    ? (root.firstElementChild as HTMLElement | null)
+    : (root as HTMLElement | null);
 }
 
 function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]): HTMLElement[] {
@@ -68,17 +74,19 @@ function _getInteractionElements(
   interaction: InteractionTrigger,
   effect: Effect,
   source: HTMLElement,
+  sourceUseFirstChild: boolean,
   target: HTMLElement,
+  targetUseFirstChild: boolean,
   sourceElements?: HTMLElement[],
   targetElements?: HTMLElement[],
 ): [HTMLElement | HTMLElement[] | null, HTMLElement | HTMLElement[] | null] {
   return [
     sourceElements
       ? _queryItemElement(interaction, sourceElements)
-      : _getElementsFromData(interaction, source),
+      : _getElementsFromData(interaction, source, sourceUseFirstChild),
     targetElements
       ? _queryItemElement(effect, targetElements)
-      : _getElementsFromData(effect, target),
+      : _getElementsFromData(effect, target, targetUseFirstChild),
   ];
 }
 
@@ -89,6 +97,7 @@ function _applyInteraction(
   sourceElements: HTMLElement | HTMLElement[],
   targetElements: HTMLElement | HTMLElement[],
   selectorCondition?: string,
+  useFirstChild?: boolean,
 ) {
   const isSourceArray = Array.isArray(sourceElements);
   const isTargetArray = Array.isArray(targetElements);
@@ -96,7 +105,7 @@ function _applyInteraction(
   if (isSourceArray) {
     sourceElements.forEach((sourceEl, index) => {
       const targetEl = isTargetArray ? targetElements[index] : targetElements;
-      
+
       if (targetEl) {
         addInteraction(
           targetKey,
@@ -106,6 +115,7 @@ function _applyInteraction(
           effect as Effect,
           interaction.params!,
           selectorCondition,
+          useFirstChild,
         );
       }
     });
@@ -120,6 +130,7 @@ function _applyInteraction(
         effect as Effect,
         interaction.params!,
         selectorCondition,
+        useFirstChild,
       );
     });
   }
@@ -135,7 +146,7 @@ function _addInteraction(
   const interactionVariations: Record<string, boolean> = {};
 
   const interactionsToApply: InteractionsToApply = [];
-  
+
   interaction.effects.forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 
@@ -192,7 +203,9 @@ function _addInteraction(
         interaction,
         effectOptions,
         sourceController.element,
+        sourceController.useFirstChild,
         targetController.element,
+        targetController.useFirstChild,
         elements,
       );
 
@@ -215,6 +228,7 @@ function _addInteraction(
         sourceElements,
         targetElements,
         selectorCondition,
+        targetController.useFirstChild,
       ]);
     }
   });
@@ -287,7 +301,9 @@ function addEffectsForTarget(
           interaction,
           effectOptions,
           sourceController.element,
+          sourceController.useFirstChild,
           targetController.element,
+          targetController.useFirstChild,
           undefined,
           elements,
         );
@@ -311,6 +327,7 @@ function addEffectsForTarget(
           sourceElements,
           targetElements,
           selectorCondition,
+          targetController.useFirstChild,
         ]);
 
         // short-circuit the loop since we have a match
@@ -340,6 +357,7 @@ function addInteraction<T extends TriggerType>(
   effect: Effect,
   options: InteractionParamsTypes[T],
   selectorCondition?: string,
+  useFirstChild?: boolean,
 ): void {
   let targetController;
 
@@ -355,6 +373,7 @@ function addInteraction<T extends TriggerType>(
       childSelector: getSelector(effect, {
         asCombinator: true,
         addItemFilter: true,
+        useFirstChild,
       }),
       selectorCondition,
     };

@@ -5,7 +5,7 @@ import type { IInteractionController } from '../types';
 /**
  * Removes all events and effects from an element based on config
  */
-export function remove(controller: IInteractionController): void {
+export function remove(controller: IInteractionController, removeFromCache: boolean = false): void {
   const key = controller.key as string;
   const instance = Interact.getInstance(key);
 
@@ -13,12 +13,23 @@ export function remove(controller: IInteractionController): void {
     return;
   }
 
-  const selectors = [...(instance.get(key)?.selectors.values() || [])].join(',');
-  const elements = controller.element.querySelectorAll(selectors);
+  const selectors = [...(instance.get(key)?.selectors.values() || [])].filter(Boolean).join(',');
+  let elements;
 
-  removeListItems(Array.from(elements) as HTMLElement[]);
+  if (selectors) {
+    elements = [...controller.element.querySelectorAll(selectors)];
 
-  instance.deleteController(key);
+    if (!controller.useFirstChild) {
+      elements.push(controller.element);
+    }
+  } else {
+    elements = [controller.element];
+  }
+
+  removeListItems(elements as HTMLElement[]);
+
+  // React can't seem to recover in StrictMode since it doesn't invoke ref callback 2nd time
+  instance.deleteController(key, removeFromCache);
 }
 
 export function removeListItems(elements: HTMLElement[]) {

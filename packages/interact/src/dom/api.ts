@@ -13,5 +13,5 @@ export function remove(key: string): void {
     return;
   }
 
-  controller.disconnect();
+  controller.disconnect({ removeFromCache: true });
 }

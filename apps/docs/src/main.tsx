@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles.css';
@@ -9,9 +8,4 @@ if (!rootElement) {
   throw new Error('Docs root element not found');
 }
 
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
+ReactDOM.createRoot(rootElement).render(<App />);

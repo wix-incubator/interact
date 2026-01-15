@@ -5,12 +5,11 @@
   "main": "index.js",
   "packageManager": "yarn@4.10.3",
   "scripts": {
-    "dev": "npm run dev --workspaces",
-    "build": "npm run build --workspaces",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings=0",
-    "test": "npm run test --workspace packages/interact --workspace packages/motion",
-    "dev:docs": "npm run dev --workspace apps/docs",
-    "dev:demo": "npm run dev --workspace apps/demo",
+    "build": "yarn workspaces foreach --all --topological --include 'packages/*' run build && yarn workspaces foreach --all --include 'apps/*' run build",
+    "lint": "eslint . --max-warnings=0",
+    "test": "yarn workspaces foreach --all --include 'packages/*' run test",
+    "dev:docs": "yarn workspace @wix/interact-docs run dev",
+    "dev:demo": "yarn workspace @wix/interact-demo run dev",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "serve": "npx serve . -l 3000",
@@ -45,12 +44,12 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^3.3.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   }
 }

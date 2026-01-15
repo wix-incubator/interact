@@ -1,9 +1,4 @@
-import type {
-  Spin,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
+import type { Spin, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
 
 const POWER_EASING_MAP = {
@@ -17,17 +12,11 @@ const DIRECTION_MAP = {
   'counter-clockwise': 1,
 };
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { power, direction = 'clockwise' } = options.namedEffect as Spin;
 
   const duration = options.duration || 1;
@@ -35,8 +24,7 @@ export function style(
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const easing =
-    (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
+  const easing = (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
 
   const transformRotate = (DIRECTION_MAP[direction] > 0 ? 1 : -1) * 360;
 
@@ -67,9 +55,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const timingFactor = getTimingFactor(options.duration!, options.delay!, true);
 
   return [`motion-spin-${timingFactor}`];

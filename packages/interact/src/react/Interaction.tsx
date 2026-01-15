@@ -7,15 +7,9 @@ type InteractionProps<T extends keyof JSX.IntrinsicElements> = {
   children?: React.ReactNode;
 } & Omit<JSX.IntrinsicElements[T], 'ref'>;
 
-const Interaction = React.forwardRef(function InteractionRender<T extends keyof JSX.IntrinsicElements>(
-  {
-    tagName,
-    interactKey,
-    children,
-    ...rest
-  }: InteractionProps<T>,
-  ref: React.Ref<any>
-) {
+const Interaction = React.forwardRef(function InteractionRender<
+  T extends keyof JSX.IntrinsicElements,
+>({ tagName, interactKey, children, ...rest }: InteractionProps<T>, ref: React.Ref<any>) {
   const TagName = tagName as any;
   const interactRefCallback = React.useRef<InteractRef | null>(null);
 
@@ -38,15 +32,20 @@ const Interaction = React.forwardRef(function InteractionRender<T extends keyof 
         }
       }
 
+      // Cleanup for React 19+, this raises a warning in React 18-
       return () => {
         cleanup?.();
         parentCleanup?.();
       };
     },
-    [ref]
+    [ref],
   );
 
-  return <TagName data-interact-key={interactKey} {...rest} ref={combinedRef}>{children}</TagName>;
+  return (
+    <TagName data-interact-key={interactKey} {...rest} ref={combinedRef}>
+      {children}
+    </TagName>
+  );
 });
 
 export { Interaction };

@@ -7,6 +7,7 @@ Interactive pointer-driven effects that respond to mouse movement and hover stat
 Mouse animations are **scrub-based** animations that respond to pointer movement in real-time. They create dynamic, interactive experiences by translating cursor position into element transformations, providing immediate visual feedback and enhancing user engagement.
 
 ### Key Characteristics
+
 - **Purpose**: Interactivity, hover effects, cursor following
 - **Trigger**: Pointer movement (`pointer-move` events)
 - **Duration**: Real-time responsiveness with optional transitions
@@ -16,57 +17,68 @@ Mouse animations are **scrub-based** animations that respond to pointer movement
 ## Animation Categories
 
 ### 🎯 **Position Tracking**
+
 Elements that follow or respond to cursor position.
 
 ### 🔄 **3D Transformations**
+
 Perspective-based effects with depth and rotation.
 
 ### 📏 **Scale & Deformation**
+
 Size changes and shape deformations based on pointer.
 
 ### ✨ **Visual Effects**
+
 Blur, transparency, and special visual responses.
 
 ### 🎨 **Custom Behaviors**
+
 Programmable effects for unique interactions.
 
 ## Complete Preset Reference
 
-| Animation | Category | Complexity | Power Levels | Axis Control | Description |
-|-----------|----------|------------|--------------|--------------|-------------|
-| **TrackMouse** | Tracking | Simple | ✓ | ✓ | Element follows cursor movement |
-| **Track3DMouse** | 3D | Medium | ✓ | ✓ | 3D tracking with perspective |
-| **Tilt3DMouse** | 3D | Medium | ✓ | - | 3D tilt based on pointer position |
-| **SwivelMouse** | 3D | Complex | ✓ | - | Pivot-point 3D rotation |
-| **ScaleMouse** | Scale | Medium | ✓ | ✓ | Dynamic scaling on hover |
-| **BlobMouse** | Scale | Medium | ✓ | - | Organic blob-like scaling |
-| **SkewMouse** | Deform | Medium | ✓ | ✓ | Skew transformation tracking |
-| **BlurMouse** | Visual | Complex | ✓ | - | Blur filter with 3D effects |
-| **AiryMouse** | Tracking | Medium | ✓ | ✓ | Lightweight floating movement |
-| **SpinMouse** | Transform | Simple | ✓ | ✓ | Rotation based on movement |
-| **BounceMouse** | Tracking | Simple | ✓ | ✓ | Elastic cursor following |
-| **CustomMouse** | Custom | Variable | - | - | Programmable mouse effects |
+| Animation        | Category  | Complexity | Power Levels | Axis Control | Description                       |
+| ---------------- | --------- | ---------- | ------------ | ------------ | --------------------------------- |
+| **TrackMouse**   | Tracking  | Simple     | ✓            | ✓            | Element follows cursor movement   |
+| **Track3DMouse** | 3D        | Medium     | ✓            | ✓            | 3D tracking with perspective      |
+| **Tilt3DMouse**  | 3D        | Medium     | ✓            | -            | 3D tilt based on pointer position |
+| **SwivelMouse**  | 3D        | Complex    | ✓            | -            | Pivot-point 3D rotation           |
+| **ScaleMouse**   | Scale     | Medium     | ✓            | ✓            | Dynamic scaling on hover          |
+| **BlobMouse**    | Scale     | Medium     | ✓            | -            | Organic blob-like scaling         |
+| **SkewMouse**    | Deform    | Medium     | ✓            | ✓            | Skew transformation tracking      |
+| **BlurMouse**    | Visual    | Complex    | ✓            | -            | Blur filter with 3D effects       |
+| **AiryMouse**    | Tracking  | Medium     | ✓            | ✓            | Lightweight floating movement     |
+| **SpinMouse**    | Transform | Simple     | ✓            | ✓            | Rotation based on movement        |
+| **BounceMouse**  | Tracking  | Simple     | ✓            | ✓            | Elastic cursor following          |
+| **CustomMouse**  | Custom    | Variable   | -            | -            | Programmable mouse effects        |
 
 ## Configuration Patterns
 
 ### Basic Mouse Animation
+
 ```typescript
-const mouseAnimation = getWebAnimation(element, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'TrackMouse',
-    distance: { value: 50, type: 'px' },
-    power: 'medium'
+const mouseAnimation = getWebAnimation(
+  element,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'TrackMouse',
+      distance: { value: 50, type: 'px' },
+      power: 'medium',
+    },
+    transitionDuration: 300,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 300,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: containerElement
-});
+  {
+    trigger: 'pointer-move',
+    element: containerElement,
+  },
+);
 ```
 
 ### Power Levels
+
 Control effect intensity and responsiveness:
 
 ```typescript
@@ -81,6 +93,7 @@ Control effect intensity and responsiveness:
 ```
 
 ### Axis Control
+
 Restrict movement to specific axes:
 
 ```typescript
@@ -92,6 +105,7 @@ Restrict movement to specific axes:
 ```
 
 ### Inversion and Direction
+
 ```typescript
 {
   type: 'AiryMouse',
@@ -102,6 +116,7 @@ Restrict movement to specific axes:
 ```
 
 ### Transition Control
+
 ```typescript
 {
   type: 'ScaleMouse',
@@ -116,7 +131,9 @@ Restrict movement to specific axes:
 ### 🎯 Position Tracking
 
 #### TrackMouse
+
 **Best for**: Cursor followers, floating elements, parallax cursors
+
 ```typescript
 {
   type: 'TrackMouse',
@@ -129,7 +146,9 @@ Restrict movement to specific axes:
 ```
 
 #### AiryMouse
+
 **Best for**: Lightweight hover effects, subtle interactions
+
 ```typescript
 {
   type: 'AiryMouse',
@@ -143,7 +162,9 @@ Restrict movement to specific axes:
 ```
 
 #### BounceMouse
+
 **Best for**: Playful elements, elastic interactions
+
 ```typescript
 {
   type: 'BounceMouse',
@@ -157,7 +178,9 @@ Restrict movement to specific axes:
 ### 🔄 3D Transformations
 
 #### Tilt3DMouse
+
 **Best for**: Cards, panels, interactive UI elements
+
 ```typescript
 {
   type: 'Tilt3DMouse',
@@ -169,7 +192,9 @@ Restrict movement to specific axes:
 ```
 
 #### Track3DMouse
+
 **Best for**: 3D showcases, product displays, immersive elements
+
 ```typescript
 {
   type: 'Track3DMouse',
@@ -183,7 +208,9 @@ Restrict movement to specific axes:
 ```
 
 #### SwivelMouse
+
 **Best for**: Rotating showcases, dial controls, directional indicators
+
 ```typescript
 {
   type: 'SwivelMouse',
@@ -198,7 +225,9 @@ Restrict movement to specific axes:
 ### 📏 Scale & Deformation
 
 #### ScaleMouse
+
 **Best for**: Buttons, interactive cards, zoom effects
+
 ```typescript
 {
   type: 'ScaleMouse',
@@ -212,7 +241,9 @@ Restrict movement to specific axes:
 ```
 
 #### BlobMouse
+
 **Best for**: Organic elements, creative interfaces, morphing shapes
+
 ```typescript
 {
   type: 'BlobMouse',
@@ -224,7 +255,9 @@ Restrict movement to specific axes:
 ```
 
 #### SkewMouse
+
 **Best for**: Creative layouts, artistic elements, dynamic typography
+
 ```typescript
 {
   type: 'SkewMouse',
@@ -239,7 +272,9 @@ Restrict movement to specific axes:
 ### ✨ Visual Effects
 
 #### BlurMouse
+
 **Best for**: Motion effects, speed indicators, dynamic focus
+
 ```typescript
 {
   type: 'BlurMouse',
@@ -254,7 +289,9 @@ Restrict movement to specific axes:
 ```
 
 #### SpinMouse
+
 **Best for**: Loading indicators, directional feedback, rotary controls
+
 ```typescript
 {
   type: 'SpinMouse',
@@ -267,7 +304,9 @@ Restrict movement to specific axes:
 ### 🎨 Custom Behaviors
 
 #### CustomMouse
+
 **Best for**: Unique interactions, specialized behaviors, complex effects
+
 ```typescript
 {
   type: 'CustomMouse',
@@ -276,7 +315,7 @@ Restrict movement to specific axes:
     const { x, y, v, active } = progress();
     // Custom transformation logic
     element.style.transform = `
-      translate(${x * 100}px, ${y * 100}px) 
+      translate(${x * 100}px, ${y * 100}px)
       rotate(${x * 360}deg)
     `;
   }
@@ -287,16 +326,18 @@ Restrict movement to specific axes:
 ## Advanced Configuration
 
 ### Pivot Points for 3D Effects
+
 ```typescript
 {
   type: 'SwivelMouse',
   pivotAxis: 'top',              // Pivot from top edge
-  // Options: 'top', 'bottom', 'left', 'right', 
+  // Options: 'top', 'bottom', 'left', 'right',
   //          'center-horizontal', 'center-vertical'
 }
 ```
 
 ### Transition Easing Options
+
 ```typescript
 {
   transitionEasing: 'elastic',   // Spring-like motion
@@ -305,6 +346,7 @@ Restrict movement to specific axes:
 ```
 
 ### Distance and Range Control
+
 ```typescript
 {
   distance: { value: 200, type: 'px' },      // Pixel-based range
@@ -316,35 +358,37 @@ Restrict movement to specific axes:
 ## Performance Optimization
 
 ### Efficient Mouse Tracking
+
 ```typescript
 // Use transform-only properties for best performance
 const efficientAnimations = [
-  'TrackMouse',     // transform: translate
-  'SpinMouse',      // transform: rotate  
-  'ScaleMouse',     // transform: scale
-  'AiryMouse'       // transform: translate
+  'TrackMouse', // transform: translate
+  'SpinMouse', // transform: rotate
+  'ScaleMouse', // transform: scale
+  'AiryMouse', // transform: translate
 ];
 
 // Minimize layout-triggering effects
 const heavierAnimations = [
-  'BlurMouse',      // Uses filter property
-  'SkewMouse'       // Complex transform calculations
+  'BlurMouse', // Uses filter property
+  'SkewMouse', // Complex transform calculations
 ];
 ```
 
 ### Throttle Pointer Events
+
 ```typescript
 // Custom throttling for intensive effects
 let throttleTimer: number;
 element.addEventListener('pointermove', (e) => {
   if (throttleTimer) return;
-  
+
   throttleTimer = requestAnimationFrame(() => {
     mouseAnimation.progress({
       x: e.clientX / window.innerWidth,
       y: e.clientY / window.innerHeight,
       v: { x: e.movementX, y: e.movementY },
-      active: true
+      active: true,
     });
     throttleTimer = 0;
   });
@@ -352,11 +396,10 @@ element.addEventListener('pointermove', (e) => {
 ```
 
 ### Touch Device Considerations
+
 ```typescript
 // Disable mouse animations on touch devices
-const isTouchDevice = window.matchMedia(
-  'not (hover: hover)'
-).matches;
+const isTouchDevice = window.matchMedia('not (hover: hover)').matches;
 
 if (isTouchDevice) {
   // Use alternative hover states or disable mouse animations
@@ -370,21 +413,26 @@ if (isTouchDevice) {
 ## Common Patterns
 
 ### Interactive Card Hover
+
 ```typescript
-const cardHover = getWebAnimation(card, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Tilt3DMouse',
-    angle: 12,
-    perspective: 1000,
-    power: 'soft'
+const cardHover = getWebAnimation(
+  card,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Tilt3DMouse',
+      angle: 12,
+      perspective: 1000,
+      power: 'soft',
+    },
+    transitionDuration: 200,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 200,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: card
-});
+  {
+    trigger: 'pointer-move',
+    element: card,
+  },
+);
 
 // Enhanced with additional effects
 card.addEventListener('pointerenter', () => {
@@ -397,59 +445,74 @@ card.addEventListener('pointerleave', () => {
 ```
 
 ### Cursor Following Element
+
 ```typescript
-const follower = getWebAnimation(cursorElement, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'TrackMouse',
-    distance: { value: 20, type: 'px' },
-    axis: 'both',
-    power: 'medium'
+const follower = getWebAnimation(
+  cursorElement,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'TrackMouse',
+      distance: { value: 20, type: 'px' },
+      axis: 'both',
+      power: 'medium',
+    },
+    transitionDuration: 100,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 100,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: document.body
-});
+  {
+    trigger: 'pointer-move',
+    element: document.body,
+  },
+);
 ```
 
 ### 3D Product Showcase
+
 ```typescript
-const productShowcase = getWebAnimation(product, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'Track3DMouse',
-    distance: { value: 50, type: 'px' },
-    angle: 15,
-    perspective: 800,
-    power: 'medium'
+const productShowcase = getWebAnimation(
+  product,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'Track3DMouse',
+      distance: { value: 50, type: 'px' },
+      angle: 15,
+      perspective: 800,
+      power: 'medium',
+    },
+    transitionDuration: 300,
+    transitionEasing: 'easeOut',
   },
-  transitionDuration: 300,
-  transitionEasing: 'easeOut'
-}, {
-  trigger: 'pointer-move',
-  element: productContainer
-});
+  {
+    trigger: 'pointer-move',
+    element: productContainer,
+  },
+);
 ```
 
 ### Interactive Button Effects
+
 ```typescript
-const buttonEffect = getWebAnimation(button, {
-  type: 'ScrubAnimationOptions',
-  namedEffect: { 
-    type: 'ScaleMouse',
-    distance: { value: 100, type: 'px' },
-    scale: 1.05,
-    scaleDirection: 'up',
-    power: 'soft'
+const buttonEffect = getWebAnimation(
+  button,
+  {
+    type: 'ScrubAnimationOptions',
+    namedEffect: {
+      type: 'ScaleMouse',
+      distance: { value: 100, type: 'px' },
+      scale: 1.05,
+      scaleDirection: 'up',
+      power: 'soft',
+    },
+    transitionDuration: 150,
+    transitionEasing: 'bounce',
   },
-  transitionDuration: 150,
-  transitionEasing: 'bounce'
-}, {
-  trigger: 'pointer-move',
-  element: button
-});
+  {
+    trigger: 'pointer-move',
+    element: button,
+  },
+);
 
 // Combined with color transitions
 button.addEventListener('mouseenter', () => {
@@ -460,10 +523,9 @@ button.addEventListener('mouseenter', () => {
 ## Accessibility and UX
 
 ### Respect Motion Preferences
+
 ```typescript
-const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
-).matches;
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (prefersReducedMotion) {
   // Disable mouse animations or use minimal effects
@@ -475,6 +537,7 @@ if (prefersReducedMotion) {
 ```
 
 ### Performance Boundaries
+
 ```typescript
 // Limit concurrent mouse animations
 const MAX_MOUSE_ANIMATIONS = 5;
@@ -485,16 +548,16 @@ function createMouseAnimation(element, config) {
     console.warn('Max mouse animations reached');
     return null;
   }
-  
+
   activeMouseAnimations++;
   const animation = getWebAnimation(element, config);
-  
+
   return {
     ...animation,
     cancel: () => {
       animation.cancel();
       activeMouseAnimations--;
-    }
+    },
   };
 }
 ```

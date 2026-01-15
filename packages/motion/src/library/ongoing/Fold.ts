@@ -1,15 +1,5 @@
-import type {
-  Fold,
-  TimeAnimationOptions,
-  DomApi,
-  AnimationExtraOptions,
-} from '../../types';
-import {
-  getEasing,
-  getEasingFamily,
-  getTimingFactor,
-  toKeyframeValue,
-} from '../../utils';
+import type { Fold, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
+import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
 
 const POWER_TO_ROTATION_FACTOR_MAP = {
   soft: 1,
@@ -48,22 +38,12 @@ const KEYFRAME_FACTORS = [
   { fold: 0, frameFactor: 0.35 },
 ];
 
-export function web(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  _dom?: DomApi,
-) {
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
-export function style(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
-  const {
-    direction = 'top',
-    power,
-    angle = MIN_ROTATE_ANGLE,
-  } = options.namedEffect as Fold;
+export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
+  const { direction = 'top', power, angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
 
   const easing = options.easing || 'cubicInOut';
   const duration = options.duration || 1;
@@ -80,10 +60,7 @@ export function style(
     : MIN_ROTATE_ANGLE * POWER_TO_ROTATION_FACTOR_MAP[power];
 
   const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(
-    duration,
-    totalDurationWithDelay - duration,
-  ) as number;
+  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   let currentOffset = 0;
 
   // Create CSS custom properties for the fold configuration
@@ -99,20 +76,12 @@ export function style(
     custom,
     '--motion-origin-x',
     asWeb,
-  )}) translateY(${toKeyframeValue(
-    custom,
-    '--motion-origin-y',
-    asWeb,
-  )}) perspective(800px)`;
+  )}) translateY(${toKeyframeValue(custom, '--motion-origin-y', asWeb)}) perspective(800px)`;
   const transformRight = `translateX(calc(-1 * ${toKeyframeValue(
     custom,
     '--motion-origin-x',
     asWeb,
-  )})) translateY(calc(-1 * ${toKeyframeValue(
-    custom,
-    '--motion-origin-y',
-    asWeb,
-  )}))`;
+  )})) translateY(calc(-1 * ${toKeyframeValue(custom, '--motion-origin-y', asWeb)}))`;
 
   const getTransform = (value: number) =>
     `${transformLeft} rotateX(calc(${toKeyframeValue(
@@ -175,9 +144,7 @@ export function style(
   ];
 }
 
-export function getNames(
-  options: TimeAnimationOptions & AnimationExtraOptions,
-) {
+export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) {
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
 
@@ -186,11 +153,7 @@ export function getNames(
   }
 
   const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(
-    duration,
-    totalDurationWithDelay - duration,
-    true,
-  ) as string;
+  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration, true) as string;
 
   return [`motion-fold-${timingFactor}`];
 }

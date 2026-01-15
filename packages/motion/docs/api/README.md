@@ -5,17 +5,20 @@ Complete reference for all Wix Motion functions, types, and classes.
 ## Core Functions
 
 ### [Animation Creation](core-functions.md)
+
 - `getWebAnimation()` - Create Web Animations API instances
-- `getScrubScene()` - Generate scroll/pointer-driven scenes  
+- `getScrubScene()` - Generate scroll/pointer-driven scenes
 - `getCSSAnimation()` - Generate CSS animation rules
 - `prepareAnimation()` - Pre-calculate measurements
 
 ### [Animation Group](animation-group.md)
+
 - `AnimationGroup` class - Manage multiple related animations
 - Control methods and properties
 - Event handling and callbacks
 
 ### [Type Definitions](types.md)
+
 - Complete TypeScript interfaces
 - Animation option types
 - Named effect definitions
@@ -24,6 +27,7 @@ Complete reference for all Wix Motion functions, types, and classes.
 ## Quick Reference
 
 ### Basic Animation Creation
+
 ```typescript
 import { getWebAnimation } from '@wix/motion';
 
@@ -36,6 +40,7 @@ const animation = getWebAnimation(
 ```
 
 ### Scroll Scene Creation
+
 ```typescript
 import { getScrubScene } from '@wix/motion';
 
@@ -48,6 +53,7 @@ const scene = getScrubScene(
 ```
 
 ### CSS Animation Generation
+
 ```typescript
 import { getCSSAnimation } from '@wix/motion';
 
@@ -59,6 +65,7 @@ const cssRules = getCSSAnimation(
 ```
 
 ### Animation Preparation
+
 ```typescript
 import { prepareAnimation } from '@wix/motion';
 
@@ -72,6 +79,7 @@ prepareAnimation(
 ## Types Overview
 
 ### Main Interfaces
+
 ```typescript
 // Time-based animation options
 interface TimeAnimationOptions {
@@ -110,36 +118,41 @@ interface AnimationGroup {
 ```
 
 ### Named Effect Types
+
 ```typescript
 // Entrance animations
-type EntranceAnimation = 
-  | FadeIn | ArcIn | BounceIn | SlideIn 
-  | FlipIn | DropIn | ExpandIn | GlideIn
-  // ... all entrance types
+type EntranceAnimation = FadeIn | ArcIn | BounceIn | SlideIn | FlipIn | DropIn | ExpandIn | GlideIn;
+// ... all entrance types
 
-// Ongoing animations  
-type OngoingAnimation = 
-  | Pulse | Breathe | Spin | Wiggle
-  | Flash | Bounce | Swing | Poke
-  // ... all ongoing types
+// Ongoing animations
+type OngoingAnimation = Pulse | Breathe | Spin | Wiggle | Flash | Bounce | Swing | Poke;
+// ... all ongoing types
 
 // Scroll animations
-type ScrollAnimation = 
-  | ParallaxScroll | FadeScroll | GrowScroll
-  | RevealScroll | TiltScroll | MoveScroll
-  // ... all scroll types
+type ScrollAnimation =
+  | ParallaxScroll
+  | FadeScroll
+  | GrowScroll
+  | RevealScroll
+  | TiltScroll
+  | MoveScroll;
+// ... all scroll types
 
 // Mouse animations
-type MouseAnimation = 
-  | TrackMouse | Tilt3DMouse | ScaleMouse
-  | BlurMouse | SwivelMouse | SpinMouse
-  // ... all mouse types
+type MouseAnimation = TrackMouse | Tilt3DMouse | ScaleMouse | BlurMouse | SwivelMouse | SpinMouse;
+// ... all mouse types
 
 // Background scroll animations
-type BackgroundScrollAnimation = 
-  | BgParallax | BgZoom | BgFade | BgRotate
-  | BgPan | BgCloseUp | BgSkew | BgPullBack
-  // ... all background types
+type BackgroundScrollAnimation =
+  | BgParallax
+  | BgZoom
+  | BgFade
+  | BgRotate
+  | BgPan
+  | BgCloseUp
+  | BgSkew
+  | BgPullBack;
+// ... all background types
 ```
 
 ---

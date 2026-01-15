@@ -1,9 +1,4 @@
-import type {
-  BgParallax,
-  RangeOffset,
-  ScrubAnimationOptions,
-  DomApi,
-} from '../../types';
+import type { BgParallax, RangeOffset, ScrubAnimationOptions, DomApi } from '../../types';
 import { measureCompHeight } from './utils';
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {

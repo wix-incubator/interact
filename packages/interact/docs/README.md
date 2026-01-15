@@ -4,15 +4,16 @@ Welcome to the complete documentation for the `@wix/interact` package - a powerf
 
 ## Package Entry Points
 
-| Entry Point | Use Case | Key Exports |
-|-------------|----------|-------------|
-| `@wix/interact/react` | React applications | `Interact`, `generate`, `Interaction` |
-| `@wix/interact/web` | Web Components | `Interact`, `generate` |
-| `@wix/interact` | Vanilla JS | `Interact`, `add`, `remove`, `generate` |
+| Entry Point           | Use Case           | Key Exports                             |
+| --------------------- | ------------------ | --------------------------------------- |
+| `@wix/interact/web`   | Web Components     | `Interact`, `generate`                  |
+| `@wix/interact/react` | React applications | `Interact`, `generate`, `Interaction`   |
+| `@wix/interact`       | Vanilla JS         | `Interact`, `add`, `remove`, `generate` |
 
 ## Table of Contents
 
 ### **API Reference**
+
 Complete reference documentation for all classes, methods, and types.
 
 - [**Core API**](api/README.md) - Main classes and functions
@@ -29,6 +30,7 @@ Complete reference documentation for all classes, methods, and types.
   - [React Types](api/types.md#react-types) - `InteractRef` and React-specific types
 
 ### **Guides & Tutorials**
+
 Learn the concepts and patterns for building effective interactions.
 
 - [**Getting Started**](guides/getting-started.md) - Your first interaction in 5 minutes
@@ -43,6 +45,7 @@ Learn the concepts and patterns for building effective interactions.
 - [**Performance**](guides/performance.md) - Optimization tips and best practices
 
 ### **Examples & Patterns**
+
 Practical examples and common interaction patterns.
 
 - [**Basic Examples**](examples/README.md) - Simple, copy-paste examples
@@ -55,6 +58,7 @@ Practical examples and common interaction patterns.
 - [**Real-world Examples**](examples/real-world.md) - Production-ready implementations
 
 ### **Integration Guides**
+
 Framework-specific integration and migration guides.
 
 - [**Framework Integration**](integration/README.md) - Using with different frameworks
@@ -66,6 +70,7 @@ Framework-specific integration and migration guides.
 - [**Debugging**](integration/debugging.md) - Development tools and techniques
 
 ### **Advanced Topics**
+
 Deep-dive technical documentation for power users.
 
 - [**Architecture**](advanced/architecture.md) - System design and decisions
@@ -114,18 +119,22 @@ import { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
 
 const config = {
-  interactions: [{
-    key: 'card',
-    trigger: 'hover',
-    effects: [{
-      keyframeEffect: {
-        name: 'lift',
-        keyframes: [{ transform: 'translateY(-4px)' }]
-      },
-      duration: 200
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'card',
+      trigger: 'hover',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'lift',
+            keyframes: [{ transform: 'translateY(-4px)' }],
+          },
+          duration: 200,
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 function App() {
@@ -156,18 +165,21 @@ function App() {
 import { Interact } from '@wix/interact/web';
 
 Interact.create({
-  interactions: [{
-    key: 'card',
-    trigger: 'hover',
-    effects: [{
-      keyframeEffect: {
-        name: 'lift',
-        keyframes: [{ transform: 'translateY(-4px)' }]
-      },
-      duration: 200
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'card',
+      trigger: 'hover',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'lift',
+            keyframes: [{ transform: 'translateY(-4px)' }],
+          },
+          duration: 200,
+        },
+      ],
+    },
+  ],
 });
 ```
 
@@ -187,25 +199,28 @@ const niceCard = document.querySelector('[data-interact-key="nice-card"]');
 add(niceCard);
 
 Interact.create({
-  interactions: [{
-    key: 'nice-card',
-    trigger: 'hover',
-    effects: [{
-      keyframeEffect: {
-        name: 'lift',
-        keyframes: [{ transform: 'translateY(-4px)' }]
-      },
-      duration: 200
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'nice-card',
+      trigger: 'hover',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'lift',
+            keyframes: [{ transform: 'translateY(-4px)' }],
+          },
+          duration: 200,
+        },
+      ],
+    },
+  ],
 });
 ```
 
 ## Version Information
 
-This documentation is for `@wix/interact` v1.0.0. For earlier versions or migration information, see the [Migration Guide](integration/migration.md).
+This documentation is for `@wix/interact` v2.0.0. For earlier versions or migration information, see the [Migration Guide](integration/migration.md).
 
 ## Feedback
 
-Found an issue with the documentation? Please [open an issue](https://github.com/wix-incubator/wow-libs/issues) or contribute improvements via pull request.
+Found an issue with the documentation? Please [open an issue](https://github.com/wix-incubator/interact/issues) or contribute improvements via pull request.

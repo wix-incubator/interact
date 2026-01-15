@@ -21,17 +21,17 @@ Configuration for time-based animations (entrance and ongoing animations).
 ```typescript
 interface TimeAnimationOptions {
   type: 'TimeAnimationOptions';
-  keyframeEffect?: MotionKeyframeEffect;    // Native KeyframeEffects
-  namedEffect?: NamedEffect;                // Pre-registered named effects
-  customEffect?: CustomEffect;              // JS-based custom effect
-  duration?: number;                        // Milliseconds
-  delay?: number;                           // Milliseconds
-  endDelay?: number;                        // Milliseconds
-  easing?: string;                          // CSS or JS easing function
-  iterations?: number;                      // Number of repeats (Infinity or 0 for infinite)
-  alternate?: boolean;                      // Alternating effect direction on each iteration
-  fill?: AnimationFillMode;                 // 'none' | 'backwards' | 'forwards' | 'both'
-  reversed?: boolean;                       // Play in reverse
+  keyframeEffect?: MotionKeyframeEffect; // Native KeyframeEffects
+  namedEffect?: NamedEffect; // Pre-registered named effects
+  customEffect?: CustomEffect; // JS-based custom effect
+  duration?: number; // Milliseconds
+  delay?: number; // Milliseconds
+  endDelay?: number; // Milliseconds
+  easing?: string; // CSS or JS easing function
+  iterations?: number; // Number of repeats (Infinity or 0 for infinite)
+  alternate?: boolean; // Alternating effect direction on each iteration
+  fill?: AnimationFillMode; // 'none' | 'backwards' | 'forwards' | 'both'
+  reversed?: boolean; // Play in reverse
 }
 ```
 
@@ -44,34 +44,34 @@ const fadeInOptions: TimeAnimationOptions = {
   namedEffect: { type: 'FadeIn' },
   duration: 800,
   easing: 'easeOut',
-  fill: 'backwards'
+  fill: 'backwards',
 };
 
 // Complex bounce animation
 const bounceOptions: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'hard'
+    power: 'hard',
   },
   duration: 1200,
   delay: 300,
   easing: 'backOut',
-  fill: 'backwards'
+  fill: 'backwards',
 };
 
 // Infinite pulse animation
 const pulseOptions: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Pulse',
     power: 'soft',
-    intensity: 0.8
+    intensity: 0.8,
   },
   duration: 2000,
   iterations: Infinity,
-  alternate: true
+  alternate: true,
 };
 ```
 
@@ -85,19 +85,19 @@ interface ScrubAnimationOptions {
   keyframeEffect?: MotionKeyframeEffect;
   namedEffect?: NamedEffect;
   customEffect?: CustomEffect;
-  startOffset?: RangeOffset;      // animation-range-start for usage with view() timelines
-  endOffset?: RangeOffset;        // animation-range-end for usage with view() timelines
-  playbackRate?: number;          // Speed multiplier
-  easing?: string;                // Transition easing
-  iterations?: number;            // Usually 1 for scrub animations
+  startOffset?: RangeOffset; // animation-range-start for usage with view() timelines
+  endOffset?: RangeOffset; // animation-range-end for usage with view() timelines
+  playbackRate?: number; // Speed multiplier
+  easing?: string; // Transition easing
+  iterations?: number; // Usually 1 for scrub animations
   fill?: AnimationFillMode;
   alternate?: boolean;
   reversed?: boolean;
-  transitionDuration?: number;    // For mouse animations (ms)
-  transitionDelay?: number;       // For mouse animations (ms)
+  transitionDuration?: number; // For mouse animations (ms)
+  transitionDelay?: number; // For mouse animations (ms)
   transitionEasing?: ScrubTransitionEasing;
-  centeredToTarget?: boolean;     // For mouse animations
-  duration?: LengthPercentage;    // Scroll-based duration
+  centeredToTarget?: boolean; // For mouse animations
+  duration?: LengthPercentage; // Scroll-based duration
 }
 ```
 
@@ -107,35 +107,35 @@ interface ScrubAnimationOptions {
 // Scroll parallax animation
 const parallaxOptions: ScrubAnimationOptions = {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'ParallaxScroll',
-    speed: 0.3
+    speed: 0.3,
   },
   startOffset: { name: 'cover' },
-  endOffset: { name: 'exit' }
+  endOffset: { name: 'exit' },
 };
 
 // Mouse tilt animation
 const mouseOptions: ScrubAnimationOptions = {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'Tilt3DMouse',
     angle: 15,
     perspective: 800,
-    power: 'medium'
+    power: 'medium',
   },
   transitionDuration: 200,
-  transitionEasing: 'easeOut'
+  transitionEasing: 'easeOut',
 };
 
 // Background zoom animation
 const bgOptions: ScrubAnimationOptions = {
   type: 'ScrubAnimationOptions',
-  namedEffect: { 
+  namedEffect: {
     type: 'BgZoom',
     direction: 'in',
-    zoom: 40
-  }
+    zoom: 40,
+  },
 };
 ```
 
@@ -162,8 +162,8 @@ type FadeIn = BaseDataItemLike<'FadeIn'>;
 
 // Directional arc entrance
 type ArcIn = BaseDataItemLike<'ArcIn'> & {
-  direction: EffectFourDirections;    // 'top' | 'right' | 'bottom' | 'left'
-  power?: EffectPower;               // 'soft' | 'medium' | 'hard'
+  direction: EffectFourDirections; // 'top' | 'right' | 'bottom' | 'left'
+  power?: EffectPower; // 'soft' | 'medium' | 'hard'
 };
 
 // Bouncing entrance
@@ -175,8 +175,8 @@ type BounceIn = BaseDataItemLike<'BounceIn'> & {
 
 // Custom directional entrance
 type GlideIn = BaseDataItemLike<'GlideIn'> & {
-  direction: number;                 // Angle in degrees
-  distance: UnitLengthPercentage;    // Movement distance
+  direction: number; // Angle in degrees
+  distance: UnitLengthPercentage; // Movement distance
   power?: EffectPower;
   startFromOffScreen?: boolean;
 };
@@ -189,25 +189,25 @@ type GlideIn = BaseDataItemLike<'GlideIn'> & {
 const fadeIn: FadeIn = { type: 'FadeIn' };
 
 // Arc from right with medium power
-const arcIn: ArcIn = { 
-  type: 'ArcIn', 
-  direction: 'right', 
-  power: 'medium' 
+const arcIn: ArcIn = {
+  type: 'ArcIn',
+  direction: 'right',
+  power: 'medium',
 };
 
 // Bounce from bottom
-const bounceIn: BounceIn = { 
-  type: 'BounceIn', 
-  direction: 'bottom', 
-  power: 'hard' 
+const bounceIn: BounceIn = {
+  type: 'BounceIn',
+  direction: 'bottom',
+  power: 'hard',
 };
 
 // Custom glide at 45 degrees
-const glideIn: GlideIn = { 
-  type: 'GlideIn', 
-  direction: 45, 
+const glideIn: GlideIn = {
+  type: 'GlideIn',
+  direction: 45,
   distance: { value: 100, type: 'px' },
-  power: 'medium'
+  power: 'medium',
 };
 ```
 
@@ -221,7 +221,7 @@ Continuous looping animations for attention and ambient motion.
 // Pulsing scale effect
 type Pulse = BaseDataItemLike<'Pulse'> & {
   power?: EffectPower;
-  intensity?: number;               // 0.1 - 2.0 multiplier
+  intensity?: number; // 0.1 - 2.0 multiplier
 };
 
 // Breathing movement
@@ -248,24 +248,24 @@ type Poke = BaseDataItemLike<'Poke'> & {
 
 ```typescript
 // Soft pulse
-const pulse: Pulse = { 
-  type: 'Pulse', 
-  power: 'soft', 
-  intensity: 0.6 
+const pulse: Pulse = {
+  type: 'Pulse',
+  power: 'soft',
+  intensity: 0.6,
 };
 
 // Vertical breathing
-const breathe: Breathe = { 
-  type: 'Breathe', 
+const breathe: Breathe = {
+  type: 'Breathe',
   direction: 'vertical',
-  distance: { value: 10, type: 'px' }
+  distance: { value: 10, type: 'px' },
 };
 
 // Clockwise spinning
-const spin: Spin = { 
-  type: 'Spin', 
-  direction: 'clockwise', 
-  power: 'medium' 
+const spin: Spin = {
+  type: 'Spin',
+  direction: 'clockwise',
+  power: 'medium',
 };
 ```
 
@@ -278,19 +278,19 @@ Scroll-driven effects synchronized to viewport position.
 ```typescript
 // Basic parallax scrolling
 type ParallaxScroll = BaseDataItemLike<'ParallaxScroll'> & {
-  speed: number;                    // Movement speed multiplier
-  range?: EffectScrollRange;        // 'in' | 'out' | 'continuous'
+  speed: number; // Movement speed multiplier
+  range?: EffectScrollRange; // 'in' | 'out' | 'continuous'
 };
 
 // Fade based on scroll
 type FadeScroll = BaseDataItemLike<'FadeScroll'> & {
   range: EffectScrollRange;
-  opacity: number;                  // Target opacity
+  opacity: number; // Target opacity
 };
 
 // Movement on scroll
 type MoveScroll = BaseDataItemLike<'MoveScroll'> & {
-  angle: number;                    // Movement direction
+  angle: number; // Movement direction
   power?: EffectPower;
   range?: EffectScrollRange;
   distance?: UnitLengthPercentage;
@@ -298,11 +298,11 @@ type MoveScroll = BaseDataItemLike<'MoveScroll'> & {
 
 // Scaling on scroll
 type GrowScroll = BaseDataItemLike<'GrowScroll'> & {
-  direction: EffectNineDirections;  // Includes corners + center
+  direction: EffectNineDirections; // Includes corners + center
   power?: EffectPower;
   range?: EffectScrollRange;
   scale?: number;
-  speed?: number;                   // Y-axis movement
+  speed?: number; // Y-axis movement
 };
 ```
 
@@ -310,24 +310,24 @@ type GrowScroll = BaseDataItemLike<'GrowScroll'> & {
 
 ```typescript
 // Slow parallax background
-const parallax: ParallaxScroll = { 
-  type: 'ParallaxScroll', 
-  speed: 0.3 
+const parallax: ParallaxScroll = {
+  type: 'ParallaxScroll',
+  speed: 0.3,
 };
 
 // Fade in on scroll
-const fadeScroll: FadeScroll = { 
-  type: 'FadeScroll', 
-  range: 'in', 
-  opacity: 1 
+const fadeScroll: FadeScroll = {
+  type: 'FadeScroll',
+  range: 'in',
+  opacity: 1,
 };
 
 // Move diagonally
-const moveScroll: MoveScroll = { 
-  type: 'MoveScroll', 
-  angle: 225, 
+const moveScroll: MoveScroll = {
+  type: 'MoveScroll',
+  angle: 225,
   distance: { value: 200, type: 'px' },
-  range: 'in'
+  range: 'in',
 };
 ```
 
@@ -341,15 +341,15 @@ Interactive pointer-driven effects.
 // Element following mouse
 type TrackMouse = BaseDataItemLike<'TrackMouse'> & {
   distance?: UnitLengthPercentage;
-  axis?: MouseEffectAxis;           // 'both' | 'horizontal' | 'vertical'
+  axis?: MouseEffectAxis; // 'both' | 'horizontal' | 'vertical'
   power?: EffectPower;
   inverted?: boolean;
 };
 
 // 3D tilt based on mouse
 type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
-  angle?: number;                   // Maximum tilt angle
-  perspective?: number;             // 3D perspective distance
+  angle?: number; // Maximum tilt angle
+  perspective?: number; // 3D perspective distance
   power?: EffectPower;
   inverted?: boolean;
 };
@@ -358,7 +358,7 @@ type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
 type ScaleMouse = BaseDataItemLike<'ScaleMouse'> & {
   distance?: UnitLengthPercentage;
   axis?: MouseEffectAxis;
-  scale?: number;                   // Maximum scale
+  scale?: number; // Maximum scale
   power?: EffectPower;
   scaleDirection: EffectScaleDirection; // 'up' | 'down'
   inverted?: boolean;
@@ -369,27 +369,27 @@ type ScaleMouse = BaseDataItemLike<'ScaleMouse'> & {
 
 ```typescript
 // Track mouse movement
-const trackMouse: TrackMouse = { 
-  type: 'TrackMouse', 
+const trackMouse: TrackMouse = {
+  type: 'TrackMouse',
   distance: { value: 50, type: 'px' },
   axis: 'both',
-  power: 'medium'
+  power: 'medium',
 };
 
 // 3D tilt effect
-const tiltMouse: Tilt3DMouse = { 
-  type: 'Tilt3DMouse', 
-  angle: 15, 
-  perspective: 800, 
-  power: 'soft' 
+const tiltMouse: Tilt3DMouse = {
+  type: 'Tilt3DMouse',
+  angle: 15,
+  perspective: 800,
+  power: 'soft',
 };
 
 // Scale on hover
-const scaleMouse: ScaleMouse = { 
-  type: 'ScaleMouse', 
-  scale: 1.1, 
-  scaleDirection: 'up', 
-  power: 'soft' 
+const scaleMouse: ScaleMouse = {
+  type: 'ScaleMouse',
+  scale: 1.1,
+  scaleDirection: 'up',
+  power: 'soft',
 };
 ```
 
@@ -408,7 +408,7 @@ type BgParallax = BaseDataItemLike<'BgParallax'> & {
 // Background zoom
 type BgZoom = BaseDataItemLike<'BgZoom'> & {
   direction: 'in' | 'out';
-  zoom?: number;                    // Zoom intensity
+  zoom?: number; // Zoom intensity
 };
 
 // Background fade
@@ -418,8 +418,8 @@ type BgFade = BaseDataItemLike<'BgFade'> & {
 
 // Complex 3D background effect
 type BgFake3D = BaseDataItemLike<'BgFake3D'> & {
-  stretch?: number;                 // Y-axis stretch
-  zoom?: number;                    // 3D zoom distance
+  stretch?: number; // Y-axis stretch
+  zoom?: number; // 3D zoom distance
 };
 ```
 
@@ -427,23 +427,23 @@ type BgFake3D = BaseDataItemLike<'BgFake3D'> & {
 
 ```typescript
 // Background parallax
-const bgParallax: BgParallax = { 
-  type: 'BgParallax', 
-  speed: 0.5 
+const bgParallax: BgParallax = {
+  type: 'BgParallax',
+  speed: 0.5,
 };
 
 // Zoom in effect
-const bgZoom: BgZoom = { 
-  type: 'BgZoom', 
-  direction: 'in', 
-  zoom: 30 
+const bgZoom: BgZoom = {
+  type: 'BgZoom',
+  direction: 'in',
+  zoom: 30,
 };
 
 // Complex 3D effect
-const bg3D: BgFake3D = { 
-  type: 'BgFake3D', 
-  stretch: 1.3, 
-  zoom: 20 
+const bg3D: BgFake3D = {
+  type: 'BgFake3D',
+  stretch: 1.3,
+  zoom: 20,
 };
 ```
 
@@ -493,8 +493,12 @@ const topLeft: Point = [0, 0];
 type EffectFourDirections = 'top' | 'right' | 'bottom' | 'left';
 
 // Eight directions (includes corners)
-type EffectEightDirections = EffectFourDirections | 
-  'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+type EffectEightDirections =
+  | EffectFourDirections
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left';
 
 // Nine directions (includes center)
 type EffectNineDirections = EffectEightDirections | 'center';
@@ -522,15 +526,14 @@ type EffectScaleDirection = 'up' | 'down';
 type MouseEffectAxis = 'both' | 'horizontal' | 'vertical';
 
 // Mouse pivot points
-type MousePivotAxis = 'top' | 'bottom' | 'right' | 'left' | 
-  'center-horizontal' | 'center-vertical';
+type MousePivotAxis = 'top' | 'bottom' | 'right' | 'left' | 'center-horizontal' | 'center-vertical';
 
 // Mouse progress information
 type Progress = {
-  x: number;                        // Normalized X position (0-1)
-  y: number;                        // Normalized Y position (0-1)
-  v?: { x: number; y: number };     // Velocity vector
-  active?: boolean;                 // Is interaction active
+  x: number; // Normalized X position (0-1)
+  y: number; // Normalized Y position (0-1)
+  v?: { x: number; y: number }; // Velocity vector
+  active?: boolean; // Is interaction active
 };
 ```
 
@@ -634,13 +637,13 @@ type RangeOffset = {
 // Start when element is 20% visible
 const startOffset: RangeOffset = {
   name: 'entry',
-  offset: { value: 20, type: 'percentage' }
+  offset: { value: 20, type: 'percentage' },
 };
 
 // End 100px before element exits
 const endOffset: RangeOffset = {
   name: 'exit',
-  offset: { value: 100, type: 'px' }
+  offset: { value: 100, type: 'px' },
 };
 
 // Cover entire viewport interaction
@@ -666,14 +669,14 @@ type TriggerVariant = {
 const scrollTrigger: TriggerVariant = {
   id: 'scroll-animation-1',
   trigger: 'view-progress',
-  componentId: 'hero-section'
+  componentId: 'hero-section',
 };
 
 // Mouse trigger
 const mouseTrigger: TriggerVariant = {
   id: 'mouse-animation-1',
   trigger: 'pointer-move',
-  componentId: 'interactive-card'
+  componentId: 'interactive-card',
 };
 ```
 
@@ -683,11 +686,11 @@ For creating completely custom animations.
 
 ```typescript
 type CustomEffect = {
-  ranges: { 
-    name: string; 
-    min: number; 
-    max: number; 
-    step?: number 
+  ranges: {
+    name: string;
+    min: number;
+    max: number;
+    step?: number;
   }[];
 };
 
@@ -705,8 +708,8 @@ const customEffect: CustomEffect = {
   ranges: [
     { name: 'opacity', min: 0, max: 1, step: 0.01 },
     { name: 'scale', min: 0.5, max: 1.5, step: 0.01 },
-    { name: 'rotation', min: 0, max: 360, step: 1 }
-  ]
+    { name: 'rotation', min: 0, max: 360, step: 1 },
+  ],
 };
 
 // Custom keyframe effect
@@ -716,8 +719,8 @@ const keyframeEffect: MotionKeyframeEffect = {
   keyframes: [
     { transform: 'scale(0) rotate(0deg)', opacity: 0 },
     { transform: 'scale(1.2) rotate(180deg)', opacity: 0.8 },
-    { transform: 'scale(1) rotate(360deg)', opacity: 1 }
-  ]
+    { transform: 'scale(1) rotate(360deg)', opacity: 1 },
+  ],
 };
 ```
 
@@ -737,27 +740,27 @@ type AnimationFillMode = 'none' | 'backwards' | 'forwards' | 'both';
 
 ```typescript
 // All entrance animations
-type EntranceAnimation = FadeIn | ArcIn | BounceIn | SlideIn | FlipIn | 
+type EntranceAnimation = FadeIn | ArcIn | BounceIn | SlideIn | FlipIn |
   DropIn | ExpandIn | GlideIn | SpinIn | PunchIn | /* ... and more */;
 
-// All ongoing animations  
-type OngoingAnimation = Pulse | Breathe | Spin | Wiggle | Flash | 
+// All ongoing animations
+type OngoingAnimation = Pulse | Breathe | Spin | Wiggle | Flash |
   Bounce | Swing | Poke | /* ... and more */;
 
 // All scroll animations
-type ScrollAnimation = ParallaxScroll | FadeScroll | MoveScroll | 
+type ScrollAnimation = ParallaxScroll | FadeScroll | MoveScroll |
   GrowScroll | RevealScroll | /* ... and more */;
 
 // All mouse animations
-type MouseAnimation = TrackMouse | Tilt3DMouse | ScaleMouse | 
+type MouseAnimation = TrackMouse | Tilt3DMouse | ScaleMouse |
   BlurMouse | /* ... and more */;
 
 // All background scroll animations
-type BackgroundScrollAnimation = BgParallax | BgZoom | BgFade | 
+type BackgroundScrollAnimation = BgParallax | BgZoom | BgFade |
   BgRotate | /* ... and more */;
 
 // Union of all named effects
-type NamedEffect = EntranceAnimation | OngoingAnimation | ScrollAnimation | 
+type NamedEffect = EntranceAnimation | OngoingAnimation | ScrollAnimation |
   MouseAnimation | BackgroundScrollAnimation;
 ```
 
@@ -765,16 +768,19 @@ type NamedEffect = EntranceAnimation | OngoingAnimation | ScrollAnimation |
 
 ```typescript
 // Main options type
-type AnimationOptions = (TimeAnimationOptions | ScrubAnimationOptions) & 
-  AnimationExtraOptions;
+type AnimationOptions = (TimeAnimationOptions | ScrubAnimationOptions) & AnimationExtraOptions;
 
 // Extra options for custom behavior
 type AnimationExtraOptions = {
   effectId?: string;
-  effect?: (progress: () => number | { 
-    x: number | undefined; 
-    y: number | undefined 
-  }) => void;
+  effect?: (
+    progress: () =>
+      | number
+      | {
+          x: number | undefined;
+          y: number | undefined;
+        },
+  ) => void;
 };
 ```
 
@@ -788,14 +794,14 @@ function isTimeAnimation(options: AnimationOptions): options is TimeAnimationOpt
   return options.type === 'TimeAnimationOptions';
 }
 
-// Check if options are scrub-based  
+// Check if options are scrub-based
 function isScrubAnimation(options: AnimationOptions): options is ScrubAnimationOptions {
   return options.type === 'ScrubAnimationOptions';
 }
 
 // Check if effect is entrance animation
 function isEntranceAnimation(effect: NamedEffect): effect is EntranceAnimation {
-  return ['FadeIn', 'ArcIn', 'BounceIn', 'SlideIn', /* ... */].includes(effect.type);
+  return ['FadeIn', 'ArcIn', 'BounceIn', 'SlideIn' /* ... */].includes(effect.type);
 }
 ```
 
@@ -803,30 +809,31 @@ function isEntranceAnimation(effect: NamedEffect): effect is EntranceAnimation {
 
 ```typescript
 // Extract effect type from options
-type ExtractEffectType<T extends AnimationOptions> = 
-  T extends { namedEffect: infer E } ? E : never;
+type ExtractEffectType<T extends AnimationOptions> = T extends { namedEffect: infer E } ? E : never;
 
 // Create typed animation options
 function createTimeAnimation<T extends EntranceAnimation | OngoingAnimation>(
   namedEffect: T,
-  options?: Partial<Omit<TimeAnimationOptions, 'type' | 'namedEffect'>>
+  options?: Partial<Omit<TimeAnimationOptions, 'type' | 'namedEffect'>>,
 ): TimeAnimationOptions {
   return {
     type: 'TimeAnimationOptions',
     namedEffect,
     duration: 1000,
-    ...options
+    ...options,
   };
 }
 
-function createScrubAnimation<T extends ScrollAnimation | MouseAnimation | BackgroundScrollAnimation>(
+function createScrubAnimation<
+  T extends ScrollAnimation | MouseAnimation | BackgroundScrollAnimation,
+>(
   namedEffect: T,
-  options?: Partial<Omit<ScrubAnimationOptions, 'type' | 'namedEffect'>>
+  options?: Partial<Omit<ScrubAnimationOptions, 'type' | 'namedEffect'>>,
 ): ScrubAnimationOptions {
   return {
     type: 'ScrubAnimationOptions',
     namedEffect,
-    ...options
+    ...options,
   };
 }
 ```
@@ -835,15 +842,12 @@ function createScrubAnimation<T extends ScrollAnimation | MouseAnimation | Backg
 
 ```typescript
 // Type-safe entrance animation
-const fadeAnimation = createTimeAnimation(
-  { type: 'FadeIn' },
-  { duration: 800, easing: 'easeOut' }
-);
+const fadeAnimation = createTimeAnimation({ type: 'FadeIn' }, { duration: 800, easing: 'easeOut' });
 
 // Type-safe scroll animation
 const parallaxAnimation = createScrubAnimation(
   { type: 'ParallaxScroll', speed: 0.3 },
-  { startOffset: { name: 'cover' } }
+  { startOffset: { name: 'cover' } },
 );
 
 // Type guards in use
@@ -874,7 +878,7 @@ class TypedAnimationFactory<T extends NamedEffect> implements AnimationFactory<T
       type: this.getAnimationType(effect),
       namedEffect: effect,
       ...this.getDefaults(effect),
-      ...options
+      ...options,
     } as AnimationOptions;
 
     return getWebAnimation(this.target, animationOptions);
@@ -882,8 +886,8 @@ class TypedAnimationFactory<T extends NamedEffect> implements AnimationFactory<T
 
   private getAnimationType(effect: T): 'TimeAnimationOptions' | 'ScrubAnimationOptions' {
     // Implementation would check effect type and return appropriate type
-    return isEntranceAnimation(effect) || isOngoingAnimation(effect) 
-      ? 'TimeAnimationOptions' 
+    return isEntranceAnimation(effect) || isOngoingAnimation(effect)
+      ? 'TimeAnimationOptions'
       : 'ScrubAnimationOptions';
   }
 
@@ -898,15 +902,18 @@ class TypedAnimationFactory<T extends NamedEffect> implements AnimationFactory<T
 
 ```typescript
 // Extract properties based on effect type
-type EffectProperties<T extends NamedEffect> = 
-  T extends { direction: infer D } ? { direction: D } : {} &
-  T extends { power: infer P } ? { power: P } : {} &
-  T extends { distance: infer D } ? { distance: D } : {};
+type EffectProperties<T extends NamedEffect> = T extends { direction: infer D }
+  ? { direction: D }
+  : {} & T extends { power: infer P }
+    ? { power: P }
+    : {} & T extends { distance: infer D }
+      ? { distance: D }
+      : {};
 
 // Usage
-type FadeInProps = EffectProperties<FadeIn>;        // {}
-type ArcInProps = EffectProperties<ArcIn>;          // { direction: EffectFourDirections; power?: EffectPower }
-type GlideInProps = EffectProperties<GlideIn>;      // { direction: number; distance: UnitLengthPercentage; power?: EffectPower }
+type FadeInProps = EffectProperties<FadeIn>; // {}
+type ArcInProps = EffectProperties<ArcIn>; // { direction: EffectFourDirections; power?: EffectPower }
+type GlideInProps = EffectProperties<GlideIn>; // { direction: number; distance: UnitLengthPercentage; power?: EffectPower }
 ```
 
 ---

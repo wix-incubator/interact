@@ -175,15 +175,14 @@ function openModal(type) {
 }
 
 function closeModal() {
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
 }
 
 modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+  if (e.target === modal) closeModal();
 });
 
 // Export for global access
 window.openModal = openModal;
 window.closeModal = closeModal;
-

@@ -30,7 +30,13 @@ function createTimeEffectHandler(
     effectToAnimationOptions(effect),
     undefined,
     reducedMotion,
-  ) as AnimationGroup;
+  ) as AnimationGroup | null;
+
+  // Return null if animation could not be created
+  if (!animation) {
+    return null;
+  }
+
   let initialPlay = true;
   const type = options.type || 'alternate';
 
@@ -104,7 +110,7 @@ function addClickHandler(
   options: StateParams | PointerTriggerParams = {} as StateParams,
   { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
-  let handler: (event: MouseEvent | KeyboardEvent) => void;
+  let handler: ((event: MouseEvent | KeyboardEvent) => void) | null;
   let once = false;
 
   if (
@@ -129,10 +135,31 @@ function addClickHandler(
     once = (options as PointerTriggerParams).type === 'once';
   }
 
+  // Early return if animation is null, no event listeners added
+  if (!handler) {
+    return;
+  }
+
+  // Store references to the actual listener functions so we can remove them later
+  const clickListener = (e: MouseEvent) => {
+    if ((e as PointerEvent).pointerType) {
+      handler(e);
+    }
+  };
+
+  const keydownListener = (event: KeyboardEvent) => {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      handler(event);
+    } else if (event.code === 'Enter') {
+      handler(event);
+    }
+  };
+
   const cleanup = () => {
-    source.removeEventListener('click', handler);
+    source.removeEventListener('click', clickListener);
     if (allowA11yTriggers) {
-      source.removeEventListener('keydown', handler);
+      source.removeEventListener('keydown', keydownListener);
     }
   };
 
@@ -141,31 +168,11 @@ function addClickHandler(
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
-  source.addEventListener(
-    'click',
-    (e) => {
-      if ((e as PointerEvent).pointerType) {
-        handler(e);
-      }
-    },
-    { passive: true, once },
-  );
+  source.addEventListener('click', clickListener, { passive: true, once });
 
   if (allowA11yTriggers) {
     source.tabIndex = 0;
-
-    source.addEventListener(
-      'keydown',
-      (event: KeyboardEvent) => {
-        if (event.code === 'Space') {
-          event.preventDefault();
-          handler(event);
-        } else if (event.code === 'Enter') {
-          handler(event);
-        }
-      },
-      { once },
-    );
+    source.addEventListener('keydown', keydownListener, { once });
   }
 }
 

@@ -14,7 +14,7 @@ export function getInteractElement() {
     constructor() {
       super();
 
-      this.controller = new InteractionController(this);
+      this.controller = new InteractionController(this, undefined, { useFirstChild: true });
       this._internals = null;
 
       if (this.attachInternals) {
@@ -39,7 +39,7 @@ export function getInteractElement() {
     }
 
     disconnectedCallback() {
-      this.disconnect();
+      this.disconnect({ removeFromCache: true });
     }
 
     connect(key?: string) {
@@ -49,9 +49,9 @@ export function getInteractElement() {
 
       this.controller.connect(key);
     }
-  
-    disconnect() {
-      this.controller.disconnect();
+
+    disconnect(options?: { removeFromCache?: boolean }) {
+      this.controller.disconnect(options);
     }
 
     toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null) {

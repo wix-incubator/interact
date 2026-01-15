@@ -9,14 +9,16 @@ export class InteractionController {
   key: string | undefined;
   connected: boolean;
   sheet: CSSStyleSheet | null;
+  useFirstChild: boolean;
   _observers: WeakMap<HTMLElement, MutationObserver>;
 
-  constructor(element: HTMLElement, key?: string) {
+  constructor(element: HTMLElement, key?: string, options?: { useFirstChild?: boolean }) {
     this.element = element;
     this.key = key;
     this.connected = false;
     this.sheet = null;
     this._observers = new WeakMap();
+    this.useFirstChild = options?.useFirstChild ?? false;
   }
 
   connect(key?: string) {
@@ -36,11 +38,11 @@ export class InteractionController {
     this.connected = add(this);
   }
 
-  disconnect() {
+  disconnect({ removeFromCache = false }: { removeFromCache?: boolean } = {}) {
     const key = this.key || this.element.dataset.interactKey;
 
     if (key) {
-      remove(this);
+      remove(this, removeFromCache);
     }
 
     if (this.sheet) {
@@ -78,7 +80,12 @@ export class InteractionController {
     }
   }
 
-  toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null, isLegacy?: boolean) {
+  toggleEffect(
+    effectId: string,
+    method: StateParams['method'],
+    item?: HTMLElement | null,
+    isLegacy?: boolean,
+  ) {
     if (item === null) {
       return;
     }
@@ -88,21 +95,22 @@ export class InteractionController {
       return;
     }
 
-    const currentEffects = new Set(this.element.dataset[INTERACT_EFFECT_DATA_ATTR]?.split(' ') || []);
+    const currentEffects = new Set(
+      this.element.dataset[INTERACT_EFFECT_DATA_ATTR]?.split(' ') || [],
+    );
 
     if (method === 'toggle') {
-        currentEffects.has(effectId)
-        ? currentEffects.delete(effectId)
-        : currentEffects.add(effectId);
+      currentEffects.has(effectId) ? currentEffects.delete(effectId) : currentEffects.add(effectId);
     } else if (method === 'add') {
-        currentEffects.add(effectId);
+      currentEffects.add(effectId);
     } else if (method === 'remove') {
-        currentEffects.delete(effectId);
+      currentEffects.delete(effectId);
     } else if (method === 'clear') {
-        currentEffects.clear();
+      currentEffects.clear();
     }
 
-    (item || this.element).dataset[INTERACT_EFFECT_DATA_ATTR] = Array.from(currentEffects).join(' ');
+    (item || this.element).dataset[INTERACT_EFFECT_DATA_ATTR] =
+      Array.from(currentEffects).join(' ');
   }
 
   getActiveEffects(): string[] {
