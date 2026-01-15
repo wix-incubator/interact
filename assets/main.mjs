@@ -93,8 +93,8 @@ function buildGrid() {
   for (let line of lines) {
     const rect = line.getBoundingClientRect();
     lineCache.set(line, {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
+      x: rect.left + rect.width / 2 + window.scrollX,
+      y: rect.top + rect.height / 2 + window.scrollY,
     });
 
     lineStates.set(line, {
