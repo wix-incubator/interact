@@ -9,9 +9,15 @@ import { Interact } from 'https://esm.sh/@wix/interact@1.92.0';
 // --- Hero Grid Functions ---
 const gridContainer = document.getElementById('grid-container');
 const lineCache = new Map();
+const lineStates = new Map();
 let centerX, centerY, maxDist;
-let windowWidth, windowHeight;
 
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
+/* this is the old grid function
 function updateGrid() {
     gridContainer.innerHTML = '';
     lineCache.clear();
@@ -52,6 +58,133 @@ function updateGrid() {
         });
     }
 }
+*/
+
+function buildGrid() {
+    gridContainer.innerHTML = '';
+    lineCache.clear();
+    lineStates.clear();
+    
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+    const cellSize = 40;
+    const containerWidth = gridContainer.offsetWidth || windowWidth;
+    const containerHeight = gridContainer.offsetHeight || windowHeight;
+    const cols = Math.ceil(containerWidth / cellSize);
+    const rows = Math.ceil(containerHeight / cellSize);
+    const neededCells = cols * rows;
+    
+    gridContainer.style.display = 'grid';
+    gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < neededCells; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        const line = document.createElement('div');
+        line.className = 'grid-line';
+        cell.appendChild(line);
+        fragment.appendChild(cell);
+    }
+    gridContainer.appendChild(fragment);
+
+    const lines = document.getElementsByClassName('grid-line');
+    for (let line of lines) {
+        const rect = line.getBoundingClientRect();
+        lineCache.set(line, {
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2
+        });
+        
+        lineStates.set(line, {
+            currentAngle: 0,
+            angleVelocity: 0,
+            currentScale: 0.2,
+            scaleVelocity: 0,
+            currentOpacity: 0.3
+        });
+    }
+}
+
+
+
+const pointerMoveEffect = (element, progress) => {
+    mouseX = progress.x * windowWidth;
+    mouseY = progress.y * windowHeight;
+};
+
+const gridWaveEffect = (element, progress) => {
+    
+    const time = progress * Math.PI * 2 * 10; 
+    for (const [line, cache] of lineCache) {
+        const state = lineStates.get(line);
+        if (!state) continue;
+
+        const dx = mouseX - cache.x;
+        const dy = mouseY - cache.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        
+        const targetAngle = Math.atan2(dy, dx) * (180 / Math.PI) - 90;
+        const maxDist = 800;
+        const distRatio = Math.min(1, dist / maxDist);
+        
+        const easedDistRatio = Math.pow(distRatio, 0.35);
+        
+       
+        const stiffness = 0.35 - easedDistRatio * 0.32;  
+        const damping = 0.82 - easedDistRatio * 0.12;   
+
+        let angleDiff = targetAngle - state.currentAngle;
+        while (angleDiff > 180) angleDiff -= 360;
+        while (angleDiff < -180) angleDiff += 360;
+        
+        const springForce = angleDiff * stiffness * (1 + Math.abs(angleDiff) * 0.002);
+        
+        const velocityFactor = Math.abs(state.angleVelocity) / 25;
+        const dynamicDamping = damping - velocityFactor * 0.08;
+        
+        state.angleVelocity += springForce;
+        state.angleVelocity *= Math.max(0.6, dynamicDamping);
+        
+        state.angleVelocity = Math.max(-25, Math.min(25, state.angleVelocity));
+        state.currentAngle += state.angleVelocity;
+        
+        if (state.currentAngle > 360) state.currentAngle -= 360;
+        if (state.currentAngle < -360) state.currentAngle += 360;
+
+        const wavePhase = time - (Math.pow(dist, 1.15) * 0.004);
+        const wave = Math.sin(wavePhase); 
+        const normalizedWave = (wave + 1) / 2;
+
+        const distFactor = Math.min(1, dist / 1500);
+        const minScale = 0.2;
+        const growthAmplitude = 1.2 * (1 - distFactor);
+        const baseScale = minScale + (growthAmplitude * normalizedWave);
+        
+        const velocityStretch = 1 + (Math.abs(state.angleVelocity) / 25) * 0.6;
+        const targetScale = baseScale * velocityStretch;
+        
+        const scaleDiff = targetScale - state.currentScale;
+        const scaleStiffness = stiffness * 1.2;
+        state.scaleVelocity += scaleDiff * scaleStiffness;
+        state.scaleVelocity *= damping;
+        state.currentScale += state.scaleVelocity;
+        
+        state.currentScale = Math.max(0.1, state.currentScale);
+        
+        const targetOpacity = 0.3 + (0.7 * normalizedWave * (1 - distFactor * 0.5));
+        state.currentOpacity += (targetOpacity - state.currentOpacity) * stiffness * 0.5;
+
+        const hideRadius = 25;
+        const fadeZone = 40;
+        let proximityMask = (dist - hideRadius) / fadeZone;
+        proximityMask = Math.max(0, Math.min(1, proximityMask));
+
+        line.style.transform = `rotate(${state.currentAngle}deg) scaleY(${state.currentScale * proximityMask})`;
+        line.style.opacity = state.currentOpacity * proximityMask;
+    }
+};
 
 
 /* this is the old desktop effect with the mouse movement... I added a new effect that also uses mouse
@@ -83,7 +216,8 @@ function rotateGridEffect(_containerElement, progress) {
     }
 }
 */
-
+/* OPTION 2: this is the second iteration of the grid effect with the mouse movement... 
+it's a bit different. It's a bit more subtle and it's more like a wind effect.
 const rotateGridEffect = (containerElement, progress) => {
     const mouseX = progress.x * windowWidth;
     const mouseY = progress.y * windowHeight;
@@ -101,6 +235,8 @@ const rotateGridEffect = (containerElement, progress) => {
         line.style.transform = `rotate(${angle + 45 + twist}deg) scaleY(${scale})`;
     }
 };
+*/
+
 
 const rotateGridEffectMobile = (containerElement, progress) => {
 
@@ -506,8 +642,24 @@ const config = {
             trigger: 'pointerMove',
             params: { hitArea: 'root' },
             conditions: ['Desktop'],
-            effects: [{ customEffect: rotateGridEffect, centeredToTarget: true }]
+            effects: [{ customEffect: pointerMoveEffect, centeredToTarget: true }]
         },
+
+        {
+            key: 'hero-grid',
+            trigger: 'viewEnter',
+           params: {type: 'once'},
+            conditions: ['Desktop'],
+            effects: [ 
+                 { 
+                    customEffect: gridWaveEffect, 
+                    duration: 16000, 
+                    iterations: Infinity, 
+                    easing: 'linear'
+                }
+            ]
+        },
+
         {
             key: 'hero-grid',
             trigger: 'viewEnter',
@@ -1317,7 +1469,7 @@ const config = {
 // =============================================================================
 
 // Generate DOM elements
-updateGrid();
+buildGrid();
 generateTunnel();
 generateMouseTunnel();
 generateSpongeGeometry();
@@ -1326,7 +1478,7 @@ generateSpongeGeometry();
 updateTunnelBounds();
 
 // Event listeners
-window.addEventListener('resize', updateGrid);
+window.addEventListener('resize', buildGrid);
 window.addEventListener('resize', updateTunnelBounds);
 
 // Respect reduced motion settings
