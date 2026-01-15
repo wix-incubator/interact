@@ -66,7 +66,7 @@ function getWebAnimation(
 ): AnimationGroup | MouseAnimationInstance | null {
   const element = target instanceof HTMLElement ? target : getElement(target, ownerDocument);
 
-  if (trigger?.trigger === 'pointer-move') {
+  if (trigger?.trigger === 'pointer-move' && !animationOptions.keyframeEffect) {
     let effectOptions = animationOptions;
 
     if (animationOptions.customEffect) {
@@ -88,7 +88,6 @@ function getWebAnimation(
       options,
     ) as MouseAnimationFactory;
 
-    // Return null if mouseAnimationFactory is not callable
     if (typeof mouseAnimationFactory !== 'function') {
       return null;
     }

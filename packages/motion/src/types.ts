@@ -77,6 +77,7 @@ export type Progress = {
   v?: { x: number; y: number };
   active?: boolean;
 };
+
 export interface MouseAnimationInstance {
   target: HTMLElement;
   play: () => void;
@@ -153,6 +154,9 @@ export type TimeAnimationOptions<TNamedEffect extends NamedEffect = NamedEffect>
   fill?: AnimationFillMode;
   reversed?: boolean;
 };
+
+export type PointerMoveAxis = 'x' | 'y';
+
 
 type ScrubAnimationDataBase<TNamedEffect extends NamedEffect = NamedEffect> = {
   id?: string;
@@ -233,11 +237,12 @@ export interface ScrubPointerScene {
   centeredToTarget?: boolean;
   transitionDuration?: number;
   transitionEasing?: ScrubTransitionEasing;
-  getProgress(): Progress;
-  effect(p: Progress): void;
+  getProgress(): Progress | number;
+  effect(__: any, p: Progress): void;
   disabled: boolean;
   destroy(): void;
   allowActiveEvent?: boolean;
+  ready?: Promise<void>;
 }
 
 type ScrubOptions = ScrubAnimationOptions & AnimationExtraOptions;

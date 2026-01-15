@@ -106,8 +106,8 @@ function getEffectsData(
       effectOptions.duration = effect.duration as number;
       effectOptions.delay = (effect as TimeAnimationOptions).delay || 0;
     } else {
-      // if ViewTimeline is supported
-      if (window.ViewTimeline) {
+      // if ViewTimeline is supported AND this is a view-progress trigger
+      if (window.ViewTimeline && trigger?.trigger === 'view-progress') {
         // set duration to 'auto'
         effectOptions.duration = 'auto';
       } else {

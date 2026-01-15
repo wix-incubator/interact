@@ -990,35 +990,39 @@ describe('interact (web)', () => {
     });
 
     describe('pointerMove', () => {
-      it('should add handler for pointerMove trigger', async () => {
-        const { getScrubScene } = await import('@wix/motion');
-        const { Pointer } = await import('kuliso');
-        const pointerInstance = {
-          start: vi.fn(),
-          destroy: vi.fn(),
-        };
-        Pointer.mockImplementation(function (this: any) {
-          Object.assign(this, pointerInstance);
-        });
+      it('should add handler for pointerMove trigger', async () =>
+        new Promise(async (done) => {
+          const { getScrubScene } = await import('@wix/motion');
+          const { Pointer } = await import('kuliso');
+          const pointerInstance = {
+            start: vi.fn(),
+            destroy: vi.fn(),
+          };
+          Pointer.mockImplementation(function (this: any) {
+            Object.assign(this, pointerInstance);
+          });
 
-        element = document.createElement('interact-element') as IInteractElement;
-        const div = document.createElement('div');
-        element.append(div);
+          element = document.createElement('interact-element') as IInteractElement;
+          const div = document.createElement('div');
+          element.append(div);
 
-        add(element, 'logo-mouse');
+          add(element, 'logo-mouse');
 
-        expect(getScrubScene).toHaveBeenCalledTimes(1);
-        expect(getScrubScene).toHaveBeenCalledWith(
-          expect.any(HTMLElement),
-          expect.objectContaining(
-            effectToAnimationOptions(getMockConfig().effects['logo-track-mouse'] as ScrubEffect),
-          ),
-          expect.objectContaining({
-            trigger: 'pointer-move',
-          }),
-        );
-        expect(pointerInstance.start).toHaveBeenCalled();
-      });
+          expect(getScrubScene).toHaveBeenCalledTimes(1);
+          expect(getScrubScene).toHaveBeenCalledWith(
+            expect.any(HTMLElement),
+            expect.objectContaining(
+              effectToAnimationOptions(getMockConfig().effects['logo-track-mouse'] as ScrubEffect),
+            ),
+            expect.objectContaining({
+              trigger: 'pointer-move',
+            }),
+          );
+          setTimeout(() => {
+            expect(pointerInstance.start).toHaveBeenCalled();
+            done(void 0);
+          }, 0);
+        }));
     });
 
     describe('viewProgress', () => {
