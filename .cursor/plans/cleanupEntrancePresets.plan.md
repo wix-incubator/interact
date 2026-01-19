@@ -6,6 +6,8 @@
 
 **Phase 2**: Remove direction-fixing logic from 6 presets that use `getAdjustedDirection()` to compensate for element rotation. Simplify presets to use direction parameters directly.
 
+**Phase 3**: Simplify opacity handling by removing redundant final keyframes where possible, and renaming `--comp-opacity` to `--motion-opacity` for clearer library semantics.
+
 ---
 
 ## Phase 1: Remove Redundant Presets
@@ -107,3 +109,25 @@ For each preset:
 - **Predictable behavior**: Direction works as specified
 - **Better performance**: No DOM measurements for rotation
 - **Easier to understand**: Less coupling between element state and effect
+
+---
+
+## Phase 3: Simplify Opacity Handling
+
+### Overview
+
+Many presets include explicit final keyframes setting `opacity: 'var(--comp-opacity, 1)'`. The `--comp-opacity` variable was originally required because the element's computed opacity was 0 in order to keep the element hidden on load.
+
+### Goals
+
+1. **Remove redundant final keyframes**: When a final keyframe only specifies opacity, it can be removed to let the animation use the element's natural CSS opacity
+2. **Rename for clarity**: If `--comp-opacity` is still needed in some cases, rename to `--motion-opacity` for generic library usage
+3. **Evaluate each preset**: Determine which presets can omit the final opacity keyframe(s) entirely
+
+### Strategy
+
+**Option A - Remove Final Keyframe** (preferred when possible):
+When the final keyframe only sets opacity and no other properties, omit it entirely. The Web Animations API will automatically use the element's computed opacity from CSS.
+
+**Option B - Rename Variable** (when API is needed):
+If explicit control over target opacity is necessary, rename `--comp-opacity` to `--motion-opacity` to make it clear this is a library feature, not Wix-specific, and add to documentation.
