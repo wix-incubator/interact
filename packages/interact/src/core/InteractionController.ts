@@ -26,11 +26,21 @@ export class InteractionController {
       return;
     }
 
-    key = key || this.key || this.element.dataset.interactKey;
+    const domKey = this.element.dataset.interactKey;
+
+    key = key || this.key || domKey;
 
     if (!key) {
       console.warn('Interact: No key provided');
       return;
+    }
+
+    if (domKey !== key) {
+      if (domKey) {
+        console.warn(`Interact: Key mismatch between element ${domKey} and parameter ${key}, updating element key`);
+      }
+
+      this.element.dataset.interactKey = key;
     }
 
     this.key = key;
