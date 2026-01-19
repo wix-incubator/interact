@@ -12,11 +12,11 @@ import { add, remove, generate } from '@wix/interact';
 
 ## Functions Overview
 
-| Function            | Purpose                                                   | Parameters                                | Returns  |
-| ------------------- | --------------------------------------------------------- | ----------------------------------------- | -------- |
-| `add()`             | Add interactions to an element                            | `element`, `key?`                         | `void`   |
-| `remove()`          | Remove interactions from an element                       | `key`                                     | `void`   |
-| `generate()`        | Generate CSS for hiding elements with entrance animations | `config`                                  | `string` |
+| Function     | Purpose                                                   | Parameters        | Returns  |
+| ------------ | --------------------------------------------------------- | ----------------- | -------- |
+| `add()`      | Add interactions to an element                            | `element`, `key?` | `void`   |
+| `remove()`   | Remove interactions from an element                       | `key`             | `void`   |
+| `generate()` | Generate CSS for hiding elements with entrance animations | `config`          | `string` |
 
 ---
 
@@ -97,7 +97,7 @@ if (element) {
 
 #### With Regular HTML Elements (React approach)
 
-```jsx
+```tsx
 import { add, remove } from '@wix/interact/react';
 
 function MyComponent() {
@@ -115,7 +115,11 @@ function MyComponent() {
     };
   }, []);
 
-  return <div ref={elementRef} data-interact-key="my-hero">Content to animate</div>;
+  return (
+    <div ref={elementRef} data-interact-key="my-hero">
+      Content to animate
+    </div>
+  );
 }
 ```
 

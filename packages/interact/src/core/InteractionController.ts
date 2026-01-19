@@ -37,7 +37,9 @@ export class InteractionController {
 
     if (domKey !== key) {
       if (domKey) {
-        console.warn(`Interact: Key mismatch between element ${domKey} and parameter ${key}, updating element key`);
+        console.warn(
+          `Interact: Key mismatch between element ${domKey} and parameter ${key}, updating element key`,
+        );
       }
 
       this.element.dataset.interactKey = key;

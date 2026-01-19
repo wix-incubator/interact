@@ -252,7 +252,7 @@ Custom checkbox with animation.
 ```html
 <interact-element data-interact-key="checkbox">
   <label class="checkbox-label">
-    <input type="checkbox" hidden>
+    <input type="checkbox" hidden />
     <div class="checkbox-box">
       <svg class="checkmark" viewBox="0 0 24 24">
         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
