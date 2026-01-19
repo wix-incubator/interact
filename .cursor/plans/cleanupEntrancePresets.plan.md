@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Phase 1**: Remove 2 redundant entrance presets (GlitchIn wrapper, ExpandIn duplicate).
+**Phase 1**: Remove/consolidate redundant presets (GlitchIn, ExpandIn, RevealIn → ShapeIn, CircleIn, PunchIn).
 
 **Phase 2**: Remove direction-fixing logic from 6 presets that use `getAdjustedDirection()` to compensate for element rotation. Simplify presets to use direction parameters directly.
 
@@ -20,12 +20,14 @@
 
 **What it does**:
 
-- Defaults `direction` to 270° (straight down)
+- Defaults `direction` to 270° (from left, slides right)
 - If user provides a direction, arbitrarily subtracts 90° from it
 - Then calls GlideIn with the adjusted direction
 - No unique visual effect or animation logic
 
-**Migration**: Use `GlideIn` directly with any `direction` angle (e.g., `direction: 270` for straight down, or any value 0-360°).
+**Change to GlideIn**: Update GlideIn's default `direction` from `0` to `270` to match the more common "from left" behavior that GlitchIn provided.
+
+**Migration**: Use `GlideIn` directly with any `direction` angle (e.g., `direction: 270` for from left, or any value 0-360°).
 
 ### 2. ExpandIn (Same Effect as GrowIn)
 
@@ -52,21 +54,56 @@
 
 **Migration**: Use `GrowIn` with appropriate `direction` (angle) and `distance` parameters to achieve the same expand-from-edge effect.
 
+### 3. RevealIn (Consolidate into ShapeIn)
+
+**Why Remove**: RevealIn and ShapeIn both use `clip-path` for reveals. They can be unified under ShapeIn.
+
+- RevealIn: directional reveals (left, right, top, bottom)
+- ShapeIn: geometric shape reveals (diamond, circle, rectangle, ellipse, window)
+
+**Naming Options** (need to choose):
+
+**Option A - Use "wipe-" prefix for directional values**:
+
+- Keep `shape` parameter
+- Add: `wipe-left`, `wipe-right`, `wipe-top`, `wipe-bottom`
+- Migration: `RevealIn({ direction: 'left' })` → `ShapeIn({ shape: 'wipe-left' })`
+
+**Option B - Rename parameter to "reveal"**:
+
+- Change parameter from `shape` to `reveal`
+- Add: `left`, `right`, `top`, `bottom`
+- Migration: `RevealIn({ direction: 'left' })` → `ShapeIn({ reveal: 'left' }) ; ShapeIn({ shape: 'circle' })` → `ShapeIn({ reveal: 'circle' })`
+
+### 4. CircleIn (Legacy)
+
+**Why Remove**: Legacy preset, no longer needed for consumers.
+
+### 5. PunchIn (Legacy)
+
+**Why Remove**: Legacy preset, no longer needed for consumers.
+
 ### Files to Modify (Phase 1)
 
 ### Core Files to Delete
 
 - [`packages/motion-presets/src/library/entrance/GlitchIn.ts`](packages/motion-presets/src/library/entrance/GlitchIn.ts)
 - [`packages/motion-presets/src/library/entrance/ExpandIn.ts`](packages/motion-presets/src/library/entrance/ExpandIn.ts)
+- [`packages/motion-presets/src/library/entrance/RevealIn.ts`](packages/motion-presets/src/library/entrance/RevealIn.ts)
+- [`packages/motion-presets/src/library/entrance/CircleIn.ts`](packages/motion-presets/src/library/entrance/CircleIn.ts)
+- [`packages/motion-presets/src/library/entrance/PunchIn.ts`](packages/motion-presets/src/library/entrance/PunchIn.ts)
 
 ### Test Files to Delete
 
 - `packages/motion-presets/src/library/entrance/test/GlitchIn.spec.ts`
 - `packages/motion-presets/src/library/entrance/test/ExpandIn.spec.ts`
+- `packages/motion-presets/src/library/entrance/test/RevealIn.spec.ts`
+- `packages/motion-presets/src/library/entrance/test/CircleIn.spec.ts`
+- `packages/motion-presets/src/library/entrance/test/PunchIn.spec.ts`
 
 ### Update Exports
 
-- [`packages/motion-presets/src/library/entrance/index.ts`](packages/motion-presets/src/library/entrance/index.ts) - Remove GlitchIn and ExpandIn exports
+- [`packages/motion-presets/src/library/entrance/index.ts`](packages/motion-presets/src/library/entrance/index.ts) - Remove GlitchIn, ExpandIn, RevealIn, CircleIn, and PunchIn exports
 
 ### Update Type Definitions
 
@@ -84,14 +121,15 @@ Many presets have complex `prepare()` functions that read `--comp-rotate-z` from
 
 ### Presets with Direction-Fixing Logic
 
-These 6 presets use `getAdjustedDirection()` in their prepare functions:
+These 5 presets use `getAdjustedDirection()` in their prepare functions:
 
 1. **FlipIn** - Adjusts rotateX/Y based on element rotation
 2. **FoldIn** - Adjusts origin and rotation based on element rotation  
 3. **SlideIn** - Adjusts clip-path direction based on element rotation
 4. **TiltIn** - Adjusts clip-path direction based on element rotation
-5. **RevealIn** - Adjusts clip-path direction based on element rotation
-6. **WinkIn** - Adjusts direction based on element rotation
+5. **WinkIn** - Adjusts direction based on element rotation
+
+(RevealIn also had this logic but is being removed in Phase 1)
 
 ### Changes Required
 
