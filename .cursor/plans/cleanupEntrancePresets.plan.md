@@ -25,7 +25,10 @@
 - Then calls GlideIn with the adjusted direction
 - No unique visual effect or animation logic
 
-**Change to GlideIn**: Update GlideIn's default `direction` from `0` to `270` to match the more common "from left" behavior that GlitchIn provided.
+**Changes to GlideIn**:
+
+- Update default `direction` from `0` to `270` to match the more common "from left" behavior that GlitchIn provided
+- Remove `startFromOffScreen` option - this requires DOM measurements (left, top) and adds complexity
 
 **Migration**: Use `GlideIn` directly with any `direction` angle (e.g., `direction: 270` for from left, or any value 0-360°).
 
