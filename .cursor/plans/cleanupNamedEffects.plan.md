@@ -194,11 +194,8 @@ Standardize parameter naming and coordinate systems across all presets for consi
 Presets using numeric degrees should use `angle` instead of `direction`:
 
 | Preset | Current | Change To |
-
 |--------|---------|-----------|
-
 | GrowIn | `direction = 0` | `angle = 0` |
-
 | GlideIn | `direction = 270` | `angle = 270` |
 
 **Files to update**:
@@ -258,15 +255,10 @@ Presets using `'horizontal' | 'vertical'` should use a different parameter name 
 ### Summary of `direction` Parameter Usage (After Changes)
 
 | Meaning | Parameter | Values | Presets |
-
 |---------|-----------|--------|---------|
-
 | Numeric angle | `angle` | `0-360` (degrees) | GrowIn, GlideIn, MoveScroll, mouse presets |
-
 | Cardinal | `direction` | `'top' \| 'right' \| 'bottom' \| 'left'` | FlipIn, FoldIn, SlideIn, FloatIn, BounceIn, etc. |
-
 | Rotation | `direction` | `'clockwise' \| 'counter-clockwise'` | SpinIn, SpinScroll, Spin |
-
 | Axis | `axis` or `orientation` | `'horizontal' \| 'vertical'` | WinkIn, FlipScroll, ArcScroll, Flip, Breathe |
 
 ---
@@ -284,25 +276,15 @@ The `power` parameter (`'soft' | 'medium' | 'hard'`) is a simplified abstraction
 Each preset has a `POWER_MAP` (or similar) that translates power levels:
 
 | Preset | Parameter | soft | medium | hard |
-
 |--------|-----------|------|--------|------|
-
 | **FlipIn** | `initialRotate` | 45° | 90° | 270° |
-
 | **FoldIn** | `initialRotate` | 45° | 90° | 120° |
-
 | **GrowIn** | `initialScale` | 0.8 | 0.6 | 0 |
-
 | **BounceIn** | `distanceFactor` | 0.5 | 0.75 | 1 |
-
 | **ArcIn** | easing | quintInOut | backOut | backInOut |
-
 | **FlipScroll** | `rotate` | 45° | 90° | 120° |
-
 | **TiltScroll** | travel distance | 0.25× | 0.5× | 1× multiplier |
-
 | **Spin3dScroll** | rotation + travel | varies | varies | varies |
-
 | **Mouse presets** | angle/scale/easing | varies | varies | varies |
 
 ### Migration Strategy
@@ -325,69 +307,37 @@ Many presets measure element dimensions or use hardcoded values that could inste
 These presets measure element dimensions and derive values that could instead be customizable:
 
 | Preset | What's Measured | Hardcoded Calculation | Suggested Parameter |
-
 |--------|-----------------|----------------------|---------------------|
-
 | ArcIn | `width`, `height` | `z = (height or width) / 2` | `depth` (default: 300px) |
-
 | CurveIn | `width` | `translateZ = width * 3` | `depth` (default: 900px) |
-
 | TiltIn | `height` | `translateZ = height / 2` | `depth` (default: 200px) |
-
 | TurnScroll | `left` | Viewport-relative translation | Use CSS fallback |
-
 | SkewPanScroll | `left` | Viewport-relative translation | Use CSS fallback |
 
 ### Category 2: Hardcoded Values That Could Be Parameters
 
 | Preset | Hardcoded Value | What It Controls | Suggested Parameter |
-
 |--------|-----------------|------------------|---------------------|
-
 | **ArcIn** | `ROTATION_ANGLE = 80` | Arc rotation angle | `angle = 80` |
-
 | **ArcIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
-
 | **ArcScroll** | `translateZ(-300px)` | Arc depth | `depth = 300` |
-
 | **ArcScroll** | `ROTATION = 68` | Arc rotation | `angle = 68` |
-
 | **ArcScroll** | `perspective(500px)` | 3D perspective | `perspective = 500` |
-
 | **TiltIn** | `rotateX(-90deg)` | Tilt angle | `tiltAngle = 90` |
-
 | **TiltIn** | `ROTATION_MAP = { left: 30, right: -30 }` | Z rotation | `rotateZ = 30` |
-
 | **TiltIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
-
 | **FoldIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
-
 | **FlipIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
-
 | **FlipScroll** | `perspective(800px)` | 3D perspective | `perspective = 800` |
-
 | **TiltScroll** | `perspective(400px)` | 3D perspective | `perspective = 400` |
-
 | **TiltScroll** | `[ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25] `| Rotation angles | `rotationX`, `rotationY`, `rotationZ` |
-
 | **TiltScroll** | `MAX_Y_TRAVEL = 40` | Max vertical travel | `maxTravelY = 40` |
-
 | **Spin3dScroll** | `perspective(1000px)` | 3D perspective | `perspective = 1000` |
-
 | **Spin3dScroll** | `MAX_Y_TRAVEL = 40` | Max vertical travel | `maxTravelY = 40` |
-
 | **FloatIn** | `distance: 120` | Float distance | `distance = 120` |
-
 | **TurnIn** | `angle: -50 / 50` | Rotation angle | `angle = 50` |
-
 | **CurveIn** | `perspective(200px)` | 3D perspective | `perspective = 200` |
-
 | **BounceIn** | `perspective(800px)` (center only) | 3D perspective | `perspective = 800` |
-
 | **CircleIn** | `ROTATION = 45` | Rotation angle | `rotation = 45` |
-
 | **TurnScroll** | `ELEMENT_ROTATION = 45` | Element rotation | `rotation = 45` |
-
 | **Breathe** | `FACTORS_SEQUENCE` | Decay pattern | Could allow custom decay factors |
-
-| **ShapeIn** | Fixed clip-path shapes | Shape dimensions | `size` or `radius` for circle/ellipse |
