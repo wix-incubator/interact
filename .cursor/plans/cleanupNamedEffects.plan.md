@@ -192,11 +192,8 @@ Standardize parameter naming and coordinate systems across all presets for consi
 Presets using numeric degrees should use `angle` instead of `direction`:
 
 | Preset | Current | Change To |
-
 |--------|---------|-----------|
-
 | GrowIn | `direction = 0` | `angle = 0` |
-
 | GlideIn | `direction = 270` | `angle = 270` |
 
 **Files to update**:
@@ -256,15 +253,10 @@ Presets using `'horizontal' | 'vertical'` should use a different parameter name 
 ### Summary of `direction` Parameter Usage (After Changes)
 
 | Meaning | Parameter | Values | Presets |
-
 |---------|-----------|--------|---------|
-
 | Numeric angle | `angle` | `0-360` (degrees) | GrowIn, GlideIn, MoveScroll, mouse presets |
-
 | Cardinal | `direction` | `'top' \| 'right' \| 'bottom' \| 'left'` | FlipIn, FoldIn, SlideIn, FloatIn, BounceIn, etc. |
-
 | Rotation | `direction` | `'clockwise' \| 'counter-clockwise'` | SpinIn, SpinScroll, Spin |
-
 | Axis | `axis` or `orientation` | `'horizontal' \| 'vertical'` | WinkIn, FlipScroll, ArcScroll, Flip, Breathe |
 
 ---
