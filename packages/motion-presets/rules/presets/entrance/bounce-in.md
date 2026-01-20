@@ -12,26 +12,20 @@ bounce entrance, bouncy reveal, spring in, elastic entrance, playful appear, jum
 
 ## Visual Description
 
-Element bounces into view from a specified direction with multiple decreasing bounces before settling. Starts with opacity 0 and full translation (distance based on power), then performs a series of bounces: first bounce reaches 100% distance, then progressively smaller bounces at ~35%, ~21%, ~9%, ~2% of original distance. Each bounce alternates between `sineIn` and `sineOut` easing for realistic physics. The opacity fades in during the first ~54% of the animation with `quadOut` easing. For `center` direction, uses `perspective(800px)` and bounces on Z-axis (towards/away from viewer). Creates a fun, energetic, attention-grabbing entrance.
+Element bounces into view with playful, physics-like motion. It overshoots its landing spot, then bounces back smaller and smaller until it settles. Like a ball dropping and bouncing to rest. Fades in as it enters. Creates a fun, energetic, attention-grabbing entrance.
 
 ## When to Use
 
-- Playful, fun brand interfaces (high confidence)
+- Playful, fun brand interfaces
 - Gamification elements and rewards
-- Notification badges or indicators
-- Call-to-action buttons that need attention
-- Success states and confirmations
-- Child-friendly interfaces
-- Marketing landing pages with energetic tone
+- Notification badges needing attention
+- Call-to-action buttons
 
 ## When NOT to Use
 
-- Professional/corporate interfaces (too playful)
-- Serious content like error messages or warnings
-- Forms and data entry interfaces
-- Multiple simultaneous elements (visual noise)
-- Users with vestibular sensitivity (bouncing motion)
-- When subtle entrance is appropriate
+- Professional/corporate interfaces
+- Multiple simultaneous elements
+- When subtle entrance is needed
 
 ## Parameters
 
@@ -64,16 +58,8 @@ interface BounceIn {
 // Basic - bounces down from top
 { type: 'BounceIn', direction: 'top' }
 
-// Energetic CTA button
-{ type: 'BounceIn', direction: 'bottom', power: 'hard' }
-// with: duration: 1000
-
-// Subtle notification badge
-{ type: 'BounceIn', direction: 'center', power: 'soft' }
-// with: duration: 800
-
-// Custom distance factor
-{ type: 'BounceIn', direction: 'left', distanceFactor: 2.5 }
+// Bounces towards viewer (3D effect)
+{ type: 'BounceIn', direction: 'center' }
 ```
 
 ## Related Presets

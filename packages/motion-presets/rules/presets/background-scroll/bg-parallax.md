@@ -12,25 +12,18 @@ background parallax, bg parallax, background scroll, parallax background, depth 
 
 ## Visual Description
 
-Background media (image or video) moves vertically at a different rate than content scroll, creating depth illusion. Uses `translateY` on the `BG_MEDIA` element. With default speed (0.2), background moves slowly relative to scroll - positive values move background in scroll direction, creating effect of background being "further away". Runs continuously through entire element visibility (`cover` timeline). More subtle than element parallax due to lower default speed.
+Background image or video moves slower than page scroll, creating an illusion of depth. Like the background is further away than the content in front of it. Subtle effect that adds visual richness without being distracting.
 
 ## When to Use
 
-- Hero sections with depth (high confidence)
+- Hero sections with depth
 - Full-width section backgrounds
 - Landing pages with visual richness
-- Storytelling pages with immersive feel
-- Section separators with visual interest
-- Photography portfolio backgrounds
 
 ## When NOT to Use
 
-- Content-heavy sections (distracting)
 - Mobile with performance concerns
-- Backgrounds with important visual details (may be cropped)
-- When background position precision matters
-- Accessibility-focused sites (motion concerns)
-- Color-only backgrounds (no visual benefit)
+- Color-only backgrounds (no benefit)
 
 ## Parameters
 
@@ -52,17 +45,8 @@ interface BgParallax {
 ## Minimal Examples
 
 ```typescript
-// Basic - subtle parallax
+// Basic
 { type: 'BgParallax' }
-
-// Noticeable depth effect
-{ type: 'BgParallax', speed: 0.4 }
-
-// Very subtle (barely moves)
-{ type: 'BgParallax', speed: 0.1 }
-
-// Dramatic parallax
-{ type: 'BgParallax', speed: 0.7 }
 ```
 
 ## Related Presets

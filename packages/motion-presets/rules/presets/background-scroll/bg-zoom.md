@@ -12,25 +12,18 @@ background zoom, bg zoom, zoom scroll, dolly zoom, zoom effect background, ken b
 
 ## Visual Description
 
-Background image zooms in or out as user scrolls, creating dramatic depth effect. Uses `perspective` and `translateZ` transforms for true 3D zoom rather than scale. In `in` direction, background starts normal and zooms in (moves towards viewer) as scroll progresses. In `out` direction, background zooms out (moves away). Uses different starting Y positions and easing per direction: `in` starts at 20svh with `sineIn`, `out` starts at 0 with `sineInOut`. Creates cinematic dolly/zoom effect.
+Background image zooms in or out as you scroll, like a camera dolly move. Creates a cinematic, dramatic effect where the background appears to move towards or away from you.
 
 ## When to Use
 
-- Cinematic hero sections (high confidence)
+- Cinematic hero sections
 - Dramatic section reveals
 - Photography/portfolio showcases
-- Landing pages with high visual impact
-- Storytelling with depth emphasis
-- Single featured image sections
 
 ## When NOT to Use
 
-- Text-heavy backgrounds (hard to read during zoom)
-- Multiple sections with zoom (overwhelming)
+- Multiple sections with zoom
 - Mobile with performance concerns
-- When background details must stay sharp
-- Vestibular sensitivity concerns
-- Precise background positioning needed
 
 ## Parameters
 
@@ -55,17 +48,11 @@ interface BgZoom {
 ## Minimal Examples
 
 ```typescript
-// Basic - zoom in effect
+// Zoom in as you scroll
 { type: 'BgZoom', direction: 'in' }
 
-// Zoom out as scroll
+// Zoom out as you scroll
 { type: 'BgZoom', direction: 'out' }
-
-// Subtle zoom
-{ type: 'BgZoom', direction: 'in', zoom: 3 }
-
-// Dramatic zoom
-{ type: 'BgZoom', direction: 'in', zoom: 10 }
 ```
 
 ## Related Presets

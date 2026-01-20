@@ -12,25 +12,18 @@ parallax effect, scroll parallax, depth scroll, layered scroll, differential scr
 
 ## Visual Description
 
-Element moves vertically at a different rate than the scroll, creating depth illusion. Uses `translateY` to shift element position relative to scroll progress. With default speed (0.5), element moves half the distance of scroll - negative speed moves opposite direction. Animation runs continuously through the entire scroll range (`cover` timeline). Movement is linear without easing for smooth, constant-rate parallax. Creates layered depth effect when multiple elements have different speeds.
+Element moves slower or faster than the page scroll, creating an illusion of depth. Like looking through a window where nearby objects move faster than distant ones. Different elements with different speeds create layered, dimensional feel.
 
 ## When to Use
 
-- Landing pages with layered depth effect (high confidence)
+- Landing pages with layered depth effect
 - Hero sections with background/foreground separation
-- Storytelling pages with cinematic scroll
-- Creating depth hierarchy between page sections
 - Decorative elements that should feel "behind" or "in front"
-- Modern, visually rich marketing pages
 
 ## When NOT to Use
 
 - Text-heavy content (readability issues)
-- Data-dense interfaces (distracting)
-- Accessibility-focused interfaces (motion sensitivity)
 - Mobile with performance concerns
-- When precise element positioning matters
-- Forms or interactive elements
 
 ## Parameters
 
@@ -56,17 +49,11 @@ interface ParallaxScroll {
 ## Minimal Examples
 
 ```typescript
-// Basic - gentle parallax
+// Basic
 { type: 'ParallaxScroll' }
 
-// Strong parallax effect
-{ type: 'ParallaxScroll', speed: 0.8 }
-
-// Reverse parallax (moves opposite)
+// Reverse parallax (moves opposite to scroll)
 { type: 'ParallaxScroll', speed: -0.3 }
-
-// Subtle depth layer
-{ type: 'ParallaxScroll', speed: 0.2 }
 ```
 
 ## Related Presets

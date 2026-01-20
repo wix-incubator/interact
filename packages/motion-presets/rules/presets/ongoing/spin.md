@@ -12,26 +12,19 @@ spinning, rotating, rotation, circular motion, revolve, turn continuously
 
 ## Visual Description
 
-Element continuously rotates 360 degrees around its center. Direction determines clockwise (default) or counter-clockwise rotation. Power level affects the easing: soft uses linear (constant speed), medium uses `quintInOut` (accelerate/decelerate), hard uses `backOut` (slight overshoot at end). Rotation preserves any existing component rotation (`--comp-rotate-z`). Creates smooth, continuous circular motion.
+Element continuously rotates around its center, like a wheel or loading spinner. Can spin clockwise or counter-clockwise at constant speed or with acceleration/deceleration. Creates smooth, continuous circular motion.
 
 ## When to Use
 
-- Loading indicators (high confidence)
+- Loading indicators
 - Processing/waiting states
 - Refresh icons during action
 - Decorative spinning elements
-- Gear/mechanical animations
-- Fan/propeller effects
-- Abstract decorative motion
 
 ## When NOT to Use
 
 - Text elements (unreadable)
-- Interactive elements during spin
-- Multiple simultaneous spins (dizzying)
-- Vestibular sensitivity concerns
-- When spin direction is semantically meaningful but not clear
-- Professional interfaces (can feel amateurish if overused)
+- Multiple simultaneous spins
 
 ## Parameters
 
@@ -59,20 +52,11 @@ interface Spin {
 ## Minimal Examples
 
 ```typescript
-// Basic - slow constant spin
+// Basic - clockwise spin
 { type: 'Spin', direction: 'clockwise' }
 
-// Loading indicator (faster)
-{ type: 'Spin', direction: 'clockwise' }
-// with: duration: 1000, easing: 'linear'
-
-// Dynamic spin with overshoot
-{ type: 'Spin', direction: 'counter-clockwise', power: 'hard' }
-// with: duration: 2000
-
-// Very slow decorative spin
-{ type: 'Spin', direction: 'clockwise', power: 'soft' }
-// with: duration: 15000
+// Counter-clockwise
+{ type: 'Spin', direction: 'counter-clockwise' }
 ```
 
 ## Related Presets

@@ -12,24 +12,18 @@ scroll fade, fade on scroll, opacity scroll, scroll reveal, scroll disappear, fa
 
 ## Visual Description
 
-Element opacity transitions from transparent to opaque (or vice versa) as it scrolls through the viewport. In `in` range, element fades from specified opacity (default 0) to full visibility as it enters and reaches viewport center. In `out` range, element fades from full visibility to target opacity as it exits. Uses linear easing during scroll for smooth, predictable opacity mapping to scroll position. Fill mode automatically set: `backwards` for `in` (invisible before entering), `forwards` for `out` (stays faded after leaving).
+Element gradually appears or disappears as you scroll. In "in" mode, content fades from invisible to visible as it enters the viewport. In "out" mode, it fades away as you scroll past. Creates smooth, cinematic content reveals.
 
 ## When to Use
 
-- Content reveal as user scrolls down (high confidence)
-- Section transitions and visual hierarchy
-- Storytelling pages with progressive disclosure
-- De-emphasizing content as user scrolls past
-- Creating focus on currently visible content
-- Smooth transitions between page sections
+- Content reveal as user scrolls
+- Section transitions
+- De-emphasizing passed content
 
 ## When NOT to Use
 
 - Critical content that must always be visible
 - Navigation or persistent UI elements
-- When abrupt transitions are acceptable
-- Interactive elements during transition (click targets)
-- Accessibility concerns with disappearing content
 
 ## Parameters
 
@@ -56,17 +50,11 @@ interface FadeScroll {
 ## Minimal Examples
 
 ```typescript
-// Basic - fade in as enters viewport
+// Fade in as enters viewport
 { type: 'FadeScroll', range: 'in' }
 
 // Fade out as leaves viewport
 { type: 'FadeScroll', range: 'out' }
-
-// Fade to semi-transparent
-{ type: 'FadeScroll', range: 'out', opacity: 0.3 }
-
-// Custom scroll range
-{ type: 'FadeScroll', range: 'in', start: 0, end: 30 }
 ```
 
 ## Related Presets

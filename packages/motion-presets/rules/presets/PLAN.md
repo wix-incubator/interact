@@ -110,46 +110,48 @@ fade in, appear, materialize, opacity transition, gentle reveal
 
 ### 3. Visual Description (Human-written)
 
-**This section requires manual writing.** Describe exactly what the user SEES with specific cues:
+**This section requires manual writing.** Describe what the user SEES in plain, non-technical language. Focus on the visual experience, not implementation details.
 
-- **Opacity**: Does it fade? From what to what?
-- **Movement**: Direction, distance, path (straight, curved, arc)
-- **Rotation**: Axis (X, Y, Z), degrees, perspective
-- **Scale**: Grows, shrinks, from what size?
-- **Timing feel**: Smooth, bouncy, snappy, elastic
+**DO describe:**
+- What the element looks like during the animation (fades, moves, rotates, scales)
+- The path or direction of movement (straight, curved, from where to where)
+- The overall feeling (smooth, bouncy, snappy, dramatic, subtle)
 
-Example for ArcIn:
+**DO NOT reference:**
+- CSS properties (translateY, perspective, rotateX)
+- Keyframe percentages or offsets
+- Easing function names
+- Implementation details (800px perspective, 70% of animation)
 
-> Element swings into view along a curved 3D arc path. Starts rotated on an axis (determined by direction), then rotates back to flat while moving along the arc. Includes a fade from transparent to opaque during the first 70% of the animation. Creates a dramatic, cinematic reveal with depth.
+**Good example for ArcIn:**
+> Element swings into view along a curved path, like a door opening towards you. It starts tilted away and gradually flattens as it settles into place. Fades in while moving. Creates a dramatic, cinematic reveal with depth.
+
+**Bad example (too technical):**
+> Uses perspective(800px) with rotateX/Y transforms. Opacity fades from 0 to 1 during first 70% with sineIn easing. Main arc uses quintInOut.
 
 ---
 
 ### 4. When to Use
 
-Bulleted decision criteria for LLM to recommend this preset:
-
-- User intent keywords (what they might ask for)
-- Content type suitability (hero, cards, text, images)
-- Design context (landing page, modal, dashboard)
-- Emotional/brand tone match
-
-Include **confidence scenarios** inline:
+**Keep it short: 3-5 bullet points max.** Focus on the most common and confident use cases.
 
 ```markdown
-- Hero sections requiring dramatic entrance (high confidence)
-- Modal content reveal (medium confidence - consider FadeIn for subtler effect)
+- Hero sections needing dramatic reveal
+- Featured/premium content
+- Single focal elements
 ```
 
 ---
 
 ### 5. When NOT to Use
 
-Anti-patterns and limitations:
+**Keep it short: 2-4 bullet points max.** Only the most important anti-patterns.
 
-- Accessibility concerns (vestibular, motion sensitivity)
-- Performance issues (many elements, mobile)
-- Design mismatches (too dramatic for subtle UI)
-- Better alternatives (suggest specific presets)
+```markdown
+- Multiple simultaneous elements
+- Subtle/professional interfaces
+- Mobile with performance concerns
+```
 
 ---
 
@@ -201,20 +203,20 @@ Add brief impact notes:
 
 ### 7. Minimal Examples
 
-2-3 terse, copy-paste ready snippets:
+**Only include examples that show fundamentally different configurations.** Don't add examples just for variety.
+
+- Include basic/default usage
+- Only add more examples if they demonstrate meaningfully different behavior (e.g., different direction that changes the visual, inverted mode, etc.)
 
 ```typescript
-// Basic - minimal config
+// Basic
 { type: 'ArcIn', direction: 'bottom' }
 
-// Dramatic hero entrance
-{ type: 'ArcIn', direction: 'bottom', power: 'hard' }
-// with: duration: 1400, easing: 'quintOut'
-
-// Subtle side panel
-{ type: 'ArcIn', direction: 'left', power: 'soft' }
-// with: duration: 800
+// Only add if meaningfully different:
+{ type: 'ArcIn', direction: 'left', power: 'hard' }
 ```
+
+**Skip examples that only differ by duration, delay, or minor parameter tweaks.**
 
 ---
 
@@ -328,23 +330,19 @@ tags: [3d, arc, curved, dramatic, cinematic, perspective, rotation, entrance]
 
 **Visual Description:**
 
-> Element swings into view along a curved 3D arc path. Starts rotated on an axis (X for top/bottom, Y for left/right) then rotates back to flat while moving along the arc. Includes opacity fade from 0 to 1 during the first 70% of animation. The perspective (800px) creates depth. Power level controls rotation intensity: soft ~15°, medium ~30°, hard ~45°. Movement feels smooth and cinematic with quintInOut easing.
+> Element swings into view along a curved path, like a door opening towards you. It starts tilted away and gradually flattens as it settles into place. Fades in while moving. The effect feels dramatic and cinematic, with a sense of depth.
 
 **When to Use:**
 
-- Hero sections requiring dramatic, cinematic entrance (high confidence)
-- Premium product showcases where depth and drama matter
-- Portfolio pieces and creative presentations
-- Featured content that needs to stand out
-- Modal content reveal (medium confidence - consider FadeIn for subtler effect)
+- Hero sections needing dramatic reveal
+- Premium/featured content
+- Single focal elements requiring attention
 
 **When NOT to Use:**
 
-- Multiple simultaneous elements (performance concern)
-- Users with vestibular sensitivity (reduced-motion alternative: FadeIn)
-- Subtle, professional interfaces where drama is inappropriate
+- Multiple simultaneous elements
+- Subtle, professional interfaces
 - Mobile with many animated elements
-- When 2D motion would suffice (use SlideIn, GlideIn instead)
 
 **Parameters:**
 
@@ -366,16 +364,11 @@ interface ArcIn {
 **Minimal Examples:**
 
 ```typescript
-// Basic
+// Basic - swings in from bottom
 { type: 'ArcIn', direction: 'bottom' }
 
-// Dramatic hero
-{ type: 'ArcIn', direction: 'bottom', power: 'hard' }
-// duration: 1400, easing: 'quintOut'
-
-// Subtle side entry  
-{ type: 'ArcIn', direction: 'left', power: 'soft' }
-// duration: 800
+// Side entry (rotates on different axis)
+{ type: 'ArcIn', direction: 'left' }
 ```
 
 **Related Presets:**
@@ -450,8 +443,10 @@ rules/presets/
 
 ## Implementation Notes
 
-1. **Visual Description**: Requires human writing - analyze keyframes in implementation files for cues about opacity, rotation axes, movement paths, and timing
-2. **Parameters**: Combine TypeScript types from `motion-presets` with constraints from `effects-kit`. **Always check each preset's specific file** - they override base params with different enum subsets
-3. **Direction/Easing subsets**: Document the exact subset each preset supports, not the base type. Clipped animations (ShapeIn, RevealIn, ShuttersIn, WinkIn) exclude back easings
-4. **Cross-trigger mapping**: Map entrance presets to their scroll/mouse equivalents where they exist (e.g., ArcIn ↔ ArcScroll)
-5. **Tags**: Derive from visual characteristics, use cases, and motion type
+1. **Visual Description**: Write in plain language describing what the user sees. NO technical terms (CSS properties, keyframe percentages, easing names). Use analogies and natural descriptions.
+2. **When to Use / When NOT to Use**: Keep short (3-5 and 2-4 bullets respectively). Focus on high-confidence, common cases.
+3. **Examples**: Only include if they show fundamentally different behavior. Skip examples that only differ by duration/delay.
+4. **Parameters**: Combine TypeScript types from `motion-presets` with constraints from `effects-kit`. **Always check each preset's specific file** - they override base params with different enum subsets
+5. **Direction/Easing subsets**: Document the exact subset each preset supports, not the base type. Clipped animations (ShapeIn, RevealIn, ShuttersIn, WinkIn) exclude back easings
+6. **Cross-trigger mapping**: Map entrance presets to their scroll/mouse equivalents where they exist (e.g., ArcIn ↔ ArcScroll)
+7. **Tags**: Derive from visual characteristics, use cases, and motion type

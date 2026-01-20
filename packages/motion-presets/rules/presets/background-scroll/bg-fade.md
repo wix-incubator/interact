@@ -12,24 +12,18 @@ background fade, bg fade, fade background, background opacity, background reveal
 
 ## Visual Description
 
-Background layer opacity transitions as user scrolls through the section. In `in` range, background fades from transparent (0) to fully visible (1) as element enters viewport and reaches center. In `out` range, background fades from visible to transparent as element exits. Targets the `BG_LAYER` element specifically. Uses `sineIn` easing for fade in, `sineOut` for fade out. Covers the scroll range from element entering viewport to center (in) or center to leaving (out).
+Background gradually appears or disappears as you scroll through a section. In "in" mode, background fades from invisible to visible. In "out" mode, it fades away. Creates smooth transitions between sections.
 
 ## When to Use
 
-- Section transitions with background change (high confidence)
+- Section transitions with background change
 - Progressive background reveals
-- Layered backgrounds that appear/disappear
-- Storytelling with background reveals
-- Section dividers with visual transitions
-- Creating focus on/off content areas
+- Creating focus on content areas
 
 ## When NOT to Use
 
 - When background must always be visible
 - Critical visual information in background
-- Fast-scrolling interfaces
-- When abrupt transitions are acceptable
-- Mobile with color-only backgrounds (no benefit)
 
 ## Parameters
 
@@ -54,14 +48,11 @@ interface BgFade {
 ## Minimal Examples
 
 ```typescript
-// Basic - fade in on entry
+// Fade in as section enters
 { type: 'BgFade', range: 'in' }
 
-// Fade out on exit
+// Fade out as section exits
 { type: 'BgFade', range: 'out' }
-
-// Custom scroll range for earlier fade
-{ type: 'BgFade', range: 'in', start: 0, end: 30 }
 ```
 
 ## Related Presets

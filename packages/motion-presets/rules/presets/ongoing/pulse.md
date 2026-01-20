@@ -12,26 +12,19 @@ pulse effect, heartbeat, throb, breathing, scale pulse, attention pulse, pulsing
 
 ## Visual Description
 
-Element continuously scales down and back up in a heartbeat-like pattern. Keyframe sequence: starts at scale 1, shrinks to ~0.96 at 27%, returns to 1 at 45%, shrinks further to ~0.93 at 72%, returns to 1 at 100%. The shrink amount is controlled by power/intensity - higher values create more pronounced shrinking. Uses linear easing overall with calculated offsets based on duration/delay ratio. Creates subtle, continuous attention-drawing effect without being distracting.
+Element gently shrinks and expands in a rhythmic, heartbeat-like pattern. Like something breathing or pulsing with life. Creates subtle, continuous attention without being distracting.
 
 ## When to Use
 
-- Drawing attention to important elements (high confidence)
+- Drawing attention to important elements
 - Live/active status indicators
-- Notification badges that need visibility
-- Call-to-action buttons (subtle)
-- "Heartbeat" effect for health/life indicators
-- Breathing/living element feel
+- Notification badges
 - Waiting/processing states
 
 ## When NOT to Use
 
-- Multiple elements simultaneously (overwhelming)
-- Primary content areas (distracting)
-- Fast-paced interfaces (adds visual noise)
-- When user needs to focus on content
-- Accessibility concerns (repetitive motion)
-- Professional/minimal interfaces (can feel gimmicky)
+- Multiple elements simultaneously
+- Professional/minimal interfaces
 
 ## Parameters
 
@@ -57,19 +50,8 @@ interface Pulse {
 ## Minimal Examples
 
 ```typescript
-// Basic - subtle pulse
+// Basic
 { type: 'Pulse' }
-
-// Noticeable attention pulse
-{ type: 'Pulse', power: 'medium' }
-// with: duration: 1500
-
-// Strong pulse for urgent attention
-{ type: 'Pulse', power: 'hard' }
-// with: duration: 1000
-
-// Custom intensity
-{ type: 'Pulse', intensity: 0.5 }
 ```
 
 ## Related Presets

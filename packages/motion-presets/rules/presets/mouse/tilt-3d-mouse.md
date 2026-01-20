@@ -12,26 +12,19 @@ tags: [3d, tilt, mouse, perspective, interactive, hover, rotation]
 
 ## Visual Description
 
-Element tilts in 3D space following mouse position within the tracking area. Uses `perspective` and `rotateX`/`rotateY` transforms to create depth. When mouse is at center, element is flat (0° rotation). Moving mouse left/right tilts element on Y-axis; moving up/down tilts on X-axis. Maximum tilt angle controlled by power/angle parameter. Perspective distance affects depth perception. Optional smooth transition easing when mouse moves. Inverted mode reverses tilt direction.
+Element tilts towards the mouse cursor, like holding a card and angling it. Moving mouse left tilts element left, moving up tilts it back. Creates an interactive 3D feel where elements respond to cursor position.
 
 ## When to Use
 
-- Interactive cards and product displays (high confidence)
+- Interactive cards and product displays
 - Hero sections with depth effect
-- Image galleries with hover enhancement
 - Portfolio thumbnails
-- Call-to-action buttons with premium feel
 - Game-like interfaces
-- 3D showcase elements
 
 ## When NOT to Use
 
-- Text-heavy content (readability issues during tilt)
-- Mobile devices (no mouse, use device orientation instead)
-- Accessibility-focused interfaces
-- Multiple overlapping elements
-- When precise click targeting is needed
-- Performance-constrained environments
+- Mobile devices (no mouse)
+- Text-heavy content
 
 ## Parameters
 
@@ -61,20 +54,11 @@ interface Tilt3DMouse {
 ## Minimal Examples
 
 ```typescript
-// Basic - medium tilt
+// Basic
 { type: 'Tilt3DMouse' }
 
-// Subtle card tilt
-{ type: 'Tilt3DMouse', power: 'soft' }
-// with: transitionDuration: 300
-
-// Dramatic interactive element
-{ type: 'Tilt3DMouse', power: 'hard' }
-// with: transitionDuration: 200
-
-// Custom angle with inverted
-{ type: 'Tilt3DMouse', angle: 30, inverted: true }
-// with: perspective: 600
+// Inverted (tilts away from mouse)
+{ type: 'Tilt3DMouse', inverted: true }
 ```
 
 ## Related Presets

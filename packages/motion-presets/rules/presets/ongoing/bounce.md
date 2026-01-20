@@ -12,26 +12,19 @@ bouncing, jumping, hopping, vertical bounce, continuous bounce, bouncy animation
 
 ## Visual Description
 
-Element continuously bounces up and down with realistic physics-based motion. Keyframe sequence simulates gravity: rises quickly to peak (-98px at highest), falls back, bounces smaller (-55px), repeats with decreasing amplitude (-23px, -5px, -2px) before settling and restarting. Uses `sineOut` easing for natural acceleration/deceleration. Power/intensity controls the bounce height multiplier (factor 1-3). Creates playful, energetic continuous motion.
+Element continuously bounces up and down like a ball on a trampoline. Bounces high, then smaller and smaller before the cycle repeats. Creates playful, energetic, attention-grabbing continuous motion.
 
 ## When to Use
 
-- Playful/fun interface elements (high confidence)
+- Playful/fun interface elements
 - Gamification indicators
 - "Jump here" attention indicators
-- Waiting states with personality
-- Interactive elements in games
 - Child-friendly interfaces
-- Mascots or character elements
 
 ## When NOT to Use
 
-- Professional/corporate interfaces (too playful)
-- Text content (hard to read)
-- Multiple simultaneous elements (chaotic)
-- Serious contexts (warnings, errors)
-- Accessibility concerns (motion sensitivity)
-- When subtle attention is needed
+- Professional/corporate interfaces
+- Multiple simultaneous elements
 
 ## Parameters
 
@@ -57,19 +50,8 @@ interface Bounce {
 ## Minimal Examples
 
 ```typescript
-// Basic - gentle bounce
+// Basic
 { type: 'Bounce' }
-
-// Energetic bounce
-{ type: 'Bounce', power: 'medium' }
-// with: duration: 1000
-
-// Dramatic attention bounce
-{ type: 'Bounce', power: 'hard' }
-// with: duration: 1500
-
-// Custom intensity
-{ type: 'Bounce', intensity: 0.6 }
 ```
 
 ## Related Presets

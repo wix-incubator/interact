@@ -12,25 +12,19 @@ scroll arc, 3d scroll, tilt scroll, rotation scroll, perspective scroll, scroll 
 
 ## Visual Description
 
-Element rotates in 3D space along an arc path as user scrolls. Uses `perspective(500px)` with `translateZ(-300px)` to create depth, then rotates on X-axis (vertical direction) or Y-axis (horizontal direction) through 68 degrees. In `in` range, rotates from -68° to 0°. In `out` range, rotates from 0° to 68°. In `continuous` range, rotates full -68° to +68° throughout scroll. Fill mode set automatically based on range. Linear easing ensures smooth, predictable rotation mapped to scroll position.
+Element tilts and rotates in 3D as you scroll, like a card flipping towards or away from you. Creates a dramatic, cinematic reveal with depth. The element appears to exist in 3D space, rotating on an invisible axis as scroll progresses.
 
 ## When to Use
 
-- Dramatic scroll-based reveals (high confidence)
+- Dramatic scroll-based reveals
 - Portfolio or showcase pages
-- Storytelling with cinematic feel
 - Hero sections with 3D depth
-- Single featured elements per viewport
-- Creative/artistic page designs
 
 ## When NOT to Use
 
-- Multiple simultaneous elements (performance, visual noise)
-- Text-heavy content (readability during rotation)
-- Mobile devices with performance concerns
-- Vestibular sensitivity concerns
-- Data-dense interfaces
-- When subtle scroll effect is needed
+- Multiple simultaneous elements
+- Text-heavy content
+- Mobile with performance concerns
 
 ## Parameters
 
@@ -57,14 +51,11 @@ interface ArcScroll {
 ## Minimal Examples
 
 ```typescript
-// Basic - continuous horizontal arc
+// Tilts left/right as you scroll
 { type: 'ArcScroll', direction: 'horizontal' }
 
-// Vertical arc on entry
-{ type: 'ArcScroll', direction: 'vertical', range: 'in' }
-
-// Arc out as exits
-{ type: 'ArcScroll', direction: 'horizontal', range: 'out' }
+// Tilts forward/backward as you scroll
+{ type: 'ArcScroll', direction: 'vertical' }
 ```
 
 ## Related Presets

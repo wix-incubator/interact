@@ -12,25 +12,18 @@ bouncy mouse, elastic follow, spring mouse, bouncy cursor effect, elastic tracki
 
 ## Visual Description
 
-Element follows mouse position with elastic/bouncy easing, creating spring-like motion. Built on TrackMouse foundation but with `elastic` or `bounce` transition easing. When mouse moves, element overshoots its target position then bounces back to settle. Creates playful, game-like interaction feel. Same translation behavior as TrackMouse but with springy physics.
+Element follows the mouse with a bouncy, springy motion. Like a jelly or rubber ball that overshoots and wobbles before settling. Creates a playful, game-like interaction feel.
 
 ## When to Use
 
-- Playful/fun interface elements (high confidence)
+- Playful/fun interface elements
 - Game-like interactions
+- Mascot/character elements
 - Child-friendly interfaces
-- Mascot/character elements following cursor
-- Energetic brand interactions
-- Interactive easter eggs
-- Engaging decorative elements
 
 ## When NOT to Use
 
 - Professional/corporate interfaces
-- Precise interactions needed
-- Multiple elements (chaotic)
-- Performance-constrained
-- Accessibility-focused (motion sensitivity)
 - When smooth following is preferred
 
 ## Parameters
@@ -57,18 +50,8 @@ interface BounceMouse {
 ## Minimal Examples
 
 ```typescript
-// Basic - elastic bounce following
+// Basic
 { type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both' }
-
-// Bounce easing variant
-{ type: 'BounceMouse', distance: { value: 100, type: 'px' }, axis: 'both' }
-// with: transitionEasing: 'bounce'
-
-// Horizontal only bounce
-{ type: 'BounceMouse', distance: { value: 60, type: 'px' }, axis: 'horizontal' }
-
-// Inverted bounce (moves away)
-{ type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both', inverted: true }
 ```
 
 ## Related Presets

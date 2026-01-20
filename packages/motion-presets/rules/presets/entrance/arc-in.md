@@ -12,25 +12,19 @@ arc entrance, curved reveal, 3d arc, swing in, cinematic entrance, perspective r
 
 ## Visual Description
 
-Element swings into view along a curved 3D arc path. Starts rotated on an axis (X-axis for top/bottom directions, Y-axis for left/right) at approximately 80 degrees, then rotates back to flat (0 degrees) while moving along the arc. Uses `perspective(800px)` to create depth. Includes an opacity fade from 0 to 1 during the first 70% of the animation (separate fade animation with `sineIn` easing). The main arc motion uses `quintInOut` easing by default, creating smooth acceleration and deceleration. Power level controls the rotation intensity through different easing curves: soft uses `cubicInOut`, medium uses `quintInOut`, hard uses `backOut` for slight overshoot.
+Element swings into view along a curved path, like a door opening towards you. It starts tilted away and gradually flattens as it settles into place. Fades in while moving. The effect feels dramatic and cinematic, with a sense of depth.
 
 ## When to Use
 
-- Hero sections requiring dramatic, cinematic entrance (high confidence)
-- Premium product showcases where depth and drama matter
-- Portfolio pieces and creative presentations
-- Featured content that needs to stand out
-- Landing page hero elements
-- Single focal point elements (not for lists)
+- Hero sections needing dramatic reveal
+- Premium/featured content
+- Single focal elements requiring attention
 
 ## When NOT to Use
 
-- Multiple simultaneous elements (performance concern with 3D transforms)
-- Users with vestibular sensitivity (provides reduced-motion alternative: FadeIn)
-- Subtle, professional interfaces where drama is inappropriate
-- Mobile with many animated elements (3D transforms are expensive)
-- When 2D motion would suffice (use SlideIn, GlideIn instead)
-- List items or repeated content
+- Multiple simultaneous elements
+- Subtle, professional interfaces
+- Mobile with many animated elements
 
 ## Parameters
 
@@ -57,16 +51,11 @@ interface ArcIn {
 ## Minimal Examples
 
 ```typescript
-// Basic - element arcs in from the left
+// Basic - swings in from bottom
 { type: 'ArcIn', direction: 'bottom' }
 
-// Dramatic hero entrance with overshoot
-{ type: 'ArcIn', direction: 'bottom', power: 'hard' }
-// with: duration: 1400
-
-// Subtle side panel entrance
-{ type: 'ArcIn', direction: 'left', power: 'soft' }
-// with: duration: 800
+// Side entry (tilts on different axis)
+{ type: 'ArcIn', direction: 'left' }
 ```
 
 ## Related Presets

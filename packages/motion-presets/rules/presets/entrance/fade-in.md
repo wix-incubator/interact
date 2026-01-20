@@ -12,24 +12,19 @@ fade in, appear, materialize, opacity transition, gentle reveal, soft entrance, 
 
 ## Visual Description
 
-Element transitions from fully transparent (opacity 0) to fully visible (opacity 1). No movement, rotation, or scale changes occur - purely an opacity transition. Uses `sineInOut` easing for a smooth, natural feel. The simplest and most universally applicable entrance animation.
+Element gradually appears from invisible to fully visible. No movement or shape changes - just a smooth, gentle materialization. The simplest and most universally applicable entrance animation.
 
 ## When to Use
 
-- Subtle content reveals in professional interfaces (high confidence)
-- Modal and overlay appearances where movement would be distracting
-- Loading state transitions - content appearing after load
-- Progressive disclosure in forms and wizards
-- Image galleries revealing loaded images
-- Any element requiring gentle, non-distracting introduction
-- Fallback for `prefers-reduced-motion` accessibility
+- Subtle content reveals in professional interfaces
+- Modal and overlay appearances
+- Loading state transitions
+- Reduced motion fallback
 
 ## When NOT to Use
 
-- When user needs attention drawn to specific element (use more dramatic preset)
-- When spatial relationship matters (use SlideIn, GlideIn to show direction)
-- Hero sections where impact is needed (use ArcIn, BounceIn)
-- When element position context is important
+- When attention needs to be drawn to element
+- Hero sections where impact is needed
 
 ## Parameters
 
@@ -49,16 +44,8 @@ interface FadeIn {
 ## Minimal Examples
 
 ```typescript
-// Basic - minimal config
+// Basic
 { type: 'FadeIn' }
-
-// Quick snappy fade
-{ type: 'FadeIn' }
-// with: duration: 300
-
-// Slow dramatic fade
-{ type: 'FadeIn' }
-// with: duration: 1500, delay: 200
 ```
 
 ## Related Presets
