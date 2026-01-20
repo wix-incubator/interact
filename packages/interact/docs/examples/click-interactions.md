@@ -19,7 +19,7 @@ Click interactions provide immediate feedback and trigger actions. This guide co
 Button pulses when clicked.
 
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 const config = {
   interactions: [
