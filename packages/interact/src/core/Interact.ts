@@ -12,6 +12,7 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { registerEffects } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -213,6 +214,8 @@ export class Interact {
   static deleteController(key: string): void {
     Interact.controllerCache.delete(key);
   }
+
+  static registerEffects = registerEffects;
 }
 
 let interactionIdCounter = 0;

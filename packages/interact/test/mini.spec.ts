@@ -29,6 +29,7 @@ vi.mock('@wix/motion', () => {
         reducedMotion,
       });
     }),
+    registerEffects: vi.fn(),
   };
 
   return mock;
@@ -318,6 +319,8 @@ describe('interact (mini)', () => {
         return { effect, timeline, play: vi.fn() };
       }
     };
+
+    (window as any).CSSAnimation = class CSSAnimation extends (window as any).Animation {};
 
     // Mock IntersectionObserver
     (window as any).IntersectionObserver = class IntersectionObserver {
@@ -934,33 +937,105 @@ describe('interact (mini)', () => {
     });
 
     describe('pointerMove', () => {
-      it('should add handler for pointerMove trigger', async () => {
-        const { getScrubScene } = await import('@wix/motion');
-        const { Pointer } = await import('kuliso');
-        const pointerInstance = {
-          start: vi.fn(),
-          destroy: vi.fn(),
-        };
-        Pointer.mockImplementation(function (this: any) {
-          Object.assign(this, pointerInstance);
-        });
+      it('should add handler for pointerMove trigger', async () =>
+        new Promise(async (done) => {
+          const { getScrubScene } = await import('@wix/motion');
+          const { Pointer } = await import('kuliso');
+          const pointerInstance = {
+            start: vi.fn(),
+            destroy: vi.fn(),
+          };
+          Pointer.mockImplementation(function (this: any) {
+            Object.assign(this, pointerInstance);
+          });
 
-        element = document.createElement('div');
+          element = document.createElement('div');
 
-        add(element, 'logo-mouse');
+          add(element, 'logo-mouse');
 
-        expect(getScrubScene).toHaveBeenCalledTimes(1);
-        expect(getScrubScene).toHaveBeenCalledWith(
-          expect.any(HTMLElement),
-          expect.objectContaining(
-            effectToAnimationOptions(getMockConfig().effects['logo-track-mouse'] as ScrubEffect),
-          ),
-          expect.objectContaining({
-            trigger: 'pointer-move',
-          }),
-        );
-        expect(pointerInstance.start).toHaveBeenCalled();
-      });
+          expect(getScrubScene).toHaveBeenCalledTimes(1);
+          expect(getScrubScene).toHaveBeenCalledWith(
+            expect.any(HTMLElement),
+            expect.objectContaining(
+              effectToAnimationOptions(getMockConfig().effects['logo-track-mouse'] as ScrubEffect),
+            ),
+            expect.objectContaining({
+              trigger: 'pointer-move',
+            }),
+          );
+          setTimeout(() => {
+            expect(pointerInstance.start).toHaveBeenCalled();
+            done(void 0);
+          }, 0);
+        }));
+
+      it('should add handler for pointerMove trigger with keyframeEffect', async () =>
+        new Promise(async (done) => {
+          const { getScrubScene } = await import('@wix/motion');
+          const { Pointer } = await import('kuliso');
+          const pointerInstance = {
+            start: vi.fn(),
+            destroy: vi.fn(),
+          };
+          Pointer.mockImplementation(function (this: any) {
+            Object.assign(this, pointerInstance);
+          });
+
+          const keyframeEffectConfig: InteractConfig = {
+            interactions: [
+              {
+                trigger: 'pointerMove',
+                key: 'keyframe-mouse',
+                params: {
+                  hitArea: 'root',
+                  axis: 'x',
+                },
+                effects: [
+                  {
+                    key: 'keyframe-mouse',
+                    effectId: 'keyframe-track-mouse',
+                  },
+                ],
+              },
+            ],
+            effects: {
+              'keyframe-track-mouse': {
+                keyframeEffect: {
+                  name: 'custom-pointer-move',
+                  keyframes: [
+                    { transform: 'translateX(-50px)' },
+                    { transform: 'translateX(50px)' },
+                  ],
+                },
+              },
+            },
+          };
+
+          Interact.destroy();
+          Interact.create(keyframeEffectConfig);
+
+          element = document.createElement('div');
+
+          add(element, 'keyframe-mouse');
+
+          expect(getScrubScene).toHaveBeenCalledWith(
+            expect.any(HTMLElement),
+            expect.objectContaining({
+              keyframeEffect: expect.objectContaining({
+                name: 'custom-pointer-move',
+                keyframes: [{ transform: 'translateX(-50px)' }, { transform: 'translateX(50px)' }],
+              }),
+            }),
+            expect.objectContaining({
+              trigger: 'pointer-move',
+              axis: 'x',
+            }),
+          );
+          setTimeout(() => {
+            expect(pointerInstance.start).toHaveBeenCalled();
+            done(void 0);
+          }, 0);
+        }));
     });
 
     describe('viewProgress', () => {
@@ -3223,6 +3298,64 @@ describe('interact (mini)', () => {
         // Should not throw when animation is null
         expect(() => add(testElement, 'null-viewprogress-test')).not.toThrow();
       });
+    });
+  });
+
+  describe('namedEffect registry (integration)', () => {
+    it('should use a registered namedEffect implementation', async () => {
+      vi.resetModules();
+      vi.doUnmock('@wix/motion');
+
+      const { registerEffects } = await import('@wix/motion');
+
+      const registeredKeyframes = [{ opacity: 0 }, { opacity: 1 }];
+      const webSpy = vi.fn(() => [
+        {
+          name: 'RegisteredTestEffect',
+          duration: 100,
+          keyframes: registeredKeyframes,
+        },
+      ]);
+
+      registerEffects({
+        RegisteredTestEffect: {
+          web: webSpy,
+          getNames: () => ['RegisteredTestEffect'],
+        },
+      });
+
+      const { Interact: RealInteract, add: realAdd } = await import('../src/index');
+
+      RealInteract.create({
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'namedEffect-source',
+            effects: [
+              {
+                key: 'namedEffect-target',
+                effectId: 'registered-effect',
+              },
+            ],
+          },
+        ],
+        effects: {
+          'registered-effect': {
+            namedEffect: { type: 'RegisteredTestEffect' } as NamedEffect,
+            duration: 100,
+          },
+        },
+      });
+
+      const sourceElement = document.createElement('div');
+      const targetElement = document.createElement('div');
+      (targetElement as any).getAnimations = () => [];
+
+      realAdd(sourceElement, 'namedEffect-source');
+      realAdd(targetElement, 'namedEffect-target');
+
+      // If the effect wasn't resolved from the registry, Motion would never call this factory.
+      expect(webSpy).toHaveBeenCalled();
     });
   });
 });

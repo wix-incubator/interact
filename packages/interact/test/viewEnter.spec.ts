@@ -13,6 +13,7 @@ vi.mock('@wix/motion', () => ({
     playState: 'idle',
     ready: Promise.resolve(),
   }),
+  registerEffects: vi.fn(),
 }));
 
 vi.mock('fastdom', () => ({

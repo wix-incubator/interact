@@ -14,6 +14,7 @@ export default defineConfig({
       '@wix/interact/web': path.resolve(__dirname, '../../packages/interact/src/web'),
       '@wix/interact/react': path.resolve(__dirname, '../../packages/interact/src/react'),
       '@wix/interact': path.resolve(__dirname, '../../packages/interact/src/index'),
+      '@wix/motion': path.resolve(__dirname, '../../packages/motion/src/index'),
     },
   },
   build: {

@@ -7,6 +7,8 @@ import type {
 
 export type { RangeOffset };
 
+export type PointerMoveAxis = 'x' | 'y';
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
@@ -53,6 +55,7 @@ export type ViewEnterParams = {
 
 export type PointerMoveParams = {
   hitArea?: 'root' | 'self';
+  axis?: PointerMoveAxis;
 };
 
 export type AnimationEndParams = {

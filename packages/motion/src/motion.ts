@@ -7,6 +7,7 @@ import type {
   CustomMouseAnimationInstance,
   ScrubScrollScene,
   ScrubPointerScene,
+  PointerMoveAxis,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
 import { getEasing, getJsEasing } from './utils';
@@ -72,7 +73,7 @@ function getScrubScene(
   animationOptions: AnimationOptions,
   trigger: Partial<TriggerVariant> & { element?: HTMLElement },
   sceneOptions: Record<string, any> = {},
-): ScrubScrollScene[] | ScrubPointerScene | null {
+): ScrubScrollScene[] | ScrubPointerScene | ScrubPointerScene[] | null {
   const { disabled, allowActiveEvent, ...rest } = sceneOptions;
   const animation = getWebAnimation(target, animationOptions, trigger, rest);
 
@@ -116,19 +117,50 @@ function getScrubScene(
       } as ScrubScrollScene;
     });
   } else if (trigger.trigger === 'pointer-move') {
-    const { centeredToTarget, transitionDuration, transitionEasing } =
-      animationOptions as ScrubAnimationOptions;
+    const scrubOptions = animationOptions as ScrubAnimationOptions;
+    const { centeredToTarget, transitionDuration, transitionEasing } = scrubOptions;
+    const axis = (trigger as { axis?: PointerMoveAxis }).axis;
+
+    if (scrubOptions.keyframeEffect) {
+      const animationGroup = animation as AnimationGroup;
+
+      if (animationGroup.animations?.length === 0) {
+        return null;
+      }
+
+      const scene: ScrubPointerScene & { _currentProgress: number } = {
+        target: undefined,
+        centeredToTarget,
+        ready: animationGroup.ready,
+        _currentProgress: 0,
+        getProgress() {
+          return this._currentProgress;
+        },
+        effect(__: any, p: { x: number; y: number }) {
+          const linearProgress = axis === 'x' ? p.x : p.y;
+          this._currentProgress = linearProgress;
+          animationGroup.progress(linearProgress);
+        },
+        disabled: disabled ?? false,
+        destroy() {
+          animationGroup.cancel();
+        },
+      };
+
+      return scene;
+    }
 
     typeSpecificOptions = {
-      target: (animation as MouseAnimationInstance).target,
       centeredToTarget,
       allowActiveEvent,
     };
 
     if (animationOptions.customEffect && transitionDuration) {
       typeSpecificOptions.transitionDuration = transitionDuration;
+      // TODO: refactor js easings
       typeSpecificOptions.transitionEasing = getJsEasing(transitionEasing);
     }
+    typeSpecificOptions.target = (animation as MouseAnimationInstance).target;
   }
 
   return {
