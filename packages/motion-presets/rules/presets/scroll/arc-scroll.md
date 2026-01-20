@@ -1,96 +1,73 @@
 ---
 name: ArcScroll
 category: scroll
-tags: [3d, arc, scroll, rotation, perspective, tilt, depth]
 ---
 
 # ArcScroll
 
-## Synonyms
-
-scroll arc, 3d scroll, tilt scroll, rotation scroll, perspective scroll, scroll rotation
-
 ## Visual Description
 
-Element tilts and rotates in 3D as you scroll, like a card flipping towards or away from you. Creates a dramatic, cinematic reveal with depth. The element appears to exist in 3D space, rotating on an invisible axis as scroll progresses.
+Element tilts and rotates in 3D space as the user scrolls, creating a dramatic cinematic effect similar to ArcIn but driven by scroll position instead of time. The element appears to exist in 3D space, rotating on an axis as scroll progresses.
 
-## When to Use
+**How it looks**: Imagine a trading card slowly tilting as you scroll—it starts tilted away from you and gradually rotates flat, or vice versa. The effect creates depth and dimension, making the element feel like it's pivoting in real space.
 
-- Dramatic scroll-based reveals
-- Portfolio or showcase pages
-- Hero sections with 3D depth
+**`direction: 'vertical'`**: Element rotates on the X-axis, tilting forward/backward like a laptop screen opening or closing.
 
-## When NOT to Use
+**`direction: 'horizontal'`**: Element rotates on the Y-axis, tilting left/right like a door swinging open.
 
-- Multiple simultaneous elements
-- Text-heavy content
-- Mobile with performance concerns
+The rotation is tied directly to scroll position, creating a satisfying connection between user input and visual transformation.
 
 ## Parameters
 
 ```typescript
 interface ArcScroll {
-  direction: 'horizontal' | 'vertical';  // EffectTwoAxes, default: 'vertical'
-  range?: 'in' | 'out' | 'continuous';   // default: 'continuous' (wix) or 'in'/'out' (responsive)
-  // Scroll range params
-  start?: number;    // varies by range
-  end?: number;      // varies by range
+  direction: 'horizontal' | 'vertical';  // default: 'vertical'
+  range?: 'in' | 'out' | 'continuous';   // default varies
+  start?: number;    // %, scroll position start
+  end?: number;      // %, scroll position end
 }
 ```
 
 **Parameter Impact:**
 
-- `direction`: Rotation axis
-  - `vertical`: Rotates on X-axis (tilts forward/backward)
-  - `horizontal`: Rotates on Y-axis (tilts left/right)
-- `range`: When rotation occurs
-  - `in`: Rotates from tilted to flat as enters viewport
-  - `out`: Rotates from flat to tilted as exits viewport
-  - `continuous`: Full rotation throughout scroll
+- `direction`: Determines the rotation axis
+  - `vertical`: Rotates on X-axis—element tilts forward/backward
+    - At start: tilted back (top edge away from viewer)
+    - At end: flat, facing viewer
+    - Feels like a screen or lid opening toward you
+  - `horizontal`: Rotates on Y-axis—element tilts left/right
+    - At start: tilted to one side
+    - At end: flat, facing viewer
+    - Feels like a door or panel swinging open
+- `range`: When the rotation occurs
+  - `in`: Rotates from tilted → flat as element enters viewport
+  - `out`: Rotates from flat → tilted as element exits viewport
+  - `continuous`: Full rotation range throughout scroll visibility
+- `start`/`end`: Fine-tune when rotation begins and completes (0-100)
 
-## Minimal Examples
+## Best Practices
+
+- **Use on single focal elements**: ArcScroll is dramatic; multiple simultaneous rotations are overwhelming
+- **Test performance**: 3D transforms can be expensive; ensure smooth 60fps
+- **Consider viewport position**: Element needs to be positioned where rotation is visible during scroll range
+- **Pair with complementary content**: Works well with text that doesn't rotate alongside
+- **Reduced motion**: Provide FadeScroll or static fallback—3D rotation is a vestibular trigger
+
+## Examples
 
 ```typescript
+// Basic - tilts forward/backward as you scroll
+{ type: 'ArcScroll', direction: 'vertical' }
+
 // Tilts left/right as you scroll
 { type: 'ArcScroll', direction: 'horizontal' }
 
-// Tilts forward/backward as you scroll
-{ type: 'ArcScroll', direction: 'vertical' }
-```
+// Only rotate while entering viewport
+{ type: 'ArcScroll', direction: 'vertical', range: 'in' }
 
-## Related Presets
+// Only rotate while exiting viewport
+{ type: 'ArcScroll', direction: 'horizontal', range: 'out' }
 
-### Same Category (Scroll)
-
-- **TiltScroll** - Similar 3D tilt, different implementation
-- **FlipScroll** - Full flip rotation on scroll
-- **Spin3dScroll** - Continuous spin on scroll
-
-### Parallel in Other Triggers
-
-- **ArcIn** (entrance) - Time-based arc entrance
-- **FlipIn** (entrance) - Time-based 3D flip
-
-### Alternatives
-
-- **TiltScroll** - Alternative 3D tilt approach
-- **FadeScroll** - When subtle effect needed
-- **ParallaxScroll** - When 2D depth preferred
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "dramatic 3D scroll effect"
-  - "cinematic reveal"
-  - "portfolio/showcase"
-  - "single focal element"
-  - "creative/artistic design"
-
-choose_alternative_when:
-  - subtle_needed: FadeScroll, ParallaxScroll
-  - full_flip: FlipScroll
-  - continuous_spin: SpinScroll
-  - 2d_depth: ParallaxScroll
-  - time_based: ArcIn
+// Custom scroll range (rotation completes earlier)
+{ type: 'ArcScroll', direction: 'vertical', range: 'in', start: 0, end: 40 }
 ```

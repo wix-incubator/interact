@@ -1,92 +1,74 @@
 ---
 name: ParallaxScroll
 category: scroll
-tags: [parallax, scroll, depth, layered, continuous, vertical, movement]
 ---
 
 # ParallaxScroll
 
-## Synonyms
-
-parallax effect, scroll parallax, depth scroll, layered scroll, differential scroll, scroll movement
-
 ## Visual Description
 
-Element moves slower or faster than the page scroll, creating an illusion of depth. Like looking through a window where nearby objects move faster than distant ones. Different elements with different speeds create layered, dimensional feel.
+Element moves at a different rate than the page scroll, creating an illusion of depth and dimension. When you scroll the page, this element moves slower (or faster, or even opposite) compared to the rest of the content, making it feel like it exists on a different layer—closer or further away.
 
-## When to Use
+**How it works**: As the user scrolls, the element's vertical position is modified based on the `speed` parameter. A speed of 0.5 means the element moves at half the scroll rate (appears further away). A negative speed means the element moves opposite to scroll direction.
 
-- Landing pages with layered depth effect
-- Hero sections with background/foreground separation
-- Decorative elements that should feel "behind" or "in front"
+**The visual effect**: Imagine looking through a car window—distant mountains move slowly while nearby trees zip past. ParallaxScroll recreates this depth perception. Faster-moving elements feel closer; slower elements feel further away.
 
-## When NOT to Use
-
-- Text-heavy content (readability issues)
-- Mobile with performance concerns
+This is a continuous effect that runs throughout the entire time the element is in the viewport, creating an immersive, layered experience.
 
 ## Parameters
 
 ```typescript
 interface ParallaxScroll {
-  speed?: number;     // min: -1, max: 1, step: 0.05, default: 0.5
+  speed?: number;     // ratio, min: -1, max: 1, step: 0.05, default: 0.5
   range?: 'continuous';  // only continuous supported
-  // Scroll range params (from base)
-  start?: number;     // min: 0, max: 0, default: 0 (screen enter)
-  end?: number;       // min: 100, max: 100, default: 100 (screen leave)
+  start?: number;     // %, min: 0, max: 0, default: 0
+  end?: number;       // %, min: 100, max: 100, default: 100
 }
 ```
 
 **Parameter Impact:**
 
-- `speed`: Rate of movement relative to scroll
-  - Positive (0.1-1): Element moves same direction as scroll, but slower
-  - Negative (-1 to -0.1): Element moves opposite to scroll direction
-  - Higher absolute value = more pronounced effect
-  - 0.5 (default): Element moves at half scroll speed
-- `range`: Only `continuous` - runs throughout entire scroll range
+- `speed`: The core parameter—determines movement rate relative to scroll
+  - **Positive values (0.1 to 1)**: Element moves in same direction as scroll, but slower
+    - `0.1-0.3`: Subtle parallax, element feels slightly "behind"
+    - `0.4-0.6`: Noticeable depth effect (0.5 default is ideal)
+    - `0.7-0.9`: Strong parallax, element moves almost with scroll
+  - **Negative values (-1 to -0.1)**: Element moves opposite to scroll direction
+    - Creates unusual "floating against current" effect
+    - Use sparingly—can be disorienting
+  - **0**: No movement (element scrolls normally with page)
+- `range`: Only `continuous` is supported—effect runs throughout viewport visibility
+- `start`/`end`: Fixed at 0-100, covering full scroll range
 
-## Minimal Examples
+## Best Practices
+
+- **Layer multiple elements**: Create depth by applying different speeds to different elements (e.g., background: 0.2, midground: 0.5, foreground: 0.8)
+- **Subtle is usually better**: Start with `speed: 0.3` and adjust—strong parallax can cause motion sickness
+- **Test on mobile**: Parallax can be janky on mobile devices; consider disabling or reducing
+- **Don't use on text**: Moving text while scrolling is hard to read
+- **Combine with position**: Elements should be positioned appropriately to have room to move
+- **Reduced motion**: Disable entirely for `prefers-reduced-motion`
+
+## Examples
 
 ```typescript
-// Basic
+// Basic - element moves at half scroll speed
 { type: 'ParallaxScroll' }
 
-// Reverse parallax (moves opposite to scroll)
+// Subtle background element (feels very far away)
+{ type: 'ParallaxScroll', speed: 0.2 }
+
+// Strong parallax (noticeable depth)
+{ type: 'ParallaxScroll', speed: 0.7 }
+
+// Reverse parallax (floats against scroll direction)
 { type: 'ParallaxScroll', speed: -0.3 }
-```
 
-## Related Presets
-
-### Same Category (Scroll)
-
-- **MoveScroll** - General movement on scroll, more control
-- **PanScroll** - Horizontal/vertical panning on scroll
-
-### Parallel in Other Triggers
-
-- **BgParallax** (background-scroll) - Parallax specifically for backgrounds
-
-### Alternatives
-
-- **FadeScroll** - When opacity change is preferred over movement
-- **MoveScroll** - When more movement control needed
-- **BgParallax** - When animating background media specifically
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "depth/layered effect needed"
-  - "elements at different scroll rates"
-  - "cinematic scroll experience"
-  - "decorative elements"
-  - "hero section depth"
-
-choose_alternative_when:
-  - background_specific: BgParallax
-  - horizontal_movement: PanScroll
-  - opacity_based: FadeScroll
-  - more_control: MoveScroll
-  - 3d_rotation: ArcScroll, TiltScroll
+// Layered depth effect (apply to different elements)
+// Background layer
+{ type: 'ParallaxScroll', speed: 0.2 }
+// Midground layer  
+{ type: 'ParallaxScroll', speed: 0.5 }
+// Foreground decorative elements
+{ type: 'ParallaxScroll', speed: 0.8 }
 ```

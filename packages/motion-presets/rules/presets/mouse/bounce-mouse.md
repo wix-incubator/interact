@@ -1,91 +1,70 @@
 ---
 name: BounceMouse
 category: mouse
-tags: [bounce, elastic, mouse, spring, playful, follow, interactive]
 ---
 
 # BounceMouse
 
-## Synonyms
-
-bouncy mouse, elastic follow, spring mouse, bouncy cursor effect, elastic tracking
-
 ## Visual Description
 
-Element follows the mouse with a bouncy, springy motion. Like a jelly or rubber ball that overshoots and wobbles before settling. Creates a playful, game-like interaction feel.
+Element follows the mouse cursor with a bouncy, elastic motion. Instead of moving directly to follow the cursor, the element overshoots its target and wobbles back and forth before settling—like a jelly or rubber ball being pulled by an invisible string.
 
-## When to Use
+**How it works**: Like TrackMouse, the element's position responds to cursor location. But instead of smooth easing, BounceMouse uses elastic/spring physics that cause the element to overshoot and oscillate before coming to rest.
 
-- Playful/fun interface elements
-- Game-like interactions
-- Mascot/character elements
-- Child-friendly interfaces
+**The visual effect**: Playful, springy, and game-like. The bouncing creates a sense of fun and energy, like the element is alive and excited to follow your cursor. It's inherently casual and not suited for serious professional contexts.
 
-## When NOT to Use
-
-- Professional/corporate interfaces
-- When smooth following is preferred
+**The difference from TrackMouse**: TrackMouse smoothly follows; BounceMouse bounces and wobbles. TrackMouse feels responsive and professional; BounceMouse feels playful and energetic.
 
 ## Parameters
 
 ```typescript
 interface BounceMouse {
-  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' };  // min: 5, max: 800, default: { value: 80, type: 'px' }
+  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' };  // default: { value: 80, type: 'px' }
   axis: 'horizontal' | 'vertical' | 'both';                              // default: 'both'
   inverted?: boolean;                                                    // default: false
-  transitionDuration?: number;                                           // min: 0, max: 5000, step: 20, default: 500
+  transitionDuration?: number;                                           // ms, min: 0, max: 5000, step: 20, default: 500
   transitionEasing?: 'elastic' | 'bounce';                              // default: 'elastic'
 }
 ```
 
 **Parameter Impact:**
 
-- `distance`: Maximum translation distance (default 80px, smaller than TrackMouse)
-- `axis`: Movement constraint (horizontal, vertical, or both)
-- `transitionEasing`: Spring behavior
-  - `elastic`: Smooth spring with overshoot and settle
-  - `bounce`: Multiple bounces before settling
-- `inverted`: Element bounces away from mouse instead of towards
+- `distance`: Maximum translation distance (smaller default than TrackMouse)
+  - Default 80px is intentionally smaller—bouncy motion with large distances can be overwhelming
+  - Keep values moderate (50-150px) for best results
+- `axis`: Constrain movement direction
+  - `both` (default): Bounces in 2D
+  - `horizontal`/`vertical`: Constrains to one axis
+- `inverted`: Reverse movement direction
+  - Creates "repelled" bouncy effect
+- `transitionDuration`: Affects bounce timing
+- `transitionEasing`: Spring behavior type
+  - `elastic` (default): Smooth spring with overshoot and gentle settle
+  - `bounce`: Multiple distinct bounces before settling—more energetic
 
-## Minimal Examples
+## Best Practices
+
+- **Keep distances small**: Bouncy motion amplifies perceived distance—start with 50-100px
+- **Match playful contexts**: BounceMouse screams "fun"—ensure it fits your brand
+- **One bouncing element**: Multiple bouncing elements are visually overwhelming
+- **Consider `elastic` vs `bounce`**: `elastic` is smoother; `bounce` is more cartoonish
+- **Reduced motion**: Disable entirely—bouncy motion can cause discomfort
+
+## Examples
 
 ```typescript
-// Basic
+// Basic - bouncy cursor following
 { type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both' }
-```
 
-## Related Presets
+// Smaller, more contained bounce
+{ type: 'BounceMouse', distance: { value: 50, type: 'px' }, axis: 'both' }
 
-### Same Category (Mouse)
+// Horizontal only bounce
+{ type: 'BounceMouse', distance: { value: 100, type: 'px' }, axis: 'horizontal' }
 
-- **TrackMouse** - Same tracking without bounce easing
-- **ScaleMouse** - Scale-based mouse response
-- **Tilt3DMouse** - 3D tilt mouse response
+// More cartoonish bounce easing
+{ type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both', transitionEasing: 'bounce' }
 
-### Parallel in Other Triggers
-
-- **BounceIn** (entrance) - Bouncy entrance animation
-- **Bounce** (ongoing) - Continuous bounce animation
-
-### Alternatives
-
-- **TrackMouse** - When smooth following preferred
-- **Tilt3DMouse** - When 3D effect preferred
-- **ScaleMouse** - When scale response preferred
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "playful mouse interaction"
-  - "game-like interface"
-  - "elastic/springy feel"
-  - "character/mascot following"
-  - "fun/energetic brand"
-
-choose_alternative_when:
-  - smooth_following: TrackMouse
-  - 3d_effect: Tilt3DMouse
-  - scale_based: ScaleMouse
-  - professional_interface: TrackMouse (with easeOut)
+// Inverted (bounces away from cursor)
+{ type: 'BounceMouse', distance: { value: 60, type: 'px' }, axis: 'both', inverted: true }
 ```

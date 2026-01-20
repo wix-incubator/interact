@@ -1,97 +1,73 @@
 ---
 name: Spin
 category: ongoing
-tags: [spin, rotation, continuous, loading, circular, rotate]
 ---
 
 # Spin
 
-## Synonyms
-
-spinning, rotating, rotation, circular motion, revolve, turn continuously
-
 ## Visual Description
 
-Element continuously rotates around its center, like a wheel or loading spinner. Can spin clockwise or counter-clockwise at constant speed or with acceleration/deceleration. Creates smooth, continuous circular motion.
+Element rotates continuously around its center point, like a wheel, gear, or loading spinner. The rotation can be clockwise or counter-clockwise, at a constant speed or with easing variations.
 
-## When to Use
+**The motion**: The element pivots around its center, completing full 360° rotations indefinitely. By default, the rotation is smooth and constant (linear easing), creating a mechanical, precise feel. With power variations, the rotation can accelerate/decelerate for a more organic feel.
 
-- Loading indicators
-- Processing/waiting states
-- Refresh icons during action
-- Decorative spinning elements
+**The visual effect**: Mechanical, precise, often associated with loading or processing states. Spin is universally understood as "something is happening" or "please wait." It can also be decorative for elements like gears, wheels, or abstract shapes.
 
-## When NOT to Use
-
-- Text elements (unreadable)
-- Multiple simultaneous spins
+Spin is ideal for loading indicators and decorative rotating elements, but it can be a strong vestibular trigger for motion-sensitive users.
 
 ## Parameters
 
 ```typescript
 interface Spin {
-  direction: 'clockwise' | 'counter-clockwise';  // EffectSpinDirections, default: 'clockwise'
+  direction: 'clockwise' | 'counter-clockwise';  // default: 'clockwise'
   power?: 'soft' | 'medium' | 'hard';            // default: 'soft'
-  duration?: number;  // min: 100, max: 50000, step: 100, default: 7000
-  delay?: number;     // min: 0, max: 8000, step: 100, default: 0
-  easing?: Easing;    // default: 'linear' (responsive)
+  duration?: number;  // ms, min: 100, max: 50000, step: 100, default: 7000
+  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 
 **Parameter Impact:**
 
 - `direction`: Rotation direction
-  - `clockwise`: Rotates right (default, natural feeling)
-  - `counter-clockwise`: Rotates left
-- `power`: Controls easing curve
-  - `soft`: Linear - constant speed, mechanical feel
-  - `medium`: `quintInOut` - accelerates then decelerates
-  - `hard`: `backOut` - slight overshoot, more dynamic
-- `duration`: One full rotation time (default 7000ms = 7 seconds, slow)
+  - `clockwise` (default): Rotates right, natural/expected direction for most users
+  - `counter-clockwise`: Rotates left, can feel like "rewinding" or unconventional
+- `power`: Controls the easing curve of rotation
+  - `soft` (default): Linear, constant speed—mechanical, precise
+  - `medium`: Eased rotation (accelerate/decelerate)—more organic feel
+  - `hard`: Strong easing with slight overshoot—dynamic, bouncy
+- `duration`: Time for one complete rotation
+  - **1000-2000ms**: Fast spin, energetic
+  - **3000-5000ms**: Medium speed, typical for loaders
+  - **7000ms (default)**: Slow, deliberate rotation
+  - **10000ms+**: Very slow, decorative/ambient
+- `delay`: Wait before spinning starts
 
-## Minimal Examples
+## Best Practices
+
+- **Default duration is slow**: 7 seconds per rotation is intentionally calm. For loaders, consider 1000-2000ms
+- **Use for loading states**: Spin is the universal "loading" indicator
+- **Don't spin text**: Rotating text is unreadable and disorienting
+- **Consider direction**: Clockwise feels natural; counter-clockwise may feel "wrong" to some users
+- **Reduced motion**: Always provide static fallback—spinning is a strong vestibular trigger
+
+## Examples
 
 ```typescript
-// Basic - clockwise spin
+// Basic - slow clockwise spin
 { type: 'Spin', direction: 'clockwise' }
 
-// Counter-clockwise
+// Loading spinner (faster)
+{ type: 'Spin', direction: 'clockwise', duration: 1500 }
+
+// Counter-clockwise (for variety or specific meaning)
 { type: 'Spin', direction: 'counter-clockwise' }
-```
 
-## Related Presets
+// Fast energetic spin
+{ type: 'Spin', direction: 'clockwise', duration: 800 }
 
-### Same Category (Ongoing)
+// Slow decorative rotation (gear, wheel)
+{ type: 'Spin', direction: 'clockwise', duration: 15000 }
 
-- **Swing** - Oscillating rotation (back and forth)
-- **Flip** - 180° flips, not continuous
-
-### Parallel in Other Triggers
-
-- **SpinIn** (entrance) - Spin into view (one-time)
-- **SpinScroll** (scroll) - Rotation driven by scroll
-- **SpinMouse** (mouse) - Rotation following mouse
-
-### Alternatives
-
-- **Swing** - When oscillation preferred over full rotation
-- **Pulse** - When scale-based attention preferred
-- **Flip** - When flip effect preferred
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "loading/processing indicator"
-  - "refresh icon animation"
-  - "decorative rotation"
-  - "mechanical/gear effect"
-  - "continuous circular motion"
-
-choose_alternative_when:
-  - oscillation_needed: Swing
-  - scale_based: Pulse
-  - entrance_spin: SpinIn
-  - scroll_driven: SpinScroll
-  - mouse_driven: SpinMouse
+// Dynamic spin with easing
+{ type: 'Spin', direction: 'clockwise', power: 'medium', duration: 2000 }
 ```

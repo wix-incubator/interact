@@ -1,33 +1,33 @@
 ---
 name: Generate LLM Preset Rules
-overview: Create concise, structured rule files for all 83 motion presets to help LLMs understand when to use each preset and generate appropriate implementation code.
+overview: Create two-level rule files (category + preset) optimized for LLM decision flow.
 todos:
-  - id: setup
-    content: Create directory structure and copy plan to rules/presets/
-    status: in_progress
-  - id: pilot-entrance
-    content: "PILOT: Generate 2-3 entrance rules (FadeIn, ArcIn, BounceIn) for review"
+  - id: restructure
+    content: "Restructure: Create category files, update existing preset files to new format"
     status: pending
-  - id: pilot-scroll
-    content: "PILOT: Generate 2-3 scroll rules (ParallaxScroll, FadeScroll, ArcScroll)"
+  - id: category-entrance
+    content: "Create entrance.md category file with decision guide"
     status: pending
-  - id: pilot-ongoing
-    content: "PILOT: Generate 2-3 ongoing rules (Pulse, Bounce, Spin)"
+  - id: category-scroll
+    content: "Create scroll.md category file with decision guide"
     status: pending
-  - id: pilot-mouse
-    content: "PILOT: Generate 2-3 mouse rules (Tilt3DMouse, TrackMouse, BounceMouse)"
+  - id: category-ongoing
+    content: "Create ongoing.md category file with decision guide"
     status: pending
-  - id: pilot-background
-    content: "PILOT: Generate 2-3 background-scroll rules (BgParallax, BgZoom, BgFade)"
+  - id: category-mouse
+    content: "Create mouse.md category file with decision guide"
+    status: pending
+  - id: category-background
+    content: "Create background-scroll.md category file with decision guide"
+    status: pending
+  - id: update-presets
+    content: "Update existing preset files to simplified format (remove when-to-use, alternatives)"
     status: pending
   - id: review
-    content: Review pilot files with user, adjust format if needed
+    content: "Review new structure with user"
     status: pending
   - id: generate-remaining
-    content: Generate remaining ~70 preset rule files
-    status: pending
-  - id: create-index
-    content: Create master index/README in rules/presets/
+    content: "Generate remaining preset files"
     status: pending
 ---
 
@@ -35,377 +35,383 @@ todos:
 
 ## Execution Phases
 
-### Phase 1: Pilot (Current)
+### Phase 1: Create Category Files (Current)
 
-Generate 2-3 sample rule files per category to validate format:
+Create 5 category-level files with decision guides:
 
-| Category | Pilot Presets |
+- `entrance.md` - Decision guide for 24 entrance presets
+- `scroll.md` - Decision guide for 20 scroll presets
+- `ongoing.md` - Decision guide for 14 ongoing presets
+- `mouse.md` - Decision guide for 13 mouse presets
+- `background-scroll.md` - Decision guide for 12 background-scroll presets
 
-|----------|---------------|
+### Phase 2: Update Existing Preset Files
 
-| entrance | FadeIn, ArcIn, BounceIn |
+Update the 15 pilot preset files to the simplified format:
 
-| scroll | ParallaxScroll, FadeScroll, ArcScroll |
+- Remove: When to Use, When NOT to Use, Related Presets, Decision Hints
+- Keep: Visual Description, Parameters, Examples
 
-| ongoing | Pulse, Bounce, Spin |
+### Phase 3: Review & Complete
 
-| mouse | Tilt3DMouse, TrackMouse, BounceMouse |
-
-| background-scroll | BgParallax, BgZoom, BgFade |  
-**Total pilot files: ~14 files**
-
-### Phase 2: Review
-
-Review pilot files, adjust format based on feedback.
-
-### Phase 3: Complete Generation
-
-Generate remaining ~70 preset rule files + master index.
+- Review new structure with user
+- Generate remaining ~70 preset files
 
 ---
 
 ## Structure Overview
 
-Create rule markdown files mirroring the docs structure:
+**Two-level hierarchy optimized for LLM decision flow:**
 
-- `rules/presets/entrance/` (24 presets)
-- `rules/presets/scroll/` (20 presets)
-- `rules/presets/ongoing/` (14 presets)
-- `rules/presets/mouse/` (13 presets)
-- `rules/presets/background-scroll/` (12 presets)
+### Level 1: Category Files (Decision Layer)
 
-## Rule File Format
+- `rules/presets/entrance.md` - When to use entrance, comparison of all 24 presets
+- `rules/presets/scroll.md` - When to use scroll, comparison of all 20 presets
+- `rules/presets/ongoing.md` - When to use ongoing, comparison of all 14 presets
+- `rules/presets/mouse.md` - When to use mouse, comparison of all 13 presets
+- `rules/presets/background-scroll.md` - When to use background-scroll, comparison of all 12 presets
 
-Each rule file will be optimized for LLM token efficiency.
+### Level 2: Preset Files (Detail Layer)
+
+- `rules/presets/entrance/arc-in.md` - Visual description, parameters, examples
+- `rules/presets/entrance/fade-in.md` - Visual description, parameters, examples
+- etc.
+
+**Why this structure?**
+LLM decision flow is a waterfall - it won't read all preset descriptions before selecting. It needs:
+
+1. First: "Which category?" → Read category file
+2. Then: "Which preset?" → Use decision table in category file
+3. Finally: "How to configure?" → Read specific preset file
+
+## Category File Format
+
+Each category file guides the LLM to select the right preset.
 
 ---
 
-### 1. Header (YAML frontmatter)
+### Category File Sections
+
+#### 1. Header (YAML frontmatter)
 
 ```yaml
-name: PresetName
-category: entrance | scroll | ongoing | mouse | backgroundScroll
-tags: [tag1, tag2, tag3, ...]  # Semantic search keywords
+name: Entrance Animations
+category: entrance
+tags: [appear, reveal, enter, load, show, intro, page-load, modal, popup]
 ```
 
-Tags are searchable intent keywords to help LLM match user requests:
+Tags help LLM match user intent via semantic search.
 
-- Motion type: `fade`, `slide`, `rotate`, `scale`, `3d`, `blur`
-- Tone: `subtle`, `dramatic`, `playful`, `professional`
-- Context: `entrance`, `hero`, `modal`, `cards`, `list-items`
+#### 2. Description & Synonyms
 
----
-
-### 2. Synonyms
-
-Natural language variations to help LLM match user intent (3-7 alternatives):
+Verbose overview of the category with alternative phrasings:
 
 ```markdown
+## Description
+
+Entrance animations bring elements into view for the first time. They create the initial 
+impression and set the tone for user interaction. These are one-shot animations that play 
+once when an element first appears.
+
 ## Synonyms
-fade in, appear, materialize, opacity transition, gentle reveal
+
+appear animation, reveal effect, intro animation, show animation, enter animation, 
+page load animation, element appearance, fade in effect, loading animation
+```
+
+#### 3. When to Use This Category
+
+When should an LLM choose this category over others:
+
+```markdown
+## When to Use Entrance Animations
+
+- Elements appearing for the first time on page load
+- Modal/overlay/popup appearances
+- Content revealing after user action (click, tab switch)
+- Elements entering viewport (triggered once, not scroll-driven)
+- First-time visibility of lazy-loaded content
+
+## When NOT to Use
+
+- Scroll-driven reveals → use Scroll animations
+- Continuous/looping animations → use Ongoing animations
+- Mouse-reactive elements → use Mouse animations
+- Background media → use Background Scroll animations
+```
+
+#### 4. Accessibility Considerations
+
+Important for inclusive design:
+
+```markdown
+## Accessibility Considerations
+
+- **Respect prefers-reduced-motion**: Use FadeIn as fallback or disable animations entirely
+- **Duration guidelines**: Keep under 500ms for functional UI, up to 1200ms for decorative
+- **Avoid vestibular triggers**: Limit large-scale movement, spinning, parallax for motion-sensitive users
+- **Focus management**: Ensure animated elements don't interfere with keyboard focus order
+- **Screen readers**: Animations are visual-only; ensure content is accessible without them
+```
+
+#### 5. Preset List with Tags and Synonyms
+
+Each preset as a block with description, tags, and synonyms for LLM matching:
+
+```markdown
+## Available Presets
+
+### FadeIn
+**Description**: Gradual opacity transition from invisible to visible. Universal, subtle, accessibility-safe.
+**Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`
+**Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance
+
+### ArcIn
+**Description**: 3D curved swing like a door opening. Dramatic, cinematic, creates depth.
+**Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`
+**Synonyms**: arc entrance, curved reveal, swing in, cinematic entrance, perspective reveal
+
+...
+```
+
+This format is optimal for LLM intent matching - tags and synonyms are explicitly labeled and grouped with each preset.
+
+#### 6. Decision Guide
+
+Help LLM choose between presets:
+
+```markdown
+## Decision Guide
+
+### By Tone
+- **Subtle/Professional**: FadeIn, BlurIn, SlideIn
+- **Dramatic/Cinematic**: ArcIn, FlipIn, TurnIn
+- **Playful/Energetic**: BounceIn, SpinIn, PunchIn
+
+### By Use Case
+- **Hero sections**: ArcIn, ExpandIn, GrowIn
+- **Modals/Overlays**: FadeIn, DropIn
+- **List items**: FadeIn, SlideIn (with stagger)
+- **Notifications**: BounceIn, PunchIn
+
+### Reduced Motion Alternatives
+Always provide a reduced-motion fallback:
+- Complex animations → FadeIn
+- Movement-based → FadeIn or no animation
+- 3D/Spinning → FadeIn
+
+### Parallels in Other Categories
+| Entrance | Scroll Equivalent | Mouse Equivalent |
+|----------|-------------------|------------------|
+| ArcIn | ArcScroll | - |
+| FadeIn | FadeScroll | - |
+| SpinIn | SpinScroll | SpinMouse |
 ```
 
 ---
 
-### 3. Visual Description (Human-written)
+### Preset File Sections
 
-**This section requires manual writing.** Describe what the user SEES in plain, non-technical language. Focus on the visual experience, not implementation details.
+Each preset file contains the details needed AFTER the LLM has decided to use this preset.
+Since category files handle decision-making, preset files can be more verbose about implementation details.
+
+#### 1. Preset Header (YAML frontmatter)
+
+```yaml
+name: ArcIn
+category: entrance
+```
+
+#### 2. Visual Description (Human-written, verbose)
+
+**Describe what the user SEES in plain, non-technical language.** Be detailed and use analogies.
 
 **DO describe:**
 
-- What the element looks like during the animation (fades, moves, rotates, scales)
-- The path or direction of movement (straight, curved, from where to where)
-- The overall feeling (smooth, bouncy, snappy, dramatic, subtle)
+- What the element looks like at the start, middle, and end
+- The path or direction of movement
+- The overall feeling (smooth, bouncy, dramatic)
+- Real-world analogies (like a door opening, a ball bouncing, etc.)
+- How opacity, scale, rotation, and position change
 
 **DO NOT reference:**
 
 - CSS properties (translateY, perspective, rotateX)
 - Keyframe percentages or offsets
-- Easing function names
-- Implementation details (800px perspective, 70% of animation)
+- Easing function names (unless explaining power/easing parameter)
+- Internal implementation details
 
-**Good example for ArcIn:**
-> Element swings into view along a curved path, like a door opening towards you. It starts tilted away and gradually flattens as it settles into place. Fades in while moving. Creates a dramatic, cinematic reveal with depth.
+**Example:**
+> Element swings into view along a curved path, like a door opening towards you. At the start,
+> the element is invisible and tilted away (as if rotated back into the screen). As the animation
+> plays, it gradually rotates forward while simultaneously fading in. The element follows an arc
+> trajectory rather than moving in a straight line, creating a sense of depth and dimension.
+> By the end, it settles flat and fully visible in its final position. The motion feels cinematic
+> and dramatic, best suited for hero elements that need to make an impression.
 
-**Bad example (too technical):**
-> Uses perspective(800px) with rotateX/Y transforms. Opacity fades from 0 to 1 during first 70% with sineIn easing. Main arc uses quintInOut.
+#### 3. Parameters (detailed)
 
----
-
-### 4. When to Use
-
-**Keep it short: 3-5 bullet points max.** Focus on the most common and confident use cases.
-
-```markdown
-- Hero sections needing dramatic reveal
-- Featured/premium content
-- Single focal elements
-```
-
----
-
-### 5. When NOT to Use
-
-**Keep it short: 2-4 bullet points max.** Only the most important anti-patterns.
-
-```markdown
-- Multiple simultaneous elements
-- Subtle/professional interfaces
-- Mobile with performance concerns
-```
-
----
-
-### 6. Parameters
-
-**Use TypeScript notation.** Pull min/max/step/enum from `@wix/effects-kit` ([wix-private/wow-libs/effects-kit](https://github.com/wix-private/wow-libs/tree/master/packages/effects-kit)).  
-**IMPORTANT: Parameter Subsets Vary Per Preset**
-
-Different presets support different subsets of enum values:
-
-**Direction variants:**
-
-- `EffectFourDirections`: `'top' | 'right' | 'bottom' | 'left'`
-- `EffectFiveDirections`: adds `'center'`
-- `EffectEightDirections`: adds diagonals `'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'`
-- `EffectNineDirections`: eight + `'center'`
-- `EffectFourCorners`: `'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'`
-- `EffectTwoDirections`: `'left' | 'right'`
-- `EffectTwoAxes`: `'horizontal' | 'vertical'`
-
-**Easing variants:**
-
-- Full easing set available for most presets
-- **Clipped/masked animations** (ShapeIn, RevealIn, ShuttersIn, etc.) exclude `backOut`, `backIn`, `backInOut` because overshoot breaks the clip boundary
-- Some presets have preset-specific easing maps tied to `power` levels
-
-Always document the **exact subset** supported by each preset, not the base type.
-
-Example:
+**Use TypeScript notation.** Pull min/max/step/enum from `@wix/effects-kit`.
+Include comprehensive parameter impact notes explaining what each value does visually.
 
 ```typescript
 interface ArcIn {
-  direction: 'top' | 'right' | 'bottom' | 'left';  // EffectFourDirections, default: 'left'
+  direction: 'top' | 'right' | 'bottom' | 'left';  // default: 'left'
   power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
-  // Inherited from base
-  duration?: number;   // min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;      // min: 0, max: 8000, step: 100, default: 0
-  easing?: Easing;     // default: 'quintInOut'
+  duration?: number;   // ms, min: 0, max: 4000, step: 100, default: 1200
+  delay?: number;      // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 
-Add brief impact notes:
+**Parameter Impact (verbose):**
 
-- `direction`: Determines rotation axis and arc path origin
-- `power`: Controls rotation intensity (soft: 15°, medium: 30°, hard: 45°)
+- `direction`: Controls which edge the element appears to swing from
+  - `top`: Element tilts forward (rotates on X-axis), appears to fall into place from above
+  - `bottom`: Element tilts backward, appears to rise up from below
+  - `left`: Element tilts sideways (rotates on Y-axis), swings in from the left
+  - `right`: Element tilts opposite direction, swings in from the right
+- `power`: Controls how dramatic the rotation and arc appear
+  - `soft`: Subtle 15° rotation, gentle arc - good for supporting content
+  - `medium`: Balanced 30° rotation - the sweet spot for most uses
+  - `hard`: Dramatic 45° rotation with slight overshoot - attention-grabbing
+- `duration`: How long the animation takes (1200ms default is cinematic, 600ms is snappy)
+- `delay`: Wait time before animation starts (useful for staggered sequences)
+
+#### 4. Best Practices
+
+Tips for effective use of this specific preset:
+
+```markdown
+## Best Practices
+
+- Use on single focal elements, not multiple simultaneous items
+- Combine with stagger delay for sequential reveals
+- Consider `power: 'soft'` for mobile devices
+- Pair with complementary exit animation if element will be removed
+```
+
+#### 5. Examples (with context)
+
+Include examples with explanatory comments:
+
+```typescript
+// Basic usage - element swings in from bottom
+{ type: 'ArcIn', direction: 'bottom' }
+
+// Hero section - dramatic entrance from side
+{ type: 'ArcIn', direction: 'left', power: 'hard' }
+
+// Subtle supporting content
+{ type: 'ArcIn', direction: 'top', power: 'soft', duration: 800 }
+
+// Staggered cards (apply to each with increasing delay)
+{ type: 'ArcIn', direction: 'bottom', delay: 0 }    // Card 1
+{ type: 'ArcIn', direction: 'bottom', delay: 100 }  // Card 2
+{ type: 'ArcIn', direction: 'bottom', delay: 200 }  // Card 3
+```
+
+**Note:** "When to use", "When not to use", "Alternatives", and "Decision hints" remain in the **category file**.
 
 ---
 
-### 7. Minimal Examples
+---
 
-**Only include examples that show fundamentally different configurations.** Don't add examples just for variety.
+## Sample Files
 
-- Include basic/default usage
-- Only add more examples if they demonstrate meaningfully different behavior (e.g., different direction that changes the visual, inverted mode, etc.)
+### Sample Category File: entrance.md
 
-```typescript
+```markdown
+---
+name: Entrance Animations
+category: entrance
+---
+
+# Entrance Animations
+
+## When to Use Entrance Animations
+
+- Elements appearing for the first time on page load
+- Modal/overlay appearances
+- Content revealing after user action
+- Triggered once (not continuous or scroll-driven)
+
+## Available Presets
+
+| Preset | Description |
+|--------|-------------|
+| FadeIn | Gradual opacity transition, subtle and universal |
+| ArcIn | 3D curved swing, dramatic and cinematic |
+| BounceIn | Playful bouncing, energetic |
+| SlideIn | Straight movement from direction |
+| FlipIn | 3D flip rotation |
+| ... | ... |
+
+## Decision Guide
+
+### By Tone
+- **Subtle/Professional**: FadeIn, BlurIn, SlideIn
+- **Dramatic/Cinematic**: ArcIn, FlipIn, TurnIn
+- **Playful/Energetic**: BounceIn, SpinIn, PunchIn
+
+### By Use Case
+- **Hero sections**: ArcIn, ExpandIn, GrowIn
+- **Modals/Overlays**: FadeIn, DropIn
+- **List items (staggered)**: FadeIn, SlideIn
+- **Notifications/Badges**: BounceIn, PunchIn
+
+### Parallels in Other Categories
+
+| Entrance | Scroll | Mouse |
+|----------|--------|-------|
+| ArcIn | ArcScroll | - |
+| FadeIn | FadeScroll | - |
+| SpinIn | SpinScroll | SpinMouse |
+| - | ParallaxScroll | TrackMouse |
+```
+
+---
+
+### Sample Preset File: entrance/arc-in.md
+
+```markdown
+---
+name: ArcIn
+category: entrance
+---
+
+# ArcIn
+
+## Visual Description
+
+Element swings into view along a curved path, like a door opening towards you. 
+It starts tilted away and gradually flattens as it settles into place. 
+Fades in while moving. The effect feels dramatic and cinematic.
+
+## Parameters
+
+\`\`\`typescript
+interface ArcIn {
+  direction: 'top' | 'right' | 'bottom' | 'left';  // default: 'left'
+  power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
+  duration?: number;   // min: 0, max: 4000, default: 1200
+  delay?: number;      // min: 0, max: 8000, default: 0
+}
+\`\`\`
+
+**Parameter Impact:**
+- `direction`: top/bottom tilts forward/back, left/right tilts sideways
+- `power`: soft = subtle, medium = noticeable, hard = dramatic
+
+## Examples
+
+\`\`\`typescript
 // Basic
 { type: 'ArcIn', direction: 'bottom' }
 
-// Only add if meaningfully different:
-{ type: 'ArcIn', direction: 'left', power: 'hard' }
-```
-
-**Skip examples that only differ by duration, delay, or minor parameter tweaks.**
-
----
-
-### 8. Related Presets
-
-**Specifically highlight parallel presets across triggers:**
-
-```markdown
-## Related Presets
-
-### Same Category (Entrance)
-- **FlipIn** - Simpler 3D flip without arc motion
-- **TurnIn** - Corner-based 3D rotation, more complex
-
-### Parallel in Other Triggers
-- **ArcScroll** (scroll) - Same arc motion, scroll-driven
-- **TiltScroll** (scroll) - Similar 3D tilt, scroll-driven
-
-### Alternatives
-- **FadeIn** - When subtle is needed over dramatic
-- **SlideIn** - When 2D motion is preferred over 3D
-```
-
----
-
-### 9. Decision Hints (Optional)
-
-Help LLM navigate similar presets:
-
-```yaml
-choose_this_when:
-  - "user wants 3D dramatic entrance"
-  - "hero section needs cinematic reveal"
-  - "premium/luxury brand feel"
-
-choose_alternative_when:
-  - "subtle needed" → FadeIn, BlurIn
-  - "2D motion preferred" → SlideIn, GlideIn  
-  - "playful/bouncy" → BounceIn
-  - "scroll-driven" → ArcScroll
-```
-
----
-
-## Data Sources
-
-### From `motion-presets/src/types.ts`
-
-- TypeScript interface definitions
-- Parameter types and optionality
-
-### From `motion-presets/src/library/{category}/{Preset}.ts`
-
-- Default values in implementation
-- Keyframe analysis for visual description cues
-- Easing maps
-
-### From `effects-kit/src/effects/{category}/{preset}.ts`
-
-- `min`, `max`, `step` constraints
-- `enum` options (check each preset - they override base enums!)
-- `default` and `mobileDefault` values
-- `units` for number-with-unit types
-- Preset-specific schema overrides
-
-### From `effects-kit/src/effects/baseParams.ts`
-
-Common parameters (but presets may use subsets):
-
-- `duration`: min: 0, max: 4000, step: 100
-- `delay`: min: 0, max: 8000, step: 100
-- `power`: enum: `['soft', 'medium', 'hard']`
-- `easing`: full set (but clipped animations exclude `back*` easings)
-
-**Direction base types:**
-
-- `directionFourSides`: `['left', 'right', 'top', 'bottom']`
-- `directionFiveSides`: four + `'center'`
-- `directionEightSides`: four + diagonals
-- `directionNineSides`: eight + `'center'`
-- `directionFourCorners`: `['top-left', 'top-right', 'bottom-left', 'bottom-right']`
-- `directionTwoSides`: `['left', 'right']`
-- `directionTwoAxes`: `['horizontal', 'vertical']`
-
-**Easing base types:**
-
-- `easing`: full set including `backIn`, `backOut`, `backInOut`
-- `easingExcludingBackOut`: for clipped/masked animations
-
----
-
-## Sample Rule File
-
-> **See**: [rules/presets/entrance/arc-in.md](rules/presets/entrance/arc-in.md) after generation
-
-**Frontmatter:**
-
-```yaml
-name: ArcIn
-category: entrance
-tags: [3d, arc, curved, dramatic, cinematic, perspective, rotation, entrance]
-```
-
-**Synonyms:**
-
-> arc entrance, curved reveal, 3d arc, swing in, cinematic entrance, perspective reveal
-
-**Visual Description:**
-
-> Element swings into view along a curved path, like a door opening towards you. It starts tilted away and gradually flattens as it settles into place. Fades in while moving. The effect feels dramatic and cinematic, with a sense of depth.
-
-**When to Use:**
-
-- Hero sections needing dramatic reveal
-- Premium/featured content
-- Single focal elements requiring attention
-
-**When NOT to Use:**
-
-- Multiple simultaneous elements
-- Subtle, professional interfaces
-- Mobile with many animated elements
-
-**Parameters:**
-
-```typescript
-interface ArcIn {
-  direction: 'top' | 'right' | 'bottom' | 'left';  // EffectFourDirections, default: 'left'
-  power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
-  duration?: number;   // min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;      // min: 0, max: 8000, step: 100, default: 0
-  easing?: Easing;     // full set supported, default: 'quintInOut'
-}
-```
-
-**Parameter Impact:**
-
-- `direction`: Determines rotation axis (top/bottom = X-axis, left/right = Y-axis) and arc origin
-- `power`: Rotation intensity - soft: subtle tilt, medium: noticeable arc, hard: dramatic swing
-
-**Minimal Examples:**
-
-```typescript
-// Basic - swings in from bottom
-{ type: 'ArcIn', direction: 'bottom' }
-
-// Side entry (rotates on different axis)
+// Side entry (tilts on different axis)
 { type: 'ArcIn', direction: 'left' }
+\`\`\`
 ```
-
-**Related Presets:**
-
-| Category | Preset | Comparison |
-
-|----------|--------|------------|
-
-| Same (Entrance) | FlipIn | Simpler 3D flip, no arc path |
-
-| Same (Entrance) | TurnIn | Corner-based 3D rotation |
-
-| Same (Entrance) | CurveIn | Alternative curved 3D motion |
-
-| Parallel (Scroll) | ArcScroll | Arc motion driven by scroll position |
-
-| Parallel (Scroll) | TiltScroll | 3D tilt on scroll |
-
-| Alternative | FadeIn | When subtle is needed |
-
-| Alternative | SlideIn | When 2D motion preferred |
-
-| Alternative | GlideIn | Smooth 2D glide with direction control |
-
-**Decision Hints:**
-
-```yaml
-choose_this_when:
-  - "dramatic 3D entrance needed"
-  - "hero/featured content"
-  - "cinematic feel"
-  - "premium brand"
-
-choose_alternative_when:
-  - subtle_needed: FadeIn, BlurIn
-  - 2d_preferred: SlideIn, GlideIn
-  - playful_bouncy: BounceIn
-  - scroll_driven: ArcScroll
-```
-
-</details>
 
 ---
 
@@ -414,23 +420,25 @@ choose_alternative_when:
 ```text
 rules/presets/
 ├── README.md                    # Master index
-├── entrance/                    # 24 files
+├── entrance.md                  # Category: when to use, decision guide
+├── scroll.md                    # Category: when to use, decision guide
+├── ongoing.md                   # Category: when to use, decision guide
+├── mouse.md                     # Category: when to use, decision guide
+├── background-scroll.md         # Category: when to use, decision guide
+├── entrance/                    # Preset details (24 files)
 │   ├── fade-in.md
 │   ├── arc-in.md
-│   ├── blur-in.md
 │   └── ...
-├── scroll/                      # 20 files
+├── scroll/                      # Preset details (20 files)
 │   ├── parallax-scroll.md
-│   ├── arc-scroll.md
 │   └── ...
-├── ongoing/                     # 14 files
+├── ongoing/                     # Preset details (14 files)
 │   ├── pulse.md
-│   ├── bounce.md
 │   └── ...
-├── mouse/                       # 13 files
+├── mouse/                       # Preset details (13 files)
 │   ├── tilt-3d-mouse.md
 │   └── ...
-└── background-scroll/           # 12 files
+└── background-scroll/           # Preset details (12 files)
     ├── bg-parallax.md
     └── ...
 ```
@@ -439,10 +447,36 @@ rules/presets/
 
 ## Implementation Notes
 
-1. **Visual Description**: Write in plain language describing what the user sees. NO technical terms (CSS properties, keyframe percentages, easing names). Use analogies and natural descriptions.
-2. **When to Use / When NOT to Use**: Keep short (3-5 and 2-4 bullets respectively). Focus on high-confidence, common cases.
-3. **Examples**: Only include if they show fundamentally different behavior. Skip examples that only differ by duration/delay.
-4. **Parameters**: Combine TypeScript types from `motion-presets` with constraints from `effects-kit`. **Always check each preset's specific file** - they override base params with different enum subsets
-5. **Direction/Easing subsets**: Document the exact subset each preset supports, not the base type. Clipped animations (ShapeIn, RevealIn, ShuttersIn, WinkIn) exclude back easings
-6. **Cross-trigger mapping**: Map entrance presets to their scroll/mouse equivalents where they exist (e.g., ArcIn ↔ ArcScroll)
-7. **Tags**: Derive from visual characteristics, use cases, and motion type
+### Category Files (Verbose)
+
+1. **Header**: Include tags for semantic search matching
+2. **Description & Synonyms**: Verbose overview with alternative phrasings
+3. **When to Use / When NOT to Use**: Clear guidance on category selection
+4. **Accessibility Considerations**: Reduced motion, vestibular safety, duration guidelines
+5. **Preset List**: Brief 1-line descriptions for quick scanning
+6. **Decision Guide**: Group by tone, use case, reduced-motion alternatives, cross-category parallels
+
+### Preset Files (Verbose)
+
+1. **Visual Description**: Detailed, use analogies, describe start/middle/end states
+2. **Parameters**: TypeScript notation with comprehensive impact notes for each value
+3. **Best Practices**: Tips specific to this preset
+4. **Examples**: Multiple examples with explanatory comments, including stagger patterns
+
+### Data Sources
+
+- **Types**: `motion-presets/src/types.ts`
+- **Constraints**: `effects-kit/src/effects/{category}/{preset}.ts`
+- **Base params**: `effects-kit/src/effects/baseParams.ts`
+
+### Notes on Parameter Subsets
+
+- Direction types vary: FourDirections, FiveDirections (adds center), EightDirections (adds diagonals)
+- Clipped animations (ShapeIn, RevealIn, ShuttersIn, WinkIn) exclude back easings
+
+### Accessibility Guidelines
+
+- Always mention `prefers-reduced-motion` media query support
+- Recommend FadeIn as universal fallback
+- Note vestibular triggers (spinning, parallax, large movement)
+- Duration guidance: <500ms functional, <1200ms decorative

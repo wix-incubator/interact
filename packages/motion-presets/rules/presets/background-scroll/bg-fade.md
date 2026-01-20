@@ -1,92 +1,66 @@
 ---
 name: BgFade
 category: backgroundScroll
-tags: [fade, background, scroll, opacity, reveal, transition]
 ---
 
 # BgFade
 
-## Synonyms
-
-background fade, bg fade, fade background, background opacity, background reveal
-
 ## Visual Description
 
-Background gradually appears or disappears as you scroll through a section. In "in" mode, background fades from invisible to visible. In "out" mode, it fades away. Creates smooth transitions between sections.
+Background opacity changes in response to scroll position, fading in as the section enters the viewport or fading out as it exits. This is the scroll-driven equivalent of FadeIn, applied specifically to background media.
 
-## When to Use
+**`range: 'in'`**: Background starts invisible (or semi-transparent) and gradually becomes fully visible as the user scrolls into the section. Creates a smooth reveal effect.
 
-- Section transitions with background change
-- Progressive background reveals
-- Creating focus on content areas
+**`range: 'out'`**: Background starts visible and gradually becomes invisible as the user scrolls past the section. Creates a graceful dismissal effect.
 
-## When NOT to Use
+**The visual effect**: Subtle and elegant. BgFade transitions backgrounds smoothly without the drama of zoom or parallax. It's perfect for section transitions, layered reveals, or guiding focus.
 
-- When background must always be visible
-- Critical visual information in background
+This is one of the safest background scroll effects—it's subtle, doesn't cause motion sickness, and degrades gracefully.
 
 ## Parameters
 
 ```typescript
 interface BgFade {
-  range: 'in' | 'out';      // EffectRangeInOut, required
-  // Scroll range params
-  start?: number;           // min: 0, max: 100, default: 0 (in) or 50 (out)
-  end?: number;             // min: 0, max: 100, default: 50 (in) or 100 (out)
+  range: 'in' | 'out';      // required
+  start?: number;           // %, min: 0, max: 100, default: 0 (in) or 50 (out)
+  end?: number;             // %, min: 0, max: 100, default: 50 (in) or 100 (out)
 }
 ```
 
 **Parameter Impact:**
 
-- `range`: Fade direction
-  - `in`: Fades from transparent to visible (0→1) on entry
-  - `out`: Fades from visible to transparent (1→0) on exit
-- `start`/`end`: Scroll position range for fade
-  - For `in`: Default 0-50 (fade completes by viewport center)
-  - For `out`: Default 50-100 (fade starts from viewport center)
+- `range`: Fade direction (required)
+  - `in`: Background fades from transparent to visible as section enters
+  - `out`: Background fades from visible to transparent as section exits
+- `start`/`end`: Scroll position range for the fade (0-100)
+  - Values represent percentage of element visibility in viewport
+  - **For `in`**: Default 0-50 means fade completes by mid-viewport
+  - **For `out`**: Default 50-100 means fade starts at mid-viewport
+  - Wider range = slower fade; narrower range = faster fade
 
-## Minimal Examples
+## Best Practices
+
+- **Combine in + out for full lifecycle**: Apply both for backgrounds that fade in and out
+- **Adjust timing with start/end**: Want fade to complete earlier? Lower the `end` value
+- **Use for section transitions**: Fade backgrounds between sections for smooth visual flow
+- **Safe for reduced motion**: BgFade is subtle enough to keep in most cases
+- **Test overlap with content**: Ensure fading background doesn't make content unreadable at any point
+
+## Examples
 
 ```typescript
-// Fade in as section enters
+// Basic - fade in as section enters
 { type: 'BgFade', range: 'in' }
 
 // Fade out as section exits
 { type: 'BgFade', range: 'out' }
-```
 
-## Related Presets
+// Quick fade in (completes early)
+{ type: 'BgFade', range: 'in', start: 0, end: 25 }
 
-### Same Category (Background Scroll)
+// Slow fade in (completes late)
+{ type: 'BgFade', range: 'in', start: 0, end: 75 }
 
-- **BgFadeBack** - Fade with different layer targeting
-- **BgParallax** - Movement without fade
-- **BgZoom** - Zoom effect on background
-
-### Parallel in Other Triggers
-
-- **FadeScroll** (scroll) - Fade for regular elements
-- **FadeIn** (entrance) - Time-based fade entrance
-
-### Alternatives
-
-- **BgParallax** - When movement preferred over opacity
-- **BgZoom** - When zoom effect preferred
-- **FadeScroll** - For regular (non-background) elements
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "background reveal/hide"
-  - "section transitions"
-  - "layered background effects"
-  - "focus control via background"
-  - "progressive disclosure"
-
-choose_alternative_when:
-  - movement_based: BgParallax
-  - zoom_effect: BgZoom
-  - regular_elements: FadeScroll
-  - time_based: FadeIn
+// Delayed fade out (starts later)
+{ type: 'BgFade', range: 'out', start: 70, end: 100 }
 ```

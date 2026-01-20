@@ -1,91 +1,71 @@
 ---
 name: Pulse
 category: ongoing
-tags: [pulse, scale, attention, heartbeat, throb, continuous, subtle]
 ---
 
 # Pulse
 
-## Synonyms
-
-pulse effect, heartbeat, throb, breathing, scale pulse, attention pulse, pulsing
-
 ## Visual Description
 
-Element gently shrinks and expands in a rhythmic, heartbeat-like pattern. Like something breathing or pulsing with life. Creates subtle, continuous attention without being distracting.
+Element gently expands and contracts in a continuous rhythmic pattern, like a heartbeat or something softly breathing. The scale oscillates—growing slightly larger, then shrinking back to normal size—in an endless loop.
 
-## When to Use
+**The motion**: The element starts at its normal size, grows slightly (maybe 5-15% larger), then shrinks back. This cycle repeats continuously. The timing feels organic, like a pulse or breath, not mechanical.
 
-- Drawing attention to important elements
-- Live/active status indicators
-- Notification badges
-- Waiting/processing states
+**The visual effect**: Creates a sense of life and activity without being aggressive or distracting. The pulsing draws attention subtly, suggesting "hey, look here" without shouting. It's the gentlest way to indicate something is active, alive, or important.
 
-## When NOT to Use
-
-- Multiple elements simultaneously
-- Professional/minimal interfaces
+Pulse is the most universally safe ongoing animation—it's subtle enough for professional contexts and doesn't trigger motion sensitivity as strongly as movement-based animations.
 
 ## Parameters
 
 ```typescript
 interface Pulse {
   power?: 'soft' | 'medium' | 'hard';  // default: 'soft'
-  intensity?: number;                   // min: 0, max: 1, step: 0.1, default: 0 (responsive)
-  duration?: number;  // min: 100, max: 4000, step: 100, default: 1300
-  delay?: number;     // min: 0, max: 8000, step: 100, default: 1000
+  intensity?: number;                   // 0-1, min: 0, max: 1, step: 0.1, default: 0
+  duration?: number;  // ms, min: 100, max: 4000, step: 100, default: 1300
+  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 1000
 }
 ```
 
 **Parameter Impact:**
 
-- `power`: Preset intensity levels
-  - `soft`: Offset 0 - very subtle pulse
-  - `medium`: Offset 0.06 - noticeable pulse
-  - `hard`: Offset 0.12 - pronounced pulse
-- `intensity`: Fine-grained control (0-1), overrides power
-- `delay`: Time before animation starts (useful for staggering)
-- `duration`: Full cycle time (includes delay in calculation)
+- `power`: Preset intensity levels for the pulse magnitude
+  - `soft` (default): Very subtle pulse, barely noticeable—professional, gentle
+  - `medium`: Noticeable pulse, clearly alive—good for status indicators
+  - `hard`: Pronounced pulse, attention-demanding—use for important alerts
+- `intensity`: Fine-grained control over pulse magnitude (0-1)
+  - Overrides `power` if specified
+  - 0 = no pulse, 1 = maximum pulse
+  - Use for precise control when presets don't fit
+- `duration`: Full pulse cycle time (expand + contract)
+  - **800-1000ms**: Quick, energetic pulse
+  - **1300ms (default)**: Balanced, natural feeling
+  - **2000ms+**: Slow, breathing-like rhythm
+- `delay`: Initial wait before pulsing begins
+  - Useful for staggering multiple pulsing elements
 
-## Minimal Examples
+## Best Practices
+
+- **One pulsing element at a time**: Multiple simultaneous pulses are visually chaotic
+- **Use for status, not content**: Pulse is for "this is active/important," not for decorating content
+- **Prefer `soft` power**: Start subtle; increase only if attention isn't captured
+- **Combine with color/icon**: Pulse alone may not convey meaning—pair with visual indicators
+- **Safe for reduced motion**: Pulse (soft) is often acceptable even with reduced motion preference, but offer disable option
+
+## Examples
 
 ```typescript
-// Basic
+// Basic - subtle pulse indicating activity
 { type: 'Pulse' }
-```
 
-## Related Presets
+// Live status indicator (streaming, recording)
+{ type: 'Pulse', power: 'medium', duration: 1000 }
 
-### Same Category (Ongoing)
+// Gentle notification badge
+{ type: 'Pulse', power: 'soft', duration: 1500 }
 
-- **Breathe** - Scale-based but different timing pattern
-- **Flash** - Opacity-based attention effect
+// Attention-demanding alert
+{ type: 'Pulse', power: 'hard', duration: 800 }
 
-### Parallel in Other Triggers
-
-- **GrowScroll** (scroll) - Scale change on scroll
-- **DropIn** (entrance) - Scale-based entrance
-
-### Alternatives
-
-- **Flash** - When opacity-based attention preferred
-- **Bounce** - When vertical movement preferred
-- **Breathe** - When different rhythm needed
-
-## Decision Hints
-
-```yaml
-choose_this_when:
-  - "subtle continuous attention"
-  - "heartbeat/living effect"
-  - "status indicator"
-  - "notification badge"
-  - "gentle CTA emphasis"
-
-choose_alternative_when:
-  - opacity_based: Flash
-  - vertical_movement: Bounce
-  - rotation: Spin
-  - different_rhythm: Breathe
-  - one_time_attention: BounceIn, PunchIn
+// Slow, calming breathing effect
+{ type: 'Pulse', power: 'soft', duration: 2500 }
 ```
