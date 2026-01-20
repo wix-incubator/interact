@@ -10,6 +10,8 @@
 
 **Phase 4**: Standardize parameter types and coordinate systems across all presets.
 
+**Phase 5**: Allow customization of previously hardcoded values like `perspective`, `depth`, `angle`, etc. and values based on DOM measurements
+
 ---
 
 ## Phase 1: Remove Redundant Presets
@@ -264,3 +266,83 @@ Presets using `'horizontal' | 'vertical'` should use a different parameter name 
 | Rotation | `direction` | `'clockwise' \| 'counter-clockwise'` | SpinIn, SpinScroll, Spin |
 
 | Axis | `axis` or `orientation` | `'horizontal' \| 'vertical'` | WinkIn, FlipScroll, ArcScroll, Flip, Breathe |
+
+---
+
+## Phase 5: Expose Hardcoded Values (and some DOM measurements) as Parameters
+
+### Overview
+
+Many presets measure element dimensions or use hardcoded values that could instead be customizable parameters. This phase removes DOM measurements and exposes these values as optional parameters with sensible defaults.
+
+### Category 1: DOM Measurements That Could Be Parameters
+
+These presets measure element dimensions and derive values that could instead be customizable:
+
+| Preset | What's Measured | Hardcoded Calculation | Suggested Parameter |
+
+|--------|-----------------|----------------------|---------------------|
+
+| ArcIn | `width`, `height` | `z = (height or width) / 2` | `depth` (default: 300px) |
+
+| CurveIn | `width` | `translateZ = width * 3` | `depth` (default: 900px) |
+
+| TiltIn | `height` | `translateZ = height / 2` | `depth` (default: 200px) |
+
+| TurnScroll | `left` | Viewport-relative translation | Use CSS fallback |
+
+| SkewPanScroll | `left` | Viewport-relative translation | Use CSS fallback |
+
+### Category 2: Hardcoded Values That Could Be Parameters
+
+| Preset | Hardcoded Value | What It Controls | Suggested Parameter |
+
+|--------|-----------------|------------------|---------------------|
+
+| **ArcIn** | `ROTATION_ANGLE = 80` | Arc rotation angle | `angle = 80` |
+
+| **ArcIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
+
+| **ArcScroll** | `translateZ(-300px)` | Arc depth | `depth = 300` |
+
+| **ArcScroll** | `ROTATION = 68` | Arc rotation | `angle = 68` |
+
+| **ArcScroll** | `perspective(500px)` | 3D perspective | `perspective = 500` |
+
+| **TiltIn** | `rotateX(-90deg)` | Tilt angle | `tiltAngle = 90` |
+
+| **TiltIn** | `ROTATION_MAP = { left: 30, right: -30 }` | Z rotation | `rotateZ = 30` |
+
+| **TiltIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
+
+| **FoldIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
+
+| **FlipIn** | `perspective(800px)` | 3D perspective | `perspective = 800` |
+
+| **FlipScroll** | `perspective(800px)` | 3D perspective | `perspective = 800` |
+
+| **TiltScroll** | `perspective(400px)` | 3D perspective | `perspective = 400` |
+
+| **TiltScroll** | `[ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25] `| Rotation angles | `rotationX`, `rotationY`, `rotationZ` |
+
+| **TiltScroll** | `MAX_Y_TRAVEL = 40` | Max vertical travel | `maxTravelY = 40` |
+
+| **Spin3dScroll** | `perspective(1000px)` | 3D perspective | `perspective = 1000` |
+
+| **Spin3dScroll** | `MAX_Y_TRAVEL = 40` | Max vertical travel | `maxTravelY = 40` |
+
+| **FloatIn** | `distance: 120` | Float distance | `distance = 120` |
+
+| **TurnIn** | `angle: -50 / 50` | Rotation angle | `angle = 50` |
+
+| **CurveIn** | `perspective(200px)` | 3D perspective | `perspective = 200` |
+
+| **BounceIn** | `perspective(800px)` (center only) | 3D perspective | `perspective = 800` |
+
+| **CircleIn** | `ROTATION = 45` | Rotation angle | `rotation = 45` |
+
+| **TurnScroll** | `ELEMENT_ROTATION = 45` | Element rotation | `rotation = 45` |
+
+| **Breathe** | `FACTORS_SEQUENCE` | Decay pattern | Could allow custom decay factors |
+
+| **ShapeIn** | Fixed clip-path shapes | Shape dimensions | `size` or `radius` for circle/ellipse |
