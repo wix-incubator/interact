@@ -51,8 +51,7 @@ Generate 2-3 sample rule files per category to validate format:
 
 | mouse | Tilt3DMouse, TrackMouse, BounceMouse |
 
-| background-scroll | BgParallax, BgZoom, BgFade |
-
+| background-scroll | BgParallax, BgZoom, BgFade |  
 **Total pilot files: ~14 files**
 
 ### Phase 2: Review
@@ -113,11 +112,13 @@ fade in, appear, materialize, opacity transition, gentle reveal
 **This section requires manual writing.** Describe what the user SEES in plain, non-technical language. Focus on the visual experience, not implementation details.
 
 **DO describe:**
+
 - What the element looks like during the animation (fades, moves, rotates, scales)
 - The path or direction of movement (straight, curved, from where to where)
 - The overall feeling (smooth, bouncy, snappy, dramatic, subtle)
 
 **DO NOT reference:**
+
 - CSS properties (translateY, perspective, rotateX)
 - Keyframe percentages or offsets
 - Easing function names
@@ -157,8 +158,7 @@ fade in, appear, materialize, opacity transition, gentle reveal
 
 ### 6. Parameters
 
-**Use TypeScript notation.** Pull min/max/step/enum from `@wix/effects-kit` ([wix-private/wow-libs/effects-kit](https://github.com/wix-private/wow-libs/tree/master/packages/effects-kit)).
-
+**Use TypeScript notation.** Pull min/max/step/enum from `@wix/effects-kit` ([wix-private/wow-libs/effects-kit](https://github.com/wix-private/wow-libs/tree/master/packages/effects-kit)).  
 **IMPORTANT: Parameter Subsets Vary Per Preset**
 
 Different presets support different subsets of enum values:
@@ -312,10 +312,6 @@ Common parameters (but presets may use subsets):
 
 > **See**: [rules/presets/entrance/arc-in.md](rules/presets/entrance/arc-in.md) after generation
 
-<details>
-
-<summary><strong>Click to expand full sample: arc-in.md</strong></summary>
-
 **Frontmatter:**
 
 ```yaml
@@ -415,7 +411,7 @@ choose_alternative_when:
 
 ## File Organization
 
-```
+```text
 rules/presets/
 ├── README.md                    # Master index
 ├── entrance/                    # 24 files
