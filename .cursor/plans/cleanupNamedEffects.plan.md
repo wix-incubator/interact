@@ -1,12 +1,14 @@
-# Entrance Animations Cleanup Plan
+# Named effects Cleanup Plan
 
 ## Overview
 
-**Phase 1**: Remove/consolidate redundant presets (GlitchIn, ExpandIn, RevealIn → ShapeIn, CircleIn, PunchIn).
+**Phase 1**: Remove/consolidate redundant presets (GlitchIn → GlideIn, ExpandIn → GrowIn, RevealIn → ShapeIn, CircleIn, PunchIn).
 
-**Phase 2**: Remove direction-fixing logic from 6 presets that use `getAdjustedDirection()` to compensate for element rotation. Simplify presets to use direction parameters directly.
+**Phase 2**: Remove direction-fixing logic from 5 presets that use `getAdjustedDirection()` to compensate for element rotation. Simplify presets to use direction parameters directly.
 
 **Phase 3**: Simplify opacity handling by removing redundant final keyframes where possible, and renaming `--comp-opacity` to `--motion-opacity` for clearer library semantics.
+
+**Phase 4**: Standardize parameter types and coordinate systems across all presets.
 
 ---
 
@@ -168,7 +170,97 @@ Many presets include explicit final keyframes setting `opacity: 'var(--comp-opac
 ### Strategy
 
 **Option A - Remove Final Keyframe** (preferred when possible):
+
 When the final keyframe only sets opacity and no other properties, omit it entirely. The Web Animations API will automatically use the element's computed opacity from CSS.
 
 **Option B - Rename Variable** (when API is needed):
+
 If explicit control over target opacity is necessary, rename `--comp-opacity` to `--motion-opacity` to make it clear this is a library feature, not Wix-specific, and add to documentation.
+
+---
+
+## Phase 4: Standardize Parameter Types and Coordinate Systems
+
+### Overview
+
+Standardize parameter naming and coordinate systems across all presets for consistency and predictability.
+
+### 1. Rename `direction` → `angle` for Numeric Degrees
+
+Presets using numeric degrees should use `angle` instead of `direction`:
+
+| Preset | Current | Change To |
+
+|--------|---------|-----------|
+
+| GrowIn | `direction = 0` | `angle = 0` |
+
+| GlideIn | `direction = 270` | `angle = 270` |
+
+**Files to update**:
+
+- `packages/motion-presets/src/library/entrance/GrowIn.ts`
+- `packages/motion-presets/src/library/entrance/GlideIn.ts`
+- Corresponding type definitions in `types.ts`
+
+### 2. Fix Coordinate System (0° = East)
+
+**Current system** (incorrect):
+
+- `0°` = from top (north)
+- `90°` = from right (east)
+
+**Standard system** (correct):
+
+- `0°` = from right (east)
+- `90°` = from top (north)
+
+**Change required**:
+
+```typescript
+// Current (wrong)
+const x = Math.sin(angleInRad) * distance.value;
+const y = Math.cos(angleInRad) * distance.value * -1;
+
+// Standard (correct)
+const x = Math.cos(angleInRad) * distance.value;
+const y = Math.sin(angleInRad) * distance.value * -1;
+```
+
+**Files to update**:
+
+- `packages/motion-presets/src/library/entrance/GrowIn.ts`
+- `packages/motion-presets/src/library/entrance/GlideIn.ts`
+- `packages/motion-presets/src/library/scroll/MoveScroll.ts` (verify)
+
+### 3. Suggestion: Rename `direction` (options include `axis` or `orientation)` for Horizontal/Vertical
+
+Presets using `'horizontal' | 'vertical'` should use a different parameter name to avoid confusion with cardinal directions.
+
+**Options** (need to choose):
+
+- `axis: 'horizontal' | 'vertical'`
+- `orientation: 'horizontal' | 'vertical'`
+
+**Presets to update**:
+
+- `packages/motion-presets/src/library/entrance/WinkIn.ts`
+- `packages/motion-presets/src/library/scroll/FlipScroll.ts`
+- `packages/motion-presets/src/library/scroll/ArcScroll.ts`
+- `packages/motion-presets/src/library/ongoing/Flip.ts`
+- `packages/motion-presets/src/library/ongoing/Breathe.ts`
+- Corresponding type definitions in `types.ts`
+
+### Summary of `direction` Parameter Usage (After Changes)
+
+| Meaning | Parameter | Values | Presets |
+
+|---------|-----------|--------|---------|
+
+| Numeric angle | `angle` | `0-360` (degrees) | GrowIn, GlideIn, MoveScroll, mouse presets |
+
+| Cardinal | `direction` | `'top' \| 'right' \| 'bottom' \| 'left'` | FlipIn, FoldIn, SlideIn, FloatIn, BounceIn, etc. |
+
+| Rotation | `direction` | `'clockwise' \| 'counter-clockwise'` | SpinIn, SpinScroll, Spin |
+
+| Axis | `axis` or `orientation` | `'horizontal' \| 'vertical'` | WinkIn, FlipScroll, ArcScroll, Flip, Breathe |
