@@ -95,7 +95,7 @@ function resolveEffect(
       keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
     }
 
-    fullEffect.initial = fullEffect.initial === false ?
+    fullEffect.initial = fullEffect.initial === false || interaction.trigger !== 'viewEnter' ?
       undefined : (fullEffect.initial || DEFAULT_INITIAL);
 
     return fullEffect;
@@ -121,7 +121,7 @@ function buildConditionalRule(
   const targetSelector = selectorCondition ?
     applySelectorCondition(selector, selectorCondition) : selector;
 
-  let rule = `${targetSelector} { ${declarations.join(' ')} }`;
+  let rule = `${targetSelector} {\n${declarations.join('\n')}\n}`;
 
   ['container' as const, 'media' as const].forEach((type) => {
     const predicate = getFullPredicateByType(conditions, configConditions, type);
@@ -156,7 +156,7 @@ function buildUnconditionalRuleFromCustomProps(
   const customProps = customPropNames.map((propName) => `var(${propName}, ${fallback})`);
   declarations.push(`${declarationPropName}: ${customProps.join(', ')};`);
 
-  return `${selector} { ${declarations.join(' ')} }`;
+  return `${selector} {\n${declarations.join('\n')}\n}`;
 }
 
 function generateTransitions(

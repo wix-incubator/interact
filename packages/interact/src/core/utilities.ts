@@ -19,6 +19,7 @@ export function getInterpolatedKey(template: string, key: string) {
 
 function interpolateKeyframesOffsets(
   keyframes: Keyframe[],
+  firstFrameOnEpsilon?: boolean
 ): Keyframe[] {
   if (!keyframes || keyframes.length === 0) return [];
 
@@ -57,6 +58,10 @@ function interpolateKeyframesOffsets(
     }
   }
 
+  if (firstFrameOnEpsilon) {
+    result[0].offset = 0.0001;
+  }
+
   return result;
 }
 
@@ -89,7 +94,7 @@ function keyframeObjectToKeyframeCSS(keyframeObj: Keyframe, offsetString: string
 
 export function keyframesToCSS(name: string, keyframes: Keyframe[], initial?: any): string {
   if (!keyframes || keyframes.length === 0) return '';
-  const interpolated = interpolateKeyframesOffsets(keyframes);
+  const interpolated = interpolateKeyframesOffsets(keyframes, !!initial);
 
   let keyframeBlocks = interpolated
     .map((kf) => {
