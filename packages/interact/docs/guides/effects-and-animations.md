@@ -16,7 +16,7 @@ Time effects are traditional time-based animations perfect for entrance effects,
 
 ### Using Named Effects
 
-Named effects are pre-built animations from `@wix/motion`:
+Named effects are pre-built animations from `@wix/motion-presets` or effects registered via `Interact.registerEffects()`:
 
 ```typescript
 {
@@ -29,29 +29,6 @@ Named effects are pre-built animations from `@wix/motion`:
     fill: 'forwards'           // Animation fill mode
 }
 ```
-
-### Available Named Effects
-
-Entrance named effects include:
-
-- `ArcIn`
-- `BlurIn`
-- `BounceIn`
-- `ExpandIn`
-- `FadeIn`
-- `FlipIn`
-- `FloatIn`
-- `FoldIn`
-- `GlitchIn`
-- `GrowIn`
-- `RevealIn`
-- `ShapeIn`
-- `ShuttersIn`
-- `SlideIn`
-- `SpinIn`
-- `TiltIn`
-- `TurnIn`
-- `WinkIn`
 
 ### Using Keyframe Effects
 

@@ -5,22 +5,14 @@ This guide covers how to use `@wix/interact` with React applications. The librar
 ## Installation
 
 ```bash
-npm install @wix/interact @wix/motion
+npm install @wix/interact
 ```
 
 ## Import
 
 ```typescript
-import { Interact, Interaction, createInteractRef } from '@wix/interact/react';
+import { Interact, Interaction } from '@wix/interact/react';
 ```
-
-The `@wix/interact/react` entry point exports:
-
-- `Interact` - Main interaction manager class
-- `Interaction` - React component for interactive elements
-- `createInteractRef` - Function to create interact-aware refs
-- `add`, `remove` - DOM API functions
-- All types from the main package
 
 ## Quick Start
 

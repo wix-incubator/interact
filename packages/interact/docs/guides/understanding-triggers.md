@@ -11,7 +11,6 @@ Triggers are the heart of `@wix/interact` - they define when an interaction shou
 | `interest`     | Accessibility-friendly hover (focus events)         |
 | `activate`     | Accessibility-friendly click (keyboard Enter/Space) |
 | `viewEnter`    | Element enters viewport                             | Entrance animations, lazy loading |
-| `pageVisible`  | Page becomes visible                                | Loop animations, Auto-play videos |
 | `animationEnd` | Previous animation completes                        | Animation sequences, chaining     |
 | `viewProgress` | Scroll progress through element                     | Parallax, progress bars           |
 | `pointerMove`  | Mouse movement over element                         | Interactive cards, 3D effects     |
@@ -352,11 +351,7 @@ const cardAnimations = [
 ];
 ```
 
-## 6. PageVisible Trigger
-
-TBD
-
-## 7. ViewProgress Trigger
+## 6. ViewProgress Trigger
 
 The `viewProgress` trigger creates scroll-driven animations as elements move through the viewport.
 

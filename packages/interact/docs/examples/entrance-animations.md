@@ -19,7 +19,7 @@ Entrance animations bring elements to life as they enter the viewport. This guid
 The most basic entrance - element fades from invisible to visible.
 
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 const config = {
   interactions: [
