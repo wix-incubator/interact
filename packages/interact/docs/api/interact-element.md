@@ -241,8 +241,8 @@ function InteractiveCard() {
   }, []);
 
   return (
-    <interact-element data-interact-key="card">
-      <button onClick={handleClick}>Toggle Effect</button>
+    <interact-element data-interact-key="card-toggle">
+      <button>Toggle Effect</button>
     </interact-element>
   );
 }
