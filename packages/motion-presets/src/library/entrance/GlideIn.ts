@@ -4,6 +4,7 @@ import {
   getOutOfScreenDistance,
   INITIAL_FRAME_OFFSET,
   toKeyframeValue,
+  safeMapGet,
 } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -34,7 +35,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 
-  const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
+  const easing = power ? safeMapGet(EASING_MAP, power, 'medium') : options.easing || 'quintInOut';
   const { x, y } = getOutOfScreenDistance(direction);
 
   const translateX = startFromOffScreen

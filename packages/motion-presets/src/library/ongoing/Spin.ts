@@ -1,5 +1,5 @@
 import type { Spin, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue, safeMapGet } from '../../utils';
 
 const POWER_EASING_MAP = {
   soft: 'linear',
@@ -17,16 +17,17 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, direction = 'clockwise' } = options.namedEffect as Spin;
+  const { power, direction: rawDirection = 'clockwise' } = options.namedEffect as Spin;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const easing = (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
+  const easing = power ? safeMapGet(POWER_EASING_MAP, power, 'medium') : options.easing || 'linear';
 
-  const transformRotate = (DIRECTION_MAP[direction] > 0 ? 1 : -1) * 360;
+  const directionFactor = safeMapGet(DIRECTION_MAP, rawDirection, 'clockwise');
+  const transformRotate = (directionFactor > 0 ? 1 : -1) * 360;
 
   const custom = {
     '--motion-rotate-start': `calc(var(--comp-rotate-z, 0deg) + ${transformRotate}deg)`,

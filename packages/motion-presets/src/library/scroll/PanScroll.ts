@@ -5,7 +5,7 @@ import {
   DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getCssUnits } from '../../utils';
+import { getCssUnits, safeMapGet } from '../../utils';
 
 const DIRECTIONS: Record<EffectTwoSides, number> = {
   left: 1,
@@ -26,13 +26,15 @@ const OFFSCREEN_POSITIONS: Record<EffectTwoSides, Record<'startX' | 'endX', stri
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const {
     distance = { value: 400, type: 'px' },
-    direction = 'left',
+    direction: rawDirection = 'left',
     startFromOffScreen = true,
-    range = 'in',
+    range: rawRange = 'in',
   } = options.namedEffect as PanScroll;
-  const travel = distance.value * DIRECTIONS[direction];
+  const direction = rawDirection in DIRECTIONS ? rawDirection : 'left';
+  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'in';
+  const travel = distance.value * safeMapGet(DIRECTIONS, direction, 'left');
   const { startX, endX } = startFromOffScreen
-    ? OFFSCREEN_POSITIONS[direction]
+    ? safeMapGet(OFFSCREEN_POSITIONS, direction, 'left')
     : {
         startX: `${-travel}${getCssUnits(distance.type)}`,
         endX: `${travel}${getCssUnits(distance.type)}`,

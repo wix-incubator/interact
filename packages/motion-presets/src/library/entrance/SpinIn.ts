@@ -1,5 +1,5 @@
 import type { SpinIn, AnimationExtraOptions, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];
@@ -22,7 +22,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    direction = 'clockwise',
+    direction: rawDirection = 'clockwise',
     spins = 0.5,
     initialScale = 0,
     power,
@@ -30,8 +30,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, spinIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale = typeof power !== 'undefined' ? SCALE_MAP[power] : initialScale;
-  const transformRotate = (DIRECTION_MAP[direction] > 0 ? 1 : -1) * 360 * spins;
+  const scale = power ? safeMapGet(SCALE_MAP, power, 'medium') : initialScale;
+  const directionFactor = safeMapGet(DIRECTION_MAP, rawDirection, 'clockwise');
+  const transformRotate = (directionFactor > 0 ? 1 : -1) * 360 * spins;
 
   const custom = {
     '--motion-scale': `${scale}`,

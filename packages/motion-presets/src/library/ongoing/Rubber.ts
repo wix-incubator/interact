@@ -1,5 +1,5 @@
 import type { Rubber, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, roundNumber, toKeyframeValue, mapRange } from '../../utils';
+import { getTimingFactor, roundNumber, toKeyframeValue, mapRange, safeMapGet } from '../../utils';
 
 const POWER_TO_RUBBER_OFFSET_MAP = {
   soft: 0,
@@ -35,8 +35,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     POWER_TO_RUBBER_OFFSET_MAP.hard,
     intensity,
   );
-  const rubberOffset =
-    typeof power !== 'undefined' ? POWER_TO_RUBBER_OFFSET_MAP[power] : responsiveRubberOffset;
+  const rubberOffset = power ? safeMapGet(POWER_TO_RUBBER_OFFSET_MAP, power, 'medium') : responsiveRubberOffset;
 
   // Create CSS custom properties for the rubber configuration
   const custom: Record<string, string | number> = {};

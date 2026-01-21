@@ -1,4 +1,4 @@
-import { getClipPolygonParams, getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getClipPolygonParams, getAdjustedDirection, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
 import type { WinkIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -18,15 +18,16 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'horizontal' } = options.namedEffect as WinkIn;
+  const { direction: rawDirection = 'horizontal' } = options.namedEffect as WinkIn;
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
 
+  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'horizontal';
   const adjustedDirection = getAdjustedDirection(
     DIRECTIONS,
     direction,
     0,
   ) as (typeof DIRECTIONS)[number];
-  const { scaleX, scaleY } = PARAM_MAP[adjustedDirection];
+  const { scaleX, scaleY } = safeMapGet(PARAM_MAP, adjustedDirection, 'horizontal');
   const easing = options.easing || 'quintInOut';
 
   const start = getClipPolygonParams({ direction, minimum: 100 });
@@ -81,7 +82,8 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'horizontal' } = options.namedEffect as WinkIn;
+  const { direction: rawDirection = 'horizontal' } = options.namedEffect as WinkIn;
+  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'horizontal';
 
   if (dom) {
     let scale = PARAM_MAP.horizontal;

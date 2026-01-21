@@ -1,4 +1,5 @@
 import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll } from '../../types';
+import { safeMapGet } from '../../utils';
 
 const POWER_MAP = {
   soft: { skewX: 10 },
@@ -40,19 +41,20 @@ const POSITIONS = {
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
   const {
     skew = 10,
-    direction = 'right',
+    direction: rawDirection = 'right',
     power,
-    range = 'in',
+    range: rawRange = 'in',
   } = options.namedEffect as SkewPanScroll;
   const easing = 'linear';
+  const range = rawRange in RANGES_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const skewX =
-    (power && POWER_MAP[power] ? POWER_MAP[power!].skewX : skew) * DIRECTION_MAP[direction];
-  const { startX, endX } = POSITIONS[direction];
-  const { fromValues, toValues } = RANGES_MAP[range](skewX, startX, endX);
+  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
+  const skewX = (powerParams ? powerParams.skewX : skew) * safeMapGet(DIRECTION_MAP, rawDirection, 'right');
+  const { startX, endX } = safeMapGet(POSITIONS, rawDirection, 'right');
+  const { fromValues, toValues } = safeMapGet(RANGES_MAP, rawRange, 'in')(skewX, startX, endX);
 
   let left = 0;
   if (dom) {

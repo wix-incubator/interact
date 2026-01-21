@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,
@@ -53,15 +53,16 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     scale = 1.4,
   } = options.namedEffect as BlobMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
     distance,
-    scale: power ? paramsMap[power].scale : scale,
+    scale: powerParams ? powerParams.scale : scale,
   };
 
   return (target: HTMLElement) => new BlobMouseAnimation(target, animationOptions);

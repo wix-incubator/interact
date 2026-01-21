@@ -167,7 +167,8 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
 }
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  const { direction = 'right' } = options.namedEffect as Cross;
+  const { direction: rawDirection = 'right' } = options.namedEffect as Cross;
+  const direction = rawDirection in GET_OFFSET_BY_DIRECTION_MAP ? rawDirection : 'right';
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;

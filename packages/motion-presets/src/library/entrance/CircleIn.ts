@@ -1,6 +1,8 @@
 import type { TimeAnimationOptions, CircleIn, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
+const VALID_DIRECTIONS = ['left', 'right'] as const;
+
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-circleXIn', 'motion-circleYIn'];
 }
@@ -14,7 +16,8 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'right' } = options.namedEffect as CircleIn;
+  const { direction: rawDirection = 'right' } = options.namedEffect as CircleIn;
+  const direction = VALID_DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'right';
   const [circleXIn, circleYIn] = getNames(options);
 
   const x =

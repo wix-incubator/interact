@@ -6,7 +6,7 @@ import {
   ShapeScroll,
   AnimationFillMode,
 } from '../../types';
-import { getEasing } from '../../utils';
+import { getEasing, safeMapGet } from '../../utils';
 
 const SHAPES: Record<ShapeScroll['shape'], { start: Record<EffectPower, string>; end: string }> = {
   diamond: {
@@ -113,21 +113,24 @@ const KEYFRAMES_RANGE_MAP: Record<
 
 export default function create(options: ScrubAnimationOptions) {
   const {
-    shape = 'circle',
+    shape: rawShape = 'circle',
     power,
     intensity = 0.5,
-    range = 'in',
+    range: rawRange = 'in',
   } = options.namedEffect as ShapeScroll;
+  const shape = rawShape in SHAPES ? rawShape : 'circle';
+  const range = rawRange in KEYFRAMES_RANGE_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const [start, end] =
-    power && SHAPES[shape].start[power]
-      ? [SHAPES[shape].start[power], SHAPES[shape].end]
-      : RESPONSIVE_SHAPES_MAP[shape](intensity * 100);
+  const shapeConfig = safeMapGet(SHAPES, shape, 'circle');
+  const powerStart = power && power in shapeConfig.start ? shapeConfig.start[power as EffectPower] : undefined;
+  const [start, end] = powerStart
+    ? [powerStart, shapeConfig.end]
+    : safeMapGet(RESPONSIVE_SHAPES_MAP, shape, 'circle')(intensity * 100);
 
-  const keyframes = KEYFRAMES_RANGE_MAP[range](start, end);
+  const keyframes = safeMapGet(KEYFRAMES_RANGE_MAP, range, 'in')(start, end);
 
   return [
     {

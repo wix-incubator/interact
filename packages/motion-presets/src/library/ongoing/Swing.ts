@@ -1,5 +1,5 @@
 import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
+import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, safeMapGet } from '../../utils';
 
 const POWER_TO_SWING_FACTOR_MAP = {
   soft: 1,
@@ -31,7 +31,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, swing = 20, direction = 'top' } = options.namedEffect as Swing;
+  const { power, swing = 20, direction: rawDirection = 'top' } = options.namedEffect as Swing;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -39,9 +39,9 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const ease = getEasingFamily(easing);
   const [name] = getNames(options);
 
-  const swingDeg = typeof power !== 'undefined' ? 20 * POWER_TO_SWING_FACTOR_MAP[power] : swing;
+  const swingDeg = power ? safeMapGet(POWER_TO_SWING_FACTOR_MAP, power, 'medium') * 20 : swing;
 
-  const { x, y } = DIRECTION_MAP[direction];
+  const { x, y } = safeMapGet(DIRECTION_MAP, rawDirection, 'top');
   const totalDuration = 3.55 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
 

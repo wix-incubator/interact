@@ -1,5 +1,6 @@
 import { cssEasings as easings } from '@wix/motion';
 import type { AnimationFillMode, ScrubAnimationOptions, StretchScroll } from '../../types';
+import { safeMapGet } from '../../utils';
 
 const POWER_MAP = {
   soft: { scaleY: 1.2, scaleX: 0.8 },
@@ -65,16 +66,17 @@ const opacityKeyframesMap = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const { power, stretch = 0.6, range = 'out' } = options.namedEffect as StretchScroll;
+  const { power, stretch = 0.6, range: rawRange = 'out' } = options.namedEffect as StretchScroll;
+  const range = rawRange in KEYFRAMES_RANGE_MAP ? rawRange : 'out';
   const easing = range === 'continuous' ? 'linear' : 'backInOut';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { scaleX, scaleY } =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleX: 1 - stretch, scaleY: 1 + stretch };
+  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
+  const { scaleX, scaleY } = powerParams ?? { scaleX: 1 - stretch, scaleY: 1 + stretch };
 
-  const animations = KEYFRAMES_RANGE_MAP[range](scaleX, scaleY);
+  const animations = safeMapGet(KEYFRAMES_RANGE_MAP, range, 'out')(scaleX, scaleY);
 
   return [
     {
@@ -87,7 +89,7 @@ export default function create(options: ScrubAnimationOptions) {
       ...options,
       fill,
       easing,
-      keyframes: opacityKeyframesMap[range],
+      keyframes: safeMapGet(opacityKeyframesMap, range, 'out'),
     },
   ];
 }

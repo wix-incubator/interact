@@ -1,4 +1,4 @@
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,
@@ -44,15 +44,16 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     perspective = 800,
   } = options.namedEffect as Tilt3DMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle: powerParams ? powerParams.angle : angle,
+    perspective: powerParams ? powerParams.perspective : perspective,
   };
 
   return (target: HTMLElement) => new Tilt3DMouseAnimation(target, animationOptions);

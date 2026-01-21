@@ -1,5 +1,5 @@
 import type { DomApi, ExpandIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-expandIn'];
@@ -30,12 +30,12 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, initialScale = 0, direction = 'center' } = options.namedEffect as ExpandIn;
+  const { power, initialScale = 0, direction: rawDirection = 'center' } = options.namedEffect as ExpandIn;
   const [fadeIn, expandIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale_ = power && power in SCALE_MAP ? SCALE_MAP[power] : initialScale;
-  const { x, y } = TRANSFORM_ORIGIN_MAP[direction];
+  const scale_ = power ? safeMapGet(SCALE_MAP, power, 'medium') : initialScale;
+  const { x, y } = safeMapGet(TRANSFORM_ORIGIN_MAP, rawDirection, 'center');
 
   const custom = {
     '--motion-translate-x': x,

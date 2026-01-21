@@ -1,5 +1,5 @@
 import type { Pulse, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
+import { getTimingFactor, toKeyframeValue, mapRange, safeMapGet } from '../../utils';
 
 const POWER_TO_PULSE_OFFSET_MAP = {
   soft: 0,
@@ -34,8 +34,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     intensity,
   );
 
-  const pulseOffset =
-    typeof power !== 'undefined' ? POWER_TO_PULSE_OFFSET_MAP[power] : responsivePulseOffset;
+  const pulseOffset = power ? safeMapGet(POWER_TO_PULSE_OFFSET_MAP, power, 'medium') : responsivePulseOffset;
 
   // Create CSS custom properties for the pulse configuration
   const custom: Record<string, string | number> = {

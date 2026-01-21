@@ -1,4 +1,5 @@
 import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode } from '../../types';
+import { safeMapGet } from '../../utils';
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -14,13 +15,14 @@ const RANGES_MAP = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const { direction = 'horizontal', range = 'in' } = options.namedEffect as ArcScroll;
+  const { direction: rawDirection = 'horizontal', range: rawRange = 'in' } = options.namedEffect as ArcScroll;
+  const range = rawRange in RANGES_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const rotateAxis = ROTATE_DIRECTION_MAP[direction];
-  const { fromValue, toValue } = RANGES_MAP[range];
+  const rotateAxis = safeMapGet(ROTATE_DIRECTION_MAP, rawDirection, 'horizontal');
+  const { fromValue, toValue } = safeMapGet(RANGES_MAP, rawRange, 'in');
   const easing = 'linear';
 
   return [

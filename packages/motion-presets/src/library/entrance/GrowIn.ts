@@ -1,5 +1,5 @@
 import type { GrowIn, TimeAnimationOptions } from '../../types';
-import { getCssUnits, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { getCssUnits, INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-growIn'];
@@ -25,7 +25,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, growIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale = typeof power !== 'undefined' ? SCALE_MAP[power] : initialScale;
+  const scale = power ? safeMapGet(SCALE_MAP, power, 'medium') : initialScale;
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 

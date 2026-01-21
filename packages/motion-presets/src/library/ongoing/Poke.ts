@@ -1,5 +1,5 @@
 import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
+import { getTimingFactor, toKeyframeValue, mapRange, safeMapGet } from '../../utils';
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },
@@ -29,11 +29,11 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, intensity = 0.5, direction = 'right' } = options.namedEffect as Poke;
+  const { power, intensity = 0.5, direction: rawDirection = 'right' } = options.namedEffect as Poke;
 
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
-  const { x, y } = DIRECTION_MAP[direction];
+  const { x, y } = safeMapGet(DIRECTION_MAP, rawDirection, 'right');
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
@@ -45,7 +45,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     intensity,
   );
 
-  const pokeFactor = power ? POWER_TO_POKE_FACTOR_MAP[power] : responsivePokeFactor;
+  const pokeFactor = power ? safeMapGet(POWER_TO_POKE_FACTOR_MAP, power, 'medium') : responsivePokeFactor;
 
   // Create CSS custom properties for the poke configuration
   const custom: Record<string, string | number> = {

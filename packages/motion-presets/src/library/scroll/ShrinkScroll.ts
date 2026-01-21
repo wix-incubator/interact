@@ -1,4 +1,5 @@
 import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll } from '../../types';
+import { safeMapGet } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const POWER_MAP = {
@@ -35,8 +36,8 @@ const RANGES_MAP = {
 };
 
 function getScrubOffsets({ power, range = 'in', speed = 0 }: ShrinkScroll) {
-  const offset =
-    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
+  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
+  const offset = powerParams ? powerParams.travelY : Math.abs(speed) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -47,25 +48,26 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: ShrinkScroll) {
 export default function create(options: ScrubAnimationOptions) {
   const {
     power,
-    range = 'in',
-    scale = range === 'in' ? 1.2 : 0.8,
-    direction = 'center',
+    range: rawRange = 'in',
+    scale: scaleParam,
+    direction: rawDirection = 'center',
     speed = 0,
   } = options.namedEffect as ShrinkScroll;
+  const range = rawRange in RANGES_MAP ? rawRange : 'in';
+  const direction = rawDirection in directionMap ? rawDirection : 'center';
+  const scale = scaleParam ?? (range === 'in' ? 1.2 : 0.8);
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { scaleFrom, scaleTo, travelY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : {
-          scaleFrom: scale,
-          scaleTo: scale,
-          travelY: speed,
-        };
+  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
+  const { scaleFrom, scaleTo, travelY } = powerParams ?? {
+    scaleFrom: scale,
+    scaleTo: scale,
+    travelY: speed,
+  };
 
-  const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
+  const { fromValues, toValues } = safeMapGet(RANGES_MAP, range, 'in')(scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
 
   const easing = 'linear';
 
@@ -73,7 +75,7 @@ export default function create(options: ScrubAnimationOptions) {
     options.namedEffect as ShrinkScroll,
   );
 
-  const [trnsX, trnsY] = directionMap[direction];
+  const [trnsX, trnsY] = safeMapGet(directionMap, direction, 'center');
 
   return [
     {

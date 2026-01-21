@@ -1,4 +1,4 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
 import type { PunchIn, TimeAnimationOptions, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 
@@ -34,16 +34,17 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-right', power = 'medium' } = options.namedEffect as PunchIn;
+  const { direction: rawDirection = 'top-right', power: rawPower = 'medium' } = options.namedEffect as PunchIn;
   const [fadeIn, punchIn] = getNames(options);
-  const translationFactors = TRANSLATION_FACTORS_MAP[direction];
+  const translationFactors = safeMapGet(TRANSLATION_FACTORS_MAP, rawDirection, 'top-right');
+  const easing = safeMapGet(POWER_MAP, rawPower, 'medium');
 
   const sourcePoint = {
     x: `calc(var(--motion-width, 100%) * 1.1 / 2 * ${translationFactors.x})`,
     y: `calc(var(--motion-height, 100%) * 1.1 / 2 * ${translationFactors.y})`,
   };
 
-  const { in: _in, out: _out } = getEasingFamily(POWER_MAP[power]);
+  const { in: _in, out: _out } = getEasingFamily(easing);
 
   const KEYFRAMES = [
     { offset: 30, scale: 0.3, factor: 1, ease: 'linear' },

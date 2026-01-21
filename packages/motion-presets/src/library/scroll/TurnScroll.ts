@@ -6,6 +6,7 @@ import type {
   DomApi,
   AnimationFillMode,
 } from '../../types';
+import { safeMapGet } from '../../utils';
 
 const ELEMENT_ROTATION = 45;
 
@@ -80,22 +81,22 @@ export default function create(
 ) {
   const {
     power,
-    spin = 'clockwise',
-    direction = 'right',
+    spin: rawSpin = 'clockwise',
+    direction: rawDirection = 'right',
     scale = 1,
-    range = 'in',
+    range: rawRange = 'in',
   } = options.namedEffect as TurnScroll;
   const easing = 'linear';
+  const range = rawRange in RANGES_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const transX = TRANSLATE_X_MAP[direction];
-  const rotateZ = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
-  const scaleFactors =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
+  const transX = safeMapGet(TRANSLATE_X_MAP, rawDirection, 'right');
+  const rotateZ = ELEMENT_ROTATION * safeMapGet(ROTATE_DIRECTION_MAP, rawSpin, 'clockwise');
+  const scaleFactors = power ? safeMapGet(POWER_MAP, power, 'medium') : { scaleFrom: scale, scaleTo: scale };
 
-  const { fromValues, toValues } = RANGES_MAP[range](rotateZ, scaleFactors, transX);
+  const { fromValues, toValues } = safeMapGet(RANGES_MAP, rawRange, 'in')(rotateZ, scaleFactors, transX);
 
   let left = 0;
   if (dom) {

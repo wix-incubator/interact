@@ -4,7 +4,7 @@ import {
   ScrubAnimationOptions,
   AnimationFillMode,
 } from '../../types';
-import { getEasing } from '../../utils';
+import { getEasing, safeMapGet } from '../../utils';
 import { getShuttersClipPaths } from '../../utils';
 
 const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
@@ -16,19 +16,21 @@ const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections>
 
 export default function create(options: ScrubAnimationOptions) {
   const {
-    direction = 'right',
+    direction: rawDirection = 'right',
     shutters = 12,
     staggered = true,
-    range = 'in',
+    range: rawRange = 'in',
   } = options.namedEffect as ShuttersScroll;
+  const safeDirection = rawDirection in OPPOSITE_DIRECTION_MAP ? rawDirection : 'right';
+  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
   const easing = range === 'in' ? getEasing('sineIn') : getEasing('sineOut');
-  const directionOpp = OPPOSITE_DIRECTION_MAP[direction];
+  const directionOpp = safeMapGet(OPPOSITE_DIRECTION_MAP, rawDirection, 'right');
   const { clipStart, clipEnd } = getShuttersClipPaths(
-    range === 'out' ? directionOpp : direction,
+    range === 'out' ? directionOpp : safeDirection,
     shutters,
     staggered,
   );

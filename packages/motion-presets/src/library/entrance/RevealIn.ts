@@ -2,6 +2,8 @@ import type { RevealIn, AnimationExtraOptions, DomApi, TimeAnimationOptions } fr
 import type { Direction } from '../../utils';
 import { getAdjustedDirection, getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
 
+const VALID_DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
+
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-revealIn'];
 }
@@ -28,7 +30,8 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'left' } = options.namedEffect as RevealIn;
+  const { direction: rawDirection = 'left' } = options.namedEffect as RevealIn;
+  const direction = VALID_DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'left';
   const [revealIn] = getNames(options);
   const easing = options.easing || 'cubicInOut';
 
@@ -65,7 +68,8 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'left' } = options.namedEffect as RevealIn;
+  const { direction: rawDirection = 'left' } = options.namedEffect as RevealIn;
+  const direction = VALID_DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'left';
 
   if (dom) {
     let rotation = '0deg';

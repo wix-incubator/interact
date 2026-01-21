@@ -1,4 +1,4 @@
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getAdjustedDirection, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
 import type { FlipIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -15,10 +15,11 @@ const POWER_TO_ROTATE_MAP = {
   hard: 270,
 };
 
-function getRotateFrom(direction: Direction, rotate: number) {
+function getRotateFrom(direction: string, rotate: number) {
+  const rotateParams = safeMapGet(ROTATE_MAP, direction, 'top');
   return {
-    x: ROTATE_MAP[direction].x * rotate,
-    y: ROTATE_MAP[direction].y * rotate,
+    x: rotateParams.x * rotate,
+    y: rotateParams.y * rotate,
   };
 }
 
@@ -36,9 +37,10 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
+  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
   const [fadeIn, flipIn] = getNames(options);
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
+  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
+  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
   const easing = options.easing || 'backOut';
 
   const from = getRotateFrom(direction, rotate);
@@ -75,9 +77,10 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
+  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
 
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
+  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
+  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
 
   if (dom) {
     let adjustedDirection: string = direction;

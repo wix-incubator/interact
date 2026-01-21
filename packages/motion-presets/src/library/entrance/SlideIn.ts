@@ -3,6 +3,7 @@ import {
   getAdjustedDirection,
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
+  safeMapGet,
   type Direction,
 } from '../../utils';
 
@@ -35,11 +36,12 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
+  const { direction: rawDirection = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
   const [slideIn, fadeIn] = getNames(options);
 
+  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'left';
   const easing = options.easing || 'cubicInOut';
-  const scale = (power && INITIAL_TRANSLATE_MAP[power]) || initialTranslate;
+  const scale = power ? safeMapGet(INITIAL_TRANSLATE_MAP, power, 'medium') : initialTranslate;
   const minimum = 100 - scale * 100;
 
   const start = getClipPolygonParams({
@@ -48,10 +50,11 @@ export function style(options: TimeAnimationOptions) {
   });
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
 
+  const directionParams = safeMapGet(PARAM_MAP, direction, 'left');
   const custom = {
     '--motion-clip-start': start,
-    '--motion-translate-x': `${PARAM_MAP[direction].dx * 100}%`,
-    '--motion-translate-y': `${PARAM_MAP[direction].dy * 100}%`,
+    '--motion-translate-x': `${directionParams.dx * 100}%`,
+    '--motion-translate-y': `${directionParams.dy * 100}%`,
   };
 
   const animations = [
@@ -102,9 +105,10 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
+  const { direction: rawDirection = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
 
-  const scale = (power && INITIAL_TRANSLATE_MAP[power]) || initialTranslate;
+  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'left';
+  const scale = power ? safeMapGet(INITIAL_TRANSLATE_MAP, power, 'medium') : initialTranslate;
   const minimum = 100 - scale * 100;
 
   if (dom) {

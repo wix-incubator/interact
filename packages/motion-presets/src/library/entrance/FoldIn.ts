@@ -1,5 +1,5 @@
 import type { FoldIn, TimeAnimationOptions, DomApi } from '../../types';
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getAdjustedDirection, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-foldIn'];
@@ -23,9 +23,10 @@ const PARAM_MAP: Record<Direction, { x: number; y: number; origin: { x: number; 
 };
 
 function getRotateFrom(direction: Direction, rotate: number) {
+  const params = safeMapGet(PARAM_MAP, direction, 'top');
   return {
-    x: PARAM_MAP[direction].x * rotate,
-    y: PARAM_MAP[direction].y * rotate,
+    x: params.x * rotate,
+    y: params.y * rotate,
   };
 }
 
@@ -36,11 +37,13 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
+  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
   const [fadeIn, foldIn] = getNames(options);
   const easing = options.easing || 'backOut';
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
-  const { x, y } = PARAM_MAP[direction].origin;
+  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
+  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
+  const directionParams = safeMapGet(PARAM_MAP, direction, 'top');
+  const { x, y } = directionParams.origin;
 
   const from = getRotateFrom(direction, rotate);
 
@@ -78,8 +81,9 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
+  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
+  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
+  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
 
   if (dom) {
     let adjustedDirection: Direction = direction;

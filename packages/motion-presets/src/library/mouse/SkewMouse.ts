@@ -6,7 +6,7 @@ import {
   ScrubTransitionEasing,
   EffectPower,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
@@ -68,15 +68,16 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     axis = 'both',
   } = options.namedEffect as SkewMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
     distance,
-    angle: power ? paramsMap[power].angle : angle,
+    angle: powerParams ? powerParams.angle : angle,
     axis,
   };
 

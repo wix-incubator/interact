@@ -7,7 +7,7 @@ import {
   EffectPower,
   ScrubTransitionEasing,
 } from '../../types';
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
 const paramsMap: Record<
@@ -44,7 +44,7 @@ class SwivelMouseAnimation extends CustomMouse {
     // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
 
-    const [translateX, translateY] = transformOrigins[pivotAxis as MousePivotAxis];
+    const [translateX, translateY] = safeMapGet(transformOrigins, pivotAxis as string, 'center-horizontal');
     const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--comp-rotate-z, 0deg))`;
 
     this.target.style.transform = transform;
@@ -63,18 +63,20 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     inverted = false,
     angle = 5,
     perspective = 800,
-    pivotAxis = 'center-horizontal',
+    pivotAxis: rawPivotAxis = 'center-horizontal',
   } = options.namedEffect as SwivelMouse;
   const invert = inverted ? -1 : 1;
+  const pivotAxis = rawPivotAxis in transformOrigins ? rawPivotAxis : 'center-horizontal';
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle: powerParams ? powerParams.angle : angle,
+    perspective: powerParams ? powerParams.perspective : perspective,
     pivotAxis,
   };
 

@@ -1,5 +1,5 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
 
 const ROTATION_ANGLE = 80;
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
@@ -26,16 +26,16 @@ export function getNames(_: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, direction = 'right' } = options.namedEffect as ArcIn;
+  const { power, direction: rawDirection = 'right' } = options.namedEffect as ArcIn;
   const [fadeIn, arcIn] = getNames(options);
 
-  const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
+  const easing = power ? safeMapGet(EASING_MAP, power, 'medium') : options.easing || 'quintInOut';
 
   // we can remove dependency on measurement here if we use a "layout wrapper" as a `container`: https://jsbin.com/mulojuwogi/edit?css,output
   // we could also consider a fixed value for z, e.g. 300px like in ArcScroll
   // const { width, height } = element.getBoundingClientRect();
 
-  const { x, y, sign } = DIRECTION_MAP[direction];
+  const { x, y, sign } = safeMapGet(DIRECTION_MAP, rawDirection, 'right');
   // const z = rotateX ? height / 2 : width / 2;
   const z = `(-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2`;
 

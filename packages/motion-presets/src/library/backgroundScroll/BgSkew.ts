@@ -7,7 +7,8 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
     measureCompHeight(measures, dom);
   }
 
-  const { angle = 20, direction = 'counter-clockwise' } = options.namedEffect as BgSkew;
+  const { angle = 20, direction: rawDirection = 'counter-clockwise' } = options.namedEffect as BgSkew;
+  const direction = ['clockwise', 'counter-clockwise'].includes(rawDirection) ? rawDirection : 'counter-clockwise';
 
   return [
     {

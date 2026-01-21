@@ -1,5 +1,5 @@
 import type { Shape, ShapeIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-shapeIn'];
@@ -24,11 +24,12 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { shape = 'rectangle' } = options.namedEffect as ShapeIn;
+  const { shape: rawShape = 'rectangle' } = options.namedEffect as ShapeIn;
   const [fadeIn, shapeIn] = getNames(options);
   const easing = options.easing || 'cubicInOut';
 
-  const { start, end } = shapes[shape];
+  const shape = rawShape in shapes ? rawShape : 'rectangle';
+  const { start, end } = safeMapGet(shapes, shape, 'rectangle');
 
   const custom = {
     '--motion-shape-start': start,
