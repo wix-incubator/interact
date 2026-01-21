@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  DomApi,
-  MoveScroll,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { AnimationFillMode, DomApi, MoveScroll, ScrubAnimationOptions } from '../../types';
 import { getCssUnits, transformPolarToXY, toKeyframeValue } from '../../utils';
 
 const POWER_MAP = {
@@ -16,24 +11,12 @@ export function getNames(_: ScrubAnimationOptions) {
   return ['motion-moveScroll'];
 }
 
-export function web(
-  options: ScrubAnimationOptions,
-  _?: DomApi,
-  config?: Record<string, any>,
-) {
+export function web(options: ScrubAnimationOptions, _?: DomApi, config?: Record<string, any>) {
   return style(options, config, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions,
-  config?: Record<string, any>,
-  asWeb = false,
-) {
-  const {
-    power,
-    angle = 210,
-    range = 'in',
-  } = options.namedEffect as MoveScroll;
+export function style(options: ScrubAnimationOptions, config?: Record<string, any>, asWeb = false) {
+  const { power, angle = 210, range = 'in' } = options.namedEffect as MoveScroll;
 
   const easing = 'linear';
   const fill = (

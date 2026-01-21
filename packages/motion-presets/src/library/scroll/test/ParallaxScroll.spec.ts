@@ -80,8 +80,7 @@ describe('ParallaxScroll', () => {
                 'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },
@@ -108,8 +107,7 @@ describe('ParallaxScroll', () => {
                 'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },

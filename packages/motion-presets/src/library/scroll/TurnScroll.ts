@@ -1,9 +1,4 @@
-import type {
-  TurnScroll,
-  ScrubAnimationOptions,
-  DomApi,
-  AnimationFillMode,
-} from '../../types';
+import type { TurnScroll, ScrubAnimationOptions, DomApi, AnimationFillMode } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const ELEMENT_ROTATION = 45;
@@ -58,22 +53,13 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     false,
     'calc(100vw - 100%)',
   )} - 100%)`;
-  const endXLeft = `calc(100vw - ${toKeyframeValue(
-    {},
-    '--motion-left',
-    false,
-    '0px',
-  )})`;
-  const [startX, endX] =
-    direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
+  const endXLeft = `calc(100vw - ${toKeyframeValue({}, '--motion-left', false, '0px')})`;
+  const [startX, endX] = direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
 
-  const rotate =
-    spin === 'clockwise' ? ELEMENT_ROTATION : -1 * ELEMENT_ROTATION;
+  const rotate = spin === 'clockwise' ? ELEMENT_ROTATION : -1 * ELEMENT_ROTATION;
 
   const { scaleFrom, scaleTo } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : { scaleFrom: scale, scaleTo: scale };
+    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
 
   const fromValues = {
     rotation: range === 'out' ? 0 : -rotate,
@@ -119,11 +105,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             '--comp-rotate-z',
             false,
             '0deg',
-          )} + ${toKeyframeValue(
-            custom,
-            '--motion-turn-rotation-from',
-            asWeb,
-          )}))`,
+          )} + ${toKeyframeValue(custom, '--motion-turn-rotation-from', asWeb)}))`,
         },
         {
           transform: `translateX(${toKeyframeValue(
@@ -139,11 +121,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             '--comp-rotate-z',
             false,
             '0deg',
-          )} + ${toKeyframeValue(
-            custom,
-            '--motion-turn-rotation-to',
-            asWeb,
-          )}))`,
+          )} + ${toKeyframeValue(custom, '--motion-turn-rotation-to', asWeb)}))`,
         },
       ],
     },

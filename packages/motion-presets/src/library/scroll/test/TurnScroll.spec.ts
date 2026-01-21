@@ -192,7 +192,7 @@ describe('TurnScroll', () => {
         ...baseMockOptions,
         namedEffect: {} as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'backwards',
@@ -209,18 +209,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom power - soft', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { power: 'soft' } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -235,18 +235,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom spin - counter-clockwise', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { spin: 'counter-clockwise' } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -261,18 +261,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom direction - left', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { direction: 'left' } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -287,18 +287,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom scale', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { scale: 0.5 } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -313,18 +313,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - out', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { range: 'out' } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'forwards',
@@ -340,18 +340,18 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - continuous', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { range: 'continuous' } as TurnScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -366,9 +366,9 @@ describe('TurnScroll', () => {
           ],
         },
       ];
-  
+
       const result = TurnScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
   });

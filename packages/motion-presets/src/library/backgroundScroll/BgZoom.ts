@@ -42,19 +42,13 @@ export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   let { direction = 'in', zoom = DEFAULT_ZOOM } = options.namedEffect as BgZoom;
   const isIn = direction === 'in';
   if (!isIn) {
@@ -113,11 +107,7 @@ export function style(
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${toKeyframeValue(
-          measures,
-          '--motion-comp-height',
-          asWeb,
-        )})`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       keyframes: [
         {
@@ -152,20 +142,12 @@ export function style(
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${toKeyframeValue(
-          measures,
-          '--motion-comp-height',
-          asWeb,
-        )})`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       get keyframes() {
         return [
           {
-            transform: `translateY(${toKeyframeValue(
-              custom,
-              '--motion-trans-y-from',
-              asWeb,
-            )})`,
+            transform: `translateY(${toKeyframeValue(custom, '--motion-trans-y-from', asWeb)})`,
           },
           {
             transform: `translateY(calc(${toKeyframeValue(

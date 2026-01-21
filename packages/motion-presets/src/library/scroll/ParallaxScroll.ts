@@ -1,9 +1,4 @@
-import type {
-  ScrubAnimationOptions,
-  ParallaxScroll,
-  AnimationFillMode,
-  DomApi,
-} from '../../types';
+import type { ScrubAnimationOptions, ParallaxScroll, AnimationFillMode, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const DEFAULT_SPEED = 0.5;

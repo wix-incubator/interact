@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  FlipScroll,
-  ScrubAnimationOptions,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const ROTATE_POWER_MAP = {
@@ -29,8 +24,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   } = options.namedEffect as FlipScroll;
 
   const rotAxisString = `rotate${direction === 'vertical' ? 'X' : 'Y'}`;
-  const flipValue =
-    power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
+  const flipValue = power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
 
   const fromValue = range === 'out' ? 0 : -flipValue;
   const toValue = range === 'in' ? 0 : flipValue;

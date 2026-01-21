@@ -66,12 +66,10 @@ describe('BgParallax', () => {
           ...baseMockOptions,
           keyframes: [
             {
-              transform:
-                'translateY(calc(var(--motion-parallax-speed) * 100svh))',
+              transform: 'translateY(calc(var(--motion-parallax-speed) * 100svh))',
             },
             {
-              transform:
-                'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
+              transform: 'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
             },
           ],
         },
@@ -94,12 +92,10 @@ describe('BgParallax', () => {
           ...baseMockOptions,
           keyframes: [
             {
-              transform:
-                'translateY(calc(var(--motion-parallax-speed) * 100svh))',
+              transform: 'translateY(calc(var(--motion-parallax-speed) * 100svh))',
             },
             {
-              transform:
-                'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
+              transform: 'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
             },
           ],
         },

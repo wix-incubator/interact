@@ -20,25 +20,18 @@ export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { direction = 'left', speed = 0.2 } = options.namedEffect as BgPan;
   const offsetPercentage = ((50 * speed) / (1 + speed)) | 0;
 
   const custom = {
-    '--motion-trans-x':
-      direction === 'left' ? `${offsetPercentage}%` : `${-offsetPercentage}%`,
+    '--motion-trans-x': direction === 'left' ? `${offsetPercentage}%` : `${-offsetPercentage}%`,
   };
 
   const [bgPan] = getNames(options);
@@ -65,18 +58,10 @@ export function style(
       },
       keyframes: [
         {
-          transform: `translateX(${toKeyframeValue(
-            custom,
-            '--motion-trans-x',
-            asWeb,
-          )})`,
+          transform: `translateX(${toKeyframeValue(custom, '--motion-trans-x', asWeb)})`,
         },
         {
-          transform: `translateX(calc(-1 * ${toKeyframeValue(
-            custom,
-            '--motion-trans-x',
-            asWeb,
-          )}))`,
+          transform: `translateX(calc(-1 * ${toKeyframeValue(custom, '--motion-trans-x', asWeb)}))`,
         },
       ],
     },

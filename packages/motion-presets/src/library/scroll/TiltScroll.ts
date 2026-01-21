@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  TiltScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 import { toKeyframeValue } from '../../utils';
 
@@ -39,9 +34,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
 
   const travelY =
     MAX_Y_TRAVEL *
-    (power && power in TRANSLATE_Y_POWER_MAP
-      ? TRANSLATE_Y_POWER_MAP[power]
-      : distance);
+    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance);
   const dir = direction === 'left' ? -1 : 1;
 
   const from = {
@@ -57,8 +50,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     transY: range === 'in' ? 0 : -1 * travelY,
   };
 
-  const startOffsetAdd =
-    range === 'out' ? '0px' : `${-1 * Math.abs(travelY)}vh`;
+  const startOffsetAdd = range === 'out' ? '0px' : `${-1 * Math.abs(travelY)}vh`;
   const endOffsetAdd = range === 'in' ? '0px' : `${Math.abs(travelY)}vh`;
 
   const [tiltScrollTranslate, tiltScrollRotate] = getNames(options);
@@ -93,11 +85,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-tilt-x-from',
             asWeb,
-          )}) rotateY(${toKeyframeValue(
-            custom,
-            '--motion-tilt-y-rot-from',
-            asWeb,
-          )})`,
+          )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-from', asWeb)})`,
         },
         {
           transform: `perspective(400px) translateY(${toKeyframeValue(
@@ -108,11 +96,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-tilt-x-to',
             asWeb,
-          )}) rotateY(${toKeyframeValue(
-            custom,
-            '--motion-tilt-y-rot-to',
-            asWeb,
-          )})`,
+          )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-to', asWeb)})`,
         },
       ],
     },

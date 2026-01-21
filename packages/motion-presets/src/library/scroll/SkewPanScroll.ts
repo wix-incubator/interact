@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  DomApi,
-  ScrubAnimationOptions,
-  SkewPanScroll,
-} from '../../types';
+import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const POWER_MAP = {
@@ -50,22 +45,15 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   ) as AnimationFillMode;
 
   const skewX =
-    (power && POWER_MAP[power] ? POWER_MAP[power] : skew) *
-    (direction === 'left' ? 1 : -1);
+    (power && POWER_MAP[power] ? POWER_MAP[power] : skew) * (direction === 'left' ? 1 : -1);
   const startXLeft = `calc(${toKeyframeValue(
     {},
     '--motion-left',
     false,
     'calc(100vw - 100%)',
   )} * -1 - 100%)`;
-  const endXLeft = `calc(100vw - ${toKeyframeValue(
-    {},
-    '--motion-left',
-    false,
-    '0px',
-  )})`;
-  const [startX, endX] =
-    direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
+  const endXLeft = `calc(100vw - ${toKeyframeValue({}, '--motion-left', false, '0px')})`;
+  const [startX, endX] = direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
 
   const fromValues = {
     skew: range === 'out' ? 0 : skewX,

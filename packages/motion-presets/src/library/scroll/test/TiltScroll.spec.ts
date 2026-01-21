@@ -238,7 +238,7 @@ describe('TiltScroll', () => {
         ...baseMockOptions,
         namedEffect: {} as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'backwards',
@@ -263,28 +263,26 @@ describe('TiltScroll', () => {
           composite: 'add',
           keyframes: [
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom power - soft', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { power: 'soft' } as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '0vh',
@@ -305,28 +303,26 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0px',
           keyframes: [
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - out', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { range: 'out' } as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'forwards',
@@ -349,29 +345,27 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - continuous', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         fill: 'both',
         namedEffect: { range: 'continuous' } as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'both',
@@ -394,28 +388,26 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom direction - left', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { direction: 'left' } as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -432,28 +424,26 @@ describe('TiltScroll', () => {
         {
           keyframes: [
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform:
-                'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom distance', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { distance: 0.5 } as TiltScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '-20vh',
@@ -474,9 +464,9 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0px',
         },
       ];
-  
+
       const result = TiltScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
   });

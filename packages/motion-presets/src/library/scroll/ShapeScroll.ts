@@ -7,10 +7,7 @@ import type {
 } from '../../types';
 import { toKeyframeValue, getEasing } from '../../utils';
 
-const SHAPES: Record<
-  ShapeScroll['shape'],
-  { start: Record<EffectPower, string>; end: string }
-> = {
+const SHAPES: Record<ShapeScroll['shape'], { start: Record<EffectPower, string>; end: string }> = {
   diamond: {
     start: {
       soft: 'polygon(50% 20%, 80% 50%, 50% 80%, 20% 50%)',
@@ -67,10 +64,7 @@ const RESPONSIVE_SHAPES_MAP = {
     'inset(-20% round 50% 50% 0% 0%)',
   ],
   rectangle: (clipFactor: number) => [`inset(${clipFactor}%)`, `inset(0%)`],
-  circle: (clipFactor: number) => [
-    `circle(${100 - clipFactor}%)`,
-    `circle(75%)`,
-  ],
+  circle: (clipFactor: number) => [`circle(${100 - clipFactor}%)`, `circle(75%)`],
   ellipse: (clipFactor: number) => {
     const clip = 50 - clipFactor / 2;
     return [`ellipse(${clip}% ${clip}%)`, `ellipse(75% 75%)`];
@@ -87,11 +81,7 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    power,
-    intensity = 0.5,
-    range = 'in',
-  } = options.namedEffect as ShapeScroll;
+  const { power, intensity = 0.5, range = 'in' } = options.namedEffect as ShapeScroll;
   let { shape = 'circle' } = options.namedEffect as ShapeScroll;
   if (!(shape in SHAPES)) {
     shape = 'circle';

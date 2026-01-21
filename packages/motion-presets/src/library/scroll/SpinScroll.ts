@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  SpinScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const POWER_MAP = {

@@ -20,21 +20,14 @@ export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
-  const { angle = 20, direction = 'counter-clockwise' } =
-    options.namedEffect as BgSkew;
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
+  const { angle = 20, direction = 'counter-clockwise' } = options.namedEffect as BgSkew;
 
   const custom = {
     '--motion-skew': `${direction === 'counter-clockwise' ? angle : -angle}deg`,
@@ -64,18 +57,10 @@ export function style(
       },
       keyframes: [
         {
-          transform: `skewY(${toKeyframeValue(
-            custom,
-            '--motion-skew',
-            asWeb,
-          )})`,
+          transform: `skewY(${toKeyframeValue(custom, '--motion-skew', asWeb)})`,
         },
         {
-          transform: `skewY(calc(-1 * ${toKeyframeValue(
-            custom,
-            '--motion-skew',
-            asWeb,
-          )}))`,
+          transform: `skewY(calc(-1 * ${toKeyframeValue(custom, '--motion-skew', asWeb)}))`,
         },
       ],
     },

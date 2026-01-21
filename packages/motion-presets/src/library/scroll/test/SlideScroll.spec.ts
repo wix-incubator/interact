@@ -129,14 +129,12 @@ describe('SlideScroll', () => {
           fill: 'backwards',
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+              clipPath: 'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-from-x), var(--motion-translate-from-y))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-to-x), var(--motion-translate-to-y))',
             },
@@ -159,14 +157,12 @@ describe('SlideScroll', () => {
         {
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+              clipPath: 'var(--motion-clip-from, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-from-x), var(--motion-translate-from-y))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-to-x), var(--motion-translate-to-y))',
             },
@@ -190,14 +186,12 @@ describe('SlideScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-from-x), var(--motion-translate-from-y))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
               transform:
                 'rotate(var(--comp-rotate-z, 0)) translate(var(--motion-translate-to-x), var(--motion-translate-to-y))',
             },

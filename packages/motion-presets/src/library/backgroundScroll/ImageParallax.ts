@@ -28,24 +28,14 @@ export function prepare(options: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
-  const {
-    speed = 1.5,
-    reverse = false,
-    isPage = false,
-  } = options.namedEffect as ImageParallax;
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
+  const { speed = 1.5, reverse = false, isPage = false } = options.namedEffect as ImageParallax;
 
   let start = -100 * (speed - 1);
   if (!isPage) {
@@ -78,11 +68,7 @@ export function style(
       } as RangeOffset,
       get endOffsetAdd() {
         return isPage
-          ? `${toKeyframeValue(
-              options.measures || {},
-              '--motion-site-height',
-              asWeb,
-            )}`
+          ? `${toKeyframeValue(options.measures || {}, '--motion-site-height', asWeb)}`
           : `calc(100vh + ${toKeyframeValue(
               options.measures || {},
               '--motion-comp-height',
@@ -91,18 +77,10 @@ export function style(
       },
       keyframes: [
         {
-          transform: `translateY(${toKeyframeValue(
-            custom,
-            '--motion-trans-y-from',
-            asWeb,
-          )})`,
+          transform: `translateY(${toKeyframeValue(custom, '--motion-trans-y-from', asWeb)})`,
         },
         {
-          transform: `translateY(${toKeyframeValue(
-            custom,
-            '--motion-trans-y-to',
-            asWeb,
-          )})`,
+          transform: `translateY(${toKeyframeValue(custom, '--motion-trans-y-to', asWeb)})`,
         },
       ],
     },

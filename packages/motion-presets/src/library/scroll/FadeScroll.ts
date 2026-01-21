@@ -1,9 +1,4 @@
-import type {
-  FadeScroll,
-  ScrubAnimationOptions,
-  AnimationFillMode,
-  DomApi,
-} from '../../types';
+import type { FadeScroll, ScrubAnimationOptions, AnimationFillMode, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -17,12 +12,8 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { opacity = 0, range = 'in' } = options.namedEffect as FadeScroll;
   const isOut = range === 'out';
-  const fromValue = isOut
-    ? toKeyframeValue({}, '--comp-opacity', false, '1')
-    : opacity;
-  const toValue = isOut
-    ? opacity
-    : toKeyframeValue({}, '--comp-opacity', false, '1');
+  const fromValue = isOut ? toKeyframeValue({}, '--comp-opacity', false, '1') : opacity;
+  const toValue = isOut ? opacity : toKeyframeValue({}, '--comp-opacity', false, '1');
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

@@ -271,20 +271,18 @@ describe('StretchScroll', () => {
         ...baseMockOptions,
         namedEffect: {} as StretchScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'forwards',
           easing: 'backInOut',
           keyframes: [
             {
-              scale:
-                'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
+              scale: 'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
               translate: '0 var(--motion-stretch-trans-from)',
             },
             {
-              scale:
-                'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
+              scale: 'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
               translate: '0 var(--motion-stretch-trans-to)',
             },
           ],
@@ -304,30 +302,28 @@ describe('StretchScroll', () => {
           ],
         },
       ];
-  
+
       const result = StretchScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - in', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { range: 'in' } as StretchScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'backwards',
           keyframes: [
             {
-              scale:
-                'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
+              scale: 'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
               translate: '0 var(--motion-stretch-trans-from)',
             },
             {
-              scale:
-                'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
+              scale: 'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
               translate: '0 var(--motion-stretch-trans-to)',
             },
           ],
@@ -346,41 +342,37 @@ describe('StretchScroll', () => {
           ],
         },
       ];
-  
+
       const result = StretchScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - continuous', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         fill: 'both',
         namedEffect: { range: 'continuous' } as StretchScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'both',
           easing: 'linear',
           keyframes: [
             {
-              scale:
-                'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
+              scale: 'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
               translate: '0 var(--motion-stretch-trans-from)',
               easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
             },
             {
-              scale:
-                'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
+              scale: 'var(--motion-stretch-scale-x-to) var(--motion-stretch-scale-y-to)',
               translate: '0 var(--motion-stretch-trans-to)',
               easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
             },
             {
-              scale:
-                'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
-              translate:
-                '0 calc(100% * (1 - var(--motion-stretch-scale-y-from)))',
+              scale: 'var(--motion-stretch-scale-x-from) var(--motion-stretch-scale-y-from)',
+              translate: '0 calc(100% * (1 - var(--motion-stretch-scale-y-from)))',
             },
           ],
         },
@@ -407,9 +399,9 @@ describe('StretchScroll', () => {
           ],
         },
       ];
-  
+
       const result = StretchScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
   });

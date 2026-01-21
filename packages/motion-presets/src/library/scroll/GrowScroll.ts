@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  GrowScroll,
-  ScrubAnimationOptions,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, GrowScroll, ScrubAnimationOptions, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
@@ -65,9 +60,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     travel: range === 'in' ? 0 : travel,
   };
 
-  const offset = Math.abs(
-    power && POWER_MAP[power] ? POWER_MAP[power].travelY : travel,
-  );
+  const offset = Math.abs(power && POWER_MAP[power] ? POWER_MAP[power].travelY : travel);
   const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
   const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
 
@@ -99,11 +92,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-travel-from',
             asWeb,
-          )}) translate(${toKeyframeValue(
-            custom,
-            '--motion-trans-x',
-            asWeb,
-          )}, ${toKeyframeValue(
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
             custom,
             '--motion-trans-y',
             asWeb,
@@ -126,11 +115,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-travel-to',
             asWeb,
-          )}) translate(${toKeyframeValue(
-            custom,
-            '--motion-trans-x',
-            asWeb,
-          )}, ${toKeyframeValue(
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
             custom,
             '--motion-trans-y',
             asWeb,

@@ -11,11 +11,7 @@ import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 const PERSPECTIVE = 100;
 
 export function getNames(_: ScrubAnimationOptions) {
-  return [
-    'motion-bgFake3DParallax',
-    'motion-bgFake3DStretch',
-    'motion-bgFake3DZoom',
-  ];
+  return ['motion-bgFake3DParallax', 'motion-bgFake3DStretch', 'motion-bgFake3DZoom'];
 }
 
 export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
@@ -26,19 +22,13 @@ export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { stretch = 1.3, zoom = 100 / 6 } = options.namedEffect as BgFake3D;
   const scale = getScaleFromPerspectiveAndZ(zoom, PERSPECTIVE);
 
@@ -66,11 +56,7 @@ export function style(
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${toKeyframeValue(
-          measures,
-          '--motion-comp-height',
-          asWeb,
-        )})`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       get keyframes() {
         return [
@@ -107,19 +93,11 @@ export function style(
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${toKeyframeValue(
-          measures,
-          '--motion-comp-height',
-          asWeb,
-        )})`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       keyframes: [
         {
-          transform: `scaleY(${toKeyframeValue(
-            custom,
-            '--motion-scale-y',
-            asWeb,
-          )})`,
+          transform: `scaleY(${toKeyframeValue(custom, '--motion-scale-y', asWeb)})`,
         },
         {
           transform: `scaleY(1)`,
@@ -141,11 +119,7 @@ export function style(
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${toKeyframeValue(
-          measures,
-          '--motion-comp-height',
-          asWeb,
-        )})`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       keyframes: [
         {

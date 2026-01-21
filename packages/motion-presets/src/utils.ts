@@ -1,5 +1,11 @@
 import { cssEasings, jsEasings } from '@wix/motion';
-import type { EffectFourDirections, EffectScrollRange, Point, ScrubTransitionEasing, DomApi } from '@wix/motion';
+import type {
+  EffectFourDirections,
+  EffectScrollRange,
+  Point,
+  ScrubTransitionEasing,
+  DomApi,
+} from '@wix/motion';
 
 export const INITIAL_FRAME_OFFSET = 1e-6;
 
@@ -108,17 +114,9 @@ export function getClipPolygonParams({
 }
 
 export const INITIAL_CLIP = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
-export const FOUR_DIRECTIONS: EffectFourDirections[] = [
-  'bottom',
-  'left',
-  'top',
-  'right',
-];
+export const FOUR_DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
 
-export function getRevealClipFrom(
-  direction: EffectFourDirections,
-  range: EffectScrollRange,
-) {
+export function getRevealClipFrom(direction: EffectFourDirections, range: EffectScrollRange) {
   return range === 'out'
     ? INITIAL_CLIP
     : getClipPolygonParams({
@@ -126,17 +124,11 @@ export function getRevealClipFrom(
       });
 }
 
-export function getRevealClipTo(
-  direction: EffectFourDirections,
-  range: EffectScrollRange,
-) {
+export function getRevealClipTo(direction: EffectFourDirections, range: EffectScrollRange) {
   return range === 'in'
     ? INITIAL_CLIP
     : getClipPolygonParams({
-        direction:
-          range === 'out'
-            ? getOppositeDirection(FOUR_DIRECTIONS, direction)
-            : direction,
+        direction: range === 'out' ? getOppositeDirection(FOUR_DIRECTIONS, direction) : direction,
       });
 }
 
@@ -160,14 +152,8 @@ export function applyRotationAdjustedClip(
         direction,
         rotation,
       ) as EffectFourDirections;
-      target.style.setProperty(
-        '--motion-clip-from',
-        getRevealClipFrom(adjDirection, range),
-      );
-      target.style.setProperty(
-        '--motion-clip-to',
-        getRevealClipTo(adjDirection, range),
-      );
+      target.style.setProperty('--motion-clip-from', getRevealClipFrom(adjDirection, range));
+      target.style.setProperty('--motion-clip-to', getRevealClipTo(adjDirection, range));
     });
   });
 }
@@ -184,10 +170,7 @@ export function getAdjustedDirection(
   return availableDirections[newIndex];
 }
 
-export function getOppositeDirection<T>(
-  availableDirections: T[],
-  direction: T,
-) {
+export function getOppositeDirection<T>(availableDirections: T[], direction: T) {
   const index = Math.max(0, availableDirections.indexOf(direction));
   const length = availableDirections.length;
   return availableDirections[(index + (length >> 1)) % length];

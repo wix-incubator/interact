@@ -91,10 +91,7 @@ describe('BgFake3D', () => {
           ],
         },
         {
-          keyframes: [
-            { transform: `scaleY(var(--motion-scale-y))` },
-            { transform: 'scaleY(1)' },
-          ],
+          keyframes: [{ transform: `scaleY(var(--motion-scale-y))` }, { transform: 'scaleY(1)' }],
         },
         {
           keyframes: [
@@ -130,10 +127,7 @@ describe('BgFake3D', () => {
           ],
         },
         {
-          keyframes: [
-            { transform: `scaleY(var(--motion-scale-y))` },
-            { transform: 'scaleY(1)' },
-          ],
+          keyframes: [{ transform: `scaleY(var(--motion-scale-y))` }, { transform: 'scaleY(1)' }],
         },
         {
           keyframes: [

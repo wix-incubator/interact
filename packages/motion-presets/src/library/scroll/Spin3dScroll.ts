@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  Spin3dScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
@@ -23,21 +18,14 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    rotate = -100,
-    speed = 0,
-    power,
-    range = 'in',
-  } = options.namedEffect as Spin3dScroll;
+  const { rotate = -100, speed = 0, power, range = 'in' } = options.namedEffect as Spin3dScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
   const { rotationZ, travelY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : { rotationZ: rotate, travelY: speed };
+    power && POWER_MAP[power] ? POWER_MAP[power] : { rotationZ: rotate, travelY: speed };
   const travel = travelY * MAX_Y_TRAVEL;
 
   const fromValues = {
@@ -90,19 +78,11 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             '--comp-rotate-z',
             false,
             '0deg',
-          )} + ${toKeyframeValue(
-            custom,
-            '--motion-rot-z-from',
-            asWeb,
-          )})) rotateY(${toKeyframeValue(
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-from', asWeb)})) rotateY(${toKeyframeValue(
             custom,
             '--motion-rot-y-from',
             asWeb,
-          )}) rotateX(${toKeyframeValue(
-            custom,
-            '--motion-rot-x-from',
-            asWeb,
-          )})`,
+          )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-from', asWeb)})`,
         },
         {
           transform: `perspective(1000px) translateY(${toKeyframeValue(
@@ -114,11 +94,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             '--comp-rotate-z',
             false,
             '0deg',
-          )} + ${toKeyframeValue(
-            custom,
-            '--motion-rot-z-to',
-            asWeb,
-          )})) rotateY(${toKeyframeValue(
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-to', asWeb)})) rotateY(${toKeyframeValue(
             custom,
             '--motion-rot-y-to',
             asWeb,

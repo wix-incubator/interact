@@ -240,7 +240,7 @@ describe('Spin3dScroll', () => {
         ...baseMockOptions,
         namedEffect: {} as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'backwards',
@@ -259,18 +259,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom rotate value', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { rotate: -50 } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           keyframes: [
@@ -285,18 +285,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom power - soft', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { power: 'soft' } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '0vh',
@@ -313,18 +313,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom power - medium', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { power: 'medium' } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '-20vh',
@@ -341,18 +341,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom power - hard', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { power: 'hard' } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '-40vh',
@@ -369,18 +369,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - out', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { range: 'out' } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'forwards',
@@ -398,19 +398,19 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom range - continuous', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         fill: 'both',
         namedEffect: { range: 'continuous' } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           fill: 'both',
@@ -428,18 +428,18 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
-  
+
     test('custom speed', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: { speed: 0.5 } as Spin3dScrollType,
       };
-  
+
       const expectedResult = [
         {
           startOffsetAdd: '-20vh',
@@ -456,9 +456,9 @@ describe('Spin3dScroll', () => {
           ],
         },
       ];
-  
+
       const result = Spin3dScroll.style(mockOptions);
-  
+
       expect(result).toMatchObject(expectedResult);
     });
   });

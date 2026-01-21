@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  ShuttersScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, ShuttersScroll, DomApi } from '../../types';
 import {
   getOppositeDirection,
   getShuttersClipPaths,
@@ -14,9 +9,7 @@ import {
 
 export function getNames(options: ScrubAnimationOptions) {
   const { range = 'in' } = options.namedEffect as ShuttersScroll;
-  return [
-    `motion-shuttersScroll-${range === 'continuous' ? '-continuous' : ''}`,
-  ];
+  return [`motion-shuttersScroll-${range === 'continuous' ? '-continuous' : ''}`];
 }
 
 export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
@@ -69,8 +62,12 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     keyframes[1].easing = easing;
     keyframes[1].offset = staggered ? 0.45 : 0.4;
 
-    const { clipStart: oppClipStart, clipEnd: oppClipEnd } =
-      getShuttersClipPaths(directionOpp, shutters, staggered, true);
+    const { clipStart: oppClipStart, clipEnd: oppClipEnd } = getShuttersClipPaths(
+      directionOpp,
+      shutters,
+      staggered,
+      true,
+    );
     Object.assign(custom, {
       '--motion-shutters-clip-opp-end': oppClipEnd,
       '--motion-shutters-clip-opp-start': oppClipStart,
@@ -84,20 +81,12 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
         easing,
       },
       {
-        clipPath: toKeyframeValue(
-          custom,
-          '--motion-shutters-clip-opp-end',
-          asWeb,
-        ),
+        clipPath: toKeyframeValue(custom, '--motion-shutters-clip-opp-end', asWeb),
         offset: secondOffset,
         easing,
       },
       {
-        clipPath: toKeyframeValue(
-          custom,
-          '--motion-shutters-clip-opp-start',
-          asWeb,
-        ),
+        clipPath: toKeyframeValue(custom, '--motion-shutters-clip-opp-start', asWeb),
       },
     );
   }

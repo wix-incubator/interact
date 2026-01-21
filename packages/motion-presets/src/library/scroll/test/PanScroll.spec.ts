@@ -177,12 +177,10 @@ describe('PanScroll', () => {
           fill: 'backwards',
           keyframes: [
             {
-              transform:
-                'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },
@@ -203,12 +201,10 @@ describe('PanScroll', () => {
         {
           keyframes: [
             {
-              transform:
-                'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },
@@ -230,12 +226,10 @@ describe('PanScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform:
-                'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },
@@ -258,12 +252,10 @@ describe('PanScroll', () => {
           fill: 'both',
           keyframes: [
             {
-              transform:
-                'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
             },
             {
-              transform:
-                'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
             },
           ],
         },

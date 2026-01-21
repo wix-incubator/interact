@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  RevealScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, RevealScroll, DomApi } from '../../types';
 import {
   applyRotationAdjustedClip,
   getRevealClipFrom,
@@ -19,8 +14,7 @@ export function getNames(options: ScrubAnimationOptions) {
 
 export function prepare(options: ScrubAnimationOptions, dom?: DomApi) {
   if (dom) {
-    const { direction = 'bottom', range = 'in' } =
-      options.namedEffect as RevealScroll;
+    const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
     applyRotationAdjustedClip(dom, direction, range);
   }
 }
@@ -32,8 +26,7 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions) {
-  const { direction = 'bottom', range = 'in' } =
-    options.namedEffect as RevealScroll;
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -48,20 +41,10 @@ export function style(options: ScrubAnimationOptions) {
 
   const keyframes = [
     {
-      clipPath: toKeyframeValue(
-        {},
-        '--motion-clip-from',
-        false,
-        custom['--motion-clip-from'],
-      ),
+      clipPath: toKeyframeValue({}, '--motion-clip-from', false, custom['--motion-clip-from']),
     },
     {
-      clipPath: toKeyframeValue(
-        {},
-        '--motion-clip-to',
-        false,
-        custom['--motion-clip-to'],
-      ),
+      clipPath: toKeyframeValue({}, '--motion-clip-to', false, custom['--motion-clip-to']),
     },
   ];
 

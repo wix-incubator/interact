@@ -15,17 +15,12 @@ export function measureCompHeight(
     }
     measures['--motion-comp-height'] = `${target.offsetHeight}px`;
     if (measures['--motion-comp-half-height']) {
-      measures['--motion-comp-half-height'] = `${Math.round(
-        0.5 * target.offsetHeight,
-      )}px`;
+      measures['--motion-comp-half-height'] = `${Math.round(0.5 * target.offsetHeight)}px`;
     }
   });
   if (assignToCss) {
     dom.mutate((target) => {
-      target?.style.setProperty(
-        '--motion-comp-height',
-        measures['--motion-comp-height'],
-      );
+      target?.style.setProperty('--motion-comp-height', measures['--motion-comp-height']);
       if (measures['--motion-comp-half-height']) {
         target?.style.setProperty(
           '--motion-comp-half-height',
@@ -58,10 +53,7 @@ export function measureSiteHeight(
   });
   if (assignToCss) {
     dom.mutate((target) => {
-      target?.style.setProperty(
-        '--motion-site-height',
-        measures['--motion-site-height'],
-      );
+      target?.style.setProperty('--motion-site-height', measures['--motion-site-height']);
     });
   }
 }

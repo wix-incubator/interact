@@ -170,12 +170,10 @@ describe('RevealScroll', () => {
           easing: 'linear',
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+              clipPath: 'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
             },
           ],
         },
@@ -196,12 +194,10 @@ describe('RevealScroll', () => {
         {
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+              clipPath: 'var(--motion-clip-from, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
             },
           ],
         },
@@ -223,12 +219,10 @@ describe('RevealScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%))',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             },
           ],
         },
@@ -249,15 +243,13 @@ describe('RevealScroll', () => {
         {
           keyframes: [
             {
-              clipPath:
-                'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
+              clipPath: 'var(--motion-clip-from, polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%))',
             },
             {
               clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
             },
             {
-              clipPath:
-                'var(--motion-clip-to, polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%))',
+              clipPath: 'var(--motion-clip-to, polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%))',
             },
           ],
         },

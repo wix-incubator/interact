@@ -31,8 +31,7 @@ export function getNames(options: ScrubAnimationOptions) {
 
 export function prepare(options: ScrubAnimationOptions, dom?: DomApi) {
   if (dom) {
-    const { direction = 'bottom', range = 'in' } =
-      options.namedEffect as SlideScroll;
+    const { direction = 'bottom', range = 'in' } = options.namedEffect as SlideScroll;
     applyRotationAdjustedClip(dom, direction, range);
   }
 }
@@ -44,22 +43,18 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { direction = 'bottom', range = 'in' } =
-    options.namedEffect as SlideScroll;
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as SlideScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
   const oppositeDirection = getOppositeDirection(FOUR_DIRECTIONS, direction);
 
-  const translateFrom =
-    range === 'out' ? { x: '0', y: '0' } : DIRECTION_TRANSLATION_MAP[direction];
+  const translateFrom = range === 'out' ? { x: '0', y: '0' } : DIRECTION_TRANSLATION_MAP[direction];
   const translateTo =
     range === 'in'
       ? { x: '0', y: '0' }
-      : DIRECTION_TRANSLATION_MAP[
-          range === 'out' ? direction : oppositeDirection
-        ];
+      : DIRECTION_TRANSLATION_MAP[range === 'out' ? direction : oppositeDirection];
 
   const custom = {
     '--motion-clip-from': getRevealClipFrom(direction, range),
@@ -72,12 +67,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
 
   const keyframes = [
     {
-      clipPath: toKeyframeValue(
-        {},
-        '--motion-clip-from',
-        false,
-        custom['--motion-clip-from'],
-      ),
+      clipPath: toKeyframeValue({}, '--motion-clip-from', false, custom['--motion-clip-from']),
       transform: `rotate(${toKeyframeValue(
         {},
         '--comp-rotate-z',
@@ -90,12 +80,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       )}, ${toKeyframeValue(custom, `--motion-translate-from-y`, asWeb)})`,
     },
     {
-      clipPath: toKeyframeValue(
-        {},
-        '--motion-clip-to',
-        false,
-        custom['--motion-clip-to'],
-      ),
+      clipPath: toKeyframeValue({}, '--motion-clip-to', false, custom['--motion-clip-to']),
       transform: `rotate(${toKeyframeValue(
         {},
         '--comp-rotate-z',
@@ -112,12 +97,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   if (range === 'continuous') {
     keyframes.splice(1, 0, {
       clipPath: INITIAL_CLIP,
-      transform: `rotate(${toKeyframeValue(
-        {},
-        '--comp-rotate-z',
-        false,
-        '0',
-      )}) translate(0, 0)`,
+      transform: `rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')}) translate(0, 0)`,
     });
   }
 

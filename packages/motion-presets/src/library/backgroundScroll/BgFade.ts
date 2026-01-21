@@ -23,19 +23,13 @@ export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
   return measures;
 }
 
-export function web(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   options.measures = prepare(options, dom);
 
   return style(options, true);
 }
 
-export function style(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  asWeb = false,
-) {
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { range = 'in' } = options.namedEffect as BgFade;
   const isOut = range === 'out';
   const easing = isOut ? 'sineOut' : 'sineIn';

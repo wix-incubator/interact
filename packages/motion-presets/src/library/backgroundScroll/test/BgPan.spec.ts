@@ -33,7 +33,10 @@ describe('BgPan', () => {
 
       const expectedResult: Partial<AnimationData>[] = [
         {
-          keyframes: [{ transform: 'translateX(-8%)' }, { transform: 'translateX(calc(-1 * -8%))' }],
+          keyframes: [
+            { transform: 'translateX(-8%)' },
+            { transform: 'translateX(calc(-1 * -8%))' },
+          ],
         },
       ];
 
@@ -51,7 +54,10 @@ describe('BgPan', () => {
 
       const expectedResult: Partial<AnimationData>[] = [
         {
-          keyframes: [{ transform: 'translateX(16%)' }, { transform: 'translateX(calc(-1 * 16%))' }],
+          keyframes: [
+            { transform: 'translateX(16%)' },
+            { transform: 'translateX(calc(-1 * 16%))' },
+          ],
         },
       ];
 

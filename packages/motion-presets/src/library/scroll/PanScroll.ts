@@ -1,9 +1,4 @@
-import {
-  PanScroll,
-  ScrubAnimationOptions,
-  DomApi,
-  AnimationFillMode,
-} from '../../types';
+import { PanScroll, ScrubAnimationOptions, DomApi, AnimationFillMode } from '../../types';
 import { getCssUnits, toKeyframeValue } from '../../utils';
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -11,11 +6,7 @@ export function getNames(_: ScrubAnimationOptions) {
 }
 
 export function prepare(options: ScrubAnimationOptions, dom?: DomApi) {
-  if (
-    options.namedEffect &&
-    (options.namedEffect as PanScroll).startFromOffScreen &&
-    dom
-  ) {
+  if (options.namedEffect && (options.namedEffect as PanScroll).startFromOffScreen && dom) {
     let left = 0;
     dom.measure((target) => {
       if (!target) {
@@ -55,14 +46,8 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       false,
       'calc(100vw - 100%)',
     )} * -1 - 100%)`;
-    const endXLeft = `calc(100vw - ${toKeyframeValue(
-      {},
-      '--motion-left',
-      false,
-      '0px',
-    )})`;
-    [startX, endX] =
-      direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
+    const endXLeft = `calc(100vw - ${toKeyframeValue({}, '--motion-left', false, '0px')})`;
+    [startX, endX] = direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
   }
 
   const fromValue = range === 'out' ? 0 : startX;

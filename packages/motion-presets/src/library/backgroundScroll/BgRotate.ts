@@ -11,13 +11,10 @@ export function web(options: ScrubAnimationOptions) {
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const easing = 'sineOut';
-  const { angle = 22, direction = 'counter-clockwise' } =
-    options.namedEffect as BgRotate;
+  const { angle = 22, direction = 'counter-clockwise' } = options.namedEffect as BgRotate;
 
   const custom = {
-    '--motion-rot-from': `${
-      direction === 'counter-clockwise' ? angle : -angle
-    }deg`,
+    '--motion-rot-from': `${direction === 'counter-clockwise' ? angle : -angle}deg`,
   };
 
   const [bgRotate] = getNames(options);
@@ -39,11 +36,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       endOffsetAdd: '100vh',
       keyframes: [
         {
-          transform: `rotate(${toKeyframeValue(
-            custom,
-            '--motion-rot-from',
-            asWeb,
-          )})`,
+          transform: `rotate(${toKeyframeValue(custom, '--motion-rot-from', asWeb)})`,
         },
         {
           transform: 'rotate(0deg)',
