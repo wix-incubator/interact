@@ -1,5 +1,5 @@
 import { cssEasings, jsEasings } from '@wix/motion';
-import type { EffectFourDirections, Point, ScrubTransitionEasing } from '@wix/motion';
+import type { EffectFourDirections, EffectScrollRange, Point, ScrubTransitionEasing, DomApi } from '@wix/motion';
 
 export const INITIAL_FRAME_OFFSET = 1e-6;
 
@@ -107,6 +107,71 @@ export function getClipPolygonParams({
   })})`;
 }
 
+export const INITIAL_CLIP = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+export const FOUR_DIRECTIONS: EffectFourDirections[] = [
+  'bottom',
+  'left',
+  'top',
+  'right',
+];
+
+export function getRevealClipFrom(
+  direction: EffectFourDirections,
+  range: EffectScrollRange,
+) {
+  return range === 'out'
+    ? INITIAL_CLIP
+    : getClipPolygonParams({
+        direction: getOppositeDirection(FOUR_DIRECTIONS, direction),
+      });
+}
+
+export function getRevealClipTo(
+  direction: EffectFourDirections,
+  range: EffectScrollRange,
+) {
+  return range === 'in'
+    ? INITIAL_CLIP
+    : getClipPolygonParams({
+        direction:
+          range === 'out'
+            ? getOppositeDirection(FOUR_DIRECTIONS, direction)
+            : direction,
+      });
+}
+
+export function applyRotationAdjustedClip(
+  dom: DomApi,
+  direction: EffectFourDirections,
+  range: EffectScrollRange,
+) {
+  dom.measure((target) => {
+    if (!target) {
+      return;
+    }
+
+    const rotation = parseInt(
+      getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0',
+      10,
+    );
+    dom.mutate(() => {
+      const adjDirection = getAdjustedDirection(
+        FOUR_DIRECTIONS,
+        direction,
+        rotation,
+      ) as EffectFourDirections;
+      target.style.setProperty(
+        '--motion-clip-from',
+        getRevealClipFrom(adjDirection, range),
+      );
+      target.style.setProperty(
+        '--motion-clip-to',
+        getRevealClipTo(adjDirection, range),
+      );
+    });
+  });
+}
+
 export function getAdjustedDirection(
   availableDirections: string[],
   direction: string,
@@ -117,6 +182,15 @@ export function getAdjustedDirection(
   const shiftBy = Math.round(((angleInDeg || 0) / 360) * length);
   const newIndex = (index + (length - 1) * shiftBy) % length;
   return availableDirections[newIndex];
+}
+
+export function getOppositeDirection<T>(
+  availableDirections: T[],
+  direction: T,
+) {
+  const index = Math.max(0, availableDirections.indexOf(direction));
+  const length = availableDirections.length;
+  return availableDirections[(index + (length >> 1)) % length];
 }
 
 export function transformPolarToXY(angle: number, distance: number) {
@@ -349,10 +423,10 @@ export function roundNumber(num: number, precision = 2) {
 export function toKeyframeValue(
   custom: Record<string, string | number>,
   key: string,
-  useValue = false,
-  fallback = '',
+  useValue: boolean | undefined = false,
+  fallback: string | undefined = undefined,
 ) {
-  return useValue ? custom[key] : `var(${key}${fallback ? `,${fallback}` : ''})`;
+  return useValue ? custom[key] : `var(${key}${fallback !== undefined ? `, ${fallback}` : ''})`;
 }
 
 export function getTimingFactor(

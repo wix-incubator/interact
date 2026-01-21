@@ -1,4 +1,10 @@
-import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../../types';
+import type {
+  AnimationFillMode,
+  FlipScroll,
+  ScrubAnimationOptions,
+  DomApi,
+} from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const ROTATE_POWER_MAP = {
   soft: 60,
@@ -6,12 +12,15 @@ const ROTATE_POWER_MAP = {
   hard: 420,
 };
 
-const ROTATE_DIRECTION_MAP = {
-  vertical: 'rotateX',
-  horizontal: 'rotateY',
-};
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-flipScroll'];
+}
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     rotate = 240,
     direction = 'horizontal',
@@ -19,10 +28,10 @@ export default function create(options: ScrubAnimationOptions) {
     range = 'continuous',
   } = options.namedEffect as FlipScroll;
 
-  const rotationAxis = ROTATE_DIRECTION_MAP[direction];
-  const flipValue = power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
+  const rotAxisString = `rotate${direction === 'vertical' ? 'X' : 'Y'}`;
+  const flipValue =
+    power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
 
-  // const { fromValue, toValue } = rangeValues[range](rotation);
   const fromValue = range === 'out' ? 0 : -flipValue;
   const toValue = range === 'in' ? 0 : flipValue;
   const easing = 'linear';
@@ -30,29 +39,36 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
+  const [flipScroll] = getNames(options);
+
+  const custom = {
+    '--motion-flip-from': `${rotAxisString}(${fromValue}deg)`,
+    '--motion-flip-to': `${rotAxisString}(${toValue}deg)`,
+  };
+
   return [
     {
       ...options,
+      name: flipScroll,
       fill,
       easing,
+      custom,
       keyframes: [
         {
-          transform: `perspective(800px) ${rotationAxis}(${fromValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) ${toKeyframeValue(
+            custom,
+            '--motion-flip-from',
+            asWeb,
+          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
         {
-          transform: `perspective(800px) ${rotationAxis}(${toValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) ${toKeyframeValue(
+            custom,
+            '--motion-flip-to',
+            asWeb,
+          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: perspective(800px) <rotationAxis>(fromValue) rotate(<rotation>);
-   *   }
-   *   to {
-   *     transform: perspective(800px) <rotationAxis>(toValue) rotate(<rotation>);
-   *   }
-   * }
-   */
 }

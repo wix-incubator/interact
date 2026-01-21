@@ -1,14 +1,16 @@
-import {
+import type {
+  AnimationFillMode,
   EffectPower,
-  AnimationData,
-  EffectScrollRange,
   ScrubAnimationOptions,
   ShapeScroll,
-  AnimationFillMode,
+  DomApi,
 } from '../../types';
-import { getEasing } from '../../utils';
+import { toKeyframeValue, getEasing } from '../../utils';
 
-const SHAPES: Record<ShapeScroll['shape'], { start: Record<EffectPower, string>; end: string }> = {
+const SHAPES: Record<
+  ShapeScroll['shape'],
+  { start: Record<EffectPower, string>; end: string }
+> = {
   diamond: {
     start: {
       soft: 'polygon(50% 20%, 80% 50%, 50% 80%, 20% 50%)',
@@ -65,59 +67,36 @@ const RESPONSIVE_SHAPES_MAP = {
     'inset(-20% round 50% 50% 0% 0%)',
   ],
   rectangle: (clipFactor: number) => [`inset(${clipFactor}%)`, `inset(0%)`],
-  circle: (clipFactor: number) => [`circle(${100 - clipFactor}%)`, `circle(75%)`],
+  circle: (clipFactor: number) => [
+    `circle(${100 - clipFactor}%)`,
+    `circle(75%)`,
+  ],
   ellipse: (clipFactor: number) => {
     const clip = 50 - clipFactor / 2;
     return [`ellipse(${clip}% ${clip}%)`, `ellipse(75% 75%)`];
   },
 };
 
-const easing = getEasing('circInOut');
+export function getNames(options: ScrubAnimationOptions) {
+  const { range = 'in' } = options.namedEffect as ShapeScroll;
+  return [`motion-shapeScroll${range === 'continuous' ? '-continuous' : ''}`];
+}
 
-const KEYFRAMES_RANGE_MAP: Record<
-  EffectScrollRange,
-  (start: string, end: string) => AnimationData['keyframes']
-> = {
-  in: (start: string, end: string) => [
-    {
-      clipPath: start,
-      easing,
-    },
-    {
-      clipPath: end,
-    },
-  ],
-  out: (start: string, end: string) => [
-    {
-      clipPath: end,
-      easing,
-    },
-    {
-      clipPath: start,
-    },
-  ],
-  continuous: (start: string, end: string) => [
-    {
-      clipPath: start,
-      easing,
-    },
-    {
-      clipPath: end,
-      easing,
-    },
-    {
-      clipPath: start,
-    },
-  ],
-};
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
 
-export default function create(options: ScrubAnimationOptions) {
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
-    shape = 'circle',
     power,
     intensity = 0.5,
     range = 'in',
   } = options.namedEffect as ShapeScroll;
+  let { shape = 'circle' } = options.namedEffect as ShapeScroll;
+  if (!(shape in SHAPES)) {
+    shape = 'circle';
+  }
+
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
@@ -127,25 +106,38 @@ export default function create(options: ScrubAnimationOptions) {
       ? [SHAPES[shape].start[power], SHAPES[shape].end]
       : RESPONSIVE_SHAPES_MAP[shape](intensity * 100);
 
-  const keyframes = KEYFRAMES_RANGE_MAP[range](start, end);
+  const [shapeScroll] = getNames(options);
+
+  const custom = {
+    '--motion-clip-from': range === 'out' ? end : start,
+    '--motion-clip-to': range === 'out' ? start : end,
+  };
+
+  const easing = getEasing('circInOut');
+
+  const keyframes = [
+    {
+      clipPath: toKeyframeValue(custom, `--motion-clip-from`, asWeb),
+      easing,
+    },
+    { clipPath: toKeyframeValue(custom, `--motion-clip-to`, asWeb) },
+  ];
+
+  if (range === 'continuous') {
+    keyframes[1].easing = easing;
+    keyframes.push({
+      clipPath: toKeyframeValue(custom, `--motion-clip-from`, asWeb),
+    });
+  }
 
   return [
     {
       ...options,
+      name: shapeScroll,
       fill,
       easing: 'linear',
+      custom,
       keyframes,
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     clip-path: <fromValue>;
-   *     easing: <easing>;
-   *   }
-   *   to {
-   *     clip-path: <toValue>;
-   *   }
-   * }
-   */
 }

@@ -1,7 +1,11 @@
 import type { DomApi } from '../../types';
 
 export function measureCompHeight(
-  measures: { compHeight: number },
+  measures: {
+    '--motion-comp-height': string;
+    // TODO: (ameerf) - remove this once we support scalar multiplication in values passed to fizban or once SDA is widely available
+    '--motion-comp-half-height'?: string;
+  },
   dom: DomApi,
   assignToCss?: boolean,
 ) {
@@ -9,11 +13,25 @@ export function measureCompHeight(
     if (!target) {
       return;
     }
-    measures.compHeight = target.offsetHeight;
+    measures['--motion-comp-height'] = `${target.offsetHeight}px`;
+    if (measures['--motion-comp-half-height']) {
+      measures['--motion-comp-half-height'] = `${Math.round(
+        0.5 * target.offsetHeight,
+      )}px`;
+    }
   });
   if (assignToCss) {
     dom.mutate((target) => {
-      target?.style.setProperty('--motion-comp-height', `${measures.compHeight}px`);
+      target?.style.setProperty(
+        '--motion-comp-height',
+        measures['--motion-comp-height'],
+      );
+      if (measures['--motion-comp-half-height']) {
+        target?.style.setProperty(
+          '--motion-comp-half-height',
+          measures['--motion-comp-half-height'],
+        );
+      }
     });
   }
 }
@@ -30,10 +48,22 @@ const getSiteHeight = (): number => {
   return masterPage ? masterPage.offsetHeight + getWixAdsHeight() : 0; // probably tests that don't have masterPage created
 };
 
-export function measureSiteHeight(measures: { siteHeight: number }, dom: DomApi) {
+export function measureSiteHeight(
+  measures: { '--motion-site-height': string },
+  dom: DomApi,
+  assignToCss?: boolean,
+) {
   dom.measure(() => {
-    measures.siteHeight = getSiteHeight();
+    measures['--motion-site-height'] = `${getSiteHeight()}px`;
   });
+  if (assignToCss) {
+    dom.mutate((target) => {
+      target?.style.setProperty(
+        '--motion-site-height',
+        measures['--motion-site-height'],
+      );
+    });
+  }
 }
 
 export function getScaleFromPerspectiveAndZ(z: number, perspective: number) {

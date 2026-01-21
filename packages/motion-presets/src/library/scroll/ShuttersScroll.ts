@@ -1,20 +1,29 @@
-import {
-  EffectFourDirections,
-  ShuttersScroll,
-  ScrubAnimationOptions,
+import type {
   AnimationFillMode,
+  ScrubAnimationOptions,
+  ShuttersScroll,
+  DomApi,
 } from '../../types';
-import { getEasing } from '../../utils';
-import { getShuttersClipPaths } from '../../utils';
+import {
+  getOppositeDirection,
+  getShuttersClipPaths,
+  getEasing,
+  toKeyframeValue,
+  FOUR_DIRECTIONS,
+} from '../../utils';
 
-const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
-  top: 'bottom',
-  right: 'left',
-  bottom: 'top',
-  left: 'right',
-};
+export function getNames(options: ScrubAnimationOptions) {
+  const { range = 'in' } = options.namedEffect as ShuttersScroll;
+  return [
+    `motion-shuttersScroll-${range === 'continuous' ? '-continuous' : ''}`,
+  ];
+}
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     direction = 'right',
     shutters = 12,
@@ -26,65 +35,80 @@ export default function create(options: ScrubAnimationOptions) {
   ) as AnimationFillMode;
 
   const easing = range === 'in' ? getEasing('sineIn') : getEasing('sineOut');
-  const directionOpp = OPPOSITE_DIRECTION_MAP[direction];
+
+  const directionOpp = getOppositeDirection(FOUR_DIRECTIONS, direction);
+
   const { clipStart, clipEnd } = getShuttersClipPaths(
     range === 'out' ? directionOpp : direction,
     shutters,
     staggered,
   );
-  const start = range !== 'out' ? clipStart : clipEnd;
-  const end = range !== 'out' ? clipEnd : clipStart;
-  let keyframes;
+
+  const custom = {
+    '--motion-shutters-clip-start': range === 'out' ? clipEnd : clipStart,
+    '--motion-shutters-clip-end': range === 'out' ? clipStart : clipEnd,
+  };
+
+  const [shuttersScroll] = getNames(options);
+
+  const keyframes: {
+    clipPath: string | number;
+    easing?: string;
+    offset?: number;
+  }[] = [
+    {
+      clipPath: toKeyframeValue(custom, '--motion-shutters-clip-start', asWeb),
+      easing,
+    },
+    {
+      clipPath: toKeyframeValue(custom, '--motion-shutters-clip-end', asWeb),
+    },
+  ];
 
   if (range === 'continuous') {
-    const { clipStart: oppClipStart, clipEnd: oppClipEnd } = getShuttersClipPaths(
-      directionOpp,
-      shutters,
-      staggered,
-      true,
-    );
+    keyframes[1].easing = easing;
+    keyframes[1].offset = staggered ? 0.45 : 0.4;
 
-    keyframes = [
+    const { clipStart: oppClipStart, clipEnd: oppClipEnd } =
+      getShuttersClipPaths(directionOpp, shutters, staggered, true);
+    Object.assign(custom, {
+      '--motion-shutters-clip-opp-end': oppClipEnd,
+      '--motion-shutters-clip-opp-start': oppClipStart,
+    });
+
+    const secondOffset = staggered ? 0.55 : 0.6;
+    keyframes.push(
       {
-        clipPath: start,
+        clipPath: toKeyframeValue(custom, '--motion-shutters-clip-end', asWeb),
+        offset: secondOffset,
         easing,
       },
       {
-        clipPath: end,
-        offset: staggered ? 0.45 : 0.4,
+        clipPath: toKeyframeValue(
+          custom,
+          '--motion-shutters-clip-opp-end',
+          asWeb,
+        ),
+        offset: secondOffset,
         easing,
       },
       {
-        clipPath: end,
-        offset: staggered ? 0.55 : 0.6,
-        easing,
+        clipPath: toKeyframeValue(
+          custom,
+          '--motion-shutters-clip-opp-start',
+          asWeb,
+        ),
       },
-      {
-        clipPath: oppClipEnd,
-        offset: staggered ? 0.55 : 0.6,
-        easing,
-      },
-      {
-        clipPath: oppClipStart,
-      },
-    ];
-  } else {
-    keyframes = [
-      {
-        clipPath: start,
-        easing,
-      },
-      {
-        clipPath: end,
-      },
-    ];
+    );
   }
 
   return [
     {
       ...options,
+      name: shuttersScroll,
       fill,
       easing: 'linear',
+      custom,
       keyframes,
     },
   ];

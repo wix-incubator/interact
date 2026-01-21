@@ -1,11 +1,10 @@
 import type {
   TurnScroll,
-  EffectScrollRange,
   ScrubAnimationOptions,
-  AnimationExtraOptions,
   DomApi,
   AnimationFillMode,
 } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const ELEMENT_ROTATION = 45;
 
@@ -15,69 +14,32 @@ const POWER_MAP = {
   hard: { scaleFrom: 0.4, scaleTo: 1.6 },
 };
 
-const ROTATE_DIRECTION_MAP = {
-  clockwise: 1,
-  'counter-clockwise': -1,
-};
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-turnScroll'];
+}
 
-type RangeValuesTurnScroll = Record<
-  EffectScrollRange,
-  (
-    rotate: number,
-    scale: { scaleFrom: number; scaleTo: number },
-    travel: { startX: string; endX: string },
-  ) => {
-    fromValues: { rotation: number; scale: number; translate: string };
-    toValues: { rotation: number; scale: number; translate: string };
+export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
+  if (dom) {
+    let left = 0;
+    dom.measure((target) => {
+      if (!target) {
+        return;
+      }
+      left = target.getBoundingClientRect().left;
+    });
+    dom.mutate((target) => {
+      target?.style.setProperty('--motion-left', `${left}px`);
+    });
   }
->;
+}
 
-const TRANSLATE_X_MAP = {
-  left: {
-    startX: `calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)`,
-    endX: `calc(100vw - var(--motion-left, 0px))`,
-  },
-  right: {
-    startX: `calc(100vw - var(--motion-left, 0px))`,
-    endX: `calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)`,
-  },
-};
+export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+  prepare(options, dom);
 
-const RANGES_MAP: RangeValuesTurnScroll = {
-  in: (rotate, scale, travel) => ({
-    fromValues: {
-      rotation: -rotate,
-      scale: scale.scaleFrom,
-      translate: travel.startX,
-    },
-    toValues: { rotation: 0, scale: 1, translate: '0px' },
-  }),
-  out: (rotate, scale, travel) => ({
-    fromValues: { rotation: 0, scale: 1, translate: '0px' },
-    toValues: {
-      rotation: rotate,
-      scale: scale.scaleFrom,
-      translate: travel.endX,
-    },
-  }),
-  continuous: (rotate, scale, travel) => ({
-    fromValues: {
-      rotation: -rotate,
-      scale: scale.scaleFrom,
-      translate: travel.startX,
-    },
-    toValues: {
-      rotation: rotate,
-      scale: scale.scaleTo,
-      translate: travel.endX,
-    },
-  }),
-};
+  return style(options, true);
+}
 
-export default function create(
-  options: ScrubAnimationOptions & AnimationExtraOptions,
-  dom?: DomApi,
-) {
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     power,
     spin = 'clockwise',
@@ -90,49 +52,100 @@ export default function create(
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const transX = TRANSLATE_X_MAP[direction];
-  const rotateZ = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
-  const scaleFactors =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
+  const startXLeft = `calc(-1 * ${toKeyframeValue(
+    {},
+    '--motion-left',
+    false,
+    'calc(100vw - 100%)',
+  )} - 100%)`;
+  const endXLeft = `calc(100vw - ${toKeyframeValue(
+    {},
+    '--motion-left',
+    false,
+    '0px',
+  )})`;
+  const [startX, endX] =
+    direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
 
-  const { fromValues, toValues } = RANGES_MAP[range](rotateZ, scaleFactors, transX);
+  const rotate =
+    spin === 'clockwise' ? ELEMENT_ROTATION : -1 * ELEMENT_ROTATION;
 
-  let left = 0;
-  if (dom) {
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-      left = target.getBoundingClientRect().left;
-    });
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-left', `${left}px`);
-    });
-  }
+  const { scaleFrom, scaleTo } =
+    power && POWER_MAP[power]
+      ? POWER_MAP[power]
+      : { scaleFrom: scale, scaleTo: scale };
+
+  const fromValues = {
+    rotation: range === 'out' ? 0 : -rotate,
+    scale: range === 'out' ? 1 : scaleFrom,
+    translate: range === 'out' ? '0px' : startX,
+  };
+  const toValues = {
+    rotation: range === 'in' ? 0 : rotate,
+    scale: range === 'in' ? 1 : range === 'continuous' ? scaleTo : scaleFrom,
+    translate: range === 'in' ? '0px' : endX,
+  };
+
+  const [turnScroll] = getNames(options);
+
+  const custom = {
+    '--motion-turn-translate-from': fromValues.translate,
+    '--motion-turn-translate-to': toValues.translate,
+    '--motion-turn-scale-from': fromValues.scale,
+    '--motion-turn-scale-to': toValues.scale,
+    '--motion-turn-rotation-from': `${fromValues.rotation}deg`,
+    '--motion-turn-rotation-to': `${toValues.rotation}deg`,
+  };
 
   return [
     {
       ...options,
+      name: turnScroll,
       fill,
       easing,
+      custom,
       keyframes: [
         {
-          transform: `translateX(${fromValues.translate}) scale(${fromValues.scale}) rotate(calc(var(--comp-rotate-z, 0deg) + ${fromValues.rotation}deg))`,
+          transform: `translateX(${toKeyframeValue(
+            custom,
+            '--motion-turn-translate-from',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-turn-scale-from',
+            asWeb,
+          )}) rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(
+            custom,
+            '--motion-turn-rotation-from',
+            asWeb,
+          )}))`,
         },
         {
-          transform: `translateX(${toValues.translate}) scale(${toValues.scale}) rotate(calc(var(--comp-rotate-z, 0deg) + ${toValues.rotation}deg))`,
+          transform: `translateX(${toKeyframeValue(
+            custom,
+            '--motion-turn-translate-to',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-turn-scale-to',
+            asWeb,
+          )}) rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(
+            custom,
+            '--motion-turn-rotation-to',
+            asWeb,
+          )}))`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: translateX(<fromValues.position>) scale(<fromValues.scale>) rotate(calc(<rotation> - <fromValues.rotation>));
-   *   }
-   *   to {
-   *     transform: translateX(<toValues.position>) scale(<toValues.scale>) rotate(calc(<rotation> + <toValues.rotation>));
-   *   }
-   * }
-   */
 }

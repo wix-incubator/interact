@@ -1,24 +1,56 @@
-import type { BgFade, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
+import type {
+  BgFade,
+  DomApi,
+  RangeOffset,
+  AnimationExtraOptions,
+  ScrubAnimationOptions,
+} from '../../types';
+import { toKeyframeValue } from '../../utils';
 import { measureCompHeight } from './utils';
 
-const EASE_IN = 'sineIn';
-const EASE_OUT = 'sineOut';
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-bgFade'];
+}
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const measures = { compHeight: 0 };
+export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
+  const measures = {
+    '--motion-comp-height': '0px',
+    '--motion-comp-half-height': '0px',
+  };
   if (dom) {
-    measureCompHeight(measures, dom);
+    measureCompHeight(measures, dom, true);
   }
+  return measures;
+}
 
+export function web(
+  options: ScrubAnimationOptions & AnimationExtraOptions,
+  dom?: DomApi,
+) {
+  options.measures = prepare(options, dom);
+
+  return style(options, true);
+}
+
+export function style(
+  options: ScrubAnimationOptions & AnimationExtraOptions,
+  asWeb = false,
+) {
   const { range = 'in' } = options.namedEffect as BgFade;
   const isOut = range === 'out';
-  const fromValue = isOut ? 1 : 0;
-  const toValue = isOut ? 0 : 1;
-  const easing = isOut ? EASE_OUT : EASE_IN;
+  const easing = isOut ? 'sineOut' : 'sineIn';
+
+  const custom = {
+    '--motion-bg-fade-from': isOut ? 1 : 0,
+    '--motion-bg-fade-to': isOut ? 0 : 1,
+  };
+
+  const [bgFade] = getNames(options);
 
   return [
     {
       ...options,
+      name: bgFade,
       part: 'BG_LAYER',
       easing,
       startOffset: {
@@ -32,15 +64,23 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       } as RangeOffset,
       get endOffsetAdd() {
         return isOut
-          ? `calc(100vh + ${measures.compHeight}px)`
-          : `calc(50vh + ${Math.round(0.5 * measures.compHeight)}px)`;
+          ? `calc(100vh + ${toKeyframeValue(
+              options.measures || {},
+              '--motion-comp-height',
+              asWeb,
+            )})`
+          : `calc(50vh + ${toKeyframeValue(
+              options.measures || {},
+              '--motion-comp-half-height',
+              asWeb,
+            )})`;
       },
       keyframes: [
         {
-          opacity: fromValue,
+          opacity: toKeyframeValue(custom, '--motion-bg-fade-from', asWeb),
         },
         {
-          opacity: toValue,
+          opacity: toKeyframeValue(custom, '--motion-bg-fade-to', asWeb),
         },
       ],
     },
