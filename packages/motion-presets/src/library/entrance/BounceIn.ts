@@ -1,6 +1,8 @@
 import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
+const DEFAULT_PERSPECTIVE = 800;
+
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
 }
@@ -42,10 +44,11 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     power,
     distanceFactor: distance = 1,
     direction = 'bottom',
+    perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as BounceIn;
   const [fadeIn, bounceIn] = getNames(options);
   const distanceFactor = (power && POWER_MAP[power]) || distance;
-  const perspective = direction === 'center' ? 'perspective(800px)' : ' ';
+  const perspectiveValue = direction === 'center' ? `perspective(${perspective}px)` : ' ';
   const { x, y, z } = TRANSLATE_DIRECTION_MAP[direction];
 
   const custom = {
@@ -53,7 +56,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-direction-y': y,
     '--motion-direction-z': z,
     '--motion-distance-factor': distanceFactor,
-    '--motion-perspective': perspective,
+    '--motion-perspective': perspectiveValue,
     '--motion-ease-in': getEasing(easeOut),
     '--motion-ease-out': getEasing(easeIn),
   };
@@ -97,7 +100,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
         },
         ...keyframes,
       ],

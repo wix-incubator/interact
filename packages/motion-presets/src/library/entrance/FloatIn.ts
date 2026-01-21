@@ -1,15 +1,17 @@
 import type { TimeAnimationOptions, FloatIn } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
+const DEFAULT_DISTANCE = 120;
+
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-floatIn'];
 }
 
-const PARAMS_MAP = {
-  top: { dx: 0, dy: -1, distance: 120 },
-  right: { dx: 1, dy: 0, distance: 120 },
-  bottom: { dx: 0, dy: 1, distance: 120 },
-  left: { dx: -1, dy: 0, distance: 120 },
+const DIRECTION_MAP = {
+  top: { dx: 0, dy: -1 },
+  right: { dx: 1, dy: 0 },
+  bottom: { dx: 0, dy: 1 },
+  left: { dx: -1, dy: 0 },
 };
 
 export function web(options: TimeAnimationOptions) {
@@ -17,12 +19,12 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'left' } = options.namedEffect as FloatIn;
+  const { direction = 'left', distance = DEFAULT_DISTANCE } = options.namedEffect as FloatIn;
   const [floatIn] = getNames(options);
-  const fromParams = PARAMS_MAP[direction];
+  const { dx, dy } = DIRECTION_MAP[direction];
 
-  const translateX = fromParams.dx * fromParams.distance;
-  const translateY = fromParams.dy * fromParams.distance;
+  const translateX = dx * distance;
+  const translateY = dy * distance;
 
   const custom = {
     '--motion-translate-x': `${translateX}px`,

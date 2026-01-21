@@ -1,5 +1,7 @@
 import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../../types';
 
+const DEFAULT_PERSPECTIVE = 800;
+
 const ROTATE_POWER_MAP = {
   soft: 60,
   medium: 120,
@@ -17,6 +19,7 @@ export default function create(options: ScrubAnimationOptions) {
     direction = 'horizontal',
     power,
     range = 'continuous',
+    perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as FlipScroll;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
@@ -37,10 +40,10 @@ export default function create(options: ScrubAnimationOptions) {
       easing,
       keyframes: [
         {
-          transform: `perspective(800px) ${rotationAxis}(${fromValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) ${rotationAxis}(${fromValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
         },
         {
-          transform: `perspective(800px) ${rotationAxis}(${toValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) ${rotationAxis}(${toValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
         },
       ],
     },
@@ -48,10 +51,10 @@ export default function create(options: ScrubAnimationOptions) {
   /*
    * @keyframes <name> {
    *   from {
-   *     transform: perspective(800px) <rotationAxis>(fromValue) rotate(<rotation>);
+   *     transform: perspective(<perspective>px) <rotationAxis>(fromValue) rotate(<rotation>);
    *   }
    *   to {
-   *     transform: perspective(800px) <rotationAxis>(toValue) rotate(<rotation>);
+   *     transform: perspective(<perspective>px) <rotationAxis>(toValue) rotate(<rotation>);
    *   }
    * }
    */

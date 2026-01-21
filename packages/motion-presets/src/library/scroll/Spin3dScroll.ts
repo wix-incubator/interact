@@ -1,6 +1,7 @@
 import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll } from '../../types';
 
-const MAX_Y_TRAVEL = 40;
+const DEFAULT_PERSPECTIVE = 1000;
+const DEFAULT_MAX_Y_TRAVEL = 40;
 
 const POWER_MAP = {
   soft: { rotationZ: 45, travelY: 0 },
@@ -53,9 +54,9 @@ const RANGES_MAP = {
   }),
 };
 
-function getScrubOffsets({ power, range = 'in', speed = 0 }: Spin3dScroll) {
+function getScrubOffsets({ power, range = 'in', speed = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: Spin3dScroll) {
   const offset =
-    (power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed)) * MAX_Y_TRAVEL;
+    (power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed)) * maxTravelY;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -64,7 +65,14 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: Spin3dScroll) {
 }
 
 export default function create(options: ScrubAnimationOptions) {
-  const { rotate = -100, power, range = 'in', speed = 0 } = options.namedEffect as Spin3dScroll;
+  const {
+    rotate = -100,
+    power,
+    range = 'in',
+    speed = 0,
+    perspective = DEFAULT_PERSPECTIVE,
+    maxTravelY = DEFAULT_MAX_Y_TRAVEL,
+  } = options.namedEffect as Spin3dScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -75,7 +83,7 @@ export default function create(options: ScrubAnimationOptions) {
 
   const { fromValues, toValues } = RANGES_MAP[range](
     initialParams.rotationZ,
-    initialParams.travelY * -MAX_Y_TRAVEL,
+    initialParams.travelY * -maxTravelY,
   );
 
   const { start: startOffsetAdd, end: endOffsetAdd } = getScrubOffsets(
@@ -91,10 +99,10 @@ export default function create(options: ScrubAnimationOptions) {
       endOffsetAdd,
       keyframes: [
         {
-          transform: `perspective(1000px) translateY(${fromValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${fromValues.rotationZ}deg)) rotateY(${fromValues.rotationY}deg) rotateX(${fromValues.rotationX}deg)`,
+          transform: `perspective(${perspective}px) translateY(${fromValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${fromValues.rotationZ}deg)) rotateY(${fromValues.rotationY}deg) rotateX(${fromValues.rotationX}deg)`,
         },
         {
-          transform: `perspective(1000px) translateY(${toValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${toValues.rotationZ}deg)) rotateY(${toValues.rotationY}deg) rotateX(${toValues.rotationX}deg)`,
+          transform: `perspective(${perspective}px) translateY(${toValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${toValues.rotationZ}deg)) rotateY(${toValues.rotationY}deg) rotateX(${toValues.rotationX}deg)`,
         },
       ],
     },
@@ -102,10 +110,10 @@ export default function create(options: ScrubAnimationOptions) {
   /*
    * @keyframes <name> {
    *   from {
-   *     transform: perspective(1000px) translateY(<fromValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<fromValue.rotateY>deg) rotateX(<fromValue.rotateX>deg);
+   *     transform: perspective(<perspective>px) translateY(<fromValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<fromValue.rotateY>deg) rotateX(<fromValue.rotateX>deg);
    *   }
    *   to {
-   *     transform: perspective(1000px) translateY(<toValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<toValue.rotateY>deg) rotateX(<toValue.rotateX>deg);
+   *     transform: perspective(<perspective>px) translateY(<toValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<toValue.rotateY>deg) rotateX(<toValue.rotateX>deg);
    *   }
    * }
    */

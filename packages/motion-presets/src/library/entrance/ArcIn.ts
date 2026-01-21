@@ -1,7 +1,10 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
-const ROTATION_ANGLE = 80;
+const DEFAULT_ANGLE = 80;
+const DEFAULT_DEPTH = 300;
+const DEFAULT_PERSPECTIVE = 800;
+
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
   right: { x: 0, y: 1, sign: 1 },
@@ -26,7 +29,13 @@ export function getNames(_: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, direction = 'right' } = options.namedEffect as ArcIn;
+  const {
+    power,
+    direction = 'right',
+    angle = DEFAULT_ANGLE,
+    depth = DEFAULT_DEPTH,
+    perspective = DEFAULT_PERSPECTIVE,
+  } = options.namedEffect as ArcIn;
   const [fadeIn, arcIn] = getNames(options);
 
   const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
@@ -37,13 +46,23 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const { x, y, sign } = DIRECTION_MAP[direction];
   // const z = rotateX ? height / 2 : width / 2;
-  const z = `(-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2`;
+  // When depth is provided, use it directly; otherwise fall back to CSS var for DOM measurement
+  const useCustomDepth = depth !== DEFAULT_DEPTH;
+  const zValue = useCustomDepth
+    ? `${depth}px`
+    : `calc((-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2)`;
+  const zValueNegative = useCustomDepth
+    ? `${-depth}px`
+    : `calc((var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0)) / 2)`;
 
   const custom = {
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
+    '--motion-arc-angle': `${angle}`,
   };
+
+  const angleValue = toKeyframeValue(custom, '--motion-arc-angle', asWeb);
 
   return [
     {
@@ -62,7 +81,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(calc(${z})) rotateX(calc(${toKeyframeValue(
+          transform: `perspective(${perspective}px) translateZ(${zValue}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',
             asWeb,
@@ -70,7 +89,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${ROTATION_ANGLE}deg)) rotateY(calc(${toKeyframeValue(
+          )} * ${angleValue}deg)) rotateY(calc(${toKeyframeValue(
             custom,
             '--motion-arc-y',
             asWeb,
@@ -78,10 +97,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${ROTATION_ANGLE}deg)) translateZ(calc(-1 * ${z})) rotate(var(--comp-rotate-z, 0deg))`,
+          )} * ${angleValue}deg)) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(calc(${z})) rotateX(0deg) rotateY(0deg) translateZ(calc(-1 * ${z})) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
         },
       ],
     },

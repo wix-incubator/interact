@@ -87,8 +87,14 @@
 
       .cards {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
+      }
+
+      @media (max-width: 900px) {
+        .cards {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       @media (max-width: 640px) {
@@ -144,6 +150,19 @@
 
       .card--react:hover {
         border-color: rgba(97, 218, 251, 0.3);
+      }
+
+      .card--presets:hover::before {
+        background: linear-gradient(135deg, #f97316, transparent 60%);
+      }
+
+      .card--presets:hover {
+        border-color: rgba(249, 115, 22, 0.3);
+      }
+
+      .card--presets .card-icon {
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.05));
+        color: #f97316;
       }
 
       .card-icon {
@@ -267,6 +286,20 @@
           <h2>React Integration</h2>
           <p>
             Uses the <code>&lt;Interaction&gt;</code> component with ref-based element tracking.
+          </p>
+        </a>
+
+        <a href="/presets/" class="card card--presets">
+          <span class="card-arrow">→</span>
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48l2.12 2.12m0-12.72l-2.12 2.12m-8.48 8.48l-2.12 2.12"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <h2>Presets Playground</h2>
+          <p>
+            Compare motion presets with Legacy vs Full configurations side by side.
           </p>
         </a>
       </div>
