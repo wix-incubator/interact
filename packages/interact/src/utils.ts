@@ -1,7 +1,6 @@
 import { getEasing } from '@wix/motion';
 import type { TriggerType, Condition, CreateTransitionCSSParams } from './types';
 
-
 export function isTimeTrigger(trigger: TriggerType): boolean {
   return !['viewProgress', 'pointerMove'].includes(trigger);
 }
@@ -53,8 +52,8 @@ export function createStateRuleAndCSSTransitions({
   childSelector = '> :first-child',
   selectorCondition,
 }: CreateTransitionCSSParams): {
-  stateRule: string,
-  transitions: string[]
+  stateRule: string;
+  transitions: string[];
 } {
   let transitions: string[] = [];
 
@@ -109,8 +108,7 @@ export function createStateRuleAndCSSTransitions({
     ? applySelectorCondition(dataAttrSelector, selectorCondition)
     : dataAttrSelector;
 
-  const stateRule = 
-    `${finalStateSelector},
+  const stateRule = `${finalStateSelector},
     ${finalDataAttrSelector} {
       ${styleProperties.join(`
       `)}
@@ -154,7 +152,7 @@ export function createTransitionCSS({
 export function getFullPredicateByType(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
-  type: 'media' | 'container'
+  type: 'media' | 'container',
 ) {
   const conditionContent = (conditionNames || [])
     .filter((conditionName) => {

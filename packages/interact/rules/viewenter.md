@@ -1065,11 +1065,13 @@ The `generate` function produces CSS that:
 **Use Case**: Defining pre-animation states for entrance animations to prevent flash of content and enable CSS-based rendering
 
 **When to Apply**:
+
 - For viewEnter entrance animations that should be hidden before animating
 - When using `generateCSS()` for SSR or efficient CSR
 - When the element should start in a specific visual state
 
 **Pattern**:
+
 ```typescript
 {
     key: '[SOURCE_SELECTOR]',
@@ -1099,6 +1101,7 @@ The `generate` function produces CSS that:
 ```
 
 **Variables**:
+
 - `[INITIAL_PROPERTIES]`: CSS properties matching the first keyframe (e.g., `opacity: 0, transform: 'translateY(40px)'`)
 - `[START_PROPERTIES]`: First keyframe properties (should match initial)
 - `[END_PROPERTIES]`: Final keyframe properties
@@ -1107,6 +1110,7 @@ The `generate` function produces CSS that:
 **Initial Property Options**:
 
 1. **Default Initial** (when omitted): Elements are hidden with reset transforms
+
 ```typescript
 // Default applied automatically:
 {
@@ -1119,6 +1123,7 @@ The `generate` function produces CSS that:
 ```
 
 2. **Custom Initial**: Match your animation's starting state
+
 ```typescript
 {
     initial: {
@@ -1130,13 +1135,15 @@ The `generate` function produces CSS that:
 ```
 
 3. **No Initial**: Element always visible (for non-entrance animations)
+
 ```typescript
 {
-    initial: false
+  initial: false;
 }
 ```
 
 **Example - Fade Slide Up with Custom Initial**:
+
 ```typescript
 {
     key: 'hero-content',
@@ -1168,6 +1175,7 @@ The `generate` function produces CSS that:
 ```
 
 **Example - Blur Reveal with Custom Initial**:
+
 ```typescript
 {
     key: 'image-reveal',
@@ -1205,12 +1213,14 @@ The `generate` function produces CSS that:
 **Use Case**: Pre-generating CSS for entrance animations to enable server-side rendering and faster client-side rendering
 
 **When to Apply**:
+
 - For SSR frameworks (Next.js, Nuxt, etc.)
 - When optimizing initial page load performance
 - When animations should work before JavaScript hydration
 - For static site generation (SSG)
 
 **Pattern**:
+
 ```typescript
 import { generateCSS, Interact, InteractConfig } from '@wix/interact';
 
@@ -1256,69 +1266,70 @@ Interact.create(config);
 ```
 
 **Example - Full SSR Setup**:
+
 ```typescript
 import { generateCSS, InteractConfig } from '@wix/interact';
 
 const config: InteractConfig = {
-    conditions: {
-        'motion-ok': {
-            type: 'media',
-            predicate: '(prefers-reduced-motion: no-preference)'
-        }
+  conditions: {
+    'motion-ok': {
+      type: 'media',
+      predicate: '(prefers-reduced-motion: no-preference)',
     },
-    interactions: [
+  },
+  interactions: [
+    {
+      key: 'hero-section',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
         {
-            key: 'hero-section',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.2 },
-            effects: [
-                {
-                    key: 'hero-section',
-                    keyframeEffect: {
-                        name: 'hero-entrance',
-                        keyframes: [
-                            { opacity: 0, transform: 'translateY(40px) scale(0.95)' },
-                            { opacity: 1, transform: 'translateY(0) scale(1)' }
-                        ]
-                    },
-                    duration: 800,
-                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-                    initial: {
-                        opacity: 0,
-                        transform: 'translateY(40px) scale(0.95)'
-                    },
-                    conditions: ['motion-ok']
-                }
-            ]
+          key: 'hero-section',
+          keyframeEffect: {
+            name: 'hero-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(40px) scale(0.95)' },
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+            ],
+          },
+          duration: 800,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          initial: {
+            opacity: 0,
+            transform: 'translateY(40px) scale(0.95)',
+          },
+          conditions: ['motion-ok'],
         },
+      ],
+    },
+    {
+      key: 'feature-cards',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.3 },
+      listContainer: '.cards-grid',
+      effects: [
         {
-            key: 'feature-cards',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: 0.3 },
-            listContainer: '.cards-grid',
-            effects: [
-                {
-                    key: 'feature-cards',
-                    listContainer: '.cards-grid',
-                    keyframeEffect: {
-                        name: 'card-entrance',
-                        keyframes: [
-                            { opacity: 0, transform: 'translateY(30px)' },
-                            { opacity: 1, transform: 'translateY(0)' }
-                        ]
-                    },
-                    duration: 600,
-                    easing: 'ease-out',
-                    initial: {
-                        opacity: 0,
-                        transform: 'translateY(30px)'
-                    },
-                    conditions: ['motion-ok']
-                }
-            ]
-        }
-    ],
-    effects: {}
+          key: 'feature-cards',
+          listContainer: '.cards-grid',
+          keyframeEffect: {
+            name: 'card-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(30px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 600,
+          easing: 'ease-out',
+          initial: {
+            opacity: 0,
+            transform: 'translateY(30px)',
+          },
+          conditions: ['motion-ok'],
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 // Server/build-time
@@ -1350,12 +1361,14 @@ const serverHTML = `
 ```
 
 **Generated CSS Includes**:
+
 1. `@keyframes` rules with `from` block containing initial state
 2. Animation rules targeting `[data-interact-key]` selectors
 3. Media/container query wrappers for conditional animations
 4. Transition rules for transition effects
 
 **Best Practices**:
+
 1. **Match initial to first keyframe**: Ensures seamless animation start
 2. **Use conditions for accessibility**: Wrap in `prefers-reduced-motion` check
 3. **Cache the CSS output**: It's deterministic based on config

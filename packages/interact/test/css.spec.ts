@@ -28,8 +28,7 @@ describe('_generateCSS', () => {
   // ============================================================================
 
   /** Escapes special regex characters */
-  const escapeRegex = (str: string): string =>
-    str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapeRegex = (str: string): string => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   /** Creates regex to match a @keyframes rule with the given name */
   const keyframesPattern = (name: string) =>
@@ -241,11 +240,7 @@ describe('_generateCSS', () => {
       const interpolatedEffect: TimeEffect = {
         keyframeEffect: {
           name: 'interpolated',
-          keyframes: [
-            { opacity: '0' },
-            { opacity: '0.5' },
-            { opacity: '1' },
-          ],
+          keyframes: [{ opacity: '0' }, { opacity: '0.5' }, { opacity: '1' }],
         },
         duration: 1000,
       };
@@ -325,9 +320,7 @@ describe('_generateCSS', () => {
       const result = _generateCSS(config);
 
       // Animation rules should use --anim-def-* custom properties
-      const hasCustomProp = result.animationRules.some((rule) =>
-        /--anim-def-\w+/.test(rule),
-      );
+      const hasCustomProp = result.animationRules.some((rule) => /--anim-def-\w+/.test(rule));
       expect(hasCustomProp).toBe(true);
     });
 
@@ -531,8 +524,8 @@ describe('_generateCSS', () => {
       const config = createConfig(transitionEffect as Effect, { effectId: 'trans-effect' });
       const result = _generateCSS(config);
 
-      const hasStateSelector = result.transitionRules.some((rule) =>
-        /:state\(trans-effect\)/.test(rule) || /--trans-effect/.test(rule),
+      const hasStateSelector = result.transitionRules.some(
+        (rule) => /:state\(trans-effect\)/.test(rule) || /--trans-effect/.test(rule),
       );
       const hasDataAttrSelector = result.transitionRules.some((rule) =>
         rule.includes('[data-interact-effect~="trans-effect"]'),
@@ -605,7 +598,7 @@ describe('_generateCSS', () => {
       const result = _generateCSS(config);
 
       expect(result.transitionRules.length).toBeGreaterThan(0);
-      
+
       const hasOpacity = result.transitionRules.some((rule) => rule.includes('opacity'));
       expect(hasOpacity).toBe(true);
     });
@@ -649,9 +642,7 @@ describe('_generateCSS', () => {
       const config = createConfig(infiniteEffect);
       const result = _generateCSS(config);
 
-      const hasInfinite = result.animationRules.some((rule) =>
-        rule.includes('infinite'),
-      );
+      const hasInfinite = result.animationRules.some((rule) => rule.includes('infinite'));
       expect(hasInfinite).toBe(true);
     });
   });
@@ -707,7 +698,7 @@ describe('_generateCSS', () => {
 
       // Should still generate CSS (with existing condition)
       expect(result.animationRules.length).toBeGreaterThan(0);
-      
+
       // Should have the existing media query
       const hasExistingMedia = result.animationRules.some((rule) =>
         rule.includes('min-width: 800px'),

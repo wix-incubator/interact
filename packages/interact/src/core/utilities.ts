@@ -16,10 +16,9 @@ export function getInterpolatedKey(template: string, key: string) {
     : template;
 }
 
-
 function interpolateKeyframesOffsets(
   keyframes: Keyframe[],
-  firstFrameOnEpsilon?: boolean
+  firstFrameOnEpsilon?: boolean,
 ): Keyframe[] {
   if (!keyframes || keyframes.length === 0) return [];
 
@@ -34,7 +33,8 @@ function interpolateKeyframesOffsets(
   }
 
   // Find segments between defined offsets and interpolate
-  let lastDefinedIndex = 0, currentOffset = result[lastDefinedIndex].offset as number;
+  let lastDefinedIndex = 0,
+    currentOffset = result[lastDefinedIndex].offset as number;
   for (let i = 1; i < result.length; i++) {
     if (result[i].offset !== undefined) {
       const endOffset = result[i].offset as number;
@@ -67,17 +67,17 @@ function interpolateKeyframesOffsets(
 
 function keyframePropertyToCSS(key: string): string {
   if (key === 'cssFloat') {
-		return 'float'
-	}
-	if (key === 'easing') {
-		return 'animation-timing-function'
-	}
-	if (key === 'cssOffset') {
-		return 'offset'
-	}
-	if (key === 'composite') {
-		return 'animation-composition'
-	}
+    return 'float';
+  }
+  if (key === 'easing') {
+    return 'animation-timing-function';
+  }
+  if (key === 'cssOffset') {
+    return 'offset';
+  }
+  if (key === 'composite') {
+    return 'animation-composition';
+  }
   return key.replace(/([A-Z])/g, '-$1').toLowerCase();
 }
 

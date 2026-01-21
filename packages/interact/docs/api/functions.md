@@ -335,6 +335,7 @@ For the generated CSS to work, the `<interact-element>` must have the `data-inte
 Generates complete CSS for time-based animations from an `InteractConfig`. This function is designed for **Server-Side Rendering (SSR)** or **efficient Client-Side Rendering (CSR)** by pre-generating CSS animations that can be rendered in a `<style>` tag at the top of the document.
 
 Unlike runtime JavaScript animations, `generateCSS` outputs pure CSS that browsers can parse and execute immediately, providing:
+
 - **Faster initial render**: Animations start without waiting for JavaScript hydration
 - **Better performance**: CSS animations run on the compositor thread
 - **SSR compatibility**: Works with any server-side rendering framework
@@ -343,12 +344,13 @@ Unlike runtime JavaScript animations, `generateCSS` outputs pure CSS that browse
 ### Signature
 
 ```typescript
-function generateCSS(config: InteractConfig): string
+function generateCSS(config: InteractConfig): string;
 ```
 
 ### Parameters
 
 **`config: InteractConfig`**
+
 - The interaction configuration object
 - Only processes time-based triggers: `viewEnter`, `hover`, `click`, `animationEnd`, `pageVisible`
 - Ignores scrub-based triggers (`viewProgress`, `pointerMove`) which require JavaScript
@@ -356,6 +358,7 @@ function generateCSS(config: InteractConfig): string
 ### Returns
 
 **`string`** - A complete CSS string containing:
+
 - `@keyframes` rules for all animations
 - Animation property rules with CSS custom properties
 - Transition rules for transition effects
@@ -413,7 +416,7 @@ type initial = Record<string, string | number> | false;
 
 ```typescript
 {
-  initial: false  // Element visible immediately, no hiding
+  initial: false; // Element visible immediately, no hiding
 }
 ```
 
@@ -425,23 +428,27 @@ type initial = Record<string, string | number> | false;
 import { generateCSS, InteractConfig } from '@wix/interact';
 
 const config: InteractConfig = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    params: { type: 'once', threshold: 0.2 },
-    effects: [{
-      keyframeEffect: {
-        name: 'fade-slide-in',
-        keyframes: [
-          { opacity: 0, transform: 'translateY(40px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ]
-      },
-      duration: 800,
-      easing: 'ease-out'
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'fade-slide-in',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(40px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 // Generate CSS at build time or on the server
@@ -472,7 +479,9 @@ For CSR applications, inject the CSS before the first paint:
 ```typescript
 import { Interact, generateCSS } from '@wix/interact';
 
-const config = {/* your config */};
+const config = {
+  /* your config */
+};
 
 // Generate and inject CSS immediately
 const css = generateCSS(config);
@@ -494,7 +503,7 @@ import { interactConfig } from './interact-config';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const animationCSS = generateCSS(interactConfig);
-  
+
   return (
     <html>
       <head>
@@ -516,22 +525,24 @@ const config: InteractConfig = {
         name: 'blur-reveal',
         keyframes: [
           { filter: 'blur(20px)', opacity: 0 },
-          { filter: 'blur(0)', opacity: 1 }
-        ]
+          { filter: 'blur(0)', opacity: 1 },
+        ],
       },
       duration: 1000,
       // Custom initial matches the animation's starting keyframe
       initial: {
         filter: 'blur(20px)',
-        opacity: 0
-      }
-    }
+        opacity: 0,
+      },
+    },
   },
-  interactions: [{
-    key: 'content-block',
-    trigger: 'viewEnter',
-    effects: [{ effectId: 'blur-reveal' }]
-  }]
+  interactions: [
+    {
+      key: 'content-block',
+      trigger: 'viewEnter',
+      effects: [{ effectId: 'blur-reveal' }],
+    },
+  ],
 };
 
 const css = generateCSS(config);
@@ -544,23 +555,27 @@ const css = generateCSS(config);
 const config: InteractConfig = {
   conditions: {
     desktop: { type: 'media', predicate: '(min-width: 1024px)' },
-    'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' }
+    'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
   },
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    effects: [{
-      keyframeEffect: {
-        name: 'complex-entrance',
-        keyframes: [
-          { opacity: 0, transform: 'translateY(60px) scale(0.9)' },
-          { opacity: 1, transform: 'translateY(0) scale(1)' }
-        ]
-      },
-      duration: 1000,
-      conditions: ['desktop', 'prefers-motion']
-    }]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'complex-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(60px) scale(0.9)' },
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+            ],
+          },
+          duration: 1000,
+          conditions: ['desktop', 'prefers-motion'],
+        },
+      ],
+    },
+  ],
 };
 
 const css = generateCSS(config);
@@ -574,20 +589,24 @@ const css = generateCSS(config);
 
 ```typescript
 const config: InteractConfig = {
-  interactions: [{
-    key: 'button',
-    trigger: 'hover',
-    effects: [{
-      transition: {
-        duration: 200,
-        easing: 'ease-out',
-        styleProperties: [
-          { name: 'transform', value: 'scale(1.05)' },
-          { name: 'box-shadow', value: '0 8px 16px rgba(0,0,0,0.15)' }
-        ]
-      }
-    }]
-  }]
+  interactions: [
+    {
+      key: 'button',
+      trigger: 'hover',
+      effects: [
+        {
+          transition: {
+            duration: 200,
+            easing: 'ease-out',
+            styleProperties: [
+              { name: 'transform', value: 'scale(1.05)' },
+              { name: 'box-shadow', value: '0 8px 16px rgba(0,0,0,0.15)' },
+            ],
+          },
+        },
+      ],
+    },
+  ],
 };
 
 const css = generateCSS(config);
@@ -617,21 +636,21 @@ The output CSS follows this structure:
 }
 
 /* 2. Animation custom property definitions (conditional) */
-[data-interact-key="hero"] > :first-child {
+[data-interact-key='hero'] > :first-child {
   --anim-def-hero-0: fade-slide-in 800ms ease-out forwards;
 }
 
 /* 3. Animation application rule */
-[data-interact-key="hero"] > :first-child {
+[data-interact-key='hero'] > :first-child {
   animation-composition: replace;
   animation: var(--anim-def-hero-0, none);
 }
 
 /* 4. Transition state rules (for transition effects) */
-[data-interact-key="button"]:state(hover-effect) > :first-child,
-[data-interact-key="button"][data-interact-effect~="hover-effect"] > :first-child {
+[data-interact-key='button']:state(hover-effect) > :first-child,
+[data-interact-key='button'][data-interact-effect~='hover-effect'] > :first-child {
   transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 ```
 
@@ -645,15 +664,15 @@ The output CSS follows this structure:
 
 ### Triggers Supported
 
-| Trigger | Supported | Notes |
-|---------|-----------|-------|
-| `viewEnter` | ✅ | Full support with initial states |
-| `hover` | ✅ | Transition effects work; alternate/repeat behaviors |
-| `click` | ✅ | Transition effects for state changes |
-| `animationEnd` | ✅ | Chained animations |
-| `pageVisible` | ✅ | Similar to viewEnter |
-| `viewProgress` | ❌ | Requires JavaScript scroll handling |
-| `pointerMove` | ❌ | Requires JavaScript pointer tracking |
+| Trigger        | Supported | Notes                                               |
+| -------------- | --------- | --------------------------------------------------- |
+| `viewEnter`    | ✅        | Full support with initial states                    |
+| `hover`        | ✅        | Transition effects work; alternate/repeat behaviors |
+| `click`        | ✅        | Transition effects for state changes                |
+| `animationEnd` | ✅        | Chained animations                                  |
+| `pageVisible`  | ✅        | Similar to viewEnter                                |
+| `viewProgress` | ❌        | Requires JavaScript scroll handling                 |
+| `pointerMove`  | ❌        | Requires JavaScript pointer tracking                |
 
 ---
 

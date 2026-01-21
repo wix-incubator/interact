@@ -289,19 +289,19 @@ export type CreateTransitionCSSParams = {
 };
 
 export type EffectCSSProps = {
-  declaration: string,
-  conditions: string[],
-  customPropName: string,
-  composition?: CompositeOperation,
-  custom?: Keyframe,
+  declaration: string;
+  conditions: string[];
+  customPropName: string;
+  composition?: CompositeOperation;
+  custom?: Keyframe;
 };
 
 export type MotionCSSAnimationResult = {
-  animation: string,
-  composition: CompositeOperation,
-  custom: Keyframe,
-  name: string,
-  keyframes: Keyframe[],
+  animation: string;
+  composition: CompositeOperation;
+  custom: Keyframe;
+  name: string;
+  keyframes: Keyframe[];
 };
 
 export type GetCSSResult = {

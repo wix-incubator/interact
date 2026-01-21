@@ -635,6 +635,7 @@ Set `initial: false` when you don't want elements hidden before animation:
 ```
 
 Use this for:
+
 - Animations on already-visible elements
 - Hover/click effects that don't need hiding
 - Looping animations
@@ -647,26 +648,30 @@ For optimal performance, especially in SSR scenarios, use `generateCSS` to pre-r
 import { generateCSS, Interact, InteractConfig } from '@wix/interact';
 
 const config: InteractConfig = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    params: { type: 'once' },
-    effects: [{
-      keyframeEffect: {
-        name: 'fade-up',
-        keyframes: [
-          { opacity: 0, transform: 'translateY(30px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ]
-      },
-      duration: 800,
-      initial: {
-        opacity: 0,
-        transform: 'translateY(30px)'
-      }
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once' },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'fade-up',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(30px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          initial: {
+            opacity: 0,
+            transform: 'translateY(30px)',
+          },
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 
 // Generate CSS at build time or on server
@@ -683,10 +688,10 @@ Interact.create(config);
 
 #### Benefits of CSS Generation
 
-| Approach | Initial Render | Animation Start | SSR Compatible |
-|----------|---------------|-----------------|----------------|
-| JavaScript-only | Flash possible | After hydration | ❌ |
-| `generateCSS` | Smooth | Immediate | ✅ |
+| Approach        | Initial Render | Animation Start | SSR Compatible |
+| --------------- | -------------- | --------------- | -------------- |
+| JavaScript-only | Flash possible | After hydration | ❌             |
+| `generateCSS`   | Smooth         | Immediate       | ✅             |
 
 #### Generated CSS Structure
 
@@ -703,15 +708,21 @@ Interact.create(config);
     opacity: 0;
     transform: translateY(30px);
   }
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-[data-interact-key="hero"] > :first-child {
+[data-interact-key='hero'] > :first-child {
   --anim-def-hero-0: fade-up 800ms ease forwards;
 }
 
-[data-interact-key="hero"] > :first-child {
+[data-interact-key='hero'] > :first-child {
   animation: var(--anim-def-hero-0, none);
 }
 ```

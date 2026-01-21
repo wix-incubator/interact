@@ -945,7 +945,9 @@ For CSR applications, inject the CSS before first paint:
 ```typescript
 import { Interact, generateCSS } from '@wix/interact';
 
-const config = {/* your config */};
+const config = {
+  /* your config */
+};
 
 // Generate and inject CSS immediately on load
 const css = generateCSS(config);
@@ -982,10 +984,10 @@ For `generateCSS()`, use `data-interact-key` on any element:
 
 ```html
 <div data-interact-key="hero">
-    <section class="hero">
-        <h1>Welcome to Our Site</h1>
-        <p>This content fades in smoothly without flash</p>
-    </section>
+  <section class="hero">
+    <h1>Welcome to Our Site</h1>
+    <p>This content fades in smoothly without flash</p>
+  </section>
 </div>
 ```
 

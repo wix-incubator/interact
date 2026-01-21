@@ -528,28 +528,32 @@ For SSR, use `generateCSS()` to pre-render animation styles on the server, preve
 import { InteractConfig } from '@wix/interact/react';
 
 export const interactConfig: InteractConfig = {
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    params: { type: 'once', threshold: 0.2 },
-    effects: [{
-      keyframeEffect: {
-        name: 'hero-entrance',
-        keyframes: [
-          { opacity: 0, transform: 'translateY(40px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ]
-      },
-      duration: 800,
-      easing: 'ease-out',
-      // Initial state for SSR - matches first keyframe
-      initial: {
-        opacity: 0,
-        transform: 'translateY(40px)'
-      }
-    }]
-  }],
-  effects: {}
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'hero-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(40px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          easing: 'ease-out',
+          // Initial state for SSR - matches first keyframe
+          initial: {
+            opacity: 0,
+            transform: 'translateY(40px)',
+          },
+        },
+      ],
+    },
+  ],
+  effects: {},
 };
 ```
 
@@ -561,7 +565,7 @@ import { interactConfig } from '@/lib/interact-config';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Generate CSS at build time (called once per build)
   const animationCSS = generateCSS(interactConfig);
-  
+
   return (
     <html>
       <head>
@@ -641,7 +645,7 @@ import { interactConfig } from '@/lib/interact-config';
 
 export default function Document() {
   const animationCSS = generateCSS(interactConfig);
-  
+
   return (
     <Html>
       <Head>
@@ -681,11 +685,11 @@ export default function Home() {
 
 ### Benefits of SSR with `generateCSS()`
 
-| Without generateCSS | With generateCSS |
-|---------------------|------------------|
+| Without generateCSS             | With generateCSS                |
+| ------------------------------- | ------------------------------- |
 | Elements flash before animation | Elements start in initial state |
-| Animations wait for hydration | Animations ready immediately |
-| JavaScript required for styling | Pure CSS handles initial state |
+| Animations wait for hydration   | Animations ready immediately    |
+| JavaScript required for styling | Pure CSS handles initial state  |
 
 ### Conditional Animations with SSR
 
@@ -694,25 +698,32 @@ Use conditions to respect user preferences:
 ```tsx
 const config: InteractConfig = {
   conditions: {
-    'motion-ok': { 
-      type: 'media', 
-      predicate: '(prefers-reduced-motion: no-preference)' 
-    }
+    'motion-ok': {
+      type: 'media',
+      predicate: '(prefers-reduced-motion: no-preference)',
+    },
   },
-  interactions: [{
-    key: 'hero',
-    trigger: 'viewEnter',
-    effects: [{
-      keyframeEffect: {/* ... */},
-      conditions: ['motion-ok']  // Only animate if user allows
-    }]
-  }]
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          keyframeEffect: {
+            /* ... */
+          },
+          conditions: ['motion-ok'], // Only animate if user allows
+        },
+      ],
+    },
+  ],
 };
 
 // Generated CSS will be wrapped in @media query
 const css = generateCSS(config);
 ```
-```
+
+````
 
 ## Troubleshooting
 
@@ -726,7 +737,7 @@ useEffect(() => {
   const instance = Interact.create(config);
   return () => instance.destroy();
 }, []);
-```
+````
 
 ### Memory leaks
 

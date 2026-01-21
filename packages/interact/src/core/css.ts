@@ -18,7 +18,7 @@ import {
   isTimeTrigger,
   shortestRepeatingPatternLength,
   getFullPredicateByType,
-  getSelectorCondition
+  getSelectorCondition,
 } from '../utils';
 import { getSelector } from './Interact';
 import { keyframesToCSS } from './utilities';
@@ -33,10 +33,7 @@ const DEFAULT_INITIAL = {
   rotate: 'none',
 };
 
-function getTransitionData(
-  effect: Effect & { key: string },
-  childSelector: string
-) {
+function getTransitionData(effect: Effect & { key: string }, childSelector: string) {
   const args: CreateTransitionCSSParams = {
     key: effect.key,
     effectId: (effect as Effect).effectId!,
@@ -70,22 +67,25 @@ function resolveEffect(
   conditionDefinitions: Record<string, Condition>,
 ): (Effect & { key: string }) | null {
   const fullEffect: any = effectRef.effectId
-      ? { ...effectsMap[effectRef.effectId], ...effectRef }
-      : { ...effectRef };
+    ? { ...effectsMap[effectRef.effectId], ...effectRef }
+    : { ...effectRef };
 
-  if (fullEffect.namedEffect ||
-      fullEffect.keyframeEffect ||
-      fullEffect.transition ||
-      fullEffect.transitionProperties) {
+  if (
+    fullEffect.namedEffect ||
+    fullEffect.keyframeEffect ||
+    fullEffect.transition ||
+    fullEffect.transitionProperties
+  ) {
     if (!fullEffect.key) {
       fullEffect.key = interaction.key;
     }
 
     if (interaction.conditions && interaction.conditions.length) {
-      fullEffect.conditions = [...new Set(...interaction.conditions, ...(fullEffect.conditions || []))]
-          .filter((condition) => conditionDefinitions[condition]);
+      fullEffect.conditions = [
+        ...new Set(...interaction.conditions, ...(fullEffect.conditions || [])),
+      ].filter((condition) => conditionDefinitions[condition]);
     }
-    
+
     const { keyframeEffect } = fullEffect;
     if (keyframeEffect && !keyframeEffect.name) {
       // use effectId only if the keyframes are not overridden by effectRef or effectRef has a unique effectId (no reference)
@@ -95,8 +95,10 @@ function resolveEffect(
       keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
     }
 
-    fullEffect.initial = fullEffect.initial === false || interaction.trigger !== 'viewEnter' ?
-      undefined : (fullEffect.initial || DEFAULT_INITIAL);
+    fullEffect.initial =
+      fullEffect.initial === false || interaction.trigger !== 'viewEnter'
+        ? undefined
+        : fullEffect.initial || DEFAULT_INITIAL;
 
     return fullEffect;
   }
@@ -108,7 +110,7 @@ function buildConditionalRule(
   selector: string,
   propsToApply: Record<string, string | number | undefined | null>,
   conditions: string[],
-  configConditions: Record<string, Condition>
+  configConditions: Record<string, Condition>,
 ) {
   const declarations: string[] = [];
   for (const [key, val] of Object.entries(propsToApply)) {
@@ -118,8 +120,9 @@ function buildConditionalRule(
   }
 
   const selectorCondition = getSelectorCondition(conditions, configConditions);
-  const targetSelector = selectorCondition ?
-    applySelectorCondition(selector, selectorCondition) : selector;
+  const targetSelector = selectorCondition
+    ? applySelectorCondition(selector, selectorCondition)
+    : selector;
 
   let rule = `${targetSelector} {\n${declarations.join('\n')}\n}`;
 
@@ -141,7 +144,7 @@ function buildAnimationCompositionDeclaration(compositions: CompositeOperation[]
     return '';
   }
 
-  return `animation-composition: ${resultCompositions.join(', ')};`
+  return `animation-composition: ${resultCompositions.join(', ')};`;
 }
 
 function buildUnconditionalRuleFromCustomProps(
@@ -149,9 +152,10 @@ function buildUnconditionalRuleFromCustomProps(
   declarationPropName: string,
   customPropNames: string[],
   fallback: string,
-  extraDeclarations?: string[]
+  extraDeclarations?: string[],
 ) {
-  const declarations: string[] = extraDeclarations && extraDeclarations.length ? [...extraDeclarations] : [];
+  const declarations: string[] =
+    extraDeclarations && extraDeclarations.length ? [...extraDeclarations] : [];
 
   const customProps = customPropNames.map((propName) => `var(${propName}, ${fallback})`);
   declarations.push(`${declarationPropName}: ${customProps.join(', ')};`);
@@ -164,7 +168,7 @@ function generateTransitions(
   transitions: string[],
   selector: string,
   escapedTargetKey: string,
-  conditions: string[]
+  conditions: string[],
 ) {
   if (!selectorTransitionPropsMap.has(selector)) {
     selectorTransitionPropsMap.set(selector, []);
@@ -176,7 +180,7 @@ function generateTransitions(
     transitionPropsArray.push({
       declaration: transition,
       conditions,
-      customPropName
+      customPropName,
     });
   }
 }
@@ -209,7 +213,7 @@ function generateAnimations(
       composition,
       custom,
       conditions,
-      customPropName
+      customPropName,
     });
   }
 }
@@ -217,7 +221,7 @@ function generateAnimations(
 function getRulesFromSelectorPropsMap(
   selectorPropsMap: Map<string, EffectCSSProps[]>,
   configConditions: Record<string, Condition>,
-  isAnimation: boolean
+  isAnimation: boolean,
 ) {
   const rules: string[] = [];
 
@@ -227,15 +231,10 @@ function getRulesFromSelectorPropsMap(
 
       const propsToApply = {
         [customPropName]: declaration,
-        ...(isAnimation ? custom : {})
+        ...(isAnimation ? custom : {}),
       };
 
-      rules.push(buildConditionalRule(
-        baseSelector,
-        propsToApply,
-        conditions,
-        configConditions,
-      ));
+      rules.push(buildConditionalRule(baseSelector, propsToApply, conditions, configConditions));
     });
 
     const customPropNames = propsArray.map(({ customPropName }) => customPropName);
@@ -249,13 +248,15 @@ function getRulesFromSelectorPropsMap(
       }
     }
 
-    rules.push(buildUnconditionalRuleFromCustomProps(
-      baseSelector,
-      isAnimation ? 'animation' : 'transition',
-      customPropNames,
-      isAnimation ? 'none' : '_',
-      extraDeclarations,
-    ));
+    rules.push(
+      buildUnconditionalRuleFromCustomProps(
+        baseSelector,
+        isAnimation ? 'animation' : 'transition',
+        customPropNames,
+        isAnimation ? 'none' : '_',
+        extraDeclarations,
+      ),
+    );
   }
 
   return rules;
@@ -269,14 +270,8 @@ function getRulesFromSelectorPropsMap(
  */
 export function _generateCSS(config: InteractConfig): GetCSSResult {
   const keyframeMap = new Map<string, string>();
-  const selectorTransitionPropsMap = new Map<
-    string,
-    EffectCSSProps[]
-  >();
-  const selectorAnimationPropsMap = new Map<
-    string,
-    EffectCSSProps[]
-  >();
+  const selectorTransitionPropsMap = new Map<string, EffectCSSProps[]>();
+  const selectorAnimationPropsMap = new Map<string, EffectCSSProps[]>();
   const transitionRules: string[] = [];
 
   const configConditions = config.conditions || {};
@@ -295,11 +290,11 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
         addItemFilter: true,
         useFirstChild: true,
       });
-                
+
       const escapedKey = CSS.escape(effect.key);
       const keyWithNoSpecialChars = effect.key.replace(/[^\w-]/g, '');
       const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
-      const conditions = (effect.conditions || []);
+      const conditions = effect.conditions || [];
 
       if (
         (effect as TransitionEffect).transition ||
@@ -316,18 +311,15 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
           transitions,
           selector,
           keyWithNoSpecialChars,
-          conditions
+          conditions,
         );
       }
 
-      if (
-        (effect as any).namedEffect ||
-        (effect as any).keyframeEffect
-      ) {
+      if ((effect as any).namedEffect || (effect as any).keyframeEffect) {
         const animationDataList = getAnimationData(effect);
         if (animationDataList.length === 0) {
           continue;
-        }          
+        }
 
         generateAnimations(
           selectorAnimationPropsMap,
@@ -336,28 +328,25 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
           effect.initial,
           selector,
           keyWithNoSpecialChars,
-          conditions
+          conditions,
         );
       }
     }
   }
 
-  transitionRules.push(...getRulesFromSelectorPropsMap(
-    selectorTransitionPropsMap,
-    configConditions,
-    false
-  ));
+  transitionRules.push(
+    ...getRulesFromSelectorPropsMap(selectorTransitionPropsMap, configConditions, false),
+  );
   const animationRules: string[] = getRulesFromSelectorPropsMap(
     selectorAnimationPropsMap,
     configConditions,
-    true
+    true,
   );
-
 
   return {
     keyframes: Array.from(keyframeMap.values()),
     animationRules,
-    transitionRules
+    transitionRules,
   };
 }
 
