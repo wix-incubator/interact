@@ -10,11 +10,17 @@ todos:
     status: pending
     dependencies:
       - pkg-setup
+  - id: line-detection
+    content: Implement Range API-based line detection (lineDetection.ts)
+    status: pending
+    dependencies:
+      - types
   - id: core-split
     content: Implement core splitText function with chars/words/lines splitting
     status: pending
     dependencies:
       - types
+      - line-detection
   - id: accessibility
     content: Add ARIA attribute handling for screen reader support
     status: pending
@@ -49,6 +55,7 @@ todos:
     status: pending
     dependencies:
       - tests
+isProject: false
 ---
 
 # Text Splitting Package Plan
@@ -59,14 +66,16 @@ Create a new `@wix/splittext` package within the `packages/` directory that expo
 
 ## Key Design Decisions
 
-Based on the reference libraries (GSAP SplitText, Motion splitText, Anime.js splitText), the API will:
+The API will have:
 
-- **Functional approach**: Export a `splitText()` function (like Motion/Anime.js) rather than a class-based API
-- **Return arrays**: Return `{ chars, words, lines }` arrays of HTMLElements for direct use with animation libraries
-- **Accessibility by default**: Add ARIA attributes automatically (like GSAP)
+- **Functional approach**: Export a `splitText()` function rather than a class-based API
+- **Return arrays**: Return `{ chars, words, lines, sentences }` arrays of HTMLElements for direct use with animation libraries
+- **Lazy evaluation with caching**: Split types are computed on-demand when accessed, not eagerly on invocation
+- **Eager split when `type` provided**: If `type` option is specified, only those types are split immediately
+- **Accessibility by default**: Add ARIA attributes automatically
 - **Revertible**: Include a `revert()` method to restore original content
-- **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load (inspired by GSAP)
-- **Masking support**: Optional mask wrappers for reveal animations
+- **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -75,6 +84,7 @@ packages/splittext/
 ├── src/
 │   ├── index.ts              # Main entry point
 │   ├── splitText.ts          # Core splitting logic
+│   ├── lineDetection.ts      # Range API-based line detection
 │   ├── types.ts              # TypeScript interfaces
 │   ├── utils.ts              # Helper functions
 │   ├── accessibility.ts      # ARIA handling
@@ -117,16 +127,7 @@ function splitText(
 ```typescript
 interface SplitTextOptions {
   // What to split
-  type?: 'chars' | 'words' | 'lines' | ('chars' | 'words' | 'lines')[];
-  
-  // Masking (wrap elements for clip reveal effects)
-  mask?: 'chars' | 'words' | 'lines';
-  
-  // Custom classes
-  charClass?: string;   // default: 'split-char'
-  wordClass?: string;   // default: 'split-word'
-  lineClass?: string;   // default: 'split-line'
-  maskClass?: string;   // default: 'split-mask'
+  type?: 'chars' | 'words' | 'lines' | 'sentences' | ('chars' | 'words' | 'lines' | 'sentences')[];
   
   // Accessibility
   aria?: 'auto' | 'hidden' | 'none';  // default: 'auto'
@@ -142,10 +143,11 @@ interface SplitTextOptions {
 }
 
 interface SplitTextResult {
-  chars: HTMLElement[];
-  words: HTMLElement[];
-  lines: HTMLElement[];
-  masks: HTMLElement[];
+  // Lazy getters - split on first access, return cached on subsequent access
+  get chars: HTMLElement[];      // Splits into characters on first access
+  get words: HTMLElement[];      // Splits into words on first access
+  get lines: HTMLElement[];      // Splits into lines on first access
+  get sentences: HTMLElement[];  // Splits into sentences on first access
   
   // Methods
   revert(): void;
@@ -187,11 +189,17 @@ Key files to implement:
 1. **`src/splitText.ts`** - Main function:
 
 - Parse target (CSS selector or element)
+- **Use Range API for line detection** (see Key Implementation Details)
 - Extract text content preserving structure
-- Split into chars/words/lines
-- Create wrapper spans with appropriate classes
-- Handle line detection (measure word positions)
-- Apply mask wrappers if requested
+- Split into chars/words/lines/sentences
+- Create wrapper spans with appropriate classes after detection
+
+2. **`src/lineDetection.ts`** - Range-based line detection:
+
+- `detectLines(element)` - Main detection function using Range API
+- `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
+- Handle Safari whitespace normalization
+- Support for nested elements via TreeWalker
 
 2. **`src/accessibility.ts`**:
 
@@ -224,6 +232,10 @@ Test coverage for:
 - Revert functionality
 - AutoSplit behavior
 - React hook lifecycle
+- **Lazy evaluation**: Verify no DOM changes until getter accessed
+- **Caching**: Verify same array reference returned on repeated access
+- **Eager split with `type`**: Verify immediate DOM changes when type provided
+- **Cache invalidation**: Verify cache cleared on `revert()` and `autoSplit` resize
 
 ### Phase 5: Documentation
 
@@ -238,37 +250,222 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 
 ```typescript
 import { splitText } from '@wix/splittext';
-import { motion } from '@wix/motion';
 
-// Split heading into characters
-const { chars, revert } = splitText('h1', { 
-  type: 'chars',
-  mask: 'chars'  // Add mask wrappers for reveal effect
-});
+// Example 1: Lazy evaluation - no splitting happens yet
+const result = splitText('.headline');
 
-// Animate with motion
-motion.animate(chars, {
-  y: ['100%', '0%'],
-  opacity: [0, 1]
-}, {
-  duration: 0.5,
-  delay: motion.stagger(0.03)
-});
+// Splitting happens on first access, result is cached
+const chars = result.chars;  // Splits into chars NOW, caches result
+const chars2 = result.chars; // Returns cached result (no re-split)
 
-// Restore original HTML when done
-setTimeout(revert, 2000);
+// Lines are split separately when accessed
+const lines = result.lines;  // Splits into lines NOW, caches result
+
+// Example 2: Eager split with type option
+const eagerResult = splitText('.headline', { type: 'words' });
+// Words are split immediately on invocation
+
+// Other types still use lazy evaluation
+const lines2 = eagerResult.lines; // Splits into lines on access
+
+// Example 3: Multiple types eager
+const multiResult = splitText('.headline', { type: ['chars', 'words'] });
+// Both chars and words split immediately
+
+// Example 4: With animation library
+const { chars } = splitText('.title', { type: 'chars' });
+animate(chars, { opacity: [0, 1], stagger: 0.05 });
 ```
 
 ## Key Implementation Details
 
+### Lazy Evaluation & Caching Strategy
+
+The `SplitTextResult` object uses lazy getters with internal caching to avoid unnecessary DOM operations:
+
+```typescript
+class SplitTextResultImpl implements SplitTextResult {
+  private _element: HTMLElement;
+  private _originalHTML: string;
+  
+  // Internal cache for split results
+  private _cache: {
+    chars?: HTMLElement[];
+    words?: HTMLElement[];
+    lines?: HTMLElement[];
+    sentences?: HTMLElement[];
+  } = {};
+  
+  constructor(element: HTMLElement, options?: SplitTextOptions) {
+    this._element = element;
+    this._originalHTML = element.innerHTML;
+    
+    // Eager split if type is provided
+    if (options?.type) {
+      const types = Array.isArray(options.type) ? options.type : [options.type];
+      for (const type of types) {
+        this._performSplit(type);
+      }
+    }
+  }
+  
+  // Lazy getter - split on first access, return cached thereafter
+  get chars(): HTMLElement[] {
+    if (!this._cache.chars) {
+      this._cache.chars = this._performSplit('chars');
+    }
+    return this._cache.chars;
+  }
+  
+  get words(): HTMLElement[] {
+    if (!this._cache.words) {
+      this._cache.words = this._performSplit('words');
+    }
+    return this._cache.words;
+  }
+  
+  get lines(): HTMLElement[] {
+    if (!this._cache.lines) {
+      this._cache.lines = this._performSplit('lines');
+    }
+    return this._cache.lines;
+  }
+  
+  get sentences(): HTMLElement[] {
+    if (!this._cache.sentences) {
+      this._cache.sentences = this._performSplit('sentences');
+    }
+    return this._cache.sentences;
+  }
+  
+  private _performSplit(type: 'chars' | 'words' | 'lines' | 'sentences'): HTMLElement[] {
+    // Actual splitting logic - creates wrapper elements in DOM
+    // Returns array of created HTMLElements
+  }
+  
+  revert(): void {
+    this._element.innerHTML = this._originalHTML;
+    this._cache = {}; // Clear cache on revert
+  }
+}
+```
+
+**Benefits of lazy evaluation:**
+
+1. **Zero overhead if unused** - `splitText()` is cheap if you don't access any getters
+2. **Pay for what you use** - Only requested split types perform DOM operations
+3. **Efficient re-access** - Cached results avoid redundant DOM manipulation
+4. **Predictable eager mode** - When `type` is specified, those splits happen immediately (useful for animations that need elements ready synchronously)
+
+**Cache invalidation:**
+
+- `revert()` clears the cache
+- `autoSplit` on resize clears and re-populates cache for accessed types
+- Manual `split()` call can force re-split with new options
+
 ### Line Detection Algorithm
 
-Lines are detected by measuring word positions:
+**Primary Approach: Range API with `getClientRects()`**
 
-1. Split text into words first
-2. Measure `offsetTop` of each word element
-3. Group consecutive words with same `offsetTop` into lines
-4. Re-wrap if `autoSplit` is enabled and container width changes
+Use the DOM Range API to detect line breaks from text nodes *before* creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+
+```typescript
+function detectLines(textNode: Text): string[] {
+  const range = document.createRange();
+  const text = textNode.textContent || '';
+  const lines: string[][] = [];
+  let lineChars: string[] = [];
+  
+  // Normalize whitespace (Safari compatibility)
+  textNode.textContent = text.trim().replace(/\s+/g, ' ');
+  
+  for (let i = 0; i < text.length; i++) {
+    range.setStart(textNode, 0);
+    range.setEnd(textNode, i + 1);
+    
+    // getClientRects() returns one rect per rendered line
+    const lineIndex = range.getClientRects().length - 1;
+    
+    if (!lines[lineIndex]) {
+      lines.push(lineChars = []);
+    }
+    lineChars.push(text.charAt(i));
+  }
+  
+  return lines.map(chars => chars.join('').trim());
+}
+```
+
+**Alternative: Height-tracking approach (more efficient for long text)**
+
+```typescript
+function detectLinesOptimized(element: HTMLElement): string[] {
+  const textNode = element.firstChild as Text;
+  const range = document.createRange();
+  const heightTracker = document.createRange();
+  const lines: string[] = [];
+  let prevHeight = 0;
+  
+  range.selectNodeContents(element);
+  range.collapse(true); // Collapse to start
+  
+  for (let i = 0; i < textNode.length; i++) {
+    heightTracker.setEnd(textNode, i + 1);
+    const currentHeight = heightTracker.getBoundingClientRect().height;
+    
+    if (currentHeight > prevHeight && i > 0) {
+      // Line break detected - extract previous line text
+      range.setEnd(textNode, i);
+      lines.push(range.toString().trim());
+      range.setStart(textNode, i);
+      prevHeight = currentHeight;
+    }
+  }
+  
+  // Don't forget the last line
+  range.setEnd(textNode, textNode.length);
+  lines.push(range.toString().trim());
+  
+  return lines;
+}
+```
+
+**Why Range API over offsetTop measurement:**
+
+1. **No pre-wrapping required** - Detect lines from original text nodes
+2. **Accurate to browser rendering** - Uses actual layout, not approximated positions
+3. **Simpler code path** - Measure first, wrap second
+4. **Works before any DOM mutation** - Original text stays intact during detection
+
+**For nested elements**: Use `TreeWalker` to iterate child text nodes, applying Range detection to each:
+
+```typescript
+const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+let node: Text | null;
+while ((node = walker.nextNode() as Text)) {
+  // Apply Range-based line detection to each text node
+}
+```
+
+**Re-splitting on resize**: If `autoSplit` is enabled:
+
+1. Track which types have been accessed (are in cache)
+2. On resize/font-load, clear cache and re-split only those types
+3. Call `onSplit` callback with updated result
+```typescript
+private _handleResize(): void {
+  const accessedTypes = Object.keys(this._cache) as SplitType[];
+  this._cache = {}; // Clear cache
+  
+  // Re-split only previously accessed types
+  for (const type of accessedTypes) {
+    this._performSplit(type);
+  }
+  
+  this._options.onSplit?.(this);
+}
+```
+
 
 ### Unicode/Emoji Handling
 
@@ -283,5 +480,46 @@ const chars = [...segmenter.segment(text)].map(s => s.segment);
 
 Unlike some libraries that strip nested tags, this implementation will:
 
-1. Walk the DOM tree
-2. Split text nodes only
+1. Use `TreeWalker` to traverse text nodes within nested elements
+2. Apply Range-based line detection to each text node
+3. Preserve nested element structure (links, bold, etc.)
+4. Split text nodes only while maintaining parent element references
+```typescript
+function processNestedElements(element: HTMLElement): void {
+  const walker = document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+    null
+  );
+  
+  const textNodes: Text[] = [];
+  let node: Text | null;
+  while ((node = walker.nextNode() as Text)) {
+    if (node.textContent?.trim()) {
+      textNodes.push(node);
+    }
+  }
+  
+  // Process each text node with Range API
+  for (const textNode of textNodes) {
+    // Line detection happens here, wrapper creation follows
+  }
+}
+```
+
+
+### Performance Considerations
+
+The Range API approach has O(n) character iteration complexity, but:
+
+1. **Instantaneous for typical text** - Single paragraphs feel instant (per Ben Nadel's testing)
+2. **No layout thrashing** - Detection happens before any DOM mutation
+3. **Efficient for repeated splits** - `autoSplit` re-detection is fast since original structure is preserved
+4. **Consider chunking for very long text** - For 10k+ character blocks, batch processing may help
+
+### Browser Compatibility
+
+- **Safari quirk**: Requires whitespace normalization before Range operations
+- **`Range.getClientRects()`**: Widely supported (all modern browsers)
+- **`Range.getBoundingClientRect()`**: Not yet standard but widely supported
+- **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
