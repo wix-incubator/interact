@@ -1,24 +1,51 @@
 ---
 name: Interact E2E Testing
-overview: "Set up Playwright-based E2E test infrastructure for the @wix/interact package, with a dedicated test harness app. The plan is divided into phases: infrastructure setup, test harness creation, test scaffolding with titles only, and incremental test implementation per suite."
+overview: "Set up Playwright-based E2E test infrastructure for the @wix/interact package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite."
 todos:
   - id: install-playwright
-    content: Install Playwright dependencies and add scripts to root package.json
+    content: Install Playwright dependencies and add scripts to packages/interact/package.json
     status: pending
   - id: playwright-config
-    content: Create/update playwright.config.ts with interact project configuration
+    content: Create playwright.config.ts in packages/interact with projects, webServer, and reporter settings
     status: pending
-  - id: test-harness-setup
-    content: Create e2e/interact/harness/ app with Vite, React, and package dependencies
+  - id: test-fixtures-vite
+    content: Create Vite config for test fixtures server in packages/interact/e2e/fixtures/
     status: pending
-  - id: test-harness-pages
-    content: Create dedicated test pages for each trigger type and feature
+  - id: test-fixtures-hover
+    content: Create test fixture page for hover trigger (basic, toggle, interest)
+    status: pending
+  - id: test-fixtures-click
+    content: Create test fixture page for click trigger (basic, toggle, activate)
+    status: pending
+  - id: test-fixtures-view-enter
+    content: Create test fixture page for viewEnter trigger (once, repeat, alternate, state)
+    status: pending
+  - id: test-fixtures-view-progress
+    content: Create test fixture page for viewProgress trigger (scroll-linked animations)
+    status: pending
+  - id: test-fixtures-pointer-move
+    content: Create test fixture page for pointerMove trigger (axis, hit area, composite)
+    status: pending
+  - id: test-fixtures-conditional
+    content: Create test fixture page for conditional effects (media queries, selectors)
+    status: pending
+  - id: test-fixtures-list-container
+    content: Create test fixture page for list container effects
+    status: pending
+  - id: test-fixtures-state
+    content: Create test fixture page for state management (toggleEffect, getActiveEffects)
+    status: pending
+  - id: test-fixtures-react
+    content: Create test fixture page for React integration (Interaction component, createInteractRef)
+    status: pending
+  - id: test-fixtures-web
+    content: Create test fixture page for Web Components (interact-element lifecycle)
     status: pending
   - id: test-utils
-    content: Create e2e/interact/utils/ with animation, scroll, pointer, and interaction helpers
+    content: Create e2e/utils/ with animation, scroll, pointer, and interaction helpers
     status: pending
   - id: page-objects
-    content: Create e2e/interact/pages/ with page objects for each test harness page
+    content: Create e2e/pages/ with page objects for each test fixture
     status: pending
   - id: scaffold-hover
     content: Create hover-trigger.spec.ts with test titles
@@ -87,7 +114,7 @@ todos:
     content: Implement Web Components integration tests (interact-element lifecycle)
     status: pending
   - id: ci-integration
-    content: Update CI workflow to install Playwright browsers and run E2E tests
+    content: Update CI workflow to run E2E tests with Playwright
     status: pending
 isProject: false
 ---
@@ -98,12 +125,12 @@ isProject: false
 
 The `@wix/interact` package is a declarative interaction library providing:
 
-- **9 Triggers**: hover, click, viewEnter, viewProgress, pointerMove, animationEnd, pageVisible, activate, interest
+- **8 Triggers**: hover, click, viewEnter, viewProgress, pointerMove, animationEnd, activate, interest
 - **3 Effect Types**: TimeEffect (time-based), ScrubEffect (scroll/pointer-linked), TransitionEffect (CSS transitions)
 - **Features**: Conditional effects (media/selector), list containers, state management (`toggleEffect`)
 - **Integrations**: React (`<Interaction>` component) and Web Components (`<interact-element>`)
 
-A dedicated test harness app will be created at `e2e/interact/harness/` specifically for E2E testing, separate from the demo app which will evolve independently.
+Dedicated test fixture pages will be created within the interact package to serve as stable, focused test harnesses.
 
 ---
 
@@ -111,7 +138,7 @@ A dedicated test harness app will be created at `e2e/interact/harness/` specific
 
 ### 1.1 Install Playwright Dependencies
 
-Add to root [`package.json`](package.json):
+Add to [`packages/interact/package.json`](packages/interact/package.json):
 
 ```json
 "devDependencies": {
@@ -125,126 +152,276 @@ Add scripts:
 "scripts": {
   "test:e2e": "playwright test",
   "test:e2e:ui": "playwright test --ui",
-  "test:e2e:interact": "playwright test --project=interact"
+  "test:e2e:fixtures": "vite --config e2e/fixtures/vite.config.ts"
 }
 ```
 
 ### 1.2 Create Playwright Configuration
 
-Create [`playwright.config.ts`](playwright.config.ts) at workspace root:
+Create [`packages/interact/playwright.config.ts`](packages/interact/playwright.config.ts):
 
-- Base URL: `http://localhost:5179` (test harness dev server)
-- Test directory: `e2e/interact/tests/`
-- Web server command: `yarn workspace @wix/interact-e2e-harness dev`
+- Base URL: `http://localhost:5173` (test fixtures dev server)
+- Test directory: `e2e/tests/`
+- Web server command: `yarn test:e2e:fixtures`
 - Projects: Chromium, Firefox, WebKit
 - Reporter: HTML + list
 - Retries: 2 on CI
 
-### 1.3 Create Test Harness App
+### 1.3 Create Test Fixtures Server
 
-Create [`e2e/interact/harness/`](e2e/interact/harness/) as a minimal Vite + React app dedicated to E2E testing:
+Create [`packages/interact/e2e/fixtures/vite.config.ts`](packages/interact/e2e/fixtures/vite.config.ts):
 
-**Package Configuration** (`package.json`):
+- Multi-page app with each fixture as an entry point
+- React plugin for JSX/TSX support (needed for React integration tests)
+- Alias `@wix/interact` to local `src/` for testing against source
+- Alias `@wix/motion` to workspace package
+- Dev server on port 5173
 
-```json
-{
-  "name": "@wix/interact-e2e-harness",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite --port 5179",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@wix/interact": "workspace:*",
-    "@wix/motion": "workspace:*",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.5.0",
-    "vite": "^6.3.5",
-    "typescript": "^5.8.3"
-  }
-}
-```
+### 1.4 Create Test Utilities
 
-**Vite Configuration** (`vite.config.ts`):
+Create [`packages/interact/e2e/utils/`](packages/interact/e2e/utils/) directory with:
 
-- React plugin for JSX support
-- Dev server on port 5179
-- Alias `@wix/interact` to workspace package
+| File | Purpose |
 
-### 1.4 Create Test Pages
+|------|---------|
 
-Create dedicated test pages in `e2e/interact/harness/src/pages/`:
+| `animation-helpers.ts` | Functions to wait for animations, check computed styles, measure transform values |
 
-| Page | Route | Purpose | Test IDs |
+| `scroll-helpers.ts` | Functions to scroll elements into view, simulate scroll gestures with `page.mouse.wheel()` |
 
-|------|-------|---------|----------|
+| `pointer-helpers.ts` | Functions to simulate mouse movements, track pointer position across hit areas |
 
-| `HoverTestPage.tsx` | `/hover` | Hover trigger scenarios | `hover-target`, `hover-toggle-target` |
+| `interaction-helpers.ts` | Functions to verify interaction states, check active effects via `getActiveEffects()` |
 
-| `ClickTestPage.tsx` | `/click` | Click trigger scenarios | `click-target`, `click-toggle-target` |
+### 1.5 Create Page Objects
 
-| `ViewEnterTestPage.tsx` | `/view-enter` | ViewEnter trigger types | `view-once`, `view-repeat`, `view-alternate`, `view-state` |
+Create [`packages/interact/e2e/pages/`](packages/interact/e2e/pages/) directory with:
 
-| `ViewProgressTestPage.tsx` | `/view-progress` | Scroll-linked animations | `scroll-target-{n}`, `scroll-container` |
+| File | Purpose |
 
-| `PointerMoveTestPage.tsx` | `/pointer-move` | Pointer-driven animations | `pointer-container`, `pointer-target`, `pointer-composite` |
+|------|---------|
 
-| `ConditionalTestPage.tsx` | `/conditional` | Media/selector conditions | `desktop-target`, `tablet-target`, `mobile-target` |
+| `base-fixture-page.ts` | Base page object with common fixture utilities, navigation, window access |
 
-| `ListContainerTestPage.tsx` | `/list-container` | List container effects | `list-container`, `list-item-{n}` |
+| `hover-page.ts` | Page object for hover trigger fixture |
 
-| `StateManagementTestPage.tsx` | `/state` | toggleEffect/getActiveEffects | `state-target`, `toggle-add-btn`, `toggle-remove-btn` |
+| `click-page.ts` | Page object for click trigger fixture |
 
-| `ReactIntegrationTestPage.tsx` | `/react` | React `<Interaction>` component | `interaction-component`, `ref-target` |
+| `view-enter-page.ts` | Page object for viewEnter trigger fixture |
 
-| `WebComponentsTestPage.tsx` | `/web` | `<interact-element>` custom element | `interact-element-target` |
+| `view-progress-page.ts` | Page object for viewProgress trigger fixture |
 
-Each page should:
+| `pointer-move-page.ts` | Page object for pointerMove trigger fixture |
 
-- Use `data-testid` attributes for reliable element selection
-- Expose interaction controllers to `window` for direct API testing
-- Include minimal styling for visual debugging
-- Be self-contained with its own `InteractConfig`
+| `conditional-page.ts` | Page object for conditional effects fixture |
 
-### 1.5 Create Test Utilities
+| `list-container-page.ts` | Page object for list container fixture |
 
-Create [`e2e/interact/utils/`](e2e/interact/utils/) directory with:
+| `state-management-page.ts` | Page object for state management fixture |
 
-- `animation-helpers.ts`: Functions to wait for animations, check computed styles, measure transform values
-- `scroll-helpers.ts`: Functions to scroll elements into view, simulate scroll gestures with `page.mouse.wheel()`
-- `pointer-helpers.ts`: Functions to simulate mouse movements, track pointer position across hit areas
-- `interaction-helpers.ts`: Functions to verify interaction states, check active effects via `getActiveEffects()`
+| `react-integration-page.ts` | Page object for React integration fixture |
 
-### 1.6 Create Page Objects
-
-Create [`e2e/interact/pages/`](e2e/interact/pages/) directory with:
-
-- `base-page.ts`: Base page object with common navigation and utility methods
-- `hover-page.ts`: Page object for hover test page elements
-- `click-page.ts`: Page object for click test page elements
-- `view-enter-page.ts`: Page object for view enter test page elements
-- `view-progress-page.ts`: Page object for scroll-driven test page elements
-- `pointer-move-page.ts`: Page object for pointer test page elements
-- `conditional-page.ts`: Page object for conditional effects test page elements
-- `list-container-page.ts`: Page object for list container test page elements
-- `state-management-page.ts`: Page object for state management test page elements
-- `react-integration-page.ts`: Page object for React integration test page elements
-- `web-components-page.ts`: Page object for Web Components test page elements
+| `web-components-page.ts` | Page object for Web Components fixture |
 
 ---
 
-## Phase 2: Test Scaffolding (Titles Only)
+## Phase 2: Test Fixtures Creation
+
+Create dedicated HTML/TypeScript pages for each test scenario. Each fixture:
+
+- Imports directly from `@wix/interact` source
+- Exposes interaction controllers to `window` for test assertions
+- Has data-testid attributes for reliable element selection
+- Includes minimal styling focused on testability
+
+### 2.1 Hover Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/hover.html`](packages/interact/e2e/fixtures/hover.html) + [`hover.tsx`](packages/interact/e2e/fixtures/hover.tsx)
+
+Elements:
+
+- Basic hover target element
+- Toggle method hover target
+- Interest trigger (a11y) target with focusable element
+
+Exposed globals:
+
+- `window.interactController`: Current InteractionController instance
+- `window.getActiveEffects()`: Function to get active effects
+
+Test IDs: `hover-target`, `hover-toggle-target`, `interest-target`
+
+### 2.2 Click Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/click.html`](packages/interact/e2e/fixtures/click.html) + [`click.tsx`](packages/interact/e2e/fixtures/click.tsx)
+
+Elements:
+
+- Basic click target element
+- Toggle method click target
+- Activate trigger (a11y) target with button element
+
+Exposed globals:
+
+- `window.interactController`: Current InteractionController instance
+- `window.clickCount`: Track click event count
+
+Test IDs: `click-target`, `click-toggle-target`, `activate-target`
+
+### 2.3 ViewEnter Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/view-enter.html`](packages/interact/e2e/fixtures/view-enter.html) + [`view-enter.tsx`](packages/interact/e2e/fixtures/view-enter.tsx)
+
+Elements:
+
+- Tall scrollable container (2000px+)
+- Once type target in middle of scroll area
+- Repeat type target
+- Alternate type target
+- State type target
+
+Exposed globals:
+
+- `window.viewEnterEvents`: Array of recorded viewEnter events
+- `window.getElementState(testId)`: Function to get element animation state
+
+Test IDs: `view-once`, `view-repeat`, `view-alternate`, `view-state`, `scroll-container`
+
+### 2.4 ViewProgress Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/view-progress.html`](packages/interact/e2e/fixtures/view-progress.html) + [`view-progress.tsx`](packages/interact/e2e/fixtures/view-progress.tsx)
+
+Elements:
+
+- Tall scrollable container (2000px+)
+- Multiple scroll-linked animation targets
+- Range configuration test elements
+
+Exposed globals:
+
+- `window.getScrollProgress(testId)`: Function to get current progress for element
+- `window.scrollContainer`: Reference to scroll container
+
+Test IDs: `scroll-container`, `scroll-target-1`, `scroll-target-2`, `scroll-target-3`
+
+### 2.5 PointerMove Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/pointer-move.html`](packages/interact/e2e/fixtures/pointer-move.html) + [`pointer-move.tsx`](packages/interact/e2e/fixtures/pointer-move.tsx)
+
+Elements:
+
+- X-axis tracking container and target
+- Y-axis tracking container and target
+- Composite transform element (scaleX + scaleY)
+- Bounded pointer area with known dimensions
+
+Exposed globals:
+
+- `window.getPointerProgress()`: Function to get x/y progress
+- `window.pointerContainer`: Reference to pointer container
+
+Test IDs: `pointer-container`, `pointer-target`, `pointer-composite`, `pointer-x-target`, `pointer-y-target`
+
+### 2.6 Conditional Effects Fixture
+
+File: [`packages/interact/e2e/fixtures/conditional.html`](packages/interact/e2e/fixtures/conditional.html) + [`conditional.tsx`](packages/interact/e2e/fixtures/conditional.tsx)
+
+Elements:
+
+- Desktop-only animation target (>1024px)
+- Tablet animation target (768-1024px)
+- Mobile animation target (<768px)
+- Grid of elements for nth-child selector testing
+- Trigger button
+
+Exposed globals:
+
+- `window.activeCondition`: Currently active media query condition
+- `window.triggerAnimation()`: Function to trigger animations
+- `window.getMatchedSelectors()`: Function returning which elements matched
+
+Test IDs: `desktop-target`, `tablet-target`, `mobile-target`, `trigger-btn`, `selector-grid`, `selector-item-{n}`
+
+### 2.7 List Container Fixture
+
+File: [`packages/interact/e2e/fixtures/list-container.html`](packages/interact/e2e/fixtures/list-container.html) + [`list-container.tsx`](packages/interact/e2e/fixtures/list-container.tsx)
+
+Elements:
+
+- List container with multiple child elements
+- Dynamic list with add/remove buttons
+- Selector condition items (even/odd)
+
+Exposed globals:
+
+- `window.addListItem()`: Function to add item dynamically
+- `window.removeListItem()`: Function to remove item dynamically
+- `window.getListItemStates()`: Function to get animation states
+
+Test IDs: `list-container`, `list-item-{n}`, `add-item-btn`, `remove-item-btn`
+
+### 2.8 State Management Fixture
+
+File: [`packages/interact/e2e/fixtures/state-management.html`](packages/interact/e2e/fixtures/state-management.html) + [`state-management.tsx`](packages/interact/e2e/fixtures/state-management.tsx)
+
+Elements:
+
+- State target element
+- Control buttons for add/remove/toggle/clear
+
+Exposed globals:
+
+- `window.interactController`: InteractionController instance
+- `window.toggleEffect(method)`: Function to call toggleEffect with method
+- `window.getActiveEffects()`: Function to get active effects
+
+Test IDs: `state-target`, `toggle-add-btn`, `toggle-remove-btn`, `toggle-toggle-btn`, `toggle-clear-btn`
+
+### 2.9 React Integration Fixture
+
+File: [`packages/interact/e2e/fixtures/react-integration.html`](packages/interact/e2e/fixtures/react-integration.html) + [`react-integration.tsx`](packages/interact/e2e/fixtures/react-integration.tsx)
+
+Elements:
+
+- `<Interaction>` component with various tagNames
+- `createInteractRef` hook usage
+- Mount/unmount toggle button
+
+Exposed globals:
+
+- `window.Interact`: Reference to Interact class
+- `window.toggleMount()`: Function to mount/unmount component
+- `window.getControllerState()`: Function to check controller connection
+
+Test IDs: `interaction-component`, `ref-target`, `mount-toggle-btn`
+
+### 2.10 Web Components Fixture
+
+File: [`packages/interact/e2e/fixtures/web-components.html`](packages/interact/e2e/fixtures/web-components.html) + [`web-components.ts`](packages/interact/e2e/fixtures/web-components.ts)
+
+Elements:
+
+- `<interact-element>` custom element
+- Attribute change test element
+- Lifecycle test element
+
+Exposed globals:
+
+- `window.customElements`: Check element registration
+- `window.getElementController()`: Function to get element's controller
+- `window.changeAttribute(attr, value)`: Function to change attribute
+
+Test IDs: `interact-element-target`, `attribute-test-element`, `lifecycle-test-element`
+
+---
+
+## Phase 3: Test Scaffolding (Titles Only)
 
 Create test files with `describe` blocks and empty `test()` stubs.
 
-### 2.1 Hover Trigger Suite
+### 3.1 Hover Trigger Suite
 
-File: [`e2e/interact/tests/hover-trigger.spec.ts`](e2e/interact/tests/hover-trigger.spec.ts)
+File: [`packages/interact/e2e/tests/hover-trigger.spec.ts`](packages/interact/e2e/tests/hover-trigger.spec.ts)
 
 ```
 describe('Hover Trigger')
@@ -260,9 +437,9 @@ describe('Hover Trigger')
     - should behave like hover on mouse interaction
 ```
 
-### 2.2 Click Trigger Suite
+### 3.2 Click Trigger Suite
 
-File: [`e2e/interact/tests/click-trigger.spec.ts`](e2e/interact/tests/click-trigger.spec.ts)
+File: [`packages/interact/e2e/tests/click-trigger.spec.ts`](packages/interact/e2e/tests/click-trigger.spec.ts)
 
 ```
 describe('Click Trigger')
@@ -278,9 +455,9 @@ describe('Click Trigger')
     - should behave like click on mouse interaction
 ```
 
-### 2.3 ViewEnter Trigger Suite
+### 3.3 ViewEnter Trigger Suite
 
-File: [`e2e/interact/tests/view-enter-trigger.spec.ts`](e2e/interact/tests/view-enter-trigger.spec.ts)
+File: [`packages/interact/e2e/tests/view-enter-trigger.spec.ts`](packages/interact/e2e/tests/view-enter-trigger.spec.ts)
 
 ```
 describe('ViewEnter Trigger')
@@ -298,9 +475,9 @@ describe('ViewEnter Trigger')
     - should remove effect state on viewport exit
 ```
 
-### 2.4 ViewProgress Trigger Suite
+### 3.4 ViewProgress Trigger Suite
 
-File: [`e2e/interact/tests/view-progress-trigger.spec.ts`](e2e/interact/tests/view-progress-trigger.spec.ts)
+File: [`packages/interact/e2e/tests/view-progress-trigger.spec.ts`](packages/interact/e2e/tests/view-progress-trigger.spec.ts)
 
 ```
 describe('ViewProgress Trigger')
@@ -314,9 +491,9 @@ describe('ViewProgress Trigger')
     - should animate elements independently based on their scroll position
 ```
 
-### 2.5 PointerMove Trigger Suite
+### 3.5 PointerMove Trigger Suite
 
-File: [`e2e/interact/tests/pointer-move-trigger.spec.ts`](e2e/interact/tests/pointer-move-trigger.spec.ts)
+File: [`packages/interact/e2e/tests/pointer-move-trigger.spec.ts`](packages/interact/e2e/tests/pointer-move-trigger.spec.ts)
 
 ```
 describe('PointerMove Trigger')
@@ -334,9 +511,9 @@ describe('PointerMove Trigger')
     - should handle scaleX/scaleY independently
 ```
 
-### 2.6 Conditional Effects Suite
+### 3.6 Conditional Effects Suite
 
-File: [`e2e/interact/tests/conditional-effects.spec.ts`](e2e/interact/tests/conditional-effects.spec.ts)
+File: [`packages/interact/e2e/tests/conditional-effects.spec.ts`](packages/interact/e2e/tests/conditional-effects.spec.ts)
 
 ```
 describe('Conditional Effects')
@@ -351,9 +528,9 @@ describe('Conditional Effects')
     - should apply spin effect to :nth-child(odd) elements
 ```
 
-### 2.7 Effect Types Suite
+### 3.7 Effect Types Suite
 
-File: [`e2e/interact/tests/effect-types.spec.ts`](e2e/interact/tests/effect-types.spec.ts)
+File: [`packages/interact/e2e/tests/effect-types.spec.ts`](packages/interact/e2e/tests/effect-types.spec.ts)
 
 ```
 describe('Effect Types')
@@ -369,9 +546,9 @@ describe('Effect Types')
     - should apply fill mode correctly
 ```
 
-### 2.8 List Container Suite
+### 3.8 List Container Suite
 
-File: [`e2e/interact/tests/list-container.spec.ts`](e2e/interact/tests/list-container.spec.ts)
+File: [`packages/interact/e2e/tests/list-container.spec.ts`](packages/interact/e2e/tests/list-container.spec.ts)
 
 ```
 describe('List Container')
@@ -383,9 +560,9 @@ describe('List Container')
     - should clean up removed list items
 ```
 
-### 2.9 State Management Suite
+### 3.9 State Management Suite
 
-File: [`e2e/interact/tests/state-management.spec.ts`](e2e/interact/tests/state-management.spec.ts)
+File: [`packages/interact/e2e/tests/state-management.spec.ts`](packages/interact/e2e/tests/state-management.spec.ts)
 
 ```
 describe('State Management')
@@ -399,9 +576,9 @@ describe('State Management')
     - should update after state changes
 ```
 
-### 2.10 React Integration Suite
+### 3.10 React Integration Suite
 
-File: [`e2e/interact/tests/react-integration.spec.ts`](e2e/interact/tests/react-integration.spec.ts)
+File: [`packages/interact/e2e/tests/react-integration.spec.ts`](packages/interact/e2e/tests/react-integration.spec.ts)
 
 ```
 describe('React Integration')
@@ -414,9 +591,9 @@ describe('React Integration')
     - should handle ref reassignment
 ```
 
-### 2.11 Web Components Integration Suite
+### 3.11 Web Components Integration Suite
 
-File: [`e2e/interact/tests/web-components-integration.spec.ts`](e2e/interact/tests/web-components-integration.spec.ts)
+File: [`packages/interact/e2e/tests/web-components-integration.spec.ts`](packages/interact/e2e/tests/web-components-integration.spec.ts)
 
 ```
 describe('Web Components Integration')
@@ -431,135 +608,135 @@ describe('Web Components Integration')
 
 ---
 
-## Phase 3: Test Implementation
+## Phase 4: Test Implementation
 
-### 3.1 Implement Hover Trigger Tests
+### 4.1 Implement Hover Trigger Tests
 
-- Navigate to `/hover` test page
-- Use `page.getByTestId('hover-target').hover()` to trigger animations
+- Navigate to hover fixture page
+- Implement hover trigger tests using `page.hover()` and `page.locator().hover()`
 - Assert on transform/opacity changes using `getComputedStyle`
+- Call `window.getActiveEffects()` to verify effect state
 - Test rapid hover with programmatic mouse events
-- Test toggle method with `hover-toggle-target`
-- Test interest trigger (a11y) with focus events
 
-### 3.2 Implement Click Trigger Tests
+### 4.2 Implement Click Trigger Tests
 
-- Navigate to `/click` test page
+- Navigate to click fixture page
 - Use `page.getByTestId('click-target').click()` to trigger
 - Assert animation plays via style changes
 - Test keyboard accessibility with `page.keyboard.press('Enter')` and `Space`
-- Test toggle method with `click-toggle-target`
+- Assert on `window.clickCount` for event tracking
 
-### 3.3 Implement ViewEnter Trigger Tests
+### 4.3 Implement ViewEnter Trigger Tests
 
-- Navigate to `/view-enter` test page
-- Use `page.getByTestId('view-once').scrollIntoViewIfNeeded()` for viewport entry
+- Navigate to view-enter fixture page
+- Use `scrollIntoViewIfNeeded()` for viewport entry
 - Use scroll helpers to scroll elements out of viewport
-- Test all four types: `once`, `repeat`, `alternate`, `state`
-- Assert on animation state changes for each type
+- Call `window.getElementState(testId)` to verify animation state
+- Assert on `window.viewEnterEvents` for event tracking
 
-### 3.4 Implement ViewProgress Trigger Tests
+### 4.4 Implement ViewProgress Trigger Tests
 
-- Navigate to `/view-progress` test page
-- Use `page.mouse.wheel()` to simulate scroll gestures on `scroll-container`
-- Assert on transform values at different scroll positions for `scroll-target-{n}` elements
-- Verify progress-based opacity changes
-- Test range configuration with different rangeStart/rangeEnd values
+- Navigate to view-progress fixture page
+- Use `page.mouse.wheel()` to simulate scroll gestures
+- Call `window.getScrollProgress(testId)` to verify progress values
+- Assert on element transform/opacity changes during scroll
 
-### 3.5 Implement PointerMove Trigger Tests
+### 4.5 Implement PointerMove Trigger Tests
 
-- Navigate to `/pointer-move` test page
-- Use `page.mouse.move(x, y)` within `pointer-container` bounds
-- Assert `pointer-target` position matches mouse position
-- Test X-axis and Y-axis configurations
-- Verify composite transforms with `pointer-composite` element
+- Navigate to pointer-move fixture page
+- Implement axis tests using `page.mouse.move()` with coordinates
+- Call `window.getPointerProgress()` to verify x/y progress
+- Test composite operations by verifying independent transform values
+- Use `getComputedStyle` to verify transform matrix
 
-### 3.6 Implement Conditional Effects Tests
+### 4.6 Implement Conditional Effects Tests
 
-- Navigate to `/conditional` test page
-- Use `page.setViewportSize()` to test breakpoints: `{width: 1200, height: 800}`, `{width: 900, height: 800}`, `{width: 600, height: 800}`
-- Trigger interaction and verify correct target (`desktop-target`, `tablet-target`, `mobile-target`) animates
-- Test selector conditions with nth-child patterns
+- Navigate to conditional fixture page
+- Use `page.setViewportSize()` to test breakpoints
+- Assert on `window.activeCondition` for correct media query
+- Call `window.triggerAnimation()` and verify correct effect applies
+- Call `window.getMatchedSelectors()` to verify selector matching
 
-### 3.7 Implement Effect Types Tests
+### 4.7 Implement Effect Types Tests
 
-- Create dedicated sections in test pages for each effect type
+- Navigate to relevant fixture pages
 - Test TimeEffect with duration, easing, iterations
 - Test TransitionEffect with transitionProperties
 - Test KeyframeEffect with custom keyframe sequences
 - Assert on specific style property changes
 
-### 3.8 Implement List Container Tests
+### 4.8 Implement List Container Tests
 
-- Navigate to `/list-container` test page
-- Scroll `list-container` into view
-- Verify all `list-item-{n}` elements receive effects
-- Test selector conditions (even/odd patterns)
-- Test dynamic list item addition/removal
+- Navigate to list-container fixture page
+- Scroll list-container into view
+- Call `window.getListItemStates()` to verify all items receive effects
+- Call `window.addListItem()` and `window.removeListItem()` to test dynamic behavior
 
-### 3.9 Implement State Management Tests
+### 4.9 Implement State Management Tests
 
-- Navigate to `/state` test page
-- Use `page.getByTestId('toggle-add-btn').click()` to add effect
-- Use `page.evaluate()` to call `getActiveEffects()` on exposed controller
-- Verify state changes with add, remove, toggle, clear methods
-- Assert on `state-target` visual state changes
+- Navigate to state-management fixture page
+- Click control buttons to test add/remove/toggle/clear
+- Call `window.getActiveEffects()` to verify state changes
+- Assert on visual state changes of `state-target`
 
-### 3.10 Implement React Integration Tests
+### 4.10 Implement React Integration Tests
 
-- Navigate to `/react` test page
+- Navigate to react-integration fixture page
 - Verify `<Interaction>` component renders with correct tagName
-- Use `page.evaluate()` to verify element is connected via `Interact.getController()`
-- Test mount/unmount behavior with React state changes
-- Test `createInteractRef` hook behavior with `ref-target`
+- Call `window.getControllerState()` to verify element connection
+- Use `window.toggleMount()` to test mount/unmount behavior
 
-### 3.11 Implement Web Components Integration Tests
+### 4.11 Implement Web Components Integration Tests
 
-- Navigate to `/web` test page
-- Verify `<interact-element>` custom element is defined
-- Test `data-interact-key` attribute reading
-- Test connectedCallback/disconnectedCallback lifecycle
-- Verify element methods (connect, disconnect, toggleEffect)
+- Navigate to web-components fixture page
+- Verify `<interact-element>` custom element is defined via `window.customElements`
+- Call `window.getElementController()` to verify controller connection
+- Use `window.changeAttribute()` to test attribute handling
 
 ---
 
-## Phase 4: CI Integration
+## Phase 5: CI Integration
 
-Update [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+Update [`.github/workflows/ci.yml`](.github/workflows/ci.yml) to:
 
-- Install Playwright browsers: `npx playwright install --with-deps`
-- Run `yarn test:e2e:interact` after unit tests
-- Upload HTML report and screenshots as artifacts on failure
+- Install Playwright browsers (`npx playwright install --with-deps chromium`)
+- Run `yarn workspace @wix/interact test:e2e` after unit tests
+- Upload HTML report as artifact on failure
+- Cache Playwright browsers for faster CI runs
 
 ---
 
 ## File Structure
 
 ```
-e2e/
-  interact/
-    harness/
-      src/
-        pages/
-          HoverTestPage.tsx
-          ClickTestPage.tsx
-          ViewEnterTestPage.tsx
-          ViewProgressTestPage.tsx
-          PointerMoveTestPage.tsx
-          ConditionalTestPage.tsx
-          ListContainerTestPage.tsx
-          StateManagementTestPage.tsx
-          ReactIntegrationTestPage.tsx
-          WebComponentsTestPage.tsx
-        App.tsx
-        main.tsx
-        styles.css
-      index.html
-      package.json
+packages/interact/
+  e2e/
+    fixtures/
       vite.config.ts
-      tsconfig.json
+      index.html                      # Entry with links to all fixtures
+      hover.html
+      hover.tsx
+      click.html
+      click.tsx
+      view-enter.html
+      view-enter.tsx
+      view-progress.html
+      view-progress.tsx
+      pointer-move.html
+      pointer-move.tsx
+      conditional.html
+      conditional.tsx
+      list-container.html
+      list-container.tsx
+      state-management.html
+      state-management.tsx
+      react-integration.html
+      react-integration.tsx
+      web-components.html
+      web-components.ts               # No React needed for Web Components
+      styles.css                      # Shared minimal styles
     pages/
-      base-page.ts
+      base-fixture-page.ts
       hover-page.ts
       click-page.ts
       view-enter-page.ts
@@ -587,18 +764,19 @@ e2e/
       state-management.spec.ts
       react-integration.spec.ts
       web-components-integration.spec.ts
-playwright.config.ts
+  playwright.config.ts
 ```
 
 ---
 
 ## Key Considerations
 
-- **Dedicated Test Harness**: The test harness at `e2e/interact/harness/` is separate from `apps/demo/` to ensure stable, test-focused pages that won't change independently
-- **Test IDs**: All interactive elements use `data-testid` attributes for reliable selection (e.g., `hover-target`, `click-toggle-target`)
-- **Exposed Controllers**: Test pages expose interaction controllers to `window` for direct API testing via `page.evaluate()`
-- **Shared Infrastructure**: The `playwright.config.ts` at root can define multiple projects for both `@wix/motion` and `@wix/interact` E2E tests
+- **Self-Contained**: All E2E infrastructure lives within `packages/interact/e2e/`, keeping tests close to the code they test
+- **Embedded Fixtures**: Following the same pattern as `@wix/motion`, test fixtures are served by a local Vite config without requiring a separate workspace package
+- **Test IDs**: All interactive elements use `data-testid` attributes for reliable selection
+- **Exposed Globals**: Test fixtures expose controllers and helper functions to `window` for direct API testing via `page.evaluate()`
+- **React Support**: The Vite config includes `@vitejs/plugin-react` for React integration test fixtures
+- **Source Testing**: Fixtures import from local `src/` via alias, testing against actual source code
 - **Animation Timing**: Use Playwright's `waitForFunction` or animation helpers to wait for animations to complete before asserting
 - **Scroll Simulation**: Use `page.mouse.wheel()` for realistic scroll behavior with ViewProgress tests
 - **Reduced Motion**: Consider adding tests that verify `prefers-reduced-motion` behavior
-- **Workspace Integration**: The harness package uses `workspace:*` dependencies to reference local `@wix/interact` and `@wix/motion` packages
