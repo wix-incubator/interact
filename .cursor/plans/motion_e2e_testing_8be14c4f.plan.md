@@ -1,6 +1,6 @@
 ---
 name: Motion E2E Testing
-overview: "Set up Playwright-based E2E test infrastructure for the @wix/motion package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite."
+overview: 'Set up Playwright-based E2E test infrastructure for the @wix/motion package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite.'
 todos:
   - id: install-playwright
     content: Install Playwright dependencies and add scripts to packages/motion/package.json
