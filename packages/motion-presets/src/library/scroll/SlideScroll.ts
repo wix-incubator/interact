@@ -6,7 +6,7 @@ import type {
   DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getAdjustedDirection, getClipPolygonParams, safeMapGet } from '../../utils';
+import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
 
 type Translate = { x: string; y: string };
 
@@ -74,16 +74,14 @@ const KEYFRAMES_RANGE_MAP: Record<
 };
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const { direction: rawDirection = 'bottom', range: rawRange = 'in' } = options.namedEffect as SlideScroll;
-  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'bottom';
-  const range = rawRange in KEYFRAMES_RANGE_MAP ? rawRange : 'in';
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as SlideScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
-  const oppositeDirection = safeMapGet(OPPOSITE_DIRECTION_MAP, direction, 'bottom');
+  const oppositeDirection = OPPOSITE_DIRECTION_MAP[direction];
 
-  const keyframes = safeMapGet(KEYFRAMES_RANGE_MAP, range, 'in')(
+  const keyframes = KEYFRAMES_RANGE_MAP[range](
     {
       from: getClipPolygonParams({
         direction: oppositeDirection,
@@ -93,8 +91,8 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       }),
     },
     {
-      from: safeMapGet(DIRECTION_TRANSLATION_MAP, direction, 'bottom'),
-      to: safeMapGet(DIRECTION_TRANSLATION_MAP, oppositeDirection, 'top'),
+      from: DIRECTION_TRANSLATION_MAP[direction],
+      to: DIRECTION_TRANSLATION_MAP[oppositeDirection],
     },
   );
 

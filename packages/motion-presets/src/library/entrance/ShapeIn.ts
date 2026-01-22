@@ -1,5 +1,5 @@
 import type { Shape, ShapeIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
+import { getMapValue, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-shapeIn'];
@@ -19,17 +19,18 @@ const shapes: Record<Shape, { start: string; end: string }> = {
   ellipse: { start: 'ellipse(0% 0%)', end: 'ellipse(75% 75%)' },
 };
 
+const DEFAULT_SHAPE = 'rectangle';
+
 export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { shape: rawShape = 'rectangle' } = options.namedEffect as ShapeIn;
+  const { shape = DEFAULT_SHAPE } = options.namedEffect as ShapeIn;
   const [fadeIn, shapeIn] = getNames(options);
   const easing = options.easing || 'cubicInOut';
 
-  const shape = rawShape in shapes ? rawShape : 'rectangle';
-  const { start, end } = safeMapGet(shapes, shape, 'rectangle');
+  const { start, end } = getMapValue(shapes, shape, shapes[DEFAULT_SHAPE]);
 
   const custom = {
     '--motion-shape-start': start,

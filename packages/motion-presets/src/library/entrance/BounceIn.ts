@@ -1,4 +1,4 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, getMapValue } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -37,17 +37,19 @@ export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
+const DEFAULT_DIRECTION = 'bottom';
+
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
     power,
     distanceFactor: distance = 1,
-    direction: rawDirection = 'bottom',
+    direction = DEFAULT_DIRECTION,
   } = options.namedEffect as BounceIn;
   const [fadeIn, bounceIn] = getNames(options);
-  const distanceFactor = power ? safeMapGet(POWER_MAP, power, 'medium') : distance;
-  const safeDirection = rawDirection in TRANSLATE_DIRECTION_MAP ? rawDirection : 'bottom';
+  const distanceFactor = getMapValue(POWER_MAP, power, distance);
+  const safeDirection = direction in TRANSLATE_DIRECTION_MAP ? direction : DEFAULT_DIRECTION;
   const perspective = safeDirection === 'center' ? 'perspective(800px)' : ' ';
-  const { x, y, z } = safeMapGet(TRANSLATE_DIRECTION_MAP, rawDirection, 'bottom');
+  const { x, y, z } = TRANSLATE_DIRECTION_MAP[safeDirection];
 
   const custom = {
     '--motion-direction-x': x,

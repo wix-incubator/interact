@@ -1,5 +1,4 @@
 import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll } from '../../types';
-import { safeMapGet } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 
@@ -55,8 +54,8 @@ const RANGES_MAP = {
 };
 
 function getScrubOffsets({ power, range = 'in', speed = 0 }: Spin3dScroll) {
-  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
-  const offset = (powerParams ? powerParams.travelY : Math.abs(speed)) * MAX_Y_TRAVEL;
+  const offset =
+    (power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed)) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -65,16 +64,16 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: Spin3dScroll) {
 }
 
 export default function create(options: ScrubAnimationOptions) {
-  const { rotate = -100, power, range: rawRange = 'in', speed = 0 } = options.namedEffect as Spin3dScroll;
+  const { rotate = -100, power, range = 'in', speed = 0 } = options.namedEffect as Spin3dScroll;
   const easing = 'linear';
-  const range = rawRange in RANGES_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const initialParams = power ? safeMapGet(POWER_MAP, power, 'medium') : { rotationZ: rotate, travelY: speed };
+  const initialParams =
+    power && POWER_MAP[power] ? POWER_MAP[power] : { rotationZ: rotate, travelY: speed };
 
-  const { fromValues, toValues } = safeMapGet(RANGES_MAP, range, 'in')(
+  const { fromValues, toValues } = RANGES_MAP[range](
     initialParams.rotationZ,
     initialParams.travelY * -MAX_Y_TRAVEL,
   );

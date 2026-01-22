@@ -1,6 +1,5 @@
 import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
-import { safeMapGet } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 
@@ -63,8 +62,11 @@ const RANGES_MAP = {
   },
 };
 
-function getYTravel(distance: number, power?: string) {
-  return (power ? safeMapGet(TRANSLATE_Y_POWER_MAP, power, 'medium') : distance) * MAX_Y_TRAVEL;
+function getYTravel(distance: number, power?: keyof typeof TRANSLATE_Y_POWER_MAP) {
+  return (
+    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance) *
+    MAX_Y_TRAVEL
+  );
 }
 
 function getScrubOffsets({ power, range = 'in', distance = 0 }: TiltScroll) {
@@ -80,18 +82,17 @@ export default function create(options: ScrubAnimationOptions) {
   const {
     power,
     distance = 0,
-    range: rawRange = 'in',
-    direction: rawDirection = 'right',
+    range = 'in',
+    direction = 'right',
   } = options.namedEffect as TiltScroll;
   const easing = 'linear';
-  const range = rawRange in RANGES_MAP ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { from, to } = safeMapGet(RANGES_MAP, rawRange, 'in');
+  const { from, to } = RANGES_MAP[range];
 
-  const dir = safeMapGet(DIRECTIONS_MAP, rawDirection, 'right');
+  const dir = DIRECTIONS_MAP[direction];
   const rotateZFrom = Math.abs(from.z) * ROTATION_Z * dir * (from.z < 0 ? -1 : 1);
   const rotateZTo = Math.abs(to.z) * ROTATION_Z * dir * (to.z < 0 ? -1 : 1);
 

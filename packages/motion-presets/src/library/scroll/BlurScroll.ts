@@ -1,5 +1,4 @@
 import type { AnimationFillMode, BlurScroll, ScrubAnimationOptions } from '../../types';
-import { safeMapGet } from '../../utils';
 
 const BLUR_POWER_MAP = {
   soft: 6,
@@ -8,9 +7,8 @@ const BLUR_POWER_MAP = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const { blur = 6, power, range: rawRange = 'in' } = options.namedEffect as BlurScroll;
-  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'in';
-  const blurFactor = power ? safeMapGet(BLUR_POWER_MAP, power, 'medium') : blur;
+  const { blur = 6, power, range = 'in' } = options.namedEffect as BlurScroll;
+  const blurFactor = power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;
 
   const fromValue = range === 'out' ? 0 : blurFactor;
   const toValue = range === 'out' ? blurFactor : 0;

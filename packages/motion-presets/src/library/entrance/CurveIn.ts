@@ -1,5 +1,5 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, getMapValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn'];
@@ -12,6 +12,8 @@ const PARAMS_MAP = {
   left: { rotationX: '0', rotationY: '-180' },
 };
 
+const DEFAULT_DIRECTION = 'right';
+
 export function web(options: TimeAnimationOptions, dom?: DomApi) {
   prepare(options, dom);
 
@@ -19,10 +21,10 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction: rawDirection = 'right' } = options.namedEffect as CurveIn;
+  const { direction = DEFAULT_DIRECTION } = options.namedEffect as CurveIn;
   const [curveIn] = getNames(options);
 
-  const { rotationX, rotationY } = safeMapGet(PARAMS_MAP, rawDirection, 'right');
+  const { rotationX, rotationY } = getMapValue(PARAMS_MAP, direction, PARAMS_MAP[DEFAULT_DIRECTION]);
 
   const custom = {
     '--motion-rotate-x': `${rotationX}deg`,

@@ -1,5 +1,4 @@
 import { AnimationFillMode, GrowScroll, ScrubAnimationOptions } from '../../types';
-import { safeMapGet } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const POWER_MAP = {
@@ -36,8 +35,8 @@ const RANGES_MAP = {
 };
 
 function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
-  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
-  const offset = powerParams ? powerParams.travelY : Math.abs(speed) * MAX_Y_TRAVEL;
+  const offset =
+    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -48,30 +47,29 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
 export default function create(options: ScrubAnimationOptions) {
   const {
     power,
-    range: rawRange = 'in',
-    scale: scaleParam,
-    direction: rawDirection = 'center',
+    range = 'in',
+    scale = range === 'in' ? POWER_MAP.hard.scaleFrom : POWER_MAP.hard.scaleTo,
+    direction = 'center',
     speed = 0,
   } = options.namedEffect as GrowScroll;
 
-  const range = rawRange in RANGES_MAP ? rawRange : 'in';
-  const direction = rawDirection in directionMap ? rawDirection : 'center';
-  const scale = scaleParam ?? (range === 'in' ? POWER_MAP.hard.scaleFrom : POWER_MAP.hard.scaleTo);
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
-  const powerParams = power ? safeMapGet(POWER_MAP, power, 'medium') : null;
-  const { scaleFrom, scaleTo, travelY } = powerParams ?? {
-    scaleFrom: scale,
-    scaleTo: scale,
-    travelY: speed,
-  };
+  const { scaleFrom, scaleTo, travelY } =
+    power && POWER_MAP[power]
+      ? POWER_MAP[power]
+      : {
+          scaleFrom: scale,
+          scaleTo: scale,
+          travelY: speed,
+        };
 
-  const { fromValues, toValues } = safeMapGet(RANGES_MAP, range, 'in')(scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
+  const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
 
   const { start, end } = getScrubOffsets(options.namedEffect as GrowScroll);
-  const [trnsX, trnsY] = safeMapGet(directionMap, direction, 'center');
+  const [trnsX, trnsY] = directionMap[direction];
 
   return [
     {

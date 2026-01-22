@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions, FloatIn } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, safeMapGet } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, getMapValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-floatIn'];
@@ -12,14 +12,16 @@ const PARAMS_MAP = {
   left: { dx: -1, dy: 0, distance: 120 },
 };
 
+const DEFAULT_DIRECTION = 'left';
+
 export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction: rawDirection = 'left' } = options.namedEffect as FloatIn;
+  const { direction = DEFAULT_DIRECTION } = options.namedEffect as FloatIn;
   const [floatIn] = getNames(options);
-  const fromParams = safeMapGet(PARAMS_MAP, rawDirection, 'left');
+  const fromParams = getMapValue(PARAMS_MAP, direction, PARAMS_MAP[DEFAULT_DIRECTION]);
 
   const translateX = fromParams.dx * fromParams.distance;
   const translateY = fromParams.dy * fromParams.distance;

@@ -368,18 +368,10 @@ export function getTimingFactor(
   return asString ? timingFactor.toString().replace(/\./g, '') : timingFactor;
 }
 
-/**
- * Safely access a map value with a fallback to a default key if the provided key is invalid.
- * Prevents runtime errors when LLM or external data provides unexpected values.
- * For power maps, use 'medium' as the default key.
- */
-export function safeMapGet<T>(
+export function getMapValue<T>(
   map: Record<string, T>,
   key: string | undefined,
-  defaultKey: string,
+  fallback: T,
 ): T {
-  if (key && key in map) {
-    return map[key];
-  }
-  return map[defaultKey];
+  return (key && key in map) ? map[key] : fallback;
 }

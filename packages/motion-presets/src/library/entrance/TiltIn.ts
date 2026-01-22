@@ -3,7 +3,7 @@ import {
   getClipPolygonParams,
   INITIAL_FRAME_OFFSET,
   toKeyframeValue,
-  safeMapGet,
+  getMapValue,
 } from '../../utils';
 import type { TiltIn, TimeAnimationOptions, DomApi } from '../../types';
 
@@ -17,6 +17,8 @@ const ROTATION_MAP = {
 };
 
 const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as (keyof typeof ROTATION_MAP)[];
+
+const DEFAULT_DIRECTION = 'left';
 
 function getClipStart(rotateZ: number) {
   const clipDirection = getAdjustedDirection(
@@ -38,12 +40,12 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction: rawDirection = 'left' } = options.namedEffect as TiltIn;
+  const { direction = DEFAULT_DIRECTION } = options.namedEffect as TiltIn;
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);
 
   const easing = options.easing || 'cubicOut';
   const clipStart = getClipStart(0);
-  const rotationZ = safeMapGet(ROTATION_MAP, rawDirection, 'left');
+  const rotationZ = getMapValue(ROTATION_MAP, direction, ROTATION_MAP[DEFAULT_DIRECTION]);
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
   const translateZ = '(var(--motion-height, 200px) / 2)';
 

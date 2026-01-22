@@ -1,5 +1,4 @@
 import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../../types';
-import { safeMapGet } from '../../utils';
 
 const ROTATE_POWER_MAP = {
   soft: 60,
@@ -15,14 +14,13 @@ const ROTATE_DIRECTION_MAP = {
 export default function create(options: ScrubAnimationOptions) {
   const {
     rotate = 240,
-    direction: rawDirection = 'horizontal',
+    direction = 'horizontal',
     power,
-    range: rawRange = 'continuous',
+    range = 'continuous',
   } = options.namedEffect as FlipScroll;
 
-  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'continuous';
-  const rotationAxis = safeMapGet(ROTATE_DIRECTION_MAP, rawDirection, 'horizontal');
-  const flipValue = power ? safeMapGet(ROTATE_POWER_MAP, power, 'medium') : rotate;
+  const rotationAxis = ROTATE_DIRECTION_MAP[direction];
+  const flipValue = power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
 
   // const { fromValue, toValue } = rangeValues[range](rotation);
   const fromValue = range === 'out' ? 0 : -flipValue;

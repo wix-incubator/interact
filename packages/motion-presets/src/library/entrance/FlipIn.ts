@@ -1,4 +1,4 @@
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
+import { getAdjustedDirection, getMapValue, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { FlipIn, TimeAnimationOptions, DomApi } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -15,12 +15,11 @@ const POWER_TO_ROTATE_MAP = {
   hard: 270,
 };
 
-function getRotateFrom(direction: string, rotate: number) {
-  const rotateParams = safeMapGet(ROTATE_MAP, direction, 'top');
-  return {
-    x: rotateParams.x * rotate,
-    y: rotateParams.y * rotate,
-  };
+const DEFAULT_DIRECTION = 'top';
+
+function getRotateFrom(direction: Direction, rotate: number) {
+  const params = getMapValue(ROTATE_MAP, direction, ROTATE_MAP[DEFAULT_DIRECTION]);
+  return { x: params.x * rotate, y: params.y * rotate };
 }
 
 const ROTATE_MAP: Record<Direction, { x: number; y: number }> = {
@@ -37,11 +36,10 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
+  const { direction = DEFAULT_DIRECTION, power, initialRotate = 90 } = options.namedEffect as FlipIn;
   const [fadeIn, flipIn] = getNames(options);
-  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
-  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
-  const easing = options.easing || 'backOut';
+  const rotate = getMapValue(POWER_TO_ROTATE_MAP, power, initialRotate);
+  const easing = options.easing || 'backOut'; 
 
   const from = getRotateFrom(direction, rotate);
 
@@ -77,29 +75,13 @@ export function style(options: TimeAnimationOptions) {
 }
 
 export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction: rawDirection = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
+  const { direction = DEFAULT_DIRECTION, power, initialRotate = 90 } = options.namedEffect as FlipIn;
 
-  const direction = DIRECTIONS.includes(rawDirection) ? rawDirection : 'top';
-  const rotate = power ? safeMapGet(POWER_TO_ROTATE_MAP, power, 'medium') : initialRotate;
+  const rotate = getMapValue(POWER_TO_ROTATE_MAP, power, initialRotate);
 
   if (dom) {
-    let adjustedDirection: string = direction;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-      adjustedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        parseInt(rotation, 10),
-      ) as (typeof DIRECTIONS)[number];
-    });
-
     dom.mutate((target) => {
-      const from = getRotateFrom(adjustedDirection, rotate);
+      const from = getRotateFrom(direction, rotate);
 
       target?.style.setProperty('--motion-rotate-x', `${from.x}deg`);
       target?.style.setProperty('--motion-rotate-y', `${from.y}deg`);

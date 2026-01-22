@@ -34,9 +34,7 @@ function getClipTo(direction: EffectFourDirections, range: RevealScroll['range']
 }
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const { direction: rawDirection = 'bottom', range: rawRange = 'in' } = options.namedEffect as RevealScroll;
-  const direction = DIRECTIONS.includes(rawDirection as any) ? rawDirection : 'bottom';
-  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'in';
+  const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

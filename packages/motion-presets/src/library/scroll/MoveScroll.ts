@@ -1,5 +1,5 @@
 import type { AnimationFillMode, DomApi, MoveScroll, ScrubAnimationOptions } from '../../types';
-import { getCssUnits, safeMapGet } from '../../utils';
+import { getCssUnits } from '../../utils';
 import { transformPolarToXY } from '../../utils';
 
 const POWER_MAP = {
@@ -29,7 +29,7 @@ function getScrubOffsets({
   power,
   range = 'in',
 }: MoveScroll) {
-  const travel = power ? safeMapGet(POWER_MAP, power, 'medium') : distance;
+  const travel = power ? POWER_MAP[power] : distance;
   const [, travelY] = transformPolarToXY(angle - 90, travel.value);
   const isTravelingDownwards = (travelY < 0 && range !== 'out') || (travelY > 0 && range === 'out');
 
@@ -52,13 +52,12 @@ export default function create(
     power,
     distance = { value: 400, type: 'px' },
     angle = 210,
-    range: rawRange = 'in',
+    range = 'in',
   } = options.namedEffect as MoveScroll;
 
-  const range = rawRange in RANGES_MAP ? rawRange : 'in';
-  const travel = power ? safeMapGet(POWER_MAP, power, 'medium') : distance;
+  const travel = power ? POWER_MAP[power] : distance;
   const [travelX, travelY] = transformPolarToXY(angle - 90, travel.value);
-  const { fromValue, toValue } = safeMapGet(RANGES_MAP, range, 'in')(Math.round(travelX), Math.round(travelY));
+  const { fromValue, toValue } = RANGES_MAP[range](Math.round(travelX), Math.round(travelY));
   const unit = getCssUnits(travel.type);
   const easing = 'linear';
   const fill = (

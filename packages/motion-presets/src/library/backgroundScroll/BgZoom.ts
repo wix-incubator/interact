@@ -1,5 +1,5 @@
 import type { BgZoom, RangeOffset, ScrubAnimationOptions, DomApi } from '../../types';
-import { roundNumber, safeMapGet } from '../../utils';
+import { roundNumber } from '../../utils';
 import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
 const PERSPECTIVE = 100;
@@ -17,8 +17,7 @@ const DIRECTION_TO_PARAMS = {
 };
 
 export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const { direction: rawDirection = 'in' } = options.namedEffect as BgZoom;
-  const direction = rawDirection in DIRECTION_TO_PARAMS ? rawDirection : 'in';
+  const { direction = 'in' } = options.namedEffect as BgZoom;
   const isIn = direction === 'in';
 
   const measures = { compHeight: 0 };
@@ -26,7 +25,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
     measureCompHeight(measures, dom, isIn);
   }
 
-  const { easing, fromY } = safeMapGet(DIRECTION_TO_PARAMS, direction, 'in');
+  const { easing, fromY } = DIRECTION_TO_PARAMS[direction];
   let { zoom = DEFAULT_ZOOM } = options.namedEffect as BgZoom;
   if (!isIn) {
     zoom *= ZOOM_OUT_FACTOR;

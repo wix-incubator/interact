@@ -1,5 +1,5 @@
 import type { BlurIn, TimeAnimationOptions } from '../../types';
-import { toKeyframeValue, safeMapGet } from '../../utils';
+import { toKeyframeValue, getMapValue } from '../../utils';
 
 const BLUR_POWER_MAP = {
   soft: 6,
@@ -20,7 +20,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, blurIn] = getNames(options);
 
   const easing = options.easing || 'linear';
-  const blurFactor = power ? safeMapGet(BLUR_POWER_MAP, power, 'medium') : blur;
+  const blurFactor = getMapValue(BLUR_POWER_MAP, power, blur);
 
   const custom = {
     '--motion-blur': `${blurFactor}px`,

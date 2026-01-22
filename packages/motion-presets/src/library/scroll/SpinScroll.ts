@@ -1,5 +1,4 @@
 import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll } from '../../types';
-import { safeMapGet } from '../../utils';
 
 const POWER_MAP = {
   soft: 1,
@@ -16,19 +15,18 @@ export default function create(options: ScrubAnimationOptions) {
   const {
     spins = 0.15,
     scale = 1,
-    direction: rawDirection = 'clockwise',
+    direction = 'clockwise',
     power,
-    range: rawRange = 'in',
+    range = 'in',
   } = options.namedEffect as SpinScroll;
   const easing = 'linear';
-  const range = ['in', 'out', 'continuous'].includes(rawRange) ? rawRange : 'in';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const spinDirection = safeMapGet(DIRECTION_MAP, rawDirection, 'clockwise');
+  const spinDirection = DIRECTION_MAP[direction];
   const rotationZ = spins * 360;
-  const scaleFactor = power ? safeMapGet(POWER_MAP, power, 'medium') : scale;
+  const scaleFactor = power && POWER_MAP[power] ? POWER_MAP[power] : scale;
   const isIn = range === 'in';
 
   const fromValue = isIn ? -rotationZ : range === 'out' ? 0 : -rotationZ / 2;

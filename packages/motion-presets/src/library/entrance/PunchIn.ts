@@ -1,4 +1,4 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, safeMapGet } from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, getMapValue } from '../../utils';
 import type { PunchIn, TimeAnimationOptions, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 
@@ -20,6 +20,9 @@ const POWER_MAP = {
   hard: 'quintIn',
 };
 
+const DEFAULT_DIRECTION = 'top-right';
+const DEFAULT_POWER = 'medium';
+
 function getMidPoint(x: number, y: number, factor: number) {
   return {
     x: `calc(var(--motion-width, 100%) * 1.1 / 3 * ${x} * ${factor})`,
@@ -34,10 +37,10 @@ export function web(options: TimeAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction: rawDirection = 'top-right', power: rawPower = 'medium' } = options.namedEffect as PunchIn;
+  const { direction = DEFAULT_DIRECTION, power = DEFAULT_POWER } = options.namedEffect as PunchIn;
   const [fadeIn, punchIn] = getNames(options);
-  const translationFactors = safeMapGet(TRANSLATION_FACTORS_MAP, rawDirection, 'top-right');
-  const easing = safeMapGet(POWER_MAP, rawPower, 'medium');
+  const translationFactors = getMapValue(TRANSLATION_FACTORS_MAP, direction, TRANSLATION_FACTORS_MAP[DEFAULT_DIRECTION]);
+  const easing = getMapValue(POWER_MAP, power, POWER_MAP[DEFAULT_POWER]);
 
   const sourcePoint = {
     x: `calc(var(--motion-width, 100%) * 1.1 / 2 * ${translationFactors.x})`,
