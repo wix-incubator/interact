@@ -29,6 +29,9 @@ todos:
   - id: test-fixtures-conditional
     content: Create test fixture page for conditional effects (media queries, selectors)
     status: pending
+  - id: test-fixtures-effect-types
+    content: Create test fixture page for effect types (time, transition, keyframe)
+    status: pending
   - id: test-fixtures-list-container
     content: Create test fixture page for list container effects
     status: pending
@@ -215,6 +218,8 @@ Create [`packages/interact/e2e/pages/`](packages/interact/e2e/pages/) directory 
 
 | `conditional-page.ts` | Page object for conditional effects fixture |
 
+| `effect-types-page.ts` | Page object for effect types fixture |
+
 | `list-container-page.ts` | Page object for list container fixture |
 
 | `state-management-page.ts` | Page object for state management fixture |
@@ -342,7 +347,27 @@ Exposed globals:
 
 Test IDs: `desktop-target`, `tablet-target`, `mobile-target`, `trigger-btn`, `selector-grid`, `selector-item-{n}`
 
-### 2.7 List Container Fixture
+### 2.7 Effect Types Fixture
+
+File: [`packages/interact/e2e/fixtures/effect-types.html`](packages/interact/e2e/fixtures/effect-types.html) + [`effect-types.tsx`](packages/interact/e2e/fixtures/effect-types.tsx)
+
+Elements:
+
+- TimeEffect test element with configurable duration/easing/iterations
+- TransitionEffect test element with transitionProperties
+- KeyframeEffect test element with custom keyframes
+- Fill mode test element (none, forwards, backwards, both)
+
+Exposed globals:
+
+- `window.triggerTimeEffect()`: Function to trigger time-based effect
+- `window.triggerTransitionEffect()`: Function to trigger transition effect
+- `window.triggerKeyframeEffect()`: Function to trigger keyframe effect
+- `window.getEffectState(testId)`: Function to get effect state and computed styles
+
+Test IDs: `time-effect-target`, `transition-effect-target`, `keyframe-effect-target`, `fill-mode-target`, `effect-trigger-btn`
+
+### 2.8 List Container Fixture
 
 File: [`packages/interact/e2e/fixtures/list-container.html`](packages/interact/e2e/fixtures/list-container.html) + [`list-container.tsx`](packages/interact/e2e/fixtures/list-container.tsx)
 
@@ -360,7 +385,7 @@ Exposed globals:
 
 Test IDs: `list-container`, `list-item-{n}`, `add-item-btn`, `remove-item-btn`
 
-### 2.8 State Management Fixture
+### 2.9 State Management Fixture
 
 File: [`packages/interact/e2e/fixtures/state-management.html`](packages/interact/e2e/fixtures/state-management.html) + [`state-management.tsx`](packages/interact/e2e/fixtures/state-management.tsx)
 
@@ -377,7 +402,7 @@ Exposed globals:
 
 Test IDs: `state-target`, `toggle-add-btn`, `toggle-remove-btn`, `toggle-toggle-btn`, `toggle-clear-btn`
 
-### 2.9 React Integration Fixture
+### 2.10 React Integration Fixture
 
 File: [`packages/interact/e2e/fixtures/react-integration.html`](packages/interact/e2e/fixtures/react-integration.html) + [`react-integration.tsx`](packages/interact/e2e/fixtures/react-integration.tsx)
 
@@ -395,7 +420,7 @@ Exposed globals:
 
 Test IDs: `interaction-component`, `ref-target`, `mount-toggle-btn`
 
-### 2.10 Web Components Fixture
+### 2.11 Web Components Fixture
 
 File: [`packages/interact/e2e/fixtures/web-components.html`](packages/interact/e2e/fixtures/web-components.html) + [`web-components.ts`](packages/interact/e2e/fixtures/web-components.ts)
 
@@ -659,11 +684,12 @@ describe('Web Components Integration')
 
 ### 4.7 Implement Effect Types Tests
 
-- Navigate to relevant fixture pages
-- Test TimeEffect with duration, easing, iterations
-- Test TransitionEffect with transitionProperties
-- Test KeyframeEffect with custom keyframe sequences
-- Assert on specific style property changes
+- Navigate to effect-types fixture page
+- Call `window.triggerTimeEffect()` and verify duration, easing, iterations
+- Call `window.triggerTransitionEffect()` and verify transitionProperties applied
+- Call `window.triggerKeyframeEffect()` and verify custom keyframe sequences
+- Call `window.getEffectState(testId)` to verify computed styles
+- Test fill mode behavior with `fill-mode-target`
 
 ### 4.8 Implement List Container Tests
 
@@ -726,6 +752,8 @@ packages/interact/
       pointer-move.tsx
       conditional.html
       conditional.tsx
+      effect-types.html
+      effect-types.tsx
       list-container.html
       list-container.tsx
       state-management.html
@@ -743,6 +771,7 @@ packages/interact/
       view-progress-page.ts
       pointer-move-page.ts
       conditional-page.ts
+      effect-types-page.ts
       list-container-page.ts
       state-management-page.ts
       react-integration-page.ts
