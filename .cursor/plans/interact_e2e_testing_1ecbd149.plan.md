@@ -225,6 +225,8 @@ Create [`packages/interact/e2e/pages/`](packages/interact/e2e/pages/) directory 
 
 | `pointer-move-page.ts` | Page object for pointerMove trigger fixture |
 
+| `animation-end-page.ts` | Page object for animationEnd trigger fixture |
+
 | `conditional-page.ts` | Page object for conditional effects fixture |
 
 | `effect-types-page.ts` | Page object for effect types fixture |
@@ -805,6 +807,8 @@ packages/interact/
       view-progress.tsx
       pointer-move.html
       pointer-move.tsx
+      animation-end.html
+      animation-end.tsx
       conditional.html
       conditional.tsx
       effect-types.html
@@ -825,6 +829,7 @@ packages/interact/
       view-enter-page.ts
       view-progress-page.ts
       pointer-move-page.ts
+      animation-end-page.ts
       conditional-page.ts
       effect-types-page.ts
       list-container-page.ts
@@ -842,6 +847,7 @@ packages/interact/
       view-enter-trigger.spec.ts
       view-progress-trigger.spec.ts
       pointer-move-trigger.spec.ts
+      animation-end-trigger.spec.ts
       conditional-effects.spec.ts
       effect-types.spec.ts
       list-container.spec.ts
