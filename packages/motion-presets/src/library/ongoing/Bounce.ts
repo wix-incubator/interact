@@ -1,5 +1,7 @@
 import type { TimeAnimationOptions, Bounce, AnimationExtraOptions, DomApi } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue, mapRange, safeMapGet } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue, mapRange, getMapValue } from '../../utils';
+
+const DEFAULT_POWER = 'soft';
 
 const POWER_TO_BOUNCE_FACTOR_MAP = {
   soft: 1,
@@ -28,16 +30,16 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power = 'soft', intensity } = options.namedEffect as Bounce;
+  const { power = DEFAULT_POWER, intensity } = options.namedEffect as Bounce;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const bounceFactor = intensity
+  const bounceFactor = intensity !== undefined
     ? mapRange(0, 1, POWER_TO_BOUNCE_FACTOR_MAP.soft, POWER_TO_BOUNCE_FACTOR_MAP.hard, intensity)
-    : safeMapGet(POWER_TO_BOUNCE_FACTOR_MAP, power, 'medium');
+    : getMapValue(POWER_TO_BOUNCE_FACTOR_MAP, power, POWER_TO_BOUNCE_FACTOR_MAP[DEFAULT_POWER]);
   const easing = getEasing('sineOut');
 
   const custom = {

@@ -1,5 +1,7 @@
 import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions } from '../../types';
-import { getElementOffset, getTimingFactor } from '../../utils';
+import { getElementOffset, getMapValue, getTimingFactor } from '../../utils';
+
+const DEFAULT_DIRECTION = 'right';
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
   // 100cqw - left
@@ -40,7 +42,21 @@ const FOUR_CORNERS_TRANSLATIONS = {
   },
 };
 
-const TRANSLATE_BY_DIRECTION_MAP = {
+function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
+  const _from = FOUR_CORNERS_TRANSLATIONS[direction].from;
+  const _to = FOUR_CORNERS_TRANSLATIONS[direction].to;
+  const fromYFactor = direction.startsWith('top') ? 1 : -1;
+  const toYFactor = -fromYFactor;
+  const fromXFactor = direction.endsWith('left') ? 1 : -1;
+  const toXFactor = -fromXFactor;
+
+  return {
+    from: `calc(${_from} * ${fromXFactor}) calc(${_from} * ${fromYFactor})`,
+    to: `calc(${_to} * ${toXFactor}) calc(${_to} * ${toYFactor})`,
+  };
+}
+
+const TRANSLATE_BY_DIRECTION_MAP: Record<string, { from: string; to: string }> = {
   left: {
     from: `${RIGHT} 0`,
     to: `${LEFT} 0`,
@@ -57,6 +73,10 @@ const TRANSLATE_BY_DIRECTION_MAP = {
     from: `0 ${TOP}`,
     to: `0 ${BOTTOM}`,
   },
+  'top-left': generateTranslate('top-left'),
+  'top-right': generateTranslate('top-right'),
+  'bottom-left': generateTranslate('bottom-left'),
+  'bottom-right': generateTranslate('bottom-right'),
 };
 
 type HorizontalOffsetByDirectionParams = {
@@ -152,23 +172,8 @@ const GET_OFFSET_BY_DIRECTION_MAP = {
   },
 };
 
-function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
-  const _from = FOUR_CORNERS_TRANSLATIONS[direction].from;
-  const _to = FOUR_CORNERS_TRANSLATIONS[direction].to;
-  const fromYFactor = direction.startsWith('top') ? 1 : -1;
-  const toYFactor = -fromYFactor;
-  const fromXFactor = direction.endsWith('left') ? 1 : -1;
-  const toXFactor = -fromXFactor;
-
-  return {
-    from: `calc(${_from} * ${fromXFactor}) calc(${_from} * ${fromYFactor})`,
-    to: `calc(${_to} * ${toXFactor}) calc(${_to} * ${toYFactor})`,
-  };
-}
-
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  const { direction: rawDirection = 'right' } = options.namedEffect as Cross;
-  const direction = rawDirection in GET_OFFSET_BY_DIRECTION_MAP ? rawDirection : 'right';
+  const { direction = DEFAULT_DIRECTION } = options.namedEffect as Cross;
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
@@ -234,7 +239,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
       get keyframes() {
         // Calculate the timing offset for keyframes
         const toDurationOffset =
-          GET_OFFSET_BY_DIRECTION_MAP[direction]({
+          getMapValue(GET_OFFSET_BY_DIRECTION_MAP, direction, GET_OFFSET_BY_DIRECTION_MAP[DEFAULT_DIRECTION])({
             left,
             top,
             width,
@@ -243,18 +248,11 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
             parentHeight,
           }) * timingFactor;
 
-        let from, to;
-        if (direction in TRANSLATE_BY_DIRECTION_MAP) {
-          from =
-            TRANSLATE_BY_DIRECTION_MAP[direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP].from;
-          to = TRANSLATE_BY_DIRECTION_MAP[direction as keyof typeof TRANSLATE_BY_DIRECTION_MAP].to;
-        } else {
-          const cornerFromTo = generateTranslate(
-            direction as keyof typeof FOUR_CORNERS_TRANSLATIONS,
-          );
-          from = cornerFromTo.from;
-          to = cornerFromTo.to;
-        }
+        const { from, to } = getMapValue(
+          TRANSLATE_BY_DIRECTION_MAP,
+          direction,
+          TRANSLATE_BY_DIRECTION_MAP[DEFAULT_DIRECTION],
+        );
 
         return [
           {

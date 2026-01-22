@@ -1,5 +1,5 @@
 import type { Flip, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue, safeMapGet } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue, getMapValue } from '../../utils';
 
 const POWER_EASING_MAP = {
   soft: 'linear',
@@ -12,20 +12,24 @@ const DIRECTION_MAP = {
   horizontal: { x: '0', y: '1' },
 };
 
+const DEFAULT_DIRECTION = 'horizontal';
+const DEFAULT_EASING = 'linear';
+
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction: rawDirection = 'horizontal', power } = options.namedEffect as Flip;
+  const { direction = DEFAULT_DIRECTION, power } = options.namedEffect as Flip;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const offset = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const rotationAxes = safeMapGet(DIRECTION_MAP, rawDirection, 'horizontal');
-  const easing = power ? safeMapGet(POWER_EASING_MAP, power, 'medium') : options.easing || 'linear';
+  const rotationAxes = getMapValue(DIRECTION_MAP, direction, DIRECTION_MAP[DEFAULT_DIRECTION]);
+  const easingFallback = options.easing || DEFAULT_EASING;
+  const easing = getMapValue(POWER_EASING_MAP, power, easingFallback);
 
   const custom = {
     '--motion-rotate-x': rotationAxes.x,

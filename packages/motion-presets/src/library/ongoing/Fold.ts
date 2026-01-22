@@ -1,5 +1,5 @@
 import type { Fold, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, safeMapGet } from '../../utils';
+import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, getMapValue } from '../../utils';
 
 const POWER_TO_ROTATION_FACTOR_MAP = {
   soft: 1,
@@ -26,6 +26,7 @@ const DIRECTION_MAP = {
   },
 };
 
+const DEFAULT_DIRECTION = 'top';
 const MIN_ROTATE_ANGLE = 15;
 
 const KEYFRAME_FACTORS = [
@@ -43,7 +44,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction: rawDirection = 'top', power, angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
+  const { direction = DEFAULT_DIRECTION, power, angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
 
   const easing = options.easing || 'cubicInOut';
   const duration = options.duration || 1;
@@ -51,13 +52,14 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const [name] = getNames(options);
 
   const isResponsive = typeof power === 'undefined';
-  const { rotation, origin } = safeMapGet(DIRECTION_MAP, rawDirection, 'top');
+  const { rotation, origin } = getMapValue(DIRECTION_MAP, direction, DIRECTION_MAP[DEFAULT_DIRECTION]);
   const { x, y } = origin;
   const ease = getEasingFamily(isResponsive ? easing : 'cubicInOut');
 
   const rotateTransform = isResponsive
     ? angle
-    : MIN_ROTATE_ANGLE * safeMapGet(POWER_TO_ROTATION_FACTOR_MAP, power, 'medium');
+    // TODO: 22/01 Choose default power here
+    : MIN_ROTATE_ANGLE * getMapValue(POWER_TO_ROTATION_FACTOR_MAP, power, POWER_TO_ROTATION_FACTOR_MAP['medium']);
 
   const totalDurationWithDelay = 3.2 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;

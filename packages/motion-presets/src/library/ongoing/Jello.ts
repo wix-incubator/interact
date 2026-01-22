@@ -1,5 +1,5 @@
 import type { Jello, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange, safeMapGet } from '../../utils';
+import { getTimingFactor, toKeyframeValue, mapRange, getMapValue } from '../../utils';
 
 const POWER_TO_JELLO_FACTOR_MAP = {
   soft: 1,
@@ -34,7 +34,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     POWER_TO_JELLO_FACTOR_MAP.hard,
     intensity,
   );
-  const jelloFactor = power ? safeMapGet(POWER_TO_JELLO_FACTOR_MAP, power, 'medium') : responsiveJelloFactor;
+  const jelloFactor = getMapValue(POWER_TO_JELLO_FACTOR_MAP, power, responsiveJelloFactor);
 
   // Create CSS custom properties for the jello configuration
   const custom: Record<string, string | number> = {

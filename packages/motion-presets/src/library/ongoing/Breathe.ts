@@ -5,8 +5,10 @@ import {
   getEasingFamily,
   getTimingFactor,
   toKeyframeValue,
-  safeMapGet,
+  getMapValue,
 } from '../../utils';
+
+const DEFAULT_DIRECTION = 'vertical';
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },
@@ -27,7 +29,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction: rawDirection = 'vertical', distance = { value: 25, type: 'px' } } =
+  const { direction = DEFAULT_DIRECTION, distance = { value: 25, type: 'px' } } =
     options.namedEffect as Breathe;
 
   const easing = options.easing || 'sineInOut';
@@ -37,10 +39,9 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   const [name] = getNames(options);
 
-  const safeDirection = rawDirection in DIRECTION_MAP ? rawDirection : 'vertical';
-  const { x, y, z } = safeMapGet(DIRECTION_MAP, rawDirection, 'vertical');
+  const { x, y, z } = getMapValue(DIRECTION_MAP, direction, DIRECTION_MAP[DEFAULT_DIRECTION]);
   const ease = getEasingFamily(easing);
-  const perspectiveTransform = safeDirection === 'center' ? 'perspective(800px)' : '';
+  const perspectiveTransform = direction === 'center' ? 'perspective(800px)' : '';
 
   // Create CSS custom properties for the Breathe configuration
   const custom: Record<string, string | number> = {
