@@ -127,7 +127,7 @@ Add scripts:
 
 Create [`packages/motion/playwright.config.ts`](packages/motion/playwright.config.ts):
 
-- Base URL: `http://localhost:5173` (test fixtures dev server)
+- Base URL: `http://localhost:5174` (test fixtures dev server)
 - Test directory: `e2e/tests/`
 - Web server command: `yarn test:e2e:fixtures`
 - Projects: Chromium, Firefox, WebKit
@@ -140,7 +140,7 @@ Create [`packages/motion/e2e/fixtures/vite.config.ts`](packages/motion/e2e/fixtu
 
 - Multi-page app with each fixture as an entry point
 - Alias `@wix/motion` to local `src/` for testing against source
-- Dev server on port 5173
+- Dev server on port 5174
 
 ### 1.4 Create Test Utilities
 

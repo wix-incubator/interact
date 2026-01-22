@@ -26,6 +26,9 @@ todos:
   - id: test-fixtures-pointer-move
     content: Create test fixture page for pointerMove trigger (axis, hit area, composite)
     status: pending
+  - id: test-fixtures-animation-end
+    content: Create test fixture page for animationEnd trigger (effect chaining, callbacks)
+    status: pending
   - id: test-fixtures-conditional
     content: Create test fixture page for conditional effects (media queries, selectors)
     status: pending
@@ -65,6 +68,9 @@ todos:
   - id: scaffold-pointer-move
     content: Create pointer-move-trigger.spec.ts with test titles
     status: pending
+  - id: scaffold-animation-end
+    content: Create animation-end-trigger.spec.ts with test titles
+    status: pending
   - id: scaffold-conditional
     content: Create conditional-effects.spec.ts with test titles
     status: pending
@@ -97,6 +103,9 @@ todos:
     status: pending
   - id: impl-pointer-move
     content: Implement pointer move tests (x/y axis, hit area, composite)
+    status: pending
+  - id: impl-animation-end
+    content: Implement animation end tests (effect chaining, callbacks, sequencing)
     status: pending
   - id: impl-conditional
     content: Implement conditional effects tests (media queries, selectors, resize)
@@ -327,7 +336,27 @@ Exposed globals:
 
 Test IDs: `pointer-container`, `pointer-target`, `pointer-composite`, `pointer-x-target`, `pointer-y-target`
 
-### 2.6 Conditional Effects Fixture
+### 2.6 AnimationEnd Trigger Fixture
+
+File: [`packages/interact/e2e/fixtures/animation-end.html`](packages/interact/e2e/fixtures/animation-end.html) + [`animation-end.tsx`](packages/interact/e2e/fixtures/animation-end.tsx)
+
+Elements:
+
+- Source animation element that triggers chain
+- Target animation element triggered by animationEnd
+- Multiple chained animation sequence elements
+- Animation completion indicator
+
+Exposed globals:
+
+- `window.triggerSourceAnimation()`: Function to start the source animation
+- `window.chainedEffects`: Array tracking which effects have been triggered
+- `window.getAnimationState(testId)`: Function to get animation state
+- `window.resetChain()`: Function to reset the animation chain
+
+Test IDs: `animation-source`, `animation-target`, `chain-step-1`, `chain-step-2`, `chain-step-3`, `chain-indicator`
+
+### 2.7 Conditional Effects Fixture
 
 File: [`packages/interact/e2e/fixtures/conditional.html`](packages/interact/e2e/fixtures/conditional.html) + [`conditional.tsx`](packages/interact/e2e/fixtures/conditional.tsx)
 
@@ -347,7 +376,7 @@ Exposed globals:
 
 Test IDs: `desktop-target`, `tablet-target`, `mobile-target`, `trigger-btn`, `selector-grid`, `selector-item-{n}`
 
-### 2.7 Effect Types Fixture
+### 2.8 Effect Types Fixture
 
 File: [`packages/interact/e2e/fixtures/effect-types.html`](packages/interact/e2e/fixtures/effect-types.html) + [`effect-types.tsx`](packages/interact/e2e/fixtures/effect-types.tsx)
 
@@ -367,7 +396,7 @@ Exposed globals:
 
 Test IDs: `time-effect-target`, `transition-effect-target`, `keyframe-effect-target`, `fill-mode-target`, `effect-trigger-btn`
 
-### 2.8 List Container Fixture
+### 2.9 List Container Fixture
 
 File: [`packages/interact/e2e/fixtures/list-container.html`](packages/interact/e2e/fixtures/list-container.html) + [`list-container.tsx`](packages/interact/e2e/fixtures/list-container.tsx)
 
@@ -385,7 +414,7 @@ Exposed globals:
 
 Test IDs: `list-container`, `list-item-{n}`, `add-item-btn`, `remove-item-btn`
 
-### 2.9 State Management Fixture
+### 2.10 State Management Fixture
 
 File: [`packages/interact/e2e/fixtures/state-management.html`](packages/interact/e2e/fixtures/state-management.html) + [`state-management.tsx`](packages/interact/e2e/fixtures/state-management.tsx)
 
@@ -402,7 +431,7 @@ Exposed globals:
 
 Test IDs: `state-target`, `toggle-add-btn`, `toggle-remove-btn`, `toggle-toggle-btn`, `toggle-clear-btn`
 
-### 2.10 React Integration Fixture
+### 2.11 React Integration Fixture
 
 File: [`packages/interact/e2e/fixtures/react-integration.html`](packages/interact/e2e/fixtures/react-integration.html) + [`react-integration.tsx`](packages/interact/e2e/fixtures/react-integration.tsx)
 
@@ -420,7 +449,7 @@ Exposed globals:
 
 Test IDs: `interaction-component`, `ref-target`, `mount-toggle-btn`
 
-### 2.11 Web Components Fixture
+### 2.12 Web Components Fixture
 
 File: [`packages/interact/e2e/fixtures/web-components.html`](packages/interact/e2e/fixtures/web-components.html) + [`web-components.ts`](packages/interact/e2e/fixtures/web-components.ts)
 
@@ -536,7 +565,24 @@ describe('PointerMove Trigger')
     - should handle scaleX/scaleY independently
 ```
 
-### 3.6 Conditional Effects Suite
+### 3.6 AnimationEnd Trigger Suite
+
+File: [`packages/interact/e2e/tests/animation-end-trigger.spec.ts`](packages/interact/e2e/tests/animation-end-trigger.spec.ts)
+
+```
+describe('AnimationEnd Trigger')
+  describe('Basic Chaining')
+    - should trigger target effect when source animation ends
+    - should pass correct effectId to animationEnd params
+  describe('Effect Sequencing')
+    - should chain multiple animations in sequence
+    - should handle parallel chains from same source
+  describe('Callbacks and Timing')
+    - should fire after animation fully completes
+    - should not trigger if animation is cancelled
+```
+
+### 3.7 Conditional Effects Suite
 
 File: [`packages/interact/e2e/tests/conditional-effects.spec.ts`](packages/interact/e2e/tests/conditional-effects.spec.ts)
 
@@ -553,7 +599,7 @@ describe('Conditional Effects')
     - should apply spin effect to :nth-child(odd) elements
 ```
 
-### 3.7 Effect Types Suite
+### 3.8 Effect Types Suite
 
 File: [`packages/interact/e2e/tests/effect-types.spec.ts`](packages/interact/e2e/tests/effect-types.spec.ts)
 
@@ -571,7 +617,7 @@ describe('Effect Types')
     - should apply fill mode correctly
 ```
 
-### 3.8 List Container Suite
+### 3.9 List Container Suite
 
 File: [`packages/interact/e2e/tests/list-container.spec.ts`](packages/interact/e2e/tests/list-container.spec.ts)
 
@@ -585,7 +631,7 @@ describe('List Container')
     - should clean up removed list items
 ```
 
-### 3.9 State Management Suite
+### 3.10 State Management Suite
 
 File: [`packages/interact/e2e/tests/state-management.spec.ts`](packages/interact/e2e/tests/state-management.spec.ts)
 
@@ -601,7 +647,7 @@ describe('State Management')
     - should update after state changes
 ```
 
-### 3.10 React Integration Suite
+### 3.11 React Integration Suite
 
 File: [`packages/interact/e2e/tests/react-integration.spec.ts`](packages/interact/e2e/tests/react-integration.spec.ts)
 
@@ -616,7 +662,7 @@ describe('React Integration')
     - should handle ref reassignment
 ```
 
-### 3.11 Web Components Integration Suite
+### 3.12 Web Components Integration Suite
 
 File: [`packages/interact/e2e/tests/web-components-integration.spec.ts`](packages/interact/e2e/tests/web-components-integration.spec.ts)
 
@@ -674,7 +720,16 @@ describe('Web Components Integration')
 - Test composite operations by verifying independent transform values
 - Use `getComputedStyle` to verify transform matrix
 
-### 4.6 Implement Conditional Effects Tests
+### 4.6 Implement AnimationEnd Trigger Tests
+
+- Navigate to animation-end fixture page
+- Call `window.triggerSourceAnimation()` to start the chain
+- Verify `window.chainedEffects` tracks triggered effects in order
+- Call `window.getAnimationState(testId)` to verify target animation started
+- Test cancellation by cancelling source animation mid-flight
+- Use `window.resetChain()` between tests
+
+### 4.7 Implement Conditional Effects Tests
 
 - Navigate to conditional fixture page
 - Use `page.setViewportSize()` to test breakpoints
@@ -682,7 +737,7 @@ describe('Web Components Integration')
 - Call `window.triggerAnimation()` and verify correct effect applies
 - Call `window.getMatchedSelectors()` to verify selector matching
 
-### 4.7 Implement Effect Types Tests
+### 4.8 Implement Effect Types Tests
 
 - Navigate to effect-types fixture page
 - Call `window.triggerTimeEffect()` and verify duration, easing, iterations
@@ -691,28 +746,28 @@ describe('Web Components Integration')
 - Call `window.getEffectState(testId)` to verify computed styles
 - Test fill mode behavior with `fill-mode-target`
 
-### 4.8 Implement List Container Tests
+### 4.9 Implement List Container Tests
 
 - Navigate to list-container fixture page
 - Scroll list-container into view
 - Call `window.getListItemStates()` to verify all items receive effects
 - Call `window.addListItem()` and `window.removeListItem()` to test dynamic behavior
 
-### 4.9 Implement State Management Tests
+### 4.10 Implement State Management Tests
 
 - Navigate to state-management fixture page
 - Click control buttons to test add/remove/toggle/clear
 - Call `window.getActiveEffects()` to verify state changes
 - Assert on visual state changes of `state-target`
 
-### 4.10 Implement React Integration Tests
+### 4.11 Implement React Integration Tests
 
 - Navigate to react-integration fixture page
 - Verify `<Interaction>` component renders with correct tagName
 - Call `window.getControllerState()` to verify element connection
 - Use `window.toggleMount()` to test mount/unmount behavior
 
-### 4.11 Implement Web Components Integration Tests
+### 4.12 Implement Web Components Integration Tests
 
 - Navigate to web-components fixture page
 - Verify `<interact-element>` custom element is defined via `window.customElements`
