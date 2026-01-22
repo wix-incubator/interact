@@ -1,4 +1,5 @@
-import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const POWER_MAP = {
   soft: 1,
@@ -6,12 +7,15 @@ const POWER_MAP = {
   hard: 0.4,
 };
 
-const DIRECTION_MAP = {
-  clockwise: 1,
-  'counter-clockwise': -1,
-};
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-spinScroll'];
+}
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     spins = 0.15,
     scale = 1,
@@ -24,41 +28,56 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const spinDirection = DIRECTION_MAP[direction];
-  const rotationZ = spins * 360;
+  const rotationZ = 360 * spins;
   const scaleFactor = power && POWER_MAP[power] ? POWER_MAP[power] : scale;
-  const isIn = range === 'in';
 
+  const isIn = range === 'in';
   const fromValue = isIn ? -rotationZ : range === 'out' ? 0 : -rotationZ / 2;
   const toValue = isIn ? 0 : range === 'out' ? rotationZ : rotationZ / 2;
+  const spinDirection = direction === 'clockwise' ? 1 : -1;
+
+  const [spinScroll] = getNames(options);
+
+  const custom = {
+    '--motion-spin-from': `${spinDirection * fromValue}deg`,
+    '--motion-spin-to': `${spinDirection * toValue}deg`,
+    '--motion-spin-scale-from': isIn ? scaleFactor : 1,
+    '--motion-spin-scale-to': isIn ? 1 : scaleFactor,
+  };
 
   return [
     {
       ...options,
+      name: spinScroll,
       fill,
       easing,
+      custom,
       keyframes: [
         {
-          transform: `scale(${isIn ? scaleFactor : 1}) rotate(calc(var(--comp-rotate-z, 0deg) + ${
-            fromValue * spinDirection
-          }deg))`,
+          transform: `scale(${toKeyframeValue(
+            custom,
+            '--motion-spin-scale-from',
+            asWeb,
+          )}) rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-spin-from', asWeb)}))`,
         },
         {
-          transform: `scale(${isIn ? 1 : scaleFactor}) rotate(calc(var(--comp-rotate-z, 0deg) + ${
-            toValue * spinDirection
-          }deg))`,
+          transform: `scale(${toKeyframeValue(
+            custom,
+            '--motion-spin-scale-to',
+            asWeb,
+          )}) rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-spin-to', asWeb)}))`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: scale(<fromValues.scale>) rotate(<rotation> - <fromValue.rotate * spinDirection>);
-   *   }
-   *   to {
-   *     transform: scale(<toValues.scale>) rotate(<rotation> + <toValue.rotate * spinDirection>);
-   *   }
-   * }
-   */
 }

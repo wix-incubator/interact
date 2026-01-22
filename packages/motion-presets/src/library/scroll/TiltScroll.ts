@@ -1,10 +1,10 @@
-import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
+import { toKeyframeValue } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 
 const [ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25];
-const [UP, DOWN, ORIGINAL_LAYOUT] = [-1, 1, 0];
 
 const TRANSLATE_Y_POWER_MAP = {
   soft: 0,
@@ -12,73 +12,15 @@ const TRANSLATE_Y_POWER_MAP = {
   hard: 1,
 };
 
-const DIRECTIONS_MAP = {
-  right: 1,
-  left: -1,
-};
-
-const RANGES_MAP = {
-  in: {
-    from: {
-      x: -1,
-      y: -1,
-      z: 1,
-      transY: DOWN,
-    },
-    to: {
-      x: 0,
-      y: 0,
-      z: 0,
-      transY: ORIGINAL_LAYOUT,
-    },
-  },
-  out: {
-    from: {
-      x: 0,
-      y: 0,
-      z: 0,
-      transY: ORIGINAL_LAYOUT,
-    },
-    to: {
-      x: -1,
-      y: -1,
-      z: 1,
-      transY: UP,
-    },
-  },
-  continuous: {
-    from: {
-      x: -1,
-      y: -1,
-      z: -1,
-      transY: DOWN,
-    },
-    to: {
-      x: 1,
-      y: 0.5,
-      z: 1.25,
-      transY: UP,
-    },
-  },
-};
-
-function getYTravel(distance: number, power?: keyof typeof TRANSLATE_Y_POWER_MAP) {
-  return (
-    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance) *
-    MAX_Y_TRAVEL
-  );
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-tiltScrollTranslate', 'motion-tiltScrollRotate'];
 }
 
-function getScrubOffsets({ power, range = 'in', distance = 0 }: TiltScroll) {
-  const offset = Math.abs(getYTravel(distance, power));
-
-  return {
-    start: range === 'out' ? '0px' : `${-offset}vh`,
-    end: range === 'in' ? '0px' : `${offset}vh`,
-  };
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
 }
 
-export default function create(options: ScrubAnimationOptions) {
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     power,
     distance = 0,
@@ -90,54 +32,99 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { from, to } = RANGES_MAP[range];
+  const travelY =
+    MAX_Y_TRAVEL *
+    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance);
+  const dir = direction === 'left' ? -1 : 1;
 
-  const dir = DIRECTIONS_MAP[direction];
-  const rotateZFrom = Math.abs(from.z) * ROTATION_Z * dir * (from.z < 0 ? -1 : 1);
-  const rotateZTo = Math.abs(to.z) * ROTATION_Z * dir * (to.z < 0 ? -1 : 1);
+  const from = {
+    x: ROTATION_X * (range === 'out' ? 0 : -1),
+    y: ROTATION_Y * (range === 'out' ? 0 : -1),
+    z: ROTATION_Z * dir * (range === 'out' ? 0 : range === 'in' ? 1 : -1),
+    transY: range === 'out' ? 0 : travelY,
+  };
+  const to = {
+    x: ROTATION_X * (range === 'in' ? 0 : range === 'out' ? -1 : 1),
+    y: ROTATION_Y * (range === 'in' ? 0 : range === 'out' ? -1 : 0.5),
+    z: ROTATION_Z * dir * (range === 'in' ? 0 : range === 'out' ? 1 : 1.25),
+    transY: range === 'in' ? 0 : -1 * travelY,
+  };
 
-  const travelY = getYTravel(distance, power);
-  const travelYFrom = travelY * from.transY;
-  const travelYTo = travelY * to.transY;
-  const rotationXFrom = from.x * ROTATION_X;
-  const rotationYFrom = from.y * ROTATION_Y;
-  const rotationXTo = to.x * ROTATION_X;
-  const rotationYTo = to.y * ROTATION_Y;
+  const startOffsetAdd = range === 'out' ? '0px' : `${-1 * Math.abs(travelY)}vh`;
+  const endOffsetAdd = range === 'in' ? '0px' : `${Math.abs(travelY)}vh`;
 
-  const { start: startOffsetAdd, end: endOffsetAdd } = getScrubOffsets(
-    options.namedEffect as TiltScroll,
-  );
+  const [tiltScrollTranslate, tiltScrollRotate] = getNames(options);
+
+  const custom = {
+    '--motion-tilt-y-from': `${from.transY}vh`,
+    '--motion-tilt-y-to': `${to.transY}vh`,
+    '--motion-tilt-x-from': `${from.x}deg`,
+    '--motion-tilt-x-to': `${to.x}deg`,
+    '--motion-tilt-y-rot-from': `${from.y}deg`,
+    '--motion-tilt-y-rot-to': `${to.y}deg`,
+    '--motion-tilt-z-from': `${from.z}deg`,
+    '--motion-tilt-z-to': `${to.z}deg`,
+  };
 
   return [
     {
       ...options,
+      name: tiltScrollTranslate,
       fill,
       easing,
       startOffsetAdd,
       endOffsetAdd,
+      custom,
       keyframes: [
         {
-          transform: `perspective(400px) translateY(${travelYFrom}vh) rotateX(${rotationXFrom}deg) rotateY(${rotationYFrom}deg)`,
+          transform: `perspective(400px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-tilt-y-from',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(
+            custom,
+            '--motion-tilt-x-from',
+            asWeb,
+          )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-from', asWeb)})`,
         },
         {
-          transform: `perspective(400px) translateY(${travelYTo}vh) rotateX(${rotationXTo}deg) rotateY(${rotationYTo}deg)`,
+          transform: `perspective(400px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-tilt-y-to',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(
+            custom,
+            '--motion-tilt-x-to',
+            asWeb,
+          )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-to', asWeb)})`,
         },
       ],
     },
     {
       ...options,
+      name: tiltScrollRotate,
       fill,
-      // TODO: refactor easings
       easing: easings.sineInOut,
       startOffsetAdd,
       endOffsetAdd,
       composite: 'add' as const, // add this animation on top of the previous one
+      custom,
       keyframes: [
         {
-          transform: `rotate(calc(var(--comp-rotate-z, 0deg) + ${rotateZFrom}deg))`,
+          transform: `rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-tilt-z-from', asWeb)}))`,
         },
         {
-          transform: `rotate(calc(var(--comp-rotate-z, 0deg) + ${rotateZTo}deg))`,
+          transform: `rotate(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-tilt-z-to', asWeb)}))`,
         },
       ],
     },

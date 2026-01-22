@@ -1,18 +1,46 @@
-import type { BgFadeBack, DomApi, RangeOffset, ScrubAnimationOptions } from '../../types';
+import type {
+  BgFadeBack,
+  DomApi,
+  RangeOffset,
+  AnimationExtraOptions,
+  ScrubAnimationOptions,
+} from '../../types';
+import { toKeyframeValue } from '../../utils';
 import { measureCompHeight } from './utils';
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const measures = { compHeight: 0 };
-  if (dom) {
-    measureCompHeight(measures, dom);
-  }
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-bgFadeBackOpacity', 'motion-bgFadeBackScale'];
+}
 
+export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
+  const measures = {
+    '--motion-comp-height': '0px',
+    '--motion-comp-half-height': '0px',
+  };
+  if (dom) {
+    measureCompHeight(measures, dom, true);
+  }
+  return measures;
+}
+
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
+  options.measures = prepare(options, dom);
+
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const easing = 'sineOut';
   const { scale = 0.7 } = options.namedEffect as BgFadeBack;
+
+  const custom = { '--motion-scale': scale };
+
+  const [bgFadeBackOpacity, bgFadeBackScale] = getNames(options);
 
   return [
     {
       ...options,
+      name: bgFadeBackOpacity,
       easing: 'linear',
       part: 'BG_LAYER',
       startOffset: {
@@ -25,7 +53,11 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100vh + ${measures.compHeight}px)`;
+        return `calc(100vh + ${toKeyframeValue(
+          options.measures || {},
+          '--motion-comp-height',
+          asWeb,
+        )})`;
       },
       keyframes: [
         {
@@ -38,6 +70,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
     },
     {
       ...options,
+      name: bgFadeBackScale,
       easing,
       part: 'BG_LAYER',
       startOffset: {
@@ -50,14 +83,18 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100vh + ${Math.round(0.5 * measures.compHeight)}px)`;
+        return `calc(100vh + ${toKeyframeValue(
+          options.measures || {},
+          '--motion-comp-half-height',
+          asWeb,
+        )})`;
       },
       keyframes: [
         {
           scale: 1,
         },
         {
-          scale,
+          scale: toKeyframeValue(custom, '--motion-scale', asWeb),
         },
       ],
     },

@@ -1,4 +1,5 @@
-import type { AnimationFillMode, BlurScroll, ScrubAnimationOptions } from '../../types';
+import type { AnimationFillMode, BlurScroll, ScrubAnimationOptions, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const BLUR_POWER_MAP = {
   soft: 6,
@@ -6,7 +7,15 @@ const BLUR_POWER_MAP = {
   hard: 50,
 };
 
-export default function create(options: ScrubAnimationOptions) {
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-blurScroll'];
+}
+
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { blur = 6, power, range = 'in' } = options.namedEffect as BlurScroll;
   const blurFactor = power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;
 
@@ -17,30 +26,29 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
+  const [blurScroll] = getNames(options);
+
+  const custom = {
+    '--motion-blur-from': `${fromValue}px`,
+    '--motion-blur-to': `${toValue}px`,
+  };
+
   return [
     {
       ...options,
+      name: blurScroll,
       fill,
       easing,
       composite: 'add' as const,
+      custom,
       keyframes: [
         {
-          filter: `blur(${fromValue}px)`,
+          filter: `blur(${toKeyframeValue(custom, '--motion-blur-from', asWeb)})`,
         },
         {
-          filter: `blur(${toValue}px)`,
+          filter: `blur(${toKeyframeValue(custom, '--motion-blur-to', asWeb)})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     filter: blur(<fromValue>px);
-   *   }
-   *   to {
-   *     filter: blur(<toValue>px);
-   *   }
-   * }
-   */
 }
