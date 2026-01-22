@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange, safeMapGet } from '../../utils';
 import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import {
@@ -75,17 +75,18 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     perspective = 600,
   } = options.namedEffect as BlurMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}, filter ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     distance,
-    angle: power ? paramsMap[power].angle : angle,
-    scale: power ? paramsMap[power].scale : scale,
+    angle: powerParams ? powerParams.angle : angle,
+    scale: powerParams ? powerParams.scale : scale,
     blur,
     perspective,
     invert,

@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions, DropIn } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, getMapValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-dropIn'];
@@ -19,8 +19,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const { power, initialScale = PARAMS_MAP.medium.scale } = options.namedEffect as DropIn;
   const [fadeIn, dropIn] = getNames(options);
 
-  const scale = (power && PARAMS_MAP[power].scale) || initialScale;
-  const easing = (power && PARAMS_MAP[power].ease) || options.easing || 'quintInOut';
+  const defaultParams = { scale: initialScale, ease: options.easing || 'quintInOut' };
+  const params = getMapValue(PARAMS_MAP, power, defaultParams);
+  const { scale, ease: easing } = params;
 
   const custom = {
     '--motion-scale': `${scale}`,

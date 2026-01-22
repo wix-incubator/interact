@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,
@@ -69,23 +69,26 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const { transitionDuration, transitionEasing } = options;
   const {
     power,
-    scaleDirection = 'down',
+    scaleDirection: rawScaleDirection = 'down',
     inverted = false,
     distance = { value: 80, type: 'px' },
     axis = 'both',
     scale = 1.4,
   } = options.namedEffect as ScaleMouse;
   const invert = inverted ? -1 : 1;
+  const scaleDirection = rawScaleDirection in paramsMap ? rawScaleDirection : 'down';
+  const directionParams = safeMapGet(paramsMap, scaleDirection, 'down');
+  const powerParams = power ? safeMapGet(directionParams, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[scaleDirection][power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
     distance,
     axis,
-    scale: power ? paramsMap[scaleDirection][power].scale : scale,
+    scale: powerParams ? powerParams.scale : scale,
   };
 
   return (target: HTMLElement) => new ScaleMouseAnimation(target, animationOptions);

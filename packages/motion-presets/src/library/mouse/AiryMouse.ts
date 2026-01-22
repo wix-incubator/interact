@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import type {
   ScrubAnimationOptions,
   AiryMouse,
@@ -51,15 +51,16 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     axis = 'both',
   } = options.namedEffect as AiryMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
     distance,
-    angle: power ? paramsMap[power].angle : angle,
+    angle: powerParams ? powerParams.angle : angle,
     axis,
   };
 

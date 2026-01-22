@@ -1,5 +1,5 @@
 import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, getMapValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
@@ -41,17 +41,22 @@ const DIRECTION_TO_TRANSFORM_MAP: Record<
   },
 };
 
+const DEFAULT_DIRECTION = 'top-left';
+const DEFAULT_EASING = 'backOut';
+
 export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-left', power } = options.namedEffect as TurnIn;
+  const { direction = DEFAULT_DIRECTION, power } = options.namedEffect as TurnIn;
   const [fadeIn, turnIn] = getNames(options);
 
-  const easing = power && EASING_MAP[power] ? EASING_MAP[power] : options.easing || 'backOut';
-  const { x, y } = DIRECTION_TO_TRANSFORM_MAP[direction];
-  const transformRotate = DIRECTION_TO_TRANSFORM_MAP[direction].angle;
+  const easingFallback = options.easing || DEFAULT_EASING;
+  const easing = getMapValue(EASING_MAP, power, easingFallback);
+  const directionParams = getMapValue(DIRECTION_TO_TRANSFORM_MAP, direction, DIRECTION_TO_TRANSFORM_MAP[DEFAULT_DIRECTION]);
+  const { x, y } = directionParams;
+  const transformRotate = directionParams.angle;
 
   const custom = {
     '--motion-origin': `${x}%, ${y}%`,

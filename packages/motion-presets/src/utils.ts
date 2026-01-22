@@ -163,7 +163,9 @@ export function getAdjustedDirection(
   direction: string,
   angleInDeg: number,
 ) {
-  const index = availableDirections.indexOf(direction);
+  // If direction is invalid, default to first available direction
+  const rawIndex = availableDirections.indexOf(direction);
+  const index = rawIndex >= 0 ? rawIndex : 0;
   const length = availableDirections.length;
   const shiftBy = Math.round(((angleInDeg || 0) / 360) * length);
   const newIndex = (index + (length - 1) * shiftBy) % length;
@@ -421,4 +423,12 @@ export function getTimingFactor(
   const delay_ = delay || 0;
   const timingFactor = roundNumber(duration_ / (duration_ + delay_));
   return asString ? timingFactor.toString().replace(/\./g, '') : timingFactor;
+}
+
+export function getMapValue<T>(
+  map: Record<string, T>,
+  key: string | undefined,
+  fallback: T,
+): T {
+  return (key && key in map) ? map[key] : fallback;
 }

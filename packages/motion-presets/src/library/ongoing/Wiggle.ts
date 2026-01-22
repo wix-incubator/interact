@@ -1,5 +1,5 @@
 import type { Wiggle, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, roundNumber, toKeyframeValue, mapRange } from '../../utils';
+import { getTimingFactor, roundNumber, toKeyframeValue, mapRange, getMapValue } from '../../utils';
 
 const POWER_TO_WIGGLE_FACTOR_MAP = {
   soft: 1,
@@ -33,7 +33,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     POWER_TO_WIGGLE_FACTOR_MAP.hard,
     intensity,
   );
-  const wiggleFactor = (power && POWER_TO_WIGGLE_FACTOR_MAP[power]) || responsiveWiggleFactor;
+  const wiggleFactor = getMapValue(POWER_TO_WIGGLE_FACTOR_MAP, power, responsiveWiggleFactor);
 
   let currentRotation = 0;
 

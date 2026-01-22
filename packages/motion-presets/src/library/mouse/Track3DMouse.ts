@@ -6,7 +6,7 @@ import {
   EffectPower,
   ScrubTransitionEasing,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
 const paramsMap: Record<
@@ -60,17 +60,18 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
     perspective = 800,
   } = options.namedEffect as Track3DMouse;
   const invert = inverted ? -1 : 1;
+  const powerParams = power ? safeMapGet(paramsMap, power, 'medium') : null;
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
+          powerParams ? powerParams.easing : transitionEasing,
         )}`
       : '',
     invert,
     distance,
     axis,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle: powerParams ? powerParams.angle : angle,
+    perspective: powerParams ? powerParams.perspective : perspective,
   };
 
   return (target: HTMLElement) => new Track3DMouseAnimation(target, animationOptions);

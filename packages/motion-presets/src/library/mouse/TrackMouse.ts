@@ -6,7 +6,7 @@ import {
   EffectPower,
   ScrubTransitionEasing,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, safeMapGet } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
 const easingMap: Record<EffectPower, ScrubTransitionEasing> = {
@@ -54,7 +54,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? easingMap[power] : transitionEasing,
+          power ? safeMapGet(easingMap, power, 'medium') : transitionEasing,
         )}`
       : '',
     invert,
