@@ -56,7 +56,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     custom,
     '--motion-breathe-perspective',
     asWeb,
-    ' ',
+    '',
   )}`;
   const breatheDistance = `${toKeyframeValue(custom, '--motion-breathe-distance', asWeb)}`;
 

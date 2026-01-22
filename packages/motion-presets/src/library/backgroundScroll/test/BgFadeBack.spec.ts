@@ -1,46 +1,89 @@
 import { describe, expect, test } from 'vitest';
 
-import BgFadeBack from '../BgFadeBack';
+import * as BgFadeBack from '../BgFadeBack';
 import { baseMockOptions } from './testUtils';
 import type { BgFadeBack as BgFadeBackType, AnimationData } from '../../../types';
 
 describe('BgFadeBack', () => {
-  test('Default values', () => {
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: {} as BgFadeBackType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {},
-      {
+  describe('web', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [{ scale: 1 }, { scale: 0.7 }],
-      },
-    ];
+        namedEffect: {} as BgFadeBackType,
+      };
 
-    const result = BgFadeBack(mockOptions);
+      const expectedResult: Partial<AnimationData>[] = [
+        {},
+        {
+          ...baseMockOptions,
+          keyframes: [{ scale: 1 }, { scale: 0.7 }],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgFadeBack.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom scale', () => {
+      const scale = 0.7;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { scale } as BgFadeBackType,
+      };
+
+      const expectedResult: Partial<AnimationData>[] = [
+        {},
+        {
+          ...baseMockOptions,
+          keyframes: [{ scale: 1 }, { scale }],
+        },
+      ];
+
+      const result = BgFadeBack.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 
-  test('Custom scale', () => {
-    const scale = 0.7;
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: { scale } as BgFadeBackType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {},
-      {
+  describe('style', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [{ scale: 1 }, { scale }],
-      },
-    ];
+        namedEffect: {} as BgFadeBackType,
+      };
 
-    const result = BgFadeBack(mockOptions);
+      const expectedResult = [
+        {},
+        {
+          ...baseMockOptions,
+          keyframes: [{ scale: 1 }, { scale: 'var(--motion-scale)' }],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgFadeBack.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom scale', () => {
+      const scale = 0.7;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { scale } as BgFadeBackType,
+      };
+
+      const expectedResult = [
+        {},
+        {
+          ...baseMockOptions,
+          keyframes: [{ scale: 1 }, { scale: 'var(--motion-scale)' }],
+        },
+      ];
+
+      const result = BgFadeBack.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 });

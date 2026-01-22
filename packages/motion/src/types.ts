@@ -107,6 +107,7 @@ export type CustomEffect =
 export type AnimationExtraOptions = {
   effectId?: string;
   effect?: (progress: () => number | { x: number | undefined; y: number | undefined }) => void;
+  measures?: Record<string, string | number>;
 };
 
 export type AnimationOptions<TNamedEffect extends NamedEffect = NamedEffect> = (
@@ -253,10 +254,6 @@ export interface MouseEffectModule {
   web(options: ScrubOptions): (element: HTMLElement) => object;
 }
 
-export interface BackgroundScrollEffectModule {
-  create(options: ScrubOptions, dom?: DomApi): AnimationData[];
-}
-
 export interface MouseCreateEffectModule {
   create(options: ScrubOptions): (element: HTMLElement) => object;
 }
@@ -266,5 +263,4 @@ export type EffectModule =
   | AnimationEffectAPI<'scrub'>
   | ScrollEffectModule
   | MouseEffectModule
-  | WebAnimationEffectFactory<'scrub'>
-  | BackgroundScrollEffectModule;
+  | WebAnimationEffectFactory<'scrub'>;

@@ -1,4 +1,5 @@
-import { AnimationFillMode, GrowScroll, ScrubAnimationOptions } from '../../types';
+import type { AnimationFillMode, GrowScroll, ScrubAnimationOptions, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const POWER_MAP = {
@@ -19,32 +20,15 @@ const directionMap = {
   center: [0, 0],
 };
 
-const RANGES_MAP = {
-  in: (scaleFrom: number, _scaleTo: number, travelY: number) => ({
-    fromValues: { scale: scaleFrom, travel: travelY },
-    toValues: { scale: 1, travel: 0 },
-  }),
-  out: (_scaleFrom: number, scaleTo: number, travelY: number) => ({
-    fromValues: { scale: 1, travel: 0 },
-    toValues: { scale: scaleTo, travel: -travelY },
-  }),
-  continuous: (scaleFrom: number, scaleTo: number, travelY: number) => ({
-    fromValues: { scale: scaleFrom, travel: travelY },
-    toValues: { scale: scaleTo, travel: -travelY },
-  }),
-};
-
-function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
-  const offset =
-    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
-
-  return {
-    start: range === 'out' ? '0px' : `${-offset}vh`,
-    end: range === 'in' ? '0px' : `${offset}vh`,
-  };
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-growScroll'];
 }
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     power,
     range = 'in',
@@ -52,11 +36,11 @@ export default function create(options: ScrubAnimationOptions) {
     direction = 'center',
     speed = 0,
   } = options.namedEffect as GrowScroll;
-
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
+
   const { scaleFrom, scaleTo, travelY } =
     power && POWER_MAP[power]
       ? POWER_MAP[power]
@@ -65,73 +49,91 @@ export default function create(options: ScrubAnimationOptions) {
           scaleTo: scale,
           travelY: speed,
         };
+  const travel = travelY * MAX_Y_TRAVEL;
 
-  const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
+  const fromValues = {
+    scale: range === 'out' ? 1 : scaleFrom,
+    travel: range === 'out' ? 0 : -travel,
+  };
+  const toValues = {
+    scale: range === 'in' ? 1 : scaleTo,
+    travel: range === 'in' ? 0 : travel,
+  };
 
-  const { start, end } = getScrubOffsets(options.namedEffect as GrowScroll);
-  const [trnsX, trnsY] = directionMap[direction];
+  const offset = Math.abs(power && POWER_MAP[power] ? POWER_MAP[power].travelY : travel);
+  const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
+  const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
+
+  const [trnsX, trnsY] = directionMap[direction] || [0, 0];
+
+  const [growScroll] = getNames(options);
+
+  const custom = {
+    '--motion-travel-from': `${fromValues.travel}vh`,
+    '--motion-travel-to': `${toValues.travel}vh`,
+    '--motion-grow-from': fromValues.scale,
+    '--motion-grow-to': toValues.scale,
+    '--motion-trans-x': `${trnsX}%`,
+    '--motion-trans-y': `${trnsY}%`,
+  };
 
   return [
     {
       ...options,
+      name: growScroll,
       fill,
       easing,
-      startOffsetAdd: start,
-      endOffsetAdd: end,
+      startOffsetAdd,
+      endOffsetAdd,
+      custom,
       keyframes: [
         {
-          transform: `translateY(${fromValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
-            fromValues.scale
-          }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
+          transform: `translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-from',
+            asWeb,
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-grow-from',
+            asWeb,
+          )}) translate(calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-x',
+            asWeb,
+          )}), calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
         },
         {
-          transform: `translateY(${toValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
-            toValues.scale
-          }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
+          transform: `translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-to',
+            asWeb,
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-grow-to',
+            asWeb,
+          )}) translate(calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-x',
+            asWeb,
+          )}), calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     translate: 0 <fromValues.travel>;
-   *   }
-   *   to {
-   *     translate: 0 <toValues.travel>;
-   *   }
-   * }
-   *
-   * @keyframes <name>-scale {
-   *   from {
-   *     scale: <fromValues.scale>;
-   *   }
-   *   <scaleDelay>% {
-   *     scale: <fromValues.scale>;
-   *     animation-timing-function: <scaleEase>;
-   *   }
-   *   <scaleDuration>% {
-   *     scale: <toValues.scale>;
-   *   }
-   *   to {
-   *     scale: <toValues.scale>;
-   *   }
-   * }
-   *
-   * @supports (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> auto <easing> both,
-   *                <name>-scale auto linear both;
-   *     animation-range: cover <start> cover <end>,
-   *                      cover <start> cover <end>;
-   *     animation-timeline: view(), view();
-   *   }
-   * }
-   * @supports not (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> 100ms linear <fill> paused,
-   *                <name>-scale 100ms linear <fill> paused;
-   *   }
-   * }
-   */
 }

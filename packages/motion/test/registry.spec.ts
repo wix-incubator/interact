@@ -123,12 +123,14 @@ describe('Registry Flow', () => {
         },
       };
 
-      const effect = getNamedEffect(animationOptions) as WebAnimationEffectFactory<'scrub'>;
+      const effect = getNamedEffect(animationOptions) as AnimationEffectAPI<'scrub'>;
 
       expect(effect).toBeDefined();
-      expect(typeof effect).toBe('function');
+      expect(effect).toHaveProperty('web');
+      expect(effect).toHaveProperty('style');
+      expect(effect).toHaveProperty('getNames');
 
-      const animationData = effect(animationOptions as ScrubAnimationOptions);
+      const animationData = effect.web(animationOptions as ScrubAnimationOptions);
 
       expect(animationData).toHaveLength(1);
       expect(animationData[0].keyframes).toBeDefined();
@@ -146,13 +148,13 @@ describe('Registry Flow', () => {
       };
 
       const fadeEffect = getNamedEffect(fadeOptions) as AnimationEffectAPI<'time'>;
-      const scrollEffect = getNamedEffect(scrollOptions) as WebAnimationEffectFactory<'scrub'>;
+      const scrollEffect = getNamedEffect(scrollOptions) as AnimationEffectAPI<'scrub'>;
 
       expect(fadeEffect).toBeDefined();
       expect(scrollEffect).toBeDefined();
 
       const fadeData = fadeEffect.web(fadeOptions as TimeAnimationOptions & AnimationExtraOptions);
-      const scrollData = scrollEffect(scrollOptions as ScrubAnimationOptions);
+      const scrollData = scrollEffect.web(scrollOptions as ScrubAnimationOptions);
 
       expect(fadeData).toHaveLength(1);
       expect(fadeData[0].keyframes).toBeDefined();

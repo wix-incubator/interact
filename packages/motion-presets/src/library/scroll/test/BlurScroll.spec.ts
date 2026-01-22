@@ -1,179 +1,355 @@
 import { describe, expect, test } from 'vitest';
 
-import BlurScroll from '../BlurScroll';
+import * as BlurScroll from '../BlurScroll';
 import type { BlurScroll as BlurScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('BlurScroll', () => {
-  test('default values', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: {} as BlurScrollType,
-    };
+  describe('web', () => {
+    test('default values', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: {} as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        fill: 'backwards',
-        keyframes: [
-          {
-            filter: 'blur(6px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          fill: 'backwards',
+          keyframes: [
+            {
+              filter: 'blur(6px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom blur value', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { blur: 10 } as BlurScrollType,
-    };
+    test('custom blur value', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { blur: 10 } as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            filter: 'blur(10px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(10px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - soft', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'soft' } as BlurScrollType,
-    };
+    test('custom power - soft', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'soft' } as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            filter: 'blur(6px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(6px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - medium', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'medium' } as BlurScrollType,
-    };
+    test('custom power - medium', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'medium' } as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            filter: 'blur(25px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(25px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - hard', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'hard' } as BlurScrollType,
-    };
+    test('custom power - hard', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'hard' } as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            filter: 'blur(50px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(50px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom range - out', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { range: 'out' } as BlurScrollType,
-    };
+    test('custom range - out', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { range: 'out' } as BlurScrollType,
+      };
 
-    const expectedResult = [
-      {
-        fill: 'forwards',
-        keyframes: [
-          {
-            filter: 'blur(0px)',
-          },
-          {
-            filter: 'blur(6px)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          fill: 'forwards',
+          keyframes: [
+            {
+              filter: 'blur(0px)',
+            },
+            {
+              filter: 'blur(6px)',
+            },
+          ],
+        },
+      ];
 
-    const result = BlurScroll(mockOptions);
+      const result = BlurScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom range - continuous', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      fill: 'both',
-      namedEffect: { range: 'continuous' } as BlurScrollType,
-    };
-
-    const expectedResult = [
-      {
+    test('custom range - continuous', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
         fill: 'both',
-        keyframes: [
-          {
-            filter: 'blur(6px)',
-          },
-          {
-            filter: 'blur(0px)',
-          },
-        ],
-      },
-    ];
+        namedEffect: { range: 'continuous' } as BlurScrollType,
+      };
 
-    const result = BlurScroll(mockOptions);
+      const expectedResult = [
+        {
+          fill: 'both',
+          keyframes: [
+            {
+              filter: 'blur(6px)',
+            },
+            {
+              filter: 'blur(0px)',
+            },
+          ],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BlurScroll.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+  });
+
+  describe('style', () => {
+    test('default values', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: {} as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          fill: 'backwards',
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom blur value', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { blur: 10 } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - soft', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'soft' } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - medium', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'medium' } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - hard', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'hard' } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom range - out', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { range: 'out' } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          fill: 'forwards',
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom range - continuous', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        fill: 'both',
+        namedEffect: { range: 'continuous' } as BlurScrollType,
+      };
+
+      const expectedResult = [
+        {
+          fill: 'both',
+          keyframes: [
+            {
+              filter: 'blur(var(--motion-blur-from))',
+            },
+            {
+              filter: 'blur(var(--motion-blur-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = BlurScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 });

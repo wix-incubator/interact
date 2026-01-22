@@ -1,5 +1,6 @@
 import { cssEasings as easings } from '@wix/motion';
-import type { AnimationFillMode, ScrubAnimationOptions, StretchScroll } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, StretchScroll, DomApi } from '../../types';
+import { roundNumber, toKeyframeValue } from '../../utils';
 
 const POWER_MAP = {
   soft: { scaleY: 1.2, scaleX: 0.8 },
@@ -7,46 +8,6 @@ const POWER_MAP = {
   hard: { scaleY: 2, scaleX: 0.4 },
 };
 
-const KEYFRAMES_RANGE_MAP = {
-  in: (scaleX: number, scaleY: number) => [
-    {
-      scale: `${scaleX} ${scaleY}`,
-      translate: `0 ${100 * (scaleY - 1)}%`,
-    },
-    {
-      scale: '1 1',
-      translate: '0 0',
-    },
-  ],
-  out: (scaleX: number, scaleY: number) => [
-    {
-      scale: '1 1',
-      translate: '0 0',
-    },
-    {
-      scale: `${scaleX} ${scaleY}`,
-      translate: `0 ${100 * (1 - scaleY)}%`,
-    },
-  ],
-  continuous: (scaleX: number, scaleY: number) => [
-    {
-      scale: `${scaleX} ${scaleY}`,
-      translate: `0 ${100 * (scaleY - 1)}%`,
-      // TODO: refactor easings
-      easing: easings.backInOut,
-    },
-    {
-      scale: '1 1',
-      translate: '0 0',
-      // TODO: refactor easings
-      easing: easings.backInOut,
-    },
-    {
-      scale: `${scaleX} ${scaleY}`,
-      translate: `0 ${100 * (1 - scaleY)}%`,
-    },
-  ],
-};
 const opacityKeyframesMap = {
   in: [
     { opacity: 0, offset: 0 },
@@ -64,7 +25,19 @@ const opacityKeyframesMap = {
   ],
 };
 
-export default function create(options: ScrubAnimationOptions) {
+export function getNames(options: ScrubAnimationOptions) {
+  const { range = 'out' } = options.namedEffect as StretchScroll;
+  return [
+    `motion-stretchScrollScale${range === 'continuous' ? '-continuous' : ''}`,
+    `motion-stretchScrollOpacity-${range}`,
+  ];
+}
+
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { power, stretch = 0.6, range = 'out' } = options.namedEffect as StretchScroll;
   const easing = range === 'continuous' ? 'linear' : 'backInOut';
   const fill = (
@@ -74,20 +47,74 @@ export default function create(options: ScrubAnimationOptions) {
   const { scaleX, scaleY } =
     power && POWER_MAP[power] ? POWER_MAP[power] : { scaleX: 1 - stretch, scaleY: 1 + stretch };
 
-  const animations = KEYFRAMES_RANGE_MAP[range](scaleX, scaleY);
+  const [stretchScrollScale, stretchScrollOpacity] = getNames(options);
+
+  const isOut = range === 'out';
+  const roundedScaleX = roundNumber(scaleX);
+  const roundedScaleY = roundNumber(scaleY);
+
+  const custom = {
+    '--motion-stretch-scale-x-from': isOut ? 1 : roundedScaleX,
+    '--motion-stretch-scale-y-from': isOut ? 1 : roundedScaleY,
+    '--motion-stretch-scale-x-to': isOut ? roundedScaleX : 1,
+    '--motion-stretch-scale-y-to': isOut ? roundedScaleY : 1,
+    '--motion-stretch-trans-from': isOut ? 0 : `calc(-100% * (1 - ${roundedScaleY}))`,
+    '--motion-stretch-trans-to': isOut ? `calc(100% * (1 - ${roundedScaleY}))` : 0,
+  };
+
+  const stretchKeyframes = [
+    {
+      scale: `${toKeyframeValue(
+        custom,
+        '--motion-stretch-scale-x-from',
+        asWeb,
+      )} ${toKeyframeValue(custom, '--motion-stretch-scale-y-from', asWeb)}`,
+      translate: `0 ${toKeyframeValue(custom, '--motion-stretch-trans-from', asWeb)}`,
+    },
+    {
+      scale: `${toKeyframeValue(
+        custom,
+        '--motion-stretch-scale-x-to',
+        asWeb,
+      )} ${toKeyframeValue(custom, '--motion-stretch-scale-y-to', asWeb)}`,
+      translate: `0 ${toKeyframeValue(custom, '--motion-stretch-trans-to', asWeb)}`,
+    },
+  ];
+
+  if (range === 'continuous') {
+    stretchKeyframes.forEach((frame) => {
+      Object.assign(frame, { easing: easings.backInOut });
+    });
+
+    stretchKeyframes.push({
+      scale: `${toKeyframeValue(
+        custom,
+        '--motion-stretch-scale-x-from',
+        asWeb,
+      )} ${toKeyframeValue(custom, '--motion-stretch-scale-y-from', asWeb)}`,
+      translate: `0 calc(100% * (1 - ${toKeyframeValue(
+        custom,
+        '--motion-stretch-scale-y-from',
+        asWeb,
+      )}))`,
+    });
+  }
 
   return [
     {
       ...options,
+      name: stretchScrollScale,
       fill,
       easing,
-      keyframes: animations,
+      custom,
+      keyframes: stretchKeyframes,
     },
     {
       ...options,
+      name: stretchScrollOpacity,
       fill,
       easing,
-      keyframes: opacityKeyframesMap[range],
+      keyframes: opacityKeyframesMap[range] || opacityKeyframesMap.out,
     },
   ];
 }

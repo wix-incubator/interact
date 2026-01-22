@@ -1,20 +1,50 @@
-import type { BgFake3D, RangeOffset, ScrubAnimationOptions, DomApi } from '../../types';
+import type {
+  BgFake3D,
+  RangeOffset,
+  AnimationExtraOptions,
+  ScrubAnimationOptions,
+  DomApi,
+} from '../../types';
+import { roundNumber, toKeyframeValue } from '../../utils';
 import { measureCompHeight, getScaleFromPerspectiveAndZ } from './utils';
 
 const PERSPECTIVE = 100;
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
-  const measures = { compHeight: 0 };
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-bgFake3DParallax', 'motion-bgFake3DStretch', 'motion-bgFake3DZoom'];
+}
+
+export function prepare(_: ScrubAnimationOptions, dom?: DomApi) {
+  const measures = { '--motion-comp-height': '0px' };
   if (dom) {
     measureCompHeight(measures, dom, true);
   }
+  return measures;
+}
 
+export function web(options: ScrubAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
+  options.measures = prepare(options, dom);
+
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const { stretch = 1.3, zoom = 100 / 6 } = options.namedEffect as BgFake3D;
   const scale = getScaleFromPerspectiveAndZ(zoom, PERSPECTIVE);
+
+  const custom = {
+    '--motion-scale-y': stretch,
+    '--motion-trans-z': `${roundNumber(zoom)}px`,
+    '--motion-trans-y-factor': roundNumber(-0.1 * (2 - scale)),
+  };
+
+  const [bgFake3DParallax, bgFake3DStretch, bgFake3DZoom] = getNames(options);
+  const { measures = { '--motion-comp-height': '0px' } } = options;
 
   return [
     {
       ...options,
+      name: bgFake3DParallax,
       part: 'BG_IMG',
       easing: 'sineOut',
       startOffset: {
@@ -26,7 +56,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${measures.compHeight}px)`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       get keyframes() {
         return [
@@ -34,15 +64,23 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
             transform: 'translateY(10svh)',
           },
           {
-            transform: `translateY(calc(${parseFloat(
-              (-0.1 * (2 - scale)).toFixed(2),
-            )} * var(--motion-comp-height, ${measures.compHeight}px)))`,
+            transform: `translateY(calc(${toKeyframeValue(
+              custom,
+              '--motion-trans-y-factor',
+              asWeb,
+            )} * ${toKeyframeValue(
+              measures,
+              '--motion-comp-height',
+              false,
+              measures!['--motion-comp-height'] as string,
+            )}))`,
           },
         ];
       },
     },
     {
       ...options,
+      name: bgFake3DStretch,
       part: 'BG_IMG',
       easing: 'linear',
       composite: 'add' as const,
@@ -55,11 +93,11 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${measures.compHeight}px)`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       keyframes: [
         {
-          transform: `scaleY(${stretch})`,
+          transform: `scaleY(${toKeyframeValue(custom, '--motion-scale-y', asWeb)})`,
         },
         {
           transform: `scaleY(1)`,
@@ -68,6 +106,7 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
     },
     {
       ...options,
+      name: bgFake3DZoom,
       part: 'BG_IMG',
       easing: 'sineIn',
       composite: 'add' as const,
@@ -80,14 +119,18 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
         offset: { type: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
-        return `calc(100svh + ${measures.compHeight}px)`;
+        return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
       },
       keyframes: [
         {
           transform: `perspective(${PERSPECTIVE}px) translateZ(0px)`,
         },
         {
-          transform: `perspective(${PERSPECTIVE}px) translateZ(${parseFloat(zoom.toFixed(2))}px)`,
+          transform: `perspective(${PERSPECTIVE}px) translateZ(${toKeyframeValue(
+            custom,
+            '--motion-trans-z',
+            asWeb,
+          )})`,
         },
       ],
     },

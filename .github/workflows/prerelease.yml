@@ -30,10 +30,16 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - run: corepack enable
-      - run: corepack prepare yarn@4.10.3 --activate
-      - run: yarn set version 4.10.3
-      - run: NPQ_PKG_MGR=yarn npx npq install
+      - name: Set up Yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@4.10.3 --activate
+          yarn set version 4.10.3
+
+      - name: Install dependencies
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: NPQ_PKG_MGR=yarn npx npq install
 
       - name: Build motion package
         run: yarn workspace @wix/motion build

@@ -1,116 +1,65 @@
+import type { AnimationFillMode, ScrubAnimationOptions, RevealScroll, DomApi } from '../../types';
 import {
-  EffectFourDirections,
-  RevealScroll,
-  ScrubAnimationOptions,
-  DomApi,
-  AnimationFillMode,
-} from '../../types';
-import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
+  applyRotationAdjustedClip,
+  getRevealClipFrom,
+  getRevealClipTo,
+  toKeyframeValue,
+  INITIAL_CLIP,
+} from '../../utils';
 
-const DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
-
-const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
-  top: 'bottom',
-  bottom: 'top',
-  left: 'right',
-  right: 'left',
-};
-
-const initialClip = getClipPolygonParams({ direction: 'initial' });
-
-function getClipFrom(direction: EffectFourDirections, range: RevealScroll['range']) {
-  return range === 'out'
-    ? initialClip
-    : getClipPolygonParams({
-        direction: OPPOSITE_DIRECTION_MAP[direction],
-      });
-}
-function getClipTo(direction: EffectFourDirections, range: RevealScroll['range']) {
-  return range === 'in'
-    ? initialClip
-    : getClipPolygonParams({
-        direction: range === 'out' ? OPPOSITE_DIRECTION_MAP[direction] : direction,
-      });
+export function getNames(options: ScrubAnimationOptions) {
+  const { range = 'in' } = options.namedEffect as RevealScroll;
+  return [`motion-revealScroll${range === 'continuous' ? '-continuous' : ''}`];
 }
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export function prepare(options: ScrubAnimationOptions, dom?: DomApi) {
+  if (dom) {
+    const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
+    applyRotationAdjustedClip(dom, direction, range);
+  }
+}
+
+export function web(options: ScrubAnimationOptions, dom?: DomApi) {
+  prepare(options, dom);
+
+  return style(options);
+}
+
+export function style(options: ScrubAnimationOptions) {
   const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  let clipFrom = getClipFrom(direction, range);
-  let clipTo = getClipTo(direction, range);
+  const [revealScroll] = getNames(options);
 
-  if (dom) {
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
+  const custom = {
+    '--motion-clip-from': getRevealClipFrom(direction, range),
+    '--motion-clip-to': getRevealClipTo(direction, range),
+  };
 
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
+  const keyframes = [
+    {
+      clipPath: toKeyframeValue({}, '--motion-clip-from', false, custom['--motion-clip-from']),
+    },
+    {
+      clipPath: toKeyframeValue({}, '--motion-clip-to', false, custom['--motion-clip-to']),
+    },
+  ];
 
-      dom.mutate(() => {
-        const adjDirection = getAdjustedDirection(
-          DIRECTIONS,
-          direction,
-          parseInt(rotation, 10),
-        ) as (typeof DIRECTIONS)[number];
-
-        clipFrom = getClipFrom(adjDirection, range);
-        clipTo = getClipTo(adjDirection, range);
-
-        target.style.setProperty('--motion-clip-from', clipFrom);
-        target.style.setProperty('--motion-clip-to', clipTo);
-      });
-    });
+  if (range === 'continuous') {
+    keyframes.splice(1, 0, { clipPath: INITIAL_CLIP });
   }
-
-  const keyframes =
-    range === 'continuous'
-      ? [
-          { clipPath: `var(--motion-clip-from, ${clipFrom})` },
-          { clipPath: initialClip },
-          { clipPath: `var(--motion-clip-to, ${clipTo})` },
-        ]
-      : ([
-          { clipPath: `var(--motion-clip-from, ${clipFrom})` },
-          { clipPath: `var(--motion-clip-to, ${clipTo})` },
-        ] as {
-          clipPath: string;
-        }[]);
 
   return [
     {
       ...options,
+      name: revealScroll,
       fill,
       easing,
+      custom,
       keyframes,
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     clip-path: <fromValue>;
-   *   }
-   *   to {
-   *     clip-path: <toValue>;
-   *   }
-   * }
-   *
-   * OR for continuous:
-   *
-   * @keyframes <name> {
-   *   from {
-   *     clip-path: <fromValue>;
-   *   }
-   *   50% {
-   *     clip-path: <initialClip>;
-   *   }
-   *   to {
-   *     clip-path: <toValue>;
-   *   }
-   * }
-   */
 }

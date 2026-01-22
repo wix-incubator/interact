@@ -1,54 +1,109 @@
 import { describe, expect, test } from 'vitest';
 
-import BgParallax from '../BgParallax';
+import * as BgParallax from '../BgParallax';
 import { baseMockOptions } from './testUtils';
 import type { BgParallax as BgParallaxType, AnimationData } from '../../../types';
 
 describe('BgParallax', () => {
-  test('Default values', () => {
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: {} as BgParallaxType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {
+  describe('web', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [
-          { transform: 'translateY(20svh)' },
-          {
-            transform: 'translateY(calc((100% - 200lvh) * -0.2))',
-          },
-        ],
-      },
-    ];
+        namedEffect: {} as BgParallaxType,
+      };
 
-    const result = BgParallax(mockOptions);
+      const expectedResult: Partial<AnimationData>[] = [
+        {
+          ...baseMockOptions,
+          keyframes: [
+            { transform: 'translateY(calc(0.2 * 100svh))' },
+            {
+              transform: 'translateY(calc((200lvh - 100%) * 0.2))',
+            },
+          ],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgParallax.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom speed', () => {
+      const speed = 0.5;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { speed } as BgParallaxType,
+      };
+
+      const expectedResult: Partial<AnimationData>[] = [
+        {
+          ...baseMockOptions,
+          keyframes: [
+            { transform: 'translateY(calc(0.5 * 100svh))' },
+            {
+              transform: 'translateY(calc((200lvh - 100%) * 0.5))',
+            },
+          ],
+        },
+      ];
+
+      const result = BgParallax.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 
-  test('Custom speed', () => {
-    const speed = 0.5;
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: { speed } as BgParallaxType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {
+  describe('style', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [
-          { transform: 'translateY(50svh)' },
-          {
-            transform: 'translateY(calc((100% - 200lvh) * -0.5))',
-          },
-        ],
-      },
-    ];
+        namedEffect: {} as BgParallaxType,
+      };
 
-    const result = BgParallax(mockOptions);
+      const expectedResult = [
+        {
+          ...baseMockOptions,
+          keyframes: [
+            {
+              transform: 'translateY(calc(var(--motion-parallax-speed) * 100svh))',
+            },
+            {
+              transform: 'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
+            },
+          ],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgParallax.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom speed', () => {
+      const speed = 0.5;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { speed } as BgParallaxType,
+      };
+
+      const expectedResult = [
+        {
+          ...baseMockOptions,
+          keyframes: [
+            {
+              transform: 'translateY(calc(var(--motion-parallax-speed) * 100svh))',
+            },
+            {
+              transform: 'translateY(calc((200lvh - 100%) * var(--motion-parallax-speed)))',
+            },
+          ],
+        },
+      ];
+
+      const result = BgParallax.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 });

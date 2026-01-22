@@ -1,234 +1,465 @@
 import { describe, expect, test } from 'vitest';
 
-import Spin3dScroll from '../Spin3dScroll';
+import * as Spin3dScroll from '../Spin3dScroll';
 import type { Spin3dScroll as Spin3dScrollType, ScrubAnimationOptions } from '../../../types';
 import { baseMockOptions } from './testUtils';
 
 describe('Spin3dScroll', () => {
-  test('default values', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: {} as Spin3dScrollType,
-    };
+  describe('web', () => {
+    test('default values', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: {} as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        fill: 'backwards',
-        easing: 'linear',
-        startOffsetAdd: '0vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          fill: 'backwards',
+          easing: 'linear',
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom rotate value', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { rotate: -50 } as Spin3dScrollType,
-    };
+    test('custom rotate value', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { rotate: -50 } as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 50deg)) rotateY(50deg) rotateX(100deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 50deg)) rotateY(50deg) rotateX(100deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - soft', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'soft' } as Spin3dScrollType,
-    };
+    test('custom power - soft', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'soft' } as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        startOffsetAdd: '0vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -45deg)) rotateY(-45deg) rotateX(-90deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -45deg)) rotateY(-45deg) rotateX(-90deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - medium', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'medium' } as Spin3dScrollType,
-    };
+    test('custom power - medium', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'medium' } as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        startOffsetAdd: '-20vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -100deg)) rotateY(-100deg) rotateX(-200deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          startOffsetAdd: '-20vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -100deg)) rotateY(-100deg) rotateX(-200deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom power - hard', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'hard' } as Spin3dScrollType,
-    };
+    test('custom power - hard', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'hard' } as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        startOffsetAdd: '-40vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(-40vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -200deg)) rotateY(-200deg) rotateX(-400deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          startOffsetAdd: '-40vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(-40vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -200deg)) rotateY(-200deg) rotateX(-400deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom range - out', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { range: 'out' } as Spin3dScrollType,
-    };
+    test('custom range - out', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { range: 'out' } as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        fill: 'forwards',
-        startOffsetAdd: '0px',
-        endOffsetAdd: '0vh',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -100deg)) rotateY(-200deg) rotateX(-300deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          fill: 'forwards',
+          startOffsetAdd: '0px',
+          endOffsetAdd: '0vh',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -100deg)) rotateY(-200deg) rotateX(-300deg)',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.web(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
-  });
+      expect(result).toMatchObject(expectedResult);
+    });
 
-  test('custom range - continuous', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      fill: 'both',
-      namedEffect: { range: 'continuous' } as Spin3dScrollType,
-    };
-
-    const expectedResult = [
-      {
+    test('custom range - continuous', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
         fill: 'both',
-        startOffsetAdd: '0vh',
-        endOffsetAdd: '0vh',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -200deg)) rotateY(-100deg) rotateX(-180deg)',
-          },
-        ],
-      },
-    ];
+        namedEffect: { range: 'continuous' } as Spin3dScrollType,
+      };
 
-    const result = Spin3dScroll(mockOptions);
+      const expectedResult = [
+        {
+          fill: 'both',
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0vh',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -200deg)) rotateY(-100deg) rotateX(-180deg)',
+            },
+          ],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = Spin3dScroll.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom speed', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { speed: 0.5 } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          startOffsetAdd: '-20vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 
-  test('custom speed', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { speed: 0.5 } as Spin3dScrollType,
-    };
+  describe('style', () => {
+    test('default values', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: {} as Spin3dScrollType,
+      };
 
-    const expectedResult = [
-      {
-        startOffsetAdd: '-20vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform:
-              'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
-          },
-          {
-            transform:
-              'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
-          },
-        ],
-      },
-    ];
+      const expectedResult = [
+        {
+          fill: 'backwards',
+          easing: 'linear',
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
 
-    const result = Spin3dScroll(mockOptions);
+      const result = Spin3dScroll.style(mockOptions);
 
-    expect(result).toMatchObject(expectedResult);
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom rotate value', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { rotate: -50 } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - soft', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'soft' } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - medium', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'medium' } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          startOffsetAdd: '-20vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom power - hard', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { power: 'hard' } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          startOffsetAdd: '-40vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom range - out', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { range: 'out' } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          fill: 'forwards',
+          startOffsetAdd: '0px',
+          endOffsetAdd: '0vh',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom range - continuous', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        fill: 'both',
+        namedEffect: { range: 'continuous' } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          fill: 'both',
+          startOffsetAdd: '0vh',
+          endOffsetAdd: '0vh',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('custom speed', () => {
+      const mockOptions: ScrubAnimationOptions = {
+        ...baseMockOptions,
+        namedEffect: { speed: 0.5 } as Spin3dScrollType,
+      };
+
+      const expectedResult = [
+        {
+          startOffsetAdd: '-20vh',
+          endOffsetAdd: '0px',
+          keyframes: [
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+            },
+            {
+              transform:
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+            },
+          ],
+        },
+      ];
+
+      const result = Spin3dScroll.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 });
