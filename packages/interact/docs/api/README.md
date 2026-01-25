@@ -7,10 +7,9 @@ Complete reference documentation for all public APIs in `@wix/interact`.
 ### Classes
 
 - [**Interact**](interact-class.md) - Main interaction manager class
-  - [Static methods](interact-class.md#static-methods): `create()`, `getInstance()`, `getElement()`, `setElement()`
-  - [Instance methods](interact-class.md#instance-methods): `init()`, `has()`, `clearInteractionStateForKey()`
-  - [Properties](interact-class.md#properties): `dataCache`, `addedInteractions`
-  - [Error handling](interact-class.md#error-handling) and [best practices](interact-class.md#best-practices)
+  - [Static methods](interact-class.md#static-methods): `create()`, `getInstance()`, `destroy()`, `setup()`, `registerEffects()`
+  - [Instance methods](interact-class.md#instance-methods): `init()`, `destroy()`, `has()`, `get()`
+  - [Error handling](interact-class.md#error-handling)
 
 ### Functions
 
@@ -19,7 +18,7 @@ Complete reference documentation for all public APIs in `@wix/interact`.
   - [Error handling](functions.md#error-handling) and [performance considerations](functions.md#performance-considerations)
 - [**remove(path)**](functions.md#remove) - Remove interactions from an element
   - [Cleanup behavior](functions.md#behavior-details) and [advanced usage](functions.md#advanced-usage)
-- [**generate(config)**](functions.md#generate) - Generate CSS for hiding elements with entrance animations
+- [**generateCSS(config)**](functions.md#generate) - Generate CSS for hiding elements with entrance animations
   - [SSR usage](functions.md#server-side-rendering-ssr) and [React integration](functions.md#with-react)
   - [HTML setup](functions.md#html-setup) and [accessibility](functions.md#accessibility)
 - [**addListItems(root, key, listContainer, elements)**](functions.md#addlistitems) - Add interactions to new list items
@@ -31,7 +30,7 @@ Complete reference documentation for all public APIs in `@wix/interact`.
 
 - [**interact-element**](interact-element.md) - Custom element for wrapping interactive content
   - [Interface](interact-element.md#element-interface) and [lifecycle methods](interact-element.md#methods)
-  - [Framework integration](interact-element.md#framework-integration) (React, Vue, Angular)
+  - [Framework integration](interact-element.md#framework-integration) (React)
   - [State management](interact-element.md#state-management) and [browser support](interact-element.md#browser-support)
   - [List management with watchChildList](interact-element.md#list-management-with-watchchildlist)
 
@@ -117,10 +116,10 @@ const interact = Interact.create(config);
 ```
 InteractConfig
 ├── interactions: Interaction[]
-│   ├── trigger: TriggerType
 │   ├── key: string
 │   ├── selector?: string
 │   ├── listContainer?: string
+│   ├── trigger: TriggerType
 │   ├── params?: TriggerParams
 │   ├── conditions?: string[]
 │   └── effects: (Effect | EffectRef)[]
@@ -130,7 +129,8 @@ InteractConfig
 │   └── TransitionEffect (CSS transitions)
 └── conditions?: Record<string, Condition>
     ├── Media queries
-    └── Container queries
+    ├── Container queries
+    └── Selector queries
 ```
 
 ## Integration with @wix/motion
@@ -158,7 +158,9 @@ The `@wix/interact` package provides a declarative layer on top of `@wix/motion`
     },
     'bounce': {
       duration: 600,
-      namedEffect: 'bounce' // Pre-built from @wix/motion
+      namedEffect: { // Pre-built from @wix/motion-presets
+        type: 'GlideIn'
+      }
     }
   }
 }

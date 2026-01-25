@@ -1,45 +1,97 @@
 import { describe, expect, test } from 'vitest';
 
-import BgCloseUp from '../BgCloseUp';
+import * as BgCloseUp from '../BgCloseUp';
 import { baseMockOptions } from './testUtils';
 import type { BgCloseUp as BgCloseUpType, AnimationData } from '../../../types';
 
 describe('BgCloseUp', () => {
-  test('Default values', () => {
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: {} as BgCloseUpType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      { ...baseMockOptions },
-      {
+  describe('web', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [{}, { transform: `perspective(100px) translateZ(80px)` }],
-      },
-    ];
+        namedEffect: {} as BgCloseUpType,
+      };
 
-    const result = BgCloseUp(mockOptions);
+      const expectedResult: Partial<AnimationData>[] = [
+        { ...baseMockOptions },
+        {
+          ...baseMockOptions,
+          keyframes: [{}, { transform: `perspective(100px) translateZ(80px)` }],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgCloseUp.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom values', () => {
+      const scale = 50;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { scale } as BgCloseUpType,
+      };
+      const expectedResult: Partial<AnimationData>[] = [
+        { ...baseMockOptions },
+        {
+          ...baseMockOptions,
+          keyframes: [{}, { transform: `perspective(100px) translateZ(50px)` }],
+        },
+      ];
+
+      const result = BgCloseUp.web(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 
-  test('Custom values', () => {
-    const scale = 50;
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: { scale } as BgCloseUpType,
-    };
-    const expectedResult: Partial<AnimationData>[] = [
-      { ...baseMockOptions },
-      {
+  describe('style', () => {
+    test('Default values', () => {
+      const mockOptions = {
         ...baseMockOptions,
-        keyframes: [{}, { transform: `perspective(100px) translateZ(50px)` }],
-      },
-    ];
+        namedEffect: {} as BgCloseUpType,
+      };
 
-    const result = BgCloseUp(mockOptions);
+      const expectedResult = [
+        { ...baseMockOptions },
+        {
+          ...baseMockOptions,
+          keyframes: [
+            {},
+            {
+              transform: `perspective(100px) translateZ(var(--motion-trans-z))`,
+            },
+          ],
+        },
+      ];
 
-    expect(result).toMatchObject(expectedResult);
+      const result = BgCloseUp.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
+
+    test('Custom values', () => {
+      const scale = 50;
+      const mockOptions = {
+        ...baseMockOptions,
+        namedEffect: { scale } as BgCloseUpType,
+      };
+      const expectedResult = [
+        { ...baseMockOptions },
+        {
+          ...baseMockOptions,
+          keyframes: [
+            {},
+            {
+              transform: `perspective(100px) translateZ(var(--motion-trans-z))`,
+            },
+          ],
+        },
+      ];
+
+      const result = BgCloseUp.style(mockOptions);
+
+      expect(result).toMatchObject(expectedResult);
+    });
   });
 });
