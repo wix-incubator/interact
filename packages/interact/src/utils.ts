@@ -1,12 +1,34 @@
 import { getEasing } from '@wix/motion';
-import type { Condition, CreateTransitionCSSParams } from './types';
+import type { TriggerType, Condition, CreateTransitionCSSParams } from './types';
+
+export function isTimeTrigger(trigger: TriggerType): boolean {
+  return !['viewProgress', 'pointerMove'].includes(trigger);
+}
+
+export function roundNumber(num: number, precision = 2): number {
+  return parseFloat(num.toFixed(precision));
+}
+
+export function shortestRepeatingPatternLength(values: string[] | number[]): number {
+  let patternLength = 1;
+  let index = 1;
+  while (index < values.length) {
+    if (values[index] === values[index % patternLength]) {
+      index++;
+    } else {
+      patternLength = Math.max(index - patternLength, patternLength) + 1;
+      index = patternLength;
+    }
+  }
+  return patternLength;
+}
 
 /**
  * Applies a selector condition predicate to a base selector.
  * - If `&` is in the predicate, replace `&` with the base selector
  * - If no `&`, assume `&<predicate>` (append predicate to base selector)
  */
-function applySelectorCondition(baseSelector: string, predicate: string): string {
+export function applySelectorCondition(baseSelector: string, predicate: string): string {
   if (predicate.includes('&')) {
     return predicate.replace(/&/g, baseSelector);
   }
@@ -23,14 +45,16 @@ export function generateId() {
   );
 }
 
-export function createTransitionCSS({
-  key,
+export function createStateRuleAndCSSTransitions({
   effectId,
   transition,
   properties,
   childSelector = '> :first-child',
   selectorCondition,
-}: CreateTransitionCSSParams): string[] {
+}: CreateTransitionCSSParams): {
+  stateRule: string;
+  transitions: string[];
+} {
   let transitions: string[] = [];
 
   if (transition?.styleProperties) {
@@ -72,7 +96,6 @@ export function createTransitionCSS({
 
   const styleProperties =
     properties?.map((property) => `${property.name}: ${property.value};`) || [];
-  const escapedKey = key.replace(/"/g, "'");
 
   // Build selectors, applying condition if present
   const stateSelector = `:is(:state(${effectId}), :--${effectId}) ${childSelector}`;
@@ -85,14 +108,34 @@ export function createTransitionCSS({
     ? applySelectorCondition(dataAttrSelector, selectorCondition)
     : dataAttrSelector;
 
-  const result = [
-    `${finalStateSelector},
+  const stateRule = `${finalStateSelector},
     ${finalDataAttrSelector} {
       ${styleProperties.join(`
       `)}
-    }`,
-  ];
+    }`;
 
+  return { stateRule, transitions };
+}
+
+export function createTransitionCSS({
+  key,
+  effectId,
+  transition,
+  properties,
+  childSelector = '> :first-child',
+  selectorCondition,
+}: CreateTransitionCSSParams): string[] {
+  const { stateRule, transitions } = createStateRuleAndCSSTransitions({
+    key,
+    effectId,
+    transition,
+    properties,
+    childSelector,
+    selectorCondition,
+  });
+  const result = [stateRule];
+
+  const escapedKey = key.replace(/"/g, "'");
   if (transitions.length) {
     const transitionSelector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
     const finalTransitionSelector = selectorCondition
@@ -106,20 +149,28 @@ export function createTransitionCSS({
   return result;
 }
 
-export function getMediaQuery(
+export function getFullPredicateByType(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
+  type: 'media' | 'container',
 ) {
   const conditionContent = (conditionNames || [])
     .filter((conditionName) => {
-      return conditions[conditionName]?.type === 'media' && conditions[conditionName].predicate;
+      return conditions[conditionName]?.type === type && conditions[conditionName].predicate;
     })
     .map((conditionName) => {
       return conditions[conditionName].predicate;
     })
     .join(') and (');
 
-  const condition = conditionContent && `(${conditionContent})`;
+  return conditionContent && `(${conditionContent})`;
+}
+
+export function getMediaQuery(
+  conditionNames: string[] | undefined,
+  conditions: Record<string, Condition>,
+) {
+  const condition = getFullPredicateByType(conditionNames, conditions, 'media');
   const mql = condition && window.matchMedia(condition);
 
   return mql;
@@ -129,11 +180,12 @@ export function getSelectorCondition(
   conditionNames: string[] | undefined,
   conditions: Record<string, Condition>,
 ): string | undefined {
-  for (const name of conditionNames || []) {
-    const condition = conditions[name];
-    if (condition?.type === 'selector' && condition.predicate) {
-      return condition.predicate;
-    }
-  }
-  return;
+  return (conditionNames || [])
+    .filter((conditionName) => {
+      return conditions[conditionName]?.type === 'selector' && conditions[conditionName].predicate;
+    })
+    .map((conditionName) => {
+      return `:is(${conditions[conditionName].predicate})`;
+    })
+    .join('');
 }

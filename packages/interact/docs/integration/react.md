@@ -519,14 +519,72 @@ function ProductList() {
 
 ## Server-Side Rendering (SSR)
 
-### Next.js App Router
+For SSR, use `generateCSS()` to pre-render animation styles on the server, preventing flash of unstyled content (FOUC) and enabling animations before JavaScript hydration.
+
+### Next.js App Router with `generateCSS()`
 
 ```tsx
-// app/components/InteractiveCard.tsx
+// lib/interact-config.ts
+import { InteractConfig } from '@wix/interact/react';
+
+export const interactConfig: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'hero-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(40px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          easing: 'ease-out',
+          // Initial state for SSR - matches first keyframe
+          initial: {
+            opacity: 0,
+            transform: 'translateY(40px)',
+          },
+        },
+      ],
+    },
+  ],
+  effects: {},
+};
+```
+
+```tsx
+// app/layout.tsx
+import { generateCSS } from '@wix/interact/react';
+import { interactConfig } from '@/lib/interact-config';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Generate CSS at build time (called once per build)
+  const animationCSS = generateCSS(interactConfig);
+
+  return (
+    <html>
+      <head>
+        {/* Inject animation CSS before first paint */}
+        <style dangerouslySetInnerHTML={{ __html: animationCSS }} />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx
+// app/components/InteractiveHero.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { Interact, Interaction } from '@wix/interact/react';
+import { interactConfig } from '@/lib/interact-config';
 
 const config = {
   /* ... */
@@ -534,19 +592,73 @@ const config = {
 
 export function InteractiveCard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const instance = Interact.create(config);
+    // JavaScript handles triggers; CSS handles animations
+    const instance = Interact.create(interactConfig);
     return () => instance.destroy();
   }, []);
 
   return (
-    <Interaction tagName="div" interactKey="card">
+    <Interaction tagName="section" interactKey="hero">
       {children}
     </Interaction>
   );
 }
 ```
 
+### The `initial` Property for SSR
+
+When using `generateCSS()`, the `initial` property controls the pre-animation state:
+
+```tsx
+// Effect with custom initial state
+{
+  keyframeEffect: {
+    name: 'blur-reveal',
+    keyframes: [
+      { filter: 'blur(20px)', opacity: 0 },
+      { filter: 'blur(0)', opacity: 1 }
+    ]
+  },
+  duration: 1000,
+  // Must match keyframe start for smooth animation
+  initial: {
+    filter: 'blur(20px)',
+    opacity: 0
+  }
+}
+
+// Effect without initial (always visible)
+{
+  namedEffect: { type: 'Pulse' },
+  duration: 500,
+  initial: false  // No hiding
+}
+```
+
 ### Next.js Pages Router
+
+```tsx
+// pages/_document.tsx
+import { Html, Head, Main, NextScript } from 'next/document';
+import { generateCSS } from '@wix/interact/react';
+import { interactConfig } from '@/lib/interact-config';
+
+export default function Document() {
+  const animationCSS = generateCSS(interactConfig);
+
+  return (
+    <Html>
+      <Head>
+        <style dangerouslySetInnerHTML={{ __html: animationCSS }} />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
+```
 
 ```tsx
 // pages/index.tsx
@@ -559,8 +671,7 @@ const config = {
 
 export default function Home() {
   useEffect(() => {
-    // Only runs on client
-    const instance = Interact.create(config);
+    const instance = Interact.create(interactConfig);
     return () => instance.destroy();
   }, []);
 
@@ -571,6 +682,48 @@ export default function Home() {
   );
 }
 ```
+
+### Benefits of SSR with `generateCSS()`
+
+| Without generateCSS             | With generateCSS                |
+| ------------------------------- | ------------------------------- |
+| Elements flash before animation | Elements start in initial state |
+| Animations wait for hydration   | Animations ready immediately    |
+| JavaScript required for styling | Pure CSS handles initial state  |
+
+### Conditional Animations with SSR
+
+Use conditions to respect user preferences:
+
+```tsx
+const config: InteractConfig = {
+  conditions: {
+    'motion-ok': {
+      type: 'media',
+      predicate: '(prefers-reduced-motion: no-preference)',
+    },
+  },
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          keyframeEffect: {
+            /* ... */
+          },
+          conditions: ['motion-ok'], // Only animate if user allows
+        },
+      ],
+    },
+  ],
+};
+
+// Generated CSS will be wrapped in @media query
+const css = generateCSS(config);
+```
+
+````
 
 ## Troubleshooting
 
@@ -584,7 +737,7 @@ useEffect(() => {
   const instance = Interact.create(config);
   return () => instance.destroy();
 }, []);
-```
+````
 
 ### Memory leaks
 

@@ -850,15 +850,18 @@ const testimonialConfig = {
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-When using entrance animations, elements may briefly appear before their animation starts (a "flash"). To prevent this, use the `generate()` function to create CSS that hides elements until their animation completes.
+When using entrance animations, elements may briefly appear before their animation starts (a "flash"). There are two approaches to prevent this:
 
-### Server-Side Setup
+1. **`generate()`** - Simple hiding CSS for elements with `data-interact-initial="true"`
+2. **`generateCSS()`** - Complete CSS animation generation with initial states (recommended)
 
-For the best experience, generate the CSS on the server and include it in the initial HTML `<head>`:
+### Using `generateCSS()` (Recommended)
+
+`generateCSS()` pre-generates all animation CSS including initial states, providing the best performance for SSR and CSR:
 
 ```typescript
 // server.ts or build script
-import { generate } from '@wix/interact';
+import { generateCSS, InteractConfig } from '@wix/interact';
 
 const config = {
   interactions: [
@@ -883,32 +886,112 @@ const config = {
   effects: {},
 };
 
-// Generate CSS at build time or on server
-const css = generate(config);
+// Generate complete animation CSS
+const animationCSS = generateCSS(config);
 
 // Include in your HTML template
 const html = `
 <!DOCTYPE html>
 <html>
 <head>
-    <style>${css}</style>
+    <style id="interact-animations">${animationCSS}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero" data-interact-initial="true">
+    <div data-interact-key="hero">
         <section class="hero">
             <h1>Welcome to Our Site</h1>
             <p>This content fades in smoothly without flash</p>
         </section>
-    </interact-element>
+    </div>
     <script type="module" src="./main.js"></script>
 </body>
 </html>
 `;
 ```
 
+### The `initial` Property
+
+The `initial` property defines the pre-animation state of elements. This is what gets rendered in the `from` keyframe of the generated CSS:
+
+```typescript
+// Default initial (when not specified)
+{
+    visibility: 'hidden',
+    transform: 'none',
+    translate: 'none',
+    scale: 'none',
+    rotate: 'none',
+}
+
+// Custom initial - should match your first keyframe
+{
+    initial: {
+        opacity: 0,
+        transform: 'translateY(40px)',
+        filter: 'blur(10px)'  // for blur effects
+    }
+}
+
+// Disable initial (element always visible)
+{
+    initial: false
+}
+```
+
+### Client-Side Rendering with `generateCSS()`
+
+For CSR applications, inject the CSS before first paint:
+
+```typescript
+import { Interact, generateCSS } from '@wix/interact';
+
+const config = {
+  /* your config */
+};
+
+// Generate and inject CSS immediately on load
+const css = generateCSS(config);
+const style = document.createElement('style');
+style.id = 'interact-animations';
+style.textContent = css;
+document.head.appendChild(style);
+
+// Initialize Interact for trigger handling
+Interact.create(config);
+```
+
+### Using `generate()` (Simple Approach)
+
+For simpler cases, `generate()` creates CSS that hides elements until JavaScript runs:
+
+```typescript
+import { generate } from '@wix/interact';
+
+const css = generate(config);
+
+// Requires data-interact-initial="true" on elements
+const html = `
+<style>${css}</style>
+<interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">Content</section>
+</interact-element>
+`;
+```
+
 ### HTML Markup
 
-Add `data-interact-initial="true"` to the `<interact-element>` that has a child that should be hidden until its entrance animation:
+For `generateCSS()`, use `data-interact-key` on any element:
+
+```html
+<div data-interact-key="hero">
+  <section class="hero">
+    <h1>Welcome to Our Site</h1>
+    <p>This content fades in smoothly without flash</p>
+  </section>
+</div>
+```
+
+For `generate()`, also add `data-interact-initial="true"`:
 
 ```html
 <interact-element data-interact-key="hero" data-interact-initial="true">
@@ -921,9 +1004,9 @@ Add `data-interact-initial="true"` to the `<interact-element>` that has a child 
 
 ### Accessibility
 
-The generated CSS respects `prefers-reduced-motion`. Users who prefer reduced motion will see content immediately without waiting for animations.
+Both functions respect `prefers-reduced-motion`. The generated CSS conditions ensure users who prefer reduced motion see content immediately.
 
-See the [generate() function documentation](../api/functions.md#generate) for more details.
+See the [generateCSS() function documentation](../api/functions.md#generatecss) for complete API details.
 
 ---
 

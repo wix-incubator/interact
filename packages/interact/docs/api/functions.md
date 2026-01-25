@@ -330,6 +330,352 @@ For the generated CSS to work, the `<interact-element>` must have the `data-inte
 
 ---
 
+## `generateCSS(config)`
+
+Generates complete CSS for time-based animations from an `InteractConfig`. This function is designed for **Server-Side Rendering (SSR)** or **efficient Client-Side Rendering (CSR)** by pre-generating CSS animations that can be rendered in a `<style>` tag at the top of the document.
+
+Unlike runtime JavaScript animations, `generateCSS` outputs pure CSS that browsers can parse and execute immediately, providing:
+
+- **Faster initial render**: Animations start without waiting for JavaScript hydration
+- **Better performance**: CSS animations run on the compositor thread
+- **SSR compatibility**: Works with any server-side rendering framework
+- **Reduced JavaScript overhead**: Animation logic handled by the browser
+
+### Signature
+
+```typescript
+function generateCSS(config: InteractConfig): string;
+```
+
+### Parameters
+
+**`config: InteractConfig`**
+
+- The interaction configuration object
+- Only processes time-based triggers: `viewEnter`, `hover`, `click`, `animationEnd`, `pageVisible`
+- Ignores scrub-based triggers (`viewProgress`, `pointerMove`) which require JavaScript
+
+### Returns
+
+**`string`** - A complete CSS string containing:
+
+- `@keyframes` rules for all animations
+- Animation property rules with CSS custom properties
+- Transition rules for transition effects
+- Initial state styles for elements with entrance animations
+
+### How It Works
+
+1. **Parses the configuration** to find all time-based interactions
+2. **Generates `@keyframes`** rules for each unique animation
+3. **Creates CSS rules** that apply animations to elements via `[data-interact-key]` selectors
+4. **Applies initial states** to hide elements before entrance animations (using the `initial` property)
+5. **Respects conditions** by wrapping rules in `@media` or `@container` queries as needed
+
+### The `initial` Property
+
+The `initial` property on effects defines the CSS state of an element **before** its animation starts. This is critical for entrance animations to prevent a "flash" of the final state before the animation begins.
+
+```typescript
+type initial = Record<string, string | number> | false;
+```
+
+**Default behavior**: When not specified, `generateCSS` applies a default initial state:
+
+```typescript
+{
+  visibility: 'hidden',
+  transform: 'none',
+  translate: 'none',
+  scale: 'none',
+  rotate: 'none',
+}
+```
+
+**Custom initial state**: Override with specific properties:
+
+```typescript
+{
+  key: 'hero',
+  keyframeEffect: {
+    name: 'slide-up',
+    keyframes: [
+      { opacity: 0, transform: 'translateY(50px)' },
+      { opacity: 1, transform: 'translateY(0)' }
+    ]
+  },
+  duration: 800,
+  initial: {
+    opacity: 0,
+    transform: 'translateY(50px)'
+  }
+}
+```
+
+**Disable initial state**: Set to `false` to skip the initial `from` keyframe:
+
+```typescript
+{
+  initial: false; // Element visible immediately, no hiding
+}
+```
+
+### Examples
+
+#### Basic SSR Usage
+
+```typescript
+import { generateCSS, InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'fade-slide-in',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(40px)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+          },
+          duration: 800,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
+  effects: {},
+};
+
+// Generate CSS at build time or on the server
+const animationCSS = generateCSS(config);
+
+// Output the CSS in your HTML template
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style id="interact-animations">${animationCSS}</style>
+</head>
+<body>
+  <div data-interact-key="hero">
+    <section class="hero">
+      <h1>Welcome</h1>
+    </section>
+  </div>
+</body>
+</html>
+`;
+```
+
+#### Client-Side Rendering with Pre-Generated CSS
+
+For CSR applications, inject the CSS before the first paint:
+
+```typescript
+import { Interact, generateCSS } from '@wix/interact';
+
+const config = {
+  /* your config */
+};
+
+// Generate and inject CSS immediately
+const css = generateCSS(config);
+const style = document.createElement('style');
+style.id = 'interact-css';
+style.textContent = css;
+document.head.appendChild(style);
+
+// Then initialize Interact (can happen later, even after hydration)
+Interact.create(config);
+```
+
+#### React SSR with Next.js
+
+```tsx
+// app/layout.tsx (App Router)
+import { generateCSS } from '@wix/interact';
+import { interactConfig } from './interact-config';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const animationCSS = generateCSS(interactConfig);
+
+  return (
+    <html>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: animationCSS }} />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+#### Using Custom Initial States
+
+```typescript
+const config: InteractConfig = {
+  effects: {
+    'blur-reveal': {
+      keyframeEffect: {
+        name: 'blur-reveal',
+        keyframes: [
+          { filter: 'blur(20px)', opacity: 0 },
+          { filter: 'blur(0)', opacity: 1 },
+        ],
+      },
+      duration: 1000,
+      // Custom initial matches the animation's starting keyframe
+      initial: {
+        filter: 'blur(20px)',
+        opacity: 0,
+      },
+    },
+  },
+  interactions: [
+    {
+      key: 'content-block',
+      trigger: 'viewEnter',
+      effects: [{ effectId: 'blur-reveal' }],
+    },
+  ],
+};
+
+const css = generateCSS(config);
+// CSS will include a `from` keyframe with filter and opacity
+```
+
+#### Conditional Animations with Media Queries
+
+```typescript
+const config: InteractConfig = {
+  conditions: {
+    desktop: { type: 'media', predicate: '(min-width: 1024px)' },
+    'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+  },
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      effects: [
+        {
+          keyframeEffect: {
+            name: 'complex-entrance',
+            keyframes: [
+              { opacity: 0, transform: 'translateY(60px) scale(0.9)' },
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+            ],
+          },
+          duration: 1000,
+          conditions: ['desktop', 'prefers-motion'],
+        },
+      ],
+    },
+  ],
+};
+
+const css = generateCSS(config);
+// Generated CSS will be wrapped in:
+// @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) { ... }
+```
+
+#### Transition Effects
+
+`generateCSS` also supports transition effects:
+
+```typescript
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'button',
+      trigger: 'hover',
+      effects: [
+        {
+          transition: {
+            duration: 200,
+            easing: 'ease-out',
+            styleProperties: [
+              { name: 'transform', value: 'scale(1.05)' },
+              { name: 'box-shadow', value: '0 8px 16px rgba(0,0,0,0.15)' },
+            ],
+          },
+        },
+      ],
+    },
+  ],
+};
+
+const css = generateCSS(config);
+// Generates transition rules with :state() and [data-interact-effect] selectors
+```
+
+### Generated CSS Structure
+
+The output CSS follows this structure:
+
+```css
+/* 1. @keyframes rules */
+@keyframes fade-slide-in {
+  from {
+    visibility: hidden;
+    transform: none;
+    /* ... default initial state */
+  }
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. Animation custom property definitions (conditional) */
+[data-interact-key='hero'] > :first-child {
+  --anim-def-hero-0: fade-slide-in 800ms ease-out forwards;
+}
+
+/* 3. Animation application rule */
+[data-interact-key='hero'] > :first-child {
+  animation-composition: replace;
+  animation: var(--anim-def-hero-0, none);
+}
+
+/* 4. Transition state rules (for transition effects) */
+[data-interact-key='button']:state(hover-effect) > :first-child,
+[data-interact-key='button'][data-interact-effect~='hover-effect'] > :first-child {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+```
+
+### Best Practices
+
+1. **Call once at build time or server startup**: The output is deterministic, so cache the result
+2. **Inject before first paint**: Place the `<style>` tag in `<head>` to prevent FOUC
+3. **Use with `Interact.create()`**: The CSS handles styling; JavaScript handles triggers
+4. **Match initial to keyframes**: When using custom `initial`, ensure it matches your animation's starting state
+5. **Use conditions for accessibility**: Wrap animations in `prefers-reduced-motion` conditions
+
+### Triggers Supported
+
+| Trigger        | Supported | Notes                                               |
+| -------------- | --------- | --------------------------------------------------- |
+| `viewEnter`    | ✅        | Full support with initial states                    |
+| `hover`        | ✅        | Transition effects work; alternate/repeat behaviors |
+| `click`        | ✅        | Transition effects for state changes                |
+| `animationEnd` | ✅        | Chained animations                                  |
+| `pageVisible`  | ✅        | Similar to viewEnter                                |
+| `viewProgress` | ❌        | Requires JavaScript scroll handling                 |
+| `pointerMove`  | ❌        | Requires JavaScript pointer tracking                |
+
+---
+
 ## See Also
 
 - [Interact Class](interact-class.md) - Main interaction manager

@@ -2,6 +2,7 @@ import { Playground } from './components/Playground';
 import { ScrollShowcase } from './components/ScrollShowcase';
 import { ResponsiveDemo } from './components/ResponsiveDemo';
 import { SelectorConditionDemo } from './components/SelectorConditionDemo';
+import { CSSGenerationDemo } from './components/CSSGenerationDemo';
 import { PointerMoveDemo } from './components/PointerMoveDemo';
 
 const heroCopy = [
@@ -35,6 +36,7 @@ function App() {
       </header>
 
       <Playground />
+      <CSSGenerationDemo />
       <SelectorConditionDemo />
       <div className="scroll-showcase-wrapper">
         <ResponsiveDemo />
