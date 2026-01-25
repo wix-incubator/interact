@@ -39,11 +39,11 @@ type Interaction = {
  * The Sequence type
  */
 type Sequence = {
-  delay: number; // default 0
-  offset: number; // default 100
-  offsetEasing: string | (p: number) => number; // linear
-  align: 'start' | 'end' | 'sequence' | 'sequence-reversed';
-  effects: Effect[]
+  delay?: number; // default 0
+  offset?: number; // default 100
+  offsetEasing?: string | (p: number) => number; // linear
+  effects: Effect[];
+  sequenceId: string;
 };
 ```
 

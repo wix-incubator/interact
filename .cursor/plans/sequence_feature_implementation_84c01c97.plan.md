@@ -108,7 +108,7 @@ export type Sequence = {
   sequenceId?: string;    // for referencing reusable sequences
   delay?: number;         // default 0
   offset?: number;        // default 100
-  offsetEasing?: string | ((p: number) => number);
+  offsetEasing?: string | ((p: number) => number); // default linear
   effects: (Effect | EffectRef)[];
 };
 
