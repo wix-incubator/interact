@@ -21,10 +21,10 @@ The effect feels dramatic, premium, and cinematic—best suited for hero element
 
 ```typescript
 interface ArcIn {
-  direction: 'top' | 'right' | 'bottom' | 'left';  // default: 'left'
-  power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
-  duration?: number;   // ms, min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;      // ms, min: 0, max: 8000, step: 100, default: 0
+  direction: 'top' | 'right' | 'bottom' | 'left'; // default: 'left'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'medium'
+  duration?: number; // ms, min: 0, max: 4000, step: 100, default: 1200
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 

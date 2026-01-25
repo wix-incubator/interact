@@ -19,10 +19,10 @@ Pulse is the most universally safe ongoing animation—it's subtle enough for pr
 
 ```typescript
 interface Pulse {
-  power?: 'soft' | 'medium' | 'hard';  // default: 'soft'
-  intensity?: number;                   // 0-1, min: 0, max: 1, step: 0.1, default: 0
-  duration?: number;  // ms, min: 100, max: 4000, step: 100, default: 1300
-  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 1000
+  power?: 'soft' | 'medium' | 'hard'; // default: 'soft'
+  intensity?: number; // 0-1, min: 0, max: 1, step: 0.1, default: 0
+  duration?: number; // ms, min: 100, max: 4000, step: 100, default: 1300
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 1000
 }
 ```
 

@@ -21,10 +21,10 @@ The rotation is tied directly to scroll position, creating a satisfying connecti
 
 ```typescript
 interface ArcScroll {
-  direction: 'horizontal' | 'vertical';  // default: 'vertical'
-  range?: 'in' | 'out' | 'continuous';   // default varies
-  start?: number;    // %, scroll position start
-  end?: number;      // %, scroll position end
+  direction: 'horizontal' | 'vertical'; // default: 'vertical'
+  range?: 'in' | 'out' | 'continuous'; // default varies
+  start?: number; // %, scroll position start
+  end?: number; // %, scroll position end
 }
 ```
 

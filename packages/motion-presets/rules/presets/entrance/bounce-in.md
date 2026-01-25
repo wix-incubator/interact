@@ -21,11 +21,11 @@ The effect feels playful, energetic, and attention-grabbing. It's perfect for el
 
 ```typescript
 interface BounceIn {
-  direction: 'top' | 'right' | 'bottom' | 'left' | 'center';  // default: 'top'
-  power?: 'soft' | 'medium' | 'hard';        // default: 'soft'
-  distanceFactor?: number;                    // min: 1, max: 4, step: 0.1, default: 1
-  duration?: number;  // ms, min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 0
+  direction: 'top' | 'right' | 'bottom' | 'left' | 'center'; // default: 'top'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'soft'
+  distanceFactor?: number; // min: 1, max: 4, step: 0.1, default: 1
+  duration?: number; // ms, min: 0, max: 4000, step: 100, default: 1200
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 

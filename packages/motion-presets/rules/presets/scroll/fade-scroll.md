@@ -19,10 +19,10 @@ The transition is smooth and linear, tied directly to scroll position—not time
 
 ```typescript
 interface FadeScroll {
-  range: 'in' | 'out';        // default: 'in'
-  opacity?: number;           // 0-1, min: 0, max: 1, step: 0.01, default: 0
-  start?: number;             // %, min: 0, max: 100, default: 0 (in) or 50 (out)
-  end?: number;               // %, min: 0, max: 100, default: 50 (in) or 100 (out)
+  range: 'in' | 'out'; // default: 'in'
+  opacity?: number; // 0-1, min: 0, max: 1, step: 0.01, default: 0
+  start?: number; // %, min: 0, max: 100, default: 0 (in) or 50 (out)
+  end?: number; // %, min: 0, max: 100, default: 50 (in) or 100 (out)
 }
 ```
 

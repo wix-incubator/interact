@@ -138,31 +138,31 @@ background animation, bg scroll effect, background parallax, section background,
 
 ### Background vs Regular Element Animations
 
-| Use Background Scroll for... | Use regular Scroll for... |
-|------------------------------|---------------------------|
-| `background-image` on sections | `<img>` elements in flow |
-| CSS background media | Content that scrolls with page |
-| Full-width/full-height backgrounds | Individual elements |
-| Media behind content | Media as content |
+| Use Background Scroll for...       | Use regular Scroll for...      |
+| ---------------------------------- | ------------------------------ |
+| `background-image` on sections     | `<img>` elements in flow       |
+| CSS background media               | Content that scrolls with page |
+| Full-width/full-height backgrounds | Individual elements            |
+| Media behind content               | Media as content               |
 
 **Exception**: `ImageParallax` is in this category but works on regular `<img>` elements, not CSS backgrounds.
 
 ### Reduced Motion Alternatives
 
-| Original | Reduced Motion Fallback |
-|----------|------------------------|
-| BgParallax | Static background (disable) |
-| BgZoom, BgCloseUp, BgPullBack | BgFade or static |
-| BgRotate, BgSkew | Disable |
-| BgFake3D | Static or subtle BgParallax |
-| BgFade | Keep (it's already subtle) |
+| Original                      | Reduced Motion Fallback     |
+| ----------------------------- | --------------------------- |
+| BgParallax                    | Static background (disable) |
+| BgZoom, BgCloseUp, BgPullBack | BgFade or static            |
+| BgRotate, BgSkew              | Disable                     |
+| BgFake3D                      | Static or subtle BgParallax |
+| BgFade                        | Keep (it's already subtle)  |
 
 ### Parallels in Other Categories
 
-| Background | Scroll | Entrance |
-|------------|--------|----------|
-| BgParallax | ParallaxScroll | - |
-| BgZoom | GrowScroll | GrowIn |
-| BgFade | FadeScroll | FadeIn |
-| BgReveal | RevealScroll | RevealIn |
-| BgRotate | SpinScroll | SpinIn |
+| Background | Scroll         | Entrance |
+| ---------- | -------------- | -------- |
+| BgParallax | ParallaxScroll | -        |
+| BgZoom     | GrowScroll     | GrowIn   |
+| BgFade     | FadeScroll     | FadeIn   |
+| BgReveal   | RevealScroll   | RevealIn |
+| BgRotate   | SpinScroll     | SpinIn   |

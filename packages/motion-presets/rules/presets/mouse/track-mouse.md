@@ -19,12 +19,12 @@ Element follows the mouse cursor, translating its position based on cursor locat
 
 ```typescript
 interface TrackMouse {
-  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' };  // default: { value: 250, type: 'px' }
-  axis: 'horizontal' | 'vertical' | 'both';                              // default: 'both'
-  power?: 'soft' | 'medium' | 'hard';                                    // default: 'medium'
-  inverted?: boolean;                                                    // default: false
-  transitionDuration?: number;                                           // ms, min: 0, max: 5000, step: 20, default: 500
-  transitionEasing?: 'linear' | 'easeOut' | 'hardBackOut';              // default: 'easeOut'
+  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' }; // default: { value: 250, type: 'px' }
+  axis: 'horizontal' | 'vertical' | 'both'; // default: 'both'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'medium'
+  inverted?: boolean; // default: false
+  transitionDuration?: number; // ms, min: 0, max: 5000, step: 20, default: 500
+  transitionEasing?: 'linear' | 'easeOut' | 'hardBackOut'; // default: 'easeOut'
 }
 ```
 

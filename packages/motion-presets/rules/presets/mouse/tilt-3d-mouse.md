@@ -19,12 +19,12 @@ Element tilts in 3D space toward the mouse cursor, like holding a physical card 
 
 ```typescript
 interface Tilt3DMouse {
-  power?: 'soft' | 'medium' | 'hard';      // default: 'medium'
-  angle?: number;                           // degrees, min: 5, max: 85, step: 1, default: 50
-  perspective?: number;                     // px, min: 200, max: 1000, step: 50, default: 800
-  inverted?: boolean;                       // default: false
-  transitionDuration?: number;              // ms, min: 0, max: 5000, step: 20, default: 500
-  transitionEasing?: 'linear' | 'easeOut' | 'hardBackOut';  // default: 'easeOut'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'medium'
+  angle?: number; // degrees, min: 5, max: 85, step: 1, default: 50
+  perspective?: number; // px, min: 200, max: 1000, step: 50, default: 800
+  inverted?: boolean; // default: false
+  transitionDuration?: number; // ms, min: 0, max: 5000, step: 20, default: 500
+  transitionEasing?: 'linear' | 'easeOut' | 'hardBackOut'; // default: 'easeOut'
 }
 ```
 

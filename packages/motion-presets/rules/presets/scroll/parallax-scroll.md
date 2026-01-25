@@ -19,10 +19,10 @@ This is a continuous effect that runs throughout the entire time the element is 
 
 ```typescript
 interface ParallaxScroll {
-  speed?: number;     // ratio, min: -1, max: 1, step: 0.05, default: 0.5
-  range?: 'continuous';  // only continuous supported
-  start?: number;     // %, min: 0, max: 0, default: 0
-  end?: number;       // %, min: 100, max: 100, default: 100
+  speed?: number; // ratio, min: -1, max: 1, step: 0.05, default: 0.5
+  range?: 'continuous'; // only continuous supported
+  start?: number; // %, min: 0, max: 0, default: 0
+  end?: number; // %, min: 100, max: 100, default: 100
 }
 ```
 
@@ -67,7 +67,7 @@ interface ParallaxScroll {
 // Layered depth effect (apply to different elements)
 // Background layer
 { type: 'ParallaxScroll', speed: 0.2 }
-// Midground layer  
+// Midground layer
 { type: 'ParallaxScroll', speed: 0.5 }
 // Foreground decorative elements
 { type: 'ParallaxScroll', speed: 0.8 }

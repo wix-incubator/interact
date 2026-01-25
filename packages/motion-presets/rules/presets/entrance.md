@@ -1,7 +1,21 @@
 ---
 name: Entrance Animations
 category: entrance
-tags: [entrance, appear, reveal, enter, load, show, intro, page-load, modal, popup, first-time, visibility]
+tags:
+  [
+    entrance,
+    appear,
+    reveal,
+    enter,
+    load,
+    show,
+    intro,
+    page-load,
+    modal,
+    popup,
+    first-time,
+    visibility,
+  ]
 ---
 
 # Entrance Animations
@@ -207,25 +221,25 @@ appear animation, reveal effect, intro animation, show animation, enter animatio
 
 Always provide a reduced-motion fallback. Recommended mappings:
 
-| Original | Reduced Motion Fallback |
-|----------|------------------------|
-| BounceIn, SpinIn, PunchIn | FadeIn |
-| ArcIn, FlipIn, TurnIn | FadeIn |
-| SlideIn, GlideIn | FadeIn (or keep with shorter duration) |
-| ShuttersIn, ShapeIn | FadeIn |
-| GlitchIn | FadeIn |
+| Original                  | Reduced Motion Fallback                |
+| ------------------------- | -------------------------------------- |
+| BounceIn, SpinIn, PunchIn | FadeIn                                 |
+| ArcIn, FlipIn, TurnIn     | FadeIn                                 |
+| SlideIn, GlideIn          | FadeIn (or keep with shorter duration) |
+| ShuttersIn, ShapeIn       | FadeIn                                 |
+| GlitchIn                  | FadeIn                                 |
 
 ### Parallels in Other Categories
 
-| Entrance | Scroll | Ongoing | Mouse |
-|----------|--------|---------|-------|
-| ArcIn | ArcScroll | - | - |
-| FadeIn | FadeScroll | Flash | - |
-| SpinIn | SpinScroll | Spin | SpinMouse |
-| BounceIn | - | Bounce | BounceMouse |
-| TiltIn | TiltScroll | - | Tilt3DMouse |
-| FlipIn | FlipScroll | Flip | - |
-| GrowIn | GrowScroll | - | ScaleMouse |
-| SlideIn | SlideScroll | - | TrackMouse |
-| BlurIn | BlurScroll | - | BlurMouse |
-| RevealIn | RevealScroll | - | - |
+| Entrance | Scroll       | Ongoing | Mouse       |
+| -------- | ------------ | ------- | ----------- |
+| ArcIn    | ArcScroll    | -       | -           |
+| FadeIn   | FadeScroll   | Flash   | -           |
+| SpinIn   | SpinScroll   | Spin    | SpinMouse   |
+| BounceIn | -            | Bounce  | BounceMouse |
+| TiltIn   | TiltScroll   | -       | Tilt3DMouse |
+| FlipIn   | FlipScroll   | Flip    | -           |
+| GrowIn   | GrowScroll   | -       | ScaleMouse  |
+| SlideIn  | SlideScroll  | -       | TrackMouse  |
+| BlurIn   | BlurScroll   | -       | BlurMouse   |
+| RevealIn | RevealScroll | -       | -           |

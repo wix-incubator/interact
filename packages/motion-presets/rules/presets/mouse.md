@@ -155,20 +155,20 @@ Since mouse animations don't work on touch devices:
 
 ### Reduced Motion Alternatives
 
-| Original | Reduced Motion Fallback |
-|----------|------------------------|
+| Original                  | Reduced Motion Fallback      |
+| ------------------------- | ---------------------------- |
 | Tilt3DMouse, Track3DMouse | Disable or very subtle scale |
-| TrackMouse, BounceMouse | Disable |
-| SpinMouse | Disable |
-| All mouse animations | Static state |
+| TrackMouse, BounceMouse   | Disable                      |
+| SpinMouse                 | Disable                      |
+| All mouse animations      | Static state                 |
 
 ### Parallels in Other Categories
 
-| Mouse | Entrance | Scroll | Ongoing |
-|-------|----------|--------|---------|
-| Tilt3DMouse | TiltIn | TiltScroll | - |
-| TrackMouse | GlideIn | ParallaxScroll | - |
-| BounceMouse | BounceIn | - | Bounce |
-| SpinMouse | SpinIn | SpinScroll | Spin |
-| ScaleMouse | GrowIn | GrowScroll | Pulse |
-| BlurMouse | BlurIn | BlurScroll | - |
+| Mouse       | Entrance | Scroll         | Ongoing |
+| ----------- | -------- | -------------- | ------- |
+| Tilt3DMouse | TiltIn   | TiltScroll     | -       |
+| TrackMouse  | GlideIn  | ParallaxScroll | -       |
+| BounceMouse | BounceIn | -              | Bounce  |
+| SpinMouse   | SpinIn   | SpinScroll     | Spin    |
+| ScaleMouse  | GrowIn   | GrowScroll     | Pulse   |
+| BlurMouse   | BlurIn   | BlurScroll     | -       |

@@ -19,8 +19,8 @@ This is specifically for CSS background images/videos on containers, not for reg
 
 ```typescript
 interface BgParallax {
-  speed?: number;         // ratio, min: 0.05, max: 0.95, step: 0.01, default: 0.2
-  range?: 'continuous';   // only continuous supported
+  speed?: number; // ratio, min: 0.05, max: 0.95, step: 0.01, default: 0.2
+  range?: 'continuous'; // only continuous supported
 }
 ```
 

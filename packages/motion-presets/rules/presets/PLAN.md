@@ -3,31 +3,31 @@ name: Generate LLM Preset Rules
 overview: Create two-level rule files (category + preset) optimized for LLM decision flow.
 todos:
   - id: restructure
-    content: "Restructure: Create category files, update existing preset files to new format"
+    content: 'Restructure: Create category files, update existing preset files to new format'
     status: pending
   - id: category-entrance
-    content: "Create entrance.md category file with decision guide"
+    content: 'Create entrance.md category file with decision guide'
     status: pending
   - id: category-scroll
-    content: "Create scroll.md category file with decision guide"
+    content: 'Create scroll.md category file with decision guide'
     status: pending
   - id: category-ongoing
-    content: "Create ongoing.md category file with decision guide"
+    content: 'Create ongoing.md category file with decision guide'
     status: pending
   - id: category-mouse
-    content: "Create mouse.md category file with decision guide"
+    content: 'Create mouse.md category file with decision guide'
     status: pending
   - id: category-background
-    content: "Create background-scroll.md category file with decision guide"
+    content: 'Create background-scroll.md category file with decision guide'
     status: pending
   - id: update-presets
-    content: "Update existing preset files to simplified format (remove when-to-use, alternatives)"
+    content: 'Update existing preset files to simplified format (remove when-to-use, alternatives)'
     status: pending
   - id: review
-    content: "Review new structure with user"
+    content: 'Review new structure with user'
     status: pending
   - id: generate-remaining
-    content: "Generate remaining preset files"
+    content: 'Generate remaining preset files'
     status: pending
 ---
 
@@ -109,13 +109,13 @@ Verbose overview of the category with alternative phrasings:
 ```markdown
 ## Description
 
-Entrance animations bring elements into view for the first time. They create the initial 
-impression and set the tone for user interaction. These are one-shot animations that play 
+Entrance animations bring elements into view for the first time. They create the initial
+impression and set the tone for user interaction. These are one-shot animations that play
 once when an element first appears.
 
 ## Synonyms
 
-appear animation, reveal effect, intro animation, show animation, enter animation, 
+appear animation, reveal effect, intro animation, show animation, enter animation,
 page load animation, element appearance, fade in effect, loading animation
 ```
 
@@ -162,11 +162,13 @@ Each preset as a block with description, tags, and synonyms for LLM matching:
 ## Available Presets
 
 ### FadeIn
+
 **Description**: Gradual opacity transition from invisible to visible. Universal, subtle, accessibility-safe.
 **Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`
 **Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance
 
 ### ArcIn
+
 **Description**: 3D curved swing like a door opening. Dramatic, cinematic, creates depth.
 **Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`
 **Synonyms**: arc entrance, curved reveal, swing in, cinematic entrance, perspective reveal
@@ -184,28 +186,33 @@ Help LLM choose between presets:
 ## Decision Guide
 
 ### By Tone
+
 - **Subtle/Professional**: FadeIn, BlurIn, SlideIn
 - **Dramatic/Cinematic**: ArcIn, FlipIn, TurnIn
 - **Playful/Energetic**: BounceIn, SpinIn, PunchIn
 
 ### By Use Case
+
 - **Hero sections**: ArcIn, ExpandIn, GrowIn
 - **Modals/Overlays**: FadeIn, DropIn
 - **List items**: FadeIn, SlideIn (with stagger)
 - **Notifications**: BounceIn, PunchIn
 
 ### Reduced Motion Alternatives
+
 Always provide a reduced-motion fallback:
+
 - Complex animations → FadeIn
 - Movement-based → FadeIn or no animation
 - 3D/Spinning → FadeIn
 
 ### Parallels in Other Categories
+
 | Entrance | Scroll Equivalent | Mouse Equivalent |
-|----------|-------------------|------------------|
-| ArcIn | ArcScroll | - |
-| FadeIn | FadeScroll | - |
-| SpinIn | SpinScroll | SpinMouse |
+| -------- | ----------------- | ---------------- |
+| ArcIn    | ArcScroll         | -                |
+| FadeIn   | FadeScroll        | -                |
+| SpinIn   | SpinScroll        | SpinMouse        |
 ```
 
 ---
@@ -242,6 +249,7 @@ category: entrance
 - Internal implementation details
 
 **Example:**
+
 > Element swings into view along a curved path, like a door opening towards you. At the start,
 > the element is invisible and tilted away (as if rotated back into the screen). As the animation
 > plays, it gradually rotates forward while simultaneously fading in. The element follows an arc
@@ -256,10 +264,10 @@ Include comprehensive parameter impact notes explaining what each value does vis
 
 ```typescript
 interface ArcIn {
-  direction: 'top' | 'right' | 'bottom' | 'left';  // default: 'left'
-  power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
-  duration?: number;   // ms, min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;      // ms, min: 0, max: 8000, step: 100, default: 0
+  direction: 'top' | 'right' | 'bottom' | 'left'; // default: 'left'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'medium'
+  duration?: number; // ms, min: 0, max: 4000, step: 100, default: 1200
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 
@@ -337,23 +345,25 @@ category: entrance
 
 ## Available Presets
 
-| Preset | Description |
-|--------|-------------|
-| FadeIn | Gradual opacity transition, subtle and universal |
-| ArcIn | 3D curved swing, dramatic and cinematic |
-| BounceIn | Playful bouncing, energetic |
-| SlideIn | Straight movement from direction |
-| FlipIn | 3D flip rotation |
-| ... | ... |
+| Preset   | Description                                      |
+| -------- | ------------------------------------------------ |
+| FadeIn   | Gradual opacity transition, subtle and universal |
+| ArcIn    | 3D curved swing, dramatic and cinematic          |
+| BounceIn | Playful bouncing, energetic                      |
+| SlideIn  | Straight movement from direction                 |
+| FlipIn   | 3D flip rotation                                 |
+| ...      | ...                                              |
 
 ## Decision Guide
 
 ### By Tone
+
 - **Subtle/Professional**: FadeIn, BlurIn, SlideIn
 - **Dramatic/Cinematic**: ArcIn, FlipIn, TurnIn
 - **Playful/Energetic**: BounceIn, SpinIn, PunchIn
 
 ### By Use Case
+
 - **Hero sections**: ArcIn, ExpandIn, GrowIn
 - **Modals/Overlays**: FadeIn, DropIn
 - **List items (staggered)**: FadeIn, SlideIn
@@ -361,12 +371,12 @@ category: entrance
 
 ### Parallels in Other Categories
 
-| Entrance | Scroll | Mouse |
-|----------|--------|-------|
-| ArcIn | ArcScroll | - |
-| FadeIn | FadeScroll | - |
-| SpinIn | SpinScroll | SpinMouse |
-| - | ParallaxScroll | TrackMouse |
+| Entrance | Scroll         | Mouse      |
+| -------- | -------------- | ---------- |
+| ArcIn    | ArcScroll      | -          |
+| FadeIn   | FadeScroll     | -          |
+| SpinIn   | SpinScroll     | SpinMouse  |
+| -        | ParallaxScroll | TrackMouse |
 ```
 
 ---
@@ -383,22 +393,23 @@ category: entrance
 
 ## Visual Description
 
-Element swings into view along a curved path, like a door opening towards you. 
-It starts tilted away and gradually flattens as it settles into place. 
+Element swings into view along a curved path, like a door opening towards you.
+It starts tilted away and gradually flattens as it settles into place.
 Fades in while moving. The effect feels dramatic and cinematic.
 
 ## Parameters
 
 \`\`\`typescript
 interface ArcIn {
-  direction: 'top' | 'right' | 'bottom' | 'left';  // default: 'left'
-  power?: 'soft' | 'medium' | 'hard';              // default: 'medium'
-  duration?: number;   // min: 0, max: 4000, default: 1200
-  delay?: number;      // min: 0, max: 8000, default: 0
+direction: 'top' | 'right' | 'bottom' | 'left'; // default: 'left'
+power?: 'soft' | 'medium' | 'hard'; // default: 'medium'
+duration?: number; // min: 0, max: 4000, default: 1200
+delay?: number; // min: 0, max: 8000, default: 0
 }
 \`\`\`
 
 **Parameter Impact:**
+
 - `direction`: top/bottom tilts forward/back, left/right tilts sideways
 - `power`: soft = subtle, medium = noticeable, hard = dramatic
 

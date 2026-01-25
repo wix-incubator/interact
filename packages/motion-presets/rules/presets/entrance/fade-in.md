@@ -17,8 +17,8 @@ FadeIn is the safest animation choice—it works everywhere, doesn't trigger mot
 
 ```typescript
 interface FadeIn {
-  duration?: number;  // ms, min: 0, max: 4000, step: 100, default: 1200
-  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 0
+  duration?: number; // ms, min: 0, max: 4000, step: 100, default: 1200
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 

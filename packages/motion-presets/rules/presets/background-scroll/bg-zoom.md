@@ -19,9 +19,9 @@ Background image scales up or down as the user scrolls, creating a cinematic dol
 
 ```typescript
 interface BgZoom {
-  direction: 'in' | 'out';    // default: 'in'
-  zoom?: number;              // multiplier, min: 0.1, max: 10, step: 0.1, default: 10
-  range?: 'continuous';       // only continuous supported
+  direction: 'in' | 'out'; // default: 'in'
+  zoom?: number; // multiplier, min: 0.1, max: 10, step: 0.1, default: 10
+  range?: 'continuous'; // only continuous supported
 }
 ```
 

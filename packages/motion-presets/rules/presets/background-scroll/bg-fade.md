@@ -21,9 +21,9 @@ This is one of the safest background scroll effects—it's subtle, doesn't cause
 
 ```typescript
 interface BgFade {
-  range: 'in' | 'out';      // required
-  start?: number;           // %, min: 0, max: 100, default: 0 (in) or 50 (out)
-  end?: number;             // %, min: 0, max: 100, default: 50 (in) or 100 (out)
+  range: 'in' | 'out'; // required
+  start?: number; // %, min: 0, max: 100, default: 0 (in) or 50 (out)
+  end?: number; // %, min: 0, max: 100, default: 50 (in) or 100 (out)
 }
 ```
 

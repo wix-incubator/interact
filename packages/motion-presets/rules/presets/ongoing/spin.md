@@ -19,10 +19,10 @@ Spin is ideal for loading indicators and decorative rotating elements, but it ca
 
 ```typescript
 interface Spin {
-  direction: 'clockwise' | 'counter-clockwise';  // default: 'clockwise'
-  power?: 'soft' | 'medium' | 'hard';            // default: 'soft'
-  duration?: number;  // ms, min: 100, max: 50000, step: 100, default: 7000
-  delay?: number;     // ms, min: 0, max: 8000, step: 100, default: 0
+  direction: 'clockwise' | 'counter-clockwise'; // default: 'clockwise'
+  power?: 'soft' | 'medium' | 'hard'; // default: 'soft'
+  duration?: number; // ms, min: 100, max: 50000, step: 100, default: 7000
+  delay?: number; // ms, min: 0, max: 8000, step: 100, default: 0
 }
 ```
 

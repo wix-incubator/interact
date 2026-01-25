@@ -1,7 +1,18 @@
 ---
 name: Scroll Animations
 category: scroll
-tags: [scroll, parallax, scroll-driven, viewport, scroll-reveal, on-scroll, scroll-triggered, storytelling, progressive]
+tags:
+  [
+    scroll,
+    parallax,
+    scroll-driven,
+    viewport,
+    scroll-reveal,
+    on-scroll,
+    scroll-triggered,
+    storytelling,
+    progressive,
+  ]
 ---
 
 # Scroll Animations
@@ -191,24 +202,24 @@ Custom `start` and `end` values allow fine-tuning the scroll range.
 
 ### Reduced Motion Alternatives
 
-| Original | Reduced Motion Fallback |
-|----------|------------------------|
-| ParallaxScroll | Disable (static position) |
-| ArcScroll, FlipScroll, Spin3dScroll | FadeScroll or disable |
-| SpinScroll | Disable |
-| TiltScroll, TurnScroll | FadeScroll |
-| GrowScroll, ShrinkScroll | FadeScroll |
+| Original                            | Reduced Motion Fallback   |
+| ----------------------------------- | ------------------------- |
+| ParallaxScroll                      | Disable (static position) |
+| ArcScroll, FlipScroll, Spin3dScroll | FadeScroll or disable     |
+| SpinScroll                          | Disable                   |
+| TiltScroll, TurnScroll              | FadeScroll                |
+| GrowScroll, ShrinkScroll            | FadeScroll                |
 
 ### Parallels in Other Categories
 
-| Scroll | Entrance | Ongoing | Background |
-|--------|----------|---------|------------|
-| FadeScroll | FadeIn | - | BgFade |
-| ArcScroll | ArcIn | - | - |
-| ParallaxScroll | - | - | BgParallax |
-| TiltScroll | TiltIn | - | - |
-| FlipScroll | FlipIn | Flip | - |
-| GrowScroll | GrowIn | - | BgZoom |
-| SpinScroll | SpinIn | Spin | BgRotate |
-| RevealScroll | RevealIn | - | BgReveal |
-| BlurScroll | BlurIn | - | - |
+| Scroll         | Entrance | Ongoing | Background |
+| -------------- | -------- | ------- | ---------- |
+| FadeScroll     | FadeIn   | -       | BgFade     |
+| ArcScroll      | ArcIn    | -       | -          |
+| ParallaxScroll | -        | -       | BgParallax |
+| TiltScroll     | TiltIn   | -       | -          |
+| FlipScroll     | FlipIn   | Flip    | -          |
+| GrowScroll     | GrowIn   | -       | BgZoom     |
+| SpinScroll     | SpinIn   | Spin    | BgRotate   |
+| RevealScroll   | RevealIn | -       | BgReveal   |
+| BlurScroll     | BlurIn   | -       | -          |

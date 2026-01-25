@@ -19,11 +19,11 @@ Element follows the mouse cursor with a bouncy, elastic motion. Instead of movin
 
 ```typescript
 interface BounceMouse {
-  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' };  // default: { value: 80, type: 'px' }
-  axis: 'horizontal' | 'vertical' | 'both';                              // default: 'both'
-  inverted?: boolean;                                                    // default: false
-  transitionDuration?: number;                                           // ms, min: 0, max: 5000, step: 20, default: 500
-  transitionEasing?: 'elastic' | 'bounce';                              // default: 'elastic'
+  distance: { value: number; type: 'px' | 'percentage' | 'vh' | 'vw' }; // default: { value: 80, type: 'px' }
+  axis: 'horizontal' | 'vertical' | 'both'; // default: 'both'
+  inverted?: boolean; // default: false
+  transitionDuration?: number; // ms, min: 0, max: 5000, step: 20, default: 500
+  transitionEasing?: 'elastic' | 'bounce'; // default: 'elastic'
 }
 ```
 

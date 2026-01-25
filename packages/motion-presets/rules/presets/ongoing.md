@@ -1,7 +1,8 @@
 ---
 name: Ongoing Animations
 category: ongoing
-tags: [ongoing, continuous, loop, looping, repeating, infinite, persistent, ambient, status, indicator]
+tags:
+  [ongoing, continuous, loop, looping, repeating, infinite, persistent, ambient, status, indicator]
 ---
 
 # Ongoing Animations
@@ -157,19 +158,19 @@ continuous animation, looping animation, infinite animation, repeating animation
 
 ### Reduced Motion Alternatives
 
-| Original | Reduced Motion Fallback |
-|----------|------------------------|
-| Spin, Swing, Flip | Stop animation or very slow Pulse |
-| Bounce, Wiggle, Jello | Pulse (soft) or stop |
-| Flash | Reduce frequency, ensure <3 flashes/second |
-| DVD, Cross | Stop animation |
+| Original              | Reduced Motion Fallback                    |
+| --------------------- | ------------------------------------------ |
+| Spin, Swing, Flip     | Stop animation or very slow Pulse          |
+| Bounce, Wiggle, Jello | Pulse (soft) or stop                       |
+| Flash                 | Reduce frequency, ensure <3 flashes/second |
+| DVD, Cross            | Stop animation                             |
 
 ### Parallels in Other Categories
 
-| Ongoing | Entrance | Scroll | Mouse |
-|---------|----------|--------|-------|
-| Pulse | DropIn | GrowScroll | ScaleMouse |
-| Bounce | BounceIn | - | BounceMouse |
-| Spin | SpinIn | SpinScroll | SpinMouse |
-| Flip | FlipIn | FlipScroll | - |
-| Flash | FadeIn | FadeScroll | - |
+| Ongoing | Entrance | Scroll     | Mouse       |
+| ------- | -------- | ---------- | ----------- |
+| Pulse   | DropIn   | GrowScroll | ScaleMouse  |
+| Bounce  | BounceIn | -          | BounceMouse |
+| Spin    | SpinIn   | SpinScroll | SpinMouse   |
+| Flip    | FlipIn   | FlipScroll | -           |
+| Flash   | FadeIn   | FadeScroll | -           |
