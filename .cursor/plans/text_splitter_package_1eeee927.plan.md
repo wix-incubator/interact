@@ -75,7 +75,7 @@ The API will have:
 - **Accessibility by default**: Add ARIA attributes automatically
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
-- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -116,10 +116,7 @@ packages/splittext/
 ### Core Function
 
 ```typescript
-function splitText(
-  target: string | HTMLElement,
-  options?: SplitTextOptions
-): SplitTextResult;
+function splitText(target: string | HTMLElement, options?: SplitTextOptions): SplitTextResult;
 ```
 
 ### Types ([`packages/splittext/src/types.ts`](packages/splittext/src/types.ts))
@@ -128,14 +125,14 @@ function splitText(
 interface SplitTextOptions {
   // What to split
   type?: 'chars' | 'words' | 'lines' | 'sentences' | ('chars' | 'words' | 'lines' | 'sentences')[];
-  
+
   // Accessibility
   aria?: 'auto' | 'hidden' | 'none';  // default: 'auto'
-  
+
   // Responsive re-splitting
   autoSplit?: boolean;
   onSplit?: (result: SplitTextResult) => Animation | void;
-  
+
   // Advanced
   splitBy?: string;        // default: ' ' (space for words)
   ignore?: string[];       // selectors to skip (e.g., ['sup', 'sub'])
@@ -148,11 +145,11 @@ interface SplitTextResult {
   get words: HTMLElement[];      // Splits into words on first access
   get lines: HTMLElement[];      // Splits into lines on first access
   get sentences: HTMLElement[];  // Splits into sentences on first access
-  
+
   // Methods
   revert(): void;
   split(options?: SplitTextOptions): SplitTextResult;
-  
+
   // Original content
   readonly originalHTML: string;
   readonly element: HTMLElement;
@@ -165,7 +162,7 @@ interface SplitTextResult {
 ```typescript
 function useSplitText(
   ref: RefObject<HTMLElement>,
-  options?: SplitTextOptions
+  options?: SplitTextOptions,
 ): SplitTextResult | null;
 ```
 
@@ -255,11 +252,11 @@ import { splitText } from '@wix/splittext';
 const result = splitText('.headline');
 
 // Splitting happens on first access, result is cached
-const chars = result.chars;  // Splits into chars NOW, caches result
+const chars = result.chars; // Splits into chars NOW, caches result
 const chars2 = result.chars; // Returns cached result (no re-split)
 
 // Lines are split separately when accessed
-const lines = result.lines;  // Splits into lines NOW, caches result
+const lines = result.lines; // Splits into lines NOW, caches result
 
 // Example 2: Eager split with type option
 const eagerResult = splitText('.headline', { type: 'words' });
@@ -287,7 +284,7 @@ The `SplitTextResult` object uses lazy getters with internal caching to avoid un
 class SplitTextResultImpl implements SplitTextResult {
   private _element: HTMLElement;
   private _originalHTML: string;
-  
+
   // Internal cache for split results
   private _cache: {
     chars?: HTMLElement[];
@@ -295,11 +292,11 @@ class SplitTextResultImpl implements SplitTextResult {
     lines?: HTMLElement[];
     sentences?: HTMLElement[];
   } = {};
-  
+
   constructor(element: HTMLElement, options?: SplitTextOptions) {
     this._element = element;
     this._originalHTML = element.innerHTML;
-    
+
     // Eager split if type is provided
     if (options?.type) {
       const types = Array.isArray(options.type) ? options.type : [options.type];
@@ -308,7 +305,7 @@ class SplitTextResultImpl implements SplitTextResult {
       }
     }
   }
-  
+
   // Lazy getter - split on first access, return cached thereafter
   get chars(): HTMLElement[] {
     if (!this._cache.chars) {
@@ -316,33 +313,33 @@ class SplitTextResultImpl implements SplitTextResult {
     }
     return this._cache.chars;
   }
-  
+
   get words(): HTMLElement[] {
     if (!this._cache.words) {
       this._cache.words = this._performSplit('words');
     }
     return this._cache.words;
   }
-  
+
   get lines(): HTMLElement[] {
     if (!this._cache.lines) {
       this._cache.lines = this._performSplit('lines');
     }
     return this._cache.lines;
   }
-  
+
   get sentences(): HTMLElement[] {
     if (!this._cache.sentences) {
       this._cache.sentences = this._performSplit('sentences');
     }
     return this._cache.sentences;
   }
-  
+
   private _performSplit(type: 'chars' | 'words' | 'lines' | 'sentences'): HTMLElement[] {
     // Actual splitting logic - creates wrapper elements in DOM
     // Returns array of created HTMLElements
   }
-  
+
   revert(): void {
     this._element.innerHTML = this._originalHTML;
     this._cache = {}; // Clear cache on revert
@@ -367,7 +364,7 @@ class SplitTextResultImpl implements SplitTextResult {
 
 **Primary Approach: Range API with `getClientRects()`**
 
-Use the DOM Range API to detect line breaks from text nodes *before* creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+Use the DOM Range API to detect line breaks from text nodes _before_ creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
 
 ```typescript
 function detectLines(textNode: Text): string[] {
@@ -375,24 +372,24 @@ function detectLines(textNode: Text): string[] {
   const text = textNode.textContent || '';
   const lines: string[][] = [];
   let lineChars: string[] = [];
-  
+
   // Normalize whitespace (Safari compatibility)
   textNode.textContent = text.trim().replace(/\s+/g, ' ');
-  
+
   for (let i = 0; i < text.length; i++) {
     range.setStart(textNode, 0);
     range.setEnd(textNode, i + 1);
-    
+
     // getClientRects() returns one rect per rendered line
     const lineIndex = range.getClientRects().length - 1;
-    
+
     if (!lines[lineIndex]) {
-      lines.push(lineChars = []);
+      lines.push((lineChars = []));
     }
     lineChars.push(text.charAt(i));
   }
-  
-  return lines.map(chars => chars.join('').trim());
+
+  return lines.map((chars) => chars.join('').trim());
 }
 ```
 
@@ -405,14 +402,14 @@ function detectLinesOptimized(element: HTMLElement): string[] {
   const heightTracker = document.createRange();
   const lines: string[] = [];
   let prevHeight = 0;
-  
+
   range.selectNodeContents(element);
   range.collapse(true); // Collapse to start
-  
+
   for (let i = 0; i < textNode.length; i++) {
     heightTracker.setEnd(textNode, i + 1);
     const currentHeight = heightTracker.getBoundingClientRect().height;
-    
+
     if (currentHeight > prevHeight && i > 0) {
       // Line break detected - extract previous line text
       range.setEnd(textNode, i);
@@ -421,11 +418,11 @@ function detectLinesOptimized(element: HTMLElement): string[] {
       prevHeight = currentHeight;
     }
   }
-  
+
   // Don't forget the last line
   range.setEnd(textNode, textNode.length);
   lines.push(range.toString().trim());
-  
+
   return lines;
 }
 ```
@@ -452,20 +449,20 @@ while ((node = walker.nextNode() as Text)) {
 1. Track which types have been accessed (are in cache)
 2. On resize/font-load, clear cache and re-split only those types
 3. Call `onSplit` callback with updated result
+
 ```typescript
 private _handleResize(): void {
   const accessedTypes = Object.keys(this._cache) as SplitType[];
   this._cache = {}; // Clear cache
-  
+
   // Re-split only previously accessed types
   for (const type of accessedTypes) {
     this._performSplit(type);
   }
-  
+
   this._options.onSplit?.(this);
 }
 ```
-
 
 ### Unicode/Emoji Handling
 
@@ -473,7 +470,7 @@ Use `Intl.Segmenter` for proper character segmentation (with fallback for older 
 
 ```typescript
 const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
-const chars = [...segmenter.segment(text)].map(s => s.segment);
+const chars = [...segmenter.segment(text)].map((s) => s.segment);
 ```
 
 ### Nested Element Handling
@@ -484,14 +481,11 @@ Unlike some libraries that strip nested tags, this implementation will:
 2. Apply Range-based line detection to each text node
 3. Preserve nested element structure (links, bold, etc.)
 4. Split text nodes only while maintaining parent element references
+
 ```typescript
 function processNestedElements(element: HTMLElement): void {
-  const walker = document.createTreeWalker(
-    element,
-    NodeFilter.SHOW_TEXT,
-    null
-  );
-  
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+
   const textNodes: Text[] = [];
   let node: Text | null;
   while ((node = walker.nextNode() as Text)) {
@@ -499,14 +493,13 @@ function processNestedElements(element: HTMLElement): void {
       textNodes.push(node);
     }
   }
-  
+
   // Process each text node with Range API
   for (const textNode of textNodes) {
     // Line detection happens here, wrapper creation follows
   }
 }
 ```
-
 
 ### Performance Considerations
 
