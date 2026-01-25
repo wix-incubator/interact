@@ -41,7 +41,7 @@ classDiagram
         +cancel()
         +onFinish()
     }
-    
+
     class Sequence {
         +animationGroups: AnimationGroup[]
         +delay: number
@@ -54,7 +54,7 @@ classDiagram
         +onFinish()
         -calculateOffsets()
     }
-    
+
     Sequence --|> AnimationGroup : extends
     Sequence "1" --> "*" AnimationGroup : manages
 ```
@@ -71,7 +71,7 @@ Create new file `packages/motion/src/Sequence.ts`:
 - Implement `calculateOffsets()` method using the formula from spec:
 ```typescript
 const last = indices.at(-1);
-indices.map(n => easing(n / last) * last * offset | 0);
+indices.map((n) => (easing(n / last) * last * offset) | 0);
 ```
 
 - Override playback methods (`play`, `pause`, `reverse`, `cancel`) to delegate to child `AnimationGroup` instances
@@ -83,8 +83,8 @@ Update `packages/motion/src/types.ts`:
 
 ```typescript
 export type SequenceOptions = {
-  delay?: number;           // default 0
-  offset?: number;          // default 100
+  delay?: number; // default 0
+  offset?: number; // default 100
   offsetEasing?: string | ((p: number) => number);
 };
 ```
@@ -105,9 +105,9 @@ Update `packages/interact/src/types.ts`:
 ```typescript
 // New Sequence type
 export type Sequence = {
-  sequenceId: string;    // for referencing reusable sequences
-  delay?: number;         // default 0
-  offset?: number;        // default 100
+  sequenceId: string; // for referencing reusable sequences
+  delay?: number; // default 0
+  offset?: number; // default 100
   offsetEasing?: string | ((p: number) => number); // default linear
   effects: (Effect | EffectRef)[];
 };
@@ -115,7 +115,7 @@ export type Sequence = {
 // Update InteractConfig
 export type InteractConfig = {
   effects: Record<string, Effect>;
-  sequences?: Record<string, Sequence>;  // NEW: reusable sequences
+  sequences?: Record<string, Sequence>; // NEW: reusable sequences
   conditions?: Record<string, Condition>;
   interactions: Interaction[];
 };
@@ -123,7 +123,7 @@ export type InteractConfig = {
 // Update Interaction
 export type Interaction = InteractionTrigger & {
   effects: ((Effect | EffectRef) & { interactionId?: string })[];
-  sequences?: Sequence[];  // NEW: inline sequences
+  sequences?: Sequence[]; // NEW: inline sequences
 };
 ```
 
@@ -134,9 +134,11 @@ Add sequences to the cache structure in `packages/interact/src/types.ts`:
 ```typescript
 export type InteractCache = {
   effects: { [effectId: string]: Effect };
-  sequences: { [sequenceId: string]: Sequence };  // NEW
+  sequences: { [sequenceId: string]: Sequence }; // NEW
   conditions: { [conditionId: string]: Condition };
-  interactions: { /* existing structure */ };
+  interactions: {
+    /* existing structure */
+  };
 };
 ```
 
@@ -177,14 +179,12 @@ The offset calculation follows this algorithm:
 function calculateOffsets(
   count: number,
   offset: number,
-  easingFn: (t: number) => number
+  easingFn: (t: number) => number,
 ): number[] {
   if (count <= 1) return [0];
-  
+
   const last = count - 1;
-  return Array.from({ length: count }, (_, i) => 
-    (easingFn(i / last) * last * offset) | 0
-  );
+  return Array.from({ length: count }, (_, i) => (easingFn(i / last) * last * offset) | 0);
 }
 ```
 
