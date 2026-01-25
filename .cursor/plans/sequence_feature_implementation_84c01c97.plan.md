@@ -105,7 +105,7 @@ Update `packages/interact/src/types.ts`:
 ```typescript
 // New Sequence type
 export type Sequence = {
-  sequenceId?: string;    // for referencing reusable sequences
+  sequenceId: string;    // for referencing reusable sequences
   delay?: number;         // default 0
   offset?: number;        // default 100
   offsetEasing?: string | ((p: number) => number); // default linear
