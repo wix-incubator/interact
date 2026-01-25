@@ -81,8 +81,14 @@ Update the 15 pilot preset files to the simplified format:
 LLM decision flow is a waterfall - it won't read all preset descriptions before selecting. It needs:
 
 1. First: "Which category?" → Read category file
-2. Then: "Which preset?" → Use decision table in category file
+2. Then: "Which preset?" → Use decision guide in category file
 3. Finally: "How to configure?" → Read specific preset file
+
+**LLM Decision Checklist:**
+
+- [ ] Category selected based on trigger type (page load, scroll, continuous, mouse, background)
+- [ ] Preset selected using decision guide (by tone, use case, or element type)
+- [ ] Parameters configured using preset file details
 
 ## Category File Format
 
@@ -163,15 +169,15 @@ Each preset as a block with description, tags, and synonyms for LLM matching:
 
 ### FadeIn
 
-**Description**: Gradual opacity transition from invisible to visible. Universal, subtle, accessibility-safe.
-**Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`
-**Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance
+- **Description**: Gradual opacity transition from invisible to visible. Universal, subtle, accessibility-safe.
+- **Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`
+- **Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance
 
 ### ArcIn
 
-**Description**: 3D curved swing like a door opening. Dramatic, cinematic, creates depth.
-**Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`
-**Synonyms**: arc entrance, curved reveal, swing in, cinematic entrance, perspective reveal
+- **Description**: 3D curved swing like a door opening. Dramatic, cinematic, creates depth.
+- **Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`
+- **Synonyms**: arc entrance, curved reveal, swing in, cinematic entrance, perspective reveal
 
 ...
 ```
@@ -345,14 +351,31 @@ category: entrance
 
 ## Available Presets
 
-| Preset   | Description                                      |
-| -------- | ------------------------------------------------ |
-| FadeIn   | Gradual opacity transition, subtle and universal |
-| ArcIn    | 3D curved swing, dramatic and cinematic          |
-| BounceIn | Playful bouncing, energetic                      |
-| SlideIn  | Straight movement from direction                 |
-| FlipIn   | 3D flip rotation                                 |
-| ...      | ...                                              |
+### FadeIn
+
+- **Description**: Gradual opacity transition from invisible to visible. Universal, subtle, accessibility-safe.
+- **Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`
+- **Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance
+
+### ArcIn
+
+- **Description**: 3D curved swing like a door opening. Dramatic, cinematic, creates depth.
+- **Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`
+- **Synonyms**: arc entrance, curved reveal, swing in, cinematic entrance, perspective reveal
+
+### BounceIn
+
+- **Description**: Playful bouncing entrance with spring physics. Energetic, fun, attention-grabbing.
+- **Tags**: `bounce`, `spring`, `playful`, `energetic`, `fun`, `attention`
+- **Synonyms**: bounce in, spring entrance, playful reveal, elastic entrance
+
+### SlideIn
+
+- **Description**: Straight movement from direction. Clean, professional, versatile.
+- **Tags**: `slide`, `move`, `direction`, `clean`, `professional`, `versatile`
+- **Synonyms**: slide in, move in, glide entrance, directional reveal
+
+...
 
 ## Decision Guide
 
@@ -464,7 +487,7 @@ rules/presets/
 2. **Description & Synonyms**: Verbose overview with alternative phrasings
 3. **When to Use / When NOT to Use**: Clear guidance on category selection
 4. **Accessibility Considerations**: Reduced motion, vestibular safety, duration guidelines
-5. **Preset List**: Brief 1-line descriptions for quick scanning
+5. **Preset List**: Description + Tags + Synonyms per preset for LLM intent matching
 6. **Decision Guide**: Group by tone, use case, reduced-motion alternatives, cross-category parallels
 
 ### Preset Files (Verbose)
@@ -480,6 +503,16 @@ rules/presets/
 - **Constraints**: `effects-kit/src/effects/{category}/{preset}.ts`
 - **Base params**: `effects-kit/src/effects/baseParams.ts`
 
+### Validation Checklist
+
+Before finalizing each preset file, verify:
+
+- [ ] Parameter defaults match source in `effects-kit`
+- [ ] Min/max/step values are accurate
+- [ ] Enum options (direction, power, easing) match TypeScript types
+- [ ] Direction type is correct (FourDirections, FiveDirections, EightDirections)
+- [ ] Easing exclusions noted for clipped animations
+
 ### Notes on Parameter Subsets
 
 - Direction types vary: FourDirections, FiveDirections (adds center), EightDirections (adds diagonals)
@@ -487,7 +520,13 @@ rules/presets/
 
 ### Accessibility Guidelines
 
-- Always mention `prefers-reduced-motion` media query support
-- Recommend FadeIn as universal fallback
-- Note vestibular triggers (spinning, parallax, large movement)
-- Duration guidance: <500ms functional, <1200ms decorative
+**Must include in every category file:**
+
+- [ ] `prefers-reduced-motion` media query support mentioned
+- [ ] Reduced-motion fallback specified (typically FadeIn or no animation)
+- [ ] Vestibular trigger warnings for: spinning, parallax, large-scale movement, 3D transforms
+
+**Must include in every preset file:**
+
+- [ ] Reduced-motion alternative noted if preset has vestibular triggers
+- [ ] Duration recommendation (functional UI: <500ms, decorative: <1200ms)

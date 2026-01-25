@@ -60,141 +60,141 @@ appear animation, reveal effect, intro animation, show animation, enter animatio
 
 ### FadeIn
 
-**Description**: Gradual opacity transition from invisible to visible. No movement or shape changes - just smooth materialization. The simplest and most universally applicable entrance.
-**Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`, `universal`, `accessible`
-**Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance, dissolve in
+- **Description**: Gradual opacity transition from invisible to visible. No movement or shape changes - just smooth materialization. The simplest and most universally applicable entrance.
+- **Tags**: `fade`, `opacity`, `subtle`, `simple`, `professional`, `minimal`, `appear`, `universal`, `accessible`
+- **Synonyms**: fade in, appear, materialize, opacity transition, gentle reveal, soft entrance, dissolve in
 
 ### ArcIn
 
-**Description**: 3D curved swing like a door opening towards you. Starts tilted away and gradually flattens as it settles. Dramatic, cinematic, creates depth.
-**Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`, `hero`
-**Synonyms**: arc entrance, curved reveal, 3d arc, swing in, cinematic entrance, perspective reveal, dramatic arc, door opening
+- **Description**: 3D curved swing like a door opening towards you. Starts tilted away and gradually flattens as it settles. Dramatic, cinematic, creates depth.
+- **Tags**: `3d`, `arc`, `curved`, `dramatic`, `cinematic`, `perspective`, `rotation`, `premium`, `hero`
+- **Synonyms**: arc entrance, curved reveal, 3d arc, swing in, cinematic entrance, perspective reveal, dramatic arc, door opening
 
 ### BlurIn
 
-**Description**: Element transitions from blurry to sharp focus while fading in. Soft, dreamy, draws attention to the sharpening moment.
-**Tags**: `blur`, `focus`, `soft`, `dreamy`, `gentle`, `elegant`, `attention`
-**Synonyms**: blur reveal, focus in, soft reveal, dreamy entrance, blur to focus, defocus to focus
+- **Description**: Element transitions from blurry to sharp focus while fading in. Soft, dreamy, draws attention to the sharpening moment.
+- **Tags**: `blur`, `focus`, `soft`, `dreamy`, `gentle`, `elegant`, `attention`
+- **Synonyms**: blur reveal, focus in, soft reveal, dreamy entrance, blur to focus, defocus to focus
 
 ### BounceIn
 
-**Description**: Playful bouncing physics - overshoots landing spot then bounces smaller and smaller until settled. Fun, energetic, attention-grabbing.
-**Tags**: `bounce`, `playful`, `energetic`, `fun`, `elastic`, `spring`, `attention`, `physics`
-**Synonyms**: bounce entrance, bouncy reveal, spring in, elastic entrance, playful appear, jump in, hop in
+- **Description**: Playful bouncing physics - overshoots landing spot then bounces smaller and smaller until settled. Fun, energetic, attention-grabbing.
+- **Tags**: `bounce`, `playful`, `energetic`, `fun`, `elastic`, `spring`, `attention`, `physics`
+- **Synonyms**: bounce entrance, bouncy reveal, spring in, elastic entrance, playful appear, jump in, hop in
 
 ### CircleIn
 
-**Description**: Circular mask expanding from center point to reveal element. Geometric, modern, spotlight-like effect.
-**Tags**: `circle`, `mask`, `geometric`, `modern`, `spotlight`, `radial`, `reveal`
-**Synonyms**: circle reveal, radial reveal, spotlight entrance, circular mask, expanding circle
+- **Description**: Circular mask expanding from center point to reveal element. Geometric, modern, spotlight-like effect.
+- **Tags**: `circle`, `mask`, `geometric`, `modern`, `spotlight`, `radial`, `reveal`
+- **Synonyms**: circle reveal, radial reveal, spotlight entrance, circular mask, expanding circle
 
 ### CurveIn
 
-**Description**: Alternative curved 3D motion path. Similar to ArcIn but with different trajectory characteristics.
-**Tags**: `3d`, `curve`, `path`, `motion`, `trajectory`, `cinematic`
-**Synonyms**: curved entrance, path reveal, curved motion, trajectory entrance
+- **Description**: Alternative curved 3D motion path. Similar to ArcIn but with different trajectory characteristics.
+- **Tags**: `3d`, `curve`, `path`, `motion`, `trajectory`, `cinematic`
+- **Synonyms**: curved entrance, path reveal, curved motion, trajectory entrance
 
 ### DropIn
 
-**Description**: Falls from above with subtle scale/bounce on landing. Gravity-like, natural feeling entrance with soft impact.
-**Tags**: `drop`, `fall`, `gravity`, `natural`, `scale`, `bounce`, `impact`, `landing`
-**Synonyms**: drop entrance, fall in, gravity drop, landing animation, drop down
+- **Description**: Falls from above with subtle scale/bounce on landing. Gravity-like, natural feeling entrance with soft impact.
+- **Tags**: `drop`, `fall`, `gravity`, `natural`, `scale`, `bounce`, `impact`, `landing`
+- **Synonyms**: drop entrance, fall in, gravity drop, landing animation, drop down
 
 ### ExpandIn
 
-**Description**: Expands outward from center point. Growing, revealing, spotlight-like emergence effect.
-**Tags**: `expand`, `grow`, `center`, `scale`, `emergence`, `spotlight`, `reveal`
-**Synonyms**: expand entrance, growing reveal, center expand, emergence, outward growth
+- **Description**: Expands outward from center point. Growing, revealing, spotlight-like emergence effect.
+- **Tags**: `expand`, `grow`, `center`, `scale`, `emergence`, `spotlight`, `reveal`
+- **Synonyms**: expand entrance, growing reveal, center expand, emergence, outward growth
 
 ### FlipIn
 
-**Description**: 3D card flip rotation to reveal element. Dramatic, reveals "other side", card-like metaphor.
-**Tags**: `flip`, `3d`, `rotation`, `card`, `dramatic`, `reveal`, `turn`
-**Synonyms**: flip entrance, card flip, 3d flip, flip reveal, turn over, flip animation
+- **Description**: 3D card flip rotation to reveal element. Dramatic, reveals "other side", card-like metaphor.
+- **Tags**: `flip`, `3d`, `rotation`, `card`, `dramatic`, `reveal`, `turn`
+- **Synonyms**: flip entrance, card flip, 3d flip, flip reveal, turn over, flip animation
 
 ### FloatIn
 
-**Description**: Gentle floating/drifting entrance. Ethereal, light, dreamy movement as if carried by air.
-**Tags**: `float`, `drift`, `ethereal`, `light`, `dreamy`, `gentle`, `air`, `soft`
-**Synonyms**: float entrance, drift in, floating reveal, ethereal entrance, airy entrance
+- **Description**: Gentle floating/drifting entrance. Ethereal, light, dreamy movement as if carried by air.
+- **Tags**: `float`, `drift`, `ethereal`, `light`, `dreamy`, `gentle`, `air`, `soft`
+- **Synonyms**: float entrance, drift in, floating reveal, ethereal entrance, airy entrance
 
 ### FoldIn
 
-**Description**: Paper-folding 3D effect. Origami-like, creative, element unfolds into view.
-**Tags**: `fold`, `3d`, `paper`, `origami`, `creative`, `unfold`, `dimensional`
-**Synonyms**: fold entrance, paper fold, origami reveal, unfold animation, folding entrance
+- **Description**: Paper-folding 3D effect. Origami-like, creative, element unfolds into view.
+- **Tags**: `fold`, `3d`, `paper`, `origami`, `creative`, `unfold`, `dimensional`
+- **Synonyms**: fold entrance, paper fold, origami reveal, unfold animation, folding entrance
 
 ### GlideIn
 
-**Description**: Smooth 2D glide from direction with angle control. Clean, directional, professional movement.
-**Tags**: `glide`, `slide`, `smooth`, `directional`, `clean`, `professional`, `angle`
-**Synonyms**: glide entrance, smooth slide, directional glide, angled entrance, sliding reveal
+- **Description**: Smooth 2D glide from direction with angle control. Clean, directional, professional movement.
+- **Tags**: `glide`, `slide`, `smooth`, `directional`, `clean`, `professional`, `angle`
+- **Synonyms**: glide entrance, smooth slide, directional glide, angled entrance, sliding reveal
 
 ### GlitchIn
 
-**Description**: Digital glitch/distortion effect. Edgy, tech-inspired, disruptive visual entrance.
-**Tags**: `glitch`, `digital`, `distortion`, `edgy`, `tech`, `disruption`, `modern`, `cyber`
-**Synonyms**: glitch entrance, digital reveal, distortion entrance, tech glitch, cyber entrance
+- **Description**: Digital glitch/distortion effect. Edgy, tech-inspired, disruptive visual entrance.
+- **Tags**: `glitch`, `digital`, `distortion`, `edgy`, `tech`, `disruption`, `modern`, `cyber`
+- **Synonyms**: glitch entrance, digital reveal, distortion entrance, tech glitch, cyber entrance
 
 ### GrowIn
 
-**Description**: Scale from small to full size. Expanding, emerging, element grows into existence.
-**Tags**: `grow`, `scale`, `expand`, `emerge`, `size`, `zoom`, `magnify`
-**Synonyms**: grow entrance, scale up, expanding entrance, zoom in, size grow, emergence
+- **Description**: Scale from small to full size. Expanding, emerging, element grows into existence.
+- **Tags**: `grow`, `scale`, `expand`, `emerge`, `size`, `zoom`, `magnify`
+- **Synonyms**: grow entrance, scale up, expanding entrance, zoom in, size grow, emergence
 
 ### PunchIn
 
-**Description**: Corner-based scale with energy and impact. Impactful, attention-grabbing, punchy entrance.
-**Tags**: `punch`, `impact`, `corner`, `scale`, `energy`, `attention`, `bold`, `strong`
-**Synonyms**: punch entrance, impact reveal, corner punch, bold entrance, powerful entrance
+- **Description**: Corner-based scale with energy and impact. Impactful, attention-grabbing, punchy entrance.
+- **Tags**: `punch`, `impact`, `corner`, `scale`, `energy`, `attention`, `bold`, `strong`
+- **Synonyms**: punch entrance, impact reveal, corner punch, bold entrance, powerful entrance
 
 ### RevealIn
 
-**Description**: Directional clip/mask reveal like a curtain opening. Theatrical, unveiling, directional exposure.
-**Tags**: `reveal`, `clip`, `mask`, `curtain`, `directional`, `theatrical`, `unveil`
-**Synonyms**: reveal entrance, curtain reveal, clip reveal, unveiling, mask reveal, wipe in
+- **Description**: Directional clip/mask reveal like a curtain opening. Theatrical, unveiling, directional exposure.
+- **Tags**: `reveal`, `clip`, `mask`, `curtain`, `directional`, `theatrical`, `unveil`
+- **Synonyms**: reveal entrance, curtain reveal, clip reveal, unveiling, mask reveal, wipe in
 
 ### ShapeIn
 
-**Description**: Shape mask reveal (circle, square, diamond, etc.). Geometric, precise, customizable mask shapes.
-**Tags**: `shape`, `mask`, `geometric`, `circle`, `square`, `diamond`, `precise`, `custom`
-**Synonyms**: shape reveal, geometric reveal, mask entrance, shape mask, custom shape reveal
+- **Description**: Shape mask reveal (circle, square, diamond, etc.). Geometric, precise, customizable mask shapes.
+- **Tags**: `shape`, `mask`, `geometric`, `circle`, `square`, `diamond`, `precise`, `custom`
+- **Synonyms**: shape reveal, geometric reveal, mask entrance, shape mask, custom shape reveal
 
 ### ShuttersIn
 
-**Description**: Venetian blind strip reveal. Segmented, rhythmic, strips revealing content progressively.
-**Tags**: `shutters`, `blinds`, `strips`, `segmented`, `rhythmic`, `venetian`, `progressive`
-**Synonyms**: shutters reveal, blind reveal, strip entrance, venetian entrance, segmented reveal
+- **Description**: Venetian blind strip reveal. Segmented, rhythmic, strips revealing content progressively.
+- **Tags**: `shutters`, `blinds`, `strips`, `segmented`, `rhythmic`, `venetian`, `progressive`
+- **Synonyms**: shutters reveal, blind reveal, strip entrance, venetian entrance, segmented reveal
 
 ### SlideIn
 
-**Description**: Straight movement from direction. Clean, simple, versatile directional entrance.
-**Tags**: `slide`, `move`, `directional`, `clean`, `simple`, `versatile`, `translate`
-**Synonyms**: slide entrance, slide in, directional slide, movement entrance, translate in
+- **Description**: Straight movement from direction. Clean, simple, versatile directional entrance.
+- **Tags**: `slide`, `move`, `directional`, `clean`, `simple`, `versatile`, `translate`
+- **Synonyms**: slide entrance, slide in, directional slide, movement entrance, translate in
 
 ### SpinIn
 
-**Description**: Rotating entrance with spin. Dynamic, playful, attention-grabbing rotation into view.
-**Tags**: `spin`, `rotate`, `dynamic`, `playful`, `attention`, `rotation`, `turn`
-**Synonyms**: spin entrance, rotating reveal, spin in, rotation entrance, twirl in
+- **Description**: Rotating entrance with spin. Dynamic, playful, attention-grabbing rotation into view.
+- **Tags**: `spin`, `rotate`, `dynamic`, `playful`, `attention`, `rotation`, `turn`
+- **Synonyms**: spin entrance, rotating reveal, spin in, rotation entrance, twirl in
 
 ### TiltIn
 
-**Description**: 3D tilt into view. Subtle depth, elegant perspective shift as element appears.
-**Tags**: `tilt`, `3d`, `subtle`, `depth`, `elegant`, `perspective`, `angle`
-**Synonyms**: tilt entrance, perspective tilt, 3d tilt, angled reveal, subtle 3d
+- **Description**: 3D tilt into view. Subtle depth, elegant perspective shift as element appears.
+- **Tags**: `tilt`, `3d`, `subtle`, `depth`, `elegant`, `perspective`, `angle`
+- **Synonyms**: tilt entrance, perspective tilt, 3d tilt, angled reveal, subtle 3d
 
 ### TurnIn
 
-**Description**: Corner-pivot 3D rotation. Complex, dramatic, premium feeling entrance with pivot point.
-**Tags**: `turn`, `3d`, `corner`, `pivot`, `dramatic`, `premium`, `complex`, `rotation`
-**Synonyms**: turn entrance, corner turn, pivot reveal, 3d turn, corner rotation
+- **Description**: Corner-pivot 3D rotation. Complex, dramatic, premium feeling entrance with pivot point.
+- **Tags**: `turn`, `3d`, `corner`, `pivot`, `dramatic`, `premium`, `complex`, `rotation`
+- **Synonyms**: turn entrance, corner turn, pivot reveal, 3d turn, corner rotation
 
 ### WinkIn
 
-**Description**: Split-in-half reveal from center. Unique, eye-like opening, center-split entrance.
-**Tags**: `wink`, `split`, `center`, `unique`, `eye`, `opening`, `divide`
-**Synonyms**: wink entrance, split reveal, center split, eye opening, divide reveal
+- **Description**: Split-in-half reveal from center. Unique, eye-like opening, center-split entrance.
+- **Tags**: `wink`, `split`, `center`, `unique`, `eye`, `opening`, `divide`
+- **Synonyms**: wink entrance, split reveal, center split, eye opening, divide reveal
 
 ## Decision Guide
 

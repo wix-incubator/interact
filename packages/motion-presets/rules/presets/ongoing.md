@@ -48,87 +48,87 @@ continuous animation, looping animation, infinite animation, repeating animation
 
 ### Pulse
 
-**Description**: Gentle scale oscillation, heartbeat-like rhythm. Shrinks and expands continuously. Subtle, universal attention indicator.
-**Tags**: `pulse`, `scale`, `heartbeat`, `throb`, `attention`, `subtle`, `status`, `breathing`
-**Synonyms**: pulse effect, heartbeat, throb, breathing, scale pulse, attention pulse, pulsing
+- **Description**: Gentle scale oscillation, heartbeat-like rhythm. Shrinks and expands continuously. Subtle, universal attention indicator.
+- **Tags**: `pulse`, `scale`, `heartbeat`, `throb`, `attention`, `subtle`, `status`, `breathing`
+- **Synonyms**: pulse effect, heartbeat, throb, breathing, scale pulse, attention pulse, pulsing
 
 ### Bounce
 
-**Description**: Vertical bouncing motion like a ball on trampoline. Playful, energetic, attention-grabbing continuous motion.
-**Tags**: `bounce`, `vertical`, `movement`, `playful`, `energetic`, `jump`, `hop`, `spring`
-**Synonyms**: bouncing, jumping, hopping, vertical bounce, continuous bounce, bouncy animation
+- **Description**: Vertical bouncing motion like a ball on trampoline. Playful, energetic, attention-grabbing continuous motion.
+- **Tags**: `bounce`, `vertical`, `movement`, `playful`, `energetic`, `jump`, `hop`, `spring`
+- **Synonyms**: bouncing, jumping, hopping, vertical bounce, continuous bounce, bouncy animation
 
 ### Spin
 
-**Description**: Continuous rotation around center. Like a wheel or loading spinner. Mechanical, precise circular motion.
-**Tags**: `spin`, `rotate`, `loading`, `circular`, `wheel`, `continuous`, `mechanical`
-**Synonyms**: spinning, rotating, rotation, circular motion, revolve, turn continuously
+- **Description**: Continuous rotation around center. Like a wheel or loading spinner. Mechanical, precise circular motion.
+- **Tags**: `spin`, `rotate`, `loading`, `circular`, `wheel`, `continuous`, `mechanical`
+- **Synonyms**: spinning, rotating, rotation, circular motion, revolve, turn continuously
 
 ### Breathe
 
-**Description**: Slow scale in/out like breathing rhythm. Calm, organic, meditative expansion and contraction.
-**Tags**: `breathe`, `scale`, `slow`, `calm`, `organic`, `meditative`, `expansion`, `zen`
-**Synonyms**: breathing animation, slow pulse, meditation, calm scale, organic rhythm
+- **Description**: Slow scale in/out like breathing rhythm. Calm, organic, meditative expansion and contraction.
+- **Tags**: `breathe`, `scale`, `slow`, `calm`, `organic`, `meditative`, `expansion`, `zen`
+- **Synonyms**: breathing animation, slow pulse, meditation, calm scale, organic rhythm
 
 ### Flash
 
-**Description**: Opacity pulsing/blinking effect. Attention, warning, notification indicator through visibility changes.
-**Tags**: `flash`, `blink`, `opacity`, `attention`, `warning`, `notification`, `visibility`
-**Synonyms**: flashing, blinking, blink animation, attention flash, warning blink
+- **Description**: Opacity pulsing/blinking effect. Attention, warning, notification indicator through visibility changes.
+- **Tags**: `flash`, `blink`, `opacity`, `attention`, `warning`, `notification`, `visibility`
+- **Synonyms**: flashing, blinking, blink animation, attention flash, warning blink
 
 ### Swing
 
-**Description**: Rotation oscillation like a pendulum. Back and forth pivoting motion, playful rhythmic movement.
-**Tags**: `swing`, `pendulum`, `oscillation`, `rotation`, `pivot`, `rhythmic`, `back-forth`
-**Synonyms**: swinging, pendulum motion, oscillating, pivot swing, back and forth
+- **Description**: Rotation oscillation like a pendulum. Back and forth pivoting motion, playful rhythmic movement.
+- **Tags**: `swing`, `pendulum`, `oscillation`, `rotation`, `pivot`, `rhythmic`, `back-forth`
+- **Synonyms**: swinging, pendulum motion, oscillating, pivot swing, back and forth
 
 ### Wiggle
 
-**Description**: Horizontal shake/wiggle motion. Side-to-side movement for attention, playful "notice me" effect.
-**Tags**: `wiggle`, `shake`, `horizontal`, `attention`, `playful`, `notice`, `side-to-side`
-**Synonyms**: wiggling, shaking, horizontal shake, side wiggle, shake animation
+- **Description**: Horizontal shake/wiggle motion. Side-to-side movement for attention, playful "notice me" effect.
+- **Tags**: `wiggle`, `shake`, `horizontal`, `attention`, `playful`, `notice`, `side-to-side`
+- **Synonyms**: wiggling, shaking, horizontal shake, side wiggle, shake animation
 
 ### Flip
 
-**Description**: Periodic 180° flips. Card-like rotation showing front/back, dramatic periodic turn.
-**Tags**: `flip`, `rotation`, `180`, `card`, `periodic`, `turn`, `front-back`
-**Synonyms**: flipping, card flip, periodic flip, turn animation, flip cycle
+- **Description**: Periodic 180° flips. Card-like rotation showing front/back, dramatic periodic turn.
+- **Tags**: `flip`, `rotation`, `180`, `card`, `periodic`, `turn`, `front-back`
+- **Synonyms**: flipping, card flip, periodic flip, turn animation, flip cycle
 
 ### Fold
 
-**Description**: 3D folding motion. Paper-like folding and unfolding, creative dimensional movement.
-**Tags**: `fold`, `3d`, `paper`, `dimensional`, `creative`, `unfold`
-**Synonyms**: folding, paper fold, 3d fold, origami motion, fold animation
+- **Description**: 3D folding motion. Paper-like folding and unfolding, creative dimensional movement.
+- **Tags**: `fold`, `3d`, `paper`, `dimensional`, `creative`, `unfold`
+- **Synonyms**: folding, paper fold, 3d fold, origami motion, fold animation
 
 ### Jello
 
-**Description**: Wobbly elastic deformation. Jiggly, bouncy distortion like gelatin wobbling.
-**Tags**: `jello`, `wobble`, `elastic`, `jiggly`, `bouncy`, `gelatin`, `deform`
-**Synonyms**: jello wobble, jiggly, elastic wobble, bouncy deform, gelatin shake
+- **Description**: Wobbly elastic deformation. Jiggly, bouncy distortion like gelatin wobbling.
+- **Tags**: `jello`, `wobble`, `elastic`, `jiggly`, `bouncy`, `gelatin`, `deform`
+- **Synonyms**: jello wobble, jiggly, elastic wobble, bouncy deform, gelatin shake
 
 ### Rubber
 
-**Description**: Elastic stretch effect. Springy stretching and snapping back, rubbery distortion.
-**Tags**: `rubber`, `elastic`, `stretch`, `spring`, `snap`, `distortion`
-**Synonyms**: rubber stretch, elastic animation, stretchy, springy, snap back
+- **Description**: Elastic stretch effect. Springy stretching and snapping back, rubbery distortion.
+- **Tags**: `rubber`, `elastic`, `stretch`, `spring`, `snap`, `distortion`
+- **Synonyms**: rubber stretch, elastic animation, stretchy, springy, snap back
 
 ### Poke
 
-**Description**: Quick scale bump like being tapped. Brief attention "boop" effect, momentary scale spike.
-**Tags**: `poke`, `bump`, `tap`, `quick`, `attention`, `boop`, `spike`
-**Synonyms**: poke effect, bump animation, tap, boop, attention tap, quick bump
+- **Description**: Quick scale bump like being tapped. Brief attention "boop" effect, momentary scale spike.
+- **Tags**: `poke`, `bump`, `tap`, `quick`, `attention`, `boop`, `spike`
+- **Synonyms**: poke effect, bump animation, tap, boop, attention tap, quick bump
 
 ### Cross
 
-**Description**: X-pattern diagonal movement. Unique geometric motion crossing diagonally.
-**Tags**: `cross`, `diagonal`, `x-pattern`, `geometric`, `unique`, `movement`
-**Synonyms**: cross movement, diagonal cross, x-pattern, crossing animation
+- **Description**: X-pattern diagonal movement. Unique geometric motion crossing diagonally.
+- **Tags**: `cross`, `diagonal`, `x-pattern`, `geometric`, `unique`, `movement`
+- **Synonyms**: cross movement, diagonal cross, x-pattern, crossing animation
 
 ### DVD
 
-**Description**: Corner-to-corner bounce (DVD screensaver). Nostalgic bouncing around container, retro effect.
-**Tags**: `dvd`, `screensaver`, `corner`, `bounce`, `nostalgic`, `retro`, `container`
-**Synonyms**: dvd bounce, screensaver, corner bounce, retro bounce, dvd logo
+- **Description**: Corner-to-corner bounce (DVD screensaver). Nostalgic bouncing around container, retro effect.
+- **Tags**: `dvd`, `screensaver`, `corner`, `bounce`, `nostalgic`, `retro`, `container`
+- **Synonyms**: dvd bounce, screensaver, corner bounce, retro bounce, dvd logo
 
 ## Decision Guide
 

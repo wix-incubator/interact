@@ -47,75 +47,75 @@ cursor animation, hover effect, mouse follow, cursor tracking, mouse parallax, i
 
 ### Tilt3DMouse
 
-**Description**: Element tilts towards cursor like holding a card and angling it. 3D perspective rotation following mouse position.
-**Tags**: `tilt`, `3d`, `perspective`, `card`, `rotate`, `angle`, `premium`, `interactive`
-**Synonyms**: 3d tilt, mouse tilt, perspective tilt, interactive tilt, hover tilt, card tilt, gyroscope effect
+- **Description**: Element tilts towards cursor like holding a card and angling it. 3D perspective rotation following mouse position.
+- **Tags**: `tilt`, `3d`, `perspective`, `card`, `rotate`, `angle`, `premium`, `interactive`
+- **Synonyms**: 3d tilt, mouse tilt, perspective tilt, interactive tilt, hover tilt, card tilt, gyroscope effect
 
 ### TrackMouse
 
-**Description**: Element follows cursor position, moving in same direction. Floating object that drifts towards where you point.
-**Tags**: `track`, `follow`, `translate`, `movement`, `parallax`, `float`, `drift`
-**Synonyms**: mouse tracking, follow cursor, cursor follow, mouse movement, parallax mouse, floating follow
+- **Description**: Element follows cursor position, moving in same direction. Floating object that drifts towards where you point.
+- **Tags**: `track`, `follow`, `translate`, `movement`, `parallax`, `float`, `drift`
+- **Synonyms**: mouse tracking, follow cursor, cursor follow, mouse movement, parallax mouse, floating follow
 
 ### BounceMouse
 
-**Description**: Bouncy/elastic cursor following. Overshoots and wobbles before settling, springy playful motion.
-**Tags**: `bounce`, `elastic`, `spring`, `playful`, `wobble`, `overshoot`, `jelly`
-**Synonyms**: bouncy mouse, elastic follow, spring mouse, bouncy cursor effect, elastic tracking
+- **Description**: Bouncy/elastic cursor following. Overshoots and wobbles before settling, springy playful motion.
+- **Tags**: `bounce`, `elastic`, `spring`, `playful`, `wobble`, `overshoot`, `jelly`
+- **Synonyms**: bouncy mouse, elastic follow, spring mouse, bouncy cursor effect, elastic tracking
 
 ### Track3DMouse
 
-**Description**: Combined translation + 3D rotation following mouse. Complex immersive effect with movement and tilt.
-**Tags**: `track`, `3d`, `translate`, `rotate`, `complex`, `immersive`, `combined`
-**Synonyms**: 3d track mouse, combined mouse effect, translate and tilt, immersive mouse
+- **Description**: Combined translation + 3D rotation following mouse. Complex immersive effect with movement and tilt.
+- **Tags**: `track`, `3d`, `translate`, `rotate`, `complex`, `immersive`, `combined`
+- **Synonyms**: 3d track mouse, combined mouse effect, translate and tilt, immersive mouse
 
 ### SpinMouse
 
-**Description**: Rotation following mouse angle. Element spins/rotates based on cursor position around element.
-**Tags**: `spin`, `rotate`, `angle`, `circular`, `dynamic`, `follow`
-**Synonyms**: mouse spin, rotation follow, angle mouse, spinning cursor effect
+- **Description**: Rotation following mouse angle. Element spins/rotates based on cursor position around element.
+- **Tags**: `spin`, `rotate`, `angle`, `circular`, `dynamic`, `follow`
+- **Synonyms**: mouse spin, rotation follow, angle mouse, spinning cursor effect
 
 ### ScaleMouse
 
-**Description**: Scale based on cursor distance. Element grows/shrinks depending on how close mouse is.
-**Tags**: `scale`, `zoom`, `distance`, `proximity`, `grow`, `shrink`, `size`
-**Synonyms**: scale mouse, zoom mouse, proximity scale, distance zoom, hover scale
+- **Description**: Scale based on cursor distance. Element grows/shrinks depending on how close mouse is.
+- **Tags**: `scale`, `zoom`, `distance`, `proximity`, `grow`, `shrink`, `size`
+- **Synonyms**: scale mouse, zoom mouse, proximity scale, distance zoom, hover scale
 
 ### SwivelMouse
 
-**Description**: Z-axis rotation following cursor. Unique gyroscope-like rotation on vertical axis.
-**Tags**: `swivel`, `z-axis`, `rotate`, `gyroscope`, `unique`, `vertical`
-**Synonyms**: swivel mouse, z rotation, gyroscope mouse, vertical rotation
+- **Description**: Z-axis rotation following cursor. Unique gyroscope-like rotation on vertical axis.
+- **Tags**: `swivel`, `z-axis`, `rotate`, `gyroscope`, `unique`, `vertical`
+- **Synonyms**: swivel mouse, z rotation, gyroscope mouse, vertical rotation
 
 ### SkewMouse
 
-**Description**: Skew distortion following cursor. Experimental angular distortion based on mouse position.
-**Tags**: `skew`, `distortion`, `angle`, `experimental`, `warp`, `tilt`
-**Synonyms**: skew mouse, distortion mouse, angle skew, warp mouse
+- **Description**: Skew distortion following cursor. Experimental angular distortion based on mouse position.
+- **Tags**: `skew`, `distortion`, `angle`, `experimental`, `warp`, `tilt`
+- **Synonyms**: skew mouse, distortion mouse, angle skew, warp mouse
 
 ### BlurMouse
 
-**Description**: Blur based on cursor distance. Focus/defocus effect depending on mouse proximity.
-**Tags**: `blur`, `focus`, `distance`, `proximity`, `defocus`, `depth`
-**Synonyms**: blur mouse, focus mouse, proximity blur, distance focus
+- **Description**: Blur based on cursor distance. Focus/defocus effect depending on mouse proximity.
+- **Tags**: `blur`, `focus`, `distance`, `proximity`, `defocus`, `depth`
+- **Synonyms**: blur mouse, focus mouse, proximity blur, distance focus
 
 ### AiryMouse
 
-**Description**: Floating/airy cursor response. Ethereal, light movement as if carried by air currents.
-**Tags**: `airy`, `float`, `ethereal`, `light`, `gentle`, `drift`, `soft`
-**Synonyms**: airy mouse, floating mouse, ethereal cursor, light follow, gentle drift
+- **Description**: Floating/airy cursor response. Ethereal, light movement as if carried by air currents.
+- **Tags**: `airy`, `float`, `ethereal`, `light`, `gentle`, `drift`, `soft`
+- **Synonyms**: airy mouse, floating mouse, ethereal cursor, light follow, gentle drift
 
 ### BlobMouse
 
-**Description**: Organic blob-like deformation. Experimental fluid shape distortion following cursor.
-**Tags**: `blob`, `organic`, `fluid`, `deform`, `experimental`, `shape`, `morph`
-**Synonyms**: blob mouse, organic deform, fluid mouse, shape morph, blob effect
+- **Description**: Organic blob-like deformation. Experimental fluid shape distortion following cursor.
+- **Tags**: `blob`, `organic`, `fluid`, `deform`, `experimental`, `shape`, `morph`
+- **Synonyms**: blob mouse, organic deform, fluid mouse, shape morph, blob effect
 
 ### CustomMouse
 
-**Description**: Configurable custom behavior. Flexible preset for custom mouse-driven transformations.
-**Tags**: `custom`, `configurable`, `flexible`, `advanced`, `custom-behavior`
-**Synonyms**: custom mouse, configurable mouse, flexible mouse effect, advanced mouse
+- **Description**: Configurable custom behavior. Flexible preset for custom mouse-driven transformations.
+- **Tags**: `custom`, `configurable`, `flexible`, `advanced`, `custom-behavior`
+- **Synonyms**: custom mouse, configurable mouse, flexible mouse effect, advanced mouse
 
 ## Decision Guide
 
