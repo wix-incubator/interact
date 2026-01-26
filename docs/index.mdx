@@ -1,0 +1,43 @@
+---
+title: "Interact"
+description: "Interact monorepo documentation and developer guide."
+---
+
+## Overview
+
+This repository hosts the Interact library, documentation, and supporting apps in a
+workspace-powered monorepo.
+
+- `packages/` holds publishable libraries.
+- `apps/` contains the demo and current documentation app.
+- Root tooling includes shared TypeScript configs, linting, and scripts.
+
+## Get started
+
+Install dependencies:
+
+```bash
+yarn install
+```
+
+Build the workspace:
+
+```bash
+yarn build
+```
+
+Run tests:
+
+```bash
+yarn test
+```
+
+## Local docs preview (Mintlify)
+
+From the `docs/` folder, run:
+
+```bash
+mint dev
+```
+
+Then open `http://localhost:3000`.
