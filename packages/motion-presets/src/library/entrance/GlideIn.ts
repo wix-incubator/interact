@@ -1,10 +1,5 @@
 import type { AnimationExtraOptions, DomApi, TimeAnimationOptions, GlideIn } from '../../types';
-import {
-  getCssUnits,
-  getOutOfScreenDistance,
-  INITIAL_FRAME_OFFSET,
-  toKeyframeValue,
-} from '../../utils';
+import { getCssUnits, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-glideIn'];
@@ -16,18 +11,15 @@ const EASING_MAP = {
   hard: 'backOut',
 };
 
-export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    direction = 0,
+    direction = 270,
     distance = { value: 100, type: 'percentage' },
     power,
-    startFromOffScreen = false,
   } = options.namedEffect as GlideIn;
   const [glideIn] = getNames(options);
 
@@ -35,14 +27,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const unit = getCssUnits(distance.type);
 
   const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
-  const { x, y } = getOutOfScreenDistance(direction);
 
-  const translateX = startFromOffScreen
-    ? x
-    : `${(Math.sin(angleInRad) * distance.value) | 0}${unit}`;
-  const translateY = startFromOffScreen
-    ? y
-    : `${(Math.cos(angleInRad) * distance.value * -1) | 0}${unit}`;
+  const translateX = `${(Math.sin(angleInRad) * distance.value) | 0}${unit}`;
+  const translateY = `${(Math.cos(angleInRad) * distance.value * -1) | 0}${unit}`;
 
   const custom = {
     '--motion-translate-x': `${translateX}`,
@@ -82,28 +69,4 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ],
     },
   ];
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { startFromOffScreen = false } = options.namedEffect as GlideIn;
-
-  if (dom && startFromOffScreen) {
-    let left = 0;
-    let top = 0;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const { left: targetLeft, top: targetTop } = target.getBoundingClientRect();
-      left = targetLeft;
-      top = targetTop;
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-left', `${left}px`);
-      target?.style.setProperty('--motion-top', `${top}px`);
-    });
-  }
 }

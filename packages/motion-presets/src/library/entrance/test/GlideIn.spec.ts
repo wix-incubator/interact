@@ -23,7 +23,7 @@ describe('GlideIn', () => {
           {
             offset: 0.000001,
             opacity: 'var(--comp-opacity, 1)',
-            transform: 'translate(0%, -100%) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(-100%, 0%) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
             opacity: 'var(--comp-opacity, 1)',
@@ -83,8 +83,8 @@ describe('GlideIn', () => {
         easing: 'quintInOut',
         name: 'motion-glideIn',
         custom: {
-          '--motion-translate-x': '0%',
-          '--motion-translate-y': '-100%',
+          '--motion-translate-x': '-100%',
+          '--motion-translate-y': '0%',
         },
         keyframes: [
           {

@@ -60,12 +60,6 @@ export type DropIn = {
   power?: EffectPower;
   initialScale?: number;
 };
-export type ExpandIn = {
-  type: 'ExpandIn';
-  power?: EffectPower;
-  direction: EffectEightDirections | 'center';
-  initialScale?: number;
-};
 export type FlipIn = {
   type: 'FlipIn';
   power?: EffectPower;
@@ -105,34 +99,17 @@ export type BounceIn = {
   distanceFactor?: number;
   perspective?: number;
 };
-export type PunchIn = {
-  type: 'PunchIn';
-  direction: EffectFourCorners | 'center';
-  power?: EffectPower;
-};
 export type GlideIn = {
   type: 'GlideIn';
-  direction: number;
-  distance: UnitLengthPercentage;
+  direction?: number;
+  distance?: UnitLengthPercentage;
   power?: EffectPower;
-  startFromOffScreen?: boolean;
-};
-export type GlitchIn = {
-  type: 'GlitchIn';
-  direction: number;
-  distance: UnitLengthPercentage;
-  power?: EffectPower;
-  startFromOffScreen?: boolean;
 };
 export type TurnIn = {
   type: 'TurnIn';
   direction?: EffectFourCorners;
   power?: EffectPower;
   angle?: number;
-};
-export type CircleIn = {
-  type: 'CircleIn';
-  direction: EffectTwoSides;
 };
 export type WinkIn = {
   type: 'WinkIn';
@@ -148,8 +125,7 @@ export type TiltIn = {
 };
 export type ShapeIn = {
   type: 'ShapeIn';
-  shape: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window';
-  direction: EffectEightDirections | 'center';
+  shape?: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window';
 };
 
 export type ShuttersIn = {
@@ -181,18 +157,14 @@ export type EntranceAnimation =
   | ArcIn
   | CurveIn
   | DropIn
-  | ExpandIn
   | FlipIn
   | FloatIn
   | FoldIn
   | SlideIn
   | SpinIn
   | BounceIn
-  | PunchIn
   | GlideIn
-  | GlitchIn
   | TurnIn
-  | CircleIn
   | WinkIn
   | TiltIn
   | ShapeIn
