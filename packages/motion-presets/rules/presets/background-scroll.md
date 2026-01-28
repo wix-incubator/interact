@@ -5,29 +5,29 @@ trigger: backgroundScroll
 
 # Background Scroll Animations
 
-Scroll animations specifically for CSS background images/videos.
+Scroll animations for structured background media components. Animates DOM elements via CSS transforms (not `background-position`).
+
+## DOM Structure Required
+
+Requires `data-motion-part` attributes: `BG_LAYER`, `BG_MEDIA`, `BG_IMG`
 
 ## When to Use
 
 - Hero sections with background depth
-- Full-width section backgrounds
+- Full-width section backgrounds with `data-motion-part` structure
 - Cinematic storytelling
 - Section transitions
 
 ## When NOT to Use
 
-- Regular content elements → see [Scroll](presets-reference.md#scroll)
-- Non-media backgrounds (solid colors)
-- Multiple animated backgrounds
+- Regular content elements → use [Scroll](presets-reference.md#scroll-presets)
+- Elements without `data-motion-part` structure
+- Simple CSS `background-image` (no DOM structure to animate)
 - Mobile with performance concerns
 
 ## Available Presets
 
-See [Background Scroll Presets](presets-reference.md#background-scroll-presets) for full details:
-
-BgParallax, BgZoom, BgFade, BgFadeBack, BgPan, BgRotate, BgSkew, BgReveal, BgCloseUp, BgPullBack, BgFake3D, ImageParallax
-
-## Quick Decision
+See [Background Scroll Presets](presets-reference.md#background-scroll-presets) for details.
 
 | Effect Type | Presets |
 | ------------- | --------- |
@@ -37,15 +37,6 @@ BgParallax, BgZoom, BgFade, BgFadeBack, BgPan, BgRotate, BgSkew, BgReveal, BgClo
 | Rotation | BgRotate |
 | Reveal | BgReveal |
 
-## Common Use Cases
-
-| Use Case | Recommended |
-| ---------- | ------------- |
-| Depth/Immersion | BgParallax (speed: 0.2-0.4) |
-| Cinematic reveals | BgZoom, BgCloseUp, BgReveal |
-| Section transitions | BgFade |
-| Creative/Experimental | BgSkew, BgRotate |
-
 ## Note
 
-`ImageParallax` is for regular `<img>` elements, not CSS backgrounds.
+`ImageParallax` works on regular `<img>` elements without `data-motion-part` structure.

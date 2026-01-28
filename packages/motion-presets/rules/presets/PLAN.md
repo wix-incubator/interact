@@ -30,7 +30,7 @@ rules/presets/
 | scroll | Scroll position binding | Tied to scroll progress (0-100%) |
 | ongoing | Continuous loop | Runs indefinitely until stopped |
 | mouse | Pointer position binding | Desktop only, real-time response |
-| background-scroll | Scroll position for CSS backgrounds | Specifically for background media |
+| background-scroll | Scroll + `data-motion-part` targeting | Requires structured DOM (see below) |
 
 **Important:** Entrance animations only support the `viewEnter` trigger natively. For click, toggle, or other event-based triggers, implement triggering logic separately.
 
@@ -43,6 +43,14 @@ rules/presets/
 | Entrance + Scroll | Requires nested containers |
 | Scroll + Mouse | Requires nested containers |
 | Any other combination | Requires multiple containers |
+
+### Background Scroll Requirements
+
+Requires `data-motion-part` attributes: `BG_LAYER`, `BG_MEDIA`, `BG_IMG`
+
+Animates DOM elements via CSS transforms (not `background-position`).
+
+**Exception:** `ImageParallax` works on regular `<img>` elements without `data-motion-part`.
 
 ### Common Parameters
 

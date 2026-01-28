@@ -110,22 +110,24 @@ Animations that respond to cursor position. Desktop-only.
 
 ### Background Scroll
 
-Scroll animations specifically for CSS background images/videos.
+Scroll animations for structured background media components. Animates DOM elements via CSS transforms (not `background-position`).
+
+**Requires `data-motion-part` attributes:** `BG_LAYER`, `BG_MEDIA`, `BG_IMG`
 
 **When to use:**
 
 - Hero sections with background depth
-- Full-width section backgrounds
-- Cinematic storytelling
-- Section transitions
+- Full-width section backgrounds with `data-motion-part` structure
 
 **When NOT to use:**
 
 - Regular content elements → use scroll
-- Non-media backgrounds (solid colors)
-- Multiple animated backgrounds (performance)
+- Elements without `data-motion-part` structure
+- Simple CSS `background-image` (no DOM structure)
 
 **Available presets:** BgParallax, BgZoom, BgFade, BgFadeBack, BgPan, BgRotate, BgSkew, BgReveal, BgCloseUp, BgPullBack, BgFake3D, ImageParallax
+
+**Note:** `ImageParallax` works on regular `<img>` elements without `data-motion-part` structure.
 
 ---
 
@@ -171,7 +173,7 @@ Many presets support `power: 'soft' | 'medium' | 'hard'`.
 ### By Tone
 
 | Tone | Entrance | Scroll | Ongoing | Mouse |
-|------|----------|--------|---------|-------|
+| ------ | ---------- | -------- | --------- | ------- |
 | Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn | FadeScroll, BlurScroll | Pulse (soft), Breathe | Tilt3DMouse (soft), TrackMouse |
 | Dramatic/Cinematic | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn | ArcScroll, FlipScroll, TiltScroll | Flip, Fold | Track3DMouse |
 | Playful/Energetic | BounceIn, SpinIn, PunchIn, GlitchIn | SpinScroll, Spin3dScroll | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse |
@@ -180,7 +182,7 @@ Many presets support `power: 'soft' | 'medium' | 'hard'`.
 ### By Use Case
 
 | Use Case | Recommended Presets |
-|----------|---------------------|
+| ---------- | --------------------- |
 | Hero sections | ArcIn, ExpandIn, FloatIn, RevealIn + BgParallax, BgZoom |
 | Modals/Popups | FadeIn, DropIn, GrowIn, SlideIn |
 | List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay |
@@ -196,7 +198,7 @@ Many presets support `power: 'soft' | 'medium' | 'hard'`.
 Effects with similar visual results across triggers:
 
 | Entrance | Scroll | Ongoing | Mouse | Background |
-|----------|--------|---------|-------|------------|
+| ---------- | -------- | --------- | ------- | ------------ |
 | FadeIn | FadeScroll | Flash | - | BgFade |
 | ArcIn | ArcScroll | - | - | - |
 | SpinIn | SpinScroll | Spin | SpinMouse | BgRotate |
@@ -1350,6 +1352,8 @@ Visual: Configurable custom behavior. For advanced custom implementations.
 ---
 
 ### Background Scroll Presets
+
+**Requires DOM structure with `data-motion-part` attributes** (`BG_LAYER`, `BG_MEDIA`, `BG_IMG`). See [Background Scroll trigger](#background-scroll) for structure details.
 
 #### BgParallax
 
