@@ -36,16 +36,16 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn animation with bottom-right direction and soft power', () => {
+  test('TurnIn animation with bottom-right direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
+      namedEffect: { direction: 'bottom-right' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
       {},
       {
-        easing: 'cubicInOut',
+        easing: 'backOut',
         keyframes: [
           {
             transform: `translate(50%, 50%) rotate(50deg) translate(-50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
@@ -62,16 +62,16 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn animation with top-right direction and medium power', () => {
+  test('TurnIn animation with top-right direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'top-right', power: 'medium' } as TurnInType,
+      namedEffect: { direction: 'top-right' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
       {},
       {
-        easing: 'quintInOut',
+        easing: 'backOut',
         keyframes: [
           {
             transform: `translate(50%, -50%) rotate(50deg) translate(-50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
@@ -88,10 +88,10 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn animation with bottom-left direction and hard power', () => {
+  test('TurnIn animation with bottom-left direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-left', power: 'hard' } as TurnInType,
+      namedEffect: { direction: 'bottom-left' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -181,10 +181,10 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn.style animation with bottom-right direction and soft power', () => {
+  test('TurnIn.style animation with bottom-right direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
+      namedEffect: { direction: 'bottom-right' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -196,7 +196,7 @@ describe('TurnIn', () => {
       },
       {
         name: 'motion-turnIn',
-        easing: 'cubicInOut',
+        easing: 'backOut',
         custom: {
           '--motion-origin': '50%, 50%',
           '--motion-origin-invert': '-50%, -50%',

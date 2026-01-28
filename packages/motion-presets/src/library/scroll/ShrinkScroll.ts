@@ -1,11 +1,6 @@
 import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll } from '../../types';
 
 const MAX_Y_TRAVEL = 40;
-const POWER_MAP = {
-  soft: { scaleFrom: 1.2, scaleTo: 0.8, travelY: 0 },
-  medium: { scaleFrom: 1.7, scaleTo: 0.3, travelY: 0.5 },
-  hard: { scaleFrom: 3.5, scaleTo: 0, travelY: 1 },
-};
 
 const directionMap = {
   top: [0, -50],
@@ -34,9 +29,8 @@ const RANGES_MAP = {
   }),
 };
 
-function getScrubOffsets({ power, range = 'in', speed = 0 }: ShrinkScroll) {
-  const offset =
-    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
+function getScrubOffsets({ range = 'in', speed = 0 }: ShrinkScroll) {
+  const offset = Math.abs(speed) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -46,7 +40,6 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: ShrinkScroll) {
 
 export default function create(options: ScrubAnimationOptions) {
   const {
-    power,
     range = 'in',
     scale = range === 'in' ? 1.2 : 0.8,
     direction = 'center',
@@ -56,14 +49,9 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { scaleFrom, scaleTo, travelY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : {
-          scaleFrom: scale,
-          scaleTo: scale,
-          travelY: speed,
-        };
+  const scaleFrom = scale;
+  const scaleTo = scale;
+  const travelY = speed;
 
   const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
 
@@ -96,7 +84,7 @@ export default function create(options: ScrubAnimationOptions) {
       ],
     },
   ];
-  /* // we may want to squash both animations into a single one and simply generate dynamically all the necessary keyframes to reach same result
+  /*
    * @keyframes <name> {
    *   from {
    *     translate: 0 <fromValues.travel>;
@@ -122,17 +110,5 @@ export default function create(options: ScrubAnimationOptions) {
    * @supports (animation-timeline: view()) {
    *   #target {
    *     animation: <name> auto <easing> both,
-   *                <name>-scale auto linear both;
-   *     animation-range: cover <start> cover <end>,
-   *                      cover <start> cover <end>;
-   *     animation-timeline: view(), view();
-   *   }
-   * }
-   * @supports not (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> 100ms linear <fill> paused,
-   *                <name>-scale 100ms linear <fill> paused;
-   *   }
-   * }
    */
 }

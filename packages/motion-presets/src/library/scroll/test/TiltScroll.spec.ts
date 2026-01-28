@@ -47,44 +47,6 @@ describe('TiltScroll', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('custom power - soft', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'soft' } as TiltScrollType,
-    };
-
-    const expectedResult = [
-      {
-        startOffsetAdd: '0vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
-          },
-          {
-            transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
-          },
-        ],
-      },
-      {
-        startOffsetAdd: '0vh',
-        endOffsetAdd: '0px',
-        keyframes: [
-          {
-            transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
-          },
-          {
-            transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-          },
-        ],
-      },
-    ];
-
-    const result = TiltScroll(mockOptions);
-
-    expect(result).toMatchObject(expectedResult);
-  });
-
   test('custom range - out', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,

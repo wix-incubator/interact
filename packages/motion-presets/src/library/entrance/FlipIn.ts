@@ -7,12 +7,6 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
 }
 
-const POWER_TO_ROTATE_MAP = {
-  soft: 45,
-  medium: 90,
-  hard: 270,
-};
-
 type Direction = 'top' | 'right' | 'bottom' | 'left';
 
 function getRotateFrom(direction: Direction, rotate: number) {
@@ -36,15 +30,13 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions) {
   const {
     direction = 'top',
-    power,
     initialRotate = 90,
     perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as FlipIn;
   const [fadeIn, flipIn] = getNames(options);
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
   const easing = options.easing || 'backOut';
 
-  const from = getRotateFrom(direction, rotate);
+  const from = getRotateFrom(direction, initialRotate);
 
   const custom = {
     '--motion-rotate-x': `${from.x}deg`,

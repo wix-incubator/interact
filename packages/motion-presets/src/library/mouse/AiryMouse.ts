@@ -4,16 +4,8 @@ import type {
   AiryMouse,
   AnimationExtraOptions,
   Progress,
-  ScrubTransitionEasing,
-  EffectPower,
 } from '../../types';
 import { CustomMouse } from './CustomMouse';
-
-const paramsMap: Record<EffectPower, { angle: number; easing: ScrubTransitionEasing }> = {
-  soft: { angle: 10, easing: 'easeOut' },
-  medium: { angle: 50, easing: 'easeOut' },
-  hard: { angle: 85, easing: 'easeOut' },
-};
 
 class AiryMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -28,7 +20,6 @@ class AiryMouseAnimation extends CustomMouse {
       translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
     }
 
-    // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progressX) * invert;
     const units = getCssUnits(distance.type);
 
@@ -44,7 +35,6 @@ class AiryMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     distance = { value: 200, type: 'px' },
     angle = 30,
@@ -53,13 +43,11 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,
-    angle: power ? paramsMap[power].angle : angle,
+    angle,
     axis,
   };
 

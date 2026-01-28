@@ -5,25 +5,18 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-dropIn'];
 }
 
-const PARAMS_MAP = {
-  soft: { scale: 1.2, ease: 'cubicInOut' },
-  medium: { scale: 1.6, ease: 'quintInOut' },
-  hard: { scale: 2, ease: 'backOut' },
-};
-
 export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, initialScale = PARAMS_MAP.medium.scale } = options.namedEffect as DropIn;
+  const { initialScale = 1.6 } = options.namedEffect as DropIn;
   const [fadeIn, dropIn] = getNames(options);
 
-  const scale = (power && PARAMS_MAP[power].scale) || initialScale;
-  const easing = (power && PARAMS_MAP[power].ease) || options.easing || 'quintInOut';
+  const easing = options.easing || 'quintInOut';
 
   const custom = {
-    '--motion-scale': `${scale}`,
+    '--motion-scale': `${initialScale}`,
   };
 
   return [

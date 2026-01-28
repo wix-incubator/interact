@@ -1,12 +1,6 @@
 import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
 
-const POWER_TO_SWING_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
-
 const DIRECTION_MAP = {
   top: { x: 0, y: -1 },
   right: { x: 1, y: 0 },
@@ -31,7 +25,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, swing = 20, direction = 'top' } = options.namedEffect as Swing;
+  const { swing = 20, direction = 'top' } = options.namedEffect as Swing;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -39,15 +33,12 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const ease = getEasingFamily(easing);
   const [name] = getNames(options);
 
-  const swingDeg = typeof power !== 'undefined' ? 20 * POWER_TO_SWING_FACTOR_MAP[power] : swing;
-
   const { x, y } = DIRECTION_MAP[direction];
   const totalDuration = 3.55 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
 
-  // Create CSS custom properties for the swing configuration
   const custom: Record<string, string | number> = {
-    '--motion-swing-deg': `${swingDeg}deg`,
+    '--motion-swing-deg': `${swing}deg`,
     '--motion-trans-x': `${x * TRANSLATE_DISTANCE}%`,
     '--motion-trans-y': `${y * TRANSLATE_DISTANCE}%`,
     '--motion-ease-in': getEasing(ease.in),
@@ -68,7 +59,6 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   )} * -1), calc(${toKeyframeValue(custom, '--motion-trans-y', asWeb)} * -1))`;
 
   let currentOffset = 0;
-  // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? FACTORS_SEQUENCE.map(({ factor, timeFactor }) => {
         const keyframeOffset = currentOffset + timeFactor * timingFactor;

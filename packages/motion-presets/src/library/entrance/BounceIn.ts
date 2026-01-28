@@ -21,12 +21,6 @@ const BOUNCE_KEYFRAMES = [
   { offset: 100, translate: 0, isIn: true },
 ];
 
-const POWER_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
-
 const TRANSLATE_DIRECTION_MAP = {
   top: { y: -1, x: 0, z: 0 },
   right: { y: 0, x: 1, z: 0 },
@@ -41,13 +35,11 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    power,
-    distanceFactor: distance = 1,
+    distanceFactor = 1,
     direction = 'bottom',
     perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as BounceIn;
   const [fadeIn, bounceIn] = getNames(options);
-  const distanceFactor = (power && POWER_MAP[power]) || distance;
   const perspectiveValue = direction === 'center' ? `perspective(${perspective}px)` : ' ';
   const { x, y, z } = TRANSLATE_DIRECTION_MAP[direction];
 

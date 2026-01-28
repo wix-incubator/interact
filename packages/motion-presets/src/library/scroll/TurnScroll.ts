@@ -9,12 +9,6 @@ import type {
 
 const ELEMENT_ROTATION = 45;
 
-const POWER_MAP = {
-  soft: { scaleFrom: 1, scaleTo: 1 },
-  medium: { scaleFrom: 0.7, scaleTo: 1.3 },
-  hard: { scaleFrom: 0.4, scaleTo: 1.6 },
-};
-
 const ROTATE_DIRECTION_MAP = {
   clockwise: 1,
   'counter-clockwise': -1,
@@ -79,7 +73,6 @@ export default function create(
   dom?: DomApi,
 ) {
   const {
-    power,
     spin = 'clockwise',
     direction = 'right',
     scale = 1,
@@ -92,8 +85,7 @@ export default function create(
 
   const transX = TRANSLATE_X_MAP[direction];
   const rotateZ = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
-  const scaleFactors =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
+  const scaleFactors = { scaleFrom: scale, scaleTo: scale };
 
   const { fromValues, toValues } = RANGES_MAP[range](rotateZ, scaleFactors, transX);
 

@@ -2,12 +2,6 @@ import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../..
 
 const DEFAULT_PERSPECTIVE = 800;
 
-const ROTATE_POWER_MAP = {
-  soft: 60,
-  medium: 120,
-  hard: 420,
-};
-
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
   horizontal: 'rotateY',
@@ -17,17 +11,14 @@ export default function create(options: ScrubAnimationOptions) {
   const {
     rotate = 240,
     direction = 'horizontal',
-    power,
     range = 'continuous',
     perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as FlipScroll;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
-  const flipValue = power && ROTATE_POWER_MAP[power] ? ROTATE_POWER_MAP[power] : rotate;
 
-  // const { fromValue, toValue } = rangeValues[range](rotation);
-  const fromValue = range === 'out' ? 0 : -flipValue;
-  const toValue = range === 'in' ? 0 : flipValue;
+  const fromValue = range === 'out' ? 0 : -rotate;
+  const toValue = range === 'in' ? 0 : rotate;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

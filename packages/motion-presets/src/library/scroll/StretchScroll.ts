@@ -1,12 +1,6 @@
 import { cssEasings as easings } from '@wix/motion';
 import type { AnimationFillMode, ScrubAnimationOptions, StretchScroll } from '../../types';
 
-const POWER_MAP = {
-  soft: { scaleY: 1.2, scaleX: 0.8 },
-  medium: { scaleY: 1.5, scaleX: 0.6 },
-  hard: { scaleY: 2, scaleX: 0.4 },
-};
-
 const KEYFRAMES_RANGE_MAP = {
   in: (scaleX: number, scaleY: number) => [
     {
@@ -32,13 +26,11 @@ const KEYFRAMES_RANGE_MAP = {
     {
       scale: `${scaleX} ${scaleY}`,
       translate: `0 ${100 * (scaleY - 1)}%`,
-      // TODO: refactor easings
       easing: easings.backInOut,
     },
     {
       scale: '1 1',
       translate: '0 0',
-      // TODO: refactor easings
       easing: easings.backInOut,
     },
     {
@@ -65,14 +57,14 @@ const opacityKeyframesMap = {
 };
 
 export default function create(options: ScrubAnimationOptions) {
-  const { power, stretch = 0.6, range = 'out' } = options.namedEffect as StretchScroll;
+  const { stretch = 0.6, range = 'out' } = options.namedEffect as StretchScroll;
   const easing = range === 'continuous' ? 'linear' : 'backInOut';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { scaleX, scaleY } =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleX: 1 - stretch, scaleY: 1 + stretch };
+  const scaleX = 1 - stretch;
+  const scaleY = 1 + stretch;
 
   const animations = KEYFRAMES_RANGE_MAP[range](scaleX, scaleY);
 
@@ -90,4 +82,14 @@ export default function create(options: ScrubAnimationOptions) {
       keyframes: opacityKeyframesMap[range],
     },
   ];
+  /*
+   * @keyframes <name> {
+   *   from {
+   *     transform: translateX(<fromValues.position>) scale(<fromValues.scale>) rotate(calc(<rotation> - <fromValues.rotation>));
+   *   }
+   *   to {
+   *     transform: translateX(<toValues.position>) scale(<toValues.scale>) rotate(calc(<rotation> + <toValues.rotation>));
+   *   }
+   * }
+   */
 }

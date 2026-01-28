@@ -5,19 +5,12 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-growIn'];
 }
 
-const SCALE_MAP = {
-  soft: 0.8,
-  medium: 0.6,
-  hard: 0,
-};
-
 export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    power,
     initialScale = 0,
     distance = { value: 120, type: 'percentage' },
     direction = 0,
@@ -25,7 +18,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, growIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale = typeof power !== 'undefined' ? SCALE_MAP[power] : initialScale;
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 
@@ -35,14 +27,14 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const custom = {
     '--motion-translate-x': `${x}`,
     '--motion-translate-y': `${y}`,
-    '--motion-scale': `${scale}`,
+    '--motion-scale': `${initialScale}`,
   };
 
   return [
     {
       ...options,
       easing,
-      duration: options.duration! * scale,
+      duration: options.duration! * initialScale,
       name: fadeIn,
       custom: {},
       keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],

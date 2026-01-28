@@ -1,17 +1,11 @@
-import type { AnimationExtraOptions, DomApi, TimeAnimationOptions, GlideIn } from '../../types';
+import type { TimeAnimationOptions, GlideIn } from '../../types';
 import { getCssUnits, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-glideIn'];
 }
 
-const EASING_MAP = {
-  soft: 'cubicInOut',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
-
-export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
+export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
@@ -19,14 +13,13 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
     direction = 270,
     distance = { value: 100, type: 'percentage' },
-    power,
   } = options.namedEffect as GlideIn;
   const [glideIn] = getNames(options);
 
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 
-  const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
+  const easing = options.easing || 'quintInOut';
 
   const translateX = `${(Math.sin(angleInRad) * distance.value) | 0}${unit}`;
   const translateY = `${(Math.cos(angleInRad) * distance.value * -1) | 0}${unit}`;
@@ -50,7 +43,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          // TODO: remove opacity when not necessary to override hard-coded opacity:0 in style
           opacity: 'var(--comp-opacity, 1)',
           transform: `translate(${toKeyframeValue(
             custom,

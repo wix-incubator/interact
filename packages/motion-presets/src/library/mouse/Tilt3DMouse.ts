@@ -5,24 +5,12 @@ import {
   AnimationExtraOptions,
   Tilt3DMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
-
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; perspective: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 25, perspective: 1000, easing: 'easeOut' },
-  medium: { angle: 50, perspective: 500, easing: 'easeOut' },
-  hard: { angle: 85, perspective: 200, easing: 'easeOut' },
-};
 
 class Tilt3DMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { invert, angle, perspective } = this.options;
 
-    // if progressX === 0, rotateX === -angle, if progressX === 0.5, rotateX === 0, if progressX === 1, rotateX === angle
     const rotateX = mapRange(0, 1, angle, -angle, progressY) * invert;
     const rotateY = mapRange(0, 1, -angle, angle, progressX) * invert;
 
@@ -38,7 +26,6 @@ class Tilt3DMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     angle = 5,
     perspective = 800,
@@ -46,13 +33,11 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle,
+    perspective,
   };
 
   return (target: HTMLElement) => new Tilt3DMouseAnimation(target, animationOptions);

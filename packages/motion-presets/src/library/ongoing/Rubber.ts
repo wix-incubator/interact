@@ -1,11 +1,8 @@
 import type { Rubber, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, roundNumber, toKeyframeValue, mapRange } from '../../utils';
 
-const POWER_TO_RUBBER_OFFSET_MAP = {
-  soft: 0,
-  medium: 0.05,
-  hard: 0.1,
-};
+const RUBBER_OFFSET_SOFT = 0;
+const RUBBER_OFFSET_HARD = 0.1;
 
 const SCALE_KEYFRAMES = [
   { keyframe: 45, scaleX: 1.03, scaleY: 0.93 },
@@ -21,24 +18,15 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, intensity = 0.5 } = options.namedEffect as Rubber;
+  const { intensity = 0.5 } = options.namedEffect as Rubber;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const responsiveRubberOffset = mapRange(
-    0,
-    1,
-    POWER_TO_RUBBER_OFFSET_MAP.soft,
-    POWER_TO_RUBBER_OFFSET_MAP.hard,
-    intensity,
-  );
-  const rubberOffset =
-    typeof power !== 'undefined' ? POWER_TO_RUBBER_OFFSET_MAP[power] : responsiveRubberOffset;
+  const rubberOffset = mapRange(0, 1, RUBBER_OFFSET_SOFT, RUBBER_OFFSET_HARD, intensity);
 
-  // Create CSS custom properties for the rubber configuration
   const custom: Record<string, string | number> = {};
 
   const keyframes = SCALE_KEYFRAMES.map(({ keyframe, scaleX, scaleY }, index) => {
@@ -49,11 +37,9 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     const adjustedScaleX = roundNumber(scaleX + offset, 4);
     const adjustedScaleY = roundNumber(scaleY - offset, 4);
 
-    // Create custom property keys for this keyframe
     const scaleXKey = `--motion-scale-x-${keyframe}`;
     const scaleYKey = `--motion-scale-y-${keyframe}`;
 
-    // Add the scale values to custom properties
     custom[scaleXKey] = adjustedScaleX;
     custom[scaleYKey] = adjustedScaleY;
 

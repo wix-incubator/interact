@@ -6,18 +6,8 @@ import {
   AnimationExtraOptions,
   BlurMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
 
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; scale: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 0, scale: 1, easing: 'easeOut' },
-  medium: { angle: 25, scale: 0.7, easing: 'easeOut' },
-  hard: { angle: 65, scale: 0.25, easing: 'easeOut' },
-};
 class BlurMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { distance, angle, scale, invert, blur, perspective } = this.options;
@@ -25,13 +15,11 @@ class BlurMouseAnimation extends CustomMouse {
     const translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     const translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
 
-    // if progressX === 0 || progressX === 1, scaleX === scale, if progressX === 0.5, scaleX === 1
     const scaleX =
       progressX < 0.5
         ? mapRange(0, 0.5, scale, 1, progressX)
         : mapRange(0.5, 1, 1, scale, progressX);
 
-    // if progressY === 0 || progressY === 1, scaleY === scale, if progressY === 0.5, scaleY === 1
     const scaleY =
       progressY < 0.5
         ? mapRange(0, 0.5, scale, 1, progressY)
@@ -39,7 +27,6 @@ class BlurMouseAnimation extends CustomMouse {
 
     const maxScale = Math.min(scaleX, scaleY);
 
-    // if progressX === 0, rotateX === -angle, if progressX === 0.5, rotateX === 0, if progressX === 1, rotateX === angle
     const rotateX = mapRange(0, 1, -angle, angle, progressY) * invert;
     const rotateY = mapRange(0, 1, angle, -angle, progressX) * invert;
 
@@ -66,7 +53,6 @@ class BlurMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     distance = { value: 80, type: 'px' },
     angle = 5,
@@ -78,14 +64,12 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const animationOptions = {
     transition: transitionDuration
       ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}, filter ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+          transitionEasing,
+        )}, filter ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     distance,
-    angle: power ? paramsMap[power].angle : angle,
-    scale: power ? paramsMap[power].scale : scale,
+    angle,
+    scale,
     blur,
     perspective,
     invert,

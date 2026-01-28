@@ -3,17 +3,10 @@ import {
   AnimationExtraOptions,
   TrackMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
 import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
-const easingMap: Record<EffectPower, ScrubTransitionEasing> = {
-  soft: 'linear',
-  medium: 'easeOut',
-  hard: 'hardBackOut',
-};
 class TrackMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { invert, distance, axis } = this.options;
@@ -21,9 +14,6 @@ class TrackMouseAnimation extends CustomMouse {
     let translateX = 0;
     let translateY = 0;
 
-    // if progressX === 0, translateX === -distance
-    // if progressX === 0.5, translateX === 0
-    // if progressX === 1, translateX === distance
     if (axis === 'both' || axis === 'horizontal') {
       translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     }
@@ -45,7 +35,6 @@ class TrackMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     distance = { value: 200, type: 'px' },
     axis = 'both',
@@ -53,9 +42,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? easingMap[power] : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,

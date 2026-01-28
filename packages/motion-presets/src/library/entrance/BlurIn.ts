@@ -1,12 +1,6 @@
 import type { BlurIn, TimeAnimationOptions } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
-const BLUR_POWER_MAP = {
-  soft: 6,
-  medium: 25,
-  hard: 50,
-};
-
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-blurIn'];
 }
@@ -16,14 +10,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { blur = 6, power } = options.namedEffect as BlurIn;
+  const { blur = 6 } = options.namedEffect as BlurIn;
   const [fadeIn, blurIn] = getNames(options);
 
   const easing = options.easing || 'linear';
-  const blurFactor = power && BLUR_POWER_MAP[power] ? BLUR_POWER_MAP[power] : blur;
 
   const custom = {
-    '--motion-blur': `${blurFactor}px`,
+    '--motion-blur': `${blur}px`,
   };
 
   return [
@@ -39,7 +32,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: blurIn,
       easing,
-      composite: 'add' as const, // make sure we don't override existing filters on the component
+      composite: 'add' as const,
       custom,
       keyframes: [
         {

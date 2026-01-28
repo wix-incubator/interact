@@ -2,12 +2,6 @@ import type { AnimationFillMode, DomApi, MoveScroll, ScrubAnimationOptions } fro
 import { getCssUnits } from '../../utils';
 import { transformPolarToXY } from '../../utils';
 
-const POWER_MAP = {
-  soft: { value: 150, type: 'px' },
-  medium: { value: 400, type: 'px' },
-  hard: { value: 800, type: 'px' },
-};
-
 const RANGES_MAP = {
   in: (travelX: number, travelY: number) => ({
     fromValue: { x: travelX, y: travelY },
@@ -26,14 +20,12 @@ const RANGES_MAP = {
 function getScrubOffsets({
   angle = 210,
   distance = { value: 400, type: 'px' },
-  power,
   range = 'in',
 }: MoveScroll) {
-  const travel = power ? POWER_MAP[power] : distance;
-  const [, travelY] = transformPolarToXY(angle - 90, travel.value);
+  const [, travelY] = transformPolarToXY(angle - 90, distance.value);
   const isTravelingDownwards = (travelY < 0 && range !== 'out') || (travelY > 0 && range === 'out');
 
-  const units = getCssUnits(travel.type);
+  const units = getCssUnits(distance.type);
   const startOffsetAdd = isTravelingDownwards ? `${travelY}${units}` : '0px';
   const endOffsetAdd = isTravelingDownwards ? `${Math.abs(travelY)}${units}` : '0px';
 
@@ -49,16 +41,14 @@ export default function create(
   config?: Record<string, any>,
 ) {
   const {
-    power,
     distance = { value: 400, type: 'px' },
     angle = 210,
     range = 'in',
   } = options.namedEffect as MoveScroll;
 
-  const travel = power ? POWER_MAP[power] : distance;
-  const [travelX, travelY] = transformPolarToXY(angle - 90, travel.value);
+  const [travelX, travelY] = transformPolarToXY(angle - 90, distance.value);
   const { fromValue, toValue } = RANGES_MAP[range](Math.round(travelX), Math.round(travelY));
-  const unit = getCssUnits(travel.type);
+  const unit = getCssUnits(distance.type);
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -67,7 +57,6 @@ export default function create(
     ? { start: '', end: '' }
     : getScrubOffsets(options.namedEffect as MoveScroll);
 
-  // use transform: translate(<value>) and not translate: <value> because of WebKit bug: https://bugs.webkit.org/show_bug.cgi?id=276281
   return [
     {
       ...options,

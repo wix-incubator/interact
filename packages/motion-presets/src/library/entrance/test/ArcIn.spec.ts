@@ -5,20 +5,19 @@ import { baseMockOptions } from './testUtils';
 import type { ArcIn as ArcInType, AnimationData } from '../../../types';
 
 describe('ArcIn', () => {
-  test('ArcIn animation with left direction and soft power', () => {
+  test('ArcIn animation with left direction', () => {
     const duration = 1000;
-    const power = 'soft';
     const direction = 'left';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
       { duration: 0.7 * duration },
       {
-        easing: 'cubicInOut',
+        easing: 'quintInOut',
         keyframes: [
           {
             transform:
@@ -37,14 +36,13 @@ describe('ArcIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('ArcIn animation with top direction and medium power', () => {
+  test('ArcIn animation with top direction', () => {
     const duration = 1000;
-    const power = 'medium';
     const direction = 'top';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -69,20 +67,19 @@ describe('ArcIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('ArcIn animation with bottom direction and hard power', () => {
+  test('ArcIn animation with bottom direction', () => {
     const duration = 1000;
-    const power = 'hard';
     const direction = 'bottom';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
       { duration: 0.7 * duration },
       {
-        easing: 'backOut',
+        easing: 'quintInOut',
         keyframes: [
           {
             transform:
@@ -129,14 +126,13 @@ describe('ArcIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('ArcIn style animation with left direction and soft power', () => {
+  test('ArcIn style animation with left direction', () => {
     const duration = 1000;
-    const power = 'soft';
     const direction = 'left';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -149,7 +145,7 @@ describe('ArcIn', () => {
       },
       {
         name: 'motion-arcIn',
-        easing: 'cubicInOut',
+        easing: 'quintInOut',
         custom: {
           '--motion-arc-x': '0',
           '--motion-arc-y': '1',
@@ -173,14 +169,13 @@ describe('ArcIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('ArcIn style animation with top direction and medium power', () => {
+  test('ArcIn style animation with top direction', () => {
     const duration = 1000;
-    const power = 'medium';
     const direction = 'top';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -257,14 +252,13 @@ describe('ArcIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('ArcIn style animation with bottom direction and hard power', () => {
+  test('ArcIn style animation with bottom direction', () => {
     const duration = 1000;
-    const power = 'hard';
     const direction = 'bottom';
     const mockOptions = {
       ...baseMockOptions,
       duration,
-      namedEffect: { power, direction } as ArcInType,
+      namedEffect: { direction } as ArcInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -277,7 +271,7 @@ describe('ArcIn', () => {
       },
       {
         name: 'motion-arcIn',
-        easing: 'backOut',
+        easing: 'quintInOut',
         custom: {
           '--motion-arc-x': '1',
           '--motion-arc-y': '0',

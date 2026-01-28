@@ -1,11 +1,8 @@
 import type { Wiggle, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, roundNumber, toKeyframeValue, mapRange } from '../../utils';
 
-const POWER_TO_WIGGLE_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 4,
-};
+const WIGGLE_FACTOR_SOFT = 1;
+const WIGGLE_FACTOR_HARD = 4;
 
 const TRANSFORM_KEYFRAMES = [
   { keyframe: 18, transY: -10, accRotate: 10 },
@@ -20,24 +17,16 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, intensity = 0.5 } = options.namedEffect as Wiggle;
+  const { intensity = 0.5 } = options.namedEffect as Wiggle;
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const responsiveWiggleFactor = mapRange(
-    0,
-    1,
-    POWER_TO_WIGGLE_FACTOR_MAP.soft,
-    POWER_TO_WIGGLE_FACTOR_MAP.hard,
-    intensity,
-  );
-  const wiggleFactor = (power && POWER_TO_WIGGLE_FACTOR_MAP[power]) || responsiveWiggleFactor;
+  const wiggleFactor = mapRange(0, 1, WIGGLE_FACTOR_SOFT, WIGGLE_FACTOR_HARD, intensity);
 
   let currentRotation = 0;
 
-  // Create CSS custom properties for the wiggle configuration
   const custom: Record<string, string | number> = {
     '--motion-wiggle-factor': wiggleFactor,
   };
@@ -52,7 +41,6 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     const rotateKey = `--motion-rotate-${keyframe}`;
     const translateYKey = `--motion-translate-y-${keyframe}`;
 
-    // For non-web usage, add the values to custom properties
     custom[rotateKey] = rotateValue;
     custom[translateYKey] = translateYValue;
 

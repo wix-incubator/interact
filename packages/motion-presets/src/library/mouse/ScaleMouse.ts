@@ -5,25 +5,7 @@ import {
   AnimationExtraOptions,
   ScaleMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
-
-const paramsMap: Record<
-  ScaleMouse['scaleDirection'],
-  Record<EffectPower, { scale: number; easing: ScrubTransitionEasing }>
-> = {
-  down: {
-    soft: { scale: 0.85, easing: 'easeOut' },
-    medium: { scale: 0.5, easing: 'easeOut' },
-    hard: { scale: 0, easing: 'easeOut' },
-  },
-  up: {
-    soft: { scale: 1.2, easing: 'easeOut' },
-    medium: { scale: 1.6, easing: 'easeOut' },
-    hard: { scale: 2.4, easing: 'easeOut' },
-  },
-};
 
 class ScaleMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -50,8 +32,6 @@ class ScaleMouseAnimation extends CustomMouse {
           : mapRange(0.5, 1, 1, scale, progressY);
     }
 
-    // scale is uniform so we use the smaller scale value if scale < 1
-    // and the bigger scale value if scale > 1
     const scaleBoth = scale < 1 ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
 
     const units = getCssUnits(distance.type);
@@ -68,8 +48,6 @@ class ScaleMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
-    scaleDirection = 'down',
     inverted = false,
     distance = { value: 80, type: 'px' },
     axis = 'both',
@@ -78,14 +56,12 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[scaleDirection][power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,
     axis,
-    scale: power ? paramsMap[scaleDirection][power].scale : scale,
+    scale,
   };
 
   return (target: HTMLElement) => new ScaleMouseAnimation(target, animationOptions);

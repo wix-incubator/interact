@@ -7,12 +7,6 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-foldIn'];
 }
 
-const POWER_TO_ROTATE_MAP = {
-  soft: 35,
-  medium: 60,
-  hard: 90,
-};
-
 type Direction = 'top' | 'right' | 'bottom' | 'left';
 
 const PARAM_MAP: Record<Direction, { x: number; y: number; origin: { x: number; y: number } }> = {
@@ -36,16 +30,14 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions) {
   const {
     direction = 'top',
-    power,
     initialRotate = 90,
     perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as FoldIn;
   const [fadeIn, foldIn] = getNames(options);
   const easing = options.easing || 'backOut';
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
   const { x, y } = PARAM_MAP[direction].origin;
 
-  const from = getRotateFrom(direction, rotate);
+  const from = getRotateFrom(direction, initialRotate);
 
   const custom = {
     '--motion-origin-x': `${x}%`,

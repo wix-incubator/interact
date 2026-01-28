@@ -32,13 +32,11 @@ describe('FlipIn', () => {
   test('FlipIn animation with custom values', () => {
     const easing = 'backIn';
     const direction = 'right';
-    const power = 'soft';
     const mockOptions = {
       ...baseMockOptions,
       easing,
       namedEffect: {
         direction,
-        power,
         initialRotate: 50,
       } as FlipInType,
     };
@@ -49,7 +47,7 @@ describe('FlipIn', () => {
         easing,
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 45deg))`,
+            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 50deg))`,
           },
           {},
         ],
@@ -100,13 +98,11 @@ describe('FlipIn', () => {
   test('FlipIn style with custom values', () => {
     const easing = 'backIn';
     const direction = 'right';
-    const power = 'soft';
     const mockOptions = {
       ...baseMockOptions,
       easing,
       namedEffect: {
         direction,
-        power,
         initialRotate: 50,
       } as FlipInType,
     };
@@ -123,11 +119,11 @@ describe('FlipIn', () => {
         name: 'motion-flipIn',
         custom: {
           '--motion-rotate-x': '0deg',
-          '--motion-rotate-y': '45deg',
+          '--motion-rotate-y': '50deg',
         },
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 45deg))`,
+            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 50deg))`,
           },
           {
             transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,

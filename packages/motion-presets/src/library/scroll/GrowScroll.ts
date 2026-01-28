@@ -1,11 +1,6 @@
 import { AnimationFillMode, GrowScroll, ScrubAnimationOptions } from '../../types';
 
 const MAX_Y_TRAVEL = 40;
-const POWER_MAP = {
-  soft: { scaleFrom: 0.8, scaleTo: 1.2, travelY: 0 },
-  medium: { scaleFrom: 0.3, scaleTo: 1.7, travelY: 0.75 },
-  hard: { scaleFrom: 0, scaleTo: 4, travelY: 1 },
-};
 
 const directionMap = {
   top: [0, -50],
@@ -34,9 +29,8 @@ const RANGES_MAP = {
   }),
 };
 
-function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
-  const offset =
-    power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed) * MAX_Y_TRAVEL;
+function getScrubOffsets({ range = 'in', speed = 0 }: GrowScroll) {
+  const offset = Math.abs(speed) * MAX_Y_TRAVEL;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -46,9 +40,8 @@ function getScrubOffsets({ power, range = 'in', speed = 0 }: GrowScroll) {
 
 export default function create(options: ScrubAnimationOptions) {
   const {
-    power,
     range = 'in',
-    scale = range === 'in' ? POWER_MAP.hard.scaleFrom : POWER_MAP.hard.scaleTo,
+    scale = range === 'in' ? 0 : 4,
     direction = 'center',
     speed = 0,
   } = options.namedEffect as GrowScroll;
@@ -57,14 +50,10 @@ export default function create(options: ScrubAnimationOptions) {
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
-  const { scaleFrom, scaleTo, travelY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : {
-          scaleFrom: scale,
-          scaleTo: scale,
-          travelY: speed,
-        };
+
+  const scaleFrom = scale;
+  const scaleTo = scale;
+  const travelY = speed;
 
   const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
 
@@ -118,20 +107,5 @@ export default function create(options: ScrubAnimationOptions) {
    *   }
    * }
    *
-   * @supports (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> auto <easing> both,
-   *                <name>-scale auto linear both;
-   *     animation-range: cover <start> cover <end>,
-   *                      cover <start> cover <end>;
-   *     animation-timeline: view(), view();
-   *   }
-   * }
-   * @supports not (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> 100ms linear <fill> paused,
-   *                <name>-scale 100ms linear <fill> paused;
-   *   }
-   * }
    */
 }

@@ -3,20 +3,9 @@ import {
   AnimationExtraOptions,
   Track3DMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
 import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; perspective: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 25, perspective: 1000, easing: 'easeOut' },
-  medium: { angle: 50, perspective: 500, easing: 'easeOut' },
-  hard: { angle: 85, perspective: 333, easing: 'easeOut' },
-};
 
 class Track3DMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -26,10 +15,7 @@ class Track3DMouseAnimation extends CustomMouse {
     let translateY = 0;
     let rotateX = 0;
     let rotateY = 0;
-    // if progressX === 0, translateX === -distance
-    // if progressX === 0.5, translateX === 0
-    // if progressX === 1, translateX === distance
-    // if progressX === 0, rotateX === -angle, if progressX === 0.5, rotateX === 0, if progressX === 1, rotateX === angle
+
     if (axis === 'both' || axis === 'horizontal') {
       translateX = mapRange(0, 1, -distance.value, distance.value, progressX);
       rotateY = mapRange(0, 1, -angle, angle, progressX) * invert;
@@ -52,7 +38,6 @@ class Track3DMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     distance = { value: 200, type: 'px' },
     angle = 5,
@@ -62,15 +47,13 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,
     axis,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle,
+    perspective,
   };
 
   return (target: HTMLElement) => new Track3DMouseAnimation(target, animationOptions);

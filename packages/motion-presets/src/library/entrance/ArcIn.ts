@@ -12,12 +12,6 @@ const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: 
   left: { x: 0, y: 1, sign: -1 },
 };
 
-const EASING_MAP = {
-  soft: 'cubicInOut',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
-
 export function web(options: TimeAnimationOptions, dom?: DomApi) {
   prepare(options, dom);
 
@@ -30,7 +24,6 @@ export function getNames(_: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    power,
     direction = 'right',
     angle = DEFAULT_ANGLE,
     depth = DEFAULT_DEPTH,
@@ -38,15 +31,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   } = options.namedEffect as ArcIn;
   const [fadeIn, arcIn] = getNames(options);
 
-  const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
-
-  // we can remove dependency on measurement here if we use a "layout wrapper" as a `container`: https://jsbin.com/mulojuwogi/edit?css,output
-  // we could also consider a fixed value for z, e.g. 300px like in ArcScroll
-  // const { width, height } = element.getBoundingClientRect();
+  const easing = options.easing || 'quintInOut';
 
   const { x, y, sign } = DIRECTION_MAP[direction];
-  // const z = rotateX ? height / 2 : width / 2;
-  // When depth is provided, use it directly; otherwise fall back to CSS var for DOM measurement
   const useCustomDepth = depth !== DEFAULT_DEPTH;
   const zValue = useCustomDepth
     ? `${depth}px`

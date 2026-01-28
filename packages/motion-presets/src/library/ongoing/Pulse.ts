@@ -1,11 +1,8 @@
 import type { Pulse, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
-const POWER_TO_PULSE_OFFSET_MAP = {
-  soft: 0,
-  medium: 0.06,
-  hard: 0.12,
-};
+const PULSE_OFFSET_SOFT = 0;
+const PULSE_OFFSET_HARD = 0.12;
 
 const SCALE_KEYFRAMES = [
   { keyframe: 27, scale: 0.96 },
@@ -19,25 +16,15 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, intensity = 0 } = options.namedEffect as Pulse;
+  const { intensity = 0 } = options.namedEffect as Pulse;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const responsivePulseOffset = mapRange(
-    0,
-    1,
-    POWER_TO_PULSE_OFFSET_MAP.soft,
-    POWER_TO_PULSE_OFFSET_MAP.hard,
-    intensity,
-  );
+  const pulseOffset = mapRange(0, 1, PULSE_OFFSET_SOFT, PULSE_OFFSET_HARD, intensity);
 
-  const pulseOffset =
-    typeof power !== 'undefined' ? POWER_TO_PULSE_OFFSET_MAP[power] : responsivePulseOffset;
-
-  // Create CSS custom properties for the pulse configuration
   const custom: Record<string, string | number> = {
     '--motion-pulse-offset': pulseOffset,
   };

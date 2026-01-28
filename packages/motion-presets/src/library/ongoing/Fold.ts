@@ -1,12 +1,6 @@
 import type { Fold, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
 
-const POWER_TO_ROTATION_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
-
 const DIRECTION_MAP = {
   top: {
     rotation: { x: 1, y: 0 },
@@ -43,27 +37,23 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction = 'top', power, angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
+  const { direction = 'top', angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
 
   const easing = options.easing || 'cubicInOut';
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
   const [name] = getNames(options);
 
-  const isResponsive = typeof power === 'undefined';
   const { rotation, origin } = DIRECTION_MAP[direction];
   const { x, y } = origin;
-  const ease = getEasingFamily(isResponsive ? easing : 'cubicInOut');
+  const ease = getEasingFamily(easing);
 
-  const rotateTransform = isResponsive
-    ? angle
-    : MIN_ROTATE_ANGLE * POWER_TO_ROTATION_FACTOR_MAP[power];
+  const rotateTransform = angle;
 
   const totalDurationWithDelay = 3.2 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   let currentOffset = 0;
 
-  // Create CSS custom properties for the fold configuration
   const custom: Record<string, string | number> = {
     '--motion-origin-x': `${x}%`,
     '--motion-origin-y': `${y}%`,
@@ -94,7 +84,6 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       asWeb,
     )} * ${value} * ${rotateTransform}deg)) ${transformRight}`;
 
-  // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? KEYFRAME_FACTORS.map(({ fold, frameFactor }) => {
         const keyframeOffset = currentOffset + frameFactor * timingFactor;

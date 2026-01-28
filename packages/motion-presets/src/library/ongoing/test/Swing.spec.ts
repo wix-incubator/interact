@@ -132,44 +132,6 @@ describe('Swing', () => {
       });
     });
 
-    test('custom power - soft', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as SwingType,
-      };
-
-      const result = Swing.style(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '20deg', // soft = 1 * 20
-      });
-    });
-
-    test('custom power - medium', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SwingType,
-      };
-
-      const result = Swing.style?.(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '40deg', // medium = 2 * 20
-      });
-    });
-
-    test('custom power - hard', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as SwingType,
-      };
-
-      const result = Swing.style?.(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '60deg', // hard = 3 * 20
-      });
-    });
   });
 
   describe('web function', () => {
@@ -282,16 +244,5 @@ describe('Swing', () => {
       );
     });
 
-    test('custom power - medium with web output', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SwingType,
-      };
-
-      const result = Swing.web(mockOptions);
-
-      expect(result[0].keyframes[1].transform).toContain('rotate(40deg)');
-      expect(result[0].keyframes[2].transform).toContain('rotate(calc(40deg * -1))');
-    });
   });
 });

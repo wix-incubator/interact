@@ -1,11 +1,8 @@
 import type { TimeAnimationOptions, Bounce, AnimationExtraOptions, DomApi } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
-const POWER_TO_BOUNCE_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
+const BOUNCE_FACTOR_SOFT = 1;
+const BOUNCE_FACTOR_HARD = 3;
 
 const TRANSLATE_Y_KEYFRAMES = [
   { keyframe: 0, translateY: 0 },
@@ -28,16 +25,14 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power = 'soft', intensity } = options.namedEffect as Bounce;
+  const { intensity = 0.5 } = options.namedEffect as Bounce;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const bounceFactor = intensity
-    ? mapRange(0, 1, POWER_TO_BOUNCE_FACTOR_MAP.soft, POWER_TO_BOUNCE_FACTOR_MAP.hard, intensity)
-    : POWER_TO_BOUNCE_FACTOR_MAP[power];
+  const bounceFactor = mapRange(0, 1, BOUNCE_FACTOR_SOFT, BOUNCE_FACTOR_HARD, intensity);
   const easing = getEasing('sineOut');
 
   const custom = {

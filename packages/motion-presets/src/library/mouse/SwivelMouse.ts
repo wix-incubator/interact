@@ -4,20 +4,9 @@ import {
   SwivelMouse,
   MousePivotAxis,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
 import { getMouseTransitionEasing, mapRange } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; perspective: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 25, perspective: 1000, easing: 'easeOut' },
-  medium: { angle: 50, perspective: 700, easing: 'easeOut' },
-  hard: { angle: 85, perspective: 300, easing: 'easeOut' },
-};
 
 const transformOrigins: Record<MousePivotAxis, [number, number]> = {
   top: [0, -50],
@@ -41,7 +30,6 @@ class SwivelMouseAnimation extends CustomMouse {
       invertVertical = 1;
     }
 
-    // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
 
     const [translateX, translateY] = transformOrigins[pivotAxis as MousePivotAxis];
@@ -59,7 +47,6 @@ class SwivelMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const {
-    power,
     inverted = false,
     angle = 5,
     perspective = 800,
@@ -68,13 +55,11 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle,
+    perspective,
     pivotAxis,
   };
 

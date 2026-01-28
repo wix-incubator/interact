@@ -33,13 +33,13 @@ describe('FoldIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('FoldIn animation with custom direction, power, and easing', () => {
+  test('FoldIn animation with custom direction and easing', () => {
     const mockOptions = {
       ...baseMockOptions,
       easing: 'cubicInOut',
       namedEffect: {
         direction: 'left',
-        power: 'soft',
+        initialRotate: 45,
       } as FoldInType,
     };
 
@@ -50,7 +50,7 @@ describe('FoldIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-origin-x ,-50%), var(--motion-origin-y, 0%)) perspective(800px) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 35deg)) translate(calc(-1 * var(--motion-origin-x ,-50%)), calc(-1 * var(--motion-origin-y, 0%)))',
+              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-origin-x ,-50%), var(--motion-origin-y, 0%)) perspective(800px) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 45deg)) translate(calc(-1 * var(--motion-origin-x ,-50%)), calc(-1 * var(--motion-origin-y, 0%)))',
           },
           {
             transform:
@@ -105,13 +105,13 @@ describe('FoldIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('FoldIn style animation with custom direction, power, and easing', () => {
+  test('FoldIn style animation with custom direction and easing', () => {
     const mockOptions = {
       ...baseMockOptions,
       easing: 'cubicInOut',
       namedEffect: {
         direction: 'left',
-        power: 'soft',
+        initialRotate: 45,
       } as FoldInType,
     };
 
@@ -129,12 +129,12 @@ describe('FoldIn', () => {
           '--motion-origin-x': '-50%',
           '--motion-origin-y': '0%',
           '--motion-rotate-x': '0deg',
-          '--motion-rotate-y': '35deg',
+          '--motion-rotate-y': '45deg',
         },
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-origin-x ,-50%), var(--motion-origin-y, 0%)) perspective(800px) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 35deg)) translate(calc(-1 * var(--motion-origin-x ,-50%)), calc(-1 * var(--motion-origin-y, 0%)))',
+              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-origin-x ,-50%), var(--motion-origin-y, 0%)) perspective(800px) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 45deg)) translate(calc(-1 * var(--motion-origin-x ,-50%)), calc(-1 * var(--motion-origin-y, 0%)))',
           },
           {
             transform:

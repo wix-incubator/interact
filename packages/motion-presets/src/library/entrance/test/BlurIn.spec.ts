@@ -28,23 +28,22 @@ describe('BlurIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('BlurIn animation with custom values', () => {
+  test('BlurIn animation with custom blur value', () => {
     const duration = 1000;
     const blur = 10;
-    const power = 'medium';
     const easing = 'sineIn';
     const mockOptions = {
       ...baseMockOptions,
       duration,
       easing,
-      namedEffect: { blur, power } as BlurInType,
+      namedEffect: { blur } as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
       {},
       {
         easing,
-        keyframes: [{ filter: `blur(25px)` }, {}],
+        keyframes: [{ filter: `blur(10px)` }, {}],
       },
     ];
 
@@ -84,16 +83,15 @@ describe('BlurIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('BlurIn style animation with custom values', () => {
+  test('BlurIn style animation with custom blur value', () => {
     const duration = 1000;
     const blur = 10;
-    const power = 'medium';
     const easing = 'sineIn';
     const mockOptions = {
       ...baseMockOptions,
       duration,
       easing,
-      namedEffect: { blur, power } as BlurInType,
+      namedEffect: { blur } as BlurInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -108,7 +106,7 @@ describe('BlurIn', () => {
         name: 'motion-blurIn',
         easing,
         custom: {
-          '--motion-blur': '25px',
+          '--motion-blur': '10px',
         },
         keyframes: [{ filter: 'blur(var(--motion-blur))' }, { filter: 'blur(0px)' }],
       },

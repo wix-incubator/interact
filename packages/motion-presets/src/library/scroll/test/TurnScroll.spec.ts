@@ -32,31 +32,6 @@ describe('TurnScroll', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('custom power - soft', () => {
-    const mockOptions: ScrubAnimationOptions = {
-      ...baseMockOptions,
-      namedEffect: { power: 'soft' } as TurnScrollType,
-    };
-
-    const expectedResult = [
-      {
-        keyframes: [
-          {
-            transform:
-              'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
-          },
-          {
-            transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-          },
-        ],
-      },
-    ];
-
-    const result = TurnScroll(mockOptions);
-
-    expect(result).toMatchObject(expectedResult);
-  });
-
   test('custom spin - counter-clockwise', () => {
     const mockOptions: ScrubAnimationOptions = {
       ...baseMockOptions,

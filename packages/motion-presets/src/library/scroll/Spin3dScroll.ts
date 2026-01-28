@@ -3,12 +3,6 @@ import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll } from '../
 const DEFAULT_PERSPECTIVE = 1000;
 const DEFAULT_MAX_Y_TRAVEL = 40;
 
-const POWER_MAP = {
-  soft: { rotationZ: 45, travelY: 0 },
-  medium: { rotationZ: 100, travelY: 0.5 },
-  hard: { rotationZ: 200, travelY: 1 },
-};
-
 const RANGES_MAP = {
   in: (rotation: number, travelY: number) => ({
     fromValues: {
@@ -54,9 +48,8 @@ const RANGES_MAP = {
   }),
 };
 
-function getScrubOffsets({ power, range = 'in', speed = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: Spin3dScroll) {
-  const offset =
-    (power && POWER_MAP[power] ? POWER_MAP[power].travelY : Math.abs(speed)) * maxTravelY;
+function getScrubOffsets({ range = 'in', speed = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: Spin3dScroll) {
+  const offset = Math.abs(speed) * maxTravelY;
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -67,7 +60,6 @@ function getScrubOffsets({ power, range = 'in', speed = 0, maxTravelY = DEFAULT_
 export default function create(options: ScrubAnimationOptions) {
   const {
     rotate = -100,
-    power,
     range = 'in',
     speed = 0,
     perspective = DEFAULT_PERSPECTIVE,
@@ -78,8 +70,7 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const initialParams =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { rotationZ: rotate, travelY: speed };
+  const initialParams = { rotationZ: rotate, travelY: speed };
 
   const { fromValues, toValues } = RANGES_MAP[range](
     initialParams.rotationZ,

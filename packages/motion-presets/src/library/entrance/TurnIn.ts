@@ -7,12 +7,6 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
 }
 
-const EASING_MAP = {
-  soft: 'cubicInOut',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
-
 const DIRECTION_TO_ORIGIN_MAP: Record<EffectFourCorners, { x: number; y: number; sign: number }> = {
   'top-left': { x: -50, y: -50, sign: -1 },
   'top-right': { x: 50, y: -50, sign: 1 },
@@ -25,10 +19,10 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-left', power, angle = DEFAULT_ANGLE } = options.namedEffect as TurnIn;
+  const { direction = 'top-left', angle = DEFAULT_ANGLE } = options.namedEffect as TurnIn;
   const [fadeIn, turnIn] = getNames(options);
 
-  const easing = power && EASING_MAP[power] ? EASING_MAP[power] : options.easing || 'backOut';
+  const easing = options.easing || 'backOut';
   const { x, y, sign } = DIRECTION_TO_ORIGIN_MAP[direction];
   const transformRotate = sign * angle;
 

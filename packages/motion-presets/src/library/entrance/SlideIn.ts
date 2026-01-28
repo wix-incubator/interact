@@ -1,9 +1,8 @@
 import type { SlideIn, TimeAnimationOptions } from '../../types';
 import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
 
-export function getNames(options: TimeAnimationOptions) {
-  const { power } = options.namedEffect as SlideIn;
-  return power !== 'hard' ? ['motion-slideIn', 'motion-fadeIn'] : ['motion-slideIn'];
+export function getNames(_: TimeAnimationOptions) {
+  return ['motion-slideIn', 'motion-fadeIn'];
 }
 
 type Direction = 'top' | 'right' | 'bottom' | 'left';
@@ -15,23 +14,16 @@ const PARAM_MAP: Record<Direction, { dx: number; dy: number; clip: Direction }> 
   left: { dx: -1, dy: 0, clip: 'right' },
 };
 
-const INITIAL_TRANSLATE_MAP = {
-  soft: 0.2,
-  medium: 0.8,
-  hard: 1,
-};
-
 export function web(options: TimeAnimationOptions) {
   return style(options);
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
+  const { direction = 'left', initialTranslate = 1 } = options.namedEffect as SlideIn;
   const [slideIn, fadeIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale = (power && INITIAL_TRANSLATE_MAP[power]) || initialTranslate;
-  const minimum = 100 - scale * 100;
+  const minimum = 100 - initialTranslate * 100;
 
   const start = getClipPolygonParams({
     direction: PARAM_MAP[direction].clip,
@@ -45,7 +37,7 @@ export function style(options: TimeAnimationOptions) {
     '--motion-translate-y': `${PARAM_MAP[direction].dy * 100}%`,
   };
 
-  const animations = [
+  return [
     {
       ...options,
       name: slideIn,
@@ -64,30 +56,12 @@ export function style(options: TimeAnimationOptions) {
         },
       ],
     },
-  ];
-
-  if (power !== 'hard') {
-    animations.push({
+    {
       ...options,
       easing: 'cubicInOut',
       name: fadeIn,
-      // @ts-expect-error
       custom: {},
-      keyframes: [
-        // @ts-expect-error
-        { offset: 0, opacity: 0 },
-        // @ts-expect-error
-        { opacity: 'var(--comp-opacity, 1)' },
-      ],
-    });
-  } else {
-    animations[0].keyframes.unshift({
-      offset: 0,
-      // @ts-expect-error
-      opacity: 0,
-      easing: 'step-end',
-    });
-  }
-
-  return animations;
+      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+    },
+  ];
 }

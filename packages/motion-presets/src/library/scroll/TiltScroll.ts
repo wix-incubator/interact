@@ -8,12 +8,6 @@ const DEFAULT_ROTATION_Y = 25;
 const DEFAULT_ROTATION_Z = 25;
 const [UP, DOWN, ORIGINAL_LAYOUT] = [-1, 1, 0];
 
-const TRANSLATE_Y_POWER_MAP = {
-  soft: 0,
-  medium: 0.5,
-  hard: 1,
-};
-
 const DIRECTIONS_MAP = {
   right: 1,
   left: -1,
@@ -34,15 +28,12 @@ const RANGES_MAP = {
   },
 };
 
-function getYTravel(distance: number, power: keyof typeof TRANSLATE_Y_POWER_MAP | undefined, maxTravelY: number) {
-  return (
-    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance) *
-    maxTravelY
-  );
+function getYTravel(distance: number, maxTravelY: number) {
+  return distance * maxTravelY;
 }
 
-function getScrubOffsets({ power, range = 'in', distance = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: TiltScroll) {
-  const offset = Math.abs(getYTravel(distance, power, maxTravelY));
+function getScrubOffsets({ range = 'in', distance = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: TiltScroll) {
+  const offset = Math.abs(getYTravel(distance, maxTravelY));
 
   return {
     start: range === 'out' ? '0px' : `${-offset}vh`,
@@ -52,7 +43,6 @@ function getScrubOffsets({ power, range = 'in', distance = 0, maxTravelY = DEFAU
 
 export default function create(options: ScrubAnimationOptions) {
   const {
-    power,
     distance = 0,
     range = 'in',
     direction = 'right',
@@ -73,7 +63,7 @@ export default function create(options: ScrubAnimationOptions) {
   const rotateZFrom = Math.abs(from.z) * rotationZ * dir * (from.z < 0 ? -1 : 1);
   const rotateZTo = Math.abs(to.z) * rotationZ * dir * (to.z < 0 ? -1 : 1);
 
-  const travelY = getYTravel(distance, power, maxTravelY);
+  const travelY = getYTravel(distance, maxTravelY);
   const travelYFrom = travelY * from.transY;
   const travelYTo = travelY * to.transY;
   const rotationXFrom = from.x * rotationX;
@@ -104,11 +94,10 @@ export default function create(options: ScrubAnimationOptions) {
     {
       ...options,
       fill,
-      // TODO: refactor easings
       easing: easings.sineInOut,
       startOffsetAdd,
       endOffsetAdd,
-      composite: 'add' as const, // add this animation on top of the previous one
+      composite: 'add' as const,
       keyframes: [
         {
           transform: `rotate(calc(var(--comp-rotate-z, 0deg) + ${rotateZFrom}deg))`,

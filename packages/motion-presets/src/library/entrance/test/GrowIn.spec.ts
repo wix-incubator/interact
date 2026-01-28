@@ -34,10 +34,10 @@ describe('GrowIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('GrowIn animation with custom direction and power', () => {
+  test('GrowIn animation with custom direction and scale', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 45, power: 'hard' } as GrowInType,
+      namedEffect: { direction: 45, initialScale: 0.5, distance: { value: 100, type: 'percentage' } } as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -49,7 +49,7 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         keyframes: [
           {
-            transform: 'translate(84%, -84%) rotate(var(--comp-rotate-z, 0deg)) scale(0)',
+            transform: 'translate(70%, -70%) rotate(var(--comp-rotate-z, 0deg)) scale(0.5)',
           },
           {
             transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0deg)) scale(1)',
@@ -101,10 +101,10 @@ describe('GrowIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('GrowIn style animation with custom direction and power', () => {
+  test('GrowIn style animation with custom direction and scale', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 45, power: 'hard' } as GrowInType,
+      namedEffect: { direction: 45, initialScale: 0.5, distance: { value: 100, type: 'percentage' } } as GrowInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -118,9 +118,9 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         name: 'motion-growIn',
         custom: {
-          '--motion-translate-x': '84%',
-          '--motion-translate-y': '-84%',
-          '--motion-scale': '0',
+          '--motion-translate-x': '70%',
+          '--motion-translate-y': '-70%',
+          '--motion-scale': '0.5',
         },
         keyframes: [
           {
