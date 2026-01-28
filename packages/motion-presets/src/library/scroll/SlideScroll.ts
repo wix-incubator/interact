@@ -3,16 +3,13 @@ import type {
   SlideScroll,
   EffectFourDirections,
   EffectScrollRange,
-  DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
+import { getClipPolygonParams } from '../../utils';
 
 type Translate = { x: string; y: string };
 
-const DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
-
-type Direction = (typeof DIRECTIONS)[number];
+type Direction = EffectFourDirections;
 
 const OPPOSITE_DIRECTION_MAP: Record<Direction, Direction> = {
   top: 'bottom',
@@ -73,7 +70,7 @@ const KEYFRAMES_RANGE_MAP: Record<
   ],
 };
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions) {
   const { direction = 'bottom', range = 'in' } = options.namedEffect as SlideScroll;
   const easing = 'linear';
   const fill = (
@@ -95,35 +92,6 @@ export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
       to: DIRECTION_TRANSLATION_MAP[oppositeDirection],
     },
   );
-
-  if (dom) {
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = parseInt(
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0',
-        10,
-      );
-
-      dom.mutate(() => {
-        const adjDirection = getAdjustedDirection(DIRECTIONS, direction, rotation) as Direction;
-        target.style.setProperty(
-          '--motion-clip-from',
-          getClipPolygonParams({
-            direction: OPPOSITE_DIRECTION_MAP[adjDirection],
-          }),
-        );
-        target.style.setProperty(
-          '--motion-clip-to',
-          getClipPolygonParams({
-            direction: adjDirection,
-          }),
-        );
-      });
-    });
-  }
 
   return [
     {

@@ -1,24 +1,19 @@
-import type { SlideIn, AnimationExtraOptions, DomApi, TimeAnimationOptions } from '../../types';
-import {
-  getAdjustedDirection,
-  getClipPolygonParams,
-  INITIAL_FRAME_OFFSET,
-  type Direction,
-} from '../../utils';
+import type { SlideIn, TimeAnimationOptions } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
 
 export function getNames(options: TimeAnimationOptions) {
   const { power } = options.namedEffect as SlideIn;
   return power !== 'hard' ? ['motion-slideIn', 'motion-fadeIn'] : ['motion-slideIn'];
 }
 
-const PARAM_MAP = {
+type Direction = 'top' | 'right' | 'bottom' | 'left';
+
+const PARAM_MAP: Record<Direction, { dx: number; dy: number; clip: Direction }> = {
   top: { dx: 0, dy: -1, clip: 'bottom' },
   right: { dx: 1, dy: 0, clip: 'left' },
   bottom: { dx: 0, dy: 1, clip: 'top' },
   left: { dx: -1, dy: 0, clip: 'right' },
 };
-
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as (keyof typeof PARAM_MAP)[];
 
 const INITIAL_TRANSLATE_MAP = {
   soft: 0.2,
@@ -26,12 +21,8 @@ const INITIAL_TRANSLATE_MAP = {
   hard: 1,
 };
 
-export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  const animations = style(options);
-
-  prepare(options, dom);
-
-  return animations;
+export function web(options: TimeAnimationOptions) {
+  return style(options);
 }
 
 export function style(options: TimeAnimationOptions) {
@@ -43,7 +34,7 @@ export function style(options: TimeAnimationOptions) {
   const minimum = 100 - scale * 100;
 
   const start = getClipPolygonParams({
-    direction,
+    direction: PARAM_MAP[direction].clip,
     minimum,
   });
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
@@ -64,7 +55,7 @@ export function style(options: TimeAnimationOptions) {
         {
           offset: INITIAL_FRAME_OFFSET,
           opacity: 'var(--comp-opacity, 1)',
-          transform: `rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))`,
+          transform: `rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
           clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
         },
         {
@@ -99,49 +90,4 @@ export function style(options: TimeAnimationOptions) {
   }
 
   return animations;
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'left', power, initialTranslate = 1 } = options.namedEffect as SlideIn;
-
-  const scale = (power && INITIAL_TRANSLATE_MAP[power]) || initialTranslate;
-  const minimum = 100 - scale * 100;
-
-  if (dom) {
-    let rotation = 0;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-      rotation = parseInt(
-        getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg',
-        10,
-      );
-    });
-
-    dom.mutate((target) => {
-      const adjustedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        rotation,
-      ) as (typeof DIRECTIONS)[number];
-
-      target?.style.setProperty(
-        '--motion-clip-start',
-        getClipPolygonParams({
-          direction: PARAM_MAP[adjustedDirection].clip as Direction,
-          minimum,
-        }),
-      );
-      target?.style.setProperty(
-        '--motion-translate-x',
-        `${PARAM_MAP[adjustedDirection].dx * 100}%`,
-      );
-      target?.style.setProperty(
-        '--motion-translate-y',
-        `${PARAM_MAP[adjustedDirection].dy * 100}%`,
-      );
-    });
-  }
 }

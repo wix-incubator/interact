@@ -1,5 +1,5 @@
-import type { FoldIn, TimeAnimationOptions, DomApi } from '../../types';
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import type { FoldIn, TimeAnimationOptions } from '../../types';
+import { INITIAL_FRAME_OFFSET } from '../../utils';
 
 const DEFAULT_PERSPECTIVE = 800;
 
@@ -13,9 +13,7 @@ const POWER_TO_ROTATE_MAP = {
   hard: 90,
 };
 
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'];
-
-type Direction = (typeof DIRECTIONS)[number];
+type Direction = 'top' | 'right' | 'bottom' | 'left';
 
 const PARAM_MAP: Record<Direction, { x: number; y: number; origin: { x: number; y: number } }> = {
   top: { x: -1, y: 0, origin: { x: 0, y: -50 } },
@@ -31,9 +29,7 @@ function getRotateFrom(direction: Direction, rotate: number) {
   };
 }
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options);
 }
 
@@ -82,37 +78,4 @@ export function style(options: TimeAnimationOptions) {
       ],
     },
   ];
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FoldIn;
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
-
-  if (dom) {
-    let adjustedDirection: Direction = direction;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-
-      adjustedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        parseInt(rotation, 10),
-      ) as Direction;
-    });
-
-    dom.mutate((target) => {
-      const { origin } = PARAM_MAP[adjustedDirection];
-      const newRotate = getRotateFrom(adjustedDirection, rotate);
-
-      target?.style.setProperty('--motion-origin-x', `${origin.x}%`);
-      target?.style.setProperty('--motion-origin-y', `${origin.y}%`);
-      target?.style.setProperty('--motion-rotate-x', `${newRotate.x}deg`);
-      target?.style.setProperty('--motion-rotate-y', `${newRotate.y}deg`);
-    });
-  }
 }

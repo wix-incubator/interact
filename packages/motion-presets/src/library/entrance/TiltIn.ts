@@ -1,10 +1,5 @@
-import {
-  getAdjustedDirection,
-  getClipPolygonParams,
-  INITIAL_FRAME_OFFSET,
-  toKeyframeValue,
-} from '../../utils';
-import type { TiltIn, TimeAnimationOptions, DomApi } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import type { TiltIn, TimeAnimationOptions } from '../../types';
 
 const DEFAULT_DEPTH = 200;
 const DEFAULT_TILT_ANGLE = 90;
@@ -20,24 +15,7 @@ const ROTATION_SIGN_MAP = {
   right: -1,
 };
 
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
-
-function getClipStart(rotateZValue: number) {
-  const clipDirection = getAdjustedDirection(
-    DIRECTIONS as unknown as string[],
-    'top',
-    rotateZValue,
-  ) as (typeof DIRECTIONS)[number];
-
-  return getClipPolygonParams({
-    direction: clipDirection,
-    minimum: 0,
-  });
-}
-
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
@@ -52,7 +30,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);
 
   const easing = options.easing || 'cubicOut';
-  const clipStart = getClipStart(0);
+  const clipStart = getClipPolygonParams({ direction: 'top', minimum: 0 });
   const rotationZ = ROTATION_SIGN_MAP[direction] * rotateZ;
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
   // When depth is provided, use it directly; otherwise fall back to CSS var for DOM measurement
@@ -65,7 +43,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-tilt-angle': `${tiltAngle}`,
   };
 
-  const depthValue = toKeyframeValue(custom, '--motion-depth', asWeb);
   const tiltAngleValue = toKeyframeValue(custom, '--motion-tilt-angle', asWeb);
 
   return [
@@ -117,21 +94,4 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ],
     },
   ];
-}
-
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let rotation = '0deg';
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-      rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-    });
-
-    dom.mutate((target_) => {
-      target_?.style.setProperty('--motion-clip-start', getClipStart(parseInt(rotation, 10)));
-    });
-  }
 }

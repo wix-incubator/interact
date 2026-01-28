@@ -2,12 +2,9 @@ import {
   EffectFourDirections,
   RevealScroll,
   ScrubAnimationOptions,
-  DomApi,
   AnimationFillMode,
 } from '../../types';
-import { getAdjustedDirection, getClipPolygonParams } from '../../utils';
-
-const DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
+import { getClipPolygonParams } from '../../utils';
 
 const OPPOSITE_DIRECTION_MAP: Record<EffectFourDirections, EffectFourDirections> = {
   top: 'bottom',
@@ -33,39 +30,15 @@ function getClipTo(direction: EffectFourDirections, range: RevealScroll['range']
       });
 }
 
-export default function create(options: ScrubAnimationOptions, dom?: DomApi) {
+export default function create(options: ScrubAnimationOptions) {
   const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  let clipFrom = getClipFrom(direction, range);
-  let clipTo = getClipTo(direction, range);
-
-  if (dom) {
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
-
-      dom.mutate(() => {
-        const adjDirection = getAdjustedDirection(
-          DIRECTIONS,
-          direction,
-          parseInt(rotation, 10),
-        ) as (typeof DIRECTIONS)[number];
-
-        clipFrom = getClipFrom(adjDirection, range);
-        clipTo = getClipTo(adjDirection, range);
-
-        target.style.setProperty('--motion-clip-from', clipFrom);
-        target.style.setProperty('--motion-clip-to', clipTo);
-      });
-    });
-  }
+  const clipFrom = getClipFrom(direction, range);
+  const clipTo = getClipTo(direction, range);
 
   const keyframes =
     range === 'continuous'

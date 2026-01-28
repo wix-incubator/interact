@@ -1,5 +1,5 @@
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
-import type { FlipIn, TimeAnimationOptions, DomApi } from '../../types';
+import { INITIAL_FRAME_OFFSET } from '../../utils';
+import type { FlipIn, TimeAnimationOptions } from '../../types';
 
 const DEFAULT_PERSPECTIVE = 800;
 
@@ -7,15 +7,13 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
 }
 
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'];
-
-type Direction = (typeof DIRECTIONS)[number];
-
 const POWER_TO_ROTATE_MAP = {
   soft: 45,
   medium: 90,
   hard: 270,
 };
+
+type Direction = 'top' | 'right' | 'bottom' | 'left';
 
 function getRotateFrom(direction: Direction, rotate: number) {
   return {
@@ -31,9 +29,7 @@ const ROTATE_MAP: Record<Direction, { x: number; y: number }> = {
   left: { x: 0, y: -1 },
 };
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options);
 }
 
@@ -79,34 +75,4 @@ export function style(options: TimeAnimationOptions) {
       ],
     },
   ];
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
-
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
-
-  if (dom) {
-    let adjustedDirection: string = direction;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-      adjustedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        parseInt(rotation, 10),
-      ) as (typeof DIRECTIONS)[number];
-    });
-
-    dom.mutate((target) => {
-      const from = getRotateFrom(adjustedDirection, rotate);
-
-      target?.style.setProperty('--motion-rotate-x', `${from.x}deg`);
-      target?.style.setProperty('--motion-rotate-y', `${from.y}deg`);
-    });
-  }
 }

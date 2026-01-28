@@ -1,19 +1,18 @@
-import { getClipPolygonParams, getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
-import type { WinkIn, TimeAnimationOptions, DomApi } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
+import type { WinkIn, TimeAnimationOptions } from '../../types';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-winkInClip', 'motion-winkInRotate'];
 }
 
-const PARAM_MAP = {
+type Direction = 'vertical' | 'horizontal';
+
+const PARAM_MAP: Record<Direction, { scaleY: number; scaleX: number }> = {
   vertical: { scaleY: 0, scaleX: 1 },
   horizontal: { scaleY: 1, scaleX: 0 },
 };
-const DIRECTIONS = ['vertical', 'horizontal'] as (keyof typeof PARAM_MAP)[];
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options);
 }
 
@@ -21,12 +20,7 @@ export function style(options: TimeAnimationOptions) {
   const { direction = 'horizontal' } = options.namedEffect as WinkIn;
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
 
-  const adjustedDirection = getAdjustedDirection(
-    DIRECTIONS,
-    direction,
-    0,
-  ) as (typeof DIRECTIONS)[number];
-  const { scaleX, scaleY } = PARAM_MAP[adjustedDirection];
+  const { scaleX, scaleY } = PARAM_MAP[direction];
   const easing = options.easing || 'quintInOut';
 
   const start = getClipPolygonParams({ direction, minimum: 100 });
@@ -78,40 +72,4 @@ export function style(options: TimeAnimationOptions) {
       ],
     },
   ];
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'horizontal' } = options.namedEffect as WinkIn;
-
-  if (dom) {
-    let scale = PARAM_MAP.horizontal;
-    let rotatedClip = getClipPolygonParams({
-      direction: 'horizontal',
-      minimum: 100,
-    });
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0';
-      const rotatedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        parseInt(rotation, 10),
-      ) as (typeof DIRECTIONS)[number];
-      scale = PARAM_MAP[rotatedDirection];
-      rotatedClip = getClipPolygonParams({
-        direction: rotatedDirection,
-        minimum: 100,
-      });
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-clip-start', rotatedClip);
-      target?.style.setProperty('--motion-scale-x', `${scale.scaleX}`);
-      target?.style.setProperty('--motion-scale-y', `${scale.scaleY}`);
-    });
-  }
 }

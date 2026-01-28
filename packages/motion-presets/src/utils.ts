@@ -107,18 +107,6 @@ export function getClipPolygonParams({
   })})`;
 }
 
-export function getAdjustedDirection(
-  availableDirections: string[],
-  direction: string,
-  angleInDeg: number,
-) {
-  const index = availableDirections.indexOf(direction);
-  const length = availableDirections.length;
-  const shiftBy = Math.round(((angleInDeg || 0) / 360) * length);
-  const newIndex = (index + (length - 1) * shiftBy) % length;
-  return availableDirections[newIndex];
-}
-
 export function transformPolarToXY(angle: number, distance: number) {
   const radians = (angle * Math.PI) / 180;
   const x = Math.cos(radians) * distance;
