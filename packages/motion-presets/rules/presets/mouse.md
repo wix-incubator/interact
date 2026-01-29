@@ -29,20 +29,20 @@ Tilt3DMouse, TrackMouse, BounceMouse, Track3DMouse, SpinMouse, ScaleMouse, Swive
 
 ## Quick Decision
 
-| Tone | Presets |
-|------|---------|
+| Tone                 | Presets                                    |
+| -------------------- | ------------------------------------------ |
 | Professional/Premium | Tilt3DMouse (soft), TrackMouse, ScaleMouse |
-| Playful/Fun | BounceMouse, BlobMouse, AiryMouse |
-| Game-like/Dynamic | SpinMouse, Track3DMouse, SkewMouse |
+| Playful/Fun          | BounceMouse, BlobMouse, AiryMouse          |
+| Game-like/Dynamic    | SpinMouse, Track3DMouse, SkewMouse         |
 
 ## Common Use Cases
 
-| Use Case | Recommended |
-|----------|-------------|
-| Product cards | Tilt3DMouse, ScaleMouse |
-| Hero depth layers | TrackMouse with different distances |
-| Interactive portfolios | Tilt3DMouse, Track3DMouse |
-| Playful interfaces | BounceMouse, BlobMouse |
+| Use Case               | Recommended                         |
+| ---------------------- | ----------------------------------- |
+| Product cards          | Tilt3DMouse, ScaleMouse             |
+| Hero depth layers      | TrackMouse with different distances |
+| Interactive portfolios | Tilt3DMouse, Track3DMouse           |
+| Playful interfaces     | BounceMouse, BlobMouse              |
 
 ## Mobile Fallback
 

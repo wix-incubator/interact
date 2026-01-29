@@ -29,19 +29,19 @@ Pulse, Bounce, Spin, Breathe, Flash, Swing, Wiggle, Flip, Fold, Jello, Rubber, P
 
 ## Quick Decision
 
-| Tone | Presets |
-|------|---------|
-| Subtle/Professional | Pulse (soft), Breathe, Flash (soft) |
-| Playful/Energetic | Bounce, Wiggle, Jello, DVD |
-| Mechanical/Technical | Spin, Flip, Fold |
-| Attention-grabbing | Flash, Bounce, Pulse (hard), Poke |
+| Tone                 | Presets                             |
+| -------------------- | ----------------------------------- |
+| Subtle/Professional  | Pulse (soft), Breathe, Flash (soft) |
+| Playful/Energetic    | Bounce, Wiggle, Jello, DVD          |
+| Mechanical/Technical | Spin, Flip, Fold                    |
+| Attention-grabbing   | Flash, Bounce, Pulse (hard), Poke   |
 
 ## Common Use Cases
 
-| Use Case | Recommended |
-|----------|-------------|
-| Loading spinner | Spin (duration: 1500ms) |
-| Status indicator | Pulse, Breathe |
-| Notification badge | Bounce, Pulse, Poke |
-| CTA emphasis | Pulse, Bounce |
-| Character/Mascot | Bounce, Wiggle, Jello |
+| Use Case           | Recommended             |
+| ------------------ | ----------------------- |
+| Loading spinner    | Spin (duration: 1500ms) |
+| Status indicator   | Pulse, Breathe          |
+| Notification badge | Bounce, Pulse, Poke     |
+| CTA emphasis       | Pulse, Bounce           |
+| Character/Mascot   | Bounce, Wiggle, Jello   |

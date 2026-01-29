@@ -29,13 +29,13 @@ Requires `data-motion-part` attributes: `BG_LAYER`, `BG_MEDIA`, `BG_IMG`
 
 See [Background Scroll Presets](presets-reference.md#background-scroll-presets) for details.
 
-| Effect Type | Presets |
-| ------------- | --------- |
-| Depth/Movement | BgParallax, BgPan, BgFake3D |
-| Scale/Zoom | BgZoom, BgCloseUp, BgPullBack |
-| Opacity | BgFade, BgFadeBack |
-| Rotation | BgRotate |
-| Reveal | BgReveal |
+| Effect Type    | Presets                       |
+| -------------- | ----------------------------- |
+| Depth/Movement | BgParallax, BgPan, BgFake3D   |
+| Scale/Zoom     | BgZoom, BgCloseUp, BgPullBack |
+| Opacity        | BgFade, BgFadeBack            |
+| Rotation       | BgRotate                      |
+| Reveal         | BgReveal                      |
 
 ## Note
 

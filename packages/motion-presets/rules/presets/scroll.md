@@ -34,19 +34,19 @@ ParallaxScroll, FadeScroll, ArcScroll, BlurScroll, FlipScroll, GrowScroll, Shrin
 
 ## Quick Decision
 
-| Effect Type | Presets |
-|-------------|---------|
-| Opacity | FadeScroll, BlurScroll |
-| Movement | ParallaxScroll, MoveScroll, PanScroll, SlideScroll |
-| Scale | GrowScroll, ShrinkScroll |
-| 3D Rotation | ArcScroll, FlipScroll, TiltScroll, TurnScroll |
-| Reveal/Mask | RevealScroll, ShapeScroll, ShuttersScroll |
+| Effect Type | Presets                                            |
+| ----------- | -------------------------------------------------- |
+| Opacity     | FadeScroll, BlurScroll                             |
+| Movement    | ParallaxScroll, MoveScroll, PanScroll, SlideScroll |
+| Scale       | GrowScroll, ShrinkScroll                           |
+| 3D Rotation | ArcScroll, FlipScroll, TiltScroll, TurnScroll      |
+| Reveal/Mask | RevealScroll, ShapeScroll, ShuttersScroll          |
 
 ## Common Use Cases
 
-| Use Case | Recommended |
-|----------|-------------|
-| Depth/Layering | ParallaxScroll with different speeds |
-| Content reveal | FadeScroll (in), RevealScroll |
-| Dramatic sections | ArcScroll, FlipScroll, TiltScroll |
-| De-emphasize passed | FadeScroll (out), ShrinkScroll |
+| Use Case            | Recommended                          |
+| ------------------- | ------------------------------------ |
+| Depth/Layering      | ParallaxScroll with different speeds |
+| Content reveal      | FadeScroll (in), RevealScroll        |
+| Dramatic sections   | ArcScroll, FlipScroll, TiltScroll    |
+| De-emphasize passed | FadeScroll (out), ShrinkScroll       |

@@ -17,13 +17,13 @@ This document is a comprehensive reference for Interact motion presets. Use it t
 
 ### Quick Trigger Lookup
 
-| User Intent | Trigger | Notes |
-| ------------- | --------- | ------- |
-| "animate when element enters viewport", "reveal on scroll into view" | entrance | viewEnter trigger (intersection observer) |
-| "animate based on scroll position", "parallax", "scroll-driven" | scroll | Tied to scroll progress |
-| "always moving", "pulsing", "loading spinner", "continuous loop" | ongoing | Runs indefinitely |
-| "react to mouse", "follow cursor", "tilt on hover" | mouse | Desktop only |
-| "background image effect", "hero background", "parallax bg" | background-scroll | CSS backgrounds only |
+| User Intent                                                          | Trigger           | Notes                                     |
+| -------------------------------------------------------------------- | ----------------- | ----------------------------------------- |
+| "animate when element enters viewport", "reveal on scroll into view" | entrance          | viewEnter trigger (intersection observer) |
+| "animate based on scroll position", "parallax", "scroll-driven"      | scroll            | Tied to scroll progress                   |
+| "always moving", "pulsing", "loading spinner", "continuous loop"     | ongoing           | Runs indefinitely                         |
+| "react to mouse", "follow cursor", "tilt on hover"                   | mouse             | Desktop only                              |
+| "background image effect", "hero background", "parallax bg"          | background-scroll | CSS backgrounds only                      |
 
 ---
 
@@ -172,44 +172,44 @@ Many presets support `power: 'soft' | 'medium' | 'hard'`.
 
 ### By Tone
 
-| Tone | Entrance | Scroll | Ongoing | Mouse |
-| ------ | ---------- | -------- | --------- | ------- |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn | FadeScroll, BlurScroll | Pulse (soft), Breathe | Tilt3DMouse (soft), TrackMouse |
-| Dramatic/Cinematic | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn | ArcScroll, FlipScroll, TiltScroll | Flip, Fold | Track3DMouse |
-| Playful/Energetic | BounceIn, SpinIn, PunchIn, GlitchIn | SpinScroll, Spin3dScroll | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse |
-| Geometric/Modern | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn | ShapeScroll, RevealScroll, ShuttersScroll | Cross | - |
+| Tone                | Entrance                                        | Scroll                                    | Ongoing                    | Mouse                          |
+| ------------------- | ----------------------------------------------- | ----------------------------------------- | -------------------------- | ------------------------------ |
+| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn        | FadeScroll, BlurScroll                    | Pulse (soft), Breathe      | Tilt3DMouse (soft), TrackMouse |
+| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn         | ArcScroll, FlipScroll, TiltScroll         | Flip, Fold                 | Track3DMouse                   |
+| Playful/Energetic   | BounceIn, SpinIn, PunchIn, GlitchIn             | SpinScroll, Spin3dScroll                  | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse         |
+| Geometric/Modern    | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn | ShapeScroll, RevealScroll, ShuttersScroll | Cross                      | -                              |
 
 ### By Use Case
 
-| Use Case | Recommended Presets |
-| ---------- | --------------------- |
-| Hero sections | ArcIn, ExpandIn, FloatIn, RevealIn + BgParallax, BgZoom |
-| Modals/Popups | FadeIn, DropIn, GrowIn, SlideIn |
-| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay |
-| Cards | FlipIn, ArcIn, TiltIn + FadeScroll (in/out) |
-| Notifications/Badges | BounceIn, PunchIn, DropIn + Pulse |
-| CTAs/Buttons | BounceIn, PunchIn, GrowIn + Pulse |
-| Loading indicators | Spin, Pulse |
-| Product images | Tilt3DMouse, ScaleMouse |
-| Background depth | BgParallax, ParallaxScroll, TrackMouse (layered) |
+| Use Case               | Recommended Presets                                     |
+| ---------------------- | ------------------------------------------------------- |
+| Hero sections          | ArcIn, ExpandIn, FloatIn, RevealIn + BgParallax, BgZoom |
+| Modals/Popups          | FadeIn, DropIn, GrowIn, SlideIn                         |
+| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay          |
+| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)             |
+| Notifications/Badges   | BounceIn, PunchIn, DropIn + Pulse                       |
+| CTAs/Buttons           | BounceIn, PunchIn, GrowIn + Pulse                       |
+| Loading indicators     | Spin, Pulse                                             |
+| Product images         | Tilt3DMouse, ScaleMouse                                 |
+| Background depth       | BgParallax, ParallaxScroll, TrackMouse (layered)        |
 
 ### Cross-Category Parallels
 
 Effects with similar visual results across triggers:
 
-| Entrance | Scroll | Ongoing | Mouse | Background |
-| ---------- | -------- | --------- | ------- | ------------ |
-| FadeIn | FadeScroll | Flash | - | BgFade |
-| ArcIn | ArcScroll | - | - | - |
-| SpinIn | SpinScroll | Spin | SpinMouse | BgRotate |
-| BounceIn | - | Bounce | BounceMouse | - |
-| TiltIn | TiltScroll | - | Tilt3DMouse | - |
-| FlipIn | FlipScroll | Flip | - | - |
-| GrowIn | GrowScroll | Pulse | ScaleMouse | BgZoom |
-| SlideIn | SlideScroll | - | TrackMouse | BgPan |
-| BlurIn | BlurScroll | - | BlurMouse | - |
-| RevealIn | RevealScroll | - | - | BgReveal |
-| - | ParallaxScroll | - | TrackMouse | BgParallax |
+| Entrance | Scroll         | Ongoing | Mouse       | Background |
+| -------- | -------------- | ------- | ----------- | ---------- |
+| FadeIn   | FadeScroll     | Flash   | -           | BgFade     |
+| ArcIn    | ArcScroll      | -       | -           | -          |
+| SpinIn   | SpinScroll     | Spin    | SpinMouse   | BgRotate   |
+| BounceIn | -              | Bounce  | BounceMouse | -          |
+| TiltIn   | TiltScroll     | -       | Tilt3DMouse | -          |
+| FlipIn   | FlipScroll     | Flip    | -           | -          |
+| GrowIn   | GrowScroll     | Pulse   | ScaleMouse  | BgZoom     |
+| SlideIn  | SlideScroll    | -       | TrackMouse  | BgPan      |
+| BlurIn   | BlurScroll     | -       | BlurMouse   | -          |
+| RevealIn | RevealScroll   | -       | -           | BgReveal   |
+| -        | ParallaxScroll | -       | TrackMouse  | BgParallax |
 
 ### Combining Triggers
 
@@ -221,7 +221,7 @@ Effects with similar visual results across triggers:
 **Requires multiple containers (nested elements):**
 
 - Entrance + Mouse
-- Entrance + Scroll  
+- Entrance + Scroll
 - Scroll + Mouse
 - Any other combination
 
@@ -997,7 +997,9 @@ Parameters:
 - `delay`: 0-8000ms (default: 0)
 
 ```typescript
-{ type: 'Flash' }
+{
+  type: 'Flash';
+}
 ```
 
 #### Swing
@@ -1092,7 +1094,9 @@ Parameters:
 **When `power` is set:** overrides `intensity`/rubber offset (soft=0, medium=0.05, hard=0.1)
 
 ```typescript
-{ type: 'Rubber' }
+{
+  type: 'Rubber';
+}
 ```
 
 #### Poke
@@ -1134,7 +1138,9 @@ Parameters:
 - `delay`: 0-8000ms (default: 0)
 
 ```typescript
-{ type: 'DVD' }
+{
+  type: 'DVD';
+}
 ```
 
 ---
@@ -1265,7 +1271,9 @@ Parameters:
 **When `power` is set:** overrides `angle` and `perspective` (soft: 25/1000, medium: 50/700, hard: 85/300)
 
 ```typescript
-{ type: 'SwivelMouse' }
+{
+  type: 'SwivelMouse';
+}
 ```
 
 #### SkewMouse
@@ -1283,7 +1291,9 @@ Parameters:
 **When `power` is set:** overrides `angle` (soft=10, medium=20, hard=45)
 
 ```typescript
-{ type: 'SkewMouse' }
+{
+  type: 'SkewMouse';
+}
 ```
 
 #### BlurMouse
@@ -1303,7 +1313,9 @@ Parameters:
 **When `power` is set:** overrides `angle` and `scale` (soft: 0/1, medium: 25/0.7, hard: 65/0.25)
 
 ```typescript
-{ type: 'BlurMouse' }
+{
+  type: 'BlurMouse';
+}
 ```
 
 #### AiryMouse
@@ -1321,7 +1333,9 @@ Parameters:
 **When `power` is set:** overrides `angle` (soft=10, medium=50, hard=85)
 
 ```typescript
-{ type: 'AiryMouse' }
+{
+  type: 'AiryMouse';
+}
 ```
 
 #### BlobMouse
@@ -1338,7 +1352,9 @@ Parameters:
 **When `power` is set:** overrides `scale` (soft=1.2, medium=1.6, hard=2.4)
 
 ```typescript
-{ type: 'BlobMouse' }
+{
+  type: 'BlobMouse';
+}
 ```
 
 #### CustomMouse
@@ -1346,7 +1362,9 @@ Parameters:
 Visual: Configurable custom behavior. For advanced custom implementations.
 
 ```typescript
-{ type: 'CustomMouse' }
+{
+  type: 'CustomMouse';
+}
 ```
 
 ---
@@ -1406,7 +1424,9 @@ Parameters:
 - `scale`: scale factor
 
 ```typescript
-{ type: 'BgFadeBack' }
+{
+  type: 'BgFadeBack';
+}
 ```
 
 #### BgPan
@@ -1446,7 +1466,9 @@ Parameters:
 - `angle`: skew angle
 
 ```typescript
-{ type: 'BgSkew' }
+{
+  type: 'BgSkew';
+}
 ```
 
 #### BgReveal
@@ -1454,7 +1476,9 @@ Parameters:
 Visual: Clip-based background reveal. Theatrical unveiling.
 
 ```typescript
-{ type: 'BgReveal' }
+{
+  type: 'BgReveal';
+}
 ```
 
 #### BgCloseUp
@@ -1466,7 +1490,9 @@ Parameters:
 - `scale`: zoom scale
 
 ```typescript
-{ type: 'BgCloseUp' }
+{
+  type: 'BgCloseUp';
+}
 ```
 
 #### BgPullBack
@@ -1478,7 +1504,9 @@ Parameters:
 - `scale`: zoom scale
 
 ```typescript
-{ type: 'BgPullBack' }
+{
+  type: 'BgPullBack';
+}
 ```
 
 #### BgFake3D
@@ -1491,7 +1519,9 @@ Parameters:
 - `zoom`: zoom factor
 
 ```typescript
-{ type: 'BgFake3D' }
+{
+  type: 'BgFake3D';
+}
 ```
 
 #### ImageParallax
@@ -1537,17 +1567,17 @@ Parameters:
 
 ### Reduced Motion Fallback Table
 
-| Original | Fallback |
-| ---------- | ---------- |
-| BounceIn, SpinIn, PunchIn | FadeIn |
-| ArcIn, FlipIn, TurnIn | FadeIn |
-| GlitchIn | FadeIn |
-| Spin, Bounce, Wiggle | Stop or subtle Pulse |
-| Flash | Reduce frequency (<3/sec) |
-| ParallaxScroll | Static position |
-| ArcScroll, FlipScroll, SpinScroll | FadeScroll or disable |
-| BgParallax, BgZoom | Static background |
-| All mouse animations | Static state |
+| Original                          | Fallback                  |
+| --------------------------------- | ------------------------- |
+| BounceIn, SpinIn, PunchIn         | FadeIn                    |
+| ArcIn, FlipIn, TurnIn             | FadeIn                    |
+| GlitchIn                          | FadeIn                    |
+| Spin, Bounce, Wiggle              | Stop or subtle Pulse      |
+| Flash                             | Reduce frequency (<3/sec) |
+| ParallaxScroll                    | Static position           |
+| ArcScroll, FlipScroll, SpinScroll | FadeScroll or disable     |
+| BgParallax, BgZoom                | Static background         |
+| All mouse animations              | Static state              |
 
 ### Stagger Patterns
 
@@ -1557,15 +1587,15 @@ For lists/grids, apply increasing `delay` values:
 // List items with 100ms stagger
 items.forEach((item, i) => ({
   type: 'FadeIn',
-  delay: i * 100
-}))
+  delay: i * 100,
+}));
 
 // Faster stagger (50ms)
 items.forEach((item, i) => ({
   type: 'SlideIn',
   direction: 'bottom',
-  delay: i * 50
-}))
+  delay: i * 50,
+}));
 ```
 
 ### Performance Notes

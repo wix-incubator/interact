@@ -42,22 +42,22 @@ See [Common Parameters](presets-reference.md#common-parameters) for details on `
 
 ## Quick Decision
 
-| Tone | Presets |
-| ------ | --------- |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn |
-| Dramatic/Cinematic | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn |
-| Playful/Energetic | BounceIn, SpinIn, PunchIn, GlitchIn |
-| Geometric/Modern | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn |
+| Tone                | Presets                                         |
+| ------------------- | ----------------------------------------------- |
+| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn        |
+| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn         |
+| Playful/Energetic   | BounceIn, SpinIn, PunchIn, GlitchIn             |
+| Geometric/Modern    | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn |
 
 ## Common Use Cases
 
-| Use Case | Recommended |
-| ---------- | ------------- |
-| Hero sections | ArcIn, ExpandIn, FloatIn |
-| Modals/Popups | FadeIn, DropIn, GrowIn |
+| Use Case               | Recommended                |
+| ---------------------- | -------------------------- |
+| Hero sections          | ArcIn, ExpandIn, FloatIn   |
+| Modals/Popups          | FadeIn, DropIn, GrowIn     |
 | List items (staggered) | FadeIn, SlideIn with delay |
-| Notifications | BounceIn, PunchIn |
-| Cards | FlipIn, ArcIn, TiltIn |
+| Notifications          | BounceIn, PunchIn          |
+| Cards                  | FlipIn, ArcIn, TiltIn      |
 
 ## Combining with Ongoing
 
