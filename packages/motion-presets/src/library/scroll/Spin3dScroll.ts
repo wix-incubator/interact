@@ -1,8 +1,7 @@
 import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
-const DEFAULT_PERSPECTIVE = 1000;
-const DEFAULT_MAX_Y_TRAVEL = 40;
+const MAX_Y_TRAVEL = 40;
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-spin3dScroll'];
@@ -13,13 +12,7 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    rotate = -100,
-    range = 'in',
-    speed = 0,
-    perspective = DEFAULT_PERSPECTIVE,
-    maxTravelY = DEFAULT_MAX_Y_TRAVEL,
-  } = options.namedEffect as Spin3dScroll;
+  const { rotate = -100, speed = 0, range = 'in' } = options.namedEffect as Spin3dScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -27,7 +20,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
 
   const rotationZ = rotate;
   const travelY = speed;
-  const travel = travelY * maxTravelY;
+  const travel = travelY * MAX_Y_TRAVEL;
 
   const fromValues = {
     rotationX: range === 'out' ? 0 : -2 * rotationZ,
@@ -70,7 +63,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       endOffsetAdd,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+          transform: `perspective(1000px) translateY(${toKeyframeValue(
             custom,
             '--motion-travel-from',
             asWeb,
@@ -86,7 +79,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
           )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-from', asWeb)})`,
         },
         {
-          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+          transform: `perspective(1000px) translateY(${toKeyframeValue(
             custom,
             '--motion-travel-to',
             asWeb,

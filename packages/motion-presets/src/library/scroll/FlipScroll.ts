@@ -1,8 +1,6 @@
 import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
-const DEFAULT_PERSPECTIVE = 800;
-
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
   horizontal: 'rotateY',
@@ -21,7 +19,6 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     rotate = 240,
     direction = 'horizontal',
     range = 'continuous',
-    perspective = DEFAULT_PERSPECTIVE,
   } = options.namedEffect as FlipScroll;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
@@ -49,14 +46,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) ${toKeyframeValue(
+          transform: `perspective(800px) ${toKeyframeValue(
             custom,
             '--motion-flip-from',
             asWeb,
           )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
         {
-          transform: `perspective(${perspective}px) ${toKeyframeValue(
+          transform: `perspective(800px) ${toKeyframeValue(
             custom,
             '--motion-flip-to',
             asWeb,

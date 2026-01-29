@@ -2,11 +2,8 @@ import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi } fro
 import { cssEasings as easings } from '@wix/motion';
 import { toKeyframeValue } from '../../utils';
 
-const DEFAULT_PERSPECTIVE = 400;
-const DEFAULT_MAX_Y_TRAVEL = 40;
-const DEFAULT_ROTATION_X = 10;
-const DEFAULT_ROTATION_Y = 25;
-const DEFAULT_ROTATION_Z = 25;
+const MAX_Y_TRAVEL = 40;
+const [ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25];
 
 const DIRECTIONS_MAP = {
   right: 1,
@@ -26,30 +23,25 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     distance = 0,
     range = 'in',
     direction = 'right',
-    perspective = DEFAULT_PERSPECTIVE,
-    rotationX = DEFAULT_ROTATION_X,
-    rotationY = DEFAULT_ROTATION_Y,
-    rotationZ = DEFAULT_ROTATION_Z,
-    maxTravelY = DEFAULT_MAX_Y_TRAVEL,
   } = options.namedEffect as TiltScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const travelY = distance * maxTravelY;
+  const travelY = MAX_Y_TRAVEL * distance;
   const dir = DIRECTIONS_MAP[direction];
 
   const from = {
-    x: rotationX * (range === 'out' ? 0 : -1),
-    y: rotationY * (range === 'out' ? 0 : -1),
-    z: rotationZ * dir * (range === 'out' ? 0 : range === 'in' ? 1 : -1),
+    x: ROTATION_X * (range === 'out' ? 0 : -1),
+    y: ROTATION_Y * (range === 'out' ? 0 : -1),
+    z: ROTATION_Z * dir * (range === 'out' ? 0 : range === 'in' ? 1 : -1),
     transY: range === 'out' ? 0 : travelY,
   };
   const to = {
-    x: rotationX * (range === 'in' ? 0 : range === 'out' ? -1 : 1),
-    y: rotationY * (range === 'in' ? 0 : range === 'out' ? -1 : 0.5),
-    z: rotationZ * dir * (range === 'in' ? 0 : range === 'out' ? 1 : 1.25),
+    x: ROTATION_X * (range === 'in' ? 0 : range === 'out' ? -1 : 1),
+    y: ROTATION_Y * (range === 'in' ? 0 : range === 'out' ? -1 : 0.5),
+    z: ROTATION_Z * dir * (range === 'in' ? 0 : range === 'out' ? 1 : 1.25),
     transY: range === 'in' ? 0 : -1 * travelY,
   };
 
@@ -80,7 +72,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+          transform: `perspective(400px) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-from',
             asWeb,
@@ -91,7 +83,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
           )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-from', asWeb)})`,
         },
         {
-          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+          transform: `perspective(400px) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-to',
             asWeb,
