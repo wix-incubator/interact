@@ -13,7 +13,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
     initialScale = 0,
     distance = { value: 120, type: 'percentage' },
-    direction = 0,
+    direction = 90,
   } = options.namedEffect as GrowIn;
   const [fadeIn, growIn] = getNames(options);
 
@@ -21,8 +21,8 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 
-  const x = `${(Math.sin(angleInRad) * distance.value) | 0}${unit}`;
-  const y = `${(Math.cos(angleInRad) * distance.value * -1) | 0}${unit}`;
+  const x = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
+  const y = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
 
   const custom = {
     '--motion-translate-x': `${x}`,

@@ -11,7 +11,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const {
-    direction = 270,
+    direction = 180,
     distance = { value: 100, type: 'percentage' },
   } = options.namedEffect as GlideIn;
   const [glideIn] = getNames(options);
@@ -21,8 +21,8 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const easing = options.easing || 'quintInOut';
 
-  const translateX = `${(Math.sin(angleInRad) * distance.value) | 0}${unit}`;
-  const translateY = `${(Math.cos(angleInRad) * distance.value * -1) | 0}${unit}`;
+  const translateX = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
+  const translateY = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
 
   const custom = {
     '--motion-translate-x': `${translateX}`,

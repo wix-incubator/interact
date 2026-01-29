@@ -245,9 +245,6 @@ export type ArcScroll = {
   type: 'ArcScroll';
   direction?: 'vertical' | 'horizontal';
   range?: EffectScrollRange;
-  angle?: number;
-  depth?: number;
-  perspective?: number;
 };
 export type BlurScroll = {
   type: 'BlurScroll';
@@ -264,7 +261,6 @@ export type FlipScroll = {
   direction?: 'vertical' | 'horizontal';
   range?: EffectScrollRange;
   rotate?: number;
-  perspective?: number;
 };
 export type GrowScroll = {
   type: 'GrowScroll';
@@ -332,8 +328,6 @@ export type Spin3dScroll = {
   range?: EffectScrollRange;
   rotate?: number;
   speed?: number;
-  perspective?: number;
-  maxTravelY?: number;
 };
 export type SpinScroll = {
   type: 'SpinScroll';
@@ -352,11 +346,6 @@ export type TiltScroll = {
   direction?: EffectTwoSides;
   range?: EffectScrollRange;
   distance?: number;
-  perspective?: number;
-  rotationX?: number;
-  rotationY?: number;
-  rotationZ?: number;
-  maxTravelY?: number;
 };
 export type TurnScroll = {
   type: 'TurnScroll';

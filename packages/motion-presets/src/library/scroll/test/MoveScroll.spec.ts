@@ -71,7 +71,7 @@ describe('MoveScroll', () => {
         {
           keyframes: [
             {
-              transform: 'translate(283px, -283px) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translate(283px, 283px) rotate(var(--comp-rotate-z, 0))',
             },
             {
               transform: 'translate(0px, 0px) rotate(var(--comp-rotate-z, 0))',

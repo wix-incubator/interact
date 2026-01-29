@@ -10,7 +10,7 @@ export function web(options: ScrubAnimationOptions, _?: DomApi, config?: Record<
 }
 
 export function style(options: ScrubAnimationOptions, config?: Record<string, any>, asWeb = false) {
-  const { angle = 210, range = 'in' } = options.namedEffect as MoveScroll;
+  const { angle = 120, range = 'in' } = options.namedEffect as MoveScroll;
 
   const easing = 'linear';
   const fill = (
@@ -24,7 +24,7 @@ export function style(options: ScrubAnimationOptions, config?: Record<string, an
     type: inputDistance.type || 'px',
   };
 
-  let [travelX, travelY] = transformPolarToXY(angle - 90, distance.value);
+  let [travelX, travelY] = transformPolarToXY(angle, distance.value);
   const unit = getCssUnits(distance.type);
 
   let startOffsetAdd = '',
