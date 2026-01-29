@@ -141,7 +141,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -184,7 +184,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -224,7 +224,7 @@ describe('ArcIn', () => {
         duration: expect.any(Number),
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -267,7 +267,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',

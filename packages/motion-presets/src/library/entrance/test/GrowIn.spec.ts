@@ -14,7 +14,7 @@ describe('GrowIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
-        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
       {
         easing: 'cubicInOut',
@@ -43,7 +43,7 @@ describe('GrowIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
-        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
       {
         easing: 'cubicInOut',
@@ -74,7 +74,7 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
       {
         easing: 'cubicInOut',
@@ -112,7 +112,7 @@ describe('GrowIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
       {
         easing: 'cubicInOut',

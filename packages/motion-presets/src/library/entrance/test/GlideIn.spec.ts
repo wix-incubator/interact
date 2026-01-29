@@ -26,7 +26,6 @@ describe('GlideIn', () => {
             transform: 'translate(-100%, 0%) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
             transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
@@ -60,7 +59,6 @@ describe('GlideIn', () => {
             transform: 'translate(141px, -141px) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
             transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
@@ -99,7 +97,6 @@ describe('GlideIn', () => {
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
             transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],
@@ -139,7 +136,6 @@ describe('GlideIn', () => {
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
             transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
           },
         ],

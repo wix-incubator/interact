@@ -83,7 +83,7 @@ describe('SpinIn', () => {
         easing: 'cubicIn',
         duration: 0,
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-spinIn',
@@ -130,7 +130,7 @@ describe('SpinIn', () => {
         easing: 'cubicIn',
         duration: 1000,
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-spinIn',

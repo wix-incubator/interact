@@ -55,7 +55,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
           )}) rotate(var(--comp-rotate-z, 0deg))`,
         },
         {
-          opacity: 'var(--comp-opacity, 1)',
           transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
         },
       ],

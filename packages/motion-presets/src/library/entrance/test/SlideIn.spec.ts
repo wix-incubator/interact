@@ -36,7 +36,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -117,7 +117,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
