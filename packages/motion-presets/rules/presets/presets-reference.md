@@ -18,7 +18,7 @@ This document is a comprehensive reference for Interact motion presets. Use it t
 ### Quick Trigger Lookup
 
 | User Intent | Trigger | Notes |
-|-------------|---------|-------|
+| ------------- | --------- | ------- |
 | "animate when element enters viewport", "reveal on scroll into view" | entrance | viewEnter trigger (intersection observer) |
 | "animate based on scroll position", "parallax", "scroll-driven" | scroll | Tied to scroll progress |
 | "always moving", "pulsing", "loading spinner", "continuous loop" | ongoing | Runs indefinitely |
@@ -1538,7 +1538,7 @@ Parameters:
 ### Reduced Motion Fallback Table
 
 | Original | Fallback |
-|----------|----------|
+| ---------- | ---------- |
 | BounceIn, SpinIn, PunchIn | FadeIn |
 | ArcIn, FlipIn, TurnIn | FadeIn |
 | GlitchIn | FadeIn |
