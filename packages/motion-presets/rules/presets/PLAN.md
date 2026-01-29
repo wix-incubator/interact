@@ -145,6 +145,58 @@ Animates DOM elements via CSS transforms (not `background-position`).
 
 ---
 
+## Accessibility
+
+This section documents preset selection guidance for accessibility. It is not about library-level features (like `allowA11yTriggers`).
+
+### Host vs Preset Responsibility
+
+The presets provide animations; the host platform decides when/whether to apply them. When the host handles accessibility globally (e.g., disabling all animations under `prefers-reduced-motion`), presets don't need to address it separately.
+
+### Preset Risk Levels
+
+**High risk** (vestibular triggers, seizure risk):
+
+- Spinning: SpinIn, Spin, SpinScroll, SpinMouse, Spin3dScroll
+- Bouncing: BounceIn, Bounce, BounceMouse
+- 3D rotations: ArcIn, FlipIn, ArcScroll, FlipScroll, Tilt3DMouse
+- Continuous motion: Flash, DVD, Jello, Wiggle
+
+**Medium risk** (strong motion, may affect some users):
+
+- GlitchIn, PunchIn, TurnIn
+- ParallaxScroll, BgParallax at high speed values
+
+**Low risk / safe** (opacity/blur changes, minimal spatial movement):
+
+- FadeIn, FadeScroll, BlurIn, BlurScroll
+- SlideIn (soft), GlideIn (soft)
+- Pulse (soft), Breathe
+
+### Reduced Motion Fallbacks
+
+| Original                          | Fallback                  |
+| --------------------------------- | ------------------------- |
+| BounceIn, SpinIn, PunchIn         | FadeIn                    |
+| ArcIn, FlipIn, TurnIn             | FadeIn                    |
+| GlitchIn                          | FadeIn                    |
+| Spin, Bounce, Wiggle              | Stop or subtle Pulse      |
+| Flash                             | Reduce frequency (<3/sec) |
+| ParallaxScroll                    | Static position           |
+| ArcScroll, FlipScroll, SpinScroll | FadeScroll or disable     |
+| BgParallax, BgZoom                | Static background         |
+| All mouse animations              | Static state              |
+
+### LLM Guidance Principles
+
+1. **Do not limit creativity by default** - generate what the user asks for
+2. **Apply constraints only when explicitly requested** - keywords: "accessible", "a11y", "reduced motion safe", "subtle", "tone down"
+3. **High-risk presets are informational, not blockers** - optionally note vestibular concerns in response
+4. **Mouse presets are desktop-only** - note this as context, not a restriction
+5. **Duration guidelines are suggestions** - functional UI <500ms, decorative up to 1200ms, hero up to 2000ms
+
+---
+
 ## Preset Entry Format
 
 For each preset in presets-reference.md:
@@ -175,8 +227,9 @@ To regenerate presets-reference.md:
 
 1. **Preset list**: `motion-presets/src/types.ts` - EntranceAnimation, ScrollAnimation, OngoingAnimation, MouseAnimation, BackgroundScrollAnimation unions
 2. **Parameter constraints**: `effects-kit/src/effects/{category}/{preset}.ts` - min/max/step/defaults
-3. **Power mappings**: This file (PLAN.md) - see tables above
-4. **Base params**: `effects-kit/src/effects/baseParams.ts`
+3. **Power mappings**: This file (PLAN.md) - see Power Parameter Mappings section
+4. **Accessibility**: This file (PLAN.md) - see Accessibility section
+5. **Base params**: `effects-kit/src/effects/baseParams.ts`
 
 ## Regeneration Steps
 
@@ -185,4 +238,5 @@ To regenerate presets-reference.md:
 3. Apply power mappings from this file
 4. Generate using preset entry format above
 5. Organize by trigger category
-6. Run `yarn format` on all generated markdown files to ensure they pass CI formatting checks (tables, code blocks, etc.)
+6. Include accessibility section from this file
+7. Run `yarn format` on all generated markdown files to ensure they pass CI formatting checks (tables, code blocks, etc.)

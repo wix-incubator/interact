@@ -1541,29 +1541,35 @@ Parameters:
 
 ---
 
-## 5. Extras
+## 5. Accessibility
 
-### Accessibility
+### Host vs Preset Responsibility
 
-**Always respect `prefers-reduced-motion`:**
+The presets provide animations; the host platform decides when and whether to apply them.
 
-- Check `window.matchMedia('(prefers-reduced-motion: reduce)')`
-- Provide FadeIn as fallback for entrance animations
-- Disable ongoing/scroll/mouse animations entirely for sensitive users
+- When the host handles accessibility globally (e.g., disabling all animations under `prefers-reduced-motion`), presets don't need to address it separately
+- Keyboard triggers (`activate`/`interest`) and config options like `allowA11yTriggers` are library-level features, not part of preset configuration
+- This section provides guidance for preset selection, not library configuration
 
-**Vestibular triggers to avoid or provide alternatives:**
+### Preset Risk Levels
 
-- Spinning: SpinIn, Spin, SpinScroll, SpinMouse
+**High risk** (vestibular triggers, seizure risk):
+
+- Spinning: SpinIn, Spin, SpinScroll, SpinMouse, Spin3dScroll
 - Bouncing: BounceIn, Bounce, BounceMouse
 - 3D rotations: ArcIn, FlipIn, ArcScroll, FlipScroll, Tilt3DMouse
-- Large-scale parallax: ParallaxScroll, BgParallax at high speeds
-- Flashing: Flash (never exceed 3 flashes/second)
+- Continuous motion: Flash, DVD, Jello, Wiggle
 
-**Duration guidelines:**
+**Medium risk** (strong motion, may affect some users):
 
-- Functional UI (modals, dropdowns): under 500ms
-- Decorative content: up to 1200ms
-- Hero moments: up to 2000ms
+- GlitchIn, PunchIn, TurnIn
+- ParallaxScroll, BgParallax at high speed values
+
+**Low risk / safe** (opacity/blur changes, minimal spatial movement):
+
+- FadeIn, FadeScroll, BlurIn, BlurScroll
+- SlideIn (soft), GlideIn (soft)
+- Pulse (soft), Breathe
 
 ### Reduced Motion Fallback Table
 
@@ -1579,24 +1585,41 @@ Parameters:
 | BgParallax, BgZoom                | Static background         |
 | All mouse animations              | Static state              |
 
+### Trigger Considerations
+
+All preset triggers play automatically without explicit user action:
+
+| Trigger           | Behavior                              | Note                                       |
+| ----------------- | ------------------------------------- | ------------------------------------------ |
+| Entrance          | Plays on viewport entry (`viewEnter`) | Not user-initiated                         |
+| Scroll            | Tied to scroll position               | Continuous while scrolling                 |
+| Background Scroll | Tied to scroll position               | Continuous while scrolling                 |
+| Ongoing           | Loops indefinitely                    | Flash must stay under 3 flashes/sec        |
+| Mouse             | Responds to cursor position           | Desktop only, no touch/keyboard equivalent |
+
+### LLM Guidance for Preset Selection
+
+**Do not limit creativity by default.** If the user asks for "grand", "energetic", "stunning", or similar, generate accordingly using any appropriate presets.
+
+**Apply accessibility constraints only when explicitly requested** via phrases like:
+
+- "accessible", "a11y", "reduced motion safe"
+- "subtle", "tone down", "gentle"
+- "professional", "minimal"
+
+**When generating high-risk presets:** Optionally note in your response that some presets may affect users with vestibular sensitivity. This is informational, not a blocker.
+
+**Mouse presets:** Note that these are desktop-only (no touch/keyboard equivalent). This is informational context, not a restriction.
+
+**Duration guidelines** (suggestions, not limits):
+
+- Functional UI (modals, dropdowns): under 500ms
+- Decorative content: up to 1200ms
+- Hero moments: up to 2000ms
+
 ### Stagger Patterns
 
-For lists/grids, apply increasing `delay` values:
-
-```typescript
-// List items with 100ms stagger
-items.forEach((item, i) => ({
-  type: 'FadeIn',
-  delay: i * 100,
-}));
-
-// Faster stagger (50ms)
-items.forEach((item, i) => ({
-  type: 'SlideIn',
-  direction: 'bottom',
-  delay: i * 50,
-}));
-```
+For lists/grids, apply increasing subtle `delay` values
 
 ### Performance Notes
 
