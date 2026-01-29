@@ -147,6 +147,56 @@ export type EffectRef = EffectBase & { effectId: string };
 
 export type Effect = EffectBase & (TimeEffect | ScrubEffect | TransitionEffect);
 
+/**
+ * A Sequence is a group of Effects managed as a coordinated timeline with staggered delays.
+ */
+export type Sequence = {
+  /**
+   * Unique identifier for referencing this sequence from Interaction.sequences
+   */
+  sequenceId: string;
+  /**
+   * Fixed delay in milliseconds before the entire sequence starts.
+   * @default 0
+   */
+  delay?: number;
+  /**
+   * Base offset in milliseconds between each effect in the sequence.
+   * @default 100
+   */
+  offset?: number;
+  /**
+   * Easing function to apply to offset calculation.
+   * Can be a JS function, a named easing from @wix/motion, or a CSS easing value.
+   * @default 'linear'
+   */
+  offsetEasing?: string | ((t: number) => number);
+  /**
+   * The effects that belong to this sequence.
+   * Effects will be applied in order with calculated staggered delays.
+   */
+  effects: (Effect | EffectRef)[];
+};
+
+/**
+ * Reference to a reusable Sequence defined in InteractConfig.sequences
+ */
+export type SequenceRef = {
+  sequenceId: string;
+  /**
+   * Override the delay defined in the referenced sequence
+   */
+  delay?: number;
+  /**
+   * Override the offset defined in the referenced sequence
+   */
+  offset?: number;
+  /**
+   * Override the offsetEasing defined in the referenced sequence
+   */
+  offsetEasing?: string | ((t: number) => number);
+};
+
 export type Condition = {
   type: 'media' | 'container' | 'selector';
   predicate?: string;
@@ -163,11 +213,24 @@ export type InteractionTrigger = {
 };
 
 export type Interaction = InteractionTrigger & {
-  effects: ((Effect | EffectRef) & { interactionId?: string })[];
+  /**
+   * Direct effects to apply for this interaction.
+   * Can be omitted if only using sequences.
+   */
+  effects?: ((Effect | EffectRef) & { interactionId?: string })[];
+  /**
+   * Sequences of effects to apply for this interaction.
+   * Each sequence groups effects with staggered delays.
+   */
+  sequences?: (Sequence | SequenceRef)[];
 };
 
 export type InteractConfig = {
   effects: Record<string, Effect>;
+  /**
+   * Reusable Sequence declarations that can be referenced by Interaction.sequences
+   */
+  sequences?: Record<string, Sequence>;
   conditions?: Record<string, Condition>;
   interactions: Interaction[];
 };
@@ -263,6 +326,9 @@ export type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
 export type InteractCache = {
   effects: {
     [effectId: string]: Effect;
+  };
+  sequences: {
+    [sequenceId: string]: Sequence;
   };
   conditions: {
     [conditionId: string]: Condition;

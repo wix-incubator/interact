@@ -1,28 +1,3 @@
----
-name: Sequence Feature Implementation
-overview: Implement a new Sequence feature in @wix/motion that manages a list of AnimationGroup instances with staggered delays, and integrate it into @eix/interact for declarative configuration.
-todos:
-  - id: motion-sequence-class
-    content: Create Sequence class in @wix/motion that extends AnimationGroup and manages AnimationGroup instances
-    status: pending
-  - id: motion-types
-    content: Add SequenceOptions type to @wix/motion/types.ts and export from index.ts
-    status: pending
-  - id: interact-types
-    content: Update InteractConfig, Interaction, and InteractCache types to include sequences
-    status: pending
-  - id: interact-parse-config
-    content: Update parseConfig in Interact.ts to process sequence declarations and sequence effects
-    status: pending
-  - id: interact-add-sequence
-    content: Update add.ts to create Sequence instances and apply calculated delay offsets
-    status: pending
-  - id: handler-integration
-    content: Update trigger handlers to work with Sequence instances for coordinated playback
-    status: pending
-isProject: false
----
-
 # Sequence Feature Implementation
 
 This plan implements the Sequence feature as specified in [sequences-spec.md](packages/interact/dev/sequences-spec.md). The feature enables managing multiple Effects as a coordinated timeline with staggered delays.
@@ -69,7 +44,6 @@ Create new file `packages/motion/src/Sequence.ts`:
 - Store `animationGroups: AnimationGroup[]` instead of `animations: Animation[]`
 - Add properties: `delay`, `offset`, `offsetEasing`
 - Implement `calculateOffsets()` method using the formula from spec:
-
 ```typescript
 const last = indices.at(-1);
 indices.map((n) => (easing(n / last) * last * offset) | 0);
@@ -97,7 +71,7 @@ Update `packages/motion/src/index.ts` to export:
 - `Sequence` class
 - `SequenceOptions` type
 
-## Part 2: @eix/interact Package Changes
+## Part 2: @wix/interact Package Changes
 
 ### 2.1 Update Types
 
@@ -149,6 +123,7 @@ Modify `packages/interact/src/core/Interact.ts`:
 
 1. Parse `config.sequences` into cache (similar to `config.effects`)
 2. Process `interaction.sequences` array:
+
    - Resolve `sequenceId` references from `config.sequences`
    - Process each effect within the sequence
    - Generate unique IDs for sequence effects

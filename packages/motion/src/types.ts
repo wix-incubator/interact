@@ -217,6 +217,30 @@ export type AnimationGroupOptions = AnimationOptions & {
   measured?: Promise<void>;
 };
 
+/**
+ * Options for creating a Sequence of AnimationGroups with staggered delays.
+ */
+export type SequenceOptions = AnimationGroupOptions & {
+  /**
+   * Fixed delay in milliseconds before the entire sequence starts.
+   * @default 0
+   */
+  delay?: number;
+  /**
+   * Base offset in milliseconds between each effect in the sequence.
+   * The actual delay for each effect is calculated using this value
+   * multiplied by the result of the offsetEasing function.
+   * @default 100
+   */
+  offset?: number;
+  /**
+   * Easing function to apply to offset calculation.
+   * Can be a JS function, a named easing from @wix/motion, or a CSS easing value.
+   * @default 'linear'
+   */
+  offsetEasing?: string | ((t: number) => number);
+};
+
 export type Shape = 'ellipse' | 'circle' | 'rectangle' | 'diamond' | 'window';
 
 export interface ScrubScrollScene {

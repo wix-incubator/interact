@@ -147,7 +147,7 @@ function _addInteraction(
 
   const interactionsToApply: InteractionsToApply = [];
 
-  interaction.effects.forEach((effect) => {
+  (interaction.effects || []).forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 
     const effectOptions = {

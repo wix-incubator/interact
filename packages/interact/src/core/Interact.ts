@@ -8,11 +8,13 @@ import {
   ViewEnterHandlerModule,
   IInteractionController,
   IInteractElement,
+  Sequence,
+  SequenceRef,
 } from '../types';
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects } from '@wix/motion';
+import { registerEffects, calculateOffsets, jsEasings, parseCubicBezier } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -40,7 +42,7 @@ export class Interact {
   static controllerCache = new Map<string, IInteractionController>();
 
   constructor() {
-    this.dataCache = { effects: {}, conditions: {}, interactions: {} };
+    this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
     this.addedInteractions = {};
     this.mediaQueryListeners = new Map();
     this.listInteractionsCache = {};
@@ -90,7 +92,7 @@ export class Interact {
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.controllers.clear();
-    this.dataCache = { effects: {}, conditions: {}, interactions: {} };
+    this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
 
@@ -220,6 +222,126 @@ export class Interact {
 
 let interactionIdCounter = 0;
 
+/**
+ * Resolves an easing value to a function.
+ * Supports:
+ * - Direct function references
+ * - Named easings from @wix/motion library
+ * - CSS cubic-bezier strings (e.g., "cubic-bezier(0.4, 0, 0.2, 1)")
+ */
+function resolveEasingFunction(
+  easing: string | ((t: number) => number) | undefined,
+): (t: number) => number {
+  if (typeof easing === 'function') {
+    return easing;
+  }
+
+  if (typeof easing === 'string') {
+    // Check named easings first
+    if (easing in jsEasings) {
+      return jsEasings[easing as keyof typeof jsEasings];
+    }
+
+    // Try parsing as cubic-bezier
+    const bezierFn = parseCubicBezier(easing);
+    if (bezierFn) {
+      return bezierFn;
+    }
+  }
+
+  return jsEasings.linear;
+}
+
+/**
+ * Resolves a sequence reference or inline sequence to a full Sequence object.
+ */
+function resolveSequence(
+  seqOrRef: Sequence | SequenceRef,
+  configSequences: Record<string, Sequence>,
+): Sequence | null {
+  const sequenceId = seqOrRef.sequenceId;
+
+  // Check if it's a reference (has sequenceId but no effects)
+  if (!('effects' in seqOrRef) || !seqOrRef.effects) {
+    const referencedSequence = configSequences[sequenceId];
+    if (!referencedSequence) {
+      console.warn(`Sequence with id "${sequenceId}" not found in config.sequences`);
+      return null;
+    }
+
+    // Merge overrides from the reference
+    return {
+      ...referencedSequence,
+      delay: seqOrRef.delay ?? referencedSequence.delay,
+      offset: seqOrRef.offset ?? referencedSequence.offset,
+      offsetEasing: seqOrRef.offsetEasing ?? referencedSequence.offsetEasing,
+    };
+  }
+
+  // It's an inline sequence
+  return seqOrRef as Sequence;
+}
+
+/**
+ * Expands effects from sequences into the effects array with calculated staggered delays.
+ */
+function expandSequenceEffects(
+  interaction: Interaction,
+  configSequences: Record<string, Sequence>,
+  configEffects: Record<string, Effect>,
+): (Effect | EffectRef)[] {
+  const expandedEffects: (Effect | EffectRef)[] = [];
+
+  // Process sequences and add their effects with calculated delays
+  if (interaction.sequences) {
+    for (const seqOrRef of interaction.sequences) {
+      const sequence = resolveSequence(seqOrRef, configSequences);
+      if (!sequence) continue;
+
+      const delay = sequence.delay ?? 0;
+      const offset = sequence.offset ?? 100;
+      const easingFn = resolveEasingFunction(sequence.offsetEasing);
+
+      // Calculate staggered offsets for this sequence
+      const offsets = calculateOffsets(sequence.effects.length, offset, easingFn);
+
+      // Process each effect in the sequence
+      sequence.effects.forEach((effect, index) => {
+        // Resolve effect reference if needed
+        let resolvedEffect: Effect | EffectRef;
+        if ('effectId' in effect && effect.effectId && !('duration' in effect || 'namedEffect' in effect || 'keyframeEffect' in effect || 'customEffect' in effect)) {
+          // It's a reference
+          const referencedEffect = configEffects[effect.effectId];
+          if (referencedEffect) {
+            resolvedEffect = { ...referencedEffect, ...effect };
+          } else {
+            resolvedEffect = effect;
+          }
+        } else {
+          resolvedEffect = effect;
+        }
+
+        // Calculate the total delay for this effect (sequence delay + staggered offset + effect's own delay)
+        const effectDelay = ('delay' in resolvedEffect ? (resolvedEffect as any).delay : 0) || 0;
+        const calculatedDelay = delay + offsets[index] + effectDelay;
+
+        // Create a new effect with the calculated delay
+        const effectWithDelay: Effect | EffectRef = {
+          ...resolvedEffect,
+          delay: calculatedDelay,
+          // Mark this effect as part of a sequence for potential cleanup tracking
+          _sequenceId: sequence.sequenceId,
+          _sequenceIndex: index,
+        } as any;
+
+        expandedEffects.push(effectWithDelay);
+      });
+    }
+  }
+
+  return expandedEffects;
+}
+
 export function getSelector(
   d: Interaction | Effect,
   {
@@ -249,12 +371,13 @@ export function getSelector(
  */
 function parseConfig(config: InteractConfig, useCutsomElement: boolean = false): InteractCache {
   const conditions = config.conditions || {};
+  const sequences = config.sequences || {};
   const interactions: InteractCache['interactions'] = {};
 
   config.interactions?.forEach((interaction_) => {
     const source = interaction_.key;
     const interactionIdx = ++interactionIdCounter;
-    const { effects: effects_, ...rest } = interaction_;
+    const { effects: effects_, sequences: sequences_, ...rest } = interaction_;
 
     if (!source) {
       console.error(`Interaction ${interactionIdx} is missing a key for source element.`);
@@ -271,9 +394,18 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
     }
 
     /*
+     * Expand sequence effects and combine with direct effects
+     */
+    const sequenceEffects = expandSequenceEffects(
+      { ...interaction_, sequences: sequences_ } as Interaction,
+      sequences,
+      config.effects || {},
+    );
+
+    /*
      * Cache interaction trigger by source element
      */
-    const effects = Array.from(effects_);
+    const effects = Array.from([...(effects_ || []), ...sequenceEffects]);
     effects.reverse(); // reverse to ensure the first effect is the one that will be applied first
     const interaction = { ...rest, effects };
 
@@ -318,7 +450,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
       }
 
       const interactionId = `${target}::${effectId}::${interactionIdx}`;
-      effect.interactionId = interactionId;
+      (effect as any).interactionId = interactionId;
       interactions[source].interactionIds.add(interactionId);
 
       if (target === source) {
@@ -350,6 +482,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
 
   return {
     effects: config.effects || {},
+    sequences,
     conditions,
     interactions,
   };
