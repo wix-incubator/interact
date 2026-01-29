@@ -1,7 +1,7 @@
 import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
-const DEFAULT_ANGLE = 50;
+const ANGLE = 50;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
@@ -19,12 +19,12 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-left', angle = DEFAULT_ANGLE } = options.namedEffect as TurnIn;
+  const { direction = 'top-left' } = options.namedEffect as TurnIn;
   const [fadeIn, turnIn] = getNames(options);
 
   const easing = options.easing || 'backOut';
   const { x, y, sign } = DIRECTION_TO_ORIGIN_MAP[direction];
-  const transformRotate = sign * angle;
+  const transformRotate = sign * ANGLE;
 
   const custom = {
     '--motion-origin': `${x}%, ${y}%`,

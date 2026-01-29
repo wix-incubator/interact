@@ -1,9 +1,7 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 
-const DEFAULT_ANGLE = 80;
-const DEFAULT_DEPTH = 300;
-const DEFAULT_PERSPECTIVE = 800;
+const ROTATION_ANGLE = 80;
 
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
@@ -23,30 +21,20 @@ export function getNames(_: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    direction = 'right',
-    angle = DEFAULT_ANGLE,
-    depth = DEFAULT_DEPTH,
-    perspective = DEFAULT_PERSPECTIVE,
-  } = options.namedEffect as ArcIn;
+  const { direction = 'right' } = options.namedEffect as ArcIn;
   const [fadeIn, arcIn] = getNames(options);
 
   const easing = options.easing || 'quintInOut';
 
   const { x, y, sign } = DIRECTION_MAP[direction];
-  const useCustomDepth = depth !== DEFAULT_DEPTH;
-  const zValue = useCustomDepth
-    ? `${depth}px`
-    : `calc((-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2)`;
-  const zValueNegative = useCustomDepth
-    ? `${-depth}px`
-    : `calc((var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0)) / 2)`;
+  const zValue = `calc((-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2)`;
+  const zValueNegative = `calc((var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0)) / 2)`;
 
   const custom = {
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
-    '--motion-arc-angle': `${angle}`,
+    '--motion-arc-angle': `${ROTATION_ANGLE}`,
   };
 
   const angleValue = toKeyframeValue(custom, '--motion-arc-angle', asWeb);
@@ -68,7 +56,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(${perspective}px) translateZ(${zValue}) rotateX(calc(${toKeyframeValue(
+          transform: `perspective(800px) translateZ(${zValue}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',
             asWeb,
@@ -87,7 +75,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
           )} * ${angleValue}deg)) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
         },
         {
-          transform: `perspective(${perspective}px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
         },
       ],
     },

@@ -42,15 +42,10 @@ export type FadeIn = { type: 'FadeIn' };
 export type ArcIn = {
   type: 'ArcIn';
   direction?: EffectFourDirections;
-  angle?: number;
-  depth?: number;
-  perspective?: number;
 };
 export type CurveIn = {
   type: 'CurveIn';
   direction?: 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
-  depth?: number;
-  perspective?: number;
 };
 export type DropIn = {
   type: 'DropIn';
@@ -60,18 +55,15 @@ export type FlipIn = {
   type: 'FlipIn';
   direction?: EffectFourDirections;
   initialRotate?: number;
-  perspective?: number;
 };
 export type FloatIn = {
   type: 'FloatIn';
   direction?: EffectFourDirections;
-  distance?: number;
 };
 export type FoldIn = {
   type: 'FoldIn';
   direction?: EffectFourDirections;
   initialRotate?: number;
-  perspective?: number;
 };
 export type SlideIn = {
   type: 'SlideIn';
@@ -88,7 +80,6 @@ export type BounceIn = {
   type: 'BounceIn';
   direction: EffectFourDirections | 'center';
   distanceFactor?: number;
-  perspective?: number;
 };
 export type GlideIn = {
   type: 'GlideIn';
@@ -98,7 +89,6 @@ export type GlideIn = {
 export type TurnIn = {
   type: 'TurnIn';
   direction?: EffectFourCorners;
-  angle?: number;
 };
 export type WinkIn = {
   type: 'WinkIn';
@@ -107,10 +97,6 @@ export type WinkIn = {
 export type TiltIn = {
   type: 'TiltIn';
   direction?: EffectTwoSides;
-  depth?: number;
-  tiltAngle?: number;
-  rotateZ?: number;
-  perspective?: number;
 };
 export type ShapeIn = {
   type: 'ShapeIn';

@@ -1,18 +1,13 @@
 import { getClipPolygonParams, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
 import type { TiltIn, TimeAnimationOptions } from '../../types';
 
-const DEFAULT_DEPTH = 200;
-const DEFAULT_TILT_ANGLE = 90;
-const DEFAULT_ROTATE_Z = 30;
-const DEFAULT_PERSPECTIVE = 800;
-
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
 }
 
-const ROTATION_SIGN_MAP = {
-  left: 1,
-  right: -1,
+const ROTATION_MAP = {
+  left: 30,
+  right: -30,
 };
 
 export function web(options: TimeAnimationOptions) {
@@ -20,30 +15,19 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    direction = 'left',
-    depth = DEFAULT_DEPTH,
-    tiltAngle = DEFAULT_TILT_ANGLE,
-    rotateZ = DEFAULT_ROTATE_Z,
-    perspective = DEFAULT_PERSPECTIVE,
-  } = options.namedEffect as TiltIn;
+  const { direction = 'left' } = options.namedEffect as TiltIn;
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);
 
   const easing = options.easing || 'cubicOut';
   const clipStart = getClipPolygonParams({ direction: 'top', minimum: 0 });
-  const rotationZ = ROTATION_SIGN_MAP[direction] * rotateZ;
+  const rotationZ = ROTATION_MAP[direction];
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
-  // When depth is provided, use it directly; otherwise fall back to CSS var for DOM measurement
-  const translateZ = depth !== DEFAULT_DEPTH ? `${depth}` : '(var(--motion-height, 200px) / 2)';
+  const translateZ = '(var(--motion-height, 200px) / 2)';
 
   const custom = {
     '--motion-rotate-z': `${rotationZ}deg`,
     '--motion-clip-start': clipStart,
-    '--motion-depth': `${depth}`,
-    '--motion-tilt-angle': `${tiltAngle}`,
   };
-
-  const tiltAngleValue = toKeyframeValue(custom, '--motion-tilt-angle', asWeb);
 
   return [
     {
@@ -63,14 +47,14 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
         {
           offset: 0,
           easing: 'step-end',
-          transform: `perspective(${perspective}px)`,
+          transform: `perspective(800px)`,
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(${perspective}px) translateZ(calc(${translateZ}px * -1)) rotateX(calc(-1 * ${tiltAngleValue}deg)) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(calc(${translateZ}px * -1)) rotateX(-90deg) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
         },
         {
-          transform: `perspective(${perspective}px) translateZ(calc(${translateZ}px * -1)) rotateX(0deg) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(calc(${translateZ}px * -1)) rotateX(0deg) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
         },
       ],
     },

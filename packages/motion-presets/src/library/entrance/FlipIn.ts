@@ -1,8 +1,6 @@
 import { INITIAL_FRAME_OFFSET } from '../../utils';
 import type { FlipIn, TimeAnimationOptions } from '../../types';
 
-const DEFAULT_PERSPECTIVE = 800;
-
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
 }
@@ -28,11 +26,7 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const {
-    direction = 'top',
-    initialRotate = 90,
-    perspective = DEFAULT_PERSPECTIVE,
-  } = options.namedEffect as FlipIn;
+  const { direction = 'top', initialRotate = 90 } = options.namedEffect as FlipIn;
   const [fadeIn, flipIn] = getNames(options);
   const easing = options.easing || 'backOut';
 
@@ -59,10 +53,10 @@ export function style(options: TimeAnimationOptions) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(${perspective}px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
+          transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
         },
         {
-          transform: `perspective(${perspective}px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,
+          transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,
         },
       ],
     },
