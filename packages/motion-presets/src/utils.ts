@@ -1,5 +1,10 @@
 import { cssEasings, jsEasings } from '@wix/motion';
-import type { EffectFourDirections, Point, ScrubTransitionEasing } from '@wix/motion';
+import type {
+  EffectFourDirections,
+  EffectScrollRange,
+  Point,
+  ScrubTransitionEasing,
+} from '@wix/motion';
 
 export const INITIAL_FRAME_OFFSET = 1e-6;
 
@@ -105,6 +110,31 @@ export function getClipPolygonParams({
     centerY,
     minimum,
   })})`;
+}
+
+export const INITIAL_CLIP = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
+export const FOUR_DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
+
+export function getOppositeDirection<T>(availableDirections: T[], direction: T) {
+  const index = Math.max(0, availableDirections.indexOf(direction));
+  const length = availableDirections.length;
+  return availableDirections[(index + (length >> 1)) % length];
+}
+
+export function getRevealClipFrom(direction: EffectFourDirections, range: EffectScrollRange) {
+  return range === 'out'
+    ? INITIAL_CLIP
+    : getClipPolygonParams({
+        direction: getOppositeDirection(FOUR_DIRECTIONS, direction),
+      });
+}
+
+export function getRevealClipTo(direction: EffectFourDirections, range: EffectScrollRange) {
+  return range === 'in'
+    ? INITIAL_CLIP
+    : getClipPolygonParams({
+        direction: range === 'out' ? getOppositeDirection(FOUR_DIRECTIONS, direction) : direction,
+      });
 }
 
 export function transformPolarToXY(angle: number, distance: number) {
@@ -337,10 +367,10 @@ export function roundNumber(num: number, precision = 2) {
 export function toKeyframeValue(
   custom: Record<string, string | number>,
   key: string,
-  useValue = false,
-  fallback = '',
+  useValue: boolean | undefined = false,
+  fallback: string | undefined = undefined,
 ) {
-  return useValue ? custom[key] : `var(${key}${fallback ? `,${fallback}` : ''})`;
+  return useValue ? custom[key] : `var(${key}${fallback !== undefined ? `, ${fallback}` : ''})`;
 }
 
 export function getTimingFactor(

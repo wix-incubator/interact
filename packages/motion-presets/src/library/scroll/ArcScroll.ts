@@ -1,4 +1,5 @@
-import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode } from '../../types';
+import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const DEFAULT_ANGLE = 68;
 const DEFAULT_DEPTH = 300;
@@ -17,7 +18,15 @@ function getRangeValues(angle: number) {
   };
 }
 
-export default function create(options: ScrubAnimationOptions) {
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-arcScroll'];
+}
+
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     direction = 'horizontal',
     range = 'in',
@@ -34,29 +43,36 @@ export default function create(options: ScrubAnimationOptions) {
   const { fromValue, toValue } = rangeValues[range];
   const easing = 'linear';
 
+  const [arcScroll] = getNames(options);
+
+  const custom = {
+    '--motion-arc-from': `${rotateAxis}(${fromValue}deg)`,
+    '--motion-arc-to': `${rotateAxis}(${toValue}deg)`,
+  };
+
   return [
     {
       ...options,
+      name: arcScroll,
       fill,
       easing,
+      custom,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) translateZ(${-depth}px) ${rotateAxis}(${fromValue}deg) translateZ(${depth}px) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translateZ(${-depth}px) ${toKeyframeValue(
+            custom,
+            '--motion-arc-from',
+            asWeb,
+          )} translateZ(${depth}px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
         {
-          transform: `perspective(${perspective}px) translateZ(${-depth}px) ${rotateAxis}(${toValue}deg) translateZ(${depth}px) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translateZ(${-depth}px) ${toKeyframeValue(
+            custom,
+            '--motion-arc-to',
+            asWeb,
+          )} translateZ(${depth}px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: perspective(<perspective>px) translateZ(-<depth>px) <rotateAxis>(<fromValue>deg) translateZ(<depth>px) rotate(<rotation>);
-   *   }
-   *   to {
-   *     transform: perspective(<perspective>px) translateZ(-<depth>px) <rotateAxis>(<toValue>deg) translateZ(<depth>px) rotate(<rotation>);
-   *   }
-   * }
-   */
 }

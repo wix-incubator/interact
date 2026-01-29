@@ -1,63 +1,18 @@
-import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const DEFAULT_PERSPECTIVE = 1000;
 const DEFAULT_MAX_Y_TRAVEL = 40;
 
-const RANGES_MAP = {
-  in: (rotation: number, travelY: number) => ({
-    fromValues: {
-      rotationX: -2 * rotation,
-      rotationY: -rotation,
-      rotationZ: -rotation,
-      travel: travelY,
-    },
-    toValues: {
-      rotationX: 0,
-      rotationY: 0,
-      rotationZ: 0,
-      travel: 0,
-    },
-  }),
-  out: (rotation: number, travelY: number) => ({
-    fromValues: {
-      rotationX: 0,
-      rotationY: 0,
-      rotationZ: 0,
-      travel: 0,
-    },
-    toValues: {
-      rotationX: rotation * 3,
-      rotationY: rotation * 2,
-      rotationZ: rotation,
-      travel: -travelY,
-    },
-  }),
-  continuous: (rotation: number, travelY: number) => ({
-    fromValues: {
-      rotationX: -2 * rotation,
-      rotationY: -rotation,
-      rotationZ: -rotation,
-      travel: travelY,
-    },
-    toValues: {
-      rotationX: rotation * 1.8,
-      rotationY: rotation,
-      rotationZ: 2 * rotation,
-      travel: -travelY,
-    },
-  }),
-};
-
-function getScrubOffsets({ range = 'in', speed = 0, maxTravelY = DEFAULT_MAX_Y_TRAVEL }: Spin3dScroll) {
-  const offset = Math.abs(speed) * maxTravelY;
-
-  return {
-    start: range === 'out' ? '0px' : `${-offset}vh`,
-    end: range === 'in' ? '0px' : `${offset}vh`,
-  };
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-spin3dScroll'];
 }
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     rotate = -100,
     range = 'in',
@@ -70,42 +25,83 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const initialParams = { rotationZ: rotate, travelY: speed };
+  const rotationZ = rotate;
+  const travelY = speed;
+  const travel = travelY * maxTravelY;
 
-  const { fromValues, toValues } = RANGES_MAP[range](
-    initialParams.rotationZ,
-    initialParams.travelY * -maxTravelY,
-  );
+  const fromValues = {
+    rotationX: range === 'out' ? 0 : -2 * rotationZ,
+    rotationY: range === 'out' ? 0 : -rotationZ,
+    rotationZ: range === 'out' ? 0 : -rotationZ,
+    travel: range === 'out' ? 0 : -travel,
+  };
+  const toValues = {
+    rotationX: rotationZ * (range === 'in' ? 0 : range === 'out' ? 3 : 1.8),
+    rotationY: rotationZ * (range === 'in' ? 0 : range === 'out' ? 2 : 1),
+    rotationZ: rotationZ * (range === 'in' ? 0 : range === 'out' ? 1 : 2),
+    travel: range === 'in' ? 0 : travel,
+  };
 
-  const { start: startOffsetAdd, end: endOffsetAdd } = getScrubOffsets(
-    options.namedEffect as Spin3dScroll,
-  );
+  const offset = Math.abs(travel);
+  const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
+  const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
+
+  const [spin3dScroll] = getNames(options);
+
+  const custom = {
+    '--motion-travel-from': `${fromValues.travel}vh`,
+    '--motion-travel-to': `${toValues.travel}vh`,
+    '--motion-rot-x-from': `${fromValues.rotationX}deg`,
+    '--motion-rot-x-to': `${toValues.rotationX}deg`,
+    '--motion-rot-y-from': `${fromValues.rotationY}deg`,
+    '--motion-rot-y-to': `${toValues.rotationY}deg`,
+    '--motion-rot-z-from': `${fromValues.rotationZ}deg`,
+    '--motion-rot-z-to': `${toValues.rotationZ}deg`,
+  };
 
   return [
     {
       ...options,
+      name: spin3dScroll,
       fill,
       easing,
+      custom,
       startOffsetAdd,
       endOffsetAdd,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) translateY(${fromValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${fromValues.rotationZ}deg)) rotateY(${fromValues.rotationY}deg) rotateX(${fromValues.rotationX}deg)`,
+          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-from',
+            asWeb,
+          )}) rotateZ(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-from', asWeb)})) rotateY(${toKeyframeValue(
+            custom,
+            '--motion-rot-y-from',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-from', asWeb)})`,
         },
         {
-          transform: `perspective(${perspective}px) translateY(${toValues.travel}vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + ${toValues.rotationZ}deg)) rotateY(${toValues.rotationY}deg) rotateX(${toValues.rotationX}deg)`,
+          transform: `perspective(${perspective}px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-to',
+            asWeb,
+          )}) rotateZ(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-to', asWeb)})) rotateY(${toKeyframeValue(
+            custom,
+            '--motion-rot-y-to',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-to', asWeb)})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: perspective(<perspective>px) translateY(<fromValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<fromValue.rotateY>deg) rotateX(<fromValue.rotateX>deg);
-   *   }
-   *   to {
-   *     transform: perspective(<perspective>px) translateY(<toValue.travel>vh) rotateZ(<fromValue.rotateZ> + <rotation>) rotateY(<toValue.rotateY>deg) rotateX(<toValue.rotateX>deg);
-   *   }
-   * }
-   */
 }

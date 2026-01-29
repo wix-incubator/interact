@@ -7,7 +7,7 @@ Practical examples and common interaction patterns for `@wix/interact`. All exam
 ### Basic Entrance Animation
 
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 const config = {
   interactions: [

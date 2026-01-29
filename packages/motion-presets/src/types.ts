@@ -394,7 +394,7 @@ export type ScrollPreset = (
   config?: Record<string, any>,
 ) => AnimationData[];
 
-export type ScrollAnimations = Record<ScrollAnimation['type'], WebAnimationEffectFactory<'scrub'>>;
+export type ScrollAnimations = Record<ScrollAnimation['type'], AnimationEffectAPI<'scrub'>>;
 
 export type BgCloseUp = {
   type: 'BgCloseUp';
@@ -468,7 +468,7 @@ export type BackgroundScrollAnimationModule = {
 };
 export type BackgroundScrollAnimations = Record<
   BackgroundScrollAnimation['type'],
-  WebAnimationEffectFactory<'scrub'>
+  AnimationEffectAPI<'scrub'>
 >;
 
 type MouseEffectBase = {

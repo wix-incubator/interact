@@ -8,6 +8,10 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
 
 ```
 ┌─────────────────────────────────────┐
+│  Use specified key as root element  │
+└──────────┬──────────────────────────┘
+           │
+┌──────────┴──────────────────────────┐
 │  Is listContainer specified?        │
 └──────────┬──────────────────────────┘
            │
@@ -22,26 +26,29 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
 └─────┬─────┘   ┌─────┴──────┐
       │         │ YES        │ NO
       │         ▼            ▼
-      │    ┌─────────┐  ┌─────────────┐
-      │    │ Query   │  │ Use first   │
-      │    │ selector│  │ child       │
-      │    │ within  │  │ element     │
-      │    │ element │  │             │
-      │    └─────────┘  └─────────────┘
-      │
-      ▼
-┌─────────────┐
-│ Is selector |
-│ specified?  |
-└────────┬────┘
+      │    ┌─────────┐  ┌─────────────────────┐
+      │    │ Query   │  │ Is root element an  │
+      │    │ selector│  │ interact-element    │
+      │    │ within  │  │ custom element?     │
+      │    │ element │  │                     │
+      │    └─────────┘  └───────┬─────────────┘
+      │                         │
+      ▼                   ┌─────┴──────┐
+┌─────────────┐           │ YES        │ NO
+│ Is selector |           ▼            ▼
+│ specified?  |    ┌─────────────┐ ┌─────────────┐
+└────────┬────┘    │ Use first   │ │ Use root    │
+         │         | child       | | element     |
+         │         | element     | |             |
+         │         └─────────────┘ └─────────────┘
     ┌────┴───────────────┐
     │ YES                │ NO
     ▼                    ▼
 ┌─────────────┐      ┌───────────────┐
-| Query       |      │ Use each item │
-| selector    |      │  as-is        │
-| within each |      └───────────────┘
-| item        |
+| Query       |      │ Use each      │
+| selector    |      │ child element │
+| within each |      |               |
+| child       |      └───────────────┘
 └─────────────┘
 ```
 
@@ -124,11 +131,14 @@ When only `selector` is specified (no `listContainer`), it selects a single elem
 
 **Result:** Hover interaction applies only to `.card-image`.
 
-### Priority 3: First Child (Fallback)
+### Priority 3: Root element or First Child (Fallback)
 
-When neither `listContainer` nor `selector` is specified, the system uses the first child element.
+When neither `listContainer` nor `selector` is specified, depending on the type of integration used, Interact fallbacks to the following options:
 
-**Behavior:**
+- `web`: uses first element child of root custom element, which matches the selector `[data-interact-key="${key}"] > :first-child`.
+- default (Vanilla) or `react`: uses the root element specified by the `key`, which matches the selector `[data-interact-key="${key}"]`.
+
+**Behavior for `web`:**
 
 - Uses `firstElementChild` of the `interact-element`
 
@@ -148,6 +158,29 @@ When neither `listContainer` nor `selector` is specified, the system uses the fi
   <button class="primary-btn">Click Me</button>
   <!-- First child is used -->
 </interact-element>
+```
+
+**Result:** Click interaction applies to the `<button>` element.
+
+**Behavior for default or `react`:**
+
+- Uses root element
+
+**Example with `react`:**
+
+```typescript
+{
+    key: 'button',
+    // No selector or listContainer specified
+    trigger: 'click',
+    effects: [/* ... */]
+}
+```
+
+```jsx
+<Interaction tagName="button" interactKey="button" class="primary-btn">
+  Click Me
+</Interaction>
 ```
 
 **Result:** Click interaction applies to the `<button>` element.
@@ -539,7 +572,7 @@ selector: '.card-image img';
 selector: 'div > div.card > div.image > img:first-child';
 ```
 
-### 3. Use listContainer for Repeating Elements
+### 3. Use `listContainer` for Repeating Elements
 
 ```typescript
 // ✅ Good: Scales automatically

@@ -1,4 +1,5 @@
-import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 
@@ -14,37 +15,22 @@ const directionMap = {
   center: [0, 0],
 };
 
-const RANGES_MAP = {
-  in: (scaleFrom: number, _scaleTo: number, travelY: number) => ({
-    fromValues: { scale: scaleFrom, travel: travelY },
-    toValues: { scale: 1, travel: 0 },
-  }),
-  out: (_scaleFrom: number, scaleTo: number, travelY: number) => ({
-    fromValues: { scale: 1, travel: 0 },
-    toValues: { scale: scaleTo, travel: -travelY },
-  }),
-  continuous: (scaleFrom: number, scaleTo: number, travelY: number) => ({
-    fromValues: { scale: scaleFrom, travel: travelY },
-    toValues: { scale: scaleTo, travel: -travelY },
-  }),
-};
-
-function getScrubOffsets({ range = 'in', speed = 0 }: ShrinkScroll) {
-  const offset = Math.abs(speed) * MAX_Y_TRAVEL;
-
-  return {
-    start: range === 'out' ? '0px' : `${-offset}vh`,
-    end: range === 'in' ? '0px' : `${offset}vh`,
-  };
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-shrinkScroll'];
 }
 
-export default function create(options: ScrubAnimationOptions) {
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     range = 'in',
     scale = range === 'in' ? 1.2 : 0.8,
     direction = 'center',
     speed = 0,
   } = options.namedEffect as ShrinkScroll;
+  const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
@@ -52,63 +38,91 @@ export default function create(options: ScrubAnimationOptions) {
   const scaleFrom = scale;
   const scaleTo = scale;
   const travelY = speed;
+  const travel = travelY * MAX_Y_TRAVEL;
 
-  const { fromValues, toValues } = RANGES_MAP[range](scaleFrom, scaleTo, travelY * -MAX_Y_TRAVEL);
+  const fromValues = {
+    scale: range === 'out' ? 1 : scaleFrom,
+    travel: range === 'out' ? 0 : -travel,
+  };
+  const toValues = {
+    scale: range === 'in' ? 1 : scaleTo,
+    travel: range === 'in' ? 0 : travel,
+  };
 
-  const easing = 'linear';
+  const offset = Math.abs(travel);
+  const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
+  const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
 
-  const { start: startOffsetAdd, end: endOffsetAdd } = getScrubOffsets(
-    options.namedEffect as ShrinkScroll,
-  );
+  const [trnsX, trnsY] = directionMap[direction] || [0, 0];
 
-  const [trnsX, trnsY] = directionMap[direction];
+  const [shrinkScroll] = getNames(options);
+
+  const custom = {
+    '--motion-travel-from': `${fromValues.travel}vh`,
+    '--motion-travel-to': `${toValues.travel}vh`,
+    '--motion-shrink-from': fromValues.scale,
+    '--motion-shrink-to': toValues.scale,
+    '--motion-trans-x': `${trnsX}%`,
+    '--motion-trans-y': `${trnsY}%`,
+  };
 
   return [
     {
       ...options,
+      name: shrinkScroll,
       fill,
       easing,
+      custom,
       startOffsetAdd,
       endOffsetAdd,
       keyframes: [
         {
-          transform: `translateY(${fromValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
-            fromValues.scale
-          }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
+          transform: `translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-from',
+            asWeb,
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-shrink-from',
+            asWeb,
+          )}) translate(calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-x',
+            asWeb,
+          )}), calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
         },
         {
-          transform: `translateY(${toValues.travel}vh) translate(${trnsX}%, ${trnsY}%) scale(${
-            toValues.scale
-          }) translate(${-trnsX}%, ${-trnsY}%) rotate(var(--comp-rotate-z, 0))`,
+          transform: `translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-to',
+            asWeb,
+          )}) translate(${toKeyframeValue(custom, '--motion-trans-x', asWeb)}, ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )}) scale(${toKeyframeValue(
+            custom,
+            '--motion-shrink-to',
+            asWeb,
+          )}) translate(calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-x',
+            asWeb,
+          )}), calc(-1 * ${toKeyframeValue(
+            custom,
+            '--motion-trans-y',
+            asWeb,
+          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     translate: 0 <fromValues.travel>;
-   *   }
-   *   to {
-   *     translate: 0 <toValues.travel>;
-   *   }
-   * }
-   *
-   * @keyframes <name>-scale {
-   *   from {
-   *     scale: <fromValues.scale>;
-   *     animation-timing-function: <scaleEase>;
-   *   }
-   *   <scaleDuration>% {
-   *     scale: <toValues.scale>;
-   *   }
-   *   to {
-   *     scale: <toValues.scale>;
-   *   }
-   * }
-   *
-   * @supports (animation-timeline: view()) {
-   *   #target {
-   *     animation: <name> auto <easing> both,
-   */
 }

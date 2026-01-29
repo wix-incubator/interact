@@ -1,4 +1,5 @@
-import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions } from '../../types';
+import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
 
 const DEFAULT_PERSPECTIVE = 800;
 
@@ -7,7 +8,15 @@ const ROTATE_DIRECTION_MAP = {
   horizontal: 'rotateY',
 };
 
-export default function create(options: ScrubAnimationOptions) {
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-flipScroll'];
+}
+
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
   const {
     rotate = 240,
     direction = 'horizontal',
@@ -24,29 +33,36 @@ export default function create(options: ScrubAnimationOptions) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
+  const [flipScroll] = getNames(options);
+
+  const custom = {
+    '--motion-flip-from': `${rotationAxis}(${fromValue}deg)`,
+    '--motion-flip-to': `${rotationAxis}(${toValue}deg)`,
+  };
+
   return [
     {
       ...options,
+      name: flipScroll,
       fill,
       easing,
+      custom,
       keyframes: [
         {
-          transform: `perspective(${perspective}px) ${rotationAxis}(${fromValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) ${toKeyframeValue(
+            custom,
+            '--motion-flip-from',
+            asWeb,
+          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
         {
-          transform: `perspective(${perspective}px) ${rotationAxis}(${toValue}deg) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) ${toKeyframeValue(
+            custom,
+            '--motion-flip-to',
+            asWeb,
+          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
         },
       ],
     },
   ];
-  /*
-   * @keyframes <name> {
-   *   from {
-   *     transform: perspective(<perspective>px) <rotationAxis>(fromValue) rotate(<rotation>);
-   *   }
-   *   to {
-   *     transform: perspective(<perspective>px) <rotationAxis>(toValue) rotate(<rotation>);
-   *   }
-   * }
-   */
 }
