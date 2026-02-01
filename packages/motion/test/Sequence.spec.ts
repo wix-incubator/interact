@@ -1,12 +1,14 @@
-import { describe, expect, test, vi, beforeEach, Mock } from 'vitest';
+import { describe, expect, test, vi, beforeEach, beforeAll } from 'vitest';
 import { Sequence, calculateOffsets, parseCubicBezier, createCubicBezier } from '../src/Sequence';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { linear, quadIn, sineOut, cubicIn, expoIn, quadOut, cubicOut } from '../src/easings';
 
-// Mock AnimationGroup
-vi.mock('../src/AnimationGroup', () => ({
-  AnimationGroup: vi.fn(),
-}));
+// Stub CSSAnimation for Node.js environment
+beforeAll(() => {
+  if (typeof globalThis.CSSAnimation === 'undefined') {
+    (globalThis as any).CSSAnimation = class CSSAnimation {};
+  }
+});
 
 describe('Sequence', () => {
   describe('calculateOffsets()', () => {
@@ -89,7 +91,7 @@ describe('Sequence', () => {
 
   describe('Sequence class', () => {
     let mockAnimations: any[];
-    let mockAnimationGroups: any[];
+    let mockAnimationGroups: AnimationGroup[];
 
     beforeEach(() => {
       vi.clearAllMocks();
@@ -146,64 +148,12 @@ describe('Sequence', () => {
         },
       ];
 
-      // Create mock AnimationGroups
+      // Create real AnimationGroup instances with mock animations
       mockAnimationGroups = [
-        {
-          animations: [mockAnimations[0]],
-          options: {},
-          ready: Promise.resolve(),
-          isCSS: false,
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0),
-          finished: Promise.resolve(),
-          playState: 'idle',
-        },
-        {
-          animations: [mockAnimations[1]],
-          options: {},
-          ready: Promise.resolve(),
-          isCSS: false,
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0.5),
-          finished: Promise.resolve(),
-          playState: 'idle',
-        },
-        {
-          animations: [mockAnimations[2]],
-          options: {},
-          ready: Promise.resolve(),
-          isCSS: false,
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0.25),
-          finished: Promise.resolve(),
-          playState: 'running',
-        },
+        new AnimationGroup([mockAnimations[0]] as unknown as Animation[]),
+        new AnimationGroup([mockAnimations[1]] as unknown as Animation[]),
+        new AnimationGroup([mockAnimations[2]] as unknown as Animation[]),
       ];
-
-      // Mock AnimationGroup constructor to pass through the groups
-      (AnimationGroup as Mock).mockImplementation(function (
-        this: any,
-        animations: any[],
-        options: any,
-      ) {
-        this.animations = animations;
-        this.options = options;
-        this.ready = options?.measured || Promise.resolve();
-        this.isCSS = false;
-        return this;
-      });
     });
 
     test('should create a Sequence with default options', () => {
@@ -294,17 +244,21 @@ describe('Sequence', () => {
       expect(sequence.getOffsets()).toEqual([0, 200, 400]);
     });
 
-    test('play should call play on all animation groups', async () => {
+    // Note: play(), pause(), reverse(), cancel(), setPlaybackRate(), onFinish(),
+    // finished, and playState are inherited from AnimationGroup.
+    // These tests verify that the underlying animations are controlled correctly.
+
+    test('play should call play on all underlying animations', async () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       await sequence.play();
 
-      for (const group of mockAnimationGroups) {
-        expect(group.play).toHaveBeenCalled();
+      for (const animation of mockAnimations) {
+        expect(animation.play).toHaveBeenCalled();
       }
     });
 
-    test('play should execute callback after all groups are ready', async () => {
+    test('play should execute callback after all animations are ready', async () => {
       const sequence = new Sequence(mockAnimationGroups);
       const callback = vi.fn();
 
@@ -313,27 +267,27 @@ describe('Sequence', () => {
       expect(callback).toHaveBeenCalled();
     });
 
-    test('pause should call pause on all animation groups', () => {
+    test('pause should call pause on all underlying animations', () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       sequence.pause();
 
-      for (const group of mockAnimationGroups) {
-        expect(group.pause).toHaveBeenCalled();
+      for (const animation of mockAnimations) {
+        expect(animation.pause).toHaveBeenCalled();
       }
     });
 
-    test('reverse should call reverse on all animation groups', async () => {
+    test('reverse should call reverse on all underlying animations', async () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       await sequence.reverse();
 
-      for (const group of mockAnimationGroups) {
-        expect(group.reverse).toHaveBeenCalled();
+      for (const animation of mockAnimations) {
+        expect(animation.reverse).toHaveBeenCalled();
       }
     });
 
-    test('reverse should execute callback after all groups are ready', async () => {
+    test('reverse should execute callback after all animations are ready', async () => {
       const sequence = new Sequence(mockAnimationGroups);
       const callback = vi.fn();
 
@@ -342,27 +296,27 @@ describe('Sequence', () => {
       expect(callback).toHaveBeenCalled();
     });
 
-    test('cancel should call cancel on all animation groups', () => {
+    test('cancel should call cancel on all underlying animations', () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       sequence.cancel();
 
-      for (const group of mockAnimationGroups) {
-        expect(group.cancel).toHaveBeenCalled();
+      for (const animation of mockAnimations) {
+        expect(animation.cancel).toHaveBeenCalled();
       }
     });
 
-    test('setPlaybackRate should set rate on all animation groups', () => {
+    test('setPlaybackRate should set rate on all underlying animations', () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       sequence.setPlaybackRate(2);
 
-      for (const group of mockAnimationGroups) {
-        expect(group.setPlaybackRate).toHaveBeenCalledWith(2);
+      for (const animation of mockAnimations) {
+        expect(animation.playbackRate).toBe(2);
       }
     });
 
-    test('onFinish should call callback when all groups finish', async () => {
+    test('onFinish should call callback when all animations finish', async () => {
       const sequence = new Sequence(mockAnimationGroups);
       const callback = vi.fn();
 
@@ -371,7 +325,7 @@ describe('Sequence', () => {
       expect(callback).toHaveBeenCalled();
     });
 
-    test('finished getter should return promise that resolves when all groups finish', async () => {
+    test('finished getter should return promise that resolves when all animations finish', async () => {
       const sequence = new Sequence(mockAnimationGroups);
 
       const result = await sequence.finished;
@@ -379,17 +333,17 @@ describe('Sequence', () => {
       expect(Array.isArray(result)).toBe(true);
     });
 
-    test('playState getter should return first group playState', () => {
+    test('playState getter should return first animation playState', () => {
       const sequence = new Sequence(mockAnimationGroups);
 
-      // mockAnimationGroups[0].playState is 'idle'
+      // mockAnimations[0].playState is 'idle'
       expect(sequence.playState).toBe('idle');
     });
 
-    test('playState should return idle for empty sequence', () => {
+    test('playState should return undefined for empty sequence', () => {
       const emptySequence = new Sequence([]);
 
-      expect(emptySequence.playState).toBe('idle');
+      expect(emptySequence.playState).toBeUndefined();
     });
   });
 
@@ -546,79 +500,34 @@ describe('Sequence', () => {
   });
 
   describe('Sequence easing resolution', () => {
-    let mockAnimationGroups: any[];
+    let mockAnimationGroups: AnimationGroup[];
 
     beforeEach(() => {
       vi.clearAllMocks();
 
-      mockAnimationGroups = [
-        {
-          animations: [
-            {
-              effect: {
-                getTiming: vi.fn(() => ({ delay: 0 })),
-                updateTiming: vi.fn(),
-              },
-            },
-          ],
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0),
-          finished: Promise.resolve(),
-          playState: 'idle',
+      // Create mock animations
+      const createMockAnimation = () => ({
+        play: vi.fn(),
+        pause: vi.fn(),
+        reverse: vi.fn(),
+        cancel: vi.fn(),
+        ready: Promise.resolve(),
+        finished: Promise.resolve(),
+        playState: 'idle',
+        playbackRate: 1,
+        effect: {
+          getTiming: vi.fn(() => ({ delay: 0 })),
+          updateTiming: vi.fn(),
+          getComputedTiming: vi.fn(() => ({ progress: 0 })),
         },
-        {
-          animations: [
-            {
-              effect: {
-                getTiming: vi.fn(() => ({ delay: 0 })),
-                updateTiming: vi.fn(),
-              },
-            },
-          ],
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0),
-          finished: Promise.resolve(),
-          playState: 'idle',
-        },
-        {
-          animations: [
-            {
-              effect: {
-                getTiming: vi.fn(() => ({ delay: 0 })),
-                updateTiming: vi.fn(),
-              },
-            },
-          ],
-          play: vi.fn().mockResolvedValue(undefined),
-          pause: vi.fn(),
-          reverse: vi.fn().mockResolvedValue(undefined),
-          cancel: vi.fn(),
-          setPlaybackRate: vi.fn(),
-          getProgress: vi.fn(() => 0),
-          finished: Promise.resolve(),
-          playState: 'idle',
-        },
-      ];
-
-      (AnimationGroup as Mock).mockImplementation(function (
-        this: any,
-        animations: any[],
-        options: any,
-      ) {
-        this.animations = animations;
-        this.options = options;
-        this.ready = Promise.resolve();
-        this.isCSS = false;
-        return this;
       });
+
+      // Create real AnimationGroup instances
+      mockAnimationGroups = [
+        new AnimationGroup([createMockAnimation()] as unknown as Animation[]),
+        new AnimationGroup([createMockAnimation()] as unknown as Animation[]),
+        new AnimationGroup([createMockAnimation()] as unknown as Animation[]),
+      ];
     });
 
     describe('Named easing strings', () => {

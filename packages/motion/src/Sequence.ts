@@ -235,73 +235,8 @@ export class Sequence extends AnimationGroup {
     );
   }
 
-  override async play(callback?: () => void): Promise<void> {
-    await this.ready;
-
-    for (const group of this.animationGroups) {
-      group.play();
-    }
-
-    // Wait for all animation groups to be ready
-    await Promise.all(this.animationGroups.map((group) => group.ready));
-
-    if (callback) {
-      callback();
-    }
-  }
-
-  override pause(): void {
-    for (const group of this.animationGroups) {
-      group.pause();
-    }
-  }
-
-  override async reverse(callback?: () => void): Promise<void> {
-    await this.ready;
-
-    for (const group of this.animationGroups) {
-      group.reverse();
-    }
-
-    // Wait for all animation groups to be ready
-    await Promise.all(this.animationGroups.map((group) => group.ready));
-
-    if (callback) {
-      callback();
-    }
-  }
-
-  override cancel(): void {
-    for (const group of this.animationGroups) {
-      group.cancel();
-    }
-  }
-
-  override setPlaybackRate(rate: number): void {
-    for (const group of this.animationGroups) {
-      group.setPlaybackRate(rate);
-    }
-  }
-
-  override async onFinish(callback: () => void): Promise<void> {
-    try {
-      await Promise.all(this.animationGroups.map((group) => group.finished));
-      callback();
-    } catch (_error) {
-      console.warn('Sequence animation was interrupted - aborting onFinish callback - ', _error);
-    }
-  }
-
-  override get finished(): Promise<Animation[]> {
-    // Return a promise that resolves when all animation groups finish
-    // We flatten the nested arrays since each group's finished returns Animation[]
-    return Promise.all(this.animationGroups.map((group) => group.finished)).then((results) =>
-      results.flat(),
-    );
-  }
-
-  override get playState(): AnimationPlayState {
-    // Return the playState of the first animation group, or 'idle' if no groups exist
-    return this.animationGroups[0]?.playState ?? 'idle';
-  }
+  // Note: play(), pause(), reverse(), cancel(), setPlaybackRate(), onFinish(),
+  // finished, and playState are inherited from AnimationGroup.
+  // Since we pass all flattened animations to super(), the parent's
+  // implementations work correctly on the same Animation objects.
 }
