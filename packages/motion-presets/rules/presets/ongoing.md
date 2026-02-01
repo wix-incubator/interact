@@ -7,27 +7,27 @@ trigger: ongoing
 
 Continuous looping animations that run indefinitely.
 
-## When to Use
+## When to Use Ongoing Animations
 
 - Loading/processing indicators
 - Status indicators (live, active, recording)
 - Attention-drawing elements (notifications, CTAs)
 - Decorative ambient motion
 
-## When NOT to Use
+## When NOT to Use Ongoing Animations
 
 - Multiple simultaneous animations (visual chaos)
 - Content that needs to be read
 - Professional/minimal interfaces
 - One-time reveals → see [Entrance](presets-reference.md#entrance)
 
-## Available Presets
+## Available Ongoing Presets
 
 See [Ongoing Presets](presets-reference.md#ongoing-presets) for full details:
 
 Pulse, Bounce, Spin, Breathe, Flash, Swing, Wiggle, Flip, Fold, Jello, Rubber, Poke, Cross, DVD
 
-## Quick Decision
+## Ongoing Quick Decision
 
 | Tone                 | Presets                             |
 | -------------------- | ----------------------------------- |
@@ -36,7 +36,7 @@ Pulse, Bounce, Spin, Breathe, Flash, Swing, Wiggle, Flip, Fold, Jello, Rubber, P
 | Mechanical/Technical | Spin, Flip, Fold                    |
 | Attention-grabbing   | Flash, Bounce, Pulse (hard), Poke   |
 
-## Common Use Cases
+## Ongoing Common Use Cases
 
 | Use Case           | Recommended             |
 | ------------------ | ----------------------- |

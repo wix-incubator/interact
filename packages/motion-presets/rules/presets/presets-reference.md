@@ -48,7 +48,7 @@ One-shot animations that play once when an element first enters the viewport.
 
 **Note:** For click, toggle, or other event-based triggers, implement the triggering logic separately and call the animation programmatically. The library only provides viewEnter as a built-in trigger for entrance animations.
 
-**Available presets:** FadeIn, ArcIn, BlurIn, BounceIn, CircleIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, GlitchIn, GrowIn, PunchIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
+**Available presets:** FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, FlipIn, FloatIn, FoldIn, GlideIn, GrowIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
 
 ### Scroll
 
@@ -149,22 +149,21 @@ Scroll animations for structured background media components. Animates DOM eleme
 - `duration`: 100-4000ms - single cycle length
 - `delay`: 0-8000ms - initial wait before looping starts
 
-### The `power` Parameter
+### Coordinate System
 
-Many presets support `power: 'soft' | 'medium' | 'hard'`.
+For angle-based parameters, the library uses standard mathematical coordinates:
 
-**Important:** `power` is a preset modifier that **overrides** fine-grained parameters when set.
+- **0°** = right (east)
+- **90°** = top (north)
+- **180°** = left (west)
+- **270°** = bottom (south)
 
-- When `power` is provided, it sets predefined values for rotation angles, distances, scale factors, and easing curves
-- For fine control, **omit `power`** and use specific parameters like `intensity`, `distanceFactor`, `initialRotate`, etc.
-- Pattern: if `power` is set, specific params are ignored
+### CSS Custom Properties
 
-```typescript
-// power overrides other params
-{ type: 'BounceIn', power: 'hard' }           // Uses hard preset (distanceFactor: 3)
-{ type: 'BounceIn', distanceFactor: 2.5 }     // Fine control (no power)
-{ type: 'BounceIn', power: 'hard', distanceFactor: 2.5 }  // power wins, distanceFactor ignored
-```
+The library exposes these CSS custom properties for runtime control:
+
+- `--motion-opacity`: Target opacity (default: 1)
+- `--motion-rotate-z`: Element rotation for scroll effects
 
 ---
 
@@ -172,26 +171,26 @@ Many presets support `power: 'soft' | 'medium' | 'hard'`.
 
 ### By Tone
 
-| Tone                | Entrance                                        | Scroll                                    | Ongoing                    | Mouse                          |
-| ------------------- | ----------------------------------------------- | ----------------------------------------- | -------------------------- | ------------------------------ |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn        | FadeScroll, BlurScroll                    | Pulse (soft), Breathe      | Tilt3DMouse (soft), TrackMouse |
-| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn         | ArcScroll, FlipScroll, TiltScroll         | Flip, Fold                 | Track3DMouse                   |
-| Playful/Energetic   | BounceIn, SpinIn, PunchIn, GlitchIn             | SpinScroll, Spin3dScroll                  | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse         |
-| Geometric/Modern    | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn | ShapeScroll, RevealScroll, ShuttersScroll | Cross                      | -                              |
+| Tone                | Entrance                                 | Scroll                                    | Ongoing                    | Mouse                            |
+| ------------------- | ---------------------------------------- | ----------------------------------------- | -------------------------- | -------------------------------- |
+| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn | FadeScroll, BlurScroll                    | Pulse (subtle), Breathe    | Tilt3DMouse (subtle), TrackMouse |
+| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn            | ArcScroll, FlipScroll, TiltScroll         | Flip, Fold                 | Track3DMouse                     |
+| Playful/Energetic   | BounceIn, SpinIn                         | SpinScroll, Spin3dScroll                  | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse           |
+| Geometric/Modern    | ShapeIn, RevealIn, ShuttersIn, WinkIn    | ShapeScroll, RevealScroll, ShuttersScroll | Cross                      | -                                |
 
 ### By Use Case
 
-| Use Case               | Recommended Presets                                     |
-| ---------------------- | ------------------------------------------------------- |
-| Hero sections          | ArcIn, ExpandIn, FloatIn, RevealIn + BgParallax, BgZoom |
-| Modals/Popups          | FadeIn, DropIn, GrowIn, SlideIn                         |
-| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay          |
-| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)             |
-| Notifications/Badges   | BounceIn, PunchIn, DropIn + Pulse                       |
-| CTAs/Buttons           | BounceIn, PunchIn, GrowIn + Pulse                       |
-| Loading indicators     | Spin, Pulse                                             |
-| Product images         | Tilt3DMouse, ScaleMouse                                 |
-| Background depth       | BgParallax, ParallaxScroll, TrackMouse (layered)        |
+| Use Case               | Recommended Presets                              |
+| ---------------------- | ------------------------------------------------ |
+| Hero sections          | ArcIn, FloatIn, RevealIn + BgParallax, BgZoom    |
+| Modals/Popups          | FadeIn, DropIn, GrowIn, SlideIn                  |
+| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay   |
+| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)      |
+| Notifications/Badges   | BounceIn, DropIn + Pulse                         |
+| CTAs/Buttons           | BounceIn, GrowIn + Pulse                         |
+| Loading indicators     | Spin, Pulse                                      |
+| Product images         | Tilt3DMouse, ScaleMouse                          |
+| Background depth       | BgParallax, ParallaxScroll, TrackMouse (layered) |
 
 ### Cross-Category Parallels
 
@@ -259,13 +258,13 @@ Visual: Element swings in along a curved 3D path, like a door opening. Dramatic,
 Parameters:
 
 - `direction`: top | right | bottom | left (default: left)
-- `power`: soft | medium | hard (default: medium)
-
-**When `power` is set:** controls rotation intensity and easing curve
+- `perspective`: 3D perspective depth (default: 800)
+- `angle`: arc rotation angle (default: 80)
+- `depth`: Z translation distance (default: 300)
 
 ```typescript
 { type: 'ArcIn', direction: 'bottom' }
-{ type: 'ArcIn', direction: 'left', power: 'hard' }  // Dramatic hero entrance
+{ type: 'ArcIn', direction: 'left', angle: 120 }  // Dramatic hero entrance
 ```
 
 #### BlurIn
@@ -274,15 +273,12 @@ Visual: Element transitions from blurry to sharp focus while fading in. Soft, dr
 
 Parameters:
 
-- `blur`: blur amount in px (default varies)
-- `power`: soft | medium | hard
-
-**When `power` is set:** overrides `blur` (soft=6, medium=25, hard=50)
+- `blur`: blur amount in px (default: 25)
 
 ```typescript
 { type: 'BlurIn' }
-{ type: 'BlurIn', power: 'soft' }
-{ type: 'BlurIn', blur: 15 }  // Custom blur, no power
+{ type: 'BlurIn', blur: 6 }   // Subtle blur
+{ type: 'BlurIn', blur: 50 }  // Dramatic blur
 ```
 
 #### BounceIn
@@ -292,29 +288,13 @@ Visual: Element bounces into view with spring physics. Playful, attention-grabbi
 Parameters:
 
 - `direction`: top | right | bottom | left | center (default: top)
-- `power`: soft | medium | hard (default: soft)
 - `distanceFactor`: 1-4 (default: 1)
-
-**When `power` is set:** overrides `distanceFactor` (soft=1, medium=2, hard=3)
+- `perspective`: 3D perspective for center direction (default: 800)
 
 ```typescript
 { type: 'BounceIn' }
-{ type: 'BounceIn', direction: 'center', power: 'medium' }  // Reward popup
-{ type: 'BounceIn', distanceFactor: 2.5 }  // Custom distance, no power
-```
-
-#### CircleIn
-
-Visual: Circular mask expanding from center to reveal element. Geometric, spotlight-like.
-
-Parameters:
-
-- `direction`: in | out (default: in)
-- `duration`: 0-4000ms (default: 1200)
-- `delay`: 0-8000ms (default: 0)
-
-```typescript
-{ type: 'CircleIn', direction: 'in' }
+{ type: 'BounceIn', direction: 'center', distanceFactor: 2 }  // Reward popup
+{ type: 'BounceIn', distanceFactor: 2.5 }  // Custom distance
 ```
 
 #### CurveIn
@@ -337,31 +317,11 @@ Visual: Falls from above with subtle scale/bounce on landing. Gravity-like, natu
 
 Parameters:
 
-- `power`: soft | medium | hard
-- `initialScale`: starting scale (default varies)
-
-**When `power` is set:** overrides `initialScale` and easing (soft: 1.2/cubicInOut, medium: 1.6/quintInOut, hard: 2/backOut)
+- `initialScale`: starting scale (default: 1.6)
 
 ```typescript
 { type: 'DropIn' }
-{ type: 'DropIn', power: 'medium' }
-```
-
-#### ExpandIn
-
-Visual: Expands outward from a point. Growing, revealing emergence.
-
-Parameters:
-
-- `direction`: top | right | bottom | left | top-left | top-right | bottom-left | bottom-right | center
-- `power`: soft | medium | hard
-- `initialScale`: starting scale
-
-**When `power` is set:** controls scale and easing intensity
-
-```typescript
-{ type: 'ExpandIn', direction: 'center' }
-{ type: 'ExpandIn', direction: 'bottom-left', power: 'hard' }
+{ type: 'DropIn', initialScale: 2 }  // More dramatic
 ```
 
 #### FlipIn
@@ -371,14 +331,12 @@ Visual: 3D card flip rotation to reveal element. Dramatic, card-like metaphor.
 Parameters:
 
 - `direction`: top | right | bottom | left
-- `power`: soft | medium | hard
-- `initialRotate`: starting rotation degrees
-
-**When `power` is set:** overrides `initialRotate` (soft=45, medium=90, hard=270)
+- `initialRotate`: starting rotation degrees (default: 90)
+- `perspective`: 3D perspective depth (default: 800)
 
 ```typescript
 { type: 'FlipIn', direction: 'left' }
-{ type: 'FlipIn', direction: 'top', power: 'hard' }
+{ type: 'FlipIn', direction: 'top', initialRotate: 270 }  // Dramatic flip
 ```
 
 #### FloatIn
@@ -402,13 +360,12 @@ Visual: Paper-folding 3D effect. Origami-like, creative.
 Parameters:
 
 - `direction`: top | right | bottom | left
-- `power`: soft | medium | hard
-- `initialRotate`: starting rotation degrees
-
-**When `power` is set:** overrides `initialRotate` (soft=35, medium=60, hard=90)
+- `initialRotate`: starting rotation degrees (default: 60)
+- `perspective`: 3D perspective depth (default: 800)
 
 ```typescript
 { type: 'FoldIn', direction: 'left' }
+{ type: 'FoldIn', direction: 'top', initialRotate: 90 }  // More dramatic fold
 ```
 
 #### GlideIn
@@ -417,65 +374,27 @@ Visual: Smooth 2D glide from direction with angle control. Clean, directional.
 
 Parameters:
 
-- `direction`: angle in degrees (0-360)
+- `angle`: angle in degrees (default: 270, from left). 0° = right, 90° = top, 180° = left, 270° = bottom
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `power`: soft | medium | hard
-- `startFromOffScreen`: boolean
-
-**When `power` is set:** controls easing curve intensity
 
 ```typescript
-{ type: 'GlideIn', direction: 180, distance: { value: 100, type: 'px' } }
-```
-
-#### GlitchIn
-
-Visual: Digital glitch/distortion effect. Edgy, tech-inspired.
-
-Parameters:
-
-- `direction`: angle in degrees
-- `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `power`: soft | medium | hard
-- `startFromOffScreen`: boolean
-
-**When `power` is set:** controls glitch intensity
-
-```typescript
-{ type: 'GlitchIn', direction: 0, distance: { value: 50, type: 'px' } }
+{ type: 'GlideIn', angle: 270, distance: { value: 100, type: 'px' } }  // From left (default)
+{ type: 'GlideIn', angle: 90, distance: { value: 50, type: 'percentage' } }  // From top
 ```
 
 #### GrowIn
 
-Visual: Scale from small to full size. Expanding, emerging.
+Visual: Scale from small to full size with optional directional movement. Expanding, emerging.
 
 Parameters:
 
-- `direction`: angle in degrees
-- `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `power`: soft | medium | hard
-- `initialScale`: starting scale (0-1)
-
-**When `power` is set:** controls scale and easing intensity
+- `angle`: angle in degrees (default: 0). 0° = right, 90° = top, 180° = left, 270° = bottom
+- `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' } (default: 120px)
+- `initialScale`: starting scale 0-1 (default: 0.6)
 
 ```typescript
-{ type: 'GrowIn', direction: 0, distance: { value: 0, type: 'px' } }
-```
-
-#### PunchIn
-
-Visual: Corner-based scale with energy and impact. Punchy, attention-grabbing.
-
-Parameters:
-
-- `direction`: top-left | top-right | bottom-left | bottom-right | center
-- `power`: soft | medium | hard
-
-**When `power` is set:** controls easing curve (soft=sineIn, medium=quadIn, hard=quintIn)
-
-```typescript
-{ type: 'PunchIn', direction: 'center' }
-{ type: 'PunchIn', direction: 'bottom-right', power: 'hard' }
+{ type: 'GrowIn', angle: 0, distance: { value: 0, type: 'px' } }  // Pure scale, no movement
+{ type: 'GrowIn', angle: 270, distance: { value: 100, type: 'px' }, initialScale: 0.3 }  // From bottom with dramatic scale
 ```
 
 #### RevealIn
@@ -517,9 +436,6 @@ Parameters:
 - `direction`: top | right | bottom | left
 - `shutters`: number of strips
 - `staggered`: boolean (animate strips sequentially)
-- `power`: soft | medium | hard
-
-**When `power` is set:** controls easing curve intensity
 
 ```typescript
 { type: 'ShuttersIn', direction: 'left', shutters: 5, staggered: true }
@@ -532,14 +448,11 @@ Visual: Straight movement from direction. Clean, simple, versatile.
 Parameters:
 
 - `direction`: top | right | bottom | left
-- `power`: soft | medium | hard
-- `initialTranslate`: starting offset
-
-**When `power` is set:** controls easing curve intensity
+- `initialTranslate`: starting offset (0-1, default: 1)
 
 ```typescript
 { type: 'SlideIn', direction: 'bottom' }
-{ type: 'SlideIn', direction: 'left', power: 'soft' }
+{ type: 'SlideIn', direction: 'left', initialTranslate: 0.2 }  // Subtle slide
 ```
 
 #### SpinIn
@@ -550,13 +463,11 @@ Parameters:
 
 - `direction`: clockwise | counter-clockwise
 - `spins`: number of rotations
-- `power`: soft | medium | hard
-- `initialScale`: starting scale
-
-**When `power` is set:** controls easing curve intensity
+- `initialScale`: starting scale (default: 0)
 
 ```typescript
 { type: 'SpinIn', direction: 'clockwise', spins: 1 }
+{ type: 'SpinIn', direction: 'counter-clockwise', spins: 2, initialScale: 0.5 }
 ```
 
 #### TiltIn
@@ -580,12 +491,11 @@ Visual: Corner-pivot 3D rotation. Complex, dramatic, premium.
 Parameters:
 
 - `direction`: top-left | top-right | bottom-left | bottom-right
-- `power`: soft | medium | hard
-- `duration`: 0-4000ms (default: 1200)
-- `delay`: 0-8000ms (default: 0)
+- `angle`: rotation angle (default: 50)
 
 ```typescript
 { type: 'TurnIn', direction: 'bottom-left' }
+{ type: 'TurnIn', direction: 'top-right', angle: 80 }  // More dramatic
 ```
 
 #### WinkIn
@@ -658,15 +568,12 @@ Visual: Blur/unblur effect controlled by scroll. Focus transitions.
 
 Parameters:
 
-- `power`: soft | medium | hard
 - `range`: in | out | continuous
-- `blur`: blur amount in px
-
-**When `power` is set:** overrides `blur` (soft=6, medium=25, hard=50)
+- `blur`: blur amount in px (default: 25)
 
 ```typescript
 { type: 'BlurScroll', range: 'in' }
-{ type: 'BlurScroll', range: 'out', power: 'medium' }
+{ type: 'BlurScroll', range: 'out', blur: 50 }  // More dramatic
 ```
 
 #### FlipScroll
@@ -675,16 +582,14 @@ Visual: Full 3D card flip driven by scroll. Dramatic rotation.
 
 Parameters:
 
-- `direction`: vertical | horizontal
-- `power`: soft | medium | hard
+- `axis`: vertical | horizontal
 - `range`: in | out | continuous
-- `rotate`: rotation degrees
-
-**When `power` is set:** overrides `rotate` (soft=60, medium=120, hard=420)
+- `rotate`: rotation degrees (default: 120)
+- `perspective`: 3D perspective depth (default: 800)
 
 ```typescript
-{ type: 'FlipScroll', direction: 'horizontal' }
-{ type: 'FlipScroll', direction: 'vertical', range: 'in' }
+{ type: 'FlipScroll', axis: 'horizontal' }
+{ type: 'FlipScroll', axis: 'vertical', range: 'in', rotate: 420 }  // Multiple rotations
 ```
 
 #### GrowScroll
@@ -694,16 +599,13 @@ Visual: Scale up as element enters viewport.
 Parameters:
 
 - `direction`: top | right | bottom | left | top-left | top-right | bottom-left | bottom-right | center
-- `power`: soft | medium | hard
 - `range`: in | out | continuous
-- `scale`: target scale
+- `scale`: target scale (default: 1.7)
 - `speed`: animation speed
-
-**When `power` is set:** overrides scale range (soft: 0.8-1.2, medium: 0.3-1.7, hard: 0-4)
 
 ```typescript
 { type: 'GrowScroll', direction: 'center' }
-{ type: 'GrowScroll', direction: 'center', range: 'in' }
+{ type: 'GrowScroll', direction: 'center', range: 'in', scale: 4 }  // Dramatic scale
 ```
 
 #### ShrinkScroll
@@ -713,15 +615,13 @@ Visual: Scale down as element exits viewport.
 Parameters:
 
 - `direction`: top | right | bottom | left | top-left | top-right | bottom-left | bottom-right | center
-- `power`: soft | medium | hard
 - `range`: in | out | continuous
-- `scale`: target scale
+- `scale`: target scale (default: 0.3)
 - `speed`: animation speed
-
-**When `power` is set:** overrides scale range (soft: 1.2-0.8, medium: 1.7-0.3, hard: 3.5-0)
 
 ```typescript
 { type: 'ShrinkScroll', direction: 'center', range: 'out' }
+{ type: 'ShrinkScroll', direction: 'center', scale: 0 }  // Shrink to nothing
 ```
 
 #### MoveScroll
@@ -730,15 +630,13 @@ Visual: Translation movement on scroll in any direction.
 
 Parameters:
 
-- `angle`: 0-360 degrees
-- `power`: soft | medium | hard
+- `angle`: 0-360 degrees. 0° = right, 90° = top, 180° = left, 270° = bottom
 - `range`: in | out | continuous
-- `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-
-**When `power` is set:** overrides `distance` (soft=150px, medium=400px, hard=800px)
+- `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' } (default: 400px)
 
 ```typescript
 { type: 'MoveScroll', angle: 90, distance: { value: 100, type: 'px' } }
+{ type: 'MoveScroll', angle: 0, distance: { value: 800, type: 'px' } }  // Long horizontal move
 ```
 
 #### PanScroll
@@ -778,13 +676,11 @@ Parameters:
 
 - `shape`: circle | ellipse | rectangle | diamond | window
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `intensity`: 0-1
-
-**When `power` is set:** overrides clipPath intensity (varies by shape)
+- `intensity`: 0-1 (default: varies by shape)
 
 ```typescript
 { type: 'ShapeScroll', shape: 'circle' }
+{ type: 'ShapeScroll', shape: 'diamond', intensity: 0.8 }
 ```
 
 #### ShuttersScroll
@@ -810,13 +706,11 @@ Parameters:
 
 - `direction`: left | right
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `skew`: skew angle
-
-**When `power` is set:** overrides `skew` (soft=10, medium=17, hard=24)
+- `skew`: skew angle (default: 17)
 
 ```typescript
 { type: 'SkewPanScroll', direction: 'left' }
+{ type: 'SkewPanScroll', direction: 'right', skew: 24 }  // More dramatic
 ```
 
 #### SlideScroll
@@ -840,15 +734,13 @@ Visual: 3D rotation around axis on scroll.
 Parameters:
 
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `rotate`: rotation degrees
+- `rotate`: rotation degrees (default: 100)
 - `speed`: animation speed
-
-**When `power` is set:** overrides rotation and travel (soft: 45deg/0, medium: 100deg/0.5, hard: 200deg/1)
+- `perspective`: 3D perspective depth (default: 1000)
 
 ```typescript
 { type: 'Spin3dScroll' }
-{ type: 'Spin3dScroll', range: 'continuous' }
+{ type: 'Spin3dScroll', range: 'continuous', rotate: 200 }  // More dramatic
 ```
 
 #### SpinScroll
@@ -860,13 +752,11 @@ Parameters:
 - `direction`: clockwise | counter-clockwise
 - `spins`: number of rotations
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `scale`: scale factor
-
-**When `power` is set:** overrides `scale` (soft=1, medium=0.7, hard=0.4)
+- `scale`: scale factor (default: 0.7)
 
 ```typescript
 { type: 'SpinScroll', direction: 'clockwise', spins: 1 }
+{ type: 'SpinScroll', direction: 'counter-clockwise', spins: 2, scale: 0.4 }
 ```
 
 #### StretchScroll
@@ -875,15 +765,12 @@ Visual: Stretch/squeeze deformation on scroll.
 
 Parameters:
 
-- `power`: soft | medium | hard
 - `range`: in | out | continuous
-- `stretch`: stretch amount
-
-**When `power` is set:** overrides scaleX/scaleY (soft: 0.8/1.2, medium: 0.6/1.5, hard: 0.4/2)
+- `stretch`: stretch amount (default: 1.5)
 
 ```typescript
 { type: 'StretchScroll' }
-{ type: 'StretchScroll', power: 'medium' }
+{ type: 'StretchScroll', stretch: 2 }  // More dramatic
 ```
 
 #### TiltScroll
@@ -894,13 +781,12 @@ Parameters:
 
 - `direction`: left | right
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `distance`: tilt distance
-
-**When `power` is set:** overrides `distance` (soft=0, medium=0.5, hard=1)
+- `distance`: tilt distance (default: 0.5)
+- `perspective`: 3D perspective depth (default: 400)
 
 ```typescript
 { type: 'TiltScroll', direction: 'left' }
+{ type: 'TiltScroll', direction: 'right', distance: 1 }  // More dramatic
 ```
 
 #### TurnScroll
@@ -912,13 +798,11 @@ Parameters:
 - `direction`: left | right
 - `spin`: clockwise | counter-clockwise
 - `range`: in | out | continuous
-- `power`: soft | medium | hard
-- `scale`: scale factor
-
-**When `power` is set:** overrides scale range (soft: 1/1, medium: 0.7/1.3, hard: 0.4/1.6)
+- `scale`: scale factor (default: 1.3)
 
 ```typescript
 { type: 'TurnScroll', direction: 'left', spin: 'clockwise' }
+{ type: 'TurnScroll', direction: 'right', spin: 'counter-clockwise', scale: 1.6 }
 ```
 
 ---
@@ -931,15 +815,11 @@ Visual: Gentle scale oscillation, heartbeat-like rhythm. Subtle, universal.
 
 Parameters:
 
-- `power`: soft | medium | hard (default: soft)
-- `intensity`: 0-1 (default: 0)
-
-**When `power` is set:** overrides `intensity`/pulse magnitude (soft=0, medium=0.06, hard=0.12)
+- `intensity`: 0-1 (default: 0.06)
 
 ```typescript
 { type: 'Pulse' }
-{ type: 'Pulse', power: 'medium' }  // Status indicator
-{ type: 'Pulse', intensity: 0.04 }  // Custom intensity, no power
+{ type: 'Pulse', intensity: 0.12 }  // More dramatic
 ```
 
 #### Bounce
@@ -948,14 +828,11 @@ Visual: Vertical bouncing motion like a ball on trampoline. Playful, energetic.
 
 Parameters:
 
-- `power`: soft | medium | hard (default: soft)
 - `intensity`: 0-1 (default: 0.3)
-
-**When `power` is set:** overrides `intensity`/bounce factor (soft=1, medium=2, hard=3)
 
 ```typescript
 { type: 'Bounce' }
-{ type: 'Bounce', power: 'medium' }  // Playful mascot
+{ type: 'Bounce', intensity: 0.6 }  // More energetic
 ```
 
 #### Spin
@@ -965,9 +842,6 @@ Visual: Continuous rotation around center. Mechanical, precise.
 Parameters:
 
 - `direction`: clockwise | counter-clockwise (default: clockwise)
-- `power`: soft | medium | hard (default: soft)
-
-**When `power` is set:** controls easing curve (linear → eased → bouncy)
 
 ```typescript
 { type: 'Spin', direction: 'clockwise' }
@@ -1008,15 +882,12 @@ Visual: Rotation oscillation like a pendulum. Back and forth rhythmic.
 
 Parameters:
 
-- `power`: soft | medium | hard
-- `swing`: swing angle
+- `swing`: swing angle (default: 40)
 - `direction`: top | right | bottom | left
-
-**When `power` is set:** overrides `swing` angle (soft: 20deg, medium: 40deg, hard: 60deg)
 
 ```typescript
 { type: 'Swing' }
-{ type: 'Swing', power: 'medium' }
+{ type: 'Swing', swing: 60 }  // More dramatic
 ```
 
 #### Wiggle
@@ -1025,14 +896,11 @@ Visual: Horizontal shake/wiggle. Side-to-side for attention.
 
 Parameters:
 
-- `power`: soft | medium | hard
-- `intensity`: 0-1
-
-**When `power` is set:** overrides `intensity`/wiggle factor (soft=1, medium=2, hard=4)
+- `intensity`: 0-1 (default: 0.5)
 
 ```typescript
 { type: 'Wiggle' }
-{ type: 'Wiggle', power: 'soft' }
+{ type: 'Wiggle', intensity: 1 }  // More vigorous
 ```
 
 #### Flip
@@ -1041,13 +909,10 @@ Visual: Periodic 180° flips. Card-like rotation showing front/back.
 
 Parameters:
 
-- `direction`: vertical | horizontal
-- `power`: soft | medium | hard
-
-**When `power` is set:** controls easing curve intensity
+- `axis`: vertical | horizontal
 
 ```typescript
-{ type: 'Flip', direction: 'horizontal' }
+{ type: 'Flip', axis: 'horizontal' }
 ```
 
 #### Fold
@@ -1057,13 +922,11 @@ Visual: 3D folding motion. Paper-like folding and unfolding.
 Parameters:
 
 - `direction`: top | right | bottom | left
-- `power`: soft | medium | hard
-- `angle`: fold angle
-
-**When `power` is set:** overrides `angle` (soft: 15deg, medium: 30deg, hard: 45deg)
+- `angle`: fold angle (default: 30)
 
 ```typescript
 { type: 'Fold', direction: 'left' }
+{ type: 'Fold', direction: 'top', angle: 45 }  // More dramatic
 ```
 
 #### Jello
@@ -1072,14 +935,11 @@ Visual: Wobbly elastic deformation. Jiggly, bouncy distortion.
 
 Parameters:
 
-- `power`: soft | medium | hard
-- `intensity`: 0-1
-
-**When `power` is set:** overrides `intensity`/jello factor (soft=1, medium=2, hard=4)
+- `intensity`: 0-1 (default: 0.5)
 
 ```typescript
 { type: 'Jello' }
-{ type: 'Jello', power: 'medium' }
+{ type: 'Jello', intensity: 1 }  // More wobbly
 ```
 
 #### Rubber
@@ -1088,15 +948,11 @@ Visual: Elastic stretch effect. Springy stretching and snapping.
 
 Parameters:
 
-- `power`: soft | medium | hard
-- `intensity`: 0-1
-
-**When `power` is set:** overrides `intensity`/rubber offset (soft=0, medium=0.05, hard=0.1)
+- `intensity`: 0-1 (default: 0.05)
 
 ```typescript
-{
-  type: 'Rubber';
-}
+{ type: 'Rubber' }
+{ type: 'Rubber', intensity: 0.1 }  // More stretchy
 ```
 
 #### Poke
@@ -1106,13 +962,11 @@ Visual: Quick scale bump like being tapped. Brief attention "boop".
 Parameters:
 
 - `direction`: top | right | bottom | left
-- `power`: soft | medium | hard
-- `intensity`: 0-1
-
-**When `power` is set:** overrides `intensity`/poke factor (soft=1, medium=2, hard=4)
+- `intensity`: 0-1 (default: 0.5)
 
 ```typescript
 { type: 'Poke', direction: 'top' }
+{ type: 'Poke', direction: 'right', intensity: 1 }  // More dramatic
 ```
 
 #### Cross
@@ -1133,7 +987,6 @@ Visual: Corner-to-corner bounce (DVD screensaver). Nostalgic, retro.
 
 Parameters:
 
-- `power`: soft | medium | hard
 - `duration`: 100-4000ms (default: 1200)
 - `delay`: 0-8000ms (default: 0)
 
@@ -1153,17 +1006,14 @@ Visual: Element tilts toward cursor in 3D, like angling a card. Premium, interac
 
 Parameters:
 
-- `power`: soft | medium | hard (default: medium)
 - `angle`: 5-85 degrees (default: 50)
-- `perspective`: 200-1000px (default: 800)
+- `perspective`: 200-1000px (default: 500)
 - `inverted`: boolean (default: false)
-
-**When `power` is set:** overrides `angle` and `perspective` (soft: 25/1000, medium: 50/500, hard: 85/200)
 
 ```typescript
 { type: 'Tilt3DMouse' }
-{ type: 'Tilt3DMouse', power: 'soft' }  // Subtle professional
-{ type: 'Tilt3DMouse', angle: 15, perspective: 1000 }  // Custom, no power
+{ type: 'Tilt3DMouse', angle: 25, perspective: 1000 }  // Subtle professional
+{ type: 'Tilt3DMouse', angle: 85, perspective: 200 }   // Dramatic
 ```
 
 #### TrackMouse
@@ -1174,10 +1024,7 @@ Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' } (default: { value: 250, type: 'px' })
 - `axis`: horizontal | vertical | both (default: both)
-- `power`: soft | medium | hard (default: medium)
 - `inverted`: boolean (default: false)
-
-**When `power` is set:** overrides easing (soft=linear, medium=easeOut, hard=hardBackOut)
 
 ```typescript
 { type: 'TrackMouse', distance: { value: 200, type: 'px' }, axis: 'both' }
@@ -1192,10 +1039,7 @@ Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' } (default: { value: 80, type: 'px' })
 - `axis`: horizontal | vertical | both (default: both)
-- `power`: soft | medium | hard
 - `inverted`: boolean (default: false)
-
-**When `power` is set:** controls spring easing behavior
 
 ```typescript
 { type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both' }
@@ -1208,16 +1052,14 @@ Visual: Combined translation + 3D rotation following mouse. Complex, immersive.
 Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `angle`: rotation angle
+- `angle`: rotation angle (default: 50)
 - `axis`: horizontal | vertical | both
-- `perspective`: perspective distance
-- `power`: soft | medium | hard
+- `perspective`: perspective distance (default: 500)
 - `inverted`: boolean
-
-**When `power` is set:** overrides `angle` and `perspective` (soft: 25/1000, medium: 50/500, hard: 85/333)
 
 ```typescript
 { type: 'Track3DMouse', distance: { value: 100, type: 'px' }, axis: 'both' }
+{ type: 'Track3DMouse', distance: { value: 50, type: 'px' }, angle: 25, perspective: 1000 }  // Subtle
 ```
 
 #### SpinMouse
@@ -1227,10 +1069,7 @@ Visual: Rotation following mouse angle. Element spins based on cursor position.
 Parameters:
 
 - `axis`: horizontal | vertical | both
-- `power`: soft | medium | hard
 - `inverted`: boolean
-
-**When `power` is set:** controls rotation intensity and easing
 
 ```typescript
 { type: 'SpinMouse' }
@@ -1245,15 +1084,13 @@ Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
 - `axis`: horizontal | vertical | both
-- `scale`: scale factor
-- `power`: soft | medium | hard
+- `scale`: scale factor (default: depends on scaleDirection)
 - `scaleDirection`: in | out
 - `inverted`: boolean
 
-**When `power` is set:** overrides `scale` (varies by scaleDirection - down: 0.85/0.5/0, up: 1.2/1.6/2.4)
-
 ```typescript
 { type: 'ScaleMouse', distance: { value: 100, type: 'px' }, scaleDirection: 'in' }
+{ type: 'ScaleMouse', distance: { value: 100, type: 'px' }, scaleDirection: 'out', scale: 2.4 }  // Dramatic grow
 ```
 
 #### SwivelMouse
@@ -1262,18 +1099,14 @@ Visual: Z-axis rotation following cursor. Gyroscope-like vertical rotation.
 
 Parameters:
 
-- `angle`: rotation angle
-- `perspective`: perspective distance
+- `angle`: rotation angle (default: 50)
+- `perspective`: perspective distance (default: 700)
 - `pivotAxis`: top | bottom | right | left | center-horizontal | center-vertical
-- `power`: soft | medium | hard
 - `inverted`: boolean
 
-**When `power` is set:** overrides `angle` and `perspective` (soft: 25/1000, medium: 50/700, hard: 85/300)
-
 ```typescript
-{
-  type: 'SwivelMouse';
-}
+{ type: 'SwivelMouse' }
+{ type: 'SwivelMouse', angle: 25, perspective: 1000 }  // Subtle
 ```
 
 #### SkewMouse
@@ -1283,17 +1116,13 @@ Visual: Skew distortion following cursor. Angular distortion.
 Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `angle`: skew angle
+- `angle`: skew angle (default: 20)
 - `axis`: horizontal | vertical | both
-- `power`: soft | medium | hard
 - `inverted`: boolean
 
-**When `power` is set:** overrides `angle` (soft=10, medium=20, hard=45)
-
 ```typescript
-{
-  type: 'SkewMouse';
-}
+{ type: 'SkewMouse' }
+{ type: 'SkewMouse', angle: 45 }  // More dramatic
 ```
 
 #### BlurMouse
@@ -1303,19 +1132,15 @@ Visual: Blur based on cursor distance. Focus/defocus by proximity.
 Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `angle`: angle
-- `scale`: scale factor
+- `angle`: angle (default: 25)
+- `scale`: scale factor (default: 0.7)
 - `blur`: blur amount
 - `perspective`: perspective distance
-- `power`: soft | medium | hard
 - `inverted`: boolean
 
-**When `power` is set:** overrides `angle` and `scale` (soft: 0/1, medium: 25/0.7, hard: 65/0.25)
-
 ```typescript
-{
-  type: 'BlurMouse';
-}
+{ type: 'BlurMouse' }
+{ type: 'BlurMouse', angle: 65, scale: 0.25 }  // More dramatic
 ```
 
 #### AiryMouse
@@ -1326,16 +1151,12 @@ Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
 - `axis`: horizontal | vertical | both
-- `angle`: angle
-- `power`: soft | medium | hard
+- `angle`: angle (default: 50)
 - `inverted`: boolean
 
-**When `power` is set:** overrides `angle` (soft=10, medium=50, hard=85)
-
 ```typescript
-{
-  type: 'AiryMouse';
-}
+{ type: 'AiryMouse' }
+{ type: 'AiryMouse', angle: 10 }  // Subtle
 ```
 
 #### BlobMouse
@@ -1345,16 +1166,12 @@ Visual: Organic blob-like deformation. Fluid shape distortion.
 Parameters:
 
 - `distance`: { value: number, type: 'px' | 'percentage' | 'vh' | 'vw' }
-- `scale`: scale factor
-- `power`: soft | medium | hard
+- `scale`: scale factor (default: 1.6)
 - `inverted`: boolean
 
-**When `power` is set:** overrides `scale` (soft=1.2, medium=1.6, hard=2.4)
-
 ```typescript
-{
-  type: 'BlobMouse';
-}
+{ type: 'BlobMouse' }
+{ type: 'BlobMouse', scale: 2.4 }  // More dramatic
 ```
 
 #### CustomMouse
@@ -1562,22 +1379,21 @@ The presets provide animations; the host platform decides when and whether to ap
 
 **Medium risk** (strong motion, may affect some users):
 
-- GlitchIn, PunchIn, TurnIn
+- TurnIn
 - ParallaxScroll, BgParallax at high speed values
 
 **Low risk / safe** (opacity/blur changes, minimal spatial movement):
 
 - FadeIn, FadeScroll, BlurIn, BlurScroll
-- SlideIn (soft), GlideIn (soft)
-- Pulse (soft), Breathe
+- SlideIn (subtle settings), GlideIn (subtle settings)
+- Pulse (low intensity), Breathe
 
 ### Reduced Motion Fallback Table
 
 | Original                          | Fallback                  |
 | --------------------------------- | ------------------------- |
-| BounceIn, SpinIn, PunchIn         | FadeIn                    |
+| BounceIn, SpinIn                  | FadeIn                    |
 | ArcIn, FlipIn, TurnIn             | FadeIn                    |
-| GlitchIn                          | FadeIn                    |
 | Spin, Bounce, Wiggle              | Stop or subtle Pulse      |
 | Flash                             | Reduce frequency (<3/sec) |
 | ParallaxScroll                    | Static position           |
@@ -1665,7 +1481,7 @@ For lists/grids, apply increasing subtle `delay` values
 // Outer container - entrance
 { type: 'FadeIn' }
 // Inner container - mouse interaction
-{ type: 'Tilt3DMouse', power: 'soft' }
+{ type: 'Tilt3DMouse', angle: 25, perspective: 1000 }  // subtle
 ```
 
 **Hero with depth (separate elements):**
@@ -1674,15 +1490,15 @@ For lists/grids, apply increasing subtle `delay` values
 // Background element
 { type: 'BgParallax', speed: 0.2 }
 // Content element
-{ type: 'ArcIn', direction: 'bottom', power: 'medium' }
+{ type: 'ArcIn', direction: 'bottom' }
 ```
 
 **Notification badge (single element - entrance + ongoing supported):**
 
 ```typescript
 // Same element can have both
-{ type: 'BounceIn', direction: 'top', power: 'soft' }  // entrance
-{ type: 'Pulse', power: 'soft' }  // ongoing
+{ type: 'BounceIn', direction: 'top', distanceFactor: 1 }  // entrance, subtle
+{ type: 'Pulse', intensity: 0.06 }  // ongoing
 ```
 
 **Loading indicator:**
@@ -1690,3 +1506,72 @@ For lists/grids, apply increasing subtle `delay` values
 ```typescript
 { type: 'Spin', direction: 'clockwise', duration: 1500 }
 ```
+
+---
+
+## 7. Intensity Value Guide
+
+When users ask for "soft", "subtle", "medium", or "hard"/"dramatic" effects, use these value mappings as guidance for suggesting appropriate parameter values.
+
+### Entrance Presets Intensity Values
+
+| Preset   | Parameter        | Subtle/Soft | Medium  | Dramatic/Hard |
+| -------- | ---------------- | ----------- | ------- | ------------- |
+| ArcIn    | easing           | quintInOut  | backOut | backInOut     |
+| BlurIn   | blur             | 6px         | 25px    | 50px          |
+| BounceIn | distanceFactor   | 1           | 2       | 3             |
+| DropIn   | initialScale     | 1.2         | 1.6     | 2             |
+| FlipIn   | initialRotate    | 45°         | 90°     | 270°          |
+| FoldIn   | initialRotate    | 35°         | 60°     | 90°           |
+| GrowIn   | initialScale     | 0.8         | 0.6     | 0             |
+| SlideIn  | initialTranslate | 0.2         | 0.8     | 1             |
+| SpinIn   | initialScale     | 0.8         | 0.5     | 0             |
+
+### Scroll Presets Intensity Values
+
+| Preset        | Parameter | Subtle/Soft | Medium | Dramatic/Hard |
+| ------------- | --------- | ----------- | ------ | ------------- |
+| BlurScroll    | blur      | 6px         | 25px   | 50px          |
+| FlipScroll    | rotate    | 60°         | 120°   | 420°          |
+| GrowScroll    | scale     | 1.2         | 1.7    | 4             |
+| MoveScroll    | distance  | 150px       | 400px  | 800px         |
+| ShrinkScroll  | scale     | 0.8         | 0.3    | 0             |
+| SkewPanScroll | skew      | 10°         | 17°    | 24°           |
+| Spin3dScroll  | rotate    | 45°         | 100°   | 200°          |
+| SpinScroll    | scale     | 1           | 0.7    | 0.4           |
+| StretchScroll | stretch   | 1.2         | 1.5    | 2             |
+| TiltScroll    | distance  | 0.25        | 0.5    | 1             |
+| TurnScroll    | scale     | 1           | 1.3    | 1.6           |
+
+### Ongoing Presets Intensity Values
+
+| Preset | Parameter | Subtle/Soft | Medium | Dramatic/Hard |
+| ------ | --------- | ----------- | ------ | ------------- |
+| Bounce | intensity | 0.3         | 0.5    | 1             |
+| Fold   | angle     | 15°         | 30°    | 45°           |
+| Jello  | intensity | 0.25        | 0.5    | 1             |
+| Poke   | intensity | 0.25        | 0.5    | 1             |
+| Pulse  | intensity | 0           | 0.06   | 0.12          |
+| Rubber | intensity | 0           | 0.05   | 0.1           |
+| Swing  | swing     | 20°         | 40°    | 60°           |
+| Wiggle | intensity | 0.25        | 0.5    | 1             |
+
+### Mouse Presets Intensity Values
+
+| Preset            | Parameter(s)       | Subtle/Soft | Medium   | Dramatic/Hard |
+| ----------------- | ------------------ | ----------- | -------- | ------------- |
+| AiryMouse         | angle              | 10°         | 50°      | 85°           |
+| BlobMouse         | scale              | 1.2         | 1.6      | 2.4           |
+| BlurMouse         | angle, scale       | 0°, 1       | 25°, 0.7 | 65°, 0.25     |
+| ScaleMouse (down) | scale              | 0.85        | 0.5      | 0             |
+| ScaleMouse (up)   | scale              | 1.2         | 1.6      | 2.4           |
+| SkewMouse         | angle              | 10°         | 20°      | 45°           |
+| SwivelMouse       | angle, perspective | 25°, 1000   | 50°, 700 | 85°, 300      |
+| Tilt3DMouse       | angle, perspective | 25°, 1000   | 50°, 500 | 85°, 200      |
+| Track3DMouse      | angle, perspective | 25°, 1000   | 50°, 500 | 85°, 333      |
+
+### Usage Example
+
+When a user asks: "I want a subtle flip entrance"
+
+Suggest: `{ type: 'FlipIn', initialRotate: 45 }`

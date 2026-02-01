@@ -7,27 +7,27 @@ trigger: mouse
 
 Animations that respond to cursor position. Desktop-only.
 
-## When to Use
+## When to Use Mouse Animations
 
 - Interactive cards/products (tilt effect)
 - Parallax depth with cursor
 - Hero section interactivity
 - Playful/game-like interfaces
 
-## When NOT to Use
+## When NOT to Use Mouse Animations
 
 - Mobile-first designs (won't work on touch)
 - Accessibility-critical interfaces
 - Essential functionality
 - Multiple simultaneous effects
 
-## Available Presets
+## Available Mouse Presets
 
 See [Mouse Presets](presets-reference.md#mouse-presets) for full details:
 
 Tilt3DMouse, TrackMouse, BounceMouse, Track3DMouse, SpinMouse, ScaleMouse, SwivelMouse, SkewMouse, BlurMouse, AiryMouse, BlobMouse, CustomMouse
 
-## Quick Decision
+## Mouse Quick Decision
 
 | Tone                 | Presets                                    |
 | -------------------- | ------------------------------------------ |
@@ -35,7 +35,7 @@ Tilt3DMouse, TrackMouse, BounceMouse, Track3DMouse, SpinMouse, ScaleMouse, Swive
 | Playful/Fun          | BounceMouse, BlobMouse, AiryMouse          |
 | Game-like/Dynamic    | SpinMouse, Track3DMouse, SkewMouse         |
 
-## Common Use Cases
+## Mouse Common Use Cases
 
 | Use Case               | Recommended                         |
 | ---------------------- | ----------------------------------- |

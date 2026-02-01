@@ -13,50 +13,48 @@ Uses the `viewEnter` trigger (intersection observer). Plays automatically when e
 
 **Note:** For click, toggle, or other event-based triggers, implement the triggering logic separately and call the animation programmatically.
 
-## When to Use
+## When to Use Entrance Animations
 
 - Element reveals on viewport entry
 - First-time visibility animations
 - Content appearing as user scrolls down
 
-## When NOT to Use
+## When NOT to Use Entrance Animations
 
 - Scroll-driven reveals → see [Scroll](presets-reference.md#scroll)
 - Continuous/looping → see [Ongoing](presets-reference.md#ongoing)
 - Mouse-reactive → see [Mouse](presets-reference.md#mouse)
 
-## Available Presets
+## Available Entrance Presets
 
 See [Entrance Presets](presets-reference.md#entrance-presets) for full details:
 
-FadeIn, ArcIn, BlurIn, BounceIn, CircleIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, GlitchIn, GrowIn, PunchIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
+FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, FlipIn, FloatIn, FoldIn, GlideIn, GrowIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
 
-## Common Parameters
+## Entrance Common Parameters
 
 All entrance presets share:
 
-- `duration`: 0-4000ms (default: 1200)
-- `delay`: 0-8000ms (default: 0)
+- `duration`: 0-4000 in ms (default: 1200)
+- `delay`: 0-8000 in ms (default: 0)
 
-See [Common Parameters](presets-reference.md#common-parameters) for details on `power` behavior.
+## Entrance Quick Decision
 
-## Quick Decision
+| Tone                | Presets                                  |
+| ------------------- | ---------------------------------------- |
+| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn |
+| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn            |
+| Playful/Energetic   | BounceIn, SpinIn                         |
+| Geometric/Modern    | ShapeIn, RevealIn, ShuttersIn, WinkIn    |
 
-| Tone                | Presets                                         |
-| ------------------- | ----------------------------------------------- |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn        |
-| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn, ExpandIn         |
-| Playful/Energetic   | BounceIn, SpinIn, PunchIn, GlitchIn             |
-| Geometric/Modern    | CircleIn, ShapeIn, RevealIn, ShuttersIn, WinkIn |
-
-## Common Use Cases
+## Entrance Common Use Cases
 
 | Use Case               | Recommended                |
 | ---------------------- | -------------------------- |
-| Hero sections          | ArcIn, ExpandIn, FloatIn   |
+| Hero sections          | ArcIn, FloatIn, RevealIn   |
 | Modals/Popups          | FadeIn, DropIn, GrowIn     |
 | List items (staggered) | FadeIn, SlideIn with delay |
-| Notifications          | BounceIn, PunchIn          |
+| Notifications          | BounceIn, DropIn           |
 | Cards                  | FlipIn, ArcIn, TiltIn      |
 
 ## Combining with Ongoing
