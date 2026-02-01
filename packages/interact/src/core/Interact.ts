@@ -20,6 +20,14 @@ function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
 }
 
+/** Keys that indicate an effect has its own definition (not just a reference) */
+const EFFECT_DEFINITION_KEYS = ['duration', 'namedEffect', 'keyframeEffect', 'customEffect'] as const;
+
+/** Check if an effect is just a reference to another effect (has effectId but no definition) */
+function isEffectReference(effect: Effect | EffectRef): effect is EffectRef {
+  return 'effectId' in effect && !EFFECT_DEFINITION_KEYS.some((key) => key in effect);
+}
+
 export class Interact {
   static defineInteractElement?: () => boolean;
   dataCache: InteractCache;
@@ -260,16 +268,14 @@ function resolveSequence(
   configSequences: Record<string, Sequence>,
 ): Sequence | null {
   const sequenceId = seqOrRef.sequenceId;
-
-  // Check if it's a reference (has sequenceId but no effects)
   if (!('effects' in seqOrRef) || !seqOrRef.effects) {
     const referencedSequence = configSequences[sequenceId];
+
     if (!referencedSequence) {
       console.warn(`Sequence with id "${sequenceId}" not found in config.sequences`);
       return null;
     }
 
-    // Merge overrides from the reference
     return {
       ...referencedSequence,
       delay: seqOrRef.delay ?? referencedSequence.delay,
@@ -278,8 +284,7 @@ function resolveSequence(
     };
   }
 
-  // It's an inline sequence
-  return seqOrRef as Sequence;
+  return seqOrRef;
 }
 
 /**
@@ -292,7 +297,6 @@ function expandSequenceEffects(
 ): (Effect | EffectRef)[] {
   const expandedEffects: (Effect | EffectRef)[] = [];
 
-  // Process sequences and add their effects with calculated delays
   if (interaction.sequences) {
     for (const seqOrRef of interaction.sequences) {
       const sequence = resolveSequence(seqOrRef, configSequences);
@@ -301,28 +305,24 @@ function expandSequenceEffects(
       const delay = sequence.delay ?? 0;
       const offset = sequence.offset ?? 100;
       const easingFn = resolveEasingFunction(sequence.offsetEasing);
-
-      // Calculate staggered offsets for this sequence
       const offsets = calculateOffsets(sequence.effects.length, offset, easingFn);
 
-      // Process each effect in the sequence
       sequence.effects.forEach((effect, index) => {
-        // Resolve effect reference if needed
-        let resolvedEffect: Effect | EffectRef;
-        if ('effectId' in effect && effect.effectId && !('duration' in effect || 'namedEffect' in effect || 'keyframeEffect' in effect || 'customEffect' in effect)) {
-          // It's a reference
+        let resolvedEffect: Effect;
+        if (isEffectReference(effect)) {
           const referencedEffect = configEffects[effect.effectId];
-          if (referencedEffect) {
-            resolvedEffect = { ...referencedEffect, ...effect };
-          } else {
-            resolvedEffect = effect;
-          }
+          resolvedEffect = referencedEffect ? { ...referencedEffect, ...effect } : effect;
         } else {
           resolvedEffect = effect;
         }
 
         // Calculate the total delay for this effect (sequence delay + staggered offset + effect's own delay)
-        const effectDelay = ('delay' in resolvedEffect ? (resolvedEffect as any).delay : 0) || 0;
+        let effectDelay;
+        if('delay' in resolvedEffect) {
+          effectDelay = resolvedEffect.delay ?? 0;
+        } else {
+          effectDelay = 0;
+        }
         const calculatedDelay = delay + offsets[index] + effectDelay;
 
         // Create a new effect with the calculated delay
