@@ -1,6 +1,6 @@
 import { describe, expect, test, vi, beforeEach, beforeAll } from 'vitest';
 import { Sequence } from '../src/Sequence';
-import { calculateOffsets, parseCubicBezier, createCubicBezier } from '../src/utils';
+import { calculateOffsets, parseCubicBezier, createCubicBezier, parseLinear, createLinear } from '../src/utils';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { linear, quadIn, sineOut, cubicIn, expoIn, quadOut, cubicOut } from '../src/easings';
 
@@ -497,6 +497,64 @@ describe('Sequence', () => {
       expect(fn(1)).toBe(1);
       expect(fn(-0.5)).toBe(0); // clamp below 0
       expect(fn(1.5)).toBe(1); // clamp above 1
+    });
+  });
+
+  describe('parseLinear()', () => {
+    test('should parse simple linear(0, 1) with auto-distributed stops', () => {
+      const fn = parseLinear('linear(0, 1)');
+      expect(fn).not.toBeNull();
+
+      expect(fn!(0)).toBe(0);
+      expect(fn!(0.5)).toBe(0.5);
+      expect(fn!(1)).toBe(1);
+    });
+
+    test('should parse linear with explicit percentage stops', () => {
+      const fn = parseLinear('linear(0, 0.75 25%, 1)');
+      expect(fn).not.toBeNull();
+
+      expect(fn!(0)).toBe(0);
+      expect(fn!(0.25)).toBe(0.75); // explicit 75% at 25% progress
+      expect(fn!(1)).toBe(1);
+      // Between 25% and 100%: interpolate from 0.75 to 1
+      expect(fn!(0.625)).toBeCloseTo(0.875, 5); // midpoint between 0.25 and 1
+    });
+
+    test('should return null for invalid input', () => {
+      expect(parseLinear('not-linear')).toBeNull();
+      expect(parseLinear('linear()')).toBeNull();
+      expect(parseLinear('linear(0)')).toBeNull(); // needs at least 2 stops
+      expect(parseLinear('cubic-bezier(0, 0, 1, 1)')).toBeNull();
+    });
+  });
+
+  describe('createLinear()', () => {
+    test('should create step-like easing with multiple stops', () => {
+      // Create a "stairs" effect: 0 until 50%, then jump to 1
+      const fn = createLinear([
+        { value: 0, position: 0 },
+        { value: 0, position: 0.5 },
+        { value: 1, position: 0.5 },
+        { value: 1, position: 1 },
+      ]);
+
+      expect(fn(0)).toBe(0);
+      expect(fn(0.25)).toBe(0);
+      expect(fn(0.5)).toBe(0); // at exact boundary, returns first matching stop
+      expect(fn(0.75)).toBe(1);
+      expect(fn(1)).toBe(1);
+    });
+
+    test('should handle boundary values correctly', () => {
+      const fn = createLinear([
+        { value: 0.2, position: 0 },
+        { value: 0.8, position: 1 },
+      ]);
+
+      expect(fn(-0.5)).toBe(0.2); // clamp below returns first stop value
+      expect(fn(1.5)).toBe(0.8); // clamp above returns last stop value
+      expect(fn(0.5)).toBeCloseTo(0.5, 5); // midpoint
     });
   });
 

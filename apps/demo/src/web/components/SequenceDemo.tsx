@@ -118,6 +118,8 @@ const easingPresets = [
   { name: 'ease-in', value: 'cubic-bezier(0.4, 0, 1, 1)', description: 'CSS cubic-bezier' },
   { name: 'overshoot', value: 'cubic-bezier(0.34, 1.56, 0.64, 1)', description: 'CSS cubic-bezier (y > 1)' },
   { name: 'back-in', value: 'cubic-bezier(0.6, -0.28, 0.735, 0.045)', description: 'CSS cubic-bezier (y < 0)' },
+  { name: 'linear ramp', value: 'linear(0, 0.5, 1)', description: 'CSS linear()' },
+  { name: 'fast-then-slow', value: 'linear(0, 0.3 50%, 1)', description: 'CSS linear()' },
 ];
 
 const sequenceItems = [
@@ -171,7 +173,7 @@ export const SequenceDemo = () => {
         <h3>Staggered Animations</h3>
         <p className="sequence-demo-description">
           Use <code>offsetEasing</code> to control stagger timing. Supports named easings, 
-          CSS <code>cubic-bezier()</code> strings, and custom functions.
+          CSS <code>cubic-bezier()</code>, CSS <code>linear()</code>, and custom functions.
         </p>
       </div>
 

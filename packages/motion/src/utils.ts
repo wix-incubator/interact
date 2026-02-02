@@ -70,6 +70,70 @@ export function parseCubicBezier(str: string): ((t: number) => number) | null {
   return createCubicBezier(x1 as number, y1 as number, x2 as number, y2 as number);
 }
 
+type LinearStop = { value: number; position: number };
+
+export function createLinear(stops: LinearStop[]): (t: number) => number {
+  if (stops.length === 0) return () => 0;
+  if (stops.length === 1) return () => stops[0].value;
+
+  // Sort stops by position
+  const sorted = [...stops].sort((a, b) => a.position - b.position);
+
+  return (t: number): number => {
+    if (t <= 0) return sorted[0].value;
+    if (t >= 1) return sorted[sorted.length - 1].value;
+
+    // Find the two stops to interpolate between
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const current = sorted[i];
+      const next = sorted[i + 1];
+
+      if (t >= current.position && t <= next.position) {
+        const range = next.position - current.position;
+        if (range === 0) return current.value;
+        const localT = (t - current.position) / range;
+        return current.value + (next.value - current.value) * localT;
+      }
+    }
+
+    return sorted[sorted.length - 1].value;
+  };
+}
+
+export function parseLinear(str: string): ((t: number) => number) | null {
+  const match = str.match(/^linear\s*\(\s*(.+)\s*\)$/i);
+  if (!match) return null;
+
+  const content = match[1];
+  const parts = content.split(',').map((s) => s.trim());
+  if (parts.length < 2) return null;
+
+  const stops: LinearStop[] = [];
+
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i].trim();
+    // Match value with optional percentage: "0.5" or "0.5 75%"
+    const valueMatch = part.match(/^(-?[\d.]+)(?:\s+(-?[\d.]+)%)?$/);
+    if (!valueMatch) return null;
+
+    const value = parseFloat(valueMatch[1]);
+    if (isNaN(value)) return null;
+
+    let position: number;
+    if (valueMatch[2] !== undefined) {
+      // Explicit percentage provided
+      position = parseFloat(valueMatch[2]) / 100;
+    } else {
+      // Auto-distribute: first is 0%, last is 100%, others evenly spaced
+      position = i / (parts.length - 1);
+    }
+
+    stops.push({ value, position });
+  }
+
+  return createLinear(stops);
+}
+
 export function resolveEasingFunction(
   easing: string | ((t: number) => number) | undefined,
 ): (t: number) => number {
@@ -79,6 +143,8 @@ export function resolveEasingFunction(
     if (easing in jsEasings) return jsEasings[easing as keyof typeof jsEasings];
     const bezierFn = parseCubicBezier(easing);
     if (bezierFn) return bezierFn;
+    const linearFn = parseLinear(easing);
+    if (linearFn) return linearFn;
   }
 
   return jsEasings.linear;
