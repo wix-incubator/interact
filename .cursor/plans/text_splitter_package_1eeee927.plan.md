@@ -21,16 +21,23 @@ todos:
     dependencies:
       - types
       - line-detection
+      - wrapper-spans
   - id: accessibility
     content: Add ARIA attribute handling for screen reader support
     status: pending
     dependencies:
       - core-split
+  - id: wrapper-spans
+    content: Implement customizable span wrapper creation with class/style/attrs options
+    status: pending
+    dependencies:
+      - types
   - id: masking
     content: Implement mask wrapper functionality for reveal animations
     status: pending
     dependencies:
       - core-split
+      - wrapper-spans
   - id: autosplit
     content: Add responsive autoSplit with resize/font-load observers
     status: pending
@@ -69,7 +76,8 @@ Create a new `@wix/splittext` package within the `packages/` directory that expo
 The API will have:
 
 - **Functional approach**: Export a `splitText()` function rather than a class-based API
-- **Return arrays**: Return `{ chars, words, lines, sentences }` arrays of HTMLElements for direct use with animation libraries
+- **Return arrays**: Return `{ chars, words, lines, sentences }` arrays of `HTMLSpanElement` for direct use with animation libraries
+- **Customizable `<span>` wrappers**: All split items wrapped in `<span>` tags with configurable classes, styles, and attributes for styling and animation
 - **Lazy evaluation with caching**: Split types are computed on-demand when accessed, not eagerly on invocation
 - **Eager split when `type` provided**: If `type` option is specified, only those types are split immediately
 - **Accessibility by default**: Add ARIA attributes automatically
@@ -86,6 +94,7 @@ packages/splittext/
 │   ├── index.ts              # Main entry point
 │   ├── splitText.ts          # Core splitting logic
 │   ├── lineDetection.ts      # Range API-based line detection
+│   ├── wrappers.ts           # Span wrapper creation & customization
 │   ├── types.ts              # TypeScript interfaces
 │   ├── utils.ts              # Helper functions
 │   ├── accessibility.ts      # ARIA handling
@@ -100,12 +109,14 @@ packages/splittext/
 │   ├── README.md             # Overview
 │   ├── api/
 │   │   ├── splitText.md      # Function API
-│   │   └── types.md          # Type definitions
+│   │   └── types.md          # Type definitions (incl. wrapper config types)
 │   ├── guides/
 │   │   ├── getting-started.md
-│   │   └── accessibility.md
+│   │   ├── accessibility.md
+│   │   └── styling-wrappers.md  # Wrapper customization guide
 │   └── examples/
-│       └── animations.md
+│       ├── animations.md        # Animation library examples
+│       └── css-animations.md    # CSS-only animation examples
 ├── README.md
 ├── package.json
 ├── tsconfig.json
@@ -129,6 +140,11 @@ interface SplitTextOptions {
   // What to split
   type?: 'chars' | 'words' | 'lines' | 'sentences' | ('chars' | 'words' | 'lines' | 'sentences')[];
 
+  // Wrapper customization for styling/animation
+  wrapperClass?: string | WrapperClassConfig;  // CSS class(es) for wrapper spans
+  wrapperStyle?: Partial<CSSStyleDeclaration> | WrapperStyleConfig;  // Inline styles
+  wrapperAttrs?: Record<string, string> | WrapperAttrsConfig;  // Custom attributes (data-*, etc.)
+
   // Accessibility
   aria?: 'auto' | 'hidden' | 'none';  // default: 'auto'
 
@@ -142,12 +158,35 @@ interface SplitTextOptions {
   preserveWhitespace?: boolean;
 }
 
+// Per-type wrapper configuration
+interface WrapperClassConfig {
+  chars?: string;
+  words?: string;
+  lines?: string;
+  sentences?: string;
+}
+
+interface WrapperStyleConfig {
+  chars?: Partial<CSSStyleDeclaration>;
+  words?: Partial<CSSStyleDeclaration>;
+  lines?: Partial<CSSStyleDeclaration>;
+  sentences?: Partial<CSSStyleDeclaration>;
+}
+
+interface WrapperAttrsConfig {
+  chars?: Record<string, string>;
+  words?: Record<string, string>;
+  lines?: Record<string, string>;
+  sentences?: Record<string, string>;
+}
+
 interface SplitTextResult {
   // Lazy getters - split on first access, return cached on subsequent access
-  get chars: HTMLElement[];      // Splits into characters on first access
-  get words: HTMLElement[];      // Splits into words on first access
-  get lines: HTMLElement[];      // Splits into lines on first access
-  get sentences: HTMLElement[];  // Splits into sentences on first access
+  // Each element is a <span> wrapper that can be styled/animated
+  get chars: HTMLSpanElement[];      // Splits into characters on first access
+  get words: HTMLSpanElement[];      // Splits into words on first access
+  get lines: HTMLSpanElement[];      // Splits into lines on first access
+  get sentences: HTMLSpanElement[];  // Splits into sentences on first access
 
   // Methods
   revert(): void;
@@ -238,6 +277,86 @@ Test coverage for:
 - **Cache invalidation**: Verify cache cleared on `revert()` and `autoSplit` resize
 - Use Playwright for E2E testing all APIs that depend on DOM APIs
 
+**Wrapper customization tests:**
+
+- **Default wrapper classes**: Verify `split-c`, `split-w`, etc. are applied
+- **Custom wrapperClass (string)**: Verify single class applied to all wrappers
+- **Custom wrapperClass (config)**: Verify per-type classes applied correctly
+- **Multiple classes**: Verify space-separated classes all applied
+- **wrapperStyle (global)**: Verify inline styles applied to all wrapper spans
+- **wrapperStyle (per-type)**: Verify different styles for chars vs words vs lines
+- **wrapperAttrs**: Verify custom data attributes and other attributes applied
+- **data-index attribute**: Verify each wrapper has correct index for animation sequencing
+- **Combined options**: Verify class + style + attrs work together
+- **Inline-block for transforms**: Verify transforms work when display: inline-block set
+- **Revert cleans wrappers**: Verify all span wrappers removed on revert()
+- **Re-split preserves options**: Verify wrapper options reapplied on autoSplit resize
+
+**E2E wrapper animation tests (Playwright):**
+
+```typescript
+test('wrapper spans are animatable with CSS transitions', async ({ page }) => {
+  await page.setContent(`<h1 class="title">Hello</h1>`);
+  await page.addStyleTag({
+    content: `
+      .char-animate {
+        display: inline-block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .char-animate.visible { opacity: 1; }
+    `,
+  });
+
+  await page.evaluate(() => {
+    const { chars } = splitText('.title', {
+      type: 'chars',
+      wrapperClass: 'char-animate',
+      wrapperStyle: { display: 'inline-block' },
+    });
+
+    // Trigger animation
+    chars.forEach((char) => char.classList.add('visible'));
+  });
+
+  // Verify opacity transition occurred
+  const opacity = await page.locator('.char-animate').first().evaluate((el) => {
+    return getComputedStyle(el).opacity;
+  });
+  expect(opacity).toBe('1');
+});
+
+test('wrapper spans support transform animations', async ({ page }) => {
+  await page.setContent(`<h1 class="title">Test</h1>`);
+
+  await page.evaluate(() => {
+    const { chars } = splitText('.title', {
+      type: 'chars',
+      wrapperStyle: {
+        display: 'inline-block',
+        transform: 'translateY(20px)',
+      },
+    });
+  });
+
+  const transform = await page.locator('.splittext-char').first().evaluate((el) => {
+    return getComputedStyle(el).transform;
+  });
+  expect(transform).toContain('matrix'); // translateY creates a matrix
+});
+
+test('data-index attributes enable staggered animations', async ({ page }) => {
+  await page.setContent(`<p>Hello World</p>`);
+
+  const indices = await page.evaluate(() => {
+    const { words } = splitText('p', { type: 'words' });
+    return words.map((w) => w.dataset.index);
+  });
+
+  expect(indices).toEqual(['0', '1']);
+});
+```
+
 ### Phase 5: Documentation
 
 Following the [interact docs structure](packages/interact/docs/README.md):
@@ -246,6 +365,67 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - Getting started guide
 - Accessibility guide
 - Animation examples with `@wix/motion`
+
+**Additional documentation for wrapper customization:**
+
+1. `**docs/api/types.md**` - Update with wrapper option types:
+  - `WrapperClassConfig` interface documentation
+  - `WrapperStyleConfig` interface documentation
+  - `WrapperAttrsConfig` interface documentation
+  - Explanation of global vs per-type configuration
+2. `**docs/guides/styling-wrappers.md**` - New guide covering:
+  - Default CSS classes (`split-c`, `split-w`, etc.)
+  - Customizing wrapper classes
+  - Applying inline styles for animation setup
+  - Using data attributes for animation hooks
+  - Best practices for `display: inline-block` with transforms
+  - CSS custom properties for staggered animations
+3. `**docs/examples/animations.md**` - Expanded with wrapper examples:
+  - **Fade-in character animation** using wrapperClass + CSS
+  - **Slide-up word reveal** using wrapperStyle initial state
+  - **Staggered line animation** using data-index attribute
+  - **@wix/motion integration** with custom wrapper classes
+  - **CSS-only animations** using @keyframes and animation-delay
+  - **Intersection Observer** trigger with wrapper data attributes
+4. `**docs/examples/css-animations.md**` - New CSS-focused examples:
+  ```css
+   /* Example: Typewriter effect */
+   .split-c {
+     display: inline-block;
+     opacity: 0;
+     animation: typewriter 0.1s ease forwards;
+   }
+
+   .split-c:nth-child(1) { animation-delay: 0.1s; }
+   .split-c:nth-child(2) { animation-delay: 0.2s; }
+   /* ... or use CSS custom property --index */
+
+   @keyframes typewriter {
+     to { opacity: 1; }
+   }
+  ```
+5. **README.md** - Quick start section update:
+  ```typescript
+   import { splitText } from '@wix/splittext';
+
+   // Split with custom styling for animations
+   const { chars } = splitText('.headline', {
+     type: 'chars',
+     wrapperClass: 'animate-char',
+     wrapperStyle: {
+       display: 'inline-block',
+       opacity: '0',
+       transform: 'translateY(10px)',
+     },
+   });
+
+   // Animate with any library or CSS
+   animate(chars, {
+     opacity: 1,
+     transform: 'translateY(0)',
+     stagger: 0.03,
+   });
+  ```
 
 ## Integration Example
 
@@ -276,9 +456,199 @@ const multiResult = splitText('.headline', { type: ['chars', 'words'] });
 // Example 4: With animation library
 const { chars } = splitText('.title', { type: 'chars' });
 animate(chars, { opacity: [0, 1], stagger: 0.05 });
+
+// Example 5: Custom wrapper classes for styling
+const { words } = splitText('.title', {
+  type: 'words',
+  wrapperClass: 'split-word animate-fade-in',
+});
+// Each word wrapped in: <span class="split-word animate-fade-in">word</span>
+
+// Example 6: Per-type wrapper classes
+const result2 = splitText('.paragraph', {
+  type: ['chars', 'words', 'lines'],
+  wrapperClass: {
+    chars: 'char-wrapper',
+    words: 'word-wrapper',
+    lines: 'line-wrapper',
+  },
+});
+
+// Example 7: Custom inline styles for animation setup
+const { chars: styledChars } = splitText('.hero-text', {
+  type: 'chars',
+  wrapperStyle: {
+    display: 'inline-block',        // Required for transforms
+    opacity: '0',                   // Initial state for fade-in
+    transform: 'translateY(20px)', // Initial state for slide-up
+  },
+});
+// Now animate with CSS transitions or JS animation library
+
+// Example 8: Custom data attributes for animation sequencing
+const { words: indexedWords } = splitText('.stagger-text', {
+  type: 'words',
+  wrapperAttrs: {
+    'data-animate': 'fade-up',
+    'data-stagger': 'true',
+  },
+});
+// Each wrapper has data attributes for CSS or JS animation hooks
+
+// Example 9: Combined wrapper configuration
+const { lines: maskedLines } = splitText('.reveal-text', {
+  type: 'lines',
+  wrapperClass: 'line-mask overflow-hidden',
+  wrapperStyle: {
+    display: 'block',
+    position: 'relative',
+  },
+  wrapperAttrs: {
+    'data-reveal': 'slide-up',
+  },
+});
 ```
 
 ## Key Implementation Details
+
+### Span Wrapper Creation & Customization
+
+All split items are wrapped in `<span>` elements to enable styling and animation. The wrapper spans are fully customizable through options.
+
+**Default wrapper structure:**
+
+```html
+<!-- Characters -->
+<span class="split-c">H</span>
+<span class="split-c">e</span>
+<span class="split-c">l</span>
+<span class="split-c">l</span>
+<span class="split-c">o</span>
+
+<!-- Words -->
+<span class="split-w">Hello</span>
+<span class="split-w">World</span>
+
+<!-- Lines -->
+<span class="split-l">Hello World, this is</span>
+<span class="split-l">the second line</span>
+
+<!-- Sentences -->
+<span class="split-s">Hello World.</span>
+<span class="split-s">This is another sentence.</span>
+```
+
+**Wrapper creation implementation:**
+
+```typescript
+type SplitType = 'chars' | 'words' | 'lines' | 'sentences';
+
+function createWrapper(
+  content: string | Node,
+  type: SplitType,
+  index: number,
+  options: SplitTextOptions
+): HTMLSpanElement {
+  const span = document.createElement('span');
+
+  // Apply default class
+  span.classList.add(`split-${type[0]}`); // 'chars' -> 'split-c'
+
+  // Apply custom classes
+  const customClass = resolveWrapperOption(options.wrapperClass, type);
+  if (customClass) {
+    span.classList.add(...customClass.split(' ').filter(Boolean));
+  }
+
+  // Apply custom styles
+  const customStyle = resolveWrapperOption(options.wrapperStyle, type);
+  if (customStyle) {
+    Object.assign(span.style, customStyle);
+  }
+
+  // Apply custom attributes
+  const customAttrs = resolveWrapperOption(options.wrapperAttrs, type);
+  if (customAttrs) {
+    for (const [key, value] of Object.entries(customAttrs)) {
+      span.setAttribute(key, value);
+    }
+  }
+
+  // Add index as data attribute for animation sequencing
+  span.dataset.index = String(index);
+
+  // Set content
+  if (typeof content === 'string') {
+    span.textContent = content;
+  } else {
+    span.appendChild(content);
+  }
+
+  return span;
+}
+
+// Helper to resolve per-type or global config
+function resolveWrapperOption<T>(
+  option: T | Record<SplitType, T> | undefined,
+  type: SplitType
+): T | undefined {
+  if (!option) return undefined;
+  if (typeof option === 'object' && type in option) {
+    return (option as Record<SplitType, T>)[type];
+  }
+  return option as T;
+}
+```
+
+**Animation-ready inline-block:**
+
+For transforms to work correctly on spans, `display: inline-block` is often required. Users can set this via `wrapperStyle`:
+
+```typescript
+const { chars } = splitText('.title', {
+  type: 'chars',
+  wrapperStyle: {
+    display: 'inline-block', // Enables transform animations
+  },
+});
+```
+
+**CSS class-based styling example:**
+
+```css
+/* Base styles */
+.split-c,
+.split-w {
+  display: inline-block;
+}
+
+.split-l {
+  display: block;
+}
+
+/* Animation classes */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+  animation-delay: calc(var(--index) * 0.05s);
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+```
+
+```typescript
+// Set CSS variable for stagger delay
+const { chars } = splitText('.title', {
+  type: 'chars',
+  wrapperClass: 'fade-in',
+});
+
+chars.forEach((char, i) => {
+  char.style.setProperty('--index', String(i));
+});
+```
 
 ### Lazy Evaluation & Caching Strategy
 
