@@ -75,7 +75,8 @@ The API will have:
 - **Accessibility by default**: Add ARIA attributes automatically
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
-- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
+- `Intl.Segmenter` **API** for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -92,6 +93,7 @@ packages/splittext/
 │       ├── index.ts          # React entry
 │       └── useSplitText.ts   # React hook
 ├── test/
+│   ├── splitText.e2e.ts      # E2E tests
 │   ├── splitText.spec.ts     # Unit tests
 │   └── react.spec.tsx        # React hook tests
 ├── docs/
@@ -104,6 +106,7 @@ packages/splittext/
 │   │   └── accessibility.md
 │   └── examples/
 │       └── animations.md
+├── README.md
 ├── package.json
 ├── tsconfig.json
 ├── tsconfig.build.json
@@ -119,7 +122,7 @@ packages/splittext/
 function splitText(target: string | HTMLElement, options?: SplitTextOptions): SplitTextResult;
 ```
 
-### Types ([`packages/splittext/src/types.ts`](packages/splittext/src/types.ts))
+### Types (`[packages/splittext/src/types.ts](packages/splittext/src/types.ts)`)
 
 ```typescript
 interface SplitTextOptions {
@@ -171,40 +174,40 @@ function useSplitText(
 ### Phase 1: Core Package Infrastructure
 
 1. Create package directory structure
-2. Set up [`package.json`](packages/splittext/package.json) following existing conventions:
+2. Set up `[package.json](packages/splittext/package.json)` following existing conventions:
 
 - Name: `@wix/splittext`
 - Dual CJS/ESM exports
 - React as optional peer dependency
 
-3. Configure TypeScript, Vite, and Vitest matching [interact package](packages/interact/package.json)
+1. Configure TypeScript, Vite, and Vitest matching [interact package](packages/interact/package.json)
 
 ### Phase 2: Core Splitting Logic
 
 Key files to implement:
 
-1. **`src/splitText.ts`** - Main function:
+1. `**src/splitText.ts**` - Main function:
 
 - Parse target (CSS selector or element)
 - **Use Range API for line detection** (see Key Implementation Details)
 - Extract text content preserving structure
-- Split into chars/words/lines/sentences
+- **Use** `Intl.Segmenter` **API for locale-sensitive text splitting on meaningful items** (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-2. **`src/lineDetection.ts`** - Range-based line detection:
+1. `**src/lineDetection.ts**` - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
 - Handle Safari whitespace normalization
 - Support for nested elements via TreeWalker
 
-2. **`src/accessibility.ts`**:
+1. `**src/accessibility.ts**`:
 
 - Add `aria-label` with original text to container
 - Add `aria-hidden="true"` to split elements
 - Handle nested elements appropriately
 
-3. **`src/utils.ts`**:
+1. `**src/utils.ts**`:
 
 - Text segmentation (handle emoji, unicode)
 - DOM manipulation helpers
@@ -212,7 +215,7 @@ Key files to implement:
 
 ### Phase 3: React Integration
 
-1. **`src/react/useSplitText.ts`**:
+1. `**src/react/useSplitText.ts**`:
 
 - Hook that wraps core function
 - Handle cleanup on unmount
@@ -222,8 +225,8 @@ Key files to implement:
 
 Test coverage for:
 
-- Basic splitting (chars, words, lines)
-- Various text content (emoji, unicode, mixed)
+- Basic splitting (chars, words, lines, sentences)
+- Various text content (emoji, unicode, mixed, RTL)
 - Nested elements handling
 - Accessibility attributes
 - Revert functionality
@@ -231,8 +234,9 @@ Test coverage for:
 - React hook lifecycle
 - **Lazy evaluation**: Verify no DOM changes until getter accessed
 - **Caching**: Verify same array reference returned on repeated access
-- **Eager split with `type`**: Verify immediate DOM changes when type provided
+- **Eager split with `type**`: Verify immediate DOM changes when type provided
 - **Cache invalidation**: Verify cache cleared on `revert()` and `autoSplit` resize
+- Use Playwright for E2E testing all APIs that depend on DOM APIs
 
 ### Phase 5: Documentation
 
@@ -347,13 +351,6 @@ class SplitTextResultImpl implements SplitTextResult {
 }
 ```
 
-**Benefits of lazy evaluation:**
-
-1. **Zero overhead if unused** - `splitText()` is cheap if you don't access any getters
-2. **Pay for what you use** - Only requested split types perform DOM operations
-3. **Efficient re-access** - Cached results avoid redundant DOM manipulation
-4. **Predictable eager mode** - When `type` is specified, those splits happen immediately (useful for animations that need elements ready synchronously)
-
 **Cache invalidation:**
 
 - `revert()` clears the cache
@@ -362,9 +359,9 @@ class SplitTextResultImpl implements SplitTextResult {
 
 ### Line Detection Algorithm
 
-**Primary Approach: Range API with `getClientRects()`**
+**Primary Approach: Range API with `getClientRects()**`
 
-Use the DOM Range API to detect line breaks from text nodes _before_ creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+Use the DOM Range API to detect line breaks from text nodes *before* creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
 
 ```typescript
 function detectLines(textNode: Text): string[] {
@@ -513,6 +510,7 @@ The Range API approach has O(n) character iteration complexity, but:
 ### Browser Compatibility
 
 - **Safari quirk**: Requires whitespace normalization before Range operations
-- **`Range.getClientRects()`**: Widely supported (all modern browsers)
-- **`Range.getBoundingClientRect()`**: Not yet standard but widely supported
+- `**Range.getClientRects()**`: Widely supported (all modern browsers)
+- `**Range.getBoundingClientRect()**`: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
+
