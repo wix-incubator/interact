@@ -28,6 +28,12 @@ export const SequenceRegistry = {
   },
 
   registerEffect(sequenceId: string, config: SequenceEffectConfig) {
+    // Clear cached sequence if re-registering (replay scenario)
+    if (this.sequences.has(sequenceId)) {
+      this.sequences.delete(sequenceId);
+      this.configs.delete(sequenceId);
+    }
+
     const list = this.configs.get(sequenceId) || [];
     list.push(config);
     this.configs.set(sequenceId, list);
