@@ -102,8 +102,8 @@ const createConfig = (offsetEasing: string): InteractConfig => ({
   interactions: [
     {
       key: 'sequence-trigger',
-      trigger: 'viewEnter',
-      params: { type: 'repeat', threshold: 0.5 },
+      trigger: 'click',
+      params: { type: 'alternate', threshold: 0.5 },
       sequences: [{ sequenceId: 'entrance-sequence' }],
     },
   ],

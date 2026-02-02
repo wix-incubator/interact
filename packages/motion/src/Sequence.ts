@@ -22,11 +22,18 @@ export class Sequence extends AnimationGroup {
   }
 
   private _applyDelays(): void {
+    const minOffset = Math.min(...this._calculatedOffsets);
+    const maxOffset = Math.max(...this._calculatedOffsets);
+    const totalSpan = maxOffset - minOffset;
+  
     this.animationGroups.forEach((group, index) => {
-      const groupDelay = this.sequenceDelay + this._calculatedOffsets[index];
-      group.applyGroupDelay(groupDelay);
-  })
-}
+      // Normalize offset to be non-negative
+      const normalizedOffset = this._calculatedOffsets[index] - minOffset;
+      const groupDelay = this.sequenceDelay + normalizedOffset;
+      const endDelay = totalSpan - normalizedOffset;
+      group.applyGroupDelay(groupDelay, endDelay);
+    });
+  }
 
   getOffsetAt(index: number): number {
     return this._calculatedOffsets[index] ?? 0;
