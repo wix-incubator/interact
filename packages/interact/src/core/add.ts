@@ -8,11 +8,14 @@ import type {
   InteractionTrigger,
   CreateTransitionCSSParams,
   IInteractionController,
+  TimeEffect,
 } from '../types';
 import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { SequenceRegistry } from '@wix/motion';
+import { effectToAnimationOptions } from '../handlers/utilities';
 
 type InteractionsToApply = Array<
   [
@@ -234,7 +237,33 @@ function _addInteraction(
   });
 
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
-  interactionsToApply.reverse().forEach((interaction) => {
+  interactionsToApply.reverse();
+
+  // First pass: Register all sequence effects before calling handlers
+  // This ensures the full Sequence can be created when handlers request it
+  interactionsToApply.forEach(([, , effect, , targetElements]) => {
+    const sequenceEffect = effect as Effect & {
+      _sequenceId?: string;
+      _sequenceIndex?: number;
+      _sequenceTotal?: number;
+      _sequenceOptions?: { delay?: number; offset?: number; offsetEasing?: string | ((t: number) => number) };
+    };
+    if (sequenceEffect._sequenceId && 'duration' in effect) {
+      const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
+      targets.forEach((target) => {
+        SequenceRegistry.registerEffect(sequenceEffect._sequenceId!, {
+          target,
+          effectOptions: effectToAnimationOptions(effect as TimeEffect),
+          sequenceOptions: sequenceEffect._sequenceOptions || {},
+          index: sequenceEffect._sequenceIndex ?? 0,
+          total: sequenceEffect._sequenceTotal ?? 1,
+        });
+      });
+    }
+  });
+
+  // Second pass: Apply all interactions (handlers will now get fully-created Sequences)
+  interactionsToApply.forEach((interaction) => {
     _applyInteraction(...interaction);
   });
 }

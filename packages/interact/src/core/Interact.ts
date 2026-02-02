@@ -14,7 +14,7 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects, calculateOffsets, jsEasings, parseCubicBezier } from '@wix/motion';
+import { registerEffects, SequenceRegistry } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -101,6 +101,7 @@ export class Interact {
     this.listInteractionsCache = {};
     this.controllers.clear();
     this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
+    SequenceRegistry.clear();
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
 
@@ -178,6 +179,7 @@ export class Interact {
     });
     Interact.instances.length = 0;
     Interact.controllerCache.clear();
+    SequenceRegistry.clear();
   }
 
   static setup(options: {
@@ -231,36 +233,6 @@ export class Interact {
 let interactionIdCounter = 0;
 
 /**
- * Resolves an easing value to a function.
- * Supports:
- * - Direct function references
- * - Named easings from @wix/motion library
- * - CSS cubic-bezier strings (e.g., "cubic-bezier(0.4, 0, 0.2, 1)")
- */
-function resolveEasingFunction(
-  easing: string | ((t: number) => number) | undefined,
-): (t: number) => number {
-  if (typeof easing === 'function') {
-    return easing;
-  }
-
-  if (typeof easing === 'string') {
-    // Check named easings first
-    if (easing in jsEasings) {
-      return jsEasings[easing as keyof typeof jsEasings];
-    }
-
-    // Try parsing as cubic-bezier
-    const bezierFn = parseCubicBezier(easing);
-    if (bezierFn) {
-      return bezierFn;
-    }
-  }
-
-  return jsEasings.linear;
-}
-
-/**
  * Resolves a sequence reference or inline sequence to a full Sequence object.
  */
 function resolveSequence(
@@ -288,7 +260,8 @@ function resolveSequence(
 }
 
 /**
- * Expands effects from sequences into the effects array with calculated staggered delays.
+ * Expands effects from sequences into the effects array with sequence metadata.
+ * Delay calculation is handled by the Sequence class in @wix/motion.
  */
 function expandSequenceEffects(
   interaction: Interaction,
@@ -302,11 +275,14 @@ function expandSequenceEffects(
       const sequence = resolveSequence(seqOrRef, configSequences);
       if (!sequence) continue;
 
-      const delay = sequence.delay ?? 0;
-      const offset = sequence.offset ?? 100;
-      const easingFn = resolveEasingFunction(sequence.offsetEasing);
-      const offsets = calculateOffsets(sequence.effects.length, offset, easingFn);
+      // Store sequence options to pass to Sequence class
+      const sequenceOptions = {
+        delay: sequence.delay ?? 0,
+        offset: sequence.offset ?? 100,
+        offsetEasing: sequence.offsetEasing,
+      };
 
+      const totalEffects = sequence.effects.length;
       sequence.effects.forEach((effect, index) => {
         let resolvedEffect: Effect;
         if (isEffectReference(effect)) {
@@ -316,25 +292,16 @@ function expandSequenceEffects(
           resolvedEffect = effect;
         }
 
-        // Calculate the total delay for this effect (sequence delay + staggered offset + effect's own delay)
-        let effectDelay;
-        if('delay' in resolvedEffect) {
-          effectDelay = resolvedEffect.delay ?? 0;
-        } else {
-          effectDelay = 0;
-        }
-        const calculatedDelay = delay + offsets[index] + effectDelay;
-
-        // Create a new effect with the calculated delay
-        const effectWithDelay: Effect | EffectRef = {
+        // Mark effect with sequence metadata (delay calculation deferred to Sequence class)
+        const effectWithMetadata: Effect | EffectRef = {
           ...resolvedEffect,
-          delay: calculatedDelay,
-          // Mark this effect as part of a sequence for potential cleanup tracking
           _sequenceId: sequence.sequenceId,
           _sequenceIndex: index,
+          _sequenceTotal: totalEffects,
+          _sequenceOptions: sequenceOptions,
         } as any;
 
-        expandedEffects.push(effectWithDelay);
+        expandedEffects.push(effectWithMetadata);
       });
     }
   }

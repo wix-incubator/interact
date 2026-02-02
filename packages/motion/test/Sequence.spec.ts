@@ -1,5 +1,6 @@
 import { describe, expect, test, vi, beforeEach, beforeAll } from 'vitest';
-import { Sequence, calculateOffsets, parseCubicBezier, createCubicBezier } from '../src/Sequence';
+import { Sequence } from '../src/Sequence';
+import { calculateOffsets, parseCubicBezier, createCubicBezier } from '../src/utils';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { linear, quadIn, sineOut, cubicIn, expoIn, quadOut, cubicOut } from '../src/easings';
 

@@ -192,7 +192,10 @@ function getScrubScene(
   } as ScrubPointerScene;
 }
 
-function getAnimation(
+import { SequenceRegistry } from './api/sequenceRegistry';
+
+// Internal function for creating individual animations (used by registry)
+function _createAnimation(
   target: HTMLElement | string | null,
   animationOptions: AnimationOptions,
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
@@ -209,6 +212,26 @@ function getAnimation(
   }
 
   return getWebAnimation(target, animationOptions, trigger, { reducedMotion });
+}
+
+// Set up registry with animation creation function
+SequenceRegistry.setGetAnimationFn((target, options, trigger, reducedMotion) => {
+  return _createAnimation(target, options as AnimationOptions, trigger, reducedMotion) as AnimationGroup | null;
+});
+
+function getAnimation(
+  target: HTMLElement | string | null,
+  animationOptions: AnimationOptions,
+  trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
+  reducedMotion: boolean = false,
+): AnimationGroup | MouseAnimationInstance | null {
+  // Check if this is a sequence effect
+  const sequenceId = (animationOptions as AnimationOptions & { _sequenceId?: string })._sequenceId;
+  if (sequenceId) {
+    return SequenceRegistry.getOrCreateSequence(sequenceId, reducedMotion);
+  }
+
+  return _createAnimation(target, animationOptions, trigger, reducedMotion);
 }
 
 export {
