@@ -84,7 +84,7 @@ The API will have:
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
 - `Intl.Segmenter` **API** for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
-- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -320,9 +320,12 @@ test('wrapper spans are animatable with CSS transitions', async ({ page }) => {
   });
 
   // Verify opacity transition occurred
-  const opacity = await page.locator('.char-animate').first().evaluate((el) => {
-    return getComputedStyle(el).opacity;
-  });
+  const opacity = await page
+    .locator('.char-animate')
+    .first()
+    .evaluate((el) => {
+      return getComputedStyle(el).opacity;
+    });
   expect(opacity).toBe('1');
 });
 
@@ -339,9 +342,12 @@ test('wrapper spans support transform animations', async ({ page }) => {
     });
   });
 
-  const transform = await page.locator('.splittext-char').first().evaluate((el) => {
-    return getComputedStyle(el).transform;
-  });
+  const transform = await page
+    .locator('.splittext-char')
+    .first()
+    .evaluate((el) => {
+      return getComputedStyle(el).transform;
+    });
   expect(transform).toContain('matrix'); // translateY creates a matrix
 });
 
@@ -369,63 +375,78 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 **Additional documentation for wrapper customization:**
 
 1. `**docs/api/types.md**` - Update with wrapper option types:
-  - `WrapperClassConfig` interface documentation
-  - `WrapperStyleConfig` interface documentation
-  - `WrapperAttrsConfig` interface documentation
-  - Explanation of global vs per-type configuration
+
+- `WrapperClassConfig` interface documentation
+- `WrapperStyleConfig` interface documentation
+- `WrapperAttrsConfig` interface documentation
+- Explanation of global vs per-type configuration
+
 2. `**docs/guides/styling-wrappers.md**` - New guide covering:
-  - Default CSS classes (`split-c`, `split-w`, etc.)
-  - Customizing wrapper classes
-  - Applying inline styles for animation setup
-  - Using data attributes for animation hooks
-  - Best practices for `display: inline-block` with transforms
-  - CSS custom properties for staggered animations
+
+- Default CSS classes (`split-c`, `split-w`, etc.)
+- Customizing wrapper classes
+- Applying inline styles for animation setup
+- Using data attributes for animation hooks
+- Best practices for `display: inline-block` with transforms
+- CSS custom properties for staggered animations
+
 3. `**docs/examples/animations.md**` - Expanded with wrapper examples:
-  - **Fade-in character animation** using wrapperClass + CSS
-  - **Slide-up word reveal** using wrapperStyle initial state
-  - **Staggered line animation** using data-index attribute
-  - **@wix/motion integration** with custom wrapper classes
-  - **CSS-only animations** using @keyframes and animation-delay
-  - **Intersection Observer** trigger with wrapper data attributes
+
+- **Fade-in character animation** using wrapperClass + CSS
+- **Slide-up word reveal** using wrapperStyle initial state
+- **Staggered line animation** using data-index attribute
+- **@wix/motion integration** with custom wrapper classes
+- **CSS-only animations** using @keyframes and animation-delay
+- **Intersection Observer** trigger with wrapper data attributes
+
 4. `**docs/examples/css-animations.md**` - New CSS-focused examples:
-  ```css
-   /* Example: Typewriter effect */
-   .split-c {
-     display: inline-block;
-     opacity: 0;
-     animation: typewriter 0.1s ease forwards;
-   }
 
-   .split-c:nth-child(1) { animation-delay: 0.1s; }
-   .split-c:nth-child(2) { animation-delay: 0.2s; }
-   /* ... or use CSS custom property --index */
+```css
+/* Example: Typewriter effect */
+.split-c {
+  display: inline-block;
+  opacity: 0;
+  animation: typewriter 0.1s ease forwards;
+}
 
-   @keyframes typewriter {
-     to { opacity: 1; }
-   }
-  ```
+.split-c:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.split-c:nth-child(2) {
+  animation-delay: 0.2s;
+}
+/* ... or use CSS custom property --index */
+
+@keyframes typewriter {
+  to {
+    opacity: 1;
+  }
+}
+```
+
 5. **README.md** - Quick start section update:
-  ```typescript
-   import { splitText } from '@wix/splittext';
 
-   // Split with custom styling for animations
-   const { chars } = splitText('.headline', {
-     type: 'chars',
-     wrapperClass: 'animate-char',
-     wrapperStyle: {
-       display: 'inline-block',
-       opacity: '0',
-       transform: 'translateY(10px)',
-     },
-   });
+```typescript
+import { splitText } from '@wix/splittext';
 
-   // Animate with any library or CSS
-   animate(chars, {
-     opacity: 1,
-     transform: 'translateY(0)',
-     stagger: 0.03,
-   });
-  ```
+// Split with custom styling for animations
+const { chars } = splitText('.headline', {
+  type: 'chars',
+  wrapperClass: 'animate-char',
+  wrapperStyle: {
+    display: 'inline-block',
+    opacity: '0',
+    transform: 'translateY(10px)',
+  },
+});
+
+// Animate with any library or CSS
+animate(chars, {
+  opacity: 1,
+  transform: 'translateY(0)',
+  stagger: 0.03,
+});
+```
 
 ## Integration Example
 
@@ -478,8 +499,8 @@ const result2 = splitText('.paragraph', {
 const { chars: styledChars } = splitText('.hero-text', {
   type: 'chars',
   wrapperStyle: {
-    display: 'inline-block',        // Required for transforms
-    opacity: '0',                   // Initial state for fade-in
+    display: 'inline-block', // Required for transforms
+    opacity: '0', // Initial state for fade-in
     transform: 'translateY(20px)', // Initial state for slide-up
   },
 });
@@ -547,7 +568,7 @@ function createWrapper(
   content: string | Node,
   type: SplitType,
   index: number,
-  options: SplitTextOptions
+  options: SplitTextOptions,
 ): HTMLSpanElement {
   const span = document.createElement('span');
 
@@ -590,7 +611,7 @@ function createWrapper(
 // Helper to resolve per-type or global config
 function resolveWrapperOption<T>(
   option: T | Record<SplitType, T> | undefined,
-  type: SplitType
+  type: SplitType,
 ): T | undefined {
   if (!option) return undefined;
   if (typeof option === 'object' && type in option) {
@@ -634,7 +655,9 @@ const { chars } = splitText('.title', {
 }
 
 @keyframes fadeIn {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 ```
 
@@ -731,7 +754,7 @@ class SplitTextResultImpl implements SplitTextResult {
 
 **Primary Approach: Range API with `getClientRects()**`
 
-Use the DOM Range API to detect line breaks from text nodes *before* creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+Use the DOM Range API to detect line breaks from text nodes _before_ creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
 
 ```typescript
 function detectLines(textNode: Text): string[] {
@@ -883,4 +906,3 @@ The Range API approach has O(n) character iteration complexity, but:
 - `**Range.getClientRects()**`: Widely supported (all modern browsers)
 - `**Range.getBoundingClientRect()**`: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
-
