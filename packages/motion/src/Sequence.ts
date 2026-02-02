@@ -24,15 +24,9 @@ export class Sequence extends AnimationGroup {
   private _applyDelays(): void {
     this.animationGroups.forEach((group, index) => {
       const groupDelay = this.sequenceDelay + this._calculatedOffsets[index];
-      for (const animation of group.animations) {
-        const timing = animation.effect?.getTiming();
-        if (timing) {
-          const existingDelay = (timing.delay as number) || 0;
-          animation.effect?.updateTiming({ delay: existingDelay + groupDelay });
-        }
-      }
-    });
-  }
+      group.applyGroupDelay(groupDelay);
+  })
+}
 
   getOffsetAt(index: number): number {
     return this._calculatedOffsets[index] ?? 0;
