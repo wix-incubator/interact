@@ -28,7 +28,7 @@ export class Sequence extends AnimationGroup {
   
     this.animationGroups.forEach((group, index) => {
       // Normalize offset to be non-negative
-      const normalizedOffset = this._calculatedOffsets[index] - minOffset;
+      const normalizedOffset = minOffset < 0 ? this._calculatedOffsets[index] - minOffset : this._calculatedOffsets[index];
       const groupDelay = this.sequenceDelay + normalizedOffset;
       const endDelay = totalSpan - normalizedOffset;
       group.applyGroupDelay(groupDelay, endDelay);
