@@ -53,7 +53,9 @@ jobs:
         run: NPQ_PKG_MGR=yarn npx npq install
 
       - name: Build motion-presets package
-        run: yarn workspace @wix/motion-presets build
+        run: |
+          yarn workspace @wix/motion build
+          yarn workspace @wix/motion-presets build
 
       - name: Test motion-presets package
         run: yarn workspace @wix/motion-presets test
