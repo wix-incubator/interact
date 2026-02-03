@@ -6,14 +6,14 @@ on:
       version_strategy:
         type: choice
         description: Version strategy
-        options: 
-        - prerelease
-        - premajor
-        - preminor
-        - prepatch
-        - major
-        - minor
-        - patch
+        options:
+          - prerelease
+          - premajor
+          - preminor
+          - prepatch
+          - major
+          - minor
+          - patch
       dry_run:
         description: 'Dry run (preview only)'
         required: false
