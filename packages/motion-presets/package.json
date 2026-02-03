@@ -1,6 +1,6 @@
 {
   "name": "@wix/motion-presets",
-  "version": "1.0.0",
+  "version": "1.0.0-0",
   "description": "Animation presets for @wix/motion",
   "license": "MIT",
   "main": "dist/cjs/motion-presets.js",
@@ -61,5 +61,6 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
-  }
+  },
+  "stableVersion": "0.1.0"
 }
