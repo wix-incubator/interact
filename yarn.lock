@@ -1429,7 +1429,7 @@ __metadata:
   resolution: "@wix/motion-presets@workspace:packages/motion-presets"
   dependencies:
     "@vitest/coverage-v8": "npm:^4.0.14"
-    "@wix/motion": "npm:^2.0.0-rc.2"
+    "@wix/motion": "npm:next"
     rimraf: "npm:^6.0.1"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.2.2"
@@ -1463,6 +1463,15 @@ __metadata:
     vitest: "npm:^4.0.14"
   languageName: unknown
   linkType: soft
+
+"@wix/motion@npm:next":
+  version: 2.0.0-rc.2
+  resolution: "@wix/motion@npm:2.0.0-rc.2"
+  dependencies:
+    fastdom: "npm:^1.0.11"
+  checksum: 10/1d22b5352c71774279d0ee068fe335a2e867ad46274584604dbf73f6e938648fadb9a3e800b31e9bfe414507157194c64ebb6eb525df4b2e9e48846152cbc9df
+  languageName: node
+  linkType: hard
 
 "abbrev@npm:^4.0.0":
   version: 4.0.0
