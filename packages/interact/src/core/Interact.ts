@@ -20,19 +20,6 @@ function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
 }
 
-/** Keys that indicate an effect has its own definition (not just a reference) */
-const EFFECT_DEFINITION_KEYS = [
-  'duration',
-  'namedEffect',
-  'keyframeEffect',
-  'customEffect',
-] as const;
-
-/** Check if an effect is just a reference to another effect (has effectId but no definition) */
-function isEffectReference(effect: Effect | EffectRef): effect is EffectRef {
-  return 'effectId' in effect && !EFFECT_DEFINITION_KEYS.some((key) => key in effect);
-}
-
 export class Interact {
   static defineInteractElement?: () => boolean;
   dataCache: InteractCache;
@@ -271,7 +258,6 @@ function resolveSequence(
 function expandSequenceEffects(
   interaction: Interaction,
   configSequences: Record<string, Sequence>,
-  configEffects: Record<string, Effect>,
 ): (Effect | EffectRef)[] {
   const expandedEffects: (Effect | EffectRef)[] = [];
 
@@ -289,17 +275,9 @@ function expandSequenceEffects(
 
       const totalEffects = sequence.effects.length;
       sequence.effects.forEach((effect, index) => {
-        let resolvedEffect: Effect;
-        if (isEffectReference(effect)) {
-          const referencedEffect = configEffects[effect.effectId];
-          resolvedEffect = referencedEffect ? { ...referencedEffect, ...effect } : effect;
-        } else {
-          resolvedEffect = effect;
-        }
-
         // Mark effect with sequence metadata (delay calculation deferred to Sequence class)
         const effectWithMetadata: Effect | EffectRef = {
-          ...resolvedEffect,
+          ...effect,
           _sequenceId: sequence.sequenceId,
           _sequenceIndex: index,
           _sequenceTotal: totalEffects,
@@ -371,7 +349,6 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
     const sequenceEffects = expandSequenceEffects(
       { ...interaction_, sequences: sequences_ } as Interaction,
       sequences,
-      config.effects || {},
     );
 
     /*
