@@ -21,7 +21,12 @@ function _convertToKeyTemplate(key: string) {
 }
 
 /** Keys that indicate an effect has its own definition (not just a reference) */
-const EFFECT_DEFINITION_KEYS = ['duration', 'namedEffect', 'keyframeEffect', 'customEffect'] as const;
+const EFFECT_DEFINITION_KEYS = [
+  'duration',
+  'namedEffect',
+  'keyframeEffect',
+  'customEffect',
+] as const;
 
 /** Check if an effect is just a reference to another effect (has effectId but no definition) */
 function isEffectReference(effect: Effect | EffectRef): effect is EffectRef {

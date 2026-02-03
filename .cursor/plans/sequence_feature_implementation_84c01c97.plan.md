@@ -44,6 +44,7 @@ Create new file `packages/motion/src/Sequence.ts`:
 - Store `animationGroups: AnimationGroup[]` instead of `animations: Animation[]`
 - Add properties: `delay`, `offset`, `offsetEasing`
 - Implement `calculateOffsets()` method using the formula from spec:
+
 ```typescript
 const last = indices.at(-1);
 indices.map((n) => (easing(n / last) * last * offset) | 0);
@@ -123,7 +124,6 @@ Modify `packages/interact/src/core/Interact.ts`:
 
 1. Parse `config.sequences` into cache (similar to `config.effects`)
 2. Process `interaction.sequences` array:
-
    - Resolve `sequenceId` references from `config.sequences`
    - Process each effect within the sequence
    - Generate unique IDs for sequence effects

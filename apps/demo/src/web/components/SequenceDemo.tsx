@@ -116,8 +116,16 @@ const easingPresets = [
   { name: 'expoIn', value: 'expoIn', description: 'Named easing' },
   { name: 'ease-out', value: 'cubic-bezier(0.4, 0, 0.2, 1)', description: 'CSS cubic-bezier' },
   { name: 'ease-in', value: 'cubic-bezier(0.4, 0, 1, 1)', description: 'CSS cubic-bezier' },
-  { name: 'overshoot', value: 'cubic-bezier(0.34, 1.56, 0.64, 1)', description: 'CSS cubic-bezier (y > 1)' },
-  { name: 'back-in', value: 'cubic-bezier(0.6, -0.28, 0.735, 0.045)', description: 'CSS cubic-bezier (y < 0)' },
+  {
+    name: 'overshoot',
+    value: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    description: 'CSS cubic-bezier (y > 1)',
+  },
+  {
+    name: 'back-in',
+    value: 'cubic-bezier(0.6, -0.28, 0.735, 0.045)',
+    description: 'CSS cubic-bezier (y < 0)',
+  },
   { name: 'linear ramp', value: 'linear(0, 0.5, 1)', description: 'CSS linear()' },
   { name: 'fast-then-slow', value: 'linear(0, 0.3 50%, 1)', description: 'CSS linear()' },
 ];
@@ -133,7 +141,9 @@ const sequenceItems = [
 
 export const SequenceDemo = () => {
   const [triggerKey, setTriggerKey] = useState(0);
-  const [configText, setConfigText] = useState(() => JSON.stringify(createConfig('quadOut'), null, 2));
+  const [configText, setConfigText] = useState(() =>
+    JSON.stringify(createConfig('quadOut'), null, 2),
+  );
   const [parseError, setParseError] = useState<string | null>(null);
   const [activePreset, setActivePreset] = useState('quadOut');
 
@@ -160,7 +170,7 @@ export const SequenceDemo = () => {
     setTriggerKey((prev) => prev + 1);
   };
 
-  const handlePresetClick = useCallback((preset: typeof easingPresets[0]) => {
+  const handlePresetClick = useCallback((preset: (typeof easingPresets)[0]) => {
     setConfigText(JSON.stringify(createConfig(preset.value), null, 2));
     setActivePreset(preset.value);
     setTriggerKey((prev) => prev + 1);
@@ -172,8 +182,8 @@ export const SequenceDemo = () => {
         <p className="scroll-label">Sequence Feature</p>
         <h3>Staggered Animations</h3>
         <p className="sequence-demo-description">
-          Use <code>offsetEasing</code> to control stagger timing. Supports named easings, 
-          CSS <code>cubic-bezier()</code>, CSS <code>linear()</code>, and custom functions.
+          Use <code>offsetEasing</code> to control stagger timing. Supports named easings, CSS{' '}
+          <code>cubic-bezier()</code>, CSS <code>linear()</code>, and custom functions.
         </p>
       </div>
 

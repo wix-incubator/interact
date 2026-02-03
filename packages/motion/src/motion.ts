@@ -216,7 +216,12 @@ function _createAnimation(
 
 // Set up registry with animation creation function
 SequenceRegistry.setGetAnimationFn((target, options, trigger, reducedMotion) => {
-  return _createAnimation(target, options as AnimationOptions, trigger, reducedMotion) as AnimationGroup | null;
+  return _createAnimation(
+    target,
+    options as AnimationOptions,
+    trigger,
+    reducedMotion,
+  ) as AnimationGroup | null;
 });
 
 function getAnimation(

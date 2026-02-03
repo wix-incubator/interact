@@ -246,7 +246,11 @@ function _addInteraction(
       _sequenceId?: string;
       _sequenceIndex?: number;
       _sequenceTotal?: number;
-      _sequenceOptions?: { delay?: number; offset?: number; offsetEasing?: string | ((t: number) => number) };
+      _sequenceOptions?: {
+        delay?: number;
+        offset?: number;
+        offsetEasing?: string | ((t: number) => number);
+      };
     };
     if (sequenceEffect._sequenceId && 'duration' in effect) {
       const targets = Array.isArray(targetElements) ? targetElements : [targetElements];

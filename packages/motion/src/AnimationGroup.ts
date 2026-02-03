@@ -27,7 +27,7 @@ export class AnimationGroup {
       const timing = animation.effect?.getTiming();
       if (timing) {
         const existingDelay = (timing.delay as number) || 0;
-        animation.effect?.updateTiming({ delay: existingDelay + delay, endDelay});
+        animation.effect?.updateTiming({ delay: existingDelay + delay, endDelay });
       }
     }
   }

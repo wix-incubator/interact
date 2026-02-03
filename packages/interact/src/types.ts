@@ -158,7 +158,7 @@ export type Sequence = {
 export type SequenceRef = {
   sequenceId: string;
   delay?: number;
-  offset?: number
+  offset?: number;
   offsetEasing?: string | ((t: number) => number);
 };
 

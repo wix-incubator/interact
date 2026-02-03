@@ -14,7 +14,12 @@ export function getJsEasing(
   return easing ? jsEasings[easing as keyof typeof jsEasings] : undefined;
 }
 
-export function createCubicBezier(x1: number, y1: number, x2: number, y2: number): (t: number) => number {
+export function createCubicBezier(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): (t: number) => number {
   const cx = 3 * x1;
   const bx = 3 * (x2 - x1) - cx;
   const ax = 1 - cx - bx;
@@ -61,7 +66,9 @@ export function createCubicBezier(x1: number, y1: number, x2: number, y2: number
 }
 
 export function parseCubicBezier(str: string): ((t: number) => number) | null {
-  const match = str.match(/cubic-bezier\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\)/i);
+  const match = str.match(
+    /cubic-bezier\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^)]+)\s*\)/i,
+  );
   if (!match) return null;
 
   const [, x1, y1, x2, y2] = match.map((v, i) => (i === 0 ? v : parseFloat(v)));
