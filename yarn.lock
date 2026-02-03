@@ -1402,7 +1402,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.4"
     "@vitest/coverage-v8": "npm:^4.0.14"
-    "@wix/motion": "npm:next"
+    "@wix/motion": "npm:^2.0.0-rc.3"
     fastdom: "npm:^1.0.12"
     fizban: "npm:^0.7.2"
     jsdom: "npm:^24.0.0"
@@ -1429,7 +1429,7 @@ __metadata:
   resolution: "@wix/motion-presets@workspace:packages/motion-presets"
   dependencies:
     "@vitest/coverage-v8": "npm:^4.0.14"
-    "@wix/motion": "npm:next"
+    "@wix/motion": "npm:^2.0.0-rc.3"
     rimraf: "npm:^6.0.1"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.2.2"
@@ -1447,16 +1447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wix/motion@npm:next":
-  version: 2.0.0-rc.2
-  resolution: "@wix/motion@npm:2.0.0-rc.2"
-  dependencies:
-    fastdom: "npm:^1.0.11"
-  checksum: 10/1d22b5352c71774279d0ee068fe335a2e867ad46274584604dbf73f6e938648fadb9a3e800b31e9bfe414507157194c64ebb6eb525df4b2e9e48846152cbc9df
-  languageName: node
-  linkType: hard
-
-"@wix/motion@workspace:packages/motion":
+"@wix/motion@npm:^2.0.0-rc.3, @wix/motion@workspace:packages/motion":
   version: 0.0.0-use.local
   resolution: "@wix/motion@workspace:packages/motion"
   dependencies:

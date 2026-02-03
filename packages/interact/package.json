@@ -55,7 +55,7 @@
     "url": "https://github.com/wix-incubator/interact/issues"
   },
   "dependencies": {
-    "@wix/motion": "next",
+    "@wix/motion": "^2.0.0-rc.3",
     "fastdom": "^1.0.12",
     "fizban": "^0.7.2",
     "kuliso": "^0.4.13"
