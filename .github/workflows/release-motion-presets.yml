@@ -1,4 +1,4 @@
-name: Motion Presets - Bump RC And Publish
+name: Motion Presets - Bump Version and Publish
 
 on:
   workflow_dispatch:
@@ -62,7 +62,7 @@ jobs:
 
       # ---- BUMP VERSION ----
 
-      - name: Bump RC version
+      - name: Bump version
         if: ${{ github.event.inputs.dry_run == 'false' }}
         working-directory: packages/motion-presets
         run: yarn version ${{ github.event.inputs.version_strategy }}
