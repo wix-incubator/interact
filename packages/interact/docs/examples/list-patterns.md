@@ -20,7 +20,7 @@ Comprehensive examples of list and grid animations using `@wix/interact`. All ex
 Simple fade entrance for list items.
 
 ```typescript
-import { Interact } from '@wix/interact';
+import { Interact } from '@wix/interact/web';
 
 const config = {
   interactions: [

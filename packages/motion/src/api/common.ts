@@ -2,24 +2,15 @@ import type {
   AnimationData,
   AnimationDataForScrub,
   AnimationOptions,
-  BackgroundScrollAnimations,
-  EntranceAnimations,
   MeasureCallback,
-  MouseAnimations,
-  OngoingAnimations,
   RangeOffset,
-  ScrollAnimations,
   TimeAnimationOptions,
   TriggerVariant,
   UnitLengthPercentage,
 } from '../types';
-import { scrollAnimations } from '../library/scroll';
-import { entranceAnimations } from '../library/entrance';
-import { ongoingAnimations } from '../library/ongoing';
-import { mouseAnimations } from '../library/mouse';
-import { backgroundScrollAnimations } from '../library/backgroundScroll';
 import { getCssUnits, getEasing } from '../utils';
 import fastdom from 'fastdom';
+import { getRegisteredEffect } from './registry';
 
 function getElement(id: string | null, ownerDocument?: Document): HTMLElement | null {
   return id ? (ownerDocument || document).getElementById(id) : null;
@@ -72,20 +63,8 @@ function mutate(target: HTMLElement | null): MeasureCallback {
 
 function getNamedEffect(animation: AnimationOptions) {
   if (animation.namedEffect) {
-    const name = animation.namedEffect.type;
-
-    // check each preset library for the named effect
-    if (name in scrollAnimations) {
-      return scrollAnimations[name as keyof ScrollAnimations];
-    } else if (name in entranceAnimations) {
-      return entranceAnimations[name as keyof EntranceAnimations];
-    } else if (name in ongoingAnimations) {
-      return ongoingAnimations[name as keyof OngoingAnimations];
-    } else if (name in mouseAnimations) {
-      return mouseAnimations[name as keyof MouseAnimations];
-    } else if (name in backgroundScrollAnimations) {
-      return backgroundScrollAnimations[name as keyof BackgroundScrollAnimations];
-    }
+    const effectName = animation.namedEffect.type;
+    return typeof effectName === 'string' ? getRegisteredEffect(effectName) : null;
   } else if (animation.keyframeEffect) {
     const effect = (animation_: AnimationOptions) => {
       const { name, keyframes } = animation_.keyframeEffect!;
@@ -127,8 +106,8 @@ function getEffectsData(
       effectOptions.duration = effect.duration as number;
       effectOptions.delay = (effect as TimeAnimationOptions).delay || 0;
     } else {
-      // if ViewTimeline is supported
-      if (window.ViewTimeline) {
+      // if ViewTimeline is supported AND this is a view-progress trigger
+      if (window.ViewTimeline && trigger?.trigger === 'view-progress') {
         // set duration to 'auto'
         effectOptions.duration = 'auto';
       } else {

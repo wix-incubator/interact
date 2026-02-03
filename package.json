@@ -8,8 +8,8 @@
     "build": "yarn workspaces foreach --all --topological --include 'packages/*' run build && yarn workspaces foreach --all --include 'apps/*' run build",
     "lint": "eslint . --max-warnings=0",
     "test": "yarn workspaces foreach --all --include 'packages/*' run test",
-    "dev:docs": "yarn --workspace apps/docs run dev",
-    "dev:demo": "yarn --workspace apps/demo run dev",
+    "dev:docs": "yarn workspace @wix/interact-docs run dev",
+    "dev:demo": "yarn workspace @wix/interact-demo run dev",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "serve": "npx serve . -l 3000",
@@ -49,7 +49,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.1.0",
-    "prettier": "^3.7.4",
+    "prettier": "3.7.4",
     "typescript": "^5.9.3"
   }
 }

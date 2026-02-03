@@ -26,6 +26,42 @@ yarn add @wix/motion
 </script>
 ```
 
+### Installing Animation Presets
+
+`@wix/motion` provides core animation utilities and an effects registry, while `@wix/motion-presets` provides ready-to-use effect modules you can register and reference via `namedEffect`.
+
+```bash
+npm install @wix/motion-presets
+```
+
+Before using named effects like `FadeIn`, you need to register the presets:
+
+```typescript
+import { registerEffects } from '@wix/motion';
+import { FadeIn } from '@wix/motion-presets';
+
+// Register preset
+registerEffects({ FadeIn });
+```
+
+You can also register a custom-made effect module (as long as it matches the expected module shape):
+
+```typescript
+import { registerEffects } from '@wix/motion';
+
+registerEffects({
+  CustomFadeIn: {
+    web: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
+    getNames: () => ['CustomFadeIn'],
+    style: (options) => [
+      { ...options, name: 'CustomFadeIn', keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+    ],
+  },
+});
+```
+
 ## Your First Animation
 
 Let's create a simple fade-in animation for an element:

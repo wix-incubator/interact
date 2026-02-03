@@ -1,0 +1,106 @@
+import type { AnimationFillMode, ScrubAnimationOptions, Spin3dScroll, DomApi } from '../../types';
+import { toKeyframeValue } from '../../utils';
+
+const MAX_Y_TRAVEL = 40;
+
+const POWER_MAP = {
+  soft: { rotationZ: 45, travelY: 0 },
+  medium: { rotationZ: 100, travelY: 0.5 },
+  hard: { rotationZ: 200, travelY: 1 },
+};
+
+export function getNames(_: ScrubAnimationOptions) {
+  return ['motion-spin3dScroll'];
+}
+
+export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
+  return style(options, true);
+}
+
+export function style(options: ScrubAnimationOptions, asWeb = false) {
+  const { rotate = -100, speed = 0, power, range = 'in' } = options.namedEffect as Spin3dScroll;
+  const easing = 'linear';
+  const fill = (
+    range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
+  ) as AnimationFillMode;
+
+  const { rotationZ, travelY } =
+    power && POWER_MAP[power] ? POWER_MAP[power] : { rotationZ: rotate, travelY: speed };
+  const travel = travelY * MAX_Y_TRAVEL;
+
+  const fromValues = {
+    rotationX: range === 'out' ? 0 : -2 * rotationZ,
+    rotationY: range === 'out' ? 0 : -rotationZ,
+    rotationZ: range === 'out' ? 0 : -rotationZ,
+    travel: range === 'out' ? 0 : -travel,
+  };
+  const toValues = {
+    rotationX: rotationZ * (range === 'in' ? 0 : range === 'out' ? 3 : 1.8),
+    rotationY: rotationZ * (range === 'in' ? 0 : range === 'out' ? 2 : 1),
+    rotationZ: rotationZ * (range === 'in' ? 0 : range === 'out' ? 1 : 2),
+    travel: range === 'in' ? 0 : travel,
+  };
+
+  const offset = Math.abs(travel);
+  const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
+  const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
+
+  const [spin3dScroll] = getNames(options);
+
+  const custom = {
+    '--motion-travel-from': `${fromValues.travel}vh`,
+    '--motion-travel-to': `${toValues.travel}vh`,
+    '--motion-rot-x-from': `${fromValues.rotationX}deg`,
+    '--motion-rot-x-to': `${toValues.rotationX}deg`,
+    '--motion-rot-y-from': `${fromValues.rotationY}deg`,
+    '--motion-rot-y-to': `${toValues.rotationY}deg`,
+    '--motion-rot-z-from': `${fromValues.rotationZ}deg`,
+    '--motion-rot-z-to': `${toValues.rotationZ}deg`,
+  };
+
+  return [
+    {
+      ...options,
+      name: spin3dScroll,
+      fill,
+      easing,
+      custom,
+      startOffsetAdd,
+      endOffsetAdd,
+      keyframes: [
+        {
+          transform: `perspective(1000px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-from',
+            asWeb,
+          )}) rotateZ(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-from', asWeb)})) rotateY(${toKeyframeValue(
+            custom,
+            '--motion-rot-y-from',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-from', asWeb)})`,
+        },
+        {
+          transform: `perspective(1000px) translateY(${toKeyframeValue(
+            custom,
+            '--motion-travel-to',
+            asWeb,
+          )}) rotateZ(calc(${toKeyframeValue(
+            {},
+            '--comp-rotate-z',
+            false,
+            '0deg',
+          )} + ${toKeyframeValue(custom, '--motion-rot-z-to', asWeb)})) rotateY(${toKeyframeValue(
+            custom,
+            '--motion-rot-y-to',
+            asWeb,
+          )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-to', asWeb)})`,
+        },
+      ],
+    },
+  ];
+}
