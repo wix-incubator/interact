@@ -156,9 +156,10 @@ export const SequenceDemo = () => {
       setParseError((e as Error).message);
       return createConfig('quadOut');
     }
-  }, [configText]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configText, triggerKey]); // triggerKey forces re-creation of Interact instance
 
-  useInteractInstance(config, triggerKey);
+  useInteractInstance(config);
 
   const handleApply = () => {
     setTriggerKey((prev) => prev + 1);
