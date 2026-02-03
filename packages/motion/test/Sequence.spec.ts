@@ -219,16 +219,17 @@ describe('Sequence', () => {
 
     test('should apply delays to animation groups', () => {
       // Creating the sequence applies delays to the animation groups
+      // 3 groups with offset 100: offsets = [0, 100, 200], totalSpan = 200
       new Sequence(mockAnimationGroups, { delay: 50, offset: 100 });
 
-      // First group: delay = 50 + 0 = 50, existing delay = 0 → total = 50
-      expect(mockAnimations[0].effect.updateTiming).toHaveBeenCalledWith({ delay: 50 });
+      // First group: delay = 50 + 0 = 50, existing delay = 0 → total = 50, endDelay = 200 - 0 = 200
+      expect(mockAnimations[0].effect.updateTiming).toHaveBeenCalledWith({ delay: 50, endDelay: 200 });
 
-      // Second group: delay = 50 + 100 = 150, existing delay = 100 → total = 250
-      expect(mockAnimations[1].effect.updateTiming).toHaveBeenCalledWith({ delay: 250 });
+      // Second group: delay = 50 + 100 = 150, existing delay = 100 → total = 250, endDelay = 200 - 100 = 100
+      expect(mockAnimations[1].effect.updateTiming).toHaveBeenCalledWith({ delay: 250, endDelay: 100 });
 
-      // Third group: delay = 50 + 200 = 250, existing delay = 50 → total = 300
-      expect(mockAnimations[2].effect.updateTiming).toHaveBeenCalledWith({ delay: 300 });
+      // Third group: delay = 50 + 200 = 250, existing delay = 50 → total = 300, endDelay = 200 - 200 = 0
+      expect(mockAnimations[2].effect.updateTiming).toHaveBeenCalledWith({ delay: 300, endDelay: 0 });
     });
 
     test('getOffsetAt should return offset for specific index', () => {
