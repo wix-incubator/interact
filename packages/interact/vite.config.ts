@@ -29,7 +29,9 @@ export default defineConfig(({ command }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
+        '@wix/motion': path.resolve(__dirname, '../motion/src/index.ts'),
       },
+      preserveSymlinks: false,
     },
     define: {
       __DEV__: isDev,

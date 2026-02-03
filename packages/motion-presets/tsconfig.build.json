@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
+    "outDir": "dist/es",
     "module": "ESNext",
     "moduleResolution": "node",
     "declaration": true,
@@ -10,5 +11,10 @@
     "noEmit": false
   },
   "include": ["src/**/*", "src"],
-  "exclude": ["src/**/test/**", "src/**/*.spec.ts"]
+  "exclude": ["src/**/test/**", "src/**/*.spec.ts"],
+  "references": [
+    {
+      "path": "../motion"
+    }
+  ]
 }
