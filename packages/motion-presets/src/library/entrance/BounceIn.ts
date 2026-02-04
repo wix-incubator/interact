@@ -96,7 +96,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
+          transform: `perspective(800px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
         ...keyframes,
       ],

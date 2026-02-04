@@ -32,7 +32,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: blurIn,
       easing,
-      composite: 'add' as const,
+      composite: 'add' as const, // make sure we don't override existing filters on the component
       custom,
       keyframes: [
         {
