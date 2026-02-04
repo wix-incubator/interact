@@ -1,6 +1,6 @@
 ---
 name: CSS Style Generator
-overview: "Modify the `generate` function in `css.ts` to dynamically create CSS rules based on the interaction config, targeting only elements from `viewEnter` triggers with `type: once` where target equals source."
+overview: 'Modify the `generate` function in `css.ts` to dynamically create CSS rules based on the interaction config, targeting only elements from `viewEnter` triggers with `type: once` where target equals source.'
 todos:
   - id: imports
     content: Add necessary imports (getSelector, getSelectorCondition, ViewEnterParams type)
@@ -91,7 +91,7 @@ Resolve `selectorCondition` from `conditions` array using `getSelectorCondition`
 ### Key Function Signature
 
 ```typescript
-export function generate(config: InteractConfig, useFirstChild: boolean = false): string
+export function generate(config: InteractConfig, useFirstChild: boolean = false): string;
 ```
 
 ### Helper Imports Needed
@@ -108,39 +108,39 @@ Import from existing utilities:
 config.interactions.forEach((interaction) => {
   // Check if trigger is viewEnter
   if (interaction.trigger !== 'viewEnter') return;
-  
+
   // Check if type is 'once' (default if not specified)
   const params = interaction.params as ViewEnterParams | undefined;
   if (params?.type && params.type !== 'once') return;
-  
+
   // Resolve interaction's selectorCondition from conditions
   const interactionSelectorCondition = getSelectorCondition(
     interaction.conditions,
-    config.conditions || {}
+    config.conditions || {},
   );
-  
+
   // For each effect
   interaction.effects.forEach((effect) => {
     const effectData = config.effects[effect.effectId] || effect;
-    
+
     // Check if target equals source - ALL criteria must EXACTLY match:
-    
+
     // 1. Key: inherited when missing, so check if missing OR matches
     if (effectData.key && effectData.key !== interaction.key) return;
-    
+
     // 2. Selector: NOT inherited, must be exactly equal (both undefined or same value)
     if (effectData.selector !== interaction.selector) return;
-    
+
     // 3. ListContainer: NOT inherited, must be exactly equal (both undefined or same value)
     if (effectData.listContainer !== interaction.listContainer) return;
-    
+
     // 4. SelectorCondition: must be exactly equal (both undefined or same value)
     const effectSelectorCondition = getSelectorCondition(
       effectData.conditions,
-      config.conditions || {}
+      config.conditions || {},
     );
     if (effectSelectorCondition !== interactionSelectorCondition) return;
-    
+
     // Build selector and add CSS rule
   });
 });
@@ -154,4 +154,3 @@ Combine:
 2. Child selector from `getSelector(effectData, { asCombinator: true, useFirstChild })`
 3. Selector condition if present
 4. State filter: `:not([data-interact-enter="done"])`
-

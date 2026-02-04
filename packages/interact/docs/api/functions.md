@@ -226,6 +226,7 @@ The function generates CSS that:
 3. **Excludes completed animations**: Uses `:not([data-interact-enter="done"])` to show elements after their animation completes
 
 **For the `web` integration (with custom elements)**:
+
 ```css
 @media (prefers-reduced-motion: no-preference) {
   [data-interact-initial='true'] > :first-child:not([data-interact-enter='done']) {
@@ -239,6 +240,7 @@ The function generates CSS that:
 ```
 
 **For other integrations (without custom elements)**:
+
 ```css
 @media (prefers-reduced-motion: no-preference) {
   [data-interact-initial='true']:not([data-interact-enter='done']) {
