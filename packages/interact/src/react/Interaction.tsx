@@ -13,7 +13,7 @@ const Interaction = React.forwardRef(function InteractionRender<
   const TagName = tagName as any;
   const interactRefCallback = React.useRef<InteractRef | null>(null);
 
-  if (!interactRefCallback.current) {
+  if (interactRefCallback.current == null) {
     interactRefCallback.current = createInteractRef(interactKey);
   }
 
