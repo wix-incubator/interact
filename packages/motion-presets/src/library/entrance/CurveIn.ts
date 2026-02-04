@@ -5,7 +5,7 @@ type CurveInDirection = 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
 
 const DEFAULT_DIRECTION: CurveInDirection = 'right';
 const DEFAULT_DEPTH = { value: 300, type: 'px' };
-const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right', 'pseudoLeft', 'pseudoRight'] as const;
+const DIRECTIONS = ['left', 'right', 'pseudoLeft', 'pseudoRight'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn', 'motion-fadeIn'];
@@ -26,7 +26,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as CurveIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as CurveInDirection;
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);

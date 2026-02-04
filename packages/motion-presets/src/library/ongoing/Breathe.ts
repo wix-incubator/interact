@@ -12,7 +12,7 @@ import {
 type BreatheDirection = 'vertical' | 'horizontal' | 'center';
 const DEFAULT_DIRECTION: BreatheDirection = 'vertical';
 const DEFAULT_DISTANCE = { value: 25, type: 'px' };
-const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal', 'center'] as const;
+const DIRECTIONS = ['vertical', 'horizontal', 'center'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },
@@ -36,7 +36,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Breathe;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as BreatheDirection;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);

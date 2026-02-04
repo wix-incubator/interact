@@ -2,7 +2,7 @@ import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectF
 import { getTimingFactor, toKeyframeValue, mapRange, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },
@@ -32,7 +32,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Poke;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { intensity = 0.5 } = namedEffect;

@@ -2,7 +2,7 @@ import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions, Effect
 import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectEightDirections = 'right';
-const ALLOWED_DIRECTION_KEYWORDS = [
+const DIRECTIONS = [
   'top', 'right', 'bottom', 'left',
   'top-left', 'top-right', 'bottom-left', 'bottom-right'
 ] as const;
@@ -176,7 +176,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
   const namedEffect = options.namedEffect as Cross;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectEightDirections;
   const duration = options.duration || 1;

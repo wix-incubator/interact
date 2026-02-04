@@ -4,7 +4,7 @@ import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } fr
 const ROTATION_ANGLE = 80;
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
 const DEFAULT_DEPTH = { value: 200, type: 'px' };
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
@@ -25,7 +25,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
 
@@ -43,10 +43,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
-    '--motion-arc-angle': `${ROTATION_ANGLE}`,
   };
-
-  const angleValue = toKeyframeValue(custom, '--motion-arc-angle', asWeb);
 
   return [
     {
@@ -73,7 +70,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${angleValue}deg)) rotateY(calc(${toKeyframeValue(
+          )} * ${ROTATION_ANGLE}deg)) rotateY(calc(${toKeyframeValue(
             custom,
             '--motion-arc-y',
             asWeb,
@@ -81,7 +78,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${angleValue}deg)) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
+          )} * ${ROTATION_ANGLE}deg)) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
           transform: `perspective(800px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,

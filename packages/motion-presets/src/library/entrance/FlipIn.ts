@@ -2,7 +2,7 @@ import { INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
 import type { FlipIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
@@ -32,7 +32,7 @@ export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as FlipIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { initialRotate = 90 } = namedEffect;

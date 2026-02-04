@@ -4,7 +4,7 @@ import { toKeyframeValue, parseDirection } from '../../utils';
 const ROTATION = 68;
 type ArcScrollDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: ArcScrollDirection = 'horizontal';
-const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
+const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -23,7 +23,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as ArcScrollDirection;
   const { range = 'in' } = namedEffect;

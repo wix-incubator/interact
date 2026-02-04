@@ -3,7 +3,7 @@ import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../
 
 type FlipDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: FlipDirection = 'horizontal';
-const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
+const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: '1', y: '0' },
@@ -18,7 +18,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Flip;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipDirection;
 

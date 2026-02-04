@@ -2,7 +2,7 @@ import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions, Effect
 import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP = {
   top: { x: 0, y: -1 },
@@ -31,7 +31,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Swing;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { swing = 20 } = namedEffect;

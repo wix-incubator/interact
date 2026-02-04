@@ -3,7 +3,7 @@ import { toKeyframeValue, parseDirection } from '../../utils';
 
 type SpinScrollDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_DIRECTION: SpinScrollDirection = 'clockwise';
-const ALLOWED_DIRECTION_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
+const DIRECTIONS = ['clockwise', 'counter-clockwise'] as const;
 
 const DIRECTION_MAP = {
   clockwise: 1,
@@ -22,7 +22,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SpinScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as SpinScrollDirection;
   const { spins = 0.15, scale = 1, range = 'in' } = namedEffect;

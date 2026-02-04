@@ -2,7 +2,7 @@ import type { Fold, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectF
 import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP = {
   top: {
@@ -43,7 +43,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Fold;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { angle = MIN_ROTATE_ANGLE } = namedEffect;

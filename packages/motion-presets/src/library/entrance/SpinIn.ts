@@ -3,7 +3,7 @@ import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../uti
 
 type SpinInDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_DIRECTION: SpinInDirection = 'clockwise';
-const ALLOWED_DIRECTION_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
+const DIRECTIONS = ['clockwise', 'counter-clockwise'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];
@@ -22,7 +22,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SpinIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as SpinInDirection;
   const { spins = 0.5, initialScale = 0 } = namedEffect;

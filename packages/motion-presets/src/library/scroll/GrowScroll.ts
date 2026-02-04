@@ -3,7 +3,7 @@ import { toKeyframeValue, parseDirection } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const DEFAULT_DIRECTION: EffectNineDirections = 'center';
-const ALLOWED_DIRECTION_KEYWORDS = [
+const DIRECTIONS = [
   'top', 'top-right', 'right', 'bottom-right',
   'bottom', 'bottom-left', 'left', 'top-left', 'center'
 ] as const;
@@ -33,7 +33,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { range = 'in', scale = range === 'in' ? 0 : 4, speed = 0 } = namedEffect;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectNineDirections;
   const easing = 'linear';

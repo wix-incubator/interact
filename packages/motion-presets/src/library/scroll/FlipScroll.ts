@@ -3,7 +3,7 @@ import { toKeyframeValue, parseDirection } from '../../utils';
 
 type FlipScrollDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: FlipScrollDirection = 'horizontal';
-const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
+const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -22,7 +22,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FlipScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipScrollDirection;
   const { rotate = 240, range = 'continuous' } = namedEffect;

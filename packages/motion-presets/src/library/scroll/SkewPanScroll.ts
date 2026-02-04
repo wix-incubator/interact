@@ -2,7 +2,7 @@ import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll, E
 import { toKeyframeValue, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
-const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
+const DIRECTIONS = ['left', 'right'] as const;
 
 const DIRECTION_MAP = {
   right: -1,
@@ -38,7 +38,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SkewPanScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const { skew = 10, range = 'in' } = namedEffect;

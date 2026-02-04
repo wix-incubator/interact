@@ -16,7 +16,7 @@ import {
 } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'bottom';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 type Translate = { x: string; y: string };
 
@@ -40,7 +40,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SlideScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { range = 'in' } = namedEffect;

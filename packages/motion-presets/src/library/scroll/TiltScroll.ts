@@ -5,7 +5,7 @@ import { toKeyframeValue, parseDirection } from '../../utils';
 const MAX_Y_TRAVEL = 40;
 const [ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25];
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
-const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
+const DIRECTIONS = ['left', 'right'] as const;
 
 const DIRECTIONS_MAP = {
   right: 1,
@@ -24,7 +24,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TiltScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const { parallaxFactor = 0 } = namedEffect;

@@ -3,7 +3,7 @@ import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';
 const DEFAULT_DEPTH = { value: 200, type: 'px' };
-const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
+const DIRECTIONS = ['left', 'right'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
@@ -22,7 +22,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TiltIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
@@ -35,7 +35,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
   const translateZ = `(${depthValue} / 2)`;
 
-  const custom = {
+  const clipCustom = {
     '--motion-rotate-z': `${rotationZ}deg`,
     '--motion-clip-start': clipStart,
   };
@@ -53,12 +53,12 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: tiltInRotate,
       easing,
-      custom,
+      custom: {},
       keyframes: [
         {
           offset: 0,
           easing: 'step-end',
-          transform: `perspective(800px)`,
+          transform: 'perspective(800px)',
         },
         {
           offset: INITIAL_FRAME_OFFSET,
@@ -75,12 +75,12 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing,
       composite: 'add' as const,
       duration: options.duration! * 0.8,
-      custom,
+      custom: clipCustom,
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
-          transform: `rotateZ(${toKeyframeValue(custom, '--motion-rotate-z', asWeb)})`,
+          clipPath: `var(--motion-clip-start, ${clipCustom['--motion-clip-start']})`,
+          transform: `rotateZ(${toKeyframeValue(clipCustom, '--motion-rotate-z', asWeb)})`,
         },
         {
           clipPath: clipEnd,

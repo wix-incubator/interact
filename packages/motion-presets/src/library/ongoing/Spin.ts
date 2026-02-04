@@ -3,7 +3,7 @@ import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../
 
 type SpinDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_DIRECTION: SpinDirection = 'clockwise';
-const ALLOWED_DIRECTION_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
+const DIRECTIONS = ['clockwise', 'counter-clockwise'] as const;
 
 const DIRECTION_MAP = {
   clockwise: -1,
@@ -18,7 +18,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Spin;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as SpinDirection;
 

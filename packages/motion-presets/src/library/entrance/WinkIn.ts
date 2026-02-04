@@ -3,7 +3,7 @@ import type { WinkIn, TimeAnimationOptions } from '../../types';
 
 type WinkInDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: WinkInDirection = 'horizontal';
-const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
+const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-winkInClip', 'motion-winkInRotate'];
@@ -24,7 +24,7 @@ export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as WinkIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as WinkInDirection;
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);

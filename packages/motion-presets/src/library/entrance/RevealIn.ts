@@ -2,7 +2,7 @@ import type { RevealIn, TimeAnimationOptions, EffectFourDirections } from '../..
 import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'left';
-const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-revealIn', 'motion-fadeIn'];
@@ -16,7 +16,7 @@ export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as RevealIn;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const [revealIn, fadeIn] = getNames(options);

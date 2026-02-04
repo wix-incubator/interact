@@ -5,7 +5,7 @@ const ELEMENT_ROTATION = 45;
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
 type SpinDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_SPIN: SpinDirection = 'clockwise';
-const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
+const DIRECTIONS = ['left', 'right'] as const;
 const ALLOWED_SPIN_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
 
 const ROTATE_DIRECTION_MAP = {
@@ -42,7 +42,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TurnScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    ALLOWED_DIRECTION_KEYWORDS,
+    DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const spin = parseDirection(
