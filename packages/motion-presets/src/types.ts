@@ -5,8 +5,10 @@ export type {
   AnimationOptions,
   CustomEffect,
   DomApi,
+  EffectEightDirections,
   EffectFourCorners,
   EffectFourDirections,
+  EffectNineDirections,
   EffectScrollRange,
   EffectTwoSides,
   Length,
@@ -18,7 +20,6 @@ export type {
   Shape,
   TimeAnimationOptions,
   Point,
-  EffectNineDirections
 } from '@wix/motion';
 
 import type {
