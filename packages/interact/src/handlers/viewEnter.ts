@@ -164,20 +164,23 @@ function addViewEnterHandler(
   // Track initial play state for alternate type
   let isInitialPlay = true;
 
-  if (animation?.isCSS) {
-    animation.onFinish(() => {
-      target.dataset.motionEnter = 'done';
-    });
-  }
-
   const handler = (isIntersecting?: boolean) => {
     if (selectorCondition && !target.matches(selectorCondition)) return;
 
     if (type === 'once') {
       if (isIntersecting) {
         animation.play(() => {
-          if (!animation.isCSS) {
-            target.dataset.motionEnter = 'done';
+          const setEnterDone = () => {
+            target.dataset.interactEnter = 'done';
+          };
+
+          if (animation.isCSS) {
+            fastdom.mutate(() => {
+              // delay for next tick to prevent content flashing
+              requestAnimationFrame(setEnterDone);
+            });
+          } else {
+            fastdom.mutate(setEnterDone);
           }
         });
       }
