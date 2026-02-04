@@ -25,8 +25,7 @@ describe('GlideIn', () => {
         ],
       },
       {
-        easing: 'quintInOut',
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -91,10 +90,9 @@ describe('GlideIn', () => {
         ],
       },
       {
-        easing: 'quintInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 

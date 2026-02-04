@@ -33,8 +33,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -64,8 +63,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -99,8 +97,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -134,8 +131,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -206,10 +202,9 @@ describe('ShuttersIn.style()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -244,10 +239,9 @@ describe('ShuttersIn.style()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -286,10 +280,9 @@ describe('ShuttersIn.style()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -328,10 +321,9 @@ describe('ShuttersIn.style()', () => {
         ],
       },
       {
-        easing: getEasing('sineIn'),
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
