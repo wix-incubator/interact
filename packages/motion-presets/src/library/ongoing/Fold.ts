@@ -57,8 +57,6 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const { x, y } = origin;
   const ease = getEasingFamily(easing);
 
-  const rotateTransform = angle;
-
   const totalDurationWithDelay = 3.2 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   let currentOffset = 0;
@@ -67,7 +65,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const custom: Record<string, string | number> = {
     '--motion-origin-x': `${x}%`,
     '--motion-origin-y': `${y}%`,
-    '--motion-rotate-angle': `${rotateTransform}deg`,
+    '--motion-rotate-angle': `${angle}deg`,
     '--motion-rotate-x': `${rotation.x}`,
     '--motion-rotate-y': `${rotation.y}`,
   };
@@ -88,11 +86,11 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       custom,
       '--motion-rotate-x',
       asWeb,
-    )} * ${value} * ${rotateTransform}deg)) rotateY(calc(${toKeyframeValue(
+    )} * ${value} * ${angle}deg)) rotateY(calc(${toKeyframeValue(
       custom,
       '--motion-rotate-y',
       asWeb,
-    )} * ${value} * ${rotateTransform}deg)) ${transformRight}`;
+    )} * ${value} * ${angle}deg)) ${transformRight}`;
 
   // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
