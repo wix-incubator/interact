@@ -29,7 +29,6 @@ import type {
   EffectFourCorners,
   EffectFourDirections,
   EffectNineDirections,
-  EffectScaleDirection,
   EffectScrollRange,
   EffectTwoSides,
   MouseAnimationFactoryCreate,
@@ -69,18 +68,18 @@ export type FoldIn = {
 };
 export type SlideIn = {
   type: 'SlideIn';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
   initialTranslate?: number;
 };
 export type SpinIn = {
   type: 'SpinIn';
-  spins: number;
-  direction: 'clockwise' | 'counter-clockwise';
+  spins?: number;
+  direction?: 'clockwise' | 'counter-clockwise';
   initialScale?: number;
 };
 export type BounceIn = {
   type: 'BounceIn';
-  direction: EffectFourDirections | 'center';
+  direction?: EffectFourDirections | 'center';
   distanceFactor?: number;
 };
 export type GlideIn = {
@@ -94,7 +93,7 @@ export type TurnIn = {
 };
 export type WinkIn = {
   type: 'WinkIn';
-  direction: 'vertical' | 'horizontal';
+  direction?: 'vertical' | 'horizontal';
 };
 export type TiltIn = {
   type: 'TiltIn';
@@ -108,13 +107,13 @@ export type ShapeIn = {
 
 export type ShuttersIn = {
   type: 'ShuttersIn';
-  direction: EffectFourDirections;
-  shutters: number;
-  staggered: boolean;
+  direction?: EffectFourDirections;
+  shutters?: number;
+  staggered?: boolean;
 };
 export type RevealIn = {
   type: 'RevealIn';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
 };
 export type BlurIn = {
   type: 'BlurIn';
@@ -144,8 +143,8 @@ export type EntranceAnimations = Record<EntranceAnimation['type'], AnimationEffe
 
 export type Breathe = {
   type: 'Breathe';
-  direction: 'vertical' | 'horizontal' | 'center';
-  distance: UnitLengthPercentage;
+  direction?: 'vertical' | 'horizontal' | 'center';
+  distance?: UnitLengthPercentage;
 };
 export type Pulse = {
   type: 'Pulse';
@@ -153,11 +152,11 @@ export type Pulse = {
 };
 export type Spin = {
   type: 'Spin';
-  direction: 'clockwise' | 'counter-clockwise';
+  direction?: 'clockwise' | 'counter-clockwise';
 };
 export type Poke = {
   type: 'Poke';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
   intensity?: number;
 };
 export type Flash = { type: 'Flash' };
@@ -168,7 +167,7 @@ export type Swing = {
 };
 export type Flip = {
   type: 'Flip';
-  direction: 'vertical' | 'horizontal';
+  direction?: 'vertical' | 'horizontal';
 };
 export type Rubber = {
   type: 'Rubber';
@@ -176,7 +175,7 @@ export type Rubber = {
 };
 export type Fold = {
   type: 'Fold';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
   angle?: number;
 };
 export type Jello = {
@@ -193,7 +192,7 @@ export type Bounce = {
 };
 export type Cross = {
   type: 'Cross';
-  direction: EffectEightDirections;
+  direction?: EffectEightDirections;
 };
 export type DVD = {
   type: 'DVD';
@@ -235,8 +234,8 @@ export type BlurScroll = {
 };
 export type FadeScroll = {
   type: 'FadeScroll';
-  range: EffectScrollRange;
-  opacity: number;
+  range?: EffectScrollRange;
+  opacity?: number;
 };
 export type FlipScroll = {
   type: 'FlipScroll';
@@ -246,63 +245,63 @@ export type FlipScroll = {
 };
 export type GrowScroll = {
   type: 'GrowScroll';
-  direction: EffectNineDirections;
+  direction?: EffectNineDirections;
   range?: EffectScrollRange;
   scale?: number;
   speed?: number;
 };
 export type MoveScroll = {
   type: 'MoveScroll';
-  angle: number;
+  angle?: number;
   range?: EffectScrollRange;
   distance?: UnitLengthPercentage;
 };
 export type PanScroll = {
   type: 'PanScroll';
-  direction: EffectTwoSides;
-  distance: UnitLengthPercentage;
-  startFromOffScreen: boolean;
+  direction?: EffectTwoSides;
+  distance?: UnitLengthPercentage;
+  startFromOffScreen?: boolean;
   range?: EffectScrollRange;
 };
 export type ParallaxScroll = {
   type: 'ParallaxScroll';
-  speed: number;
+  parallaxFactor?: number;
   range?: EffectScrollRange;
 };
 export type RevealScroll = {
   type: 'RevealScroll';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
   range?: EffectScrollRange;
 };
 export type ShapeScroll = {
   type: 'ShapeScroll';
-  shape: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window';
+  shape?: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window';
   range?: EffectScrollRange;
   intensity?: number;
 };
 export type ShrinkScroll = {
   type: 'ShrinkScroll';
-  direction: EffectNineDirections;
+  direction?: EffectNineDirections;
   range?: EffectScrollRange;
   scale?: number;
   speed?: number;
 };
 export type ShuttersScroll = {
   type: 'ShuttersScroll';
-  direction: EffectFourDirections;
-  shutters: number;
-  staggered: boolean;
+  direction?: EffectFourDirections;
+  shutters?: number;
+  staggered?: boolean;
   range?: EffectScrollRange;
 };
 export type SkewPanScroll = {
   type: 'SkewPanScroll';
-  direction: EffectTwoSides;
+  direction?: EffectTwoSides;
   range?: EffectScrollRange;
   skew?: number;
 };
 export type SlideScroll = {
   type: 'SlideScroll';
-  direction: EffectFourDirections;
+  direction?: EffectFourDirections;
   range?: EffectScrollRange;
 };
 export type Spin3dScroll = {
@@ -313,8 +312,8 @@ export type Spin3dScroll = {
 };
 export type SpinScroll = {
   type: 'SpinScroll';
-  direction: 'clockwise' | 'counter-clockwise';
-  spins: number;
+  direction?: 'clockwise' | 'counter-clockwise';
+  spins?: number;
   range?: EffectScrollRange;
   scale?: number;
 };
@@ -327,12 +326,12 @@ export type TiltScroll = {
   type: 'TiltScroll';
   direction?: EffectTwoSides;
   range?: EffectScrollRange;
-  distance?: number;
+  parallaxFactor?: number;
 };
 export type TurnScroll = {
   type: 'TurnScroll';
-  direction: EffectTwoSides;
-  spin: 'clockwise' | 'counter-clockwise';
+  direction?: EffectTwoSides;
+  spin?: 'clockwise' | 'counter-clockwise';
   range?: EffectScrollRange;
   scale?: number;
   rotation?: number;
@@ -446,7 +445,7 @@ type MouseEffectBase = {
   inverted?: boolean;
 };
 
-type MouseEffectAxis = 'both' | 'horizontal' | 'vertical';
+export type MouseEffectAxis = 'both' | 'horizontal' | 'vertical';
 
 export type MousePivotAxis =
   | 'top'
@@ -485,7 +484,6 @@ export type ScaleMouse = MouseEffectBase & {
   distance?: UnitLengthPercentage;
   axis?: MouseEffectAxis;
   scale?: number;
-  scaleDirection: EffectScaleDirection;
 };
 export type SkewMouse = MouseEffectBase & {
   type: 'SkewMouse';
