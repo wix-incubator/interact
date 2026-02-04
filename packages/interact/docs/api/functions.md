@@ -223,11 +223,25 @@ The function generates CSS that:
 
 1. **Respects reduced motion preferences**: Wrapped in `@media (prefers-reduced-motion: no-preference)` to ensure accessibility
 2. **Targets first child of elements with `data-interact-initial="true"`**: Only affects elements explicitly marked for entrance animations
-3. **Excludes completed animations**: Uses `:not([data-motion-enter="done"])` to show elements after their animation completes
+3. **Excludes completed animations**: Uses `:not([data-interact-enter="done"])` to show elements after their animation completes
 
+**For the `web` integration (with custom elements)**:
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial='true'] > :first-child:not([data-motion-enter='done']) {
+  [data-interact-initial='true'] > :first-child:not([data-interact-enter='done']) {
+    visibility: hidden;
+    transform: none;
+    translate: none;
+    scale: none;
+    rotate: none;
+  }
+}
+```
+
+**For other integrations (without custom elements)**:
+```css
+@media (prefers-reduced-motion: no-preference) {
+  [data-interact-initial='true']:not([data-interact-enter='done']) {
     visibility: hidden;
     transform: none;
     translate: none;

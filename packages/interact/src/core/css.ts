@@ -1,9 +1,9 @@
 import { InteractConfig } from '../types';
 
-export function generate(_config: InteractConfig): string {
+export function generate(_config: InteractConfig, useFirstChild: boolean = false): string {
   const css: string[] = [
     `@media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial="true"] > :first-child:not([data-motion-enter="done"]) {
+  [data-interact-initial="true"]${useFirstChild ? ' > :first-child' : ''}:not([data-interact-enter="done"]) {
     visibility: hidden;
     transform: none;
     translate: none;
