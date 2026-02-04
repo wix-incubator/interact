@@ -1,5 +1,8 @@
-import type { SlideIn, TimeAnimationOptions } from '../../types';
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
+import type { SlideIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'left';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-slideIn', 'motion-fadeIn'];
@@ -19,7 +22,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'left', initialTranslate = 1 } = options.namedEffect as SlideIn;
+  const namedEffect = options.namedEffect as SlideIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { initialTranslate = 1 } = namedEffect;
   const [slideIn, fadeIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
@@ -45,21 +54,25 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
-          opacity: 'var(--comp-opacity, 1)',
-          transform: `rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
+          offset: 0,
+          transform: `rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
           clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
         },
         {
-          transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
+          offset: INITIAL_FRAME_OFFSET,
+          transform: `rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
+          clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
+        },
+        {
+          transform: 'rotate(var(--motion-rotate, 0deg)) translate(0px, 0px)',
           clipPath: clipEnd,
         },
       ],
     },
     {
       ...options,
-      easing: 'cubicInOut',
       name: fadeIn,
+      easing,
       custom: {},
       keyframes: [{ offset: 0, opacity: 0 }, {}],
     },

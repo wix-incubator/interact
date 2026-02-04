@@ -1,4 +1,4 @@
-import type { TimeAnimationOptions, GlideIn } from '../../types';
+import type { TimeAnimationOptions } from '../../types';
 import {
   getCssUnits,
   INITIAL_FRAME_OFFSET,
@@ -7,8 +7,15 @@ import {
   parseDirection,
 } from '../../utils';
 
-const DEFAULT_DIRECTION = 180;
-const DEFAULT_DISTANCE = { value: 100, type: 'percentage' };
+type ExpandIn = {
+  type: 'ExpandIn';
+  direction?: number | string;
+  distance?: { value: number; type: string } | string;
+  initialScale?: number;
+};
+
+const DEFAULT_DIRECTION = 90;
+const DEFAULT_DISTANCE = { value: 120, type: 'percentage' };
 const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
   top: 90,
@@ -16,10 +23,9 @@ const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
   bottom: 270,
   left: 180,
 };
-const ALLOW_ANGLES = true;
 
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-glideIn', 'motion-fadeIn'];
+  return ['motion-fadeIn', 'motion-expandIn'];
 }
 
 export function web(options: TimeAnimationOptions) {
@@ -27,13 +33,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const namedEffect = options.namedEffect as GlideIn;
+  const namedEffect = options.namedEffect as ExpandIn;
+  const { initialScale = 0 } = namedEffect;
 
   const parsedDirection = parseDirection(
     namedEffect.direction,
     ALLOWED_DIRECTION_KEYWORDS,
     DEFAULT_DIRECTION,
-    ALLOW_ANGLES,
   );
   const direction =
     typeof parsedDirection === 'string'
@@ -42,26 +48,34 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
+  const [fadeIn, expandIn] = getNames(options);
+
+  const easing = options.easing || 'cubicInOut';
   const angleInRad = (direction * Math.PI) / 180;
   const unit = getCssUnits(distance.type);
 
-  const easing = options.easing || 'quintInOut';
-
-  const translateX = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
-  const translateY = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
+  const x = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
+  const y = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
 
   const custom = {
-    '--motion-translate-x': `${translateX}`,
-    '--motion-translate-y': `${translateY}`,
+    '--motion-translate-x': `${x}`,
+    '--motion-translate-y': `${y}`,
+    '--motion-scale': `${initialScale}`,
   };
-
-  const [glideIn, fadeIn] = getNames(options);
 
   return [
     {
       ...options,
-      name: glideIn,
       easing,
+      duration: options.duration! * initialScale,
+      name: fadeIn,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }, {}],
+    },
+    {
+      ...options,
+      easing,
+      name: expandIn,
       custom,
       keyframes: [
         {
@@ -74,19 +88,16 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-translate-y',
             asWeb,
-          )}) rotate(var(--motion-rotate, 0deg))`,
+          )}) rotate(var(--motion-rotate, 0deg)) scale(${toKeyframeValue(
+            custom,
+            '--motion-scale',
+            asWeb,
+          )})`,
         },
         {
-          transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
+          transform: 'translate(0px, 0px) rotate(var(--motion-rotate, 0deg)) scale(1)',
         },
       ],
-    },
-    {
-      ...options,
-      name: fadeIn,
-      easing,
-      custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
     },
   ];
 }

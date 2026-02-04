@@ -1,5 +1,9 @@
 import type { SpinIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
+
+type SpinInDirection = 'clockwise' | 'counter-clockwise';
+const DEFAULT_DIRECTION: SpinInDirection = 'clockwise';
+const ALLOWED_DIRECTION_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];
@@ -15,11 +19,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    direction = 'clockwise',
-    spins = 0.5,
-    initialScale = 0,
-  } = options.namedEffect as SpinIn;
+  const namedEffect = options.namedEffect as SpinIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as SpinInDirection;
+  const { spins = 0.5, initialScale = 0 } = namedEffect;
   const [fadeIn, spinIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';

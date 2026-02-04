@@ -1,5 +1,9 @@
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
 import type { WinkIn, TimeAnimationOptions } from '../../types';
+
+type WinkInDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: WinkInDirection = 'horizontal';
+const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-winkInClip', 'motion-winkInRotate'];
@@ -17,7 +21,12 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'horizontal' } = options.namedEffect as WinkIn;
+  const namedEffect = options.namedEffect as WinkIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as WinkInDirection;
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
 
   const { scaleX, scaleY } = PARAM_MAP[direction];
@@ -64,10 +73,10 @@ export function style(options: TimeAnimationOptions) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, ${custom['--motion-scale-x']}), var(--motion-scale-y, ${custom['--motion-scale-y']}))`,
+          transform: `rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, ${custom['--motion-scale-x']}), var(--motion-scale-y, ${custom['--motion-scale-y']}))`,
         },
         {
-          transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+          transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
         },
       ],
     },

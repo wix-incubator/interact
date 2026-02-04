@@ -1,13 +1,17 @@
-import { ShuttersIn, TimeAnimationOptions } from '../../types';
+import { ShuttersIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
 import {
   getShuttersClipPaths,
   getEasing,
   toKeyframeValue,
   INITIAL_FRAME_OFFSET,
+  parseDirection,
 } from '../../utils';
 
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
+
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-shuttersIn'];
+  return ['motion-shuttersIn', 'motion-fadeIn'];
 }
 
 export function web(options: TimeAnimationOptions) {
@@ -15,12 +19,14 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    direction = 'right',
-    shutters = 12,
-    staggered = true,
-  } = options.namedEffect as ShuttersIn;
-  const [shuttersIn] = getNames(options);
+  const namedEffect = options.namedEffect as ShuttersIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { shutters = 12, staggered = true } = namedEffect;
+  const [shuttersIn, fadeIn] = getNames(options);
 
   const { clipStart, clipEnd } = getShuttersClipPaths(direction, shutters, staggered);
 
@@ -39,19 +45,20 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: 0,
-          opacity: 0,
-          easing: 'step-end',
-        },
-        {
           offset: INITIAL_FRAME_OFFSET,
-          opacity: 'var(--comp-opacity, 1)',
           clipPath: toKeyframeValue(custom, '--motion-shutters-start', asWeb),
         },
         {
           clipPath: toKeyframeValue(custom, '--motion-shutters-end', asWeb),
         },
       ],
+    },
+    {
+      ...options,
+      name: fadeIn,
+      easing,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }, {}],
     },
   ];
 }

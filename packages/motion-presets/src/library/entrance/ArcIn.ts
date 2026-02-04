@@ -1,7 +1,10 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
 
 const ROTATION_ANGLE = 80;
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
+const DEFAULT_DEPTH = { value: 200, type: 'px' };
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
@@ -10,9 +13,7 @@ const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: 
   left: { x: 0, y: 1, sign: -1 },
 };
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
@@ -21,14 +22,22 @@ export function getNames(_: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'right' } = options.namedEffect as ArcIn;
+  const namedEffect = options.namedEffect as ArcIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+
+  const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const [fadeIn, arcIn] = getNames(options);
 
   const easing = options.easing || 'quintInOut';
 
   const { x, y, sign } = DIRECTION_MAP[direction];
-  const zValue = `calc((-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2)`;
-  const zValueNegative = `calc((var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0)) / 2)`;
+  const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
+  const zValue = `calc(-1 * ${depthValue} / 2)`;
+  const zValueNegative = `calc(${depthValue} / 2)`;
 
   const custom = {
     '--motion-arc-x': `${x}`,
@@ -72,33 +81,13 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${angleValue}deg)) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
+          )} * ${angleValue}deg)) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },
   ];
 }
 
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let width: number, height: number;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-height', `${height}px`);
-      target?.style.setProperty('--motion-width', `${width}px`);
-    });
-  }
-}

@@ -3,10 +3,16 @@ import {
   AnimationExtraOptions,
   SkewMouse,
   Progress,
+  MouseEffectAxis,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
 import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
+
+const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_ANGLE = 25;
+const DEFAULT_AXIS: MouseEffectAxis = 'both';
+const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
 
 class SkewMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -31,7 +37,7 @@ class SkewMouseAnimation extends CustomMouse {
 
     const units = getCssUnits(distance.type);
 
-    const transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) skew(${skewX}deg, ${skewY}deg) rotate(var(--comp-rotate-z, 0deg))`;
+    const transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) skew(${skewX}deg, ${skewY}deg) rotate(var(--motion-rotate, 0deg))`;
 
     this.target.style.transform = transform;
   }
@@ -44,12 +50,11 @@ class SkewMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    inverted = false,
-    distance = { value: 200, type: 'px' },
-    angle = 25,
-    axis = 'both',
-  } = options.namedEffect as SkewMouse;
+  const namedEffect = options.namedEffect as SkewMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

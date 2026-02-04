@@ -1,6 +1,9 @@
-import { ScrubAnimationOptions, AnimationExtraOptions, SpinMouse, Progress } from '../../types';
-import { getMouseTransitionEasing, getAngleInDeg } from '../../utils';
+import { ScrubAnimationOptions, AnimationExtraOptions, SpinMouse, Progress, MouseEffectAxis } from '../../types';
+import { getMouseTransitionEasing, getAngleInDeg, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
+
+const DEFAULT_AXIS: MouseEffectAxis = 'both';
+const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
 
 class SpinMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -13,7 +16,7 @@ class SpinMouseAnimation extends CustomMouse {
         90,
       ) * invert;
 
-    this.target.style.transform = `rotate(calc(${rotation}deg + var(--comp-rotate-z, 0deg)))`;
+    this.target.style.transform = `rotate(calc(${rotation}deg + var(--motion-rotate, 0deg)))`;
   }
 
   cancel() {
@@ -24,7 +27,9 @@ class SpinMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing = 'linear' } = options;
-  const { inverted = false, axis = 'both' } = options.namedEffect as SpinMouse;
+  const namedEffect = options.namedEffect as SpinMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

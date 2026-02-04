@@ -1,11 +1,16 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 import {
   ScrubAnimationOptions,
   AnimationExtraOptions,
   ScaleMouse,
   Progress,
+  MouseEffectAxis,
 } from '../../types';
+
+const DEFAULT_DISTANCE = { value: 80, type: 'px' };
+const DEFAULT_AXIS: MouseEffectAxis = 'both';
+const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
 
 class ScaleMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -36,7 +41,7 @@ class ScaleMouseAnimation extends CustomMouse {
 
     const units = getCssUnits(distance.type);
 
-    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleBoth}) rotate(var(--comp-rotate-z, 0deg))`;
+    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleBoth}) rotate(var(--motion-rotate, 0deg))`;
   }
 
   cancel() {
@@ -47,12 +52,11 @@ class ScaleMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    inverted = false,
-    distance = { value: 80, type: 'px' },
-    axis = 'both',
-    scale = 1.4,
-  } = options.namedEffect as ScaleMouse;
+  const namedEffect = options.namedEffect as ScaleMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const { scale = 1.4 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

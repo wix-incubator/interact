@@ -1,8 +1,11 @@
-import type { RevealIn, TimeAnimationOptions } from '../../types';
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET } from '../../utils';
+import type { RevealIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'left';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-revealIn'];
+  return ['motion-revealIn', 'motion-fadeIn'];
 }
 
 export function web(options: TimeAnimationOptions) {
@@ -10,8 +13,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions) {
-  const { direction = 'left' } = options.namedEffect as RevealIn;
-  const [revealIn] = getNames(options);
+  const namedEffect = options.namedEffect as RevealIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const [revealIn, fadeIn] = getNames(options);
   const easing = options.easing || 'cubicInOut';
 
   const start = getClipPolygonParams({ direction, minimum: 0 });
@@ -30,18 +38,23 @@ export function style(options: TimeAnimationOptions) {
       keyframes: [
         {
           offset: 0,
-          opacity: 0,
-          easing: 'step-end',
+          clipPath: `var(--motion-clip-start, ${start})`,
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          opacity: 'var(--comp-opacity, 1)',
           clipPath: `var(--motion-clip-start, ${start})`,
         },
         {
           clipPath: end,
         },
       ],
+    },
+    {
+      ...options,
+      name: fadeIn,
+      easing,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }, {}],
     },
   ];
 }

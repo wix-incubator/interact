@@ -1,7 +1,9 @@
 import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
 
 const ANGLE = 50;
+const DEFAULT_DIRECTION: EffectFourCorners = 'top-left';
+const ALLOWED_DIRECTION_KEYWORDS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
@@ -19,7 +21,12 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'top-left' } = options.namedEffect as TurnIn;
+  const namedEffect = options.namedEffect as TurnIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourCorners;
   const [fadeIn, turnIn] = getNames(options);
 
   const easing = options.easing || 'backOut';
@@ -56,10 +63,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-rotate-z',
             asWeb,
-          )}) translate(${invertedOrigin}) rotate(var(--comp-rotate-z, 0deg))`,
+          )}) translate(${invertedOrigin}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `translate(${origin}) rotate(0deg) translate(${invertedOrigin}) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `translate(${origin}) rotate(0deg) translate(${invertedOrigin}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },

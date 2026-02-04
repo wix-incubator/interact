@@ -1,11 +1,17 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
 import type {
   ScrubAnimationOptions,
   AiryMouse,
   AnimationExtraOptions,
   Progress,
+  MouseEffectAxis,
 } from '../../types';
 import { CustomMouse } from './CustomMouse';
+
+const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_ANGLE = 30;
+const DEFAULT_AXIS: MouseEffectAxis = 'both';
+const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
 
 class AiryMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -23,7 +29,7 @@ class AiryMouseAnimation extends CustomMouse {
     const rotate = mapRange(0, 1, -angle, angle, progressX) * invert;
     const units = getCssUnits(distance.type);
 
-    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) rotate(calc(${rotate}deg + var(--comp-rotate-z, 0deg)))`;
+    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) rotate(calc(${rotate}deg + var(--motion-rotate, 0deg)))`;
   }
 
   cancel() {
@@ -34,12 +40,11 @@ class AiryMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    inverted = false,
-    distance = { value: 200, type: 'px' },
-    angle = 30,
-    axis = 'both',
-  } = options.namedEffect as AiryMouse;
+  const namedEffect = options.namedEffect as AiryMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

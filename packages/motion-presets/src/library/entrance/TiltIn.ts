@@ -1,5 +1,9 @@
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
-import type { TiltIn, TimeAnimationOptions } from '../../types';
+import { getClipPolygonParams, INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
+
+const DEFAULT_DIRECTION: EffectTwoSides = 'left';
+const DEFAULT_DEPTH = { value: 200, type: 'px' };
+const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
@@ -15,14 +19,21 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'left' } = options.namedEffect as TiltIn;
+  const namedEffect = options.namedEffect as TiltIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectTwoSides;
+  const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);
 
   const easing = options.easing || 'cubicOut';
   const clipStart = getClipPolygonParams({ direction: 'top', minimum: 0 });
   const rotationZ = ROTATION_MAP[direction];
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
-  const translateZ = '(var(--motion-height, 200px) / 2)';
+  const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
+  const translateZ = `(${depthValue} / 2)`;
 
   const custom = {
     '--motion-rotate-z': `${rotationZ}deg`,
@@ -51,10 +62,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(calc(${translateZ}px * -1)) rotateX(-90deg) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(-90deg) translateZ(calc(${translateZ})) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(calc(${translateZ}px * -1)) rotateX(0deg) translateZ(calc(${translateZ}px)) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(0deg) translateZ(calc(${translateZ})) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },

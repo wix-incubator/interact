@@ -1,7 +1,9 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
-const DEFAULT_PERSPECTIVE = 800;
+type BounceInDirection = 'top' | 'right' | 'bottom' | 'left' | 'center';
+const DEFAULT_DIRECTION: BounceInDirection = 'bottom';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left', 'center'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
@@ -34,13 +36,15 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    distanceFactor = 1,
-    direction = 'bottom',
-    perspective = DEFAULT_PERSPECTIVE,
-  } = options.namedEffect as BounceIn;
+  const namedEffect = options.namedEffect as BounceIn;
+  const direction = parseDirection(
+    namedEffect?.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as BounceInDirection;
+  const distanceFactor = namedEffect?.distanceFactor || 1;
   const [fadeIn, bounceIn] = getNames(options);
-  const perspectiveValue = direction === 'center' ? `perspective(${perspective}px)` : ' ';
+  const perspective = direction === 'center' ? 'perspective(800px)' : ' ';
   const { x, y, z } = TRANSLATE_DIRECTION_MAP[direction];
 
   const custom = {
@@ -48,7 +52,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-direction-y': y,
     '--motion-direction-z': z,
     '--motion-distance-factor': distanceFactor,
-    '--motion-perspective': perspectiveValue,
+    '--motion-perspective': perspective,
     '--motion-ease-in': getEasing(easeOut),
     '--motion-ease-out': getEasing(easeIn),
   };
@@ -72,7 +76,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       translate / 2
     }px), calc(${directionZ} * ${distanceFactor_} * ${
       translate / 2
-    }px)) rotateZ(var(--comp-rotate-z, 0deg))`,
+    }px)) rotateZ(var(--motion-rotate, 0deg))`,
   }));
 
   return [
@@ -92,7 +96,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
         ...keyframes,
       ],

@@ -42,10 +42,12 @@ export type FadeIn = { type: 'FadeIn' };
 export type ArcIn = {
   type: 'ArcIn';
   direction?: EffectFourDirections;
+  depth?: UnitLengthPercentage;
 };
 export type CurveIn = {
   type: 'CurveIn';
   direction?: 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
+  depth?: UnitLengthPercentage;
 };
 export type DropIn = {
   type: 'DropIn';
@@ -97,6 +99,7 @@ export type WinkIn = {
 export type TiltIn = {
   type: 'TiltIn';
   direction?: EffectTwoSides;
+  depth?: UnitLengthPercentage;
 };
 export type ShapeIn = {
   type: 'ShapeIn';
@@ -108,12 +111,6 @@ export type ShuttersIn = {
   direction: EffectFourDirections;
   shutters: number;
   staggered: boolean;
-};
-export type GrowIn = {
-  type: 'GrowIn';
-  direction: number;
-  distance: UnitLengthPercentage;
-  initialScale?: number;
 };
 export type RevealIn = {
   type: 'RevealIn';
@@ -141,7 +138,6 @@ export type EntranceAnimation =
   | TiltIn
   | ShapeIn
   | ShuttersIn
-  | GrowIn
   | RevealIn
   | BlurIn;
 export type EntranceAnimations = Record<EntranceAnimation['type'], AnimationEffectAPI<'time'>>;

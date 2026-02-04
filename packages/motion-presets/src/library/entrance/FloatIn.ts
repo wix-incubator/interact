@@ -1,8 +1,11 @@
-import type { TimeAnimationOptions, FloatIn } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import type { TimeAnimationOptions, FloatIn, EffectFourDirections } from '../../types';
+import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'left';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-floatIn'];
+  return ['motion-floatIn', 'motion-fadeIn'];
 }
 
 const DIRECTION_MAP = {
@@ -17,8 +20,13 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'left' } = options.namedEffect as FloatIn;
-  const [floatIn] = getNames(options);
+  const namedEffect = options.namedEffect as FloatIn;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const [floatIn, fadeIn] = getNames(options);
   const fromParams = DIRECTION_MAP[direction];
 
   const translateX = fromParams.dx * fromParams.distance;
@@ -29,21 +37,17 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-translate-y': `${translateY}px`,
   };
 
+  const easing = 'sineInOut';
+
   return [
     {
       ...options,
       name: floatIn,
-      easing: 'sineInOut',
+      easing,
       custom,
       keyframes: [
         {
-          offset: 0,
-          opacity: 0,
-          easing: 'step-end',
-        },
-        {
           offset: INITIAL_FRAME_OFFSET,
-          opacity: 0,
           transform: `translate(${toKeyframeValue(
             custom,
             '--motion-translate-x',
@@ -52,13 +56,19 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-translate-y',
             asWeb,
-          )}) rotate(var(--comp-rotate-z, 0deg))`,
+          )}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          opacity: 'var(--comp-opacity, 1)',
-          transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+          transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
         },
       ],
+    },
+    {
+      ...options,
+      name: fadeIn,
+      easing,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }, {}],
     },
   ];
 }

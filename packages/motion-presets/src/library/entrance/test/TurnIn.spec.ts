@@ -22,10 +22,10 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -48,10 +48,10 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(50%, 50%) rotate(50deg) translate(-50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, 50%) rotate(50deg) translate(-50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(50%, 50%) rotate(0deg) translate(-50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, 50%) rotate(0deg) translate(-50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -74,10 +74,10 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(50%, -50%) rotate(50deg) translate(-50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, -50%) rotate(50deg) translate(-50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(50%, -50%) rotate(0deg) translate(-50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, -50%) rotate(0deg) translate(-50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -100,10 +100,10 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(-50%, 50%) rotate(-50deg) translate(50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, 50%) rotate(-50deg) translate(50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, 50%) rotate(0deg) translate(50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, 50%) rotate(0deg) translate(50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -128,10 +128,10 @@ describe('TurnIn', () => {
         easing: customEasing,
         keyframes: [
           {
-            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -167,10 +167,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -204,10 +204,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -243,10 +243,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },

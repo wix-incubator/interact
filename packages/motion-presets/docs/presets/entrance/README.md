@@ -18,7 +18,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 | **[SlideIn](slide-in.md)** | Medium     | ✓            | 4-way      | Slide from edge with clip reveal |
 | **[GlideIn](glide-in.md)** | Medium     | ✓            | 360°       | Smooth directional movement      |
 | **[FloatIn](float-in.md)** | Simple     | -            | 4-way      | Gentle floating movement         |
-| **[GrowIn](grow-in.md)**   | Medium     | ✓            | 360°       | Directional scale growth         |
+| **[ExpandIn](expand-in.md)** | Medium     | ✓            | 360°       | Directional scale growth         |
 
 ### 🔄 3D Transforms
 
@@ -94,7 +94,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 
 #### Medium (Directional controls)
 
-- SlideIn, GlideIn, BounceIn, FlipIn, ExpandIn, SpinIn, GrowIn
+- SlideIn, GlideIn, BounceIn, FlipIn, ExpandIn, SpinIn
 
 #### Complex (Advanced 3D effects)
 

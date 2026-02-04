@@ -1,4 +1,4 @@
-import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange, parseLength, parseDirection } from '../../utils';
 import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import {
@@ -7,6 +7,9 @@ import {
   BlurMouse,
   Progress,
 } from '../../types';
+
+const DEFAULT_DISTANCE = { value: 80, type: 'px' };
+const DEFAULT_ANGLE = 5;
 
 class BlurMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -32,7 +35,7 @@ class BlurMouseAnimation extends CustomMouse {
 
     const units = getCssUnits(distance.type);
 
-    const transform = `perspective(${perspective}px) translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${maxScale}, ${maxScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--comp-rotate-z, 0deg))`;
+    const transform = `perspective(${perspective}px) translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${maxScale}, ${maxScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--motion-rotate, 0deg))`;
 
     const progressDistance = distance2d([0.5, 0.5], [progressX, progressY]);
     const blurFilter = Math.round(mapRange(0, 1, 0, blur, quadInOut(progressDistance)));
@@ -52,14 +55,11 @@ class BlurMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    inverted = false,
-    distance = { value: 80, type: 'px' },
-    angle = 5,
-    scale = 0.3,
-    blur = 20,
-    perspective = 600,
-  } = options.namedEffect as BlurMouse;
+  const namedEffect = options.namedEffect as BlurMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const { scale = 0.3, blur = 20, perspective = 600 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

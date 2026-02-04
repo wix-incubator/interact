@@ -383,3 +383,118 @@ export function getTimingFactor(
   const timingFactor = roundNumber(duration_ / (duration_ + delay_));
   return asString ? timingFactor.toString().replace(/\./g, '') : timingFactor;
 }
+
+export type LengthValue = { value: number; type: string };
+export type LengthInput = string | number | LengthValue | undefined;
+
+const CSS_UNIT_REGEX = /^(-?\d*\.?\d+)(px|%|em|rem|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i;
+
+/**
+ * Normalize unit string to internal format
+ */
+function normalizeUnit(unit: string): string {
+  const lower = unit.toLowerCase();
+  return lower === '%' ? 'percentage' : lower;
+}
+
+/**
+ * Parse length value from number, string, or object format
+ * @param input - Number, String (e.g., "100px", "50%", "100"), or object { value, type }
+ * @param defaultValue - Fallback value if input is invalid
+ * @returns Normalized length object { value, type }
+ */
+export function parseLength(
+  input: LengthInput,
+  defaultValue: LengthValue,
+): LengthValue {
+  if (input === undefined || input === null) {
+    return defaultValue;
+  }
+
+  // Handle number input - use default unit type
+  if (typeof input === 'number') {
+    return { value: input, type: defaultValue.type };
+  }
+
+  // Handle object input { value, type }
+  if (typeof input === 'object' && 'value' in input && 'type' in input) {
+    const value = typeof input.value === 'string' ? parseFloat(input.value) : input.value;
+    if (typeof value === 'number' && !isNaN(value) && typeof input.type === 'string') {
+      return { value, type: normalizeUnit(input.type) };
+    }
+    return defaultValue;
+  }
+
+  // Handle string input
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+
+    // Try parsing as number + unit (e.g., "100px", "50%")
+    const match = trimmed.match(CSS_UNIT_REGEX);
+    if (match) {
+      return { value: parseFloat(match[1]), type: normalizeUnit(match[2]) };
+    }
+
+    // Try parsing as plain number string (e.g., "100", "100.5")
+    if (trimmed !== '') {
+      const numValue = Number(trimmed);
+      if (!isNaN(numValue)) {
+        return { value: numValue, type: defaultValue.type };
+      }
+    }
+  }
+
+  return defaultValue;
+}
+
+export type DirectionKeywords = readonly string[];
+
+/**
+ * Parse direction value from keyword, number (degrees), or string with "deg" suffix
+ * @param input - String keyword, number, or "45deg" string
+ * @param allowedKeywords - Array of valid keyword strings for this preset
+ * @param defaultValue - Fallback value if input is invalid
+ * @param acceptAngles - Whether to accept numeric angle values (default: false)
+ * @returns Normalized direction value (number for angles, string for keywords)
+ */
+export function parseDirection<T extends string | number>(
+  input: string | number | undefined,
+  allowedKeywords: DirectionKeywords,
+  defaultValue: T,
+  acceptAngles = false,
+): T {
+  if (input === undefined || input === null) {
+    return defaultValue;
+  }
+
+  if (typeof input === 'number') {
+    return acceptAngles ? (input as T) : defaultValue;
+  }
+
+  if (typeof input === 'string') {
+    const trimmed = input.trim().toLowerCase();
+
+    // Check if it's a valid keyword
+    if (allowedKeywords.includes(trimmed)) {
+      return trimmed as T;
+    }
+
+    if (acceptAngles) {
+      // Check if it's a degree string (e.g., "45deg", "90DEG")
+      const degMatch = trimmed.match(/^(-?\d*\.?\d+)deg$/i);
+      if (degMatch) {
+        return parseFloat(degMatch[1]) as T;
+      }
+
+      // Check if it's just a number as string
+      if (trimmed !== '') {
+        const numValue = Number(trimmed);
+        if (!isNaN(numValue)) {
+          return numValue as T;
+        }
+      }
+    }
+  }
+
+  return defaultValue;
+}

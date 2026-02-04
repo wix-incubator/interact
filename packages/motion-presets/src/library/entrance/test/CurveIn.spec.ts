@@ -19,22 +19,19 @@ describe('CurveIn', () => {
           easing: 'quadOut',
           keyframes: [
             {
-              offset: 0,
-              opacity: 0,
-              easing: 'step-end',
-            },
-            {
               offset: 0.000001,
-              opacity: 0,
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(180deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(180deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
-              opacity: 'var(--comp-opacity, 1)',
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
           ],
+        },
+        {
+          easing: 'quadOut',
+          keyframes: [{ offset: 0, opacity: 0 }, {}],
         },
       ];
 
@@ -56,22 +53,19 @@ describe('CurveIn', () => {
           easing: 'quadOut',
           keyframes: [
             {
-              offset: 0,
-              opacity: 0,
-              easing: 'step-end',
-            },
-            {
               offset: 0.000001,
-              opacity: 0,
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(-180deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(-180deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
-              opacity: 'var(--comp-opacity, 1)',
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
           ],
+        },
+        {
+          easing: 'quadOut',
+          keyframes: [{ offset: 0, opacity: 0 }, {}],
         },
       ];
 
@@ -100,22 +94,21 @@ describe('CurveIn', () => {
           },
           keyframes: [
             {
-              offset: 0,
-              opacity: 0,
-              easing: 'step-end',
-            },
-            {
               offset: 0.000001,
-              opacity: 0,
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
-              opacity: 'var(--comp-opacity, 1)',
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
           ],
+        },
+        {
+          name: 'motion-fadeIn',
+          easing: 'quadOut',
+          custom: {},
+          keyframes: [{ offset: 0, opacity: 0 }, {}],
         },
       ];
 
@@ -142,22 +135,21 @@ describe('CurveIn', () => {
           },
           keyframes: [
             {
-              offset: 0,
-              opacity: 0,
-              easing: 'step-end',
-            },
-            {
               offset: 0.000001,
-              opacity: 0,
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
-              opacity: 'var(--comp-opacity, 1)',
               transform:
-                'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+                'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
           ],
+        },
+        {
+          name: 'motion-fadeIn',
+          easing: 'quadOut',
+          custom: {},
+          keyframes: [{ offset: 0, opacity: 0 }, {}],
         },
       ];
 

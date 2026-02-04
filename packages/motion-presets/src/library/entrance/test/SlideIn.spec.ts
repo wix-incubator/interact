@@ -16,18 +16,25 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start': 'polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%)',
+          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
           '--motion-translate-x': '-100%',
           '--motion-translate-y': '0%',
         },
         keyframes: [
           {
+            offset: 0,
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
+            offset: 0.000001,
+            transform:
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+          },
+          {
+            transform: 'rotate(var(--motion-rotate, 0deg)) translate(0px, 0px)',
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
@@ -36,7 +43,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -48,7 +55,7 @@ describe('SlideIn', () => {
   test('SlideIn animation with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right', initialTranslate: 100 } as SlideInType,
+      namedEffect: { direction: 'right', initialTranslate: 1 } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -56,28 +63,34 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+          '--motion-clip-start': 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
           '--motion-translate-x': '100%',
           '--motion-translate-y': '0%',
         },
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            transform:
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) translate(0px, 0px)',
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        name: 'motion-fadeIn',
+        easing: 'cubicInOut',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -97,18 +110,25 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start': 'polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%)',
+          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
           '--motion-translate-x': '-100%',
           '--motion-translate-y': '0%',
         },
         keyframes: [
           {
+            offset: 0,
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 20% 0%, 20% 100%, 0% 100%))',
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
+            offset: 0.000001,
+            transform:
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+          },
+          {
+            transform: 'rotate(var(--motion-rotate, 0deg)) translate(0px, 0px)',
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
@@ -117,7 +137,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -129,7 +149,7 @@ describe('SlideIn', () => {
   test('SlideIn style with custom direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'right', initialTranslate: 100 } as SlideInType,
+      namedEffect: { direction: 'right', initialTranslate: 1 } as SlideInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -137,28 +157,34 @@ describe('SlideIn', () => {
         name: 'motion-slideIn',
         easing: 'cubicInOut',
         custom: {
-          '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
+          '--motion-clip-start': 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
           '--motion-translate-x': '100%',
           '--motion-translate-y': '0%',
         },
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            transform:
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
+              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) translate(0px, 0px)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) translate(0px, 0px)',
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        name: 'motion-fadeIn',
+        easing: 'cubicInOut',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 

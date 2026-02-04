@@ -86,6 +86,23 @@ Each preset page includes:
 
 ## 🛠️ Common Patterns
 
+### CSS Custom Properties
+
+Motion presets respect certain CSS custom properties set on your elements. This allows animations to work seamlessly with your existing styles.
+
+#### `--motion-rotate`
+
+If your element has a rotation applied via CSS transform, set the `--motion-rotate` custom property to preserve it during animations:
+
+```css
+.rotated-element {
+  --motion-rotate: 45deg;
+  transform: rotate(45deg);
+}
+```
+
+Without this property, animations that manipulate transforms may reset your element's rotation to `0deg`. By setting `--motion-rotate`, the preset includes your rotation in all transform calculations.
+
 ### Basic Animation Creation
 
 ```typescript

@@ -5,8 +5,14 @@ import {
   MousePivotAxis,
   Progress,
 } from '../../types';
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
+
+const DEFAULT_ANGLE = 5;
+const DEFAULT_PIVOT_AXIS: MousePivotAxis = 'center-horizontal';
+const ALLOWED_PIVOT_AXIS_KEYWORDS = [
+  'top', 'bottom', 'right', 'left', 'center-horizontal', 'center-vertical'
+] as const;
 
 const transformOrigins: Record<MousePivotAxis, [number, number]> = {
   top: [0, -50],
@@ -33,7 +39,7 @@ class SwivelMouseAnimation extends CustomMouse {
     const rotate = mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
 
     const [translateX, translateY] = transformOrigins[pivotAxis as MousePivotAxis];
-    const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--comp-rotate-z, 0deg))`;
+    const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--motion-rotate, 0deg))`;
 
     this.target.style.transform = transform;
   }
@@ -46,12 +52,15 @@ class SwivelMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    inverted = false,
-    angle = 5,
-    perspective = 800,
-    pivotAxis = 'center-horizontal',
-  } = options.namedEffect as SwivelMouse;
+  const namedEffect = options.namedEffect as SwivelMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const pivotAxis = parseDirection(
+    namedEffect.pivotAxis,
+    ALLOWED_PIVOT_AXIS_KEYWORDS,
+    DEFAULT_PIVOT_AXIS,
+  ) as MousePivotAxis;
+  const { perspective = 800 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
