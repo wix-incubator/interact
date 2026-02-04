@@ -21,11 +21,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
             },
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
             },
           ],
         },
@@ -47,11 +47,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 50deg)) rotateY(50deg) rotateX(100deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 50deg)) rotateY(50deg) rotateX(100deg)',
             },
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
             },
           ],
         },
@@ -76,11 +76,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
             },
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -100deg)) rotateY(-200deg) rotateX(-300deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + -100deg)) rotateY(-200deg) rotateX(-300deg)',
             },
           ],
         },
@@ -106,11 +106,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
             },
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + -200deg)) rotateY(-100deg) rotateX(-180deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + -200deg)) rotateY(-100deg) rotateX(-180deg)',
             },
           ],
         },
@@ -134,11 +134,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
+                'perspective(1000px) translateY(-20vh) rotateZ(calc(var(--motion-rotate, 0deg) + 100deg)) rotateY(100deg) rotateX(200deg)',
             },
             {
               transform:
-                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--comp-rotate-z, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
+                'perspective(1000px) translateY(0vh) rotateZ(calc(var(--motion-rotate, 0deg) + 0deg)) rotateY(0deg) rotateX(0deg)',
             },
           ],
         },
@@ -166,11 +166,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -192,11 +192,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -221,11 +221,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -251,11 +251,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -279,11 +279,11 @@ describe('Spin3dScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--comp-rotate-z, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },

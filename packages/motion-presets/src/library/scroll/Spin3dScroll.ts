@@ -69,7 +69,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotateZ(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-rot-z-from', asWeb)})) rotateY(${toKeyframeValue(
@@ -85,7 +85,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotateZ(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-rot-z-to', asWeb)})) rotateY(${toKeyframeValue(

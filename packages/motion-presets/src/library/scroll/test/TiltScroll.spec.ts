@@ -34,10 +34,10 @@ describe('TiltScroll', () => {
           composite: 'add',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -74,10 +74,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 25deg))',
             },
           ],
         },
@@ -115,10 +115,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 31.25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 31.25deg))',
             },
           ],
         },
@@ -149,10 +149,10 @@ describe('TiltScroll', () => {
         {
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -163,10 +163,10 @@ describe('TiltScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom distance', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: 0.5 } as TiltScrollType,
+        namedEffect: { parallaxFactor: 0.5 } as TiltScrollType,
       };
 
       const expectedResult = [
@@ -225,10 +225,10 @@ describe('TiltScroll', () => {
           composite: 'add',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -267,10 +267,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -310,10 +310,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -346,10 +346,10 @@ describe('TiltScroll', () => {
         {
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -360,10 +360,10 @@ describe('TiltScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom distance', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: 0.5 } as TiltScrollType,
+        namedEffect: { parallaxFactor: 0.5 } as TiltScrollType,
       };
 
       const expectedResult = [

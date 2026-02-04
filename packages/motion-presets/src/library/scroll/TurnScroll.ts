@@ -1,7 +1,12 @@
-import type { TurnScroll, ScrubAnimationOptions, DomApi, AnimationFillMode } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import type { TurnScroll, ScrubAnimationOptions, DomApi, AnimationFillMode, EffectTwoSides } from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
 
 const ELEMENT_ROTATION = 45;
+const DEFAULT_DIRECTION: EffectTwoSides = 'right';
+type SpinDirection = 'clockwise' | 'counter-clockwise';
+const DEFAULT_SPIN: SpinDirection = 'clockwise';
+const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
+const ALLOWED_SPIN_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   clockwise: 1,
@@ -34,12 +39,18 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    spin = 'clockwise',
-    direction = 'right',
-    scale = 1,
-    range = 'in',
-  } = options.namedEffect as TurnScroll;
+  const namedEffect = options.namedEffect as TurnScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectTwoSides;
+  const spin = parseDirection(
+    namedEffect.spin,
+    ALLOWED_SPIN_KEYWORDS,
+    DEFAULT_SPIN,
+  ) as SpinDirection;
+  const { scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -99,7 +110,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-turn-rotation-from', asWeb)}))`,
@@ -115,7 +126,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-turn-rotation-to', asWeb)}))`,

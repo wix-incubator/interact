@@ -1,7 +1,12 @@
-import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import type { AnimationFillMode, ScrubAnimationOptions, ShrinkScroll, DomApi, EffectNineDirections } from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
+const DEFAULT_DIRECTION: EffectNineDirections = 'center';
+const ALLOWED_DIRECTION_KEYWORDS = [
+  'top', 'top-right', 'right', 'bottom-right',
+  'bottom', 'bottom-left', 'left', 'top-left', 'center'
+] as const;
 
 const directionMap = {
   top: [0, -50],
@@ -24,12 +29,13 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    range = 'in',
-    scale = range === 'in' ? 1.2 : 0.8,
-    direction = 'center',
-    speed = 0,
-  } = options.namedEffect as ShrinkScroll;
+  const namedEffect = options.namedEffect as ShrinkScroll;
+  const { range = 'in', scale = range === 'in' ? 1.2 : 0.8, speed = 0 } = namedEffect;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectNineDirections;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -97,7 +103,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-trans-y',
             asWeb,
-          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )})) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translateY(${toKeyframeValue(
@@ -120,7 +126,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-trans-y',
             asWeb,
-          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )})) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

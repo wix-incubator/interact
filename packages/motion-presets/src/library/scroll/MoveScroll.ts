@@ -1,5 +1,8 @@
 import type { AnimationFillMode, DomApi, MoveScroll, ScrubAnimationOptions } from '../../types';
-import { getCssUnits, transformPolarToXY, toKeyframeValue } from '../../utils';
+import { getCssUnits, transformPolarToXY, toKeyframeValue, parseLength, parseDirection } from '../../utils';
+
+const DEFAULT_ANGLE = 120;
+const DEFAULT_DISTANCE = { value: 400, type: 'px' };
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-moveScroll'];
@@ -10,19 +13,16 @@ export function web(options: ScrubAnimationOptions, _?: DomApi, config?: Record<
 }
 
 export function style(options: ScrubAnimationOptions, config?: Record<string, any>, asWeb = false) {
-  const { angle = 120, range = 'in' } = options.namedEffect as MoveScroll;
+  const namedEffect = options.namedEffect as MoveScroll;
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const { range = 'in' } = namedEffect;
 
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { distance: inputDistance = { value: 400, type: 'px' } } =
-    options.namedEffect as MoveScroll;
-  const distance = {
-    value: inputDistance.value || 0,
-    type: inputDistance.type || 'px',
-  };
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
   let [travelX, travelY] = transformPolarToXY(angle, distance.value);
   const unit = getCssUnits(distance.type);
@@ -79,7 +79,7 @@ export function style(options: ScrubAnimationOptions, config?: Record<string, an
             custom,
             '--motion-move-from-y',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translate(${toKeyframeValue(
@@ -90,7 +90,7 @@ export function style(options: ScrubAnimationOptions, config?: Record<string, an
             custom,
             '--motion-move-to-y',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

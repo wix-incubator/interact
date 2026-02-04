@@ -1,10 +1,14 @@
-import type { AnimationFillMode, ScrubAnimationOptions, RevealScroll, DomApi } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, RevealScroll, DomApi, EffectFourDirections } from '../../types';
 import {
   getRevealClipFrom,
   getRevealClipTo,
   toKeyframeValue,
   INITIAL_CLIP,
+  parseDirection,
 } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'bottom';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(options: ScrubAnimationOptions) {
   const { range = 'in' } = options.namedEffect as RevealScroll;
@@ -16,7 +20,13 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions) {
-  const { direction = 'bottom', range = 'in' } = options.namedEffect as RevealScroll;
+  const namedEffect = options.namedEffect as RevealScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

@@ -1,5 +1,9 @@
-import { PanScroll, ScrubAnimationOptions, DomApi, AnimationFillMode } from '../../types';
-import { getCssUnits, toKeyframeValue } from '../../utils';
+import { PanScroll, ScrubAnimationOptions, DomApi, AnimationFillMode, EffectTwoSides } from '../../types';
+import { getCssUnits, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectTwoSides = 'left';
+const DEFAULT_DISTANCE = { value: 400, type: 'px' };
+const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-panScroll'];
@@ -27,15 +31,14 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    direction = 'left',
-    startFromOffScreen = true,
-    range = 'in',
-  } = options.namedEffect as PanScroll;
-  let { distance } = options.namedEffect as PanScroll;
-  if (!distance || !distance.value || !distance.type) {
-    distance = { value: 400, type: 'px' };
-  }
+  const namedEffect = options.namedEffect as PanScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectTwoSides;
+  const { startFromOffScreen = true, range = 'in' } = namedEffect;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const travel = distance.value * (direction === 'left' ? 1 : -1);
   let startX = `${-travel}${getCssUnits(distance.type)}`;
   let endX = `${travel}${getCssUnits(distance.type)}`;
@@ -78,14 +81,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-pan-from',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translateX(${toKeyframeValue(
             custom,
             '--motion-pan-to',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

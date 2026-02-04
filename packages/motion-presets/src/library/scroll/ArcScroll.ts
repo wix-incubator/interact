@@ -1,7 +1,10 @@
 import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
 
 const ROTATION = 68;
+type ArcScrollDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: ArcScrollDirection = 'horizontal';
+const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -17,7 +20,13 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { direction = 'horizontal', range = 'in' } = options.namedEffect as ArcScroll;
+  const namedEffect = options.namedEffect as ArcScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as ArcScrollDirection;
+  const { range = 'in' } = namedEffect;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
@@ -47,14 +56,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-from',
             asWeb,
-          )} translateZ(300px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} translateZ(300px) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
         {
           transform: `perspective(500px) translateZ(-300px) ${toKeyframeValue(
             custom,
             '--motion-arc-to',
             asWeb,
-          )} translateZ(300px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} translateZ(300px) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
       ],
     },

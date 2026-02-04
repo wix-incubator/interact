@@ -1,5 +1,9 @@
 import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
+
+type SpinScrollDirection = 'clockwise' | 'counter-clockwise';
+const DEFAULT_DIRECTION: SpinScrollDirection = 'clockwise';
+const ALLOWED_DIRECTION_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
 
 const DIRECTION_MAP = {
   clockwise: 1,
@@ -15,12 +19,13 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    spins = 0.15,
-    scale = 1,
-    direction = 'clockwise',
-    range = 'in',
-  } = options.namedEffect as SpinScroll;
+  const namedEffect = options.namedEffect as SpinScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as SpinScrollDirection;
+  const { spins = 0.15, scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -57,7 +62,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-spin-from', asWeb)}))`,
@@ -69,7 +74,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-spin-to', asWeb)}))`,

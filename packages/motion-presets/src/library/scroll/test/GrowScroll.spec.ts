@@ -20,11 +20,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(0%, 0%) scale(0) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 0%) scale(0) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -49,11 +49,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(0%, 0%) scale(4) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 0%) scale(4) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -75,11 +75,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(50%, -50%) scale(0) translate(calc(-1 * 50%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, -50%) scale(0) translate(calc(-1 * 50%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(50%, -50%) scale(1) translate(calc(-1 * 50%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, -50%) scale(1) translate(calc(-1 * 50%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -101,11 +101,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(-50%, 50%) scale(0) translate(calc(-1 * -50%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, 50%) scale(0) translate(calc(-1 * -50%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(-50%, 50%) scale(1) translate(calc(-1 * -50%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, 50%) scale(1) translate(calc(-1 * -50%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -127,11 +127,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(50%, 50%) scale(0) translate(calc(-1 * 50%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, 50%) scale(0) translate(calc(-1 * 50%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(50%, 50%) scale(1) translate(calc(-1 * 50%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, 50%) scale(1) translate(calc(-1 * 50%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -153,11 +153,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(-50%, -50%) scale(0) translate(calc(-1 * -50%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, -50%) scale(0) translate(calc(-1 * -50%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(-50%, -50%) scale(1) translate(calc(-1 * -50%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, -50%) scale(1) translate(calc(-1 * -50%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -179,11 +179,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(0%, 50%) scale(0) translate(calc(-1 * 0%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 50%) scale(0) translate(calc(-1 * 0%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(0%, 50%) scale(1) translate(calc(-1 * 0%), calc(-1 * 50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 50%) scale(1) translate(calc(-1 * 0%), calc(-1 * 50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -205,11 +205,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(0%, -50%) scale(0) translate(calc(-1 * 0%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, -50%) scale(0) translate(calc(-1 * 0%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(0%, -50%) scale(1) translate(calc(-1 * 0%), calc(-1 * -50%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, -50%) scale(1) translate(calc(-1 * 0%), calc(-1 * -50%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -231,11 +231,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(-50%, 0%) scale(0) translate(calc(-1 * -50%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, 0%) scale(0) translate(calc(-1 * -50%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(-50%, 0%) scale(1) translate(calc(-1 * -50%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(-50%, 0%) scale(1) translate(calc(-1 * -50%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -257,11 +257,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(0vh) translate(50%, 0%) scale(0) translate(calc(-1 * 50%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, 0%) scale(0) translate(calc(-1 * 50%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(50%, 0%) scale(1) translate(calc(-1 * 50%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(50%, 0%) scale(1) translate(calc(-1 * 50%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -285,11 +285,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(-20vh) translate(0%, 0%) scale(0) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(-20vh) translate(0%, 0%) scale(0) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--comp-rotate-z, 0))',
+                'translateY(0vh) translate(0%, 0%) scale(1) translate(calc(-1 * 0%), calc(-1 * 0%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -316,11 +316,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -345,11 +345,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -371,11 +371,11 @@ describe('GrowScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-from)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-from)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(var(--motion-travel-to)) translate(var(--motion-trans-x), var(--motion-trans-y)) scale(var(--motion-grow-to)) translate(calc(-1 * var(--motion-trans-x)), calc(-1 * var(--motion-trans-y))) rotate(var(--motion-rotate, 0))',
             },
           ],
         },

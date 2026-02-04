@@ -1,5 +1,9 @@
 import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
+
+type FlipScrollDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: FlipScrollDirection = 'horizontal';
+const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -15,11 +19,13 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    rotate = 240,
-    direction = 'horizontal',
-    range = 'continuous',
-  } = options.namedEffect as FlipScroll;
+  const namedEffect = options.namedEffect as FlipScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as FlipScrollDirection;
+  const { rotate = 240, range = 'continuous' } = namedEffect;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
 
@@ -50,14 +56,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-flip-from',
             asWeb,
-          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
         {
           transform: `perspective(800px) ${toKeyframeValue(
             custom,
             '--motion-flip-to',
             asWeb,
-          )} rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
       ],
     },

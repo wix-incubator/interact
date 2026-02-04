@@ -1,9 +1,11 @@
-import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi } from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi, EffectTwoSides } from '../../types';
 import { cssEasings as easings } from '@wix/motion';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const [ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25];
+const DEFAULT_DIRECTION: EffectTwoSides = 'right';
+const ALLOWED_DIRECTION_KEYWORDS = ['left', 'right'] as const;
 
 const DIRECTIONS_MAP = {
   right: 1,
@@ -19,17 +21,20 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    distance = 0,
-    range = 'in',
-    direction = 'right',
-  } = options.namedEffect as TiltScroll;
+  const namedEffect = options.namedEffect as TiltScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectTwoSides;
+  const { parallaxFactor = 0 } = namedEffect;
+  const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const travelY = MAX_Y_TRAVEL * distance;
+  const travelY = MAX_Y_TRAVEL * parallaxFactor;
   const dir = DIRECTIONS_MAP[direction];
 
   const from = {
@@ -108,7 +113,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
         {
           transform: `rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-tilt-z-from', asWeb)}))`,
@@ -116,7 +121,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
         {
           transform: `rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-tilt-z-to', asWeb)}))`,
