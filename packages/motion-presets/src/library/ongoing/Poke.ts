@@ -1,4 +1,10 @@
-import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectFourDirections } from '../../types';
+import type {
+  Poke,
+  TimeAnimationOptions,
+  DomApi,
+  AnimationExtraOptions,
+  EffectFourDirections,
+} from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';

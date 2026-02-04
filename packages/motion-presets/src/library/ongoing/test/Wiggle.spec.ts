@@ -87,7 +87,6 @@ describe('Wiggle', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('style() method', () => {

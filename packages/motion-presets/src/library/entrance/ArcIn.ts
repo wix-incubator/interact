@@ -87,4 +87,3 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     },
   ];
 }
-

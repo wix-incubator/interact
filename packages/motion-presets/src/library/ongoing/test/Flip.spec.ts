@@ -120,7 +120,6 @@ describe('Flip', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('style() method', () => {
@@ -248,6 +247,5 @@ describe('Flip', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 });

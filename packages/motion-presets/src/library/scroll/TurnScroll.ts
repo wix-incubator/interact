@@ -1,4 +1,10 @@
-import type { TurnScroll, ScrubAnimationOptions, DomApi, AnimationFillMode, EffectTwoSides } from '../../types';
+import type {
+  TurnScroll,
+  ScrubAnimationOptions,
+  DomApi,
+  AnimationFillMode,
+  EffectTwoSides,
+} from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
 
 const ELEMENT_ROTATION = 45;

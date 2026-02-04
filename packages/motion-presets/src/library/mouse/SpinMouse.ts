@@ -1,4 +1,10 @@
-import { ScrubAnimationOptions, AnimationExtraOptions, SpinMouse, Progress, MouseEffectAxis } from '../../types';
+import {
+  ScrubAnimationOptions,
+  AnimationExtraOptions,
+  SpinMouse,
+  Progress,
+  MouseEffectAxis,
+} from '../../types';
 import { getMouseTransitionEasing, getAngleInDeg, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 

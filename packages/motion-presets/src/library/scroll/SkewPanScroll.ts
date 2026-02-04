@@ -1,4 +1,10 @@
-import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll, EffectTwoSides } from '../../types';
+import type {
+  AnimationFillMode,
+  DomApi,
+  ScrubAnimationOptions,
+  SkewPanScroll,
+  EffectTwoSides,
+} from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';

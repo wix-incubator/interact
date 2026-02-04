@@ -1,11 +1,6 @@
 import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  BlobMouse,
-  Progress,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, BlobMouse, Progress } from '../../types';
 
 const DEFAULT_DISTANCE = { value: 200, type: 'px' };
 
@@ -41,10 +36,7 @@ class BlobMouseAnimation extends CustomMouse {
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
   const namedEffect = options.namedEffect as BlobMouse;
-  const {
-    inverted = false,
-    scale = 1.4,
-  } = namedEffect;
+  const { inverted = false, scale = 1.4 } = namedEffect;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
   const invert = inverted ? -1 : 1;

@@ -5,7 +5,13 @@ import {
   Progress,
   MouseEffectAxis,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
+import {
+  getCssUnits,
+  getMouseTransitionEasing,
+  mapRange,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 

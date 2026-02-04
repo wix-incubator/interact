@@ -1,10 +1,22 @@
-import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions, EffectEightDirections } from '../../types';
+import type {
+  Cross,
+  DomApi,
+  TimeAnimationOptions,
+  AnimationExtraOptions,
+  EffectEightDirections,
+} from '../../types';
 import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectEightDirections = 'right';
 const DIRECTIONS = [
-  'top', 'right', 'bottom', 'left',
-  'top-left', 'top-right', 'bottom-left', 'bottom-right'
+  'top',
+  'right',
+  'bottom',
+  'left',
+  'top-left',
+  'top-right',
+  'bottom-left',
+  'bottom-right',
 ] as const;
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {

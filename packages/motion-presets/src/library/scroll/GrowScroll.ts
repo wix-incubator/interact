@@ -1,11 +1,24 @@
-import type { AnimationFillMode, GrowScroll, ScrubAnimationOptions, DomApi, EffectNineDirections } from '../../types';
+import type {
+  AnimationFillMode,
+  GrowScroll,
+  ScrubAnimationOptions,
+  DomApi,
+  EffectNineDirections,
+} from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
 
 const MAX_Y_TRAVEL = 40;
 const DEFAULT_DIRECTION: EffectNineDirections = 'center';
 const DIRECTIONS = [
-  'top', 'top-right', 'right', 'bottom-right',
-  'bottom', 'bottom-left', 'left', 'top-left', 'center'
+  'top',
+  'top-right',
+  'right',
+  'bottom-right',
+  'bottom',
+  'bottom-left',
+  'left',
+  'top-left',
+  'center',
 ] as const;
 
 const directionMap = {

@@ -98,7 +98,6 @@ describe('Jello.web()', () => {
 
     expect(result).toMatchObject(expectedResult);
   });
-
 });
 
 describe('Jello.style()', () => {
@@ -203,5 +202,4 @@ describe('Jello.style()', () => {
 
     expect(result).toMatchObject(expectedResult);
   });
-
 });

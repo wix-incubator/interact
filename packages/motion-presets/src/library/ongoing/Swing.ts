@@ -1,5 +1,17 @@
-import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectFourDirections } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+import type {
+  Swing,
+  TimeAnimationOptions,
+  DomApi,
+  AnimationExtraOptions,
+  EffectFourDirections,
+} from '../../types';
+import {
+  getEasing,
+  getEasingFamily,
+  getTimingFactor,
+  toKeyframeValue,
+  parseDirection,
+} from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;

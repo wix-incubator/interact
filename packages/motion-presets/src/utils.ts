@@ -403,10 +403,7 @@ function normalizeUnit(unit: string): string {
  * @param defaultValue - Fallback value if input is invalid
  * @returns Normalized length object { value, type }
  */
-export function parseLength(
-  input: LengthInput,
-  defaultValue: LengthValue,
-): LengthValue {
+export function parseLength(input: LengthInput, defaultValue: LengthValue): LengthValue {
   if (input === undefined || input === null) {
     return defaultValue;
   }

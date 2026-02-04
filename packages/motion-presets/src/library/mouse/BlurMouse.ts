@@ -1,12 +1,14 @@
-import { getCssUnits, getMouseTransitionEasing, distance2d, mapRange, parseLength, parseDirection } from '../../utils';
+import {
+  getCssUnits,
+  getMouseTransitionEasing,
+  distance2d,
+  mapRange,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  BlurMouse,
-  Progress,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, BlurMouse, Progress } from '../../types';
 
 const DEFAULT_DISTANCE = { value: 80, type: 'px' };
 const DEFAULT_ANGLE = 5;

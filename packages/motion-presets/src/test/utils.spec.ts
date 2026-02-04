@@ -58,9 +58,7 @@ describe('parseLength', () => {
     });
 
     test('returns default for object with invalid string value', () => {
-      expect(parseLength({ value: 'abc' as any, type: 'px' }, defaultValue)).toEqual(
-        defaultValue,
-      );
+      expect(parseLength({ value: 'abc' as any, type: 'px' }, defaultValue)).toEqual(defaultValue);
     });
 
     test('returns default for object missing value', () => {
@@ -211,7 +209,6 @@ describe('parseDirection', () => {
   });
 
   describe('acceptAngles parameter', () => {
-
     describe('when acceptAngles is false (default)', () => {
       test('rejects number input, returns default', () => {
         expect(parseDirection(45, allowedKeywords, defaultValue, false)).toBe(defaultValue);

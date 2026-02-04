@@ -1,4 +1,10 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
+import {
+  getCssUnits,
+  getMouseTransitionEasing,
+  mapRange,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 import type {
   ScrubAnimationOptions,
   AiryMouse,

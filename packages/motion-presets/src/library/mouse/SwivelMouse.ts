@@ -10,9 +10,7 @@ import { CustomMouse } from './CustomMouse';
 
 const DEFAULT_ANGLE = 5;
 const DEFAULT_PIVOT_AXIS: MousePivotAxis = 'center-horizontal';
-const AXES = [
-  'top', 'bottom', 'right', 'left', 'center-horizontal', 'center-vertical'
-] as const;
+const AXES = ['top', 'bottom', 'right', 'left', 'center-horizontal', 'center-vertical'] as const;
 
 const transformOrigins: Record<MousePivotAxis, [number, number]> = {
   top: [0, -50],

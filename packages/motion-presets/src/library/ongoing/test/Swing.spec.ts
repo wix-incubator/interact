@@ -131,7 +131,6 @@ describe('Swing', () => {
         '--motion-trans-y': '50%',
       });
     });
-
   });
 
   describe('web function', () => {
@@ -243,6 +242,5 @@ describe('Swing', () => {
         'translate(calc(50% * -1), calc(0% * -1))',
       );
     });
-
   });
 });

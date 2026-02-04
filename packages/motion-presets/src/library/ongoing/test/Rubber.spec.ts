@@ -264,5 +264,4 @@ describe('Rubber', () => {
 
     expect(result).toMatchObject(expectedResult);
   });
-
 });

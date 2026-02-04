@@ -1,4 +1,10 @@
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import {
+  getClipPolygonParams,
+  INITIAL_FRAME_OFFSET,
+  toKeyframeValue,
+  parseDirection,
+  parseLength,
+} from '../../utils';
 import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';

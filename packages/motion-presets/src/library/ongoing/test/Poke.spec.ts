@@ -257,7 +257,6 @@ describe('Poke', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('style() method', () => {
@@ -407,7 +406,6 @@ describe('Poke', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('getNames() method', () => {

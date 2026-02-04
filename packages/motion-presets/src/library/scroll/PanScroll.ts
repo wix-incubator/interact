@@ -1,4 +1,10 @@
-import { PanScroll, ScrubAnimationOptions, DomApi, AnimationFillMode, EffectTwoSides } from '../../types';
+import {
+  PanScroll,
+  ScrubAnimationOptions,
+  DomApi,
+  AnimationFillMode,
+  EffectTwoSides,
+} from '../../types';
 import { getCssUnits, toKeyframeValue, parseDirection, parseLength } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';

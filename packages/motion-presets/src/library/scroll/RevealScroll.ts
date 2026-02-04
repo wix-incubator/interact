@@ -1,4 +1,10 @@
-import type { AnimationFillMode, ScrubAnimationOptions, RevealScroll, DomApi, EffectFourDirections } from '../../types';
+import type {
+  AnimationFillMode,
+  ScrubAnimationOptions,
+  RevealScroll,
+  DomApi,
+  EffectFourDirections,
+} from '../../types';
 import {
   getRevealClipFrom,
   getRevealClipTo,

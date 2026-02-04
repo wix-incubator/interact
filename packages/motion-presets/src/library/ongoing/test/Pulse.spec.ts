@@ -89,7 +89,6 @@ describe('Pulse', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('style() method', () => {

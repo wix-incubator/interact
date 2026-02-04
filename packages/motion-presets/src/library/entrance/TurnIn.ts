@@ -8,7 +8,10 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
 }
 
-const DIRECTION_TO_TRANSFORM_MAP: Record<EffectFourCorners, { x: number; y: number; angle: number }> = {
+const DIRECTION_TO_TRANSFORM_MAP: Record<
+  EffectFourCorners,
+  { x: number; y: number; angle: number }
+> = {
   'top-left': { angle: -50, x: -50, y: -50 },
   'top-right': { angle: 50, x: 50, y: -50 },
   'bottom-right': { angle: 50, x: 50, y: 50 },

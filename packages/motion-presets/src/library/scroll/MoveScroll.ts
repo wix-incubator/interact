@@ -1,5 +1,11 @@
 import type { AnimationFillMode, DomApi, MoveScroll, ScrubAnimationOptions } from '../../types';
-import { getCssUnits, transformPolarToXY, toKeyframeValue, parseLength, parseDirection } from '../../utils';
+import {
+  getCssUnits,
+  transformPolarToXY,
+  toKeyframeValue,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 
 const DEFAULT_ANGLE = 120;
 const DEFAULT_DISTANCE = { value: 400, type: 'px' };

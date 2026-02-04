@@ -1,4 +1,10 @@
-import type { AnimationFillMode, ScrubAnimationOptions, ShuttersScroll, DomApi, EffectFourDirections } from '../../types';
+import type {
+  AnimationFillMode,
+  ScrubAnimationOptions,
+  ShuttersScroll,
+  DomApi,
+  EffectFourDirections,
+} from '../../types';
 import {
   getOppositeDirection,
   getShuttersClipPaths,

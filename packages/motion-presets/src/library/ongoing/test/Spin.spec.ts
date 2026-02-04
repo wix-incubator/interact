@@ -112,7 +112,6 @@ describe('Spin', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('style() method', () => {
@@ -221,6 +220,5 @@ describe('Spin', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 });

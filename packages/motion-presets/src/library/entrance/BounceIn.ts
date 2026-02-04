@@ -1,4 +1,10 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+import {
+  getEasingFamily,
+  getEasing,
+  toKeyframeValue,
+  INITIAL_FRAME_OFFSET,
+  parseDirection,
+} from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 
 type BounceInDirection = 'top' | 'right' | 'bottom' | 'left' | 'center';

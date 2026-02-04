@@ -5,7 +5,13 @@ import {
   Progress,
   MouseEffectAxis,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength, parseDirection } from '../../utils';
+import {
+  getCssUnits,
+  getMouseTransitionEasing,
+  mapRange,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
 const DEFAULT_DISTANCE = { value: 200, type: 'px' };

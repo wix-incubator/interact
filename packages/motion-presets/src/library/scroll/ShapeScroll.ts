@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  ScrubAnimationOptions,
-  ShapeScroll,
-  DomApi,
-} from '../../types';
+import type { AnimationFillMode, ScrubAnimationOptions, ShapeScroll, DomApi } from '../../types';
 import { toKeyframeValue, getEasing } from '../../utils';
 
 const RESPONSIVE_SHAPES_MAP = {

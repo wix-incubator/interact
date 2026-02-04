@@ -1,4 +1,10 @@
-import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi, EffectTwoSides } from '../../types';
+import type {
+  AnimationFillMode,
+  ScrubAnimationOptions,
+  TiltScroll,
+  DomApi,
+  EffectTwoSides,
+} from '../../types';
 import { cssEasings as easings } from '@wix/motion';
 import { toKeyframeValue, parseDirection } from '../../utils';
 

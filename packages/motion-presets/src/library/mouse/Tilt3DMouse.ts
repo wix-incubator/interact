@@ -1,11 +1,6 @@
 import { getMouseTransitionEasing, mapRange, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  Tilt3DMouse,
-  Progress,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, Tilt3DMouse, Progress } from '../../types';
 
 const DEFAULT_ANGLE = 5;
 

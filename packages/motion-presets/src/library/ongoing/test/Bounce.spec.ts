@@ -191,7 +191,6 @@ describe('Bounce', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('web function', () => {
@@ -380,7 +379,6 @@ describe('Bounce', () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-
   });
 
   describe('getNames function', () => {

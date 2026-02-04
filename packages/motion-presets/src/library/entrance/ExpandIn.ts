@@ -36,11 +36,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ExpandIn;
   const { initialScale = 0 } = namedEffect;
 
-  const parsedDirection = parseDirection(
-    namedEffect.direction,
-    DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const parsedDirection = parseDirection(namedEffect.direction, DIRECTIONS, DEFAULT_DIRECTION);
   const direction =
     typeof parsedDirection === 'string'
       ? DIRECTION_KEYWORD_TO_ANGLE[parsedDirection]
