@@ -27,6 +27,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const rubberOffset = mapRange(0, 1, RUBBER_OFFSET_SOFT, RUBBER_OFFSET_HARD, intensity);
 
+  // Create CSS custom properties for the rubber configuration
   const custom: Record<string, string | number> = {};
 
   const keyframes = SCALE_KEYFRAMES.map(({ keyframe, scaleX, scaleY }, index) => {
@@ -37,9 +38,11 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     const adjustedScaleX = roundNumber(scaleX + offset, 4);
     const adjustedScaleY = roundNumber(scaleY - offset, 4);
 
+    // Create custom property keys for this keyframe
     const scaleXKey = `--motion-scale-x-${keyframe}`;
     const scaleYKey = `--motion-scale-y-${keyframe}`;
 
+    // Add the scale values to custom properties
     custom[scaleXKey] = adjustedScaleX;
     custom[scaleYKey] = adjustedScaleY;
 

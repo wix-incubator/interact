@@ -45,6 +45,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const pokeFactor = mapRange(0, 1, POKE_FACTOR_SOFT, POKE_FACTOR_HARD, intensity);
 
+  // Create CSS custom properties for the poke configuration
   const custom: Record<string, string | number> = {
     '--motion-translate-x': x * pokeFactor,
     '--motion-translate-y': y * pokeFactor,

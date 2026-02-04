@@ -69,6 +69,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   )} * -1), calc(${toKeyframeValue(custom, '--motion-trans-y', asWeb)} * -1))`;
 
   let currentOffset = 0;
+  // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? FACTORS_SEQUENCE.map(({ factor, timeFactor }) => {
         const keyframeOffset = currentOffset + timeFactor * timingFactor;

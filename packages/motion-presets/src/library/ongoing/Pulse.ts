@@ -25,6 +25,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const pulseOffset = mapRange(0, 1, PULSE_OFFSET_SOFT, PULSE_OFFSET_HARD, intensity);
 
+  // Create CSS custom properties for the pulse configuration
   const custom: Record<string, string | number> = {
     '--motion-pulse-offset': pulseOffset,
   };

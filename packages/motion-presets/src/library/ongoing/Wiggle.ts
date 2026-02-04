@@ -27,6 +27,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   let currentRotation = 0;
 
+  // Create CSS custom properties for the wiggle configuration
   const custom: Record<string, string | number> = {
     '--motion-wiggle-factor': wiggleFactor,
   };
