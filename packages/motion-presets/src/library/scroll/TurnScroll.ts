@@ -66,17 +66,15 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [startX, endX] = direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
 
   const rotate = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
-  const scaleFrom = scale;
-  const scaleTo = scale;
 
   const fromValues = {
     rotation: range === 'out' ? 0 : -rotate,
-    scale: range === 'out' ? 1 : scaleFrom,
+    scale: range === 'out' ? 1 : scale,
     translate: range === 'out' ? '0px' : startX,
   };
   const toValues = {
     rotation: range === 'in' ? 0 : rotate,
-    scale: range === 'in' ? 1 : range === 'continuous' ? scaleTo : scaleFrom,
+    scale: range === 'in' ? 1 : scale,
     translate: range === 'in' ? '0px' : endX,
   };
 

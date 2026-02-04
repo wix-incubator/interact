@@ -60,6 +60,7 @@ export function style(options: ScrubAnimationOptions, config?: Record<string, an
     '--motion-move-to-y': `${toValue.y}${unit}`,
   };
 
+  // use transform: translate(<value>) and not translate: <value> because of WebKit bug: https://bugs.webkit.org/show_bug.cgi?id=276281
   return [
     {
       ...options,

@@ -107,7 +107,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       easing: easings.sineInOut,
       startOffsetAdd,
       endOffsetAdd,
-      composite: 'add' as const,
+      composite: 'add' as const, // add this animation on top of the previous one
       custom,
       keyframes: [
         {

@@ -18,20 +18,18 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const rotationZ = rotate;
-  const travelY = speed;
-  const travel = travelY * MAX_Y_TRAVEL;
+  const travel = speed * MAX_Y_TRAVEL;
 
   const fromValues = {
-    rotationX: range === 'out' ? 0 : -2 * rotationZ,
-    rotationY: range === 'out' ? 0 : -rotationZ,
-    rotationZ: range === 'out' ? 0 : -rotationZ,
+    rotationX: range === 'out' ? 0 : -2 * rotate,
+    rotationY: range === 'out' ? 0 : -rotate,
+    rotationZ: range === 'out' ? 0 : -rotate,
     travel: range === 'out' ? 0 : -travel,
   };
   const toValues = {
-    rotationX: rotationZ * (range === 'in' ? 0 : range === 'out' ? 3 : 1.8),
-    rotationY: rotationZ * (range === 'in' ? 0 : range === 'out' ? 2 : 1),
-    rotationZ: rotationZ * (range === 'in' ? 0 : range === 'out' ? 1 : 2),
+    rotationX: rotate * (range === 'in' ? 0 : range === 'out' ? 3 : 1.8),
+    rotationY: rotate * (range === 'in' ? 0 : range === 'out' ? 2 : 1),
+    rotationZ: rotate * (range === 'in' ? 0 : range === 'out' ? 1 : 2),
     travel: range === 'in' ? 0 : travel,
   };
 

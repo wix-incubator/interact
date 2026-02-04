@@ -18,6 +18,7 @@ export type {
   Shape,
   TimeAnimationOptions,
   Point,
+  EffectNineDirections
 } from '@wix/motion';
 
 import type {
