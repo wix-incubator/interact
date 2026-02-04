@@ -3,7 +3,7 @@ import { getMouseTransitionEasing, getAngleInDeg, parseDirection } from '../../u
 import { CustomMouse } from './CustomMouse';
 
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
-const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
+const AXES = ['both', 'horizontal', 'vertical'] as const;
 
 class SpinMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -29,7 +29,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const { transitionDuration, transitionEasing = 'linear' } = options;
   const namedEffect = options.namedEffect as SpinMouse;
   const inverted = namedEffect.inverted ?? false;
-  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

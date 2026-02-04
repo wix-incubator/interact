@@ -11,7 +11,7 @@ import { CustomMouse } from './CustomMouse';
 const DEFAULT_DISTANCE = { value: 200, type: 'px' };
 const DEFAULT_ANGLE = 30;
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
-const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
+const AXES = ['both', 'horizontal', 'vertical'] as const;
 
 class AiryMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -26,6 +26,7 @@ class AiryMouseAnimation extends CustomMouse {
       translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
     }
 
+    // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progressX) * invert;
     const units = getCssUnits(distance.type);
 
@@ -44,7 +45,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const inverted = namedEffect.inverted ?? false;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
-  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

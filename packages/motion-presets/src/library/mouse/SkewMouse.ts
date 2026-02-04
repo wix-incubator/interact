@@ -12,7 +12,7 @@ import { CustomMouse } from './CustomMouse';
 const DEFAULT_DISTANCE = { value: 200, type: 'px' };
 const DEFAULT_ANGLE = 25;
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
-const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
+const AXES = ['both', 'horizontal', 'vertical'] as const;
 
 class SkewMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -22,6 +22,7 @@ class SkewMouseAnimation extends CustomMouse {
     let skewY = 0;
     const { distance, angle, axis, invert } = this.options;
 
+    // distance
     if (axis !== 'vertical') {
       translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
       skewX = mapRange(0, 1, angle, -angle, progressX) * invert;
@@ -31,7 +32,14 @@ class SkewMouseAnimation extends CustomMouse {
       skewY = mapRange(0, 1, angle, -angle, progressY) * invert;
     }
     if (axis === 'both') {
+      // We want to do `skewX *= progressY < 0.5 ? 1 : -1`
+      // but normalize it by y progress (so it will be 0 when y is 0.5)
+      // and apply a circInOut easing on the progress so it will feel more natural
       skewX *= mapRange(0, 1, 1, -1, circInOut(progressY));
+
+      // we want to do `skewY *= progressX < 0.5 ? 1 : -1`
+      // but normalize it by x progress (so it will be 0 when x is 0.5)
+      // and apply a circInOut easing on the progress so it will feel more natural
       skewY *= mapRange(0, 1, 1, -1, circInOut(progressX));
     }
 
@@ -54,7 +62,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const inverted = namedEffect.inverted ?? false;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
-  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

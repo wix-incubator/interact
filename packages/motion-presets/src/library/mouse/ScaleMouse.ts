@@ -10,7 +10,7 @@ import {
 
 const DEFAULT_DISTANCE = { value: 80, type: 'px' };
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
-const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
+const AXES = ['both', 'horizontal', 'vertical'] as const;
 
 class ScaleMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -37,6 +37,8 @@ class ScaleMouseAnimation extends CustomMouse {
           : mapRange(0.5, 1, 1, scale, progressY);
     }
 
+    // scale is uniform so we use the smaller scale value if scale < 1
+    // and the bigger scale value if scale > 1
     const scaleBoth = scale < 1 ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
 
     const units = getCssUnits(distance.type);
@@ -55,7 +57,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const namedEffect = options.namedEffect as ScaleMouse;
   const inverted = namedEffect.inverted ?? false;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
-  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const { scale = 1.4 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {

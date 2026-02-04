@@ -15,11 +15,13 @@ class BlobMouseAnimation extends CustomMouse {
     const translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     const translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
 
+    // if progressX === 0 || progressX === 1, scaleX === scale, if progressX === 0.5, scaleX === 1
     const scaleX =
       progressX < 0.5
         ? mapRange(0, 0.5, scale, 1, progressX)
         : mapRange(0.5, 1, 1, scale, progressX);
 
+    // if progressY === 0 || progressY === 1, scaleY === scale, if progressY === 0.5, scaleY === 1
     const scaleY =
       progressY < 0.5
         ? mapRange(0, 0.5, scale, 1, progressY)

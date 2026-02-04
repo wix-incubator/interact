@@ -10,7 +10,7 @@ import { CustomMouse } from './CustomMouse';
 
 const DEFAULT_DISTANCE = { value: 200, type: 'px' };
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
-const ALLOWED_AXIS_KEYWORDS = ['both', 'horizontal', 'vertical'] as const;
+const AXES = ['both', 'horizontal', 'vertical'] as const;
 
 class TrackMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -19,6 +19,9 @@ class TrackMouseAnimation extends CustomMouse {
     let translateX = 0;
     let translateY = 0;
 
+    // if progressX === 0, translateX === -distance
+    // if progressX === 0.5, translateX === 0
+    // if progressX === 1, translateX === distance
     if (axis === 'both' || axis === 'horizontal') {
       translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     }
@@ -42,7 +45,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const namedEffect = options.namedEffect as TrackMouse;
   const inverted = namedEffect.inverted ?? false;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
-  const axis = parseDirection(namedEffect.axis, ALLOWED_AXIS_KEYWORDS, DEFAULT_AXIS) as MouseEffectAxis;
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration

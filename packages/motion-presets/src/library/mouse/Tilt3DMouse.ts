@@ -13,6 +13,7 @@ class Tilt3DMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { invert, angle, perspective } = this.options;
 
+    // if progressX === 0, rotateX === -angle, if progressX === 0.5, rotateX === 0, if progressX === 1, rotateX === angle
     const rotateX = mapRange(0, 1, angle, -angle, progressY) * invert;
     const rotateY = mapRange(0, 1, -angle, angle, progressX) * invert;
 

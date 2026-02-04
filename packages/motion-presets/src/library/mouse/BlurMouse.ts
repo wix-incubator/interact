@@ -18,11 +18,13 @@ class BlurMouseAnimation extends CustomMouse {
     const translateX = mapRange(0, 1, -distance.value, distance.value, progressX) * invert;
     const translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
 
+    // if progressX === 0 || progressX === 1, scaleX === scale, if progressX === 0.5, scaleX === 1
     const scaleX =
       progressX < 0.5
         ? mapRange(0, 0.5, scale, 1, progressX)
         : mapRange(0.5, 1, 1, scale, progressX);
 
+    // if progressY === 0 || progressY === 1, scaleY === scale, if progressY === 0.5, scaleY === 1
     const scaleY =
       progressY < 0.5
         ? mapRange(0, 0.5, scale, 1, progressY)
@@ -30,6 +32,7 @@ class BlurMouseAnimation extends CustomMouse {
 
     const maxScale = Math.min(scaleX, scaleY);
 
+    // if progressX === 0, rotateX === -angle, if progressX === 0.5, rotateX === 0, if progressX === 1, rotateX === angle
     const rotateX = mapRange(0, 1, -angle, angle, progressY) * invert;
     const rotateY = mapRange(0, 1, angle, -angle, progressX) * invert;
 

@@ -10,7 +10,7 @@ import { CustomMouse } from './CustomMouse';
 
 const DEFAULT_ANGLE = 5;
 const DEFAULT_PIVOT_AXIS: MousePivotAxis = 'center-horizontal';
-const ALLOWED_PIVOT_AXIS_KEYWORDS = [
+const AXES = [
   'top', 'bottom', 'right', 'left', 'center-horizontal', 'center-vertical'
 ] as const;
 
@@ -57,7 +57,7 @@ export default function create(options: ScrubAnimationOptions & AnimationExtraOp
   const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
   const pivotAxis = parseDirection(
     namedEffect.pivotAxis,
-    ALLOWED_PIVOT_AXIS_KEYWORDS,
+    AXES,
     DEFAULT_PIVOT_AXIS,
   ) as MousePivotAxis;
   const { perspective = 800 } = namedEffect;
