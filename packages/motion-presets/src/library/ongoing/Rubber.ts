@@ -45,7 +45,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
     return {
       offset: (keyframe / 100) * timingFactor,
-      transform: `rotateZ(var(--comp-rotate-z, 0deg)) scale(${toKeyframeValue(
+      transform: `rotateZ(var(--motion-rotate, 0deg)) scale(${toKeyframeValue(
         custom,
         scaleXKey,
         asWeb,

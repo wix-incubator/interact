@@ -5,7 +5,14 @@ import {
   getEasingFamily,
   getTimingFactor,
   toKeyframeValue,
+  parseDirection,
+  parseLength,
 } from '../../utils';
+
+type BreatheDirection = 'vertical' | 'horizontal' | 'center';
+const DEFAULT_DIRECTION: BreatheDirection = 'vertical';
+const DEFAULT_DISTANCE = { value: 25, type: 'px' };
+const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal', 'center'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },
@@ -26,8 +33,13 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction = 'vertical', distance = { value: 25, type: 'px' } } =
-    options.namedEffect as Breathe;
+  const namedEffect = options.namedEffect as Breathe;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as BreatheDirection;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
   const easing = options.easing || 'sineInOut';
   const duration = options.duration || 1;
@@ -72,19 +84,19 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         return {
           offset: keyframeOffset,
           easing: getEasing(ease.inOut),
-          transform: `${breathePerspective} translate3d(calc(${breatheX} * ${distancePart}), calc(${breatheY} * ${distancePart}), calc(${breatheZ} * ${distancePart})) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `${breathePerspective} translate3d(calc(${breatheX} * ${distancePart}), calc(${breatheY} * ${distancePart}), calc(${breatheZ} * ${distancePart})) rotateZ(var(--motion-rotate, 0deg))`,
         };
       })
     : [
         {
           offset: 0.25,
           easing: getEasing(ease.inOut),
-          transform: `${breathePerspective} translate3d(calc(${breatheX} * ${breatheDistance}), calc(${breatheY} * ${breatheDistance}), calc(${breatheZ} * ${breatheDistance})) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `${breathePerspective} translate3d(calc(${breatheX} * ${breatheDistance}), calc(${breatheY} * ${breatheDistance}), calc(${breatheZ} * ${breatheDistance})) rotateZ(var(--motion-rotate, 0deg))`,
         },
         {
           offset: 0.75,
           easing: getEasing(ease.in),
-          transform: `${breathePerspective} translate3d(calc(${breatheX} * -1 * ${breatheDistance}), calc(${breatheY} * -1 * ${breatheDistance}), calc(${breatheZ} * -1 * ${breatheDistance})) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `${breathePerspective} translate3d(calc(${breatheX} * -1 * ${breatheDistance}), calc(${breatheY} * -1 * ${breatheDistance}), calc(${breatheZ} * -1 * ${breatheDistance})) rotateZ(var(--motion-rotate, 0deg))`,
         },
       ];
 
@@ -100,12 +112,12 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0,
           easing: getEasing(ease.out),
-          transform: `${breathePerspective} translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `${breathePerspective} translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
         ...keyframes,
         {
           offset: 1,
-          transform: `${breathePerspective} translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `${breathePerspective} translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
       ],
     },

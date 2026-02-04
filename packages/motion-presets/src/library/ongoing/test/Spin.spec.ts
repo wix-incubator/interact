@@ -21,17 +21,17 @@ describe('Spin', () => {
           delay: 0,
           duration: 1000,
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + -360deg)',
           },
           keyframes: [
             {
               offset: 0,
               easing: 'linear',
-              rotate: 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+              rotate: 'calc(var(--motion-rotate, 0deg) + -360deg)',
             },
             {
               offset: 1,
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },
@@ -60,17 +60,17 @@ describe('Spin', () => {
           delay: 0,
           duration: 1500,
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + -360deg)',
           },
           keyframes: [
             {
               offset: 0,
               easing: 'cubic-bezier(0.86, 0, 0.07, 1)',
-              rotate: 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+              rotate: 'calc(var(--motion-rotate, 0deg) + -360deg)',
             },
             {
               offset: 0.67,
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },
@@ -92,17 +92,17 @@ describe('Spin', () => {
         {
           name: 'motion-spin-1',
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + 360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + 360deg)',
           },
           keyframes: [
             {
               offset: 0,
               easing: 'linear',
-              rotate: 'calc(var(--comp-rotate-z, 0deg) + 360deg)',
+              rotate: 'calc(var(--motion-rotate, 0deg) + 360deg)',
             },
             {
               offset: 1,
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },
@@ -131,7 +131,7 @@ describe('Spin', () => {
           delay: 0,
           duration: 1000,
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + -360deg)',
           },
           keyframes: [
             {
@@ -141,7 +141,7 @@ describe('Spin', () => {
             },
             {
               offset: 1,
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },
@@ -169,7 +169,7 @@ describe('Spin', () => {
           delay: 0,
           duration: 1000,
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + -360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + -360deg)',
           },
           keyframes: [
             {
@@ -179,7 +179,7 @@ describe('Spin', () => {
             },
             {
               offset: 0.8, // duration / (duration + delay)
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },
@@ -201,7 +201,7 @@ describe('Spin', () => {
         {
           name: 'motion-spin-1',
           custom: {
-            '--motion-rotate-start': 'calc(var(--comp-rotate-z, 0deg) + 360deg)',
+            '--motion-rotate-start': 'calc(var(--motion-rotate, 0deg) + 360deg)',
           },
           keyframes: [
             {
@@ -211,7 +211,7 @@ describe('Spin', () => {
             },
             {
               offset: 1,
-              rotate: 'var(--comp-rotate-z, 0deg)',
+              rotate: 'var(--motion-rotate, 0deg)',
             },
           ],
         },

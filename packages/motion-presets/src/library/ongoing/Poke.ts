@@ -1,5 +1,8 @@
-import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
+import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectFourDirections } from '../../types';
+import { getTimingFactor, toKeyframeValue, mapRange, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },
@@ -26,7 +29,13 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { intensity = 0.5, direction = 'right' } = options.namedEffect as Poke;
+  const namedEffect = options.namedEffect as Poke;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { intensity = 0.5 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);

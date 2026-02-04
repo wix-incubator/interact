@@ -1,5 +1,9 @@
 import type { Flip, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+
+type FlipDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: FlipDirection = 'horizontal';
+const ALLOWED_DIRECTION_KEYWORDS = ['vertical', 'horizontal'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: '1', y: '0' },
@@ -11,7 +15,12 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction = 'horizontal' } = options.namedEffect as Flip;
+  const namedEffect = options.namedEffect as Flip;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as FlipDirection;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -49,16 +58,16 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateStart}`,
+          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateStart}`,
           easing: getEasing(easing),
         },
         {
           offset,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateEnd}`,
+          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
         {
           offset: 1,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateEnd}`,
+          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
       ],
     },

@@ -1,5 +1,8 @@
-import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
+import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions, EffectFourDirections } from '../../types';
+import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'top';
+const ALLOWED_DIRECTION_KEYWORDS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP = {
   top: { x: 0, y: -1 },
@@ -25,7 +28,13 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { swing = 20, direction = 'top' } = options.namedEffect as Swing;
+  const namedEffect = options.namedEffect as Swing;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { swing = 20 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -67,7 +76,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         return {
           offset: keyframeOffset,
           easing: toKeyframeValue(custom, '--motion-ease-inout', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -78,7 +87,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0.25,
           easing: toKeyframeValue(custom, '--motion-ease-inout', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -87,7 +96,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0.75,
           easing: toKeyframeValue(custom, '--motion-ease-in', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -107,12 +116,12 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0,
           easing: toKeyframeValue(custom, '--motion-ease-out', asWeb),
-          transform: `rotateZ(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
+          transform: `rotateZ(var(--motion-rotate, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
         },
         ...keyframes,
         {
           offset: 1,
-          transform: `rotateZ(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
+          transform: `rotateZ(var(--motion-rotate, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
         },
       ],
     },

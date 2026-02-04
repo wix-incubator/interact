@@ -38,32 +38,32 @@ describe('Rubber', () => {
           {
             offset: 0.45,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-45), var(--motion-scale-y-45))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-45), var(--motion-scale-y-45))',
           },
           {
             offset: 0.56,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-56), var(--motion-scale-y-56))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-56), var(--motion-scale-y-56))',
           },
           {
             offset: 0.66,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-66), var(--motion-scale-y-66))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-66), var(--motion-scale-y-66))',
           },
           {
             offset: 0.78,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-78), var(--motion-scale-y-78))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-78), var(--motion-scale-y-78))',
           },
           {
             offset: 0.89,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-89), var(--motion-scale-y-89))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-89), var(--motion-scale-y-89))',
           },
           {
             offset: 1,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-100), var(--motion-scale-y-100))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-100), var(--motion-scale-y-100))',
           },
         ],
       },
@@ -106,27 +106,27 @@ describe('Rubber', () => {
         keyframes: [
           {
             offset: 0.45,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.08, 0.88)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.08, 0.88)',
           },
           {
             offset: 0.56,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.875, 1.055)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(0.875, 1.055)',
           },
           {
             offset: 0.66,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.07, 0.91)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.07, 0.91)',
           },
           {
             offset: 0.78,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.955, 1.045)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(0.955, 1.045)',
           },
           {
             offset: 0.89,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.055, 0.9495)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.055, 0.9495)',
           },
           {
             offset: 1,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -168,32 +168,32 @@ describe('Rubber', () => {
           {
             offset: 0.225,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-45), var(--motion-scale-y-45))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-45), var(--motion-scale-y-45))',
           },
           {
             offset: 0.28,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-56), var(--motion-scale-y-56))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-56), var(--motion-scale-y-56))',
           },
           {
             offset: 0.33,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-66), var(--motion-scale-y-66))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-66), var(--motion-scale-y-66))',
           },
           {
             offset: 0.39,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-78), var(--motion-scale-y-78))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-78), var(--motion-scale-y-78))',
           },
           {
             offset: 0.445,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-89), var(--motion-scale-y-89))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-89), var(--motion-scale-y-89))',
           },
           {
             offset: 0.5,
             transform:
-              'rotateZ(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x-100), var(--motion-scale-y-100))',
+              'rotateZ(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x-100), var(--motion-scale-y-100))',
           },
         ],
       },
@@ -234,27 +234,27 @@ describe('Rubber', () => {
         keyframes: [
           {
             offset: 0.225,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.11, 0.85)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.11, 0.85)',
           },
           {
             offset: 0.28,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.86, 1.07)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(0.86, 1.07)',
           },
           {
             offset: 0.33,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.1, 0.88)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.1, 0.88)',
           },
           {
             offset: 0.39,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(0.94, 1.06)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(0.94, 1.06)',
           },
           {
             offset: 0.445,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1.085, 0.9195)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1.085, 0.9195)',
           },
           {
             offset: 0.5,
-            transform: 'rotateZ(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotateZ(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },

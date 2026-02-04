@@ -35,7 +35,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
     return {
       offset,
-      transform: `rotateZ(var(--comp-rotate-z, 0deg)) skewY(calc(${toKeyframeValue(
+      transform: `rotateZ(var(--motion-rotate, 0deg)) skewY(calc(${toKeyframeValue(
         custom,
         '--motion-skew-y',
         asWeb,

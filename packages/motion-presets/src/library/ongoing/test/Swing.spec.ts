@@ -29,24 +29,24 @@ describe('Swing', () => {
               easing: 'var(--motion-ease-out)',
               offset: 0,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               easing: 'var(--motion-ease-inout)',
               offset: 0.25,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(var(--motion-swing-deg)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(var(--motion-swing-deg)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               easing: 'var(--motion-ease-in)',
               offset: 0.75,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(calc(var(--motion-swing-deg) * -1)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(calc(var(--motion-swing-deg) * -1)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               offset: 1,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
           ],
         },
@@ -158,24 +158,24 @@ describe('Swing', () => {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
               offset: 0.25,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(20deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(20deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               easing: 'cubic-bezier(0.47, 0, 0.745, 0.715)',
               offset: 0.75,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(calc(20deg * -1)) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(calc(20deg * -1)) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               offset: 1,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
           ],
         },

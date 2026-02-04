@@ -1,5 +1,11 @@
-import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions } from '../../types';
-import { getElementOffset, getTimingFactor } from '../../utils';
+import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions, EffectEightDirections } from '../../types';
+import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectEightDirections = 'right';
+const ALLOWED_DIRECTION_KEYWORDS = [
+  'top', 'right', 'bottom', 'left',
+  'top-left', 'top-right', 'bottom-left', 'bottom-right'
+] as const;
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
   // 100cqw - left
@@ -167,7 +173,12 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
 }
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  const { direction = 'right' } = options.namedEffect as Cross;
+  const namedEffect = options.namedEffect as Cross;
+  const direction = parseDirection(
+    namedEffect.direction,
+    ALLOWED_DIRECTION_KEYWORDS,
+    DEFAULT_DIRECTION,
+  ) as EffectEightDirections;
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;

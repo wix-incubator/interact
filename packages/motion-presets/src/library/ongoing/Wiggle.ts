@@ -33,7 +33,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const keyframes = TRANSFORM_KEYFRAMES.map(({ keyframe, transY, accRotate }) => {
     const offset = (keyframe / 100) * timingFactor;
-    const rotateValue = `calc(var(--comp-rotate-z, 0deg) + ${roundNumber(
+    const rotateValue = `calc(var(--motion-rotate, 0deg) + ${roundNumber(
       currentRotation + accRotate * wiggleFactor,
     )}deg)`;
     const translateYValue = `${transY * wiggleFactor}px`;

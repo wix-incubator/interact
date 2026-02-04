@@ -19,23 +19,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.18,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg)) translateY(-25px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 25deg)) translateY(-25px)',
             },
             {
               offset: 0.35,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -20deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -20deg)) translateY(0px)',
             },
             {
               offset: 0.53,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 15deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 15deg)) translateY(0px)',
             },
             {
               offset: 0.73,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -10deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -10deg)) translateY(0px)',
             },
             {
               offset: 1,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -61,23 +61,23 @@ describe('Wiggle', () => {
           keyframes: [
             {
               offset: 0.1206,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 34deg)) translateY(-34px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 34deg)) translateY(-34px)',
             },
             {
               offset: 0.2345,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -27.2deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -27.2deg)) translateY(0px)',
             },
             {
               offset: 0.3551,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 20.4deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 20.4deg)) translateY(0px)',
             },
             {
               offset: 0.48910000000000003,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -13.6deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -13.6deg)) translateY(0px)',
             },
             {
               offset: 0.67,
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg)) translateY(0px)',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg)) translateY(0px)',
             },
           ],
         },
@@ -102,15 +102,15 @@ describe('Wiggle', () => {
           name: 'motion-wiggle-1',
           duration: 1,
           custom: {
-            '--motion-rotate-18': 'calc(var(--comp-rotate-z, 0deg) + 25deg)',
+            '--motion-rotate-18': 'calc(var(--motion-rotate, 0deg) + 25deg)',
             '--motion-translate-y-18': '-25px',
-            '--motion-rotate-35': 'calc(var(--comp-rotate-z, 0deg) + -20deg)',
+            '--motion-rotate-35': 'calc(var(--motion-rotate, 0deg) + -20deg)',
             '--motion-translate-y-35': '0px',
-            '--motion-rotate-53': 'calc(var(--comp-rotate-z, 0deg) + 15deg)',
+            '--motion-rotate-53': 'calc(var(--motion-rotate, 0deg) + 15deg)',
             '--motion-translate-y-53': '0px',
-            '--motion-rotate-73': 'calc(var(--comp-rotate-z, 0deg) + -10deg)',
+            '--motion-rotate-73': 'calc(var(--motion-rotate, 0deg) + -10deg)',
             '--motion-translate-y-73': '0px',
-            '--motion-rotate-100': 'calc(var(--comp-rotate-z, 0deg) + 0deg)',
+            '--motion-rotate-100': 'calc(var(--motion-rotate, 0deg) + 0deg)',
             '--motion-translate-y-100': '0px',
           },
           keyframes: [
@@ -157,15 +157,15 @@ describe('Wiggle', () => {
           name: 'motion-wiggle-067',
           duration: 1500,
           custom: {
-            '--motion-rotate-18': 'calc(var(--comp-rotate-z, 0deg) + 34deg)',
+            '--motion-rotate-18': 'calc(var(--motion-rotate, 0deg) + 34deg)',
             '--motion-translate-y-18': '-34px',
-            '--motion-rotate-35': 'calc(var(--comp-rotate-z, 0deg) + -27.2deg)',
+            '--motion-rotate-35': 'calc(var(--motion-rotate, 0deg) + -27.2deg)',
             '--motion-translate-y-35': '0px',
-            '--motion-rotate-53': 'calc(var(--comp-rotate-z, 0deg) + 20.4deg)',
+            '--motion-rotate-53': 'calc(var(--motion-rotate, 0deg) + 20.4deg)',
             '--motion-translate-y-53': '0px',
-            '--motion-rotate-73': 'calc(var(--comp-rotate-z, 0deg) + -13.6deg)',
+            '--motion-rotate-73': 'calc(var(--motion-rotate, 0deg) + -13.6deg)',
             '--motion-translate-y-73': '0px',
-            '--motion-rotate-100': 'calc(var(--comp-rotate-z, 0deg) + 0deg)',
+            '--motion-rotate-100': 'calc(var(--motion-rotate, 0deg) + 0deg)',
             '--motion-translate-y-100': '0px',
           },
           keyframes: [
