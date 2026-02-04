@@ -63,6 +63,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
   let currentOffset = 0;
 
+  // Create CSS custom properties for the fold configuration
   const custom: Record<string, string | number> = {
     '--motion-origin-x': `${x}%`,
     '--motion-origin-y': `${y}%`,
@@ -93,6 +94,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       asWeb,
     )} * ${value} * ${rotateTransform}deg)) ${transformRight}`;
 
+  // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? KEYFRAME_FACTORS.map(({ fold, frameFactor }) => {
         const keyframeOffset = currentOffset + frameFactor * timingFactor;

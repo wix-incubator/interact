@@ -46,6 +46,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const totalDuration = 3.55 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
 
+  // Create CSS custom properties for the swing configuration
   const custom: Record<string, string | number> = {
     '--motion-swing-deg': `${swing}deg`,
     '--motion-trans-x': `${x * TRANSLATE_DISTANCE}%`,

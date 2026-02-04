@@ -41,6 +41,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     const rotateKey = `--motion-rotate-${keyframe}`;
     const translateYKey = `--motion-translate-y-${keyframe}`;
 
+    // For non-web usage, add the values to custom properties
     custom[rotateKey] = rotateValue;
     custom[translateYKey] = translateYValue;
 

@@ -26,6 +26,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const jelloFactor = mapRange(0, 1, JELLO_FACTOR_SOFT, JELLO_FACTOR_HARD, intensity);
 
+  // Create CSS custom properties for the jello configuration
   const custom: Record<string, string | number> = {
     '--motion-skew-y': jelloFactor,
   };
