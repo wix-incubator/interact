@@ -1,6 +1,9 @@
 import type { TimeAnimationOptions, Bounce, AnimationExtraOptions, DomApi } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
 
+const BOUNCE_FACTOR_SOFT = 1;
+const BOUNCE_FACTOR_HARD = 3;
+
 const TRANSLATE_Y_KEYFRAMES = [
   { keyframe: 0, translateY: 0 },
   { keyframe: 8.8, translateY: -55 },
@@ -29,7 +32,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const bounceFactor =  mapRange(0, 1, 1, 3, intensity)
+  const bounceFactor = mapRange(0, 1, BOUNCE_FACTOR_SOFT, BOUNCE_FACTOR_HARD, intensity);
 
   const easing = getEasing('sineOut');
 
