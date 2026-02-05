@@ -90,14 +90,14 @@ const config: InteractConfig = {
 // Using selector with listContainer
 {
     key: 'product-grid',
-    listContainer: '.product-item',     // Each product item
-    selector: '.product-image',         // Image within each item
+    listContainer: '.products',         // Container holding all product items
+    selector: '.product-image',         // querySelectorAll finds all images as list items
     trigger: 'hover',
     effects: [
         {
             key: 'product-grid',
-            listContainer: '.product-item',
-            selector: '.product-overlay', // Overlay within each item
+            listContainer: '.products',
+            selector: '.product-overlay', // querySelectorAll finds all overlays as list items
             namedEffect: {
               type: 'FadeIn'
             },
@@ -676,14 +676,14 @@ const galleryConfig: InteractConfig = {
     // Gallery items with list container and selector
     {
       key: 'image-gallery',
-      listContainer: '.gallery-grid', // Container with multiple items
-      selector: '.gallery-item img', // Image within each item
+      listContainer: '.gallery-grid', // Container holding all gallery items
+      selector: '.gallery-item img', // querySelectorAll finds all matching images as list items
       trigger: 'hover',
       effects: [
         {
           key: 'image-gallery',
           listContainer: '.gallery-grid',
-          selector: '.gallery-item .overlay', // Overlay within each item
+          selector: '.gallery-item .overlay', // querySelectorAll finds all matching overlays as list items
           effectId: 'image-overlay',
         },
       ],

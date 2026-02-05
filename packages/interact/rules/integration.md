@@ -120,9 +120,10 @@ type InteractConfig = {
 
 ### Element Selection Hierarchy
 
-1. **`listContainer`**: If present, selects a container to target its immediate children as list items.
-2. **`selector`**: Matches all elements within the root (using `querySelectorAll`), or within each list item.
-3. **Fallback**: If neither is provided, targets the **first child** of `<interact-element>` in `web` or the root element in `react`.
+1. **`listContainer` + `selector`**: If both are present, uses `querySelectorAll(selector)` within the container to find all matching elements as list items.
+2. **`listContainer` only**: If present without `selector`, targets the immediate children of the container as list items.
+3. **`selector` only**: If present without `listContainer`, matches all elements within the root element (using `querySelectorAll`).
+4. **Fallback**: If neither is provided, targets the **first child** of `<interact-element>` in `web` or the root element in `react`.
 
 ## 4. Generating Critical CSS for Entrance Animations
 

@@ -124,7 +124,7 @@ type Interaction = {
 
 - `key` - Unique identifier for the custom element that triggers the interaction
 - `trigger` - Type of trigger event
-- `selector` - Optional CSS selector to target elements within the custom element (uses `querySelectorAll`) or within each list item if combined with `listContainer`
+- `selector` - Optional CSS selector to target elements. When `listContainer` is also specified, uses `querySelectorAll` within the container to find matching elements as list items. Without `listContainer`, uses `querySelectorAll` within the root element. For dynamically added list items, uses `querySelector` within each item.
 - `listContainer` - Optional selector for list container when targeting list items
 - `params` - Optional parameters for the trigger
 - `conditions` - Optional array of condition IDs to evaluate
