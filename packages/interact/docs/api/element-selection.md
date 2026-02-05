@@ -23,15 +23,15 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
 │ children  │  │ specified?           │
 │ of list   │  └──────┬───────────────┘
 │ container │         │
-└─────┬─────┘   ┌─────┴──────┐
-      │         │ YES        │ NO
-      │         ▼            ▼
-      │    ┌─────────┐  ┌─────────────────────┐
-      │    │ Query   │  │ Is root element an  │
-      │    │ selector│  │ interact-element    │
-      │    │ within  │  │ custom element?     │
-      │    │ element │  │                     │
-      │    └─────────┘  └───────┬─────────────┘
+└─────┬─────┘   ┌─────┴───────────┐
+      │         │ YES             │ NO
+      │         ▼                 ▼
+      │    ┌──────────────┐  ┌─────────────────────┐
+      │    │ Query        │  │ Is root element an  │
+      │    │ selector all │  │ interact-element    │
+      │    │ within       │  │ custom element?     │
+      │    │ element      │  │                     │
+      │    └──────────────┘  └───────┬─────────────┘
       │                         │
       ▼                   ┌─────┴──────┐
 ┌─────────────┐           │ YES        │ NO
@@ -46,7 +46,7 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
     ▼                    ▼
 ┌─────────────┐      ┌───────────────┐
 | Query       |      │ Use each      │
-| selector    |      │ child element │
+| selector all|      │ child element │
 | within each |      |               |
 | child       |      └───────────────┘
 └─────────────┘
@@ -98,19 +98,20 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 
 ### Priority 2: selector (Medium)
 
-When only `selector` is specified (no `listContainer`), it selects a single element within the `interact-element`.
+When only `selector` is specified (no `listContainer`), it selects all matching elements within the `interact-element`.
 
 **Behavior:**
 
-- Queries for the first matching element within the custom element
-- Uses `querySelector()` internally
+- Queries for all matching elements within the custom element
+- Uses `querySelectorAll()` internally
+- Each matched element receives the interaction/effect independently
 
 **Example:**
 
 ```typescript
 {
     key: 'card',
-    selector: '.card-image',    // Priority 2: Find this specific element
+    selector: '.card-image',    // Priority 2: Find all matching elements
     trigger: 'hover',
     effects: [/* ... */]
 }
@@ -129,7 +130,7 @@ When only `selector` is specified (no `listContainer`), it selects a single elem
 </interact-element>
 ```
 
-**Result:** Hover interaction applies only to `.card-image`.
+**Result:** Hover interaction applies to all `.card-image` elements.
 
 ### Priority 3: Root element or First Child (Fallback)
 
@@ -625,6 +626,7 @@ selector: 'div > div.card > div.image > img:first-child';
 <interact-element>
     <div>
         <span class="target"> ← Selected (matches selector)
+        <span class="target"> ← Selected (matches selector)
         <span class="other">Not selected</span>
     </div>
 </interact-element>
@@ -667,9 +669,9 @@ selector: 'div > div.card > div.image > img:first-child';
 
 **Use selector when:**
 
-- Need specific element within structure
-- Multiple potential targets
-- Element is nested
+- Need specific elements within structure
+- Multiple matching elements should receive the same interaction
+- Elements are nested
 
 **Use listContainer when:**
 

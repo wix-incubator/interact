@@ -82,7 +82,7 @@ const config: InteractConfig = {
 
 ### Selector vs ListContainer
 
-- **`selector`**: Selects a single element using CSS selector
+- **`selector`**: Selects all matching elements using CSS selector (`querySelectorAll`)
 - **`listContainer`**: Selects a container for targeting its child elements for list-based interactions
 - **Combined**: Use both to select elements within list items
 

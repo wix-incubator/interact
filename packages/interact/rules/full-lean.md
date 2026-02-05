@@ -189,7 +189,7 @@ This configuration declares what user/system triggers occur on which source elem
     - **conditions?: string[]**
       - OPTIONAL. Array of condition ids that MUST all pass for this trigger to be active.
     - **selector?: string**
-      - OPTIONAL. Additional CSS selector to refine the source element's descendants when attaching/observing the trigger (e.g., delegate a click to a child button).
+      - OPTIONAL. Additional CSS selector to refine the source element's descendants when attaching/observing the trigger (uses `querySelectorAll` to match all matching elements, e.g., delegate a click to child buttons).
     - **effects: Array<Effect | EffectRef>**
       - REQUIRED. The effects to apply when the trigger fires. Ordering is significant: the first array entry is applied first. The system may reverse internal storage to preserve this application order.
 
@@ -309,7 +309,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
   - **conditions?: string[]**
     - OPTIONAL. All conditions MUST pass for the effect to run (in addition to interaction conditions).
   - **selector?: string**
-    - OPTIONAL. Additional CSS selector to refine the target element's descendants.
+    - OPTIONAL. Additional CSS selector to refine the target element's descendants (uses `querySelectorAll` to match all matching elements).
   - **effectId?: string**
     - For `EffectRef` this field is REQUIRED and MUST reference an entry in `effects`.
 
