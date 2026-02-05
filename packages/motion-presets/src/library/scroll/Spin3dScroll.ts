@@ -12,7 +12,8 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { rotate = -100, speed = 0, range = 'in' } = options.namedEffect as Spin3dScroll;
+  const { rotate = -100, speed = 0, range = 'in', perspective = 1000 } =
+    options.namedEffect as Spin3dScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -40,6 +41,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [spin3dScroll] = getNames(options);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-travel-from': `${fromValues.travel}vh`,
     '--motion-travel-to': `${toValues.travel}vh`,
     '--motion-rot-x-from': `${fromValues.rotationX}deg`,
@@ -61,7 +63,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       endOffsetAdd,
       keyframes: [
         {
-          transform: `perspective(1000px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-travel-from',
             asWeb,
@@ -77,7 +79,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
           )}) rotateX(${toKeyframeValue(custom, '--motion-rot-x-from', asWeb)})`,
         },
         {
-          transform: `perspective(1000px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-travel-to',
             asWeb,

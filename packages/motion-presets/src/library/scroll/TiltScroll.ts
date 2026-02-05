@@ -33,7 +33,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
-  const { parallaxFactor = 0 } = namedEffect;
+  const { parallaxFactor = 0, perspective = 400 } = namedEffect;
   const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
@@ -62,6 +62,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [tiltScrollTranslate, tiltScrollRotate] = getNames(options);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-tilt-y-from': `${from.transY}vh`,
     '--motion-tilt-y-to': `${to.transY}vh`,
     '--motion-tilt-x-from': `${from.x}deg`,
@@ -83,7 +84,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(400px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-from',
             asWeb,
@@ -94,7 +95,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
           )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-from', asWeb)})`,
         },
         {
-          transform: `perspective(400px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-to',
             asWeb,

@@ -50,8 +50,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     DEFAULT_DIRECTION,
   ) as BounceInDirection;
   const distanceFactor = namedEffect?.distanceFactor || 1;
+  const { perspective = 800 } = namedEffect || {};
   const [fadeIn, bounceIn] = getNames(options);
-  const perspective = direction === 'center' ? 'perspective(800px)' : ' ';
+  const perspectiveValue = direction === 'center' ? `perspective(${perspective}px)` : ' ';
   const { x, y, z } = TRANSLATE_DIRECTION_MAP[direction];
 
   const custom = {
@@ -59,7 +60,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-direction-y': y,
     '--motion-direction-z': z,
     '--motion-distance-factor': distanceFactor,
-    '--motion-perspective': perspective,
+    '--motion-perspective': perspectiveValue,
     '--motion-ease-in': getEasing(easeOut),
     '--motion-ease-out': getEasing(easeIn),
   };
@@ -103,7 +104,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
+          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
         ...keyframes,
       ],

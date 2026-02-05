@@ -88,16 +88,17 @@ describe('FlipIn', () => {
         easing: 'backOut',
         name: 'motion-flipIn',
         custom: {
+          '--motion-perspective': '800px',
           '--motion-rotate-x': '90deg',
           '--motion-rotate-y': '0deg',
         },
         keyframes: [
           {
             offset: 0.000001,
-            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 90deg)) rotateY(var(--motion-rotate-y, 0deg))`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 90deg)) rotateY(var(--motion-rotate-y, 0deg))`,
           },
           {
-            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
           },
         ],
       },
@@ -131,16 +132,17 @@ describe('FlipIn', () => {
         easing,
         name: 'motion-flipIn',
         custom: {
+          '--motion-perspective': '800px',
           '--motion-rotate-x': '0deg',
           '--motion-rotate-y': '50deg',
         },
         keyframes: [
           {
             offset: 0.000001,
-            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 50deg))`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 50deg))`,
           },
           {
-            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
           },
         ],
       },

@@ -44,11 +44,13 @@ export type ArcIn = {
   type: 'ArcIn';
   direction?: EffectFourDirections;
   depth?: UnitLengthPercentage;
+  perspective?: number;
 };
 export type CurveIn = {
   type: 'CurveIn';
   direction?: 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
   depth?: UnitLengthPercentage;
+  perspective?: number;
 };
 export type DropIn = {
   type: 'DropIn';
@@ -58,6 +60,7 @@ export type FlipIn = {
   type: 'FlipIn';
   direction?: EffectFourDirections;
   initialRotate?: number;
+  perspective?: number;
 };
 export type FloatIn = {
   type: 'FloatIn';
@@ -67,6 +70,7 @@ export type FoldIn = {
   type: 'FoldIn';
   direction?: EffectFourDirections;
   initialRotate?: number;
+  perspective?: number;
 };
 export type SlideIn = {
   type: 'SlideIn';
@@ -83,6 +87,7 @@ export type BounceIn = {
   type: 'BounceIn';
   direction?: EffectFourDirections | 'center';
   distanceFactor?: number;
+  perspective?: number;
 };
 export type GlideIn = {
   type: 'GlideIn';
@@ -101,6 +106,7 @@ export type TiltIn = {
   type: 'TiltIn';
   direction?: EffectTwoSides;
   depth?: UnitLengthPercentage;
+  perspective?: number;
 };
 export type ShapeIn = {
   type: 'ShapeIn';
@@ -156,6 +162,7 @@ export type Breathe = {
   type: 'Breathe';
   direction?: 'vertical' | 'horizontal' | 'center';
   distance?: UnitLengthPercentage;
+  perspective?: number;
 };
 export type Pulse = {
   type: 'Pulse';
@@ -179,6 +186,7 @@ export type Swing = {
 export type Flip = {
   type: 'Flip';
   direction?: 'vertical' | 'horizontal';
+  perspective?: number;
 };
 export type Rubber = {
   type: 'Rubber';
@@ -237,6 +245,7 @@ export type ArcScroll = {
   type: 'ArcScroll';
   direction?: 'vertical' | 'horizontal';
   range?: EffectScrollRange;
+  perspective?: number;
 };
 export type BlurScroll = {
   type: 'BlurScroll';
@@ -253,6 +262,7 @@ export type FlipScroll = {
   direction?: 'vertical' | 'horizontal';
   range?: EffectScrollRange;
   rotate?: number;
+  perspective?: number;
 };
 export type GrowScroll = {
   type: 'GrowScroll';
@@ -320,6 +330,7 @@ export type Spin3dScroll = {
   range?: EffectScrollRange;
   rotate?: number;
   speed?: number;
+  perspective?: number;
 };
 export type SpinScroll = {
   type: 'SpinScroll';
@@ -338,6 +349,7 @@ export type TiltScroll = {
   direction?: EffectTwoSides;
   range?: EffectScrollRange;
   parallaxFactor?: number;
+  perspective?: number;
 };
 export type TurnScroll = {
   type: 'TurnScroll';

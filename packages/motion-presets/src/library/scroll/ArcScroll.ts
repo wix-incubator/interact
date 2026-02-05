@@ -26,7 +26,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as ArcScrollDirection;
-  const { range = 'in' } = namedEffect;
+  const { range = 'in', perspective = 500 } = namedEffect;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
@@ -39,6 +39,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [arcScroll] = getNames(options);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-arc-from': `${rotateAxis}(${fromValue}deg)`,
     '--motion-arc-to': `${rotateAxis}(${toValue}deg)`,
   };
@@ -52,14 +53,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(500px) translateZ(-300px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(-300px) ${toKeyframeValue(
             custom,
             '--motion-arc-from',
             asWeb,
           )} translateZ(300px) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
         {
-          transform: `perspective(500px) translateZ(-300px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(-300px) ${toKeyframeValue(
             custom,
             '--motion-arc-to',
             asWeb,

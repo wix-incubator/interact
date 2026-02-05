@@ -1,4 +1,4 @@
-import { INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+import { INITIAL_FRAME_OFFSET, parseDirection, toKeyframeValue } from '../../utils';
 import type { FlipIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
@@ -25,23 +25,24 @@ const ROTATE_MAP: Record<Direction, { x: number; y: number }> = {
 };
 
 export function web(options: TimeAnimationOptions) {
-  return style(options);
+  return style(options, true);
 }
 
-export function style(options: TimeAnimationOptions) {
+export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FlipIn;
   const direction = parseDirection(
     namedEffect.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
-  const { initialRotate = 90 } = namedEffect;
+  const { initialRotate = 90, perspective = 800 } = namedEffect;
   const [fadeIn, flipIn] = getNames(options);
   const easing = options.easing || 'backOut';
 
   const from = getRotateFrom(direction, initialRotate);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': `${from.x}deg`,
     '--motion-rotate-y': `${from.y}deg`,
   };
@@ -62,10 +63,10 @@ export function style(options: TimeAnimationOptions) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
         },
         {
-          transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
         },
       ],
     },

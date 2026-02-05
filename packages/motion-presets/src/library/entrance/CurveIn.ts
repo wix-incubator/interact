@@ -31,12 +31,14 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     DEFAULT_DIRECTION,
   ) as CurveInDirection;
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
+  const { perspective = 200 } = namedEffect;
   const [curveIn, fadeIn] = getNames(options);
 
   const { rotationX, rotationY } = PARAMS_MAP[direction];
   const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': `${rotationX}deg`,
     '--motion-rotate-y': `${rotationY}deg`,
     '--motion-depth-negative': `calc(${depthValue} * -3)`,
@@ -54,7 +56,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(200px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(${toKeyframeValue(
             custom,
             '--motion-rotate-x',
             asWeb,
@@ -62,10 +64,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-rotate-y',
             asWeb,
-          )}) translateZ(${toKeyframeValue(custom, '--motion-depth  -positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
+          )}) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(200px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
       ],
     },

@@ -21,6 +21,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipDirection;
+  const { perspective = 800 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -31,6 +32,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const easing = options.easing || 'linear';
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': rotationAxes.x,
     '--motion-rotate-y': rotationAxes.y,
   };
@@ -58,16 +60,16 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateStart}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateStart}`,
           easing: getEasing(easing),
         },
         {
           offset,
-          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
         {
           offset: 1,
-          transform: `perspective(800px) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
       ],
     },

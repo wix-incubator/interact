@@ -138,14 +138,17 @@ describe('FlipScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '800px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(800px) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(800px) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -164,14 +167,17 @@ describe('FlipScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '800px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(800px) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(800px) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -190,14 +196,17 @@ describe('FlipScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '800px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(800px) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(800px) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -217,14 +226,17 @@ describe('FlipScroll', () => {
       const expectedResult = [
         {
           fill: 'backwards',
+          custom: {
+            '--motion-perspective': '800px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(800px) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(800px) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -244,14 +256,17 @@ describe('FlipScroll', () => {
       const expectedResult = [
         {
           fill: 'forwards',
+          custom: {
+            '--motion-perspective': '800px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(800px) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-from) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(800px) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
+                'perspective(var(--motion-perspective)) var(--motion-flip-to) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },

@@ -163,14 +163,17 @@ describe('Spin3dScroll', () => {
           easing: 'linear',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '1000px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -189,14 +192,17 @@ describe('Spin3dScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '1000px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -218,14 +224,17 @@ describe('Spin3dScroll', () => {
           fill: 'forwards',
           startOffsetAdd: '0px',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '1000px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -248,14 +257,17 @@ describe('Spin3dScroll', () => {
           fill: 'both',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '1000px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },
@@ -276,14 +288,17 @@ describe('Spin3dScroll', () => {
         {
           startOffsetAdd: '-20vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '1000px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-from)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-from))) rotateY(var(--motion-rot-y-from)) rotateX(var(--motion-rot-x-from))',
             },
             {
               transform:
-                'perspective(1000px) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-travel-to)) rotateZ(calc(var(--motion-rotate, 0deg) + var(--motion-rot-z-to))) rotateY(var(--motion-rot-y-to)) rotateX(var(--motion-rot-x-to))',
             },
           ],
         },

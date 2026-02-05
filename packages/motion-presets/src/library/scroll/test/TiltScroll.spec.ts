@@ -206,14 +206,17 @@ describe('TiltScroll', () => {
           fill: 'backwards',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -250,14 +253,17 @@ describe('TiltScroll', () => {
           fill: 'forwards',
           startOffsetAdd: '0px',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -293,14 +299,17 @@ describe('TiltScroll', () => {
           fill: 'both',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -332,14 +341,17 @@ describe('TiltScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -370,14 +382,17 @@ describe('TiltScroll', () => {
         {
           startOffsetAdd: '-20vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },

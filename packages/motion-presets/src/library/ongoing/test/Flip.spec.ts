@@ -133,6 +133,7 @@ describe('Flip', () => {
         {
           name: 'motion-flip-1',
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '0',
             '--motion-rotate-y': '1',
           },
@@ -140,18 +141,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
         },
@@ -174,6 +175,7 @@ describe('Flip', () => {
           easing: 'linear',
           delay: 0,
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '1',
             '--motion-rotate-y': '0',
           },
@@ -181,18 +183,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
         },
@@ -219,6 +221,7 @@ describe('Flip', () => {
           delay: 0,
           duration: 2000,
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '0',
             '--motion-rotate-y': '1',
           },
@@ -226,18 +229,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'ease-in-out',
             },
             {
               offset: 0.5,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
         },

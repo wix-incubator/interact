@@ -25,7 +25,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipScrollDirection;
-  const { rotate = 240, range = 'continuous' } = namedEffect;
+  const { rotate = 240, range = 'continuous', perspective = 800 } = namedEffect;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];
 
@@ -39,6 +39,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [flipScroll] = getNames(options);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-flip-from': `${rotationAxis}(${fromValue}deg)`,
     '--motion-flip-to': `${rotationAxis}(${toValue}deg)`,
   };
@@ -52,14 +53,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(800px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) ${toKeyframeValue(
             custom,
             '--motion-flip-from',
             asWeb,
           )} rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
         {
-          transform: `perspective(800px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) ${toKeyframeValue(
             custom,
             '--motion-flip-to',
             asWeb,

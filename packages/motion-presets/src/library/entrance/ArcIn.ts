@@ -30,6 +30,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   ) as EffectFourDirections;
 
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
+  const { perspective = 800 } = namedEffect;
   const [fadeIn, arcIn] = getNames(options);
 
   const easing = options.easing || 'quintInOut';
@@ -38,6 +39,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
@@ -62,7 +64,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(calc(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',
             asWeb,
@@ -81,7 +83,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
           )} * ${ROTATION_ANGLE}deg)) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },

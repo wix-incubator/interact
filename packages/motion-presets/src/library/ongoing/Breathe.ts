@@ -41,6 +41,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     DEFAULT_DIRECTION,
   ) as BreatheDirection;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const { perspective = 800 } = namedEffect;
 
   const easing = options.easing || 'sineInOut';
   const duration = options.duration || 1;
@@ -51,7 +52,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const { x, y, z } = DIRECTION_MAP[direction];
   const ease = getEasingFamily(easing);
-  const perspectiveTransform = direction === 'center' ? 'perspective(800px)' : '';
+  const perspectiveTransform = direction === 'center' ? `perspective(${perspective}px)` : '';
 
   // Create CSS custom properties for the Breathe configuration
   const custom: Record<string, string | number> = {
