@@ -6,13 +6,7 @@ import {
   parseLength,
   parseDirection,
 } from '../../utils';
-
-type ExpandIn = {
-  type: 'ExpandIn';
-  direction?: number | string;
-  distance?: { value: number; type: string } | string;
-  initialScale?: number;
-};
+import type { ExpandIn } from '../../types';
 
 const DEFAULT_DIRECTION = 90;
 const DEFAULT_DISTANCE = { value: 120, type: 'percentage' };
@@ -36,7 +30,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ExpandIn;
   const { initialScale = 0 } = namedEffect;
 
-  const parsedDirection = parseDirection(namedEffect.direction, DIRECTIONS, DEFAULT_DIRECTION);
+  const parsedDirection = parseDirection(namedEffect.direction, DIRECTIONS, DEFAULT_DIRECTION, true);
   const direction =
     typeof parsedDirection === 'string'
       ? DIRECTION_KEYWORD_TO_ANGLE[parsedDirection]
@@ -63,7 +57,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     {
       ...options,
       easing,
-      duration: options.duration! * initialScale,
+      duration: options.duration! * 0.7,
       name: fadeIn,
       custom: {},
       keyframes: [{ offset: 0, opacity: 0 }, {}],

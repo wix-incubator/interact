@@ -87,7 +87,7 @@ export type BounceIn = {
 export type GlideIn = {
   type: 'GlideIn';
   direction?: number;
-  distance?: UnitLengthPercentage;
+  distance?: UnitLengthPercentage | EffectFourDirections;
 };
 export type TurnIn = {
   type: 'TurnIn';
@@ -122,6 +122,13 @@ export type BlurIn = {
   blur?: number;
 };
 
+export type ExpandIn = {
+  type: 'ExpandIn';
+  direction?: number | string;
+  distance?: { value: number; type: string } | string;
+  initialScale?: number;
+};
+
 export type EntranceAnimation =
   | FadeIn
   | ArcIn
@@ -140,7 +147,9 @@ export type EntranceAnimation =
   | ShapeIn
   | ShuttersIn
   | RevealIn
-  | BlurIn;
+  | BlurIn
+  | ExpandIn;
+
 export type EntranceAnimations = Record<EntranceAnimation['type'], AnimationEffectAPI<'time'>>;
 
 export type Breathe = {
