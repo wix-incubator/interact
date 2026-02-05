@@ -1,5 +1,16 @@
-import { getEasingFamily, getEasing, toKeyframeValue, INITIAL_FRAME_OFFSET } from '../../utils';
+import {
+  getEasingFamily,
+  getEasing,
+  toKeyframeValue,
+  INITIAL_FRAME_OFFSET,
+  parseDirection,
+} from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
+import { FOUR_DIRECTIONS } from '../../consts';
+
+type BounceInDirection = 'top' | 'right' | 'bottom' | 'left' | 'center';
+const DEFAULT_DIRECTION: BounceInDirection = 'bottom';
+const DIRECTIONS = [...FOUR_DIRECTIONS, 'center'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
@@ -19,12 +30,6 @@ const BOUNCE_KEYFRAMES = [
   { offset: 100, translate: 0, isIn: true },
 ];
 
-const POWER_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
-
 const TRANSLATE_DIRECTION_MAP = {
   top: { y: -1, x: 0, z: 0 },
   right: { y: 0, x: 1, z: 0 },
@@ -38,14 +43,16 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    power,
-    distanceFactor: distance = 1,
-    direction = 'bottom',
-  } = options.namedEffect as BounceIn;
+  const namedEffect = options.namedEffect as BounceIn;
+  const direction = parseDirection(
+    namedEffect?.direction,
+    DIRECTIONS,
+    DEFAULT_DIRECTION,
+  ) as BounceInDirection;
+  const distanceFactor = namedEffect?.distanceFactor || 1;
+  const { perspective = 800 } = namedEffect || {};
   const [fadeIn, bounceIn] = getNames(options);
-  const distanceFactor = (power && POWER_MAP[power]) || distance;
-  const perspective = direction === 'center' ? 'perspective(800px)' : ' ';
+  const perspectiveValue = direction === 'center' ? `perspective(${perspective}px)` : ' ';
   const { x, y, z } = TRANSLATE_DIRECTION_MAP[direction];
 
   const custom = {
@@ -53,7 +60,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-direction-y': y,
     '--motion-direction-z': z,
     '--motion-distance-factor': distanceFactor,
-    '--motion-perspective': perspective,
+    '--motion-perspective': perspectiveValue,
     '--motion-ease-in': getEasing(easeOut),
     '--motion-ease-out': getEasing(easeIn),
   };
@@ -77,7 +84,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       translate / 2
     }px), calc(${directionZ} * ${distanceFactor_} * ${
       translate / 2
-    }px)) rotateZ(var(--comp-rotate-z, 0deg))`,
+    }px)) rotateZ(var(--motion-rotate, 0deg))`,
   }));
 
   return [
@@ -87,7 +94,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: (options.duration! * BOUNCE_KEYFRAMES[3].offset) / 100,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -97,7 +104,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) translate3d(0, 0, 0) rotateZ(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
         },
         ...keyframes,
       ],

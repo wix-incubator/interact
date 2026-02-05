@@ -1,11 +1,9 @@
 import type { Flip, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
+import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
-const POWER_EASING_MAP = {
-  soft: 'linear',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
+type FlipDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: FlipDirection = 'horizontal';
 
 const DIRECTION_MAP = {
   vertical: { x: '1', y: '0' },
@@ -17,7 +15,13 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction = 'horizontal', power } = options.namedEffect as Flip;
+  const namedEffect = options.namedEffect as Flip;
+  const direction = parseDirection(
+    namedEffect.direction,
+    AXIS_DIRECTIONS,
+    DEFAULT_DIRECTION,
+  ) as FlipDirection;
+  const { perspective = 800 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -25,9 +29,10 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const [name] = getNames(options);
 
   const rotationAxes = DIRECTION_MAP[direction];
-  const easing = (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
+  const easing = options.easing || 'linear';
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': rotationAxes.x,
     '--motion-rotate-y': rotationAxes.y,
   };
@@ -55,16 +60,16 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       keyframes: [
         {
           offset: 0,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateStart}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateStart}`,
           easing: getEasing(easing),
         },
         {
           offset,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateEnd}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
         {
           offset: 1,
-          transform: `perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) ${rotateEnd}`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateZ(var(--motion-rotate, 0deg)) ${rotateEnd}`,
         },
       ],
     },

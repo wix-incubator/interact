@@ -1,7 +1,15 @@
 import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 const ROTATION = 68;
+type ArcScrollDirection = 'vertical' | 'horizontal';
+const DEFAULT_DIRECTION: ArcScrollDirection = 'horizontal';
+
+const ROTATE_DIRECTION_MAP = {
+  vertical: 'rotateX',
+  horizontal: 'rotateY',
+};
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-arcScroll'];
@@ -12,22 +20,28 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { direction = 'horizontal', range = 'in' } = options.namedEffect as ArcScroll;
+  const namedEffect = options.namedEffect as ArcScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    AXIS_DIRECTIONS,
+    DEFAULT_DIRECTION,
+  ) as ArcScrollDirection;
+  const { range = 'in', perspective = 500 } = namedEffect;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const rotAxisString = `rotate${direction === 'vertical' ? 'X' : 'Y'}`;
+  const rotateAxis = ROTATE_DIRECTION_MAP[direction];
   const fromValue = range === 'out' ? 0 : -ROTATION;
   const toValue = range === 'in' ? 0 : ROTATION;
-
   const easing = 'linear';
 
   const [arcScroll] = getNames(options);
 
   const custom = {
-    '--motion-arc-from': `${rotAxisString}(${fromValue}deg)`,
-    '--motion-arc-to': `${rotAxisString}(${toValue}deg)`,
+    '--motion-perspective': `${perspective}px`,
+    '--motion-arc-from': `${rotateAxis}(${fromValue}deg)`,
+    '--motion-arc-to': `${rotateAxis}(${toValue}deg)`,
   };
 
   return [
@@ -39,18 +53,18 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(500px) translateZ(-300px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(-300px) ${toKeyframeValue(
             custom,
             '--motion-arc-from',
             asWeb,
-          )} translateZ(300px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} translateZ(300px) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
         {
-          transform: `perspective(500px) translateZ(-300px) ${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(-300px) ${toKeyframeValue(
             custom,
             '--motion-arc-to',
             asWeb,
-          )} translateZ(300px) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0deg')})`,
+          )} translateZ(300px) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0deg')})`,
         },
       ],
     },

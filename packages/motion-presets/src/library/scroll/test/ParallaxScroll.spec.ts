@@ -20,10 +20,10 @@ describe('ParallaxScroll', () => {
           endOffsetAdd: '25vh',
           keyframes: [
             {
-              transform: 'translateY(calc(-1 * 25vh)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(calc(-1 * 25vh)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateY(25vh) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(25vh) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -34,10 +34,10 @@ describe('ParallaxScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom speed', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { speed: 0.75 } as ParallaxScrollType,
+        namedEffect: { parallaxFactor: 0.75 } as ParallaxScrollType,
       };
 
       const expectedResult = [
@@ -46,10 +46,10 @@ describe('ParallaxScroll', () => {
           endOffsetAdd: '37.5vh',
           keyframes: [
             {
-              transform: 'translateY(calc(-1 * 37.5vh)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(calc(-1 * 37.5vh)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateY(37.5vh) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(37.5vh) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -77,10 +77,10 @@ describe('ParallaxScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -91,10 +91,10 @@ describe('ParallaxScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom speed', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { speed: 0.75 } as ParallaxScrollType,
+        namedEffect: { parallaxFactor: 0.75 } as ParallaxScrollType,
       };
 
       const expectedResult = [
@@ -104,10 +104,10 @@ describe('ParallaxScroll', () => {
           keyframes: [
             {
               transform:
-                'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--comp-rotate-z, 0))',
+                'translateY(calc(-1 * var(--motion-parallax-to))) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateY(var(--motion-parallax-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },

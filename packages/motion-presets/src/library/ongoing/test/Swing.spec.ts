@@ -29,24 +29,24 @@ describe('Swing', () => {
               easing: 'var(--motion-ease-out)',
               offset: 0,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               easing: 'var(--motion-ease-inout)',
               offset: 0.25,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(var(--motion-swing-deg)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(var(--motion-swing-deg)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               easing: 'var(--motion-ease-in)',
               offset: 0.75,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(calc(var(--motion-swing-deg) * -1)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(calc(var(--motion-swing-deg) * -1)) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
             {
               offset: 1,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(var(--motion-trans-x), var(--motion-trans-y)) rotate(0deg) translate(calc(var(--motion-trans-x) * -1), calc(var(--motion-trans-y) * -1))',
             },
           ],
         },
@@ -131,45 +131,6 @@ describe('Swing', () => {
         '--motion-trans-y': '50%',
       });
     });
-
-    test('custom power - soft', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as SwingType,
-      };
-
-      const result = Swing.style(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '20deg', // soft = 1 * 20
-      });
-    });
-
-    test('custom power - medium', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SwingType,
-      };
-
-      const result = Swing.style?.(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '40deg', // medium = 2 * 20
-      });
-    });
-
-    test('custom power - hard', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as SwingType,
-      };
-
-      const result = Swing.style?.(mockOptions);
-
-      expect(result[0].custom).toMatchObject({
-        '--motion-swing-deg': '60deg', // hard = 3 * 20
-      });
-    });
   });
 
   describe('web function', () => {
@@ -196,24 +157,24 @@ describe('Swing', () => {
               easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)',
               offset: 0,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
               offset: 0.25,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(20deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(20deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               easing: 'cubic-bezier(0.47, 0, 0.745, 0.715)',
               offset: 0.75,
               transform:
-                'rotate(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(calc(20deg * -1)) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotate(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(calc(20deg * -1)) translate(calc(0% * -1), calc(-50% * -1))',
             },
             {
               offset: 1,
               transform:
-                'rotateZ(var(--comp-rotate-z, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
+                'rotateZ(var(--motion-rotate, 0deg)) translate(0%, -50%) rotate(0deg) translate(calc(0% * -1), calc(-50% * -1))',
             },
           ],
         },
@@ -280,18 +241,6 @@ describe('Swing', () => {
       expect(result[0].keyframes[0].transform).toContain(
         'translate(calc(50% * -1), calc(0% * -1))',
       );
-    });
-
-    test('custom power - medium with web output', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SwingType,
-      };
-
-      const result = Swing.web(mockOptions);
-
-      expect(result[0].keyframes[1].transform).toContain('rotate(40deg)');
-      expect(result[0].keyframes[2].transform).toContain('rotate(calc(40deg * -1))');
     });
   });
 });

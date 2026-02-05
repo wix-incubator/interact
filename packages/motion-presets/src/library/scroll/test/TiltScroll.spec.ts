@@ -34,48 +34,10 @@ describe('TiltScroll', () => {
           composite: 'add',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-            },
-          ],
-        },
-      ];
-
-      const result = TiltScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as TiltScrollType,
-      };
-
-      const expectedResult = [
-        {
-          startOffsetAdd: '0vh',
-          endOffsetAdd: '0px',
-          keyframes: [
-            {
-              transform: 'perspective(400px) translateY(0vh) rotateX(-10deg) rotateY(-25deg)',
-            },
-            {
-              transform: 'perspective(400px) translateY(0vh) rotateX(0deg) rotateY(0deg)',
-            },
-          ],
-        },
-        {
-          startOffsetAdd: '0vh',
-          endOffsetAdd: '0px',
-          keyframes: [
-            {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
-            },
-            {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -112,10 +74,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 25deg))',
             },
           ],
         },
@@ -153,10 +115,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 31.25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 31.25deg))',
             },
           ],
         },
@@ -187,10 +149,10 @@ describe('TiltScroll', () => {
         {
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + -25deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + -25deg))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -201,10 +163,10 @@ describe('TiltScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom distance', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: 0.5 } as TiltScrollType,
+        namedEffect: { parallaxFactor: 0.5 } as TiltScrollType,
       };
 
       const expectedResult = [
@@ -244,14 +206,17 @@ describe('TiltScroll', () => {
           fill: 'backwards',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -263,50 +228,10 @@ describe('TiltScroll', () => {
           composite: 'add',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
-            },
-          ],
-        },
-      ];
-
-      const result = TiltScroll.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as TiltScrollType,
-      };
-
-      const expectedResult = [
-        {
-          startOffsetAdd: '0vh',
-          endOffsetAdd: '0px',
-          keyframes: [
-            {
-              transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
-            },
-            {
-              transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
-            },
-          ],
-        },
-        {
-          startOffsetAdd: '0vh',
-          endOffsetAdd: '0px',
-          keyframes: [
-            {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
-            },
-            {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -328,14 +253,17 @@ describe('TiltScroll', () => {
           fill: 'forwards',
           startOffsetAdd: '0px',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -345,10 +273,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -371,14 +299,17 @@ describe('TiltScroll', () => {
           fill: 'both',
           startOffsetAdd: '0vh',
           endOffsetAdd: '0vh',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
@@ -388,10 +319,10 @@ describe('TiltScroll', () => {
           endOffsetAdd: '0vh',
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -410,24 +341,27 @@ describe('TiltScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },
         {
           keyframes: [
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-from)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-from)))',
             },
             {
-              transform: 'rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-tilt-z-to)))',
+              transform: 'rotate(calc(var(--motion-rotate, 0deg) + var(--motion-tilt-z-to)))',
             },
           ],
         },
@@ -438,24 +372,27 @@ describe('TiltScroll', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('custom distance', () => {
+    test('custom parallaxFactor', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: 0.5 } as TiltScrollType,
+        namedEffect: { parallaxFactor: 0.5 } as TiltScrollType,
       };
 
       const expectedResult = [
         {
           startOffsetAdd: '-20vh',
           endOffsetAdd: '0px',
+          custom: {
+            '--motion-perspective': '400px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-from)) rotateX(var(--motion-tilt-x-from)) rotateY(var(--motion-tilt-y-rot-from))',
             },
             {
               transform:
-                'perspective(400px) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
+                'perspective(var(--motion-perspective)) translateY(var(--motion-tilt-y-to)) rotateX(var(--motion-tilt-x-to)) rotateY(var(--motion-tilt-y-rot-to))',
             },
           ],
         },

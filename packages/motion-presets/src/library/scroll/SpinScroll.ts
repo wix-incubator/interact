@@ -1,10 +1,13 @@
 import type { AnimationFillMode, ScrubAnimationOptions, SpinScroll, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS } from '../../consts';
 
-const POWER_MAP = {
-  soft: 1,
-  medium: 0.7,
-  hard: 0.4,
+type SpinScrollDirection = 'clockwise' | 'counter-clockwise';
+const DEFAULT_DIRECTION: SpinScrollDirection = 'clockwise';
+
+const DIRECTION_MAP = {
+  clockwise: 1,
+  'counter-clockwise': -1,
 };
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -16,33 +19,32 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    spins = 0.15,
-    scale = 1,
-    direction = 'clockwise',
-    power,
-    range = 'in',
-  } = options.namedEffect as SpinScroll;
+  const namedEffect = options.namedEffect as SpinScroll;
+  const direction = parseDirection(
+    namedEffect.direction,
+    SPIN_DIRECTIONS,
+    DEFAULT_DIRECTION,
+  ) as SpinScrollDirection;
+  const { spins = 0.15, scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const rotationZ = 360 * spins;
-  const scaleFactor = power && POWER_MAP[power] ? POWER_MAP[power] : scale;
-
+  const spinDirection = DIRECTION_MAP[direction];
+  const rotationZ = spins * 360;
   const isIn = range === 'in';
+
   const fromValue = isIn ? -rotationZ : range === 'out' ? 0 : -rotationZ / 2;
   const toValue = isIn ? 0 : range === 'out' ? rotationZ : rotationZ / 2;
-  const spinDirection = direction === 'clockwise' ? 1 : -1;
 
   const [spinScroll] = getNames(options);
 
   const custom = {
     '--motion-spin-from': `${spinDirection * fromValue}deg`,
     '--motion-spin-to': `${spinDirection * toValue}deg`,
-    '--motion-spin-scale-from': isIn ? scaleFactor : 1,
-    '--motion-spin-scale-to': isIn ? 1 : scaleFactor,
+    '--motion-spin-scale-from': isIn ? scale : 1,
+    '--motion-spin-scale-to': isIn ? 1 : scale,
   };
 
   return [
@@ -60,7 +62,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-spin-from', asWeb)}))`,
@@ -72,7 +74,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-spin-to', asWeb)}))`,

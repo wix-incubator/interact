@@ -16,20 +16,17 @@ describe('FloatIn', () => {
         easing: 'sineInOut',
         keyframes: [
           {
-            offset: 0,
-            opacity: 0,
-            easing: 'step-end',
-          },
-          {
             offset: 0.000001,
-            opacity: 0,
-            transform: 'translate(-120px, 0px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(-120px, 0px) rotate(var(--motion-rotate, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
-            transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
           },
         ],
+      },
+      {
+        easing: 'sineInOut',
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -48,20 +45,16 @@ describe('FloatIn', () => {
       {
         keyframes: [
           {
-            offset: 0,
-            opacity: 0,
-            easing: 'step-end',
-          },
-          {
             offset: 0.000001,
-            opacity: 0,
-            transform: 'translate(0px, -120px) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0px, -120px) rotate(var(--motion-rotate, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
-            transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
           },
         ],
+      },
+      {
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -79,27 +72,27 @@ describe('FloatIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'sineInOut',
+        name: 'motion-floatIn',
         custom: {
           '--motion-translate-x': '-120px',
           '--motion-translate-y': '0px',
         },
         keyframes: [
           {
-            offset: 0,
-            opacity: 0,
-            easing: 'step-end',
-          },
-          {
             offset: 0.000001,
-            opacity: 0,
             transform:
-              'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg))',
+              'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
-            transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
           },
         ],
+      },
+      {
+        easing: 'sineInOut',
+        name: 'motion-fadeIn',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -116,27 +109,26 @@ describe('FloatIn', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
+        name: 'motion-floatIn',
         custom: {
           '--motion-translate-x': '0px',
           '--motion-translate-y': '-120px',
         },
         keyframes: [
           {
-            offset: 0,
-            opacity: 0,
-            easing: 'step-end',
-          },
-          {
             offset: 0.000001,
-            opacity: 0,
             transform:
-              'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--comp-rotate-z, 0deg))',
+              'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
           {
-            opacity: 'var(--comp-opacity, 1)',
-            transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+            transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
           },
         ],
+      },
+      {
+        name: 'motion-fadeIn',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 

@@ -14,21 +14,25 @@ describe('RevealIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
+        name: 'motion-revealIn',
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        easing: 'cubicInOut',
+        name: 'motion-fadeIn',
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -45,21 +49,24 @@ describe('RevealIn', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
+        name: 'motion-revealIn',
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        name: 'motion-fadeIn',
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -77,24 +84,29 @@ describe('RevealIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'cubicInOut',
+        name: 'motion-revealIn',
         custom: {
           '--motion-clip-start': 'polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)',
         },
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        easing: 'cubicInOut',
+        name: 'motion-fadeIn',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 
@@ -111,24 +123,28 @@ describe('RevealIn', () => {
 
     const expectedResult: Partial<AnimationData>[] = [
       {
+        name: 'motion-revealIn',
         custom: {
           '--motion-clip-start': 'polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)',
         },
         keyframes: [
           {
             offset: 0,
-            opacity: 0,
-            easing: 'step-end',
+            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             offset: 0.000001,
-            opacity: 'var(--comp-opacity, 1)',
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
             clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
           },
         ],
+      },
+      {
+        name: 'motion-fadeIn',
+        custom: {},
+        keyframes: [{ offset: 0, opacity: 0 }, {}],
       },
     ];
 

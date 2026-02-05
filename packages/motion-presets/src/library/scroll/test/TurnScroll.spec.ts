@@ -19,35 +19,10 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--motion-rotate, 0deg) + -45deg))',
             },
             {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-            },
-          ],
-        },
-      ];
-
-      const result = TurnScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as TurnScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
-            },
-            {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'translateX(0px) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -69,10 +44,10 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 45deg))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 45deg))',
             },
             {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'translateX(0px) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -94,10 +69,10 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
+                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--motion-rotate, 0deg) + -45deg))',
             },
             {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'translateX(0px) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -119,10 +94,10 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) scale(0.5) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) scale(0.5) rotate(calc(var(--motion-rotate, 0deg) + -45deg))',
             },
             {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'translateX(0px) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -144,11 +119,11 @@ describe('TurnScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform: 'translateX(0px) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'translateX(0px) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
             {
               transform:
-                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 45deg))',
+                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 45deg))',
             },
           ],
         },
@@ -170,11 +145,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -45deg))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) scale(1) rotate(calc(var(--motion-rotate, 0deg) + -45deg))',
             },
             {
               transform:
-                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 45deg))',
+                'translateX(calc(-1 * var(--motion-left, calc(100vw - 100%)) - 100%)) scale(1) rotate(calc(var(--motion-rotate, 0deg) + 45deg))',
             },
           ],
         },
@@ -200,37 +175,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
-            },
-          ],
-        },
-      ];
-
-      const result = TurnScroll.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as TurnScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
-            },
-            {
-              transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
@@ -252,11 +201,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
@@ -278,11 +227,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
@@ -304,11 +253,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
@@ -331,11 +280,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
@@ -357,11 +306,11 @@ describe('TurnScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-from)))',
+                'translateX(var(--motion-turn-translate-from)) scale(var(--motion-turn-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-from)))',
             },
             {
               transform:
-                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-turn-rotation-to)))',
+                'translateX(var(--motion-turn-translate-to)) scale(var(--motion-turn-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-turn-rotation-to)))',
             },
           ],
         },
