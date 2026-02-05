@@ -8,11 +8,13 @@ import type {
   InteractionTrigger,
   CreateTransitionCSSParams,
   IInteractionController,
+  TimeEffect,
 } from '../types';
 import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { calculateSequenceOffsets } from '@wix/motion';
 
 type InteractionsToApply = Array<
   [
@@ -25,6 +27,14 @@ type InteractionsToApply = Array<
     boolean,
   ]
 >;
+
+/**
+ * Checks if an effect is a time-based effect (keyframeEffect or namedEffect with duration).
+ * Sequence delays should only be applied to these types of effects.
+ */
+function isTimeBasedEffect(effect: Effect): effect is Effect & TimeEffect {
+  return 'duration' in effect && typeof effect.duration === 'number';
+}
 
 function _getElementsFromData(
   data: Interaction | Effect,
@@ -232,6 +242,33 @@ function _addInteraction(
       ]);
     }
   });
+
+  if (interaction.sequence && interactionsToApply.length > 0) {
+    const timeBasedIndices: number[] = [];
+    interactionsToApply.forEach((item, index) => {
+      const effect = item[2];
+      if (isTimeBasedEffect(effect)) {
+        timeBasedIndices.push(index);
+      }
+    });
+
+    if (timeBasedIndices.length > 0) {
+      const offsets = calculateSequenceOffsets(timeBasedIndices.length, interaction.sequence);
+      // Reverse offsets so first effect gets smallest delay after array reversal
+      offsets.reverse();
+
+      timeBasedIndices.forEach((itemIndex, offsetIndex) => {
+        const effect = interactionsToApply[itemIndex][2] as Effect & TimeEffect;
+        const existingDelay = effect.delay || 0;
+        const sequenceOffset = offsets[offsetIndex];
+
+        interactionsToApply[itemIndex][2] = {
+          ...effect,
+          delay: existingDelay + sequenceOffset,
+        };
+      });
+    }
+  }
 
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
   interactionsToApply.reverse().forEach((interaction) => {

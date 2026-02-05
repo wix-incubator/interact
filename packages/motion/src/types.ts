@@ -264,3 +264,11 @@ export type EffectModule =
   | ScrollEffectModule
   | MouseEffectModule
   | WebAnimationEffectFactory<'scrub'>;
+
+export type SequenceOffsetEasing = string | ((p: number) => number);
+
+export type SequenceOptions = {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: SequenceOffsetEasing;
+};

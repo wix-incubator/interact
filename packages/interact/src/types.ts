@@ -3,9 +3,10 @@ import type {
   RangeOffset,
   ScrubTransitionEasing,
   MotionAnimationOptions,
+  SequenceOptions,
 } from '@wix/motion';
 
-export type { RangeOffset };
+export type { RangeOffset, SequenceOptions };
 
 export type PointerMoveAxis = 'x' | 'y';
 
@@ -164,6 +165,7 @@ export type InteractionTrigger = {
 
 export type Interaction = InteractionTrigger & {
   effects: ((Effect | EffectRef) & { interactionId?: string })[];
+  sequence?: SequenceOptions;
 };
 
 export type InteractConfig = {
