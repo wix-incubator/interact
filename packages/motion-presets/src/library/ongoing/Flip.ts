@@ -1,9 +1,9 @@
 import type { Flip, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 type FlipDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: FlipDirection = 'horizontal';
-const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: '1', y: '0' },
@@ -18,7 +18,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Flip;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipDirection;
 

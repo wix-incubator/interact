@@ -145,7 +145,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-arcIn',
@@ -154,16 +154,18 @@ describe('ArcIn', () => {
           '--motion-arc-x': '0',
           '--motion-arc-y': '1',
           '--motion-arc-sign': '-1',
+          '--motion-depth-negative': 'calc(-1 * 200px / 2)',
+          '--motion-depth-positive': 'calc(200px / 2)',
         },
         keyframes: [
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(0deg) rotateY(0deg) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) rotateY(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },
@@ -189,7 +191,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-arcIn',
@@ -198,16 +200,18 @@ describe('ArcIn', () => {
           '--motion-arc-x': '1',
           '--motion-arc-y': '0',
           '--motion-arc-sign': '1',
+          '--motion-depth-negative': 'calc(-1 * 200px / 2)',
+          '--motion-depth-positive': 'calc(200px / 2)',
         },
         keyframes: [
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(0deg) rotateY(0deg) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) rotateY(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },
@@ -230,7 +234,7 @@ describe('ArcIn', () => {
         duration: expect.any(Number),
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-arcIn',
@@ -239,16 +243,18 @@ describe('ArcIn', () => {
           '--motion-arc-x': '0',
           '--motion-arc-y': '1',
           '--motion-arc-sign': '1',
+          '--motion-depth-negative': 'calc(-1 * 200px / 2)',
+          '--motion-depth-positive': 'calc(200px / 2)',
         },
         keyframes: [
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(0deg) rotateY(0deg) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) rotateY(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },
@@ -274,7 +280,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-arcIn',
@@ -283,16 +289,18 @@ describe('ArcIn', () => {
           '--motion-arc-x': '1',
           '--motion-arc-y': '0',
           '--motion-arc-sign': '-1',
+          '--motion-depth-negative': 'calc(-1 * 200px / 2)',
+          '--motion-depth-positive': 'calc(200px / 2)',
         },
         keyframes: [
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(0deg) rotateY(0deg) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) rotateY(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },

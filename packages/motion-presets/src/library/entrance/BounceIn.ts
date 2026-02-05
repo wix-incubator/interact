@@ -6,10 +6,11 @@ import {
   parseDirection,
 } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 type BounceInDirection = 'top' | 'right' | 'bottom' | 'left' | 'center';
 const DEFAULT_DIRECTION: BounceInDirection = 'bottom';
-const DIRECTIONS = ['top', 'right', 'bottom', 'left', 'center'] as const;
+const DIRECTIONS = [...FOUR_DIRECTIONS, 'center'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
@@ -92,7 +93,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: (options.duration! * BOUNCE_KEYFRAMES[3].offset) / 100,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

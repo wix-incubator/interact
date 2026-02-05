@@ -26,7 +26,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: options.duration! * 0.8,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

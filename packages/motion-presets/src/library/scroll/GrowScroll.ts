@@ -6,20 +6,10 @@ import type {
   EffectNineDirections,
 } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
+import { NINE_DIRECTIONS } from '../../consts';
 
 const MAX_Y_TRAVEL = 40;
 const DEFAULT_DIRECTION: EffectNineDirections = 'center';
-const DIRECTIONS = [
-  'top',
-  'top-right',
-  'right',
-  'bottom-right',
-  'bottom',
-  'bottom-left',
-  'left',
-  'top-left',
-  'center',
-] as const;
 
 const directionMap = {
   top: [0, -50],
@@ -46,7 +36,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { range = 'in', scale = range === 'in' ? 0 : 4, speed = 0 } = namedEffect;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    NINE_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectNineDirections;
   const easing = 'linear';

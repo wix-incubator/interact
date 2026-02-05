@@ -6,9 +6,9 @@ import type {
   EffectTwoSides,
 } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
-const DIRECTIONS = ['left', 'right'] as const;
 
 const DIRECTION_MAP = {
   right: -1,
@@ -44,7 +44,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SkewPanScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const { skew = 10, range = 'in' } = namedEffect;

@@ -6,9 +6,9 @@ import {
   INITIAL_FRAME_OFFSET,
   parseDirection,
 } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-shuttersIn', 'motion-fadeIn'];
@@ -22,7 +22,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ShuttersIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { shutters = 12, staggered = true } = namedEffect;

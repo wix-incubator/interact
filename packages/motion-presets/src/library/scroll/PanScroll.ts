@@ -6,10 +6,10 @@ import {
   EffectTwoSides,
 } from '../../types';
 import { getCssUnits, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';
 const DEFAULT_DISTANCE = { value: 400, type: 'px' };
-const DIRECTIONS = ['left', 'right'] as const;
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-panScroll'];
@@ -40,7 +40,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as PanScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const { startFromOffScreen = true, range = 'in' } = namedEffect;

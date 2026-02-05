@@ -1,9 +1,9 @@
 import type { SpinIn, TimeAnimationOptions } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS } from '../../consts';
 
 type SpinInDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_DIRECTION: SpinInDirection = 'clockwise';
-const DIRECTIONS = ['clockwise', 'counter-clockwise'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];
@@ -22,7 +22,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SpinIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    SPIN_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as SpinInDirection;
   const { spins = 0.5, initialScale = 0 } = namedEffect;
@@ -43,7 +43,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'cubicIn',
       duration: options.duration! * initialScale,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

@@ -1,10 +1,10 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 const ROTATION_ANGLE = 80;
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
 const DEFAULT_DEPTH = { value: 200, type: 'px' };
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
@@ -25,7 +25,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
 
@@ -36,13 +36,13 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const { x, y, sign } = DIRECTION_MAP[direction];
   const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
-  const zValue = `calc(-1 * ${depthValue} / 2)`;
-  const zValueNegative = `calc(${depthValue} / 2)`;
 
   const custom = {
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
+    '--motion-depth-negative': `calc(-1 * ${depthValue} / 2)`,
+    '--motion-depth-positive': `calc(${depthValue} / 2)`,
   };
 
   return [
@@ -52,7 +52,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       easing: 'sineIn',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -62,7 +62,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(${zValue}) rotateX(calc(${toKeyframeValue(
+          transform: `perspective(800px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',
             asWeb,
@@ -78,10 +78,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${ROTATION_ANGLE}deg)) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
+          )} * ${ROTATION_ANGLE}deg)) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(${zValue}) rotateX(0deg) rotateY(0deg) translateZ(${zValueNegative}) rotate(var(--motion-rotate, 0deg))`,
+          transform: `perspective(800px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },

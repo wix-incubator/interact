@@ -1,9 +1,9 @@
 import type { Spin, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS } from '../../consts';
 
 type SpinDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_DIRECTION: SpinDirection = 'clockwise';
-const DIRECTIONS = ['clockwise', 'counter-clockwise'] as const;
 
 const DIRECTION_MAP = {
   clockwise: -1,
@@ -18,7 +18,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Spin;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    SPIN_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as SpinDirection;
 

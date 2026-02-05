@@ -1,3 +1,4 @@
+import { EIGHT_DIRECTIONS } from '../../consts';
 import type {
   Cross,
   DomApi,
@@ -8,16 +9,6 @@ import type {
 import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectEightDirections = 'right';
-const DIRECTIONS = [
-  'top',
-  'right',
-  'bottom',
-  'left',
-  'top-left',
-  'top-right',
-  'bottom-left',
-  'bottom-right',
-] as const;
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
   // 100cqw - left
@@ -188,7 +179,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?:
   const namedEffect = options.namedEffect as Cross;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    EIGHT_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectEightDirections;
   const duration = options.duration || 1;

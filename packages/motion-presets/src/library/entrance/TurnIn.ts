@@ -1,8 +1,7 @@
 import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
-
+import { FOUR_CORNERS_DIRECTIONS } from '../../consts';
 const DEFAULT_DIRECTION: EffectFourCorners = 'top-left';
-const DIRECTIONS = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-turnIn'];
@@ -26,7 +25,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TurnIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    FOUR_CORNERS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourCorners;
   const [fadeIn, turnIn] = getNames(options);
@@ -50,7 +49,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.6,
       easing: 'sineIn',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

@@ -1,11 +1,12 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
 import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 type CurveInDirection = 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
 
 const DEFAULT_DIRECTION: CurveInDirection = 'right';
 const DEFAULT_DEPTH = { value: 300, type: 'px' };
-const DIRECTIONS = ['left', 'right', 'pseudoLeft', 'pseudoRight'] as const;
+const DIRECTIONS = [...TWO_SIDES_DIRECTIONS, 'pseudoLeft', 'pseudoRight'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn', 'motion-fadeIn'];
@@ -38,6 +39,8 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const custom = {
     '--motion-rotate-x': `${rotationX}deg`,
     '--motion-rotate-y': `${rotationY}deg`,
+    '--motion-depth-negative': `calc(${depthValue} * -3)`,
+    '--motion-depth-positive': `calc(${depthValue} * 3)`,
   };
 
   const easing = 'quadOut';
@@ -51,7 +54,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       keyframes: [
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(200px) translateZ(calc(${depthValue} * -3)) rotateX(${toKeyframeValue(
+          transform: `perspective(200px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(${toKeyframeValue(
             custom,
             '--motion-rotate-x',
             asWeb,
@@ -59,10 +62,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-rotate-y',
             asWeb,
-          )}) translateZ(calc(${depthValue} * 3)) rotateZ(var(--motion-rotate, 0deg))`,
+          )}) translateZ(${toKeyframeValue(custom, '--motion-depth  -positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(200px) translateZ(calc(${depthValue} * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(${depthValue} * 3)) rotateZ(var(--motion-rotate, 0deg))`,
+          transform: `perspective(200px) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
       ],
     },
@@ -71,7 +74,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
   ];
 }

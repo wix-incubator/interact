@@ -6,10 +6,10 @@ import {
   parseLength,
   parseDirection,
 } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION = 180;
 const DEFAULT_DISTANCE = { value: 100, type: 'percentage' };
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
   top: 90,
   right: 0,
@@ -31,7 +31,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const parsedDirection = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
     ALLOW_ANGLES,
   );

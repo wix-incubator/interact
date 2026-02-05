@@ -6,13 +6,12 @@ import type {
   EffectTwoSides,
 } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS, TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const ELEMENT_ROTATION = 45;
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
 type SpinDirection = 'clockwise' | 'counter-clockwise';
 const DEFAULT_SPIN: SpinDirection = 'clockwise';
-const DIRECTIONS = ['left', 'right'] as const;
-const ALLOWED_SPIN_KEYWORDS = ['clockwise', 'counter-clockwise'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   clockwise: 1,
@@ -48,12 +47,12 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TurnScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const spin = parseDirection(
     namedEffect.spin,
-    ALLOWED_SPIN_KEYWORDS,
+    SPIN_DIRECTIONS,
     DEFAULT_SPIN,
   ) as SpinDirection;
   const { scale = 1, range = 'in' } = namedEffect;

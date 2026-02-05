@@ -1,9 +1,9 @@
 import type { AnimationFillMode, FlipScroll, ScrubAnimationOptions, DomApi } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 type FlipScrollDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: FlipScrollDirection = 'horizontal';
-const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -22,7 +22,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FlipScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as FlipScrollDirection;
   const { rotate = 240, range = 'continuous' } = namedEffect;

@@ -1,10 +1,10 @@
 import type { ScrubAnimationOptions, ArcScroll, AnimationFillMode, DomApi } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 const ROTATION = 68;
 type ArcScrollDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: ArcScrollDirection = 'horizontal';
-const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 const ROTATE_DIRECTION_MAP = {
   vertical: 'rotateX',
@@ -23,7 +23,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcScroll;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as ArcScrollDirection;
   const { range = 'in' } = namedEffect;

@@ -6,9 +6,9 @@ import type {
   EffectFourDirections,
 } from '../../types';
 import { getTimingFactor, toKeyframeValue, mapRange, parseDirection } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as const;
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },
@@ -38,7 +38,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const namedEffect = options.namedEffect as Poke;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectFourDirections;
   const { intensity = 0.5 } = namedEffect;

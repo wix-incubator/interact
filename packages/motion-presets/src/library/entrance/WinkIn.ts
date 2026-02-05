@@ -1,9 +1,9 @@
 import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
 import type { WinkIn, TimeAnimationOptions } from '../../types';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 type WinkInDirection = 'vertical' | 'horizontal';
 const DEFAULT_DIRECTION: WinkInDirection = 'horizontal';
-const DIRECTIONS = ['vertical', 'horizontal'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-winkInClip', 'motion-winkInRotate'];
@@ -24,7 +24,7 @@ export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as WinkIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as WinkInDirection;
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
@@ -47,7 +47,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

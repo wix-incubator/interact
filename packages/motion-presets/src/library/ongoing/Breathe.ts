@@ -8,11 +8,12 @@ import {
   parseDirection,
   parseLength,
 } from '../../utils';
+import { AXIS_DIRECTIONS } from '../../consts';
 
 type BreatheDirection = 'vertical' | 'horizontal' | 'center';
 const DEFAULT_DIRECTION: BreatheDirection = 'vertical';
 const DEFAULT_DISTANCE = { value: 25, type: 'px' };
-const DIRECTIONS = ['vertical', 'horizontal', 'center'] as const;
+const DIRECTIONS = [...AXIS_DIRECTIONS, 'center'] as const;
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },

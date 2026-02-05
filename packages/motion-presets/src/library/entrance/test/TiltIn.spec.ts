@@ -90,11 +90,15 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-tiltInRotate',
         easing: 'cubicOut',
+        custom: {
+          '--motion-depth-negative': 'calc(200px / 2 * -1)',
+          '--motion-depth-positive': 'calc(200px / 2)',
+        },
         keyframes: [
           {
             offset: 0,
@@ -104,11 +108,11 @@ describe('TiltIn', () => {
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc((200px / 2) * -1)) rotateX(-90deg) translateZ(calc((200px / 2))) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc((200px / 2) * -1)) rotateX(0deg) translateZ(calc((200px / 2))) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },
@@ -155,11 +159,15 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-tiltInRotate',
         easing,
+        custom: {
+          '--motion-depth-negative': 'calc(200px / 2 * -1)',
+          '--motion-depth-positive': 'calc(200px / 2)',
+        },
         keyframes: [
           {
             offset: 0,
@@ -169,11 +177,11 @@ describe('TiltIn', () => {
           {
             offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc((200px / 2) * -1)) rotateX(-90deg) translateZ(calc((200px / 2))) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc((200px / 2) * -1)) rotateX(0deg) translateZ(calc((200px / 2))) rotate(var(--motion-rotate, 0deg))',
+              'perspective(800px) translateZ(var(--motion-depth-negative)) rotateX(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },

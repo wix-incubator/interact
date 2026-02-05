@@ -6,10 +6,10 @@ import {
   parseLength,
 } from '../../utils';
 import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';
 const DEFAULT_DEPTH = { value: 200, type: 'px' };
-const DIRECTIONS = ['left', 'right'] as const;
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
@@ -28,7 +28,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TiltIn;
   const direction = parseDirection(
     namedEffect.direction,
-    DIRECTIONS,
+    TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
@@ -39,7 +39,11 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const rotationZ = ROTATION_MAP[direction];
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
   const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
-  const translateZ = `(${depthValue} / 2)`;
+
+  const rotateCustom = {
+    '--motion-depth-negative': `calc(${depthValue} / 2 * -1)`,
+    '--motion-depth-positive': `calc(${depthValue} / 2)`,
+  };
 
   const clipCustom = {
     '--motion-rotate-z': `${rotationZ}deg`,
@@ -53,13 +57,13 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.2,
       easing: 'cubicOut',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, {}],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
       name: tiltInRotate,
       easing,
-      custom: {},
+      custom: rotateCustom,
       keyframes: [
         {
           offset: 0,
@@ -68,10 +72,10 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(-90deg) translateZ(calc(${translateZ})) rotate(var(--motion-rotate, 0deg))`,
+          transform: `perspective(800px) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-negative', asWeb)}) rotateX(-90deg) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(0deg) translateZ(calc(${translateZ})) rotate(var(--motion-rotate, 0deg))`,
+          transform: `perspective(800px) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-negative', asWeb)}) rotateX(0deg) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },
