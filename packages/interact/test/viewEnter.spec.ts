@@ -14,14 +14,8 @@ vi.mock('@wix/motion', () => ({
     ready: Promise.resolve(),
   }),
   registerEffects: vi.fn(),
-  SequenceRegistry: {
-    configs: new Map(),
-    sequences: new Map(),
-    registerEffect: vi.fn(),
-    getOrCreateSequence: vi.fn(),
-    clear: vi.fn(),
-    clearSequence: vi.fn(),
-  },
+  getSequence: vi.fn().mockReturnValue(null),
+  clearSequenceCache: vi.fn(),
 }));
 
 vi.mock('fastdom', () => ({

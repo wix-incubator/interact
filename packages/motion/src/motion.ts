@@ -8,8 +8,10 @@ import type {
   ScrubScrollScene,
   ScrubPointerScene,
   PointerMoveAxis,
+  SequenceOptions,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
+import { Sequence } from './Sequence';
 import { getEasing, getJsEasing } from './utils';
 import { getWebAnimation } from './api/webAnimations';
 import { getCSSAnimation } from './api/cssAnimations';
@@ -192,9 +194,71 @@ function getScrubScene(
   } as ScrubPointerScene;
 }
 
-import { SequenceRegistry } from './api/sequenceRegistry';
+// Internal cache for sequences
+const sequenceCache = new Map<string, Sequence>();
 
-// Internal function for creating individual animations (used by registry)
+/**
+ * Configuration for a single effect within a sequence.
+ */
+export type SequenceConfig = {
+  target: HTMLElement;
+  effectOptions: AnimationOptions;
+  index: number;
+};
+
+/**
+ * Options for getSequence function, extending SequenceOptions with reducedMotion.
+ */
+export type GetSequenceOptions = SequenceOptions & {
+  reducedMotion?: boolean;
+};
+
+/**
+ * Creates or retrieves a cached Sequence from the provided configs.
+ *
+ * @param sequenceId - Unique identifier for the sequence
+ * @param configs - Array of effect configurations (target, options, index)
+ * @param options - Sequence options (delay, offset, offsetEasing) and reducedMotion flag
+ * @returns The created Sequence, or null if no valid animations could be created
+ */
+export function getSequence(
+  sequenceId: string,
+  configs: SequenceConfig[],
+  options?: GetSequenceOptions,
+): Sequence | null {
+  // Return cached sequence if it exists
+  if (sequenceCache.has(sequenceId)) {
+    return sequenceCache.get(sequenceId)!;
+  }
+
+  if (!configs.length) return null;
+
+  const groups: AnimationGroup[] = [];
+
+  configs.forEach((cfg) => {
+    const animation = _createAnimation(cfg.target, cfg.effectOptions, undefined, options?.reducedMotion);
+    if (animation && animation instanceof AnimationGroup) {
+      groups.push(animation);
+    }
+  });
+
+  if (!groups.length) return null;
+
+  // Create Sequence with options
+  const sequence = new Sequence(groups, options);
+  sequenceCache.set(sequenceId, sequence);
+  return sequence;
+}
+
+export function clearSequenceCache(sequenceId?: string): void {
+  if (sequenceId) {
+    sequenceCache.delete(sequenceId);
+  } else {
+    sequenceCache.clear();
+  }
+}
+
+// Internal function for creating individual animations
 function _createAnimation(
   target: HTMLElement | string | null,
   animationOptions: AnimationOptions,
@@ -214,26 +278,16 @@ function _createAnimation(
   return getWebAnimation(target, animationOptions, trigger, { reducedMotion });
 }
 
-// Set up registry with animation creation function
-SequenceRegistry.setGetAnimationFn((target, options, trigger, reducedMotion) => {
-  return _createAnimation(
-    target,
-    options as AnimationOptions,
-    trigger,
-    reducedMotion,
-  ) as AnimationGroup | null;
-});
-
 function getAnimation(
   target: HTMLElement | string | null,
   animationOptions: AnimationOptions,
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
   reducedMotion: boolean = false,
 ): AnimationGroup | MouseAnimationInstance | null {
-  // Check if this is a sequence effect
+  // Check if this is a sequence effect - return cached sequence if available
   const sequenceId = (animationOptions as AnimationOptions & { _sequenceId?: string })._sequenceId;
   if (sequenceId) {
-    return SequenceRegistry.getOrCreateSequence(sequenceId, reducedMotion);
+    return sequenceCache.get(sequenceId) ?? null;
   }
 
   return _createAnimation(target, animationOptions, trigger, reducedMotion);
