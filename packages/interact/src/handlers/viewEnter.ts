@@ -139,6 +139,14 @@ function addViewEnterHandler(
   options: ViewEnterParams = {},
   { reducedMotion, selectorCondition }: InteractOptions = {},
 ) {
+  // For sequence effects, only the first effect (index 0) controls playback
+  const sequenceIndex = (effect as any)._sequenceIndex;
+  const isSequenceEffect = sequenceIndex !== undefined;
+  if (isSequenceEffect && sequenceIndex !== 0) {
+    // Non-leader sequence effects don't need handlers - the leader controls the Sequence
+    return;
+  }
+
   const mergedOptions = { ...viewEnterOptions, ...options };
   const type = mergedOptions.type || 'once';
   const animation = getAnimation(

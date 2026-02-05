@@ -30,6 +30,8 @@ vi.mock('@wix/motion', () => {
       });
     }),
     registerEffects: vi.fn(),
+    getSequence: vi.fn().mockReturnValue(null),
+    clearSequenceCache: vi.fn(),
   };
 
   return mock;

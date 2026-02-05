@@ -8,11 +8,14 @@ import type {
   InteractionTrigger,
   CreateTransitionCSSParams,
   IInteractionController,
+  TimeEffect,
 } from '../types';
 import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { getSequence, type SequenceConfig } from '@wix/motion';
+import { effectToAnimationOptions } from '../handlers/utilities';
 
 type InteractionsToApply = Array<
   [
@@ -147,7 +150,7 @@ function _addInteraction(
 
   const interactionsToApply: InteractionsToApply = [];
 
-  interaction.effects.forEach((effect) => {
+  (interaction.effects || []).forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 
     const effectOptions = {
@@ -234,7 +237,63 @@ function _addInteraction(
   });
 
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
-  interactionsToApply.reverse().forEach((interaction) => {
+  interactionsToApply.reverse();
+
+  // First pass: Collect all sequence configs grouped by sequenceId
+  const sequenceConfigsMap = new Map<
+    string,
+    {
+      configs: SequenceConfig[];
+      options: {
+        delay?: number;
+        offset?: number;
+        offsetEasing?: string | ((t: number) => number);
+      };
+    }
+  >();
+
+  interactionsToApply.forEach(([, , effect, , targetElements]) => {
+    const sequenceEffect = effect as Effect & {
+      _sequenceId?: string;
+      _sequenceIndex?: number;
+      _sequenceTotal?: number;
+      _sequenceOptions?: {
+        delay?: number;
+        offset?: number;
+        offsetEasing?: string | ((t: number) => number);
+      };
+    };
+    if (sequenceEffect._sequenceId && 'duration' in effect) {
+      const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
+      targets.forEach((target) => {
+        let entry = sequenceConfigsMap.get(sequenceEffect._sequenceId!);
+        if (!entry) {
+          entry = {
+            configs: [],
+            options: sequenceEffect._sequenceOptions || {},
+          };
+          sequenceConfigsMap.set(sequenceEffect._sequenceId!, entry);
+        }
+        entry.configs.push({
+          target,
+          effectOptions: effectToAnimationOptions(effect as TimeEffect),
+          index: sequenceEffect._sequenceIndex ?? 0,
+        });
+      });
+    }
+  });
+
+  // Create all Sequences before handlers run (populates the internal cache)
+  sequenceConfigsMap.forEach((entry, sequenceId) => {
+    const options = {
+      ...entry.options,
+      reducedMotion: Interact.forceReducedMotion,
+    };
+    getSequence(sequenceId, entry.configs, options);
+  });
+
+  // Second pass: Apply all interactions (handlers will now get fully-created Sequences from cache)
+  interactionsToApply.forEach((interaction) => {
     _applyInteraction(...interaction);
   });
 }

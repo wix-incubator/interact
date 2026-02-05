@@ -8,11 +8,13 @@ import {
   ViewEnterHandlerModule,
   IInteractionController,
   IInteractElement,
+  Sequence,
+  SequenceRef,
 } from '../types';
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects } from '@wix/motion';
+import { registerEffects, clearSequenceCache } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -40,7 +42,7 @@ export class Interact {
   static controllerCache = new Map<string, IInteractionController>();
 
   constructor() {
-    this.dataCache = { effects: {}, conditions: {}, interactions: {} };
+    this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
     this.addedInteractions = {};
     this.mediaQueryListeners = new Map();
     this.listInteractionsCache = {};
@@ -90,7 +92,8 @@ export class Interact {
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.controllers.clear();
-    this.dataCache = { effects: {}, conditions: {}, interactions: {} };
+    this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
+    clearSequenceCache();
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
 
@@ -168,6 +171,7 @@ export class Interact {
     });
     Interact.instances.length = 0;
     Interact.controllerCache.clear();
+    clearSequenceCache();
   }
 
   static setup(options: {
@@ -220,6 +224,74 @@ export class Interact {
 
 let interactionIdCounter = 0;
 
+/**
+ * Resolves a sequence reference or inline sequence to a full Sequence object.
+ */
+function resolveSequence(
+  seqOrRef: Sequence | SequenceRef,
+  configSequences: Record<string, Sequence>,
+): Sequence | null {
+  const sequenceId = seqOrRef.sequenceId;
+  if (!('effects' in seqOrRef) || !seqOrRef.effects) {
+    const referencedSequence = configSequences[sequenceId];
+
+    if (!referencedSequence) {
+      console.warn(`Sequence with id "${sequenceId}" not found in config.sequences`);
+      return null;
+    }
+
+    return {
+      ...referencedSequence,
+      delay: seqOrRef.delay ?? referencedSequence.delay,
+      offset: seqOrRef.offset ?? referencedSequence.offset,
+      offsetEasing: seqOrRef.offsetEasing ?? referencedSequence.offsetEasing,
+    };
+  }
+
+  return seqOrRef;
+}
+
+/**
+ * Expands effects from sequences into the effects array with sequence metadata.
+ * Delay calculation is handled by the Sequence class in @wix/motion.
+ */
+function expandSequenceEffects(
+  interaction: Interaction,
+  configSequences: Record<string, Sequence>,
+): (Effect | EffectRef)[] {
+  const expandedEffects: (Effect | EffectRef)[] = [];
+
+  if (interaction.sequences) {
+    for (const seqOrRef of interaction.sequences) {
+      const sequence = resolveSequence(seqOrRef, configSequences);
+      if (!sequence) continue;
+
+      // Store sequence options to pass to Sequence class
+      const sequenceOptions = {
+        delay: sequence.delay ?? 0,
+        offset: sequence.offset ?? 100,
+        offsetEasing: sequence.offsetEasing,
+      };
+
+      const totalEffects = sequence.effects.length;
+      sequence.effects.forEach((effect, index) => {
+        // Mark effect with sequence metadata (delay calculation deferred to Sequence class)
+        const effectWithMetadata: Effect | EffectRef = {
+          ...effect,
+          _sequenceId: sequence.sequenceId,
+          _sequenceIndex: index,
+          _sequenceTotal: totalEffects,
+          _sequenceOptions: sequenceOptions,
+        } as any;
+
+        expandedEffects.push(effectWithMetadata);
+      });
+    }
+  }
+
+  return expandedEffects;
+}
+
 export function getSelector(
   d: Interaction | Effect,
   {
@@ -249,12 +321,13 @@ export function getSelector(
  */
 function parseConfig(config: InteractConfig, useCutsomElement: boolean = false): InteractCache {
   const conditions = config.conditions || {};
+  const sequences = config.sequences || {};
   const interactions: InteractCache['interactions'] = {};
 
   config.interactions?.forEach((interaction_) => {
     const source = interaction_.key;
     const interactionIdx = ++interactionIdCounter;
-    const { effects: effects_, ...rest } = interaction_;
+    const { effects: effects_, sequences: sequences_, ...rest } = interaction_;
 
     if (!source) {
       console.error(`Interaction ${interactionIdx} is missing a key for source element.`);
@@ -271,9 +344,17 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
     }
 
     /*
+     * Expand sequence effects and combine with direct effects
+     */
+    const sequenceEffects = expandSequenceEffects(
+      { ...interaction_, sequences: sequences_ } as Interaction,
+      sequences,
+    );
+
+    /*
      * Cache interaction trigger by source element
      */
-    const effects = Array.from(effects_);
+    const effects = Array.from([...(effects_ || []), ...sequenceEffects]);
     effects.reverse(); // reverse to ensure the first effect is the one that will be applied first
     const interaction = { ...rest, effects };
 
@@ -318,7 +399,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
       }
 
       const interactionId = `${target}::${effectId}::${interactionIdx}`;
-      effect.interactionId = interactionId;
+      (effect as any).interactionId = interactionId;
       interactions[source].interactionIds.add(interactionId);
 
       if (target === source) {
@@ -350,6 +431,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
 
   return {
     effects: config.effects || {},
+    sequences,
     conditions,
     interactions,
   };
