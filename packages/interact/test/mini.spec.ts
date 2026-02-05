@@ -302,7 +302,7 @@ describe('interact (mini)', () => {
     // Mock Web Animations API
     (window as any).KeyframeEffect = class KeyframeEffect {
       constructor(element: Element | null, keyframes: any[], options: any) {
-        return { element, keyframes, options };
+        return { element, keyframes, options, setKeyframes: vi.fn() };
       }
     };
 
@@ -2026,7 +2026,7 @@ describe('interact (mini)', () => {
         add(targetElement, 'invalid-target');
 
         expect(consoleSpy).toHaveBeenCalledWith(
-          'Interact: No element found for selector ".non-existent-element"',
+          'Interact: No elements found for selector ".non-existent-element"',
         );
       });
 
