@@ -65,7 +65,7 @@ function _getElementsFromData(
 function _queryItemElement(data: Interaction | Effect, elements: HTMLElement[]): HTMLElement[] {
   return elements
     .flatMap((element) => {
-      return data.selector ? Array.from(element.querySelectorAll(data.selector)) as HTMLElement[] : element;
+      return data.selector ? Array.from(element.querySelectorAll(data.selector)) as HTMLElement[] : [element];
     })
     .filter(Boolean) as HTMLElement[];
 }
