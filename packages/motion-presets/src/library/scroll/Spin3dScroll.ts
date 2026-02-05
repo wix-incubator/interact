@@ -12,8 +12,12 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { rotate = -100, speed = 0, range = 'in', perspective = 1000 } =
-    options.namedEffect as Spin3dScroll;
+  const {
+    rotate = -100,
+    speed = 0,
+    range = 'in',
+    perspective = 1000,
+  } = options.namedEffect as Spin3dScroll;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

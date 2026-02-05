@@ -30,7 +30,12 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ExpandIn;
   const { initialScale = 0 } = namedEffect;
 
-  const parsedDirection = parseDirection(namedEffect.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION, true);
+  const parsedDirection = parseDirection(
+    namedEffect.direction,
+    FOUR_DIRECTIONS,
+    DEFAULT_DIRECTION,
+    true,
+  );
   const direction =
     typeof parsedDirection === 'string'
       ? DIRECTION_KEYWORD_TO_ANGLE[parsedDirection]

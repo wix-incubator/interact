@@ -50,11 +50,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
   ) as EffectTwoSides;
-  const spin = parseDirection(
-    namedEffect.spin,
-    SPIN_DIRECTIONS,
-    DEFAULT_SPIN,
-  ) as SpinDirection;
+  const spin = parseDirection(namedEffect.spin, SPIN_DIRECTIONS, DEFAULT_SPIN) as SpinDirection;
   const { scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
