@@ -46,7 +46,7 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
     ▼                    ▼
 ┌─────────────┐      ┌───────────────┐
 | Query       |      │ Use each      │
-| selector all|      │ child element │
+| selector    |      │ child element │
 | within each |      |               |
 | child       |      └───────────────┘
 └─────────────┘
