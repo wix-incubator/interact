@@ -57,15 +57,23 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
               listItemSelector: effectListItemSelector,
               conditions: effectConditions,
             } = effectData;
+
             const sameKey = !effectKey || effectKey === interactionKey;
+            if (!sameKey) return;
+
             const sameSelector =
               (!effectSelector && !interactionSelector) || effectSelector === interactionSelector;
+            if (!sameSelector) return;
+
             const sameListcontainer =
               (!effectListContainer && !interactionListContainer) ||
               effectListContainer === interactionListContainer;
+            if (!sameListcontainer) return;
+
             const sameListItemSelector =
               (!effectListItemSelector && !interactionListItemSelector) ||
               effectListItemSelector === interactionListItemSelector;
+            if (!sameListItemSelector) return;
 
             const configConditions = _config.conditions || {};
             const effectConditionSelector = getSelectorCondition(
@@ -80,23 +88,18 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
               (!effectConditionSelector && !interactionConditionSelector) ||
               effectConditionSelector === interactionConditionSelector;
 
-            if (
-              sameKey &&
-              sameSelector &&
-              sameListcontainer &&
-              sameListItemSelector &&
-              sameConditionSelector
-            ) {
-              const selector = buildSelector(
-                interactionKey,
-                effectData,
-                interactionConditionSelector,
-                useFirstChild,
-              );
+            if (!sameConditionSelector) return;
 
-              if (!processedSelectors.has(selector)) {
-                processedSelectors.add(selector);
-                css.push(`@media (prefers-reduced-motion: no-preference) {
+            const selector = buildSelector(
+              interactionKey,
+              effectData,
+              interactionConditionSelector,
+              useFirstChild,
+            );
+
+            if (!processedSelectors.has(selector)) {
+              processedSelectors.add(selector);
+              css.push(`@media (prefers-reduced-motion: no-preference) {
               ${selector}:not([data-interact-enter="done"]) {
                 visibility: hidden;
                 transform: none;
@@ -105,7 +108,6 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
                 rotate: none;
               }
             }`);
-              }
             }
           });
         }
