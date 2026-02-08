@@ -80,7 +80,13 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
               (!effectConditionSelector && !interactionConditionSelector) ||
               effectConditionSelector === interactionConditionSelector;
 
-            if (sameKey && sameSelector && sameListcontainer && sameListItemSelector && sameConditionSelector) {
+            if (
+              sameKey &&
+              sameSelector &&
+              sameListcontainer &&
+              sameListItemSelector &&
+              sameConditionSelector
+            ) {
               const selector = buildSelector(
                 interactionKey,
                 effectData,
