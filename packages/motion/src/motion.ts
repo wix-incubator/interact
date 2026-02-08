@@ -8,13 +8,50 @@ import type {
   ScrubScrollScene,
   ScrubPointerScene,
   PointerMoveAxis,
+  SequenceOptions,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
+import { Sequence } from './Sequence';
 import { getEasing, getJsEasing } from './utils';
 import { getWebAnimation } from './api/webAnimations';
 import { getCSSAnimation } from './api/cssAnimations';
 import { prepareAnimation } from './api/prepare';
 import { getElement, getNamedEffect } from './api/common';
+
+// Sequence config and cache
+export type SequenceEffectConfig = {
+  target: HTMLElement;
+  effectOptions: Record<string, unknown>;
+  sequenceOptions: SequenceOptions;
+  index: number;
+  total: number;
+};
+
+const sequenceConfigs = new Map<string, SequenceEffectConfig[]>();
+const sequenceCache = new Map<string, Sequence>();
+
+export function registerSequenceEffect(
+  sequenceId: string,
+  config: SequenceEffectConfig,
+): void {
+  if (sequenceCache.has(sequenceId)) {
+    sequenceCache.delete(sequenceId);
+    sequenceConfigs.delete(sequenceId);
+  }
+  const list = sequenceConfigs.get(sequenceId) || [];
+  list.push(config);
+  sequenceConfigs.set(sequenceId, list);
+}
+
+export function clearSequenceCache(sequenceId?: string): void {
+  if (sequenceId) {
+    sequenceConfigs.delete(sequenceId);
+    sequenceCache.delete(sequenceId);
+  } else {
+    sequenceConfigs.clear();
+    sequenceCache.clear();
+  }
+}
 
 function getElementCSSAnimation(
   target: HTMLElement | string | null,
@@ -192,9 +229,7 @@ function getScrubScene(
   } as ScrubPointerScene;
 }
 
-import { SequenceRegistry } from './api/sequenceRegistry';
-
-// Internal function for creating individual animations (used by registry)
+// Internal function for creating individual animations
 function _createAnimation(
   target: HTMLElement | string | null,
   animationOptions: AnimationOptions,
@@ -214,15 +249,31 @@ function _createAnimation(
   return getWebAnimation(target, animationOptions, trigger, { reducedMotion });
 }
 
-// Set up registry with animation creation function
-SequenceRegistry.setGetAnimationFn((target, options, trigger, reducedMotion) => {
-  return _createAnimation(
-    target,
-    options as AnimationOptions,
-    trigger,
-    reducedMotion,
-  ) as AnimationGroup | null;
-});
+function _getOrCreateSequence(sequenceId: string, reducedMotion: boolean): Sequence | null {
+  if (sequenceCache.has(sequenceId)) return sequenceCache.get(sequenceId)!;
+
+  const configs = sequenceConfigs.get(sequenceId);
+  if (!configs?.length || configs.length < configs[0].total) return null;
+
+  configs.sort((a, b) => a.index - b.index);
+
+  const groups = configs
+    .map((cfg) =>
+      _createAnimation(
+        cfg.target,
+        cfg.effectOptions as AnimationOptions,
+        undefined,
+        reducedMotion,
+      ),
+    )
+    .filter((a): a is AnimationGroup => a instanceof AnimationGroup);
+
+  if (!groups.length) return null;
+
+  const sequence = new Sequence(groups, configs[0].sequenceOptions);
+  sequenceCache.set(sequenceId, sequence);
+  return sequence;
+}
 
 function getAnimation(
   target: HTMLElement | string | null,
@@ -230,12 +281,10 @@ function getAnimation(
   trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
   reducedMotion: boolean = false,
 ): AnimationGroup | MouseAnimationInstance | null {
-  // Check if this is a sequence effect
   const sequenceId = (animationOptions as AnimationOptions & { _sequenceId?: string })._sequenceId;
   if (sequenceId) {
-    return SequenceRegistry.getOrCreateSequence(sequenceId, reducedMotion);
+    return _getOrCreateSequence(sequenceId, reducedMotion);
   }
-
   return _createAnimation(target, animationOptions, trigger, reducedMotion);
 }
 

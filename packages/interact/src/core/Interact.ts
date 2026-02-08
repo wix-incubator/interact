@@ -14,7 +14,7 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects, SequenceRegistry } from '@wix/motion';
+import { registerEffects, clearSequenceCache } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -93,7 +93,7 @@ export class Interact {
     this.listInteractionsCache = {};
     this.controllers.clear();
     this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
-    SequenceRegistry.clear();
+    clearSequenceCache();
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
 
@@ -171,7 +171,7 @@ export class Interact {
     });
     Interact.instances.length = 0;
     Interact.controllerCache.clear();
-    SequenceRegistry.clear();
+    clearSequenceCache();
   }
 
   static setup(options: {

@@ -29,14 +29,8 @@ vi.mock('@wix/motion', () => {
       });
     }),
     registerEffects: vi.fn(),
-    SequenceRegistry: {
-      configs: new Map(),
-      sequences: new Map(),
-      registerEffect: vi.fn(),
-      getOrCreateSequence: vi.fn(),
-      clear: vi.fn(),
-      clearSequence: vi.fn(),
-    },
+    registerSequenceEffect: vi.fn(),
+    clearSequenceCache: vi.fn(),
   };
 
   return mock;

@@ -14,7 +14,7 @@ import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../uti
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { SequenceRegistry } from '@wix/motion';
+import { registerSequenceEffect } from '@wix/motion';
 import { effectToAnimationOptions } from '../handlers/utilities';
 
 type InteractionsToApply = Array<
@@ -255,7 +255,7 @@ function _addInteraction(
     if (sequenceEffect._sequenceId && 'duration' in effect) {
       const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
       targets.forEach((target) => {
-        SequenceRegistry.registerEffect(sequenceEffect._sequenceId!, {
+        registerSequenceEffect(sequenceEffect._sequenceId!, {
           target,
           effectOptions: effectToAnimationOptions(effect as TimeEffect),
           sequenceOptions: sequenceEffect._sequenceOptions || {},
