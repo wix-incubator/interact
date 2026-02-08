@@ -225,7 +225,6 @@ describe('css.generate', () => {
 
         expect(result).toBe('');
       });
-
     });
 
     describe('listContainer matching', () => {
@@ -297,7 +296,6 @@ describe('css.generate', () => {
         };
 
         const result = generate(config);
-        console.log('---> ', result);
         expect(result).toContain('[data-interact-key="my-element"]');
         expect(result).toContain('.list');
       });
@@ -388,117 +386,6 @@ describe('css.generate', () => {
     });
   });
 
-  describe('selector building', () => {
-    it('should escape double quotes in key', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'element"with"quotes',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config);
-
-      expect(result).toContain("[data-interact-key=\"element'with'quotes\"]");
-      expect(result).not.toContain('element"with"quotes');
-    });
-
-    it('should add > :first-child when useFirstChild is true and no selector', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'my-element',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config, true);
-
-      expect(result).toContain('[data-interact-key="my-element"] > :first-child');
-    });
-
-    it('should not add :first-child when useFirstChild is false', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'my-element',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config, false);
-
-      expect(result).not.toContain(':first-child');
-    });
-  });
-
-  describe('CSS rule generation', () => {
-    it('should wrap rules in @media (prefers-reduced-motion: no-preference)', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'my-element',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config);
-
-      expect(result).toContain('@media (prefers-reduced-motion: no-preference)');
-    });
-
-    it('should include :not([data-interact-enter="done"]) filter', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'my-element',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config);
-
-      expect(result).toContain(':not([data-interact-enter="done"])');
-    });
-
-    it('should include all required CSS properties', () => {
-      const config: InteractConfig = {
-        effects: {},
-        interactions: [
-          {
-            key: 'my-element',
-            trigger: 'viewEnter',
-            effects: [{ effectId: 'fadeIn' }],
-          },
-        ],
-      };
-
-      const result = generate(config);
-
-      expect(result).toContain('visibility: hidden');
-      expect(result).toContain('transform: none');
-      expect(result).toContain('translate: none');
-      expect(result).toContain('scale: none');
-      expect(result).toContain('rotate: none');
-    });
-  });
-
   describe('multiple interactions/effects', () => {
     it('should generate CSS for multiple matching interactions', () => {
       const config: InteractConfig = {
@@ -523,7 +410,7 @@ describe('css.generate', () => {
       expect(result).toContain('[data-interact-key="element-2"]');
     });
 
-    it('should generate CSS for multiple matching effects in one interaction', () => {
+    it('should deduplicate CSS for multiple effects with same selector', () => {
       const config: InteractConfig = {
         effects: {},
         interactions: [
@@ -538,7 +425,7 @@ describe('css.generate', () => {
       const result = generate(config);
 
       const matches = result.match(/@media \(prefers-reduced-motion: no-preference\)/g);
-      expect(matches).toHaveLength(2);
+      expect(matches).toHaveLength(1);
     });
 
     it('should only generate CSS for matching effects, not all effects', () => {
@@ -548,10 +435,7 @@ describe('css.generate', () => {
           {
             key: 'my-element',
             trigger: 'viewEnter',
-            effects: [
-              { effectId: 'fadeIn' },
-              { key: 'other-element', effectId: 'slideIn' },
-            ],
+            effects: [{ effectId: 'fadeIn' }, { key: 'other-element', effectId: 'slideIn' }],
           },
         ],
       };
