@@ -22,7 +22,7 @@ export class AnimationGroup {
     this.isCSS = animations[0] instanceof CSSAnimation;
   }
 
-  applyGroupDelay(delay: number, endDelay?: number) {
+  addGroupDelay(delay: number, endDelay?: number) {
     for (const animation of this.animations) {
       const timing = animation.effect?.getTiming();
       if (timing) {

@@ -36,7 +36,7 @@ export class Sequence extends AnimationGroup {
         minOffset < 0 ? this._calculatedOffsets[index] - minOffset : this._calculatedOffsets[index];
       const groupDelay = this.sequenceDelay + normalizedOffset;
       const endDelay = totalSpan - normalizedOffset;
-      group.applyGroupDelay(groupDelay, endDelay);
+      group.addGroupDelay(groupDelay, endDelay);
     });
   }
 
