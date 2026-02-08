@@ -87,7 +87,6 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
             const sameConditionSelector =
               (!effectConditionSelector && !interactionConditionSelector) ||
               effectConditionSelector === interactionConditionSelector;
-
             if (!sameConditionSelector) return;
 
             const selector = buildSelector(
