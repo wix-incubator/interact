@@ -1,17 +1,69 @@
-import { InteractConfig } from '../types';
+import { getSelectorCondition, applySelectorCondition } from '../../src/utils';
+import { Effect, InteractConfig, ViewEnterParams } from '../types';
+import { getSelector } from './Interact';
+
+const buildSelector = (
+  key: string,
+  effect: Effect,
+  conditionSelector: string | undefined,
+  useFirstChild: boolean): string => {
+  const escapedKey = key.replace(/"/g, "'");
+  
+  let baseSelector = `[data-interact-key="${escapedKey}"]`;
+  
+  const elementSelector = getSelector(effect, { asCombinator: true, useFirstChild });
+  
+  if (elementSelector) {
+    baseSelector = `${baseSelector} ${elementSelector}`;
+  }
+  
+  if (conditionSelector) {
+    baseSelector = applySelectorCondition(baseSelector, conditionSelector);
+  }
+  
+  return baseSelector;
+}
 
 export function generate(_config: InteractConfig, useFirstChild: boolean = false): string {
-  const css: string[] = [
-    `@media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial="true"]${useFirstChild ? ' > :first-child' : ''}:not([data-interact-enter="done"]) {
-    visibility: hidden;
-    transform: none;
-    translate: none;
-    scale: none;
-    rotate: none;
-  }
-}`,
-  ];
+  const css: string[] = [];
+  
+  _config.interactions.forEach(({key: interactionKey, selector: interactionSelector, listContainer: interactionListContainer, trigger, params, effects, conditions: interactionConditions}) => {
+      const isViewEnter = trigger === 'viewEnter';
+      if (isViewEnter) {
+        const interactionParams = params as ViewEnterParams;
+        const isOnce = !interactionParams?.type || interactionParams.type === 'once';
+        
+
+        if (isOnce) {
+        effects.forEach ((effect) => {
+          const effectData = effect?.effectId ? _config.effects[effect.effectId] || effect : effect;
+          const {key: effectKey, selector: effectSelector, listContainer: effectListContainer, conditions: effectConditions} = effectData;
+          const sameKey = !effectKey || effectKey === interactionKey;
+          const sameSelector = (!effectSelector && !interactionSelector) ||effectSelector === interactionSelector
+          const sameListcontainer = (!effectListContainer && !interactionListContainer) ||effectListContainer === interactionListContainer
+
+          const configConditions = _config.conditions || {};
+          const effectConditionSelector = getSelectorCondition(effectConditions, configConditions)
+          const interactionConditionSelector = getSelectorCondition(interactionConditions, configConditions)
+          const sameConditionSelector = (!effectConditionSelector && !interactionConditionSelector) || effectConditionSelector === interactionConditionSelector
+
+          if (sameKey && sameSelector && sameListcontainer && sameConditionSelector) {
+            const selector = buildSelector(interactionKey, effectData, interactionConditionSelector, useFirstChild);
+
+            css.push(`@media (prefers-reduced-motion: no-preference) {
+              ${selector}:not([data-interact-enter="done"]) {
+                visibility: hidden;
+                transform: none;
+                translate: none;
+                scale: none;
+                rotate: none;
+              }
+            }`);
+          }
+        });
+        }
+      }
+  });
 
   return css.join('\n');
 }
