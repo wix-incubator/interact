@@ -299,6 +299,31 @@ describe('css.generate', () => {
         expect(result).toContain('[data-interact-key="my-element"]');
         expect(result).toContain('.list');
       });
+
+      it('should NOT generate CSS when effect listItemSelector differs from interaction listItemSelector', () => {
+        const config: InteractConfig = {
+          effects: {},
+          interactions: [
+            {
+              key: 'gallery',
+              trigger: 'viewEnter',
+              listContainer: '.gallery-grid',
+              listItemSelector: '.image',
+              effects: [
+                {
+                  listContainer: '.gallery-grid',
+                  listItemSelector: '.caption',
+                  effectId: 'fadeIn',
+                },
+              ],
+            },
+          ],
+        };
+
+        const result = generate(config);
+
+        expect(result).toBe('');
+      });
     });
 
     describe('selectorCondition matching', () => {

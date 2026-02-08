@@ -34,6 +34,7 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
       key: interactionKey,
       selector: interactionSelector,
       listContainer: interactionListContainer,
+      listItemSelector: interactionListItemSelector,
       trigger,
       params,
       effects,
@@ -53,6 +54,7 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
               key: effectKey,
               selector: effectSelector,
               listContainer: effectListContainer,
+              listItemSelector: effectListItemSelector,
               conditions: effectConditions,
             } = effectData;
             const sameKey = !effectKey || effectKey === interactionKey;
@@ -61,6 +63,9 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
             const sameListcontainer =
               (!effectListContainer && !interactionListContainer) ||
               effectListContainer === interactionListContainer;
+            const sameListItemSelector =
+              (!effectListItemSelector && !interactionListItemSelector) ||
+              effectListItemSelector === interactionListItemSelector;
 
             const configConditions = _config.conditions || {};
             const effectConditionSelector = getSelectorCondition(
@@ -75,7 +80,7 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
               (!effectConditionSelector && !interactionConditionSelector) ||
               effectConditionSelector === interactionConditionSelector;
 
-            if (sameKey && sameSelector && sameListcontainer && sameConditionSelector) {
+            if (sameKey && sameSelector && sameListcontainer && sameListItemSelector && sameConditionSelector) {
               const selector = buildSelector(
                 interactionKey,
                 effectData,
