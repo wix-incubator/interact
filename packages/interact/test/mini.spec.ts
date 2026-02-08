@@ -302,7 +302,7 @@ describe('interact (mini)', () => {
     // Mock Web Animations API
     (window as any).KeyframeEffect = class KeyframeEffect {
       constructor(element: Element | null, keyframes: any[], options: any) {
-        return { element, keyframes, options };
+        return { element, keyframes, options, setKeyframes: vi.fn() };
       }
     };
 
