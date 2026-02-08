@@ -7,7 +7,7 @@
 
 /* Critical CSS for viewEnter entrance animations - prevents FOUC */
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial='true'] > :first-child:not([data-interact-enter='done']) {
+  [data-interact-initial='true'] > :first-child:not([data-interact-enter='start']) {
     visibility: hidden;
     transform: none;
     translate: none;
