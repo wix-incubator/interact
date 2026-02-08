@@ -181,7 +181,9 @@ function addViewEnterHandler(
             });
 
             animation.onFinish(() => {
-              target.dataset.interactEnter = 'done';
+              fastdom.mutate(() => {
+                target.dataset.interactEnter = 'done';
+              });
             });
           } else {
             fastdom.mutate(setEnterStart);
