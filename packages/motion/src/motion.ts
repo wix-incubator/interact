@@ -30,10 +30,7 @@ export type SequenceEffectConfig = {
 const sequenceConfigs = new Map<string, SequenceEffectConfig[]>();
 const sequenceCache = new Map<string, Sequence>();
 
-export function registerSequenceEffect(
-  sequenceId: string,
-  config: SequenceEffectConfig,
-): void {
+export function registerSequenceEffect(sequenceId: string, config: SequenceEffectConfig): void {
   if (sequenceCache.has(sequenceId)) {
     sequenceCache.delete(sequenceId);
     sequenceConfigs.delete(sequenceId);
@@ -259,12 +256,7 @@ function _getOrCreateSequence(sequenceId: string, reducedMotion: boolean): Seque
 
   const groups = configs
     .map((cfg) =>
-      _createAnimation(
-        cfg.target,
-        cfg.effectOptions as AnimationOptions,
-        undefined,
-        reducedMotion,
-      ),
+      _createAnimation(cfg.target, cfg.effectOptions as AnimationOptions, undefined, reducedMotion),
     )
     .filter((a): a is AnimationGroup => a instanceof AnimationGroup);
 
