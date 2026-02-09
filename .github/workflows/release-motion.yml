@@ -35,6 +35,14 @@ jobs:
           fetch-depth: 0 # full history for yarn version
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create and checkout release branch
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout -b release
+          git push -u origin release
+
       - name: Setup Node with trusted publishing
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -72,7 +80,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git add .
           git commit -m "chore: bump @wix/motion ${{ github.event.inputs.version_strategy }} version [skip ci]"
-          git push --follow-tags
+          git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -93,3 +101,23 @@ jobs:
           npm publish --tag latest --provenance --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
+
+      # ---- MERGE BACK TO MASTER ----
+
+      - name: Merge release branch to master
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout master
+          git merge release --no-edit
+          git push origin master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release branch
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        run: |
+          git push origin --delete release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
