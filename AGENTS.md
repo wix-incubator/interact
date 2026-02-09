@@ -42,6 +42,9 @@ Declarative web animation library — trigger-based interactions using the Web A
 - Update doc examples when changing implementation — reviewers catch stale docs
 - Commit messages: `<type>(<scope>): <description>` — types: feat, fix, docs, refactor, test, chore — scopes: interact, motion, docs, demo
 - Tests go in `packages/*/test/` as `*.spec.ts` / `*.spec.tsx`
+- `@wix/motion` wraps Web Animations API — use its API (`getWebAnimation`, `getScrubScene`), not native WAAPI
+- In tests, use dynamic `import()` after `vi.resetModules()` — static imports won't pick up mocked modules
+- `@wix/motion-presets` uses `export * as Namespace` — imports are namespace objects, not direct exports
 
 ## Boundaries
 
@@ -58,6 +61,7 @@ Declarative web animation library — trigger-based interactions using the Web A
 - Edit `dist/` directories — they are build output
 - Confuse `packages/interact/rules/` with AI rules — those are library interaction rule specs
 - Import between apps — packages are the shared layer
+- Use native Web Animations API directly — always go through `@wix/motion`
 
 ## Documentation Index
 
