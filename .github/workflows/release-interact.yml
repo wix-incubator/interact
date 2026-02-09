@@ -159,7 +159,10 @@ jobs:
                 ref: 'release',
               });
               
-              checks = checkRuns.check_runs.filter(check => check.name === 'build');
+              // Filter and sort to get the most recent 'build' check
+              checks = checkRuns.check_runs
+                .filter(check => check.name === 'build')
+                .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
               
               if (checks.length > 0 && checks[0].status === 'completed') {
                 console.log(`CI check completed with conclusion: ${checks[0].conclusion}`);
