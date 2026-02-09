@@ -111,7 +111,7 @@ jobs:
               body: 'Automated version bump and release PR',
               maintainer_can_modify: true
             });
-            
+
             // Add bypass-ci label to skip CI checks
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -119,7 +119,7 @@ jobs:
               issue_number: pr.number,
               labels: ['bypass-ci']
             });
-            
+
             return pr.number;
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
