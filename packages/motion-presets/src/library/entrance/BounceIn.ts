@@ -94,13 +94,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: bounceIn,
       easing: 'linear',
       custom,
-      keyframes: [
-        {
-          offset: 0,
-          transform: `perspective(${perspective}px) translate3d(0, 0, 0) rotateZ(var(--motion-rotate, 0deg))`,
-        },
-        ...keyframes,
-      ],
+      keyframes,
     },
   ];
 }

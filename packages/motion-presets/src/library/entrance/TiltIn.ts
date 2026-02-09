@@ -84,7 +84,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom: clipCustom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: `var(--motion-clip-start, ${clipCustom['--motion-clip-start']})`,
           transform: `rotateZ(${toKeyframeValue(clipCustom, '--motion-rotate-z', asWeb)})`,
         },

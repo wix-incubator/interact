@@ -1,5 +1,5 @@
 import type { EffectFourDirections, FoldIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, parseDirection, toKeyframeValue } from '../../utils';
+import { parseDirection, toKeyframeValue } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 export function getNames(_: TimeAnimationOptions) {
@@ -63,7 +63,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `rotate(var(--motion-rotate, 0deg)) translate(var(--motion-origin-x, ${custom['--motion-origin-x']}), var(--motion-origin-y, ${custom['--motion-origin-y']})) perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']})) translate(calc(-1 * var(--motion-origin-x, ${custom['--motion-origin-x']})), calc(-1 * var(--motion-origin-y, ${custom['--motion-origin-y']})))`,
         },
         {

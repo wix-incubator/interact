@@ -1,5 +1,5 @@
 import { ShuttersIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
-import { getShuttersClipPaths, getEasing, toKeyframeValue, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getShuttersClipPaths, getEasing, toKeyframeValue, parseDirection } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
@@ -39,7 +39,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: toKeyframeValue(custom, '--motion-shutters-start', asWeb),
         },
         {

@@ -1,7 +1,6 @@
 import type { TimeAnimationOptions, GlideIn } from '../../types';
 import {
   getCssUnits,
-  INITIAL_FRAME_OFFSET,
   toKeyframeValue,
   parseLength,
   parseDirection,
@@ -65,7 +64,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `translate(${toKeyframeValue(
             custom,
             '--motion-translate-x',

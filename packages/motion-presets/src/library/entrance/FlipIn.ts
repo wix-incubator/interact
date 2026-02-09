@@ -1,4 +1,4 @@
-import { INITIAL_FRAME_OFFSET, parseDirection, toKeyframeValue } from '../../utils';
+import { parseDirection, toKeyframeValue } from '../../utils';
 import type { EffectFourDirections, FlipIn, TimeAnimationOptions } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
@@ -60,7 +60,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
         },
         {

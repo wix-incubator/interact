@@ -1,5 +1,5 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
-import { toKeyframeValue, parseDirection, parseLength, INITIAL_FRAME_OFFSET } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const ROTATION_ANGLE = 80;
@@ -63,7 +63,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',

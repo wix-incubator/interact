@@ -1,4 +1,4 @@
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+import { getClipPolygonParams, parseDirection } from '../../utils';
 import type { TimeAnimationOptions, WinkIn } from '../../types';
 import { AXIS_DIRECTIONS } from '../../consts';
 
@@ -54,7 +54,6 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
         },
         {
@@ -70,7 +69,6 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, ${custom['--motion-scale-x']}), var(--motion-scale-y, ${custom['--motion-scale-y']}))`,
         },
         {

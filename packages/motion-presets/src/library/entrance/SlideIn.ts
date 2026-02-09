@@ -52,12 +52,6 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: 0,
-          transform: `rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
-          clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
-        },
-        {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, ${custom['--motion-translate-x']}), var(--motion-translate-y, ${custom['--motion-translate-y']}))`,
           clipPath: `var(--motion-clip-start, ${custom['--motion-clip-start']})`,
         },

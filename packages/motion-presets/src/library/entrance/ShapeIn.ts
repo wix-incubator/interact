@@ -1,5 +1,5 @@
 import type { Shape, ShapeIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-shapeIn'];
@@ -51,7 +51,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: toKeyframeValue(custom, '--motion-shape-start', asWeb),
         },
         {

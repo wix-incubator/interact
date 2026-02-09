@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions, FloatIn, EffectFourDirections } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'left';
@@ -47,7 +47,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `translate(${toKeyframeValue(
             custom,
             '--motion-translate-x',

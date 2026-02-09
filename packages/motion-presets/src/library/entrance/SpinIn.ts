@@ -1,5 +1,5 @@
 import type { SpinIn, TimeAnimationOptions } from '../../types';
-import { toKeyframeValue, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
 import { SPIN_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
@@ -51,7 +51,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           scale: toKeyframeValue(custom, '--motion-scale', asWeb),
           rotate: toKeyframeValue(custom, '--motion-rotate', asWeb),
         },

@@ -1,5 +1,5 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
-import { toKeyframeValue, parseDirection, parseLength, INITIAL_FRAME_OFFSET } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength } from '../../utils';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DEPTH = { value: 300, type: 'px' };
@@ -53,7 +53,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(${toKeyframeValue(
             custom,
             '--motion-rotate-x',

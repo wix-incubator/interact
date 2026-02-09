@@ -1,5 +1,5 @@
 import type { TimeAnimationOptions } from '../../types';
-import { getCssUnits, toKeyframeValue, parseLength, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getCssUnits, toKeyframeValue, parseLength, parseDirection } from '../../utils';
 import type { ExpandIn } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
@@ -68,7 +68,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `translate(${toKeyframeValue(
             custom,
             '--motion-translate-x',

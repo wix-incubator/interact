@@ -1,5 +1,5 @@
 import type { RevealIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
-import { getClipPolygonParams, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { getClipPolygonParams, parseDirection } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'left';
@@ -37,11 +37,6 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: 0,
-          clipPath: `var(--motion-clip-start, ${start})`,
-        },
-        {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: `var(--motion-clip-start, ${start})`,
         },
         {

@@ -1,5 +1,5 @@
 import type { TurnIn, TimeAnimationOptions, EffectFourCorners } from '../../types';
-import { toKeyframeValue, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
 import { FOUR_CORNERS_DIRECTIONS } from '../../consts';
 const DEFAULT_DIRECTION: EffectFourCorners = 'top-left';
 
@@ -58,7 +58,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `translate(${origin}) rotate(${toKeyframeValue(
             custom,
             '--motion-rotate-z',
