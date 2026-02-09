@@ -99,7 +99,7 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
             if (!processedSelectors.has(selector)) {
               processedSelectors.add(selector);
               css.push(`@media (prefers-reduced-motion: no-preference) {
-              ${selector}:not([data-interact-enter="start"]) {
+              ${selector}:not([data-interact-enter]) {
                 visibility: hidden;
                 transform: none;
                 translate: none;
