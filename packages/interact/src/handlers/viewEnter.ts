@@ -170,17 +170,23 @@ function addViewEnterHandler(
     if (type === 'once') {
       if (isIntersecting) {
         animation.play(() => {
-          const setEnterDone = () => {
-            target.dataset.interactEnter = 'done';
+          const setEnterStart = () => {
+            target.dataset.interactEnter = 'start';
           };
 
           if (animation.isCSS) {
             fastdom.mutate(() => {
               // delay for next tick to prevent content flashing
-              requestAnimationFrame(setEnterDone);
+              requestAnimationFrame(setEnterStart);
+            });
+
+            animation.onFinish(() => {
+              fastdom.mutate(() => {
+                target.dataset.interactEnter = 'done';
+              });
             });
           } else {
-            fastdom.mutate(setEnterDone);
+            fastdom.mutate(setEnterStart);
           }
         });
       }
