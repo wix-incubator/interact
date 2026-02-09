@@ -76,11 +76,7 @@ const GET_OFFSET_BY_DIRECTION_MAP = {
   left: ({ left, width, parentWidth }: HorizontalOffsetByDirectionParams) =>
     (width + left) / (parentWidth + width || 1),
   // (100cqw - left) / (100cqw + width)
-  right: ({
-    left,
-    width,
-    parentWidth,
-  }: HorizontalOffsetByDirectionParams) =>
+  right: ({ left, width, parentWidth }: HorizontalOffsetByDirectionParams) =>
     (parentWidth - left) / (parentWidth + width || 1),
   // (100cqh - top) / (100cqh + height)
   bottom: ({ top, height, parentHeight }: VerticalOffsetByDirectionParams) =>
@@ -170,11 +166,7 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   const namedEffect = options.namedEffect as Cross;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    EIGHT_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, EIGHT_DIRECTIONS, DEFAULT_DIRECTION);
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;

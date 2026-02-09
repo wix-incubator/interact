@@ -1,9 +1,4 @@
-import type {
-  AnimationFillMode,
-  DomApi,
-  FlipScroll,
-  ScrubAnimationOptions,
-} from '../../types';
+import type { AnimationFillMode, DomApi, FlipScroll, ScrubAnimationOptions } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
 import { AXIS_DIRECTIONS } from '../../consts';
 
@@ -24,11 +19,7 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FlipScroll;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    AXIS_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, AXIS_DIRECTIONS, DEFAULT_DIRECTION);
   const { rotate = 240, range = 'continuous', perspective = 800 } = namedEffect;
 
   const rotationAxis = ROTATE_DIRECTION_MAP[direction];

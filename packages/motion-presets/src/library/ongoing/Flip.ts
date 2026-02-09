@@ -1,9 +1,4 @@
-import type {
-  AnimationExtraOptions,
-  DomApi,
-  Flip,
-  TimeAnimationOptions,
-} from '../../types';
+import type { AnimationExtraOptions, DomApi, Flip, TimeAnimationOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
 import { AXIS_DIRECTIONS } from '../../consts';
 
@@ -20,11 +15,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const namedEffect = options.namedEffect as Flip;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    AXIS_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, AXIS_DIRECTIONS, DEFAULT_DIRECTION);
   const { perspective = 800 } = namedEffect;
 
   const duration = options.duration || 1;

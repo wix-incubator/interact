@@ -8,7 +8,10 @@ export function getNames(_: TimeAnimationOptions) {
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 
-const PARAM_MAP: Record<EffectFourDirections, { x: number; y: number; origin: { x: number; y: number } }> = {
+const PARAM_MAP: Record<
+  EffectFourDirections,
+  { x: number; y: number; origin: { x: number; y: number } }
+> = {
   top: { x: -1, y: 0, origin: { x: 0, y: -50 } },
   right: { x: 0, y: -1, origin: { x: 50, y: 0 } },
   bottom: { x: 1, y: 0, origin: { x: 0, y: 50 } },
@@ -28,11 +31,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FoldIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    FOUR_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
   const { initialRotate = 90, perspective = 800 } = namedEffect;
   const [fadeIn, foldIn] = getNames(options);
   const easing = options.easing || 'backOut';

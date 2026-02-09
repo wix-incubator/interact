@@ -3,7 +3,7 @@ import type { BounceIn, TimeAnimationOptions } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DIRECTIONS = [...FOUR_DIRECTIONS, 'center'] as const;
-const DEFAULT_DIRECTION: typeof DIRECTIONS[number] = 'bottom';
+const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'bottom';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
@@ -37,11 +37,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as BounceIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, DIRECTIONS, DEFAULT_DIRECTION);
   const distanceFactor = namedEffect?.distanceFactor || 1;
   const { perspective = 800 } = namedEffect || {};
   const [fadeIn, bounceIn] = getNames(options);

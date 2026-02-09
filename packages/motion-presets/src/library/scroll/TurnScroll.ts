@@ -44,11 +44,7 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TurnScroll;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    TWO_SIDES_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
   const spin = parseDirection(namedEffect?.spin, SPIN_DIRECTIONS, DEFAULT_SPIN);
   const { scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';

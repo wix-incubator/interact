@@ -34,11 +34,7 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as GrowScroll;
   const { range = 'in', scale = range === 'in' ? 0 : 4, speed = 0 } = namedEffect;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    NINE_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, NINE_DIRECTIONS, DEFAULT_DIRECTION);
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

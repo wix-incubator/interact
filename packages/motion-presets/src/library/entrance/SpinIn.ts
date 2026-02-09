@@ -19,11 +19,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SpinIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    SPIN_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, SPIN_DIRECTIONS, DEFAULT_DIRECTION);
   const { spins = 0.5, initialScale = 0 } = namedEffect;
   const [fadeIn, spinIn] = getNames(options);
 

@@ -38,11 +38,7 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as PanScroll;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    TWO_SIDES_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
   const { startFromOffScreen = true, range = 'in' } = namedEffect;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const travel = distance.value * (direction === 'left' ? 1 : -1);

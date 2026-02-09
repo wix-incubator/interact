@@ -1,4 +1,10 @@
-import { getClipPolygonParams, toKeyframeValue, parseDirection, parseLength, INITIAL_FRAME_OFFSET } from '../../utils';
+import {
+  getClipPolygonParams,
+  toKeyframeValue,
+  parseDirection,
+  parseLength,
+  INITIAL_FRAME_OFFSET,
+} from '../../utils';
 import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
@@ -20,11 +26,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TiltIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    TWO_SIDES_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const { perspective = 800 } = namedEffect;
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);

@@ -28,11 +28,7 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TiltScroll;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    TWO_SIDES_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
   const { parallaxFactor = 0, perspective = 400 } = namedEffect;
   const { range = 'in' } = namedEffect;
   const easing = 'linear';

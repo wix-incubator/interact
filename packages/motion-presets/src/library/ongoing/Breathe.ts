@@ -1,9 +1,4 @@
-import type {
-  AnimationExtraOptions,
-  Breathe,
-  DomApi,
-  TimeAnimationOptions,
-} from '../../types';
+import type { AnimationExtraOptions, Breathe, DomApi, TimeAnimationOptions } from '../../types';
 import {
   getCssUnits,
   getEasing,
@@ -39,11 +34,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const namedEffect = options.namedEffect as Breathe;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, DIRECTIONS, DEFAULT_DIRECTION);
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const { perspective = 800 } = namedEffect;
 

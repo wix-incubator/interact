@@ -20,11 +20,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as WinkIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    AXIS_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, AXIS_DIRECTIONS, DEFAULT_DIRECTION);
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
 
   const { scaleX, scaleY } = PARAM_MAP[direction];

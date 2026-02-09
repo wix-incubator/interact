@@ -1,10 +1,5 @@
 import type { TimeAnimationOptions, GlideIn } from '../../types';
-import {
-  getCssUnits,
-  toKeyframeValue,
-  parseLength,
-  parseDirection,
-} from '../../utils';
+import { getCssUnits, toKeyframeValue, parseLength, parseDirection } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION = 180;

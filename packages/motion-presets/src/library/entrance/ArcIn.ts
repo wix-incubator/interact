@@ -23,11 +23,7 @@ export function getNames(_: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    FOUR_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
 
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const { perspective = 800 } = namedEffect;

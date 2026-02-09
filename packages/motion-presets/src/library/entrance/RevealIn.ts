@@ -14,11 +14,7 @@ export function web(options: TimeAnimationOptions) {
 
 export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as RevealIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    FOUR_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
   const [revealIn, fadeIn] = getNames(options);
   const easing = options.easing || 'cubicInOut';
 

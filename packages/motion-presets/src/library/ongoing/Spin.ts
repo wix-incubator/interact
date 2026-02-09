@@ -1,9 +1,4 @@
-import type {
-  AnimationExtraOptions,
-  DomApi,
-  Spin,
-  TimeAnimationOptions,
-} from '../../types';
+import type { AnimationExtraOptions, DomApi, Spin, TimeAnimationOptions } from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
 import { SPIN_DIRECTIONS } from '../../consts';
 
@@ -20,11 +15,7 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const namedEffect = options.namedEffect as Spin;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    SPIN_DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, SPIN_DIRECTIONS, DEFAULT_DIRECTION);
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;

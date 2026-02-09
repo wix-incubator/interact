@@ -4,7 +4,7 @@ import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DEPTH = { value: 300, type: 'px' };
 const DIRECTIONS = [...TWO_SIDES_DIRECTIONS, 'pseudoLeft', 'pseudoRight'] as const;
-const DEFAULT_DIRECTION: typeof DIRECTIONS[number] = 'right';
+const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'right';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn', 'motion-fadeIn'];
@@ -23,11 +23,7 @@ export function web(options: TimeAnimationOptions, _dom?: DomApi) {
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as CurveIn;
-  const direction = parseDirection(
-    namedEffect?.direction,
-    DIRECTIONS,
-    DEFAULT_DIRECTION,
-  );
+  const direction = parseDirection(namedEffect?.direction, DIRECTIONS, DEFAULT_DIRECTION);
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const { perspective = 200 } = namedEffect;
   const [curveIn, fadeIn] = getNames(options);
