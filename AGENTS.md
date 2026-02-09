@@ -42,6 +42,8 @@ Declarative web animation library — trigger-based interactions using the Web A
 - Update doc examples when changing implementation — reviewers catch stale docs
 - Commit messages: `<type>(<scope>): <description>` — types: feat, fix, docs, refactor, test, chore — scopes: interact, motion, docs, demo
 - Tests go in `packages/*/test/` as `*.spec.ts` / `*.spec.tsx`
+- `@wix/interact` has three entry points: main (types/core), `/react` (React components), `/web` (Web Components)
+- Presets require `Interact.registerEffects({ FadeIn })` before use — reference via `namedEffect` in configs; use `keyframeEffect` for inline keyframes
 - `@wix/motion` wraps Web Animations API — use its API (`getWebAnimation`, `getScrubScene`), not native WAAPI
 - In tests, use dynamic `import()` after `vi.resetModules()` — static imports won't pick up mocked modules
 - `@wix/motion-presets` uses `export * as Namespace` — imports are namespace objects, not direct exports
@@ -68,5 +70,6 @@ Declarative web animation library — trigger-based interactions using the Web A
 | Doc | Contents |
 |-----|----------|
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Dev setup, PR process, code standards |
+| [packages/interact/docs/guides/](packages/interact/docs/guides/) | Getting started, config shape, usage patterns |
 | [packages/interact/docs/](packages/interact/docs/) | API reference, guides, examples |
 | [packages/motion/docs/](packages/motion/) | Motion API, animation categories |
