@@ -39,6 +39,22 @@ import type {
   WebAnimationEffectFactory,
 } from '@wix/motion';
 
+export type Translate = { x: string; y: string };
+export type ShapeType = 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window';
+
+export type HorizontalOffsetByDirectionParams = {
+  left: number;
+  width: number;
+  parentWidth: number;
+};
+export type VerticalOffsetByDirectionParams = {
+  top: number;
+  height: number;
+  parentHeight: number;
+};
+export type OffsetByDirectionParams = HorizontalOffsetByDirectionParams &
+  VerticalOffsetByDirectionParams;
+
 export type FadeIn = { type: 'FadeIn' };
 export type ArcIn = {
   type: 'ArcIn';

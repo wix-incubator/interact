@@ -1,5 +1,5 @@
 import { INITIAL_FRAME_OFFSET, parseDirection, toKeyframeValue } from '../../utils';
-import type { FlipIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
+import type { EffectFourDirections, FlipIn, TimeAnimationOptions } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
@@ -8,16 +8,14 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
 }
 
-type Direction = 'top' | 'right' | 'bottom' | 'left';
-
-function getRotateFrom(direction: Direction, rotate: number) {
+function getRotateFrom(direction: EffectFourDirections, rotate: number) {
   return {
     x: ROTATE_MAP[direction].x * rotate,
     y: ROTATE_MAP[direction].y * rotate,
   };
 }
 
-const ROTATE_MAP: Record<Direction, { x: number; y: number }> = {
+const ROTATE_MAP: Record<EffectFourDirections, { x: number; y: number }> = {
   top: { x: 1, y: 0 },
   right: { x: 0, y: 1 },
   bottom: { x: -1, y: 0 },
@@ -31,10 +29,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FlipIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { initialRotate = 90, perspective = 800 } = namedEffect;
   const [fadeIn, flipIn] = getNames(options);
   const easing = options.easing || 'backOut';
@@ -53,7 +51,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

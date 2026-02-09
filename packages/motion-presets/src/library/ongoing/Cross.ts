@@ -1,10 +1,13 @@
 import { EIGHT_DIRECTIONS } from '../../consts';
 import type {
+  AnimationExtraOptions,
   Cross,
   DomApi,
-  TimeAnimationOptions,
-  AnimationExtraOptions,
   EffectEightDirections,
+  HorizontalOffsetByDirectionParams,
+  OffsetByDirectionParams,
+  TimeAnimationOptions,
+  VerticalOffsetByDirectionParams,
 } from '../../types';
 import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
 
@@ -68,26 +71,16 @@ const TRANSLATE_BY_DIRECTION_MAP = {
   },
 };
 
-type HorizontalOffsetByDirectionParams = {
-  left: number;
-  width: number;
-  parentWidth: number;
-};
-
-type VerticalOffsetByDirectionParams = {
-  top: number;
-  height: number;
-  parentHeight: number;
-};
-
-type OffsetByDirectionParams = HorizontalOffsetByDirectionParams & VerticalOffsetByDirectionParams;
-
 const GET_OFFSET_BY_DIRECTION_MAP = {
   // (width + left) / (100cqw + width)
   left: ({ left, width, parentWidth }: HorizontalOffsetByDirectionParams) =>
     (width + left) / (parentWidth + width || 1),
   // (100cqw - left) / (100cqw + width)
-  right: ({ left, width, parentWidth }: HorizontalOffsetByDirectionParams) =>
+  right: ({
+    left,
+    width,
+    parentWidth,
+  }: HorizontalOffsetByDirectionParams) =>
     (parentWidth - left) / (parentWidth + width || 1),
   // (100cqh - top) / (100cqh + height)
   bottom: ({ top, height, parentHeight }: VerticalOffsetByDirectionParams) =>
@@ -178,10 +171,10 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
   const namedEffect = options.namedEffect as Cross;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     EIGHT_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectEightDirections;
+  );
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;

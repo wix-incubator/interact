@@ -1,12 +1,10 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength, INITIAL_FRAME_OFFSET } from '../../utils';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
-type CurveInDirection = 'left' | 'right' | 'pseudoLeft' | 'pseudoRight';
-
-const DEFAULT_DIRECTION: CurveInDirection = 'right';
 const DEFAULT_DEPTH = { value: 300, type: 'px' };
 const DIRECTIONS = [...TWO_SIDES_DIRECTIONS, 'pseudoLeft', 'pseudoRight'] as const;
+const DEFAULT_DIRECTION: typeof DIRECTIONS[number] = 'right';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-curveIn', 'motion-fadeIn'];
@@ -26,10 +24,10 @@ export function web(options: TimeAnimationOptions, _dom?: DomApi) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as CurveIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as CurveInDirection;
+  );
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const { perspective = 200 } = namedEffect;
   const [curveIn, fadeIn] = getNames(options);
@@ -76,7 +74,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
   ];
 }

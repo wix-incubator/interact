@@ -28,10 +28,10 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ShuttersScroll;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { shutters = 12, staggered = true, range = 'in' } = namedEffect;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

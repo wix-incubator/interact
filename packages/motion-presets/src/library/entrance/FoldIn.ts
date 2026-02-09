@@ -1,4 +1,4 @@
-import type { FoldIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
+import type { EffectFourDirections, FoldIn, TimeAnimationOptions } from '../../types';
 import { INITIAL_FRAME_OFFSET, parseDirection, toKeyframeValue } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
@@ -8,16 +8,14 @@ export function getNames(_: TimeAnimationOptions) {
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 
-type Direction = (typeof FOUR_DIRECTIONS)[number];
-
-const PARAM_MAP: Record<Direction, { x: number; y: number; origin: { x: number; y: number } }> = {
+const PARAM_MAP: Record<EffectFourDirections, { x: number; y: number; origin: { x: number; y: number } }> = {
   top: { x: -1, y: 0, origin: { x: 0, y: -50 } },
   right: { x: 0, y: -1, origin: { x: 50, y: 0 } },
   bottom: { x: 1, y: 0, origin: { x: 0, y: 50 } },
   left: { x: 0, y: 1, origin: { x: -50, y: 0 } },
 };
 
-function getRotateFrom(direction: Direction, rotate: number) {
+function getRotateFrom(direction: EffectFourDirections, rotate: number) {
   return {
     x: PARAM_MAP[direction].x * rotate,
     y: PARAM_MAP[direction].y * rotate,
@@ -31,10 +29,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FoldIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { initialRotate = 90, perspective = 800 } = namedEffect;
   const [fadeIn, foldIn] = getNames(options);
   const easing = options.easing || 'backOut';
@@ -56,7 +54,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

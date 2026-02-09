@@ -1,17 +1,15 @@
 import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
-import type { WinkIn, TimeAnimationOptions } from '../../types';
+import type { TimeAnimationOptions, WinkIn } from '../../types';
 import { AXIS_DIRECTIONS } from '../../consts';
 
-type WinkInDirection = 'vertical' | 'horizontal';
-const DEFAULT_DIRECTION: WinkInDirection = 'horizontal';
+const DIRECTIONS = AXIS_DIRECTIONS;
+const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'horizontal';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-winkInClip', 'motion-winkInRotate'];
 }
 
-type Direction = 'vertical' | 'horizontal';
-
-const PARAM_MAP: Record<Direction, { scaleY: number; scaleX: number }> = {
+const PARAM_MAP: Record<(typeof DIRECTIONS)[number], { scaleY: number; scaleX: number }> = {
   vertical: { scaleY: 0, scaleX: 1 },
   horizontal: { scaleY: 1, scaleX: 0 },
 };
@@ -23,10 +21,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as WinkIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     AXIS_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as WinkInDirection;
+  );
   const [fadeIn, winkInClip, winkInRotate] = getNames(options);
 
   const { scaleX, scaleY } = PARAM_MAP[direction];
@@ -47,7 +45,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

@@ -20,7 +20,7 @@ export function web(options: ScrubAnimationOptions, _?: DomApi, config?: Record<
 
 export function style(options: ScrubAnimationOptions, config?: Record<string, any>, asWeb = false) {
   const namedEffect = options.namedEffect as MoveScroll;
-  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const angle = parseDirection(namedEffect?.angle, [], DEFAULT_ANGLE, true);
   const { range = 'in' } = namedEffect;
 
   const easing = 'linear';

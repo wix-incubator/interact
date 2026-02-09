@@ -22,10 +22,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as FloatIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const [floatIn, fadeIn] = getNames(options);
   const fromParams = DIRECTION_MAP[direction];
 
@@ -68,7 +68,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
   ];
 }

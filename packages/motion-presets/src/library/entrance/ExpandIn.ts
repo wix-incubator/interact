@@ -1,11 +1,5 @@
 import type { TimeAnimationOptions } from '../../types';
-import {
-  getCssUnits,
-  INITIAL_FRAME_OFFSET,
-  toKeyframeValue,
-  parseLength,
-  parseDirection,
-} from '../../utils';
+import { getCssUnits, toKeyframeValue, parseLength, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
 import type { ExpandIn } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
@@ -31,7 +25,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const { initialScale = 0 } = namedEffect;
 
   const parsedDirection = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
     true,
@@ -65,7 +59,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

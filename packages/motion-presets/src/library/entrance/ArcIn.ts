@@ -1,5 +1,5 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength, INITIAL_FRAME_OFFSET } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const ROTATION_ANGLE = 80;
@@ -24,10 +24,10 @@ export function getNames(_: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ArcIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
 
   const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
   const { perspective = 800 } = namedEffect;
@@ -54,7 +54,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       easing: 'sineIn',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

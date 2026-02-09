@@ -1,17 +1,16 @@
 import type {
-  TurnScroll,
-  ScrubAnimationOptions,
-  DomApi,
   AnimationFillMode,
+  DomApi,
   EffectTwoSides,
+  ScrubAnimationOptions,
+  TurnScroll,
 } from '../../types';
 import { toKeyframeValue, parseDirection } from '../../utils';
 import { SPIN_DIRECTIONS, TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const ELEMENT_ROTATION = 45;
 const DEFAULT_DIRECTION: EffectTwoSides = 'right';
-type SpinDirection = 'clockwise' | 'counter-clockwise';
-const DEFAULT_SPIN: SpinDirection = 'clockwise';
+const DEFAULT_SPIN: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
 
 const ROTATE_DIRECTION_MAP = {
   clockwise: 1,
@@ -46,11 +45,11 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as TurnScroll;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectTwoSides;
-  const spin = parseDirection(namedEffect.spin, SPIN_DIRECTIONS, DEFAULT_SPIN) as SpinDirection;
+  );
+  const spin = parseDirection(namedEffect?.spin, SPIN_DIRECTIONS, DEFAULT_SPIN);
   const { scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (

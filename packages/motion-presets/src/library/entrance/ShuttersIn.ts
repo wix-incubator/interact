@@ -1,11 +1,5 @@
 import { ShuttersIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
-import {
-  getShuttersClipPaths,
-  getEasing,
-  toKeyframeValue,
-  INITIAL_FRAME_OFFSET,
-  parseDirection,
-} from '../../utils';
+import { getShuttersClipPaths, getEasing, toKeyframeValue, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
@@ -21,10 +15,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ShuttersIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { shutters = 12, staggered = true } = namedEffect;
   const [shuttersIn, fadeIn] = getNames(options);
 
@@ -57,7 +51,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+      keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
     },
   ];
 }

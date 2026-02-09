@@ -43,10 +43,10 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SkewPanScroll;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     TWO_SIDES_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectTwoSides;
+  );
   const { skew = 10, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (

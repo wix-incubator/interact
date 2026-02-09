@@ -1,5 +1,5 @@
-import type { SlideIn, TimeAnimationOptions, EffectFourDirections } from '../../types';
-import { getClipPolygonParams, INITIAL_FRAME_OFFSET, parseDirection } from '../../utils';
+import type { EffectFourDirections, SlideIn, TimeAnimationOptions } from '../../types';
+import { getClipPolygonParams, parseDirection, INITIAL_FRAME_OFFSET } from '../../utils';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'left';
@@ -8,9 +8,7 @@ export function getNames(_: TimeAnimationOptions) {
   return ['motion-slideIn', 'motion-fadeIn'];
 }
 
-type Direction = 'top' | 'right' | 'bottom' | 'left';
-
-const PARAM_MAP: Record<Direction, { dx: number; dy: number; clip: Direction }> = {
+const PARAM_MAP: Record<EffectFourDirections, { dx: number; dy: number; clip: EffectFourDirections }> = {
   top: { dx: 0, dy: -1, clip: 'bottom' },
   right: { dx: 1, dy: 0, clip: 'left' },
   bottom: { dx: 0, dy: 1, clip: 'top' },
@@ -24,10 +22,10 @@ export function web(options: TimeAnimationOptions) {
 export function style(options: TimeAnimationOptions) {
   const namedEffect = options.namedEffect as SlideIn;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { initialTranslate = 1 } = namedEffect;
   const [slideIn, fadeIn] = getNames(options);
 
@@ -74,7 +72,7 @@ export function style(options: TimeAnimationOptions) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
   ];
 }

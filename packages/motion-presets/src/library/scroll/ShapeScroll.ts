@@ -1,7 +1,16 @@
-import type { AnimationFillMode, ScrubAnimationOptions, ShapeScroll, DomApi } from '../../types';
+import type {
+  AnimationFillMode,
+  DomApi,
+  ScrubAnimationOptions,
+  ShapeScroll,
+  ShapeType,
+} from '../../types';
 import { toKeyframeValue, getEasing } from '../../utils';
 
-const RESPONSIVE_SHAPES_MAP = {
+const RESPONSIVE_SHAPES_MAP: Record<
+  ShapeType,
+  (clipFactor: number) => [string, string] | string[]
+> = {
   diamond: (clipFactor: number) => {
     const clip = clipFactor / 2;
     const clipNeg = 100 - clip;
@@ -21,8 +30,6 @@ const RESPONSIVE_SHAPES_MAP = {
     return [`ellipse(${clip}% ${clip}%)`, `ellipse(75% 75%)`];
   },
 };
-
-type ShapeType = keyof typeof RESPONSIVE_SHAPES_MAP;
 
 export function getNames(options: ScrubAnimationOptions) {
   const { range = 'in' } = options.namedEffect as ShapeScroll;
@@ -44,7 +51,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const [start, end] = RESPONSIVE_SHAPES_MAP[shape as ShapeType](intensity * 100);
+  const [start, end] = RESPONSIVE_SHAPES_MAP[shape](intensity * 100);
 
   const [shapeScroll] = getNames(options);
 

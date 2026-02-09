@@ -1,16 +1,9 @@
-import {
-  getEasingFamily,
-  getEasing,
-  toKeyframeValue,
-  INITIAL_FRAME_OFFSET,
-  parseDirection,
-} from '../../utils';
+import { getEasingFamily, getEasing, toKeyframeValue, parseDirection } from '../../utils';
 import type { BounceIn, TimeAnimationOptions } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
-type BounceInDirection = 'top' | 'right' | 'bottom' | 'left' | 'center';
-const DEFAULT_DIRECTION: BounceInDirection = 'bottom';
 const DIRECTIONS = [...FOUR_DIRECTIONS, 'center'] as const;
+const DEFAULT_DIRECTION: typeof DIRECTIONS[number] = 'bottom';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-bounceIn'];
@@ -18,7 +11,7 @@ export function getNames(_: TimeAnimationOptions) {
 
 const { in: easeIn, out: easeOut } = getEasingFamily('sineIn');
 const BOUNCE_KEYFRAMES = [
-  { offset: INITIAL_FRAME_OFFSET * 100, translate: 100 },
+  { offset: 0, translate: 100 },
   { offset: 30, translate: 0 },
   { offset: 42, translate: 35 },
   { offset: 54, translate: 0 },
@@ -48,7 +41,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     namedEffect?.direction,
     DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as BounceInDirection;
+  );
   const distanceFactor = namedEffect?.distanceFactor || 1;
   const { perspective = 800 } = namedEffect || {};
   const [fadeIn, bounceIn] = getNames(options);
@@ -94,7 +87,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: (options.duration! * BOUNCE_KEYFRAMES[3].offset) / 100,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }],
+      keyframes: [{ opacity: 0 }, {}],
     },
     {
       ...options,

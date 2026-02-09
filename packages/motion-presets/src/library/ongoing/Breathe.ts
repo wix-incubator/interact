@@ -1,4 +1,9 @@
-import type { TimeAnimationOptions, Breathe, DomApi, AnimationExtraOptions } from '../../types';
+import type {
+  AnimationExtraOptions,
+  Breathe,
+  DomApi,
+  TimeAnimationOptions,
+} from '../../types';
 import {
   getCssUnits,
   getEasing,
@@ -10,10 +15,9 @@ import {
 } from '../../utils';
 import { AXIS_DIRECTIONS } from '../../consts';
 
-type BreatheDirection = 'vertical' | 'horizontal' | 'center';
-const DEFAULT_DIRECTION: BreatheDirection = 'vertical';
 const DEFAULT_DISTANCE = { value: 25, type: 'px' };
 const DIRECTIONS = [...AXIS_DIRECTIONS, 'center'] as const;
+const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'vertical';
 
 const DIRECTION_MAP = {
   vertical: { x: 0, y: 1, z: 0 },
@@ -36,10 +40,10 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const namedEffect = options.namedEffect as Breathe;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as BreatheDirection;
+  );
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const { perspective = 800 } = namedEffect;
 

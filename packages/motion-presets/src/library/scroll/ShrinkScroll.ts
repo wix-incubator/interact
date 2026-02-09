@@ -35,10 +35,10 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as ShrinkScroll;
   const { range = 'in', scale = range === 'in' ? 1.2 : 0.8, speed = 0 } = namedEffect;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     NINE_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectNineDirections;
+  );
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill

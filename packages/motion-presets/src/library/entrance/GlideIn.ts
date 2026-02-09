@@ -30,7 +30,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as GlideIn;
 
   const parsedDirection = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
     ALLOW_ANGLES,
@@ -85,7 +85,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+      keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
     },
   ];
 }

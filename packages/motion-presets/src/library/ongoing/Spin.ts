@@ -1,9 +1,13 @@
-import type { Spin, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
+import type {
+  AnimationExtraOptions,
+  DomApi,
+  Spin,
+  TimeAnimationOptions,
+} from '../../types';
 import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
 import { SPIN_DIRECTIONS } from '../../consts';
 
-type SpinDirection = 'clockwise' | 'counter-clockwise';
-const DEFAULT_DIRECTION: SpinDirection = 'clockwise';
+const DEFAULT_DIRECTION: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
 
 const DIRECTION_MAP = {
   clockwise: -1,
@@ -17,10 +21,10 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
   const namedEffect = options.namedEffect as Spin;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     SPIN_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as SpinDirection;
+  );
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;

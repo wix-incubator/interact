@@ -1,9 +1,10 @@
 import type {
+  AnimationFillMode,
+  DomApi,
+  EffectFourDirections,
   ScrubAnimationOptions,
   SlideScroll,
-  EffectFourDirections,
-  DomApi,
-  AnimationFillMode,
+  Translate,
 } from '../../types';
 import {
   getOppositeDirection,
@@ -16,8 +17,6 @@ import {
 } from '../../utils';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'bottom';
-
-type Translate = { x: string; y: string };
 
 const DIRECTION_TRANSLATION_MAP: Record<EffectFourDirections, Translate> = {
   bottom: { x: '0', y: '100%' },
@@ -38,10 +37,10 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 export function style(options: ScrubAnimationOptions, asWeb = false) {
   const namedEffect = options.namedEffect as SlideScroll;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (

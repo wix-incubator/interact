@@ -28,10 +28,10 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 export function style(options: ScrubAnimationOptions) {
   const namedEffect = options.namedEffect as RevealScroll;
   const direction = parseDirection(
-    namedEffect.direction,
+    namedEffect?.direction,
     FOUR_DIRECTIONS,
     DEFAULT_DIRECTION,
-  ) as EffectFourDirections;
+  );
   const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
