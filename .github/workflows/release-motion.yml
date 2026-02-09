@@ -145,7 +145,7 @@ jobs:
             // Wait for CI checks to complete
             let checks = [];
             let attempts = 0;
-            const maxAttempts = 30; // 5 minutes max
+            const maxAttempts = 30; // approximately 5 minutes (30 * 10 seconds)
             
             while (attempts < maxAttempts) {
               await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
@@ -160,11 +160,20 @@ jobs:
               
               if (checks.length > 0 && checks[0].status === 'completed') {
                 console.log(`CI check completed with conclusion: ${checks[0].conclusion}`);
+                
+                if (checks[0].conclusion !== 'success') {
+                  throw new Error(`CI check failed with conclusion: ${checks[0].conclusion}`);
+                }
+                
                 break;
               }
               
               attempts++;
               console.log(`Waiting for CI checks... (attempt ${attempts}/${maxAttempts})`);
+            }
+            
+            if (attempts >= maxAttempts) {
+              throw new Error('Timeout waiting for CI checks to complete');
             }
 
       - name: Merge Pull Request
