@@ -88,7 +88,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/motion to ${{ steps.get_version.outputs.version }} [skip ci]"
+          git commit -m "chore: bump @wix/motion to ${{ steps.get_version.outputs.version }}"
           git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -105,19 +105,11 @@ jobs:
             const { data: pr } = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `chore: bump @wix/motion to ${{ steps.get_version.outputs.version }} [skip ci]`,
+              title: `chore: bump @wix/motion to ${{ steps.get_version.outputs.version }}`,
               head: 'release',
               base: 'master',
               body: 'Automated version bump and release PR',
               maintainer_can_modify: true
-            });
-
-            // Add bypass-ci label to skip CI checks
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              labels: ['bypass-ci']
             });
 
             return pr.number;
@@ -141,6 +133,39 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
 
       # ---- MERGE PR BACK TO MASTER ----
+
+      - name: Wait for CI to complete
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ steps.create_pr.outputs.result }};
+            
+            // Wait for CI checks to complete
+            let checks = [];
+            let attempts = 0;
+            const maxAttempts = 30; // 5 minutes max
+            
+            while (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 10000)); // Wait 10 seconds
+              
+              const { data: checkRuns } = await github.rest.checks.listForRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'release',
+              });
+              
+              checks = checkRuns.check_runs.filter(check => check.name === 'build');
+              
+              if (checks.length > 0 && checks[0].status === 'completed') {
+                console.log(`CI check completed with conclusion: ${checks[0].conclusion}`);
+                break;
+              }
+              
+              attempts++;
+              console.log(`Waiting for CI checks... (attempt ${attempts}/${maxAttempts})`);
+            }
 
       - name: Merge Pull Request
         if: ${{ github.event.inputs.dry_run == 'false' }}
