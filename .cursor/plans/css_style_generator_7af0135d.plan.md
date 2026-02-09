@@ -1,6 +1,6 @@
 ---
 name: CSS Style Generator
-overview: "Modify the `generate` function in `css.ts` to dynamically create CSS rules based on the interaction config, targeting only elements from `viewEnter` triggers with `type: once` where target equals source."
+overview: 'Modify the `generate` function in `css.ts` to dynamically create CSS rules based on the interaction config, targeting only elements from `viewEnter` triggers with `type: once` where target equals source.'
 todos:
   - id: imports
     content: Add necessary imports (getSelector, getSelectorCondition, ViewEnterParams type)
@@ -154,4 +154,3 @@ Combine:
 2. Child selector from `getSelector(effectData, { asCombinator: true, useFirstChild })`
 3. Selector condition if present
 4. State filter: `:not([data-interact-enter])`
-
