@@ -1,4 +1,4 @@
-name: Motion - Bump Version and Publish
+name: Motion Presets - Bump Version and Publish
 
 on:
   workflow_dispatch:
@@ -52,17 +52,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: NPQ_PKG_MGR=yarn npx npq install
 
-      - name: Build motion package
-        run: yarn workspace @wix/motion build
+      - name: Build motion-presets package
+        run: |
+          yarn workspace @wix/motion build
+          yarn workspace @wix/motion-presets build
 
-      - name: Test motion package
-        run: yarn workspace @wix/motion test
+      - name: Test motion-presets package
+        run: yarn workspace @wix/motion-presets test
 
       # ---- BUMP VERSION ----
 
       - name: Bump version
         if: ${{ github.event.inputs.dry_run == 'false' }}
-        working-directory: packages/motion
+        working-directory: packages/motion-presets
         run: yarn version ${{ github.event.inputs.version_strategy }}
 
       - name: Commit and push version bump
@@ -71,25 +73,25 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/motion ${{ github.event.inputs.version_strategy }} version [skip ci]"
+          git commit -m "chore: bump @wix/motion-presets ${{ github.event.inputs.version_strategy }} version [skip ci]"
           git push --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
-      - name: npm publish @wix/motion RC (trusted)
+      - name: npm publish @wix/motion-presets RC (trusted)
         if: ${{ github.event.inputs.dry_run == 'false' && (github.event.inputs.version_strategy == 'prerelease' || github.event.inputs.version_strategy == 'premajor' || github.event.inputs.version_strategy == 'preminor' || github.event.inputs.version_strategy == 'prepatch') }}
         run: |
-          cd packages/motion
+          cd packages/motion-presets
           npm publish --tag next --provenance --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_PRESETS_NPM_TOKEN }}
 
-      - name: npm publish @wix/motion Stable (trusted)
+      - name: npm publish @wix/motion-presets Stable (trusted)
         if: ${{ github.event.inputs.dry_run == 'false' && (github.event.inputs.version_strategy == 'major' || github.event.inputs.version_strategy == 'minor' || github.event.inputs.version_strategy == 'patch') }}
         run: |
-          cd packages/motion
+          cd packages/motion-presets
           npm publish --tag latest --provenance --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_PRESETS_NPM_TOKEN }}

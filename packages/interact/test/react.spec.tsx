@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Interaction, createInteractRef, Interact } from '../src/react';
 import * as domApi from '../src/dom/api';
 import type { InteractConfig } from '../src/types';
@@ -370,7 +370,9 @@ describe('interact (react)', () => {
 
       function TestComponent() {
         const ref = useRef<HTMLDivElement>(null);
-        refValue.current = ref.current;
+        useEffect(() => {
+          refValue.current = ref.current;
+        });
 
         return (
           <Interaction tagName="div" interactKey="logo-click" ref={ref}>
