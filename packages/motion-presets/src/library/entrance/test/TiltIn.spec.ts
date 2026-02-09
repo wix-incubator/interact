@@ -90,7 +90,7 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-tiltInRotate',
@@ -160,7 +160,7 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-tiltInRotate',

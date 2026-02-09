@@ -16,7 +16,6 @@ describe('FloatIn', () => {
         easing: 'sineInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform: 'translate(-120px, 0px) rotate(var(--motion-rotate, 0deg))',
           },
           {
@@ -26,7 +25,7 @@ describe('FloatIn', () => {
       },
       {
         easing: 'sineInOut',
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -45,7 +44,6 @@ describe('FloatIn', () => {
       {
         keyframes: [
           {
-            offset: 0.000001,
             transform: 'translate(0px, -120px) rotate(var(--motion-rotate, 0deg))',
           },
           {
@@ -54,7 +52,7 @@ describe('FloatIn', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -79,7 +77,6 @@ describe('FloatIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -92,7 +89,7 @@ describe('FloatIn', () => {
         easing: 'sineInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -116,7 +113,6 @@ describe('FloatIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -128,7 +124,7 @@ describe('FloatIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 

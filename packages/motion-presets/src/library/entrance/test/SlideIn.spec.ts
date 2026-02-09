@@ -22,13 +22,6 @@ describe('SlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            transform:
-              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
@@ -43,7 +36,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -69,13 +62,6 @@ describe('SlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            transform:
-              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
@@ -90,7 +76,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -116,13 +102,6 @@ describe('SlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            transform:
-              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, -100%), var(--motion-translate-y, 0%))',
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
@@ -137,7 +116,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -163,13 +142,6 @@ describe('SlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            transform:
-              'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'rotate(var(--motion-rotate, 0deg)) translate(var(--motion-translate-x, 100%), var(--motion-translate-y, 0%))',
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
@@ -184,7 +156,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 

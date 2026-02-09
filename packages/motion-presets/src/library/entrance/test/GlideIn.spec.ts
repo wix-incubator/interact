@@ -16,7 +16,6 @@ describe('GlideIn', () => {
         easing: 'quintInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform: 'translate(-100%, 0%) rotate(var(--motion-rotate, 0deg))',
           },
           {
@@ -25,7 +24,7 @@ describe('GlideIn', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -46,7 +45,6 @@ describe('GlideIn', () => {
       {
         keyframes: [
           {
-            offset: 0.000001,
             transform: 'translate(141px, -141px) rotate(var(--motion-rotate, 0deg))',
           },
           {
@@ -55,7 +53,7 @@ describe('GlideIn', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -80,7 +78,6 @@ describe('GlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -92,7 +89,7 @@ describe('GlideIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -118,7 +115,6 @@ describe('GlideIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'translate(var(--motion-translate-x), var(--motion-translate-y)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -130,7 +126,7 @@ describe('GlideIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 

@@ -22,7 +22,6 @@ describe('ShuttersIn.web()', () => {
         duration: 1000,
         keyframes: [
           {
-            offset: 0.000001,
             clipPath:
               'polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%, 8% 0%, 8% 100%, 8% 100%, 8% 0%, 16% 0%, 16% 100%, 16% 100%, 16% 0%, 25% 0%, 25% 100%, 25% 100%, 25% 0%, 33% 0%, 33% 100%, 33% 100%, 33% 0%, 41% 0%, 41% 100%, 41% 100%, 41% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 0%, 58% 0%, 58% 100%, 58% 100%, 58% 0%, 66% 0%, 66% 100%, 66% 100%, 66% 0%, 75% 0%, 75% 100%, 75% 100%, 75% 0%, 83% 0%, 83% 100%, 83% 100%, 83% 0%, 91% 0%, 91% 100%, 91% 100%, 91% 0%)',
           },
@@ -33,7 +32,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -52,7 +51,6 @@ describe('ShuttersIn.web()', () => {
         easing: getEasing('sineIn'),
         keyframes: [
           {
-            offset: 0.000001,
             clipPath:
               'polygon(100% 0%, 100% 100%, 100% 100%, 100% 0%, 91% 0%, 91% 100%, 91% 100%, 91% 0%, 83% 0%, 83% 100%, 83% 100%, 83% 0%, 75% 0%, 75% 100%, 75% 100%, 75% 0%, 66% 0%, 66% 100%, 66% 100%, 66% 0%, 58% 0%, 58% 100%, 58% 100%, 58% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 0%, 41% 0%, 41% 100%, 41% 100%, 41% 0%, 33% 0%, 33% 100%, 33% 100%, 33% 0%, 25% 0%, 25% 100%, 25% 100%, 25% 0%, 16% 0%, 16% 100%, 16% 100%, 16% 0%, 8% 0%, 8% 100%, 8% 100%, 8% 0%)',
           },
@@ -63,7 +61,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -86,7 +84,6 @@ describe('ShuttersIn.web()', () => {
         easing: getEasing('sineIn'),
         keyframes: [
           {
-            offset: 0.000001,
             clipPath:
               'polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%, 16% 0%, 16% 100%, 16% 100%, 16% 0%, 33% 0%, 33% 100%, 33% 100%, 33% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 0%, 66% 0%, 66% 100%, 66% 100%, 66% 0%, 83% 0%, 83% 100%, 83% 100%, 83% 0%)',
           },
@@ -97,7 +94,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -120,7 +117,6 @@ describe('ShuttersIn.web()', () => {
         easing: getEasing('sineIn'),
         keyframes: [
           {
-            offset: 0.000001,
             clipPath:
               'polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%, 8% 0%, 8% 100%, 8% 100%, 8% 0%, 16% 0%, 16% 100%, 16% 100%, 16% 0%, 25% 0%, 25% 100%, 25% 100%, 25% 0%, 33% 0%, 33% 100%, 33% 100%, 33% 0%, 41% 0%, 41% 100%, 41% 100%, 41% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 0%, 58% 0%, 58% 100%, 58% 100%, 58% 0%, 66% 0%, 66% 100%, 66% 100%, 66% 0%, 75% 0%, 75% 100%, 75% 100%, 75% 0%, 83% 0%, 83% 100%, 83% 100%, 83% 0%, 91% 0%, 91% 100%, 91% 100%, 91% 0%)',
           },
@@ -131,7 +127,7 @@ describe('ShuttersIn.web()', () => {
         ],
       },
       {
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -152,7 +148,6 @@ describe('ShuttersIn.web()', () => {
         duration: 1000,
         keyframes: [
           {
-            offset: 0.000001,
             clipPath:
               'polygon(0% 0%, 0% 100%, 0% 100%, 0% 0%, 8% 0%, 8% 100%, 8% 100%, 8% 0%, 16% 0%, 16% 100%, 16% 100%, 16% 0%, 25% 0%, 25% 100%, 25% 100%, 25% 0%, 33% 0%, 33% 100%, 33% 100%, 33% 0%, 41% 0%, 41% 100%, 41% 100%, 41% 0%, 50% 0%, 50% 100%, 50% 100%, 50% 0%, 58% 0%, 58% 100%, 58% 100%, 58% 0%, 66% 0%, 66% 100%, 66% 100%, 66% 0%, 75% 0%, 75% 100%, 75% 100%, 75% 0%, 83% 0%, 83% 100%, 83% 100%, 83% 0%, 91% 0%, 91% 100%, 91% 100%, 91% 0%)',
           },
@@ -164,7 +159,7 @@ describe('ShuttersIn.web()', () => {
       },
       {
         easing: 'easeInOutQuad',
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -193,7 +188,6 @@ describe('ShuttersIn.style()', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             clipPath: 'var(--motion-shutters-start)',
           },
           {
@@ -204,7 +198,7 @@ describe('ShuttersIn.style()', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -230,7 +224,6 @@ describe('ShuttersIn.style()', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             clipPath: 'var(--motion-shutters-start)',
           },
           {
@@ -241,7 +234,7 @@ describe('ShuttersIn.style()', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -271,7 +264,6 @@ describe('ShuttersIn.style()', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             clipPath: 'var(--motion-shutters-start)',
           },
           {
@@ -282,7 +274,7 @@ describe('ShuttersIn.style()', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -312,7 +304,6 @@ describe('ShuttersIn.style()', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             clipPath: 'var(--motion-shutters-start)',
           },
           {
@@ -323,7 +314,7 @@ describe('ShuttersIn.style()', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0, easing: 'step-end' }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 
@@ -351,7 +342,6 @@ describe('ShuttersIn.style()', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             clipPath: 'var(--motion-shutters-start)',
           },
           {
@@ -363,7 +353,7 @@ describe('ShuttersIn.style()', () => {
         easing: 'easeInOutQuad',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0, easing: 'step-end' }, {}],
       },
     ];
 

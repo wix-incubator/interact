@@ -19,7 +19,6 @@ describe('CurveIn', () => {
           easing: 'quadOut',
           keyframes: [
             {
-              offset: 0.000001,
               transform:
                 'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(180deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
@@ -31,7 +30,7 @@ describe('CurveIn', () => {
         },
         {
           easing: 'quadOut',
-          keyframes: [{ offset: 0, opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }, {}],
         },
       ];
 
@@ -53,7 +52,6 @@ describe('CurveIn', () => {
           easing: 'quadOut',
           keyframes: [
             {
-              offset: 0.000001,
               transform:
                 'perspective(200px) translateZ(calc(300px * -3)) rotateX(0deg) rotateY(-180deg) translateZ(calc(300px * 3)) rotateZ(var(--motion-rotate, 0deg))',
             },
@@ -65,7 +63,7 @@ describe('CurveIn', () => {
         },
         {
           easing: 'quadOut',
-          keyframes: [{ offset: 0, opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }, {}],
         },
       ];
 
@@ -95,7 +93,6 @@ describe('CurveIn', () => {
           },
           keyframes: [
             {
-              offset: 0.000001,
               transform:
                 'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(var(--motion-depth-positive)) rotateZ(var(--motion-rotate, 0deg))',
             },
@@ -109,7 +106,7 @@ describe('CurveIn', () => {
           name: 'motion-fadeIn',
           easing: 'quadOut',
           custom: {},
-          keyframes: [{ offset: 0, opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }, {}],
         },
       ];
 
@@ -137,7 +134,6 @@ describe('CurveIn', () => {
           },
           keyframes: [
             {
-              offset: 0.000001,
               transform:
                 'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(var(--motion-rotate-x)) rotateY(var(--motion-rotate-y)) translateZ(var(--motion-depth-positive)) rotateZ(var(--motion-rotate, 0deg))',
             },
@@ -151,7 +147,7 @@ describe('CurveIn', () => {
           name: 'motion-fadeIn',
           easing: 'quadOut',
           custom: {},
-          keyframes: [{ offset: 0, opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }, {}],
         },
       ];
 

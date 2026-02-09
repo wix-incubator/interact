@@ -20,7 +20,6 @@ describe('ArcIn', () => {
         easing: 'quintInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(0 * -1 * 80deg)) rotateY(calc(1 * -1 * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -52,7 +51,6 @@ describe('ArcIn', () => {
         easing: 'quintInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(1 * 1 * 80deg)) rotateY(calc(0 * 1 * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -84,7 +82,6 @@ describe('ArcIn', () => {
         easing: 'quintInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(1 * -1 * 80deg)) rotateY(calc(0 * -1 * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -113,7 +110,6 @@ describe('ArcIn', () => {
         easing: 'quintInOut',
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(800px) translateZ(calc(-1 * 200px / 2)) rotateX(calc(0 * 1 * 80deg)) rotateY(calc(1 * 1 * 80deg)) translateZ(calc(200px / 2)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -145,7 +141,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -160,7 +156,6 @@ describe('ArcIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -192,7 +187,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -207,7 +202,6 @@ describe('ArcIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -236,7 +230,7 @@ describe('ArcIn', () => {
         duration: expect.any(Number),
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -251,7 +245,6 @@ describe('ArcIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -283,7 +276,7 @@ describe('ArcIn', () => {
         duration: duration * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }],
+        keyframes: [{ opacity: 0 }, {}],
       },
       {
         name: 'motion-arcIn',
@@ -298,7 +291,6 @@ describe('ArcIn', () => {
         },
         keyframes: [
           {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(calc(var(--motion-arc-x) * var(--motion-arc-sign) * 80deg)) rotateY(calc(var(--motion-arc-y) * var(--motion-arc-sign) * 80deg)) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },

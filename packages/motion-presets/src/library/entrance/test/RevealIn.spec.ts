@@ -17,11 +17,6 @@ describe('RevealIn', () => {
         name: 'motion-revealIn',
         keyframes: [
           {
-            offset: 0,
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
-          },
-          {
-            offset: 0.000001,
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
@@ -32,7 +27,7 @@ describe('RevealIn', () => {
       {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -52,11 +47,6 @@ describe('RevealIn', () => {
         name: 'motion-revealIn',
         keyframes: [
           {
-            offset: 0,
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
-          },
-          {
-            offset: 0.000001,
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
@@ -66,7 +56,7 @@ describe('RevealIn', () => {
       },
       {
         name: 'motion-fadeIn',
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -90,11 +80,6 @@ describe('RevealIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
-          },
-          {
-            offset: 0.000001,
             clipPath: 'var(--motion-clip-start, polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%))',
           },
           {
@@ -106,7 +91,7 @@ describe('RevealIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
@@ -129,11 +114,6 @@ describe('RevealIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
-          },
-          {
-            offset: 0.000001,
             clipPath: 'var(--motion-clip-start, polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%))',
           },
           {
@@ -144,7 +124,7 @@ describe('RevealIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ offset: 0, opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }, {}],
       },
     ];
 
