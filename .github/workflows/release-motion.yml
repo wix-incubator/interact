@@ -23,6 +23,7 @@ on:
 permissions:
   id-token: write # REQUIRED for npm Trusted Publishing
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -73,16 +74,53 @@ jobs:
         working-directory: packages/motion
         run: yarn version ${{ github.event.inputs.version_strategy }}
 
+      - name: Get new version
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        id: get_version
+        working-directory: packages/motion
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Commit and push version bump
         if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/motion ${{ github.event.inputs.version_strategy }} version [skip ci]"
+          git commit -m "chore: bump @wix/motion to ${{ steps.get_version.outputs.version }} [skip ci]"
           git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---- CREATE PULL REQUEST ----
+
+      - name: Create Pull Request
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        id: create_pr
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `chore: bump @wix/motion to ${{ steps.get_version.outputs.version }} [skip ci]`,
+              head: 'release',
+              base: 'master',
+              body: 'Automated version bump and release PR',
+              maintainer_can_modify: true
+            });
+
+            // Add bypass-ci label to skip CI checks
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['bypass-ci']
+            });
+
+            return pr.number;
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
@@ -102,18 +140,21 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
 
-      # ---- MERGE BACK TO MASTER ----
+      # ---- MERGE PR BACK TO MASTER ----
 
-      - name: Merge release branch to master
+      - name: Merge Pull Request
         if: ${{ github.event.inputs.dry_run == 'false' }}
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git checkout master
-          git merge release --no-edit
-          git push origin master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ steps.create_pr.outputs.result }};
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: parseInt(prNumber),
+              merge_method: 'merge'
+            });
 
       - name: Delete release branch
         if: ${{ github.event.inputs.dry_run == 'false' }}
