@@ -8,14 +8,87 @@ import type {
   InteractionTrigger,
   CreateTransitionCSSParams,
   IInteractionController,
-  TimeEffect,
+  GetAnimationFn,
 } from '../types';
+import { isSequenceEffect } from '../types';
 import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerSequenceEffect } from '@wix/motion';
+import { getAnimation, Sequence as MotionSequence, AnimationGroup } from '@wix/motion';
+import type { AnimationOptions, TriggerVariant } from '@wix/motion';
 import { effectToAnimationOptions } from '../handlers/utilities';
+
+export function createGetAnimation(sequenceCache: Map<string, MotionSequence>) {
+  return (
+    target: HTMLElement | string | null,
+    animationOptions: AnimationOptions & { _sequenceId?: string },
+    trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
+    reducedMotion: boolean = false,
+  ) => {
+    const sequenceId = animationOptions._sequenceId;
+    if (sequenceId) {
+      return sequenceCache.get(sequenceId) ?? null;
+    }
+    return getAnimation(target, animationOptions, trigger, reducedMotion);
+  };
+}
+
+function buildSequences(
+  interactionsToApply: InteractionsToApply,
+  sequenceCache: Map<string, MotionSequence>,
+  reducedMotion: boolean,
+) {
+  const sequenceGroups = new Map<
+    string,
+    {
+      configs: Array<{
+        target: HTMLElement;
+        effectOptions: Record<string, unknown>;
+        index: number;
+      }>;
+      sequenceOptions: {
+        delay?: number;
+        offset?: number;
+        offsetEasing?: string | ((t: number) => number);
+      };
+    }
+  >();
+
+  for (const [, , effect, , targetElements] of interactionsToApply) {
+    if (!isSequenceEffect(effect)) continue;
+
+    const sequenceId = effect._sequenceId;
+    if (!sequenceGroups.has(sequenceId)) {
+      sequenceGroups.set(sequenceId, {
+        configs: [],
+        sequenceOptions: effect._sequenceOptions || {},
+      });
+    }
+    const group = sequenceGroups.get(sequenceId)!;
+    const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
+    for (const target of targets) {
+      group.configs.push({
+        target,
+        effectOptions: effectToAnimationOptions(effect),
+        index: effect._sequenceIndex,
+      });
+    }
+  }
+
+  for (const [sequenceId, { configs, sequenceOptions }] of sequenceGroups) {
+    sequenceCache.delete(sequenceId);
+    configs.sort((a, b) => a.index - b.index);
+    const groups = configs
+      .map((cfg) =>
+        getAnimation(cfg.target, cfg.effectOptions as AnimationOptions, undefined, reducedMotion),
+      )
+      .filter((a): a is AnimationGroup => a instanceof AnimationGroup);
+    if (groups.length) {
+      sequenceCache.set(sequenceId, new MotionSequence(groups, sequenceOptions));
+    }
+  }
+}
 
 type InteractionsToApply = Array<
   [
@@ -99,8 +172,9 @@ function _applyInteraction(
   effect: Effect,
   sourceElements: HTMLElement | HTMLElement[],
   targetElements: HTMLElement | HTMLElement[],
-  selectorCondition?: string,
-  useFirstChild?: boolean,
+  selectorCondition: string | undefined,
+  useFirstChild: boolean,
+  getAnimationFn: GetAnimationFn,
 ) {
   const isSourceArray = Array.isArray(sourceElements);
   const isTargetArray = Array.isArray(targetElements);
@@ -117,6 +191,7 @@ function _applyInteraction(
           targetEl,
           effect as Effect,
           interaction.params!,
+          getAnimationFn,
           selectorCondition,
           useFirstChild,
         );
@@ -132,6 +207,7 @@ function _applyInteraction(
         targetEl,
         effect as Effect,
         interaction.params!,
+        getAnimationFn,
         selectorCondition,
         useFirstChild,
       );
@@ -239,36 +315,12 @@ function _addInteraction(
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
   interactionsToApply.reverse();
 
-  // First pass: Register all sequence effects before calling handlers
-  // This ensures the full Sequence can be created when handlers request it
-  interactionsToApply.forEach(([, , effect, , targetElements]) => {
-    const sequenceEffect = effect as Effect & {
-      _sequenceId?: string;
-      _sequenceIndex?: number;
-      _sequenceTotal?: number;
-      _sequenceOptions?: {
-        delay?: number;
-        offset?: number;
-        offsetEasing?: string | ((t: number) => number);
-      };
-    };
-    if (sequenceEffect._sequenceId && 'duration' in effect) {
-      const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
-      targets.forEach((target) => {
-        registerSequenceEffect(sequenceEffect._sequenceId!, {
-          target,
-          effectOptions: effectToAnimationOptions(effect as TimeEffect),
-          sequenceOptions: sequenceEffect._sequenceOptions || {},
-          index: sequenceEffect._sequenceIndex ?? 0,
-          total: sequenceEffect._sequenceTotal ?? 1,
-        });
-      });
-    }
-  });
+  // Build MotionSequences eagerly before calling handlers
+  buildSequences(interactionsToApply, instance.sequenceCache, Interact.forceReducedMotion);
 
-  // Second pass: Apply all interactions (handlers will now get fully-created Sequences)
+  const getAnimationFn = createGetAnimation(instance.sequenceCache) as GetAnimationFn;
   interactionsToApply.forEach((interaction) => {
-    _applyInteraction(...interaction);
+    _applyInteraction(...interaction, getAnimationFn);
   });
 }
 
@@ -373,7 +425,7 @@ function addEffectsForTarget(
 
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
   interactionsToApply.reverse().forEach((interaction) => {
-    _applyInteraction(...interaction);
+    _applyInteraction(...interaction, getAnimation as GetAnimationFn);
   });
 
   return interactionIds.length > 0;
@@ -389,6 +441,7 @@ function addInteraction<T extends TriggerType>(
   target: HTMLElement,
   effect: Effect,
   options: InteractionParamsTypes[T],
+  getAnimation: GetAnimationFn,
   selectorCondition?: string,
   useFirstChild?: boolean,
 ): void {
@@ -424,6 +477,7 @@ function addInteraction<T extends TriggerType>(
     targetController,
     selectorCondition,
     allowA11yTriggers: Interact.allowA11yTriggers,
+    getAnimation,
   });
 }
 

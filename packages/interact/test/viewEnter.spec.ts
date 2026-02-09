@@ -1,21 +1,24 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
+const mockAnimation = {
+  play: vi.fn(),
+  cancel: vi.fn(),
+  onFinish: vi.fn(),
+  pause: vi.fn(),
+  reverse: vi.fn(),
+  progress: vi.fn(),
+  persist: vi.fn(),
+  isCSS: false,
+  playState: 'idle',
+  ready: Promise.resolve(),
+};
+
+const mockGetAnimation = vi.fn().mockReturnValue(mockAnimation);
+
 vi.mock('@wix/motion', () => ({
-  getAnimation: vi.fn().mockReturnValue({
-    play: vi.fn(),
-    cancel: vi.fn(),
-    onFinish: vi.fn(),
-    pause: vi.fn(),
-    reverse: vi.fn(),
-    progress: vi.fn(),
-    persist: vi.fn(),
-    isCSS: false,
-    playState: 'idle',
-    ready: Promise.resolve(),
-  }),
+  getAnimation: vi.fn(),
+  Sequence: vi.fn(),
   registerEffects: vi.fn(),
-  registerSequenceEffect: vi.fn(),
-  clearSequenceCache: vi.fn(),
 }));
 
 vi.mock('fastdom', () => ({
@@ -54,6 +57,7 @@ describe('viewEnter handler', () => {
     document.body.appendChild(target);
 
     vi.clearAllMocks();
+    mockGetAnimation.mockReturnValue(mockAnimation);
 
     observeSpy = vi.fn();
     unobserveSpy = vi.fn();
@@ -108,7 +112,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         {},
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       expect(IntersectionObserverMock).toHaveBeenCalled();
@@ -121,7 +125,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'once' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry();
@@ -138,7 +142,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold: 0.5 },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({
@@ -161,7 +165,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({
@@ -192,7 +196,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({
@@ -219,7 +223,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: false, threshold },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({
@@ -236,15 +240,12 @@ describe('viewEnter handler', () => {
 
   describe('Alternate type', () => {
     it('should play animation on first entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -254,15 +255,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should reverse animation on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -279,15 +277,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should reverse animation on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -312,7 +307,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -322,15 +317,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -339,15 +331,12 @@ describe('viewEnter handler', () => {
 
   describe('Repeat type', () => {
     it('should play animation from 0 on entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -358,15 +347,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should pause and reset progress to 0 on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -385,15 +371,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should play from 0 on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -420,7 +403,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -430,15 +413,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -447,15 +427,12 @@ describe('viewEnter handler', () => {
 
   describe('State type', () => {
     it('should play animation on first entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -465,15 +442,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should pause animation on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -490,15 +464,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should resume animation on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -518,15 +489,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should NOT reset progress on re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       // First entry
@@ -552,7 +520,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -562,15 +530,12 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        {},
+        { getAnimation: mockGetAnimation },
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -579,15 +544,12 @@ describe('viewEnter handler', () => {
 
   describe('Null animation handling', () => {
     it('should not create IntersectionObserver when animation is null', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      (getAnimation as any).mockReturnValueOnce(null);
-
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'NonExistentEffect' } },
         {},
-        {},
+        { getAnimation: () => null },
       );
 
       // IntersectionObserver should not be created when animation is null

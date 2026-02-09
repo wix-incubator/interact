@@ -1,4 +1,3 @@
-import { getAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
 import type {
   TimeEffect,
@@ -9,7 +8,9 @@ import type {
   EffectBase,
   IInteractionController,
   InteractOptions,
+  GetAnimationFn,
 } from '../types';
+import { isSequenceEffect } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -22,13 +23,12 @@ function createTimeEffectHandler(
   element: HTMLElement,
   effect: TimeEffect & EffectBase,
   options: PointerTriggerParams,
+  getAnimation: GetAnimationFn,
   reducedMotion: boolean = false,
   selectorCondition?: string,
 ) {
   // For sequence effects, only the first effect (index 0) controls playback
-  const sequenceIndex = (effect as any)._sequenceIndex;
-  const isSequenceEffect = sequenceIndex !== undefined;
-  if (isSequenceEffect && sequenceIndex !== 0) {
+  if (isSequenceEffect(effect) && effect._sequenceIndex !== 0) {
     // Non-leader sequence effects don't need handlers - the leader controls the Sequence
     return () => {};
   }
@@ -116,7 +116,13 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
+  {
+    reducedMotion,
+    targetController,
+    selectorCondition,
+    allowA11yTriggers,
+    getAnimation,
+  }: InteractOptions,
 ) {
   let handler: ((event: MouseEvent | KeyboardEvent) => void) | null;
   let once = false;
@@ -133,10 +139,12 @@ function addClickHandler(
       selectorCondition,
     );
   } else {
+    if (!getAnimation) return;
     handler = createTimeEffectHandler(
       target,
       effect as TimeEffect & EffectBase,
       options as PointerTriggerParams,
+      getAnimation,
       reducedMotion,
       selectorCondition,
     );

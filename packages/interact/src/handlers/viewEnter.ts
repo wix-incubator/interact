@@ -1,6 +1,6 @@
 import type { AnimationGroup } from '@wix/motion';
-import { getAnimation } from '@wix/motion';
 import type { TimeEffect, HandlerObjectMap, ViewEnterParams, InteractOptions } from '../types';
+import { isSequenceEffect } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
@@ -137,15 +137,15 @@ function addViewEnterHandler(
   target: HTMLElement,
   effect: TimeEffect,
   options: ViewEnterParams = {},
-  { reducedMotion, selectorCondition }: InteractOptions = {},
+  { reducedMotion, selectorCondition, getAnimation }: InteractOptions = {},
 ) {
   // For sequence effects, only the first effect (index 0) controls playback
-  const sequenceIndex = (effect as any)._sequenceIndex;
-  const isSequenceEffect = sequenceIndex !== undefined;
-  if (isSequenceEffect && sequenceIndex !== 0) {
+  if (isSequenceEffect(effect) && effect._sequenceIndex !== 0) {
     // Non-leader sequence effects don't need handlers - the leader controls the Sequence
     return;
   }
+
+  if (!getAnimation) return;
 
   const mergedOptions = { ...viewEnterOptions, ...options };
   const type = mergedOptions.type || 'once';

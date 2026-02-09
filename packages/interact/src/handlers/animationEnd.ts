@@ -1,5 +1,4 @@
 import type { AnimationGroup } from '@wix/motion';
-import { getAnimation } from '@wix/motion';
 import type { AnimationEndParams, TimeEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
@@ -14,8 +13,10 @@ function addAnimationEndHandler(
   target: HTMLElement,
   effect: TimeEffect,
   __: AnimationEndParams,
-  { reducedMotion, selectorCondition }: InteractOptions,
+  { reducedMotion, selectorCondition, getAnimation }: InteractOptions,
 ): void {
+  if (!getAnimation) return;
+
   const animation = getAnimation(
     target,
     effectToAnimationOptions(effect),
