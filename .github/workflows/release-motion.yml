@@ -105,19 +105,11 @@ jobs:
             const { data: pr } = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `chore: bump @wix/motion to ${{ steps.get_version.outputs.version }} [skip ci]`,
+              title: `chore: bump @wix/motion to ${{ steps.get_version.outputs.version }}`,
               head: 'release',
               base: 'master',
               body: 'Automated version bump and release PR',
               maintainer_can_modify: true
-            });
-
-            // Add bypass-ci label to skip CI checks
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              labels: ['bypass-ci']
             });
 
             return pr.number;
@@ -140,25 +132,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_NPM_TOKEN }}
 
-      # ---- MERGE PR BACK TO MASTER ----
-
-      - name: Merge Pull Request
-        if: ${{ github.event.inputs.dry_run == 'false' }}
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const prNumber = ${{ steps.create_pr.outputs.result }};
-            await github.rest.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: parseInt(prNumber),
-              merge_method: 'squash'
-            });
-
-      - name: Delete release branch
-        if: ${{ github.event.inputs.dry_run == 'false' }}
-        run: |
-          git push origin --delete release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Merging back to master currently doesn't work, will be done manually
