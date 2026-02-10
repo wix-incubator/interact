@@ -2080,7 +2080,7 @@ describe('interact (web)', () => {
         add(targetElement, 'invalid-target');
 
         expect(consoleSpy).toHaveBeenCalledWith(
-          'Interact: No element found for selector ".non-existent-element"',
+          'Interact: No elements found for selector ".non-existent-element"',
         );
       });
 

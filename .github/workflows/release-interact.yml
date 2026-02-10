@@ -23,6 +23,7 @@ on:
 permissions:
   id-token: write # REQUIRED for npm Trusted Publishing
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -34,6 +35,14 @@ jobs:
         with:
           fetch-depth: 0 # full history for yarn version
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and checkout release branch
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout -b release
+          git push -u origin release
 
       - name: Setup Node with trusted publishing
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -68,16 +77,45 @@ jobs:
         working-directory: packages/interact
         run: yarn version ${{ github.event.inputs.version_strategy }}
 
+      - name: Get new version
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        id: get_version
+        working-directory: packages/interact
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Commit and push version bump
         if: ${{ github.event.inputs.dry_run == 'false' }}
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/interact ${{ github.event.inputs.version_strategy }} version [skip ci]"
-          git push --follow-tags
+          git commit -m "chore: bump @wix/interact to ${{ steps.get_version.outputs.version }}"
+          git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---- CREATE PULL REQUEST ----
+
+      - name: Create Pull Request
+        if: ${{ github.event.inputs.dry_run == 'false' }}
+        id: create_pr
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `chore: bump @wix/interact to ${{ steps.get_version.outputs.version }}`,
+              head: 'release',
+              base: 'master',
+              body: 'Automated version bump and release PR',
+              maintainer_can_modify: true
+            });
+
+            return pr.number;
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
@@ -96,3 +134,5 @@ jobs:
           npm publish --tag latest --provenance --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
+
+      # Merging back to master currently doesn't work, will be done manually

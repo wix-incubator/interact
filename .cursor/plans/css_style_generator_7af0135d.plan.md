@@ -30,7 +30,7 @@ The current implementation in `[packages/interact/src/core/css.ts](packages/inte
 export function generate(_config: InteractConfig, useFirstChild: boolean = false): string {
   const css: string[] = [
     `@media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial="true"]${useFirstChild ? ' > :first-child' : ''}:not([data-interact-enter="done"]) {
+  [data-interact-initial="true"]${useFirstChild ? ' > :first-child' : ''}:not([data-interact-enter]) {
     visibility: hidden;
     ...
   }
@@ -72,7 +72,7 @@ For each matching selector, generate a CSS rule in the format:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-key="${key}"]${childSelector}:not([data-interact-enter="done"]) {
+  [data-interact-key="${key}"]${childSelector}:not([data-interact-enter]) {
     visibility: hidden;
     transform: none;
     translate: none;
@@ -153,4 +153,4 @@ Combine:
 1. Base: `[data-interact-key="${interaction.key}"]`
 2. Child selector from `getSelector(effectData, { asCombinator: true, useFirstChild })`
 3. Selector condition if present
-4. State filter: `:not([data-interact-enter="done"])`
+4. State filter: `:not([data-interact-enter])`
