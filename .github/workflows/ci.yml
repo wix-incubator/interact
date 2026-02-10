@@ -16,11 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Skip CI checks if PR has [skip ci] in title or has 'bypass-ci' label
-    if: |
-      !contains(github.event.pull_request.title, '[skip ci]') &&
-      !contains(join(github.event.pull_request.labels.*.name, ' '), 'bypass-ci')
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
