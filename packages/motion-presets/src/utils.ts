@@ -385,7 +385,12 @@ export function getTimingFactor(
 }
 
 export type LengthValue = { value: number; unit: string };
-export type LengthInput = string | number | LengthValue | { value: number; unit?: string } | undefined;
+export type LengthInput =
+  | string
+  | number
+  | LengthValue
+  | { value: number; unit?: string }
+  | undefined;
 
 const CSS_UNIT_REGEX = /^(-?\d*\.?\d+)(px|%|em|rem|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i;
 
