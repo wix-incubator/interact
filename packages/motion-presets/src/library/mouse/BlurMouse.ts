@@ -10,7 +10,7 @@ import { quadInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 import { ScrubAnimationOptions, AnimationExtraOptions, BlurMouse, Progress } from '../../types';
 
-const DEFAULT_DISTANCE = { value: 80, type: 'px' };
+const DEFAULT_DISTANCE = { value: 80, unit: 'px' };
 const DEFAULT_ANGLE = 5;
 
 class BlurMouseAnimation extends CustomMouse {
@@ -38,7 +38,7 @@ class BlurMouseAnimation extends CustomMouse {
     const rotateX = mapRange(0, 1, -angle, angle, progressY) * invert;
     const rotateY = mapRange(0, 1, angle, -angle, progressX) * invert;
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     const transform = `perspective(${perspective}px) translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${maxScale}, ${maxScale}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--motion-rotate, 0deg))`;
 

@@ -9,7 +9,7 @@ import { getCssUnits, toKeyframeValue, parseDirection, parseLength } from '../..
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';
-const DEFAULT_DISTANCE = { value: 400, type: 'px' };
+const DEFAULT_DISTANCE = { value: 400, unit: 'px' };
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-panScroll'];
@@ -42,8 +42,8 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const { startFromOffScreen = true, range = 'in' } = namedEffect;
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
   const travel = distance.value * (direction === 'left' ? 1 : -1);
-  let startX = `${-travel}${getCssUnits(distance.type)}`;
-  let endX = `${travel}${getCssUnits(distance.type)}`;
+  let startX = `${-travel}${getCssUnits(distance.unit)}`;
+  let endX = `${travel}${getCssUnits(distance.unit)}`;
   if (startFromOffScreen) {
     const startXLeft = `calc(${toKeyframeValue(
       {},

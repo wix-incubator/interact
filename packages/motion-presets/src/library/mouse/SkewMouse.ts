@@ -15,7 +15,7 @@ import {
 import { circInOut } from '@wix/motion';
 import { CustomMouse } from './CustomMouse';
 
-const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
 const DEFAULT_ANGLE = 25;
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
 const AXES = ['both', 'horizontal', 'vertical'] as const;
@@ -49,7 +49,7 @@ class SkewMouseAnimation extends CustomMouse {
       skewY *= mapRange(0, 1, 1, -1, circInOut(progressX));
     }
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     const transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) skew(${skewX}deg, ${skewY}deg) rotate(var(--motion-rotate, 0deg))`;
 

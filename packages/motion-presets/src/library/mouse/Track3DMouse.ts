@@ -14,7 +14,7 @@ import {
 } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
-const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
 const DEFAULT_ANGLE = 5;
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
 const AXES = ['both', 'horizontal', 'vertical'] as const;
@@ -39,7 +39,7 @@ class Track3DMouseAnimation extends CustomMouse {
       translateY = mapRange(0, 1, -distance.value, distance.value, progressY);
       rotateX = mapRange(0, 1, angle, -angle, progressY) * invert;
     }
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     this.target.style.transform = `perspective(${perspective}px) translateX(${translateX}${units}) translateY(${translateY}${units}) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--motion-rotate, 0deg))`;
   }

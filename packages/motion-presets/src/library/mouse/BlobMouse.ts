@@ -2,7 +2,7 @@ import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength } from '..
 import { CustomMouse } from './CustomMouse';
 import { ScrubAnimationOptions, AnimationExtraOptions, BlobMouse, Progress } from '../../types';
 
-const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
 
 class BlobMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -22,7 +22,7 @@ class BlobMouseAnimation extends CustomMouse {
         ? mapRange(0, 0.5, scale, 1, progressY)
         : mapRange(0.5, 1, 1, scale, progressY);
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleX}, ${scaleY}) rotate(var(--motion-rotate, 0deg))`;
   }

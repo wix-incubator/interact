@@ -9,7 +9,7 @@ import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectTwoSides = 'left';
-const DEFAULT_DEPTH = { value: 200, type: 'px' };
+const DEFAULT_DEPTH = { value: 200, unit: 'px' };
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
@@ -35,7 +35,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const clipStart = getClipPolygonParams({ direction: 'top', minimum: 0 });
   const rotationZ = ROTATION_MAP[direction];
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
-  const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
 
   const rotateCustom = {
     '--motion-perspective': `${perspective}px`,

@@ -3,117 +3,117 @@ import { describe, expect, test } from 'vitest';
 import { parseLength, parseDirection } from '../utils';
 
 describe('parseLength', () => {
-  const defaultValue = { value: 100, type: 'percentage' };
+  const defaultValue = { value: 100, unit: 'percentage' };
 
   describe('number input', () => {
     test('handles positive number', () => {
-      expect(parseLength(50, defaultValue)).toEqual({ value: 50, type: 'percentage' });
+      expect(parseLength(50, defaultValue)).toEqual({ value: 50, unit: 'percentage' });
     });
 
     test('handles zero', () => {
-      expect(parseLength(0, defaultValue)).toEqual({ value: 0, type: 'percentage' });
+      expect(parseLength(0, defaultValue)).toEqual({ value: 0, unit: 'percentage' });
     });
 
     test('handles decimal number', () => {
-      expect(parseLength(33.5, defaultValue)).toEqual({ value: 33.5, type: 'percentage' });
+      expect(parseLength(33.5, defaultValue)).toEqual({ value: 33.5, unit: 'percentage' });
     });
 
-    test('inherits type from default value', () => {
-      const pxDefault = { value: 100, type: 'px' };
-      expect(parseLength(50, pxDefault)).toEqual({ value: 50, type: 'px' });
+    test('inherits unit from default value', () => {
+      const pxDefault = { value: 100, unit: 'px' };
+      expect(parseLength(50, pxDefault)).toEqual({ value: 50, unit: 'px' });
     });
   });
 
-  describe('object input { value, type }', () => {
+  describe('object input { value, unit }', () => {
     test('handles valid object with number value', () => {
-      expect(parseLength({ value: 200, type: 'px' }, defaultValue)).toEqual({
+      expect(parseLength({ value: 200, unit: 'px' }, defaultValue)).toEqual({
         value: 200,
-        type: 'px',
+        unit: 'px',
       });
     });
 
     test('handles object with string value that can be parsed', () => {
-      expect(parseLength({ value: '150' as any, type: 'em' }, defaultValue)).toEqual({
+      expect(parseLength({ value: '150' as any, unit: 'em' }, defaultValue)).toEqual({
         value: 150,
-        type: 'em',
+        unit: 'em',
       });
     });
 
     test('normalizes percentage symbol to "percentage"', () => {
-      expect(parseLength({ value: 50, type: '%' }, defaultValue)).toEqual({
+      expect(parseLength({ value: 50, unit: '%' }, defaultValue)).toEqual({
         value: 50,
-        type: 'percentage',
+        unit: 'percentage',
       });
     });
 
     test('normalizes uppercase unit', () => {
-      expect(parseLength({ value: 100, type: 'PX' }, defaultValue)).toEqual({
+      expect(parseLength({ value: 100, unit: 'PX' }, defaultValue)).toEqual({
         value: 100,
-        type: 'px',
+        unit: 'px',
       });
     });
 
     test('returns default for object with NaN value', () => {
-      expect(parseLength({ value: NaN, type: 'px' }, defaultValue)).toEqual(defaultValue);
+      expect(parseLength({ value: NaN, unit: 'px' }, defaultValue)).toEqual(defaultValue);
     });
 
     test('returns default for object with invalid string value', () => {
-      expect(parseLength({ value: 'abc' as any, type: 'px' }, defaultValue)).toEqual(defaultValue);
+      expect(parseLength({ value: 'abc' as any, unit: 'px' }, defaultValue)).toEqual(defaultValue);
     });
 
     test('returns default for object missing value', () => {
-      expect(parseLength({ type: 'px' } as any, defaultValue)).toEqual(defaultValue);
+      expect(parseLength({ unit: 'px' } as any, defaultValue)).toEqual(defaultValue);
     });
 
-    test('returns default for object missing type', () => {
+    test('returns default for object missing unit', () => {
       expect(parseLength({ value: 100 } as any, defaultValue)).toEqual(defaultValue);
     });
   });
 
   describe('string input with unit', () => {
     test('parses "100px"', () => {
-      expect(parseLength('100px', defaultValue)).toEqual({ value: 100, type: 'px' });
+      expect(parseLength('100px', defaultValue)).toEqual({ value: 100, unit: 'px' });
     });
 
     test('parses "50%"', () => {
-      expect(parseLength('50%', defaultValue)).toEqual({ value: 50, type: 'percentage' });
+      expect(parseLength('50%', defaultValue)).toEqual({ value: 50, unit: 'percentage' });
     });
 
     test('parses decimal "33.5em"', () => {
-      expect(parseLength('33.5em', defaultValue)).toEqual({ value: 33.5, type: 'em' });
+      expect(parseLength('33.5em', defaultValue)).toEqual({ value: 33.5, unit: 'em' });
     });
 
     test('parses with whitespace "  100px  "', () => {
-      expect(parseLength('  100px  ', defaultValue)).toEqual({ value: 100, type: 'px' });
+      expect(parseLength('  100px  ', defaultValue)).toEqual({ value: 100, unit: 'px' });
     });
 
     test('parses uppercase unit "100PX"', () => {
-      expect(parseLength('100PX', defaultValue)).toEqual({ value: 100, type: 'px' });
+      expect(parseLength('100PX', defaultValue)).toEqual({ value: 100, unit: 'px' });
     });
 
     test('parses various CSS units', () => {
-      expect(parseLength('10rem', defaultValue)).toEqual({ value: 10, type: 'rem' });
-      expect(parseLength('20vw', defaultValue)).toEqual({ value: 20, type: 'vw' });
-      expect(parseLength('30vh', defaultValue)).toEqual({ value: 30, type: 'vh' });
-      expect(parseLength('40vmin', defaultValue)).toEqual({ value: 40, type: 'vmin' });
-      expect(parseLength('50vmax', defaultValue)).toEqual({ value: 50, type: 'vmax' });
-      expect(parseLength('5ch', defaultValue)).toEqual({ value: 5, type: 'ch' });
-      expect(parseLength('2cm', defaultValue)).toEqual({ value: 2, type: 'cm' });
-      expect(parseLength('3mm', defaultValue)).toEqual({ value: 3, type: 'mm' });
-      expect(parseLength('1in', defaultValue)).toEqual({ value: 1, type: 'in' });
-      expect(parseLength('12pt', defaultValue)).toEqual({ value: 12, type: 'pt' });
-      expect(parseLength('6pc', defaultValue)).toEqual({ value: 6, type: 'pc' });
+      expect(parseLength('10rem', defaultValue)).toEqual({ value: 10, unit: 'rem' });
+      expect(parseLength('20vw', defaultValue)).toEqual({ value: 20, unit: 'vw' });
+      expect(parseLength('30vh', defaultValue)).toEqual({ value: 30, unit: 'vh' });
+      expect(parseLength('40vmin', defaultValue)).toEqual({ value: 40, unit: 'vmin' });
+      expect(parseLength('50vmax', defaultValue)).toEqual({ value: 50, unit: 'vmax' });
+      expect(parseLength('5ch', defaultValue)).toEqual({ value: 5, unit: 'ch' });
+      expect(parseLength('2cm', defaultValue)).toEqual({ value: 2, unit: 'cm' });
+      expect(parseLength('3mm', defaultValue)).toEqual({ value: 3, unit: 'mm' });
+      expect(parseLength('1in', defaultValue)).toEqual({ value: 1, unit: 'in' });
+      expect(parseLength('12pt', defaultValue)).toEqual({ value: 12, unit: 'pt' });
+      expect(parseLength('6pc', defaultValue)).toEqual({ value: 6, unit: 'pc' });
     });
   });
 
   describe('string input without unit (plain number)', () => {
-    test('parses "100" using default type', () => {
-      expect(parseLength('100', defaultValue)).toEqual({ value: 100, type: 'percentage' });
+    test('parses "100" using default unit', () => {
+      expect(parseLength('100', defaultValue)).toEqual({ value: 100, unit: 'percentage' });
     });
 
-    test('inherits type from px default', () => {
-      const pxDefault = { value: 50, type: 'px' };
-      expect(parseLength('200', pxDefault)).toEqual({ value: 200, type: 'px' });
+    test('inherits unit from px default', () => {
+      const pxDefault = { value: 50, unit: 'px' };
+      expect(parseLength('200', pxDefault)).toEqual({ value: 200, unit: 'px' });
     });
   });
 

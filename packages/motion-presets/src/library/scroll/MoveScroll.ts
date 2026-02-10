@@ -8,7 +8,7 @@ import {
 } from '../../utils';
 
 const DEFAULT_ANGLE = 120;
-const DEFAULT_DISTANCE = { value: 400, type: 'px' };
+const DEFAULT_DISTANCE = { value: 400, unit: 'px' };
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-moveScroll'];
@@ -31,7 +31,7 @@ export function style(options: ScrubAnimationOptions, config?: Record<string, an
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
   let [travelX, travelY] = transformPolarToXY(angle, distance.value);
-  const unit = getCssUnits(distance.type);
+  const unit = getCssUnits(distance.unit);
 
   let startOffsetAdd = '',
     endOffsetAdd = '';

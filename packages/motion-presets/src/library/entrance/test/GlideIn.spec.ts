@@ -35,7 +35,7 @@ describe('GlideIn', () => {
 
   test('GlideIn animation with custom direction and distance', () => {
     const direction = 45;
-    const distance = { value: 200, type: 'px' };
+    const distance = { value: 200, unit: 'px' };
     const mockOptions = {
       ...baseMockOptions,
       namedEffect: { direction, distance } as GlideInType,
@@ -100,7 +100,7 @@ describe('GlideIn', () => {
 
   test('GlideIn style animation with custom direction and distance', () => {
     const direction = 45;
-    const distance = { value: 200, type: 'px' };
+    const distance = { value: 200, unit: 'px' };
     const mockOptions = {
       ...baseMockOptions,
       namedEffect: { direction, distance } as GlideInType,

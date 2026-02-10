@@ -14,7 +14,7 @@ import type {
 } from '../../types';
 import { CustomMouse } from './CustomMouse';
 
-const DEFAULT_DISTANCE = { value: 200, type: 'px' };
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
 const DEFAULT_ANGLE = 30;
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
 const AXES = ['both', 'horizontal', 'vertical'] as const;
@@ -34,7 +34,7 @@ class AiryMouseAnimation extends CustomMouse {
 
     // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progressX) * invert;
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) rotate(calc(${rotate}deg + var(--motion-rotate, 0deg)))`;
   }

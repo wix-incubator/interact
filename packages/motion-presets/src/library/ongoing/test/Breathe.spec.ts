@@ -125,7 +125,7 @@ describe('Breathe', () => {
     test('custom distance', () => {
       const mockOptions: TimeAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: { value: 50, type: 'percentage' } } as Breathe,
+        namedEffect: { distance: { value: 50, unit: 'percentage' } } as Breathe,
       };
 
       const expectedResult: Partial<AnimationData>[] = [
@@ -441,7 +441,7 @@ describe('Breathe', () => {
     test('custom distance', () => {
       const mockOptions: TimeAnimationOptions = {
         ...baseMockOptions,
-        namedEffect: { distance: { value: 50, type: 'percentage' } } as Breathe,
+        namedEffect: { distance: { value: 50, unit: 'percentage' } } as Breathe,
       };
 
       const expectedResult: Partial<AnimationData>[] = [

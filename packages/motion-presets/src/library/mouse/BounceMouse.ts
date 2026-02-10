@@ -2,7 +2,7 @@ import { ScrubAnimationOptions, AnimationExtraOptions, BounceMouse, TrackMouse }
 import { parseLength } from '../../utils';
 import createTrack from './TrackMouse';
 
-const DEFAULT_DISTANCE = { value: 80, type: 'px' };
+const DEFAULT_DISTANCE = { value: 80, unit: 'px' };
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const namedEffect = options.namedEffect as BounceMouse;

@@ -144,8 +144,8 @@ export function transformPolarToXY(angle: number, distance: number) {
   return [x, y];
 }
 
-export function getCssUnits(type: 'percentage' | string) {
-  return type === 'percentage' ? '%' : type || 'px';
+export function getCssUnits(unit: 'percentage' | string) {
+  return unit === 'percentage' ? '%' : unit || 'px';
 }
 
 export function getEasing(easing?: keyof typeof cssEasings | string): string {
@@ -158,8 +158,8 @@ export function getJsEasing(
   return easing ? jsEasings[easing as keyof typeof jsEasings] : undefined;
 }
 
-export function getCssUnitValue(length: { value: number; type: string }) {
-  return `${length.value}${getCssUnits(length.type)}`;
+export function getCssUnitValue(length: { value: number; unit: string }) {
+  return `${length.value}${getCssUnits(length.unit)}`;
 }
 
 export function getEasingFamily(easing: string) {
@@ -384,8 +384,8 @@ export function getTimingFactor(
   return asString ? timingFactor.toString().replace(/\./g, '') : timingFactor;
 }
 
-export type LengthValue = { value: number; type: string };
-export type LengthInput = string | number | LengthValue | undefined;
+export type LengthValue = { value: number; unit: string };
+export type LengthInput = string | number | LengthValue | { value: number; unit?: string } | undefined;
 
 const CSS_UNIT_REGEX = /^(-?\d*\.?\d+)(px|%|em|rem|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i;
 
@@ -410,14 +410,14 @@ export function parseLength(input: LengthInput, defaultValue: LengthValue): Leng
 
   // Handle number input - use default unit type
   if (typeof input === 'number') {
-    return { value: input, type: defaultValue.type };
+    return { value: input, unit: defaultValue.unit };
   }
 
-  // Handle object input { value, type }
-  if (typeof input === 'object' && 'value' in input && 'type' in input) {
+  // Handle object input { value, unit }
+  if (typeof input === 'object' && 'value' in input && 'unit' in input) {
     const value = typeof input.value === 'string' ? parseFloat(input.value) : input.value;
-    if (typeof value === 'number' && !isNaN(value) && typeof input.type === 'string') {
-      return { value, type: normalizeUnit(input.type) };
+    if (typeof value === 'number' && !isNaN(value) && typeof input.unit === 'string') {
+      return { value, unit: normalizeUnit(input.unit) };
     }
     return defaultValue;
   }
@@ -429,14 +429,14 @@ export function parseLength(input: LengthInput, defaultValue: LengthValue): Leng
     // Try parsing as number + unit (e.g., "100px", "50%")
     const match = trimmed.match(CSS_UNIT_REGEX);
     if (match) {
-      return { value: parseFloat(match[1]), type: normalizeUnit(match[2]) };
+      return { value: parseFloat(match[1]), unit: normalizeUnit(match[2]) };
     }
 
     // Try parsing as plain number string (e.g., "100", "100.5")
     if (trimmed !== '') {
       const numValue = Number(trimmed);
       if (!isNaN(numValue)) {
-        return { value: numValue, type: defaultValue.type };
+        return { value: numValue, unit: defaultValue.unit };
       }
     }
   }

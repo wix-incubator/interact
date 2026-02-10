@@ -10,7 +10,7 @@ import {
 } from '../../utils';
 import { AXIS_DIRECTIONS } from '../../consts';
 
-const DEFAULT_DISTANCE = { value: 25, type: 'px' };
+const DEFAULT_DISTANCE = { value: 25, unit: 'px' };
 const DIRECTIONS = [...AXIS_DIRECTIONS, 'center'] as const;
 const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'vertical';
 
@@ -52,7 +52,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   // Create CSS custom properties for the Breathe configuration
   const custom: Record<string, string | number> = {
     '--motion-breathe-perspective': perspectiveTransform,
-    '--motion-breathe-distance': `${distance.value}${getCssUnits(distance.type || 'px')}`,
+    '--motion-breathe-distance': `${distance.value}${getCssUnits(distance.unit || 'px')}`,
     '--motion-breathe-x': x,
     '--motion-breathe-y': y,
     '--motion-breathe-z': z,

@@ -689,8 +689,8 @@ const config = {
         {
           key: 'orbit-y',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateY',
             keyframes: [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(360deg)' }],
@@ -700,8 +700,8 @@ const config = {
         {
           key: 'orbit-x',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateX',
             keyframes: [
@@ -714,8 +714,8 @@ const config = {
         {
           key: 'orbit-diag-1',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag1',
             keyframes: [
@@ -728,8 +728,8 @@ const config = {
         {
           key: 'orbit-diag-2',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag2',
             keyframes: [
@@ -796,8 +796,8 @@ const config = {
         {
           key: 'pyramid-target',
           fill: 'both',
-          rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'pyramid-tumble',
             keyframes: [
@@ -814,8 +814,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 15, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 5, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 15, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -826,8 +826,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 20, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 5, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 20, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -838,8 +838,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 15, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -850,8 +850,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 15, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -862,8 +862,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 15, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -874,8 +874,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 30, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 45, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 45, unit: 'percentage' } },
           fill: 'both',
         },
       ],
@@ -968,8 +968,8 @@ const config = {
         {
           key: 'spread-card-0',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'stayCenter',
             keyframes: [
@@ -981,8 +981,8 @@ const config = {
         {
           key: 'spread-card-1',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftInner',
             keyframes: [
@@ -994,8 +994,8 @@ const config = {
         {
           key: 'spread-card-2',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightInner',
             keyframes: [
@@ -1007,8 +1007,8 @@ const config = {
         {
           key: 'spread-card-3',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftOuter',
             keyframes: [
@@ -1020,8 +1020,8 @@ const config = {
         {
           key: 'spread-card-4',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightOuter',
             keyframes: [
@@ -1041,8 +1041,8 @@ const config = {
         {
           key: 'h-track',
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'moveLeft',
             keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(-5824px)' }],

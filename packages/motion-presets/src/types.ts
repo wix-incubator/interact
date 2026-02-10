@@ -147,7 +147,7 @@ export type BlurIn = {
 export type ExpandIn = {
   type: 'ExpandIn';
   direction?: number | string;
-  distance?: { value: number; type: string } | string;
+  distance?: UnitLengthPercentage;
   initialScale?: number;
 };
 

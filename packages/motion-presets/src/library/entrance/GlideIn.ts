@@ -3,7 +3,7 @@ import { getCssUnits, toKeyframeValue, parseLength, parseDirection } from '../..
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION = 180;
-const DEFAULT_DISTANCE = { value: 100, type: 'percentage' };
+const DEFAULT_DISTANCE = { value: 100, unit: 'percentage' };
 const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
   top: 90,
   right: 0,
@@ -37,7 +37,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
 
   const angleInRad = (direction * Math.PI) / 180;
-  const unit = getCssUnits(distance.type);
+  const unit = getCssUnits(distance.unit);
 
   const easing = options.easing || 'quintInOut';
 

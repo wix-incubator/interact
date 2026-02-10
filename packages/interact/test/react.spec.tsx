@@ -132,11 +132,11 @@ describe('interact (react)', () => {
         } as NamedEffect,
         rangeStart: {
           name: 'contain',
-          offset: { value: -10, type: 'percentage' },
+          offset: { value: -10, unit: 'percentage' },
         },
         rangeEnd: {
           name: 'contain',
-          offset: { value: 110, type: 'percentage' },
+          offset: { value: 110, unit: 'percentage' },
         },
       },
     },

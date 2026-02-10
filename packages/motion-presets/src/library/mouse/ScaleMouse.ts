@@ -14,7 +14,7 @@ import {
   MouseEffectAxis,
 } from '../../types';
 
-const DEFAULT_DISTANCE = { value: 80, type: 'px' };
+const DEFAULT_DISTANCE = { value: 80, unit: 'px' };
 const DEFAULT_AXIS: MouseEffectAxis = 'both';
 const AXES = ['both', 'horizontal', 'vertical'] as const;
 
@@ -47,7 +47,7 @@ class ScaleMouseAnimation extends CustomMouse {
     // and the bigger scale value if scale > 1
     const scaleBoth = scale < 1 ? Math.min(scaleX, scaleY) : Math.max(scaleX, scaleY);
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
     this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleBoth}) rotate(var(--motion-rotate, 0deg))`;
   }

@@ -2,7 +2,7 @@ import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
 import { toKeyframeValue, parseDirection, parseLength } from '../../utils';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
-const DEFAULT_DEPTH = { value: 300, type: 'px' };
+const DEFAULT_DEPTH = { value: 300, unit: 'px' };
 const DIRECTIONS = [...TWO_SIDES_DIRECTIONS, 'pseudoLeft', 'pseudoRight'] as const;
 const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'right';
 
@@ -29,7 +29,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const [curveIn, fadeIn] = getNames(options);
 
   const { rotationX, rotationY } = PARAMS_MAP[direction];
-  const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
 
   const custom = {
     '--motion-perspective': `${perspective}px`,

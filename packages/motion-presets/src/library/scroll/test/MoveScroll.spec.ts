@@ -37,7 +37,7 @@ describe('MoveScroll', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: {
-          distance: { value: 200, type: 'percentage' },
+          distance: { value: 200, unit: 'percentage' },
         } as MoveScrollType,
       };
 
@@ -173,7 +173,7 @@ describe('MoveScroll', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: {
-          distance: { value: 200, type: 'percentage' },
+          distance: { value: 200, unit: 'percentage' },
         } as MoveScrollType,
       };
 

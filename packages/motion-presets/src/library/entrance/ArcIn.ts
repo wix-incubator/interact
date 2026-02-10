@@ -4,7 +4,7 @@ import { FOUR_DIRECTIONS } from '../../consts';
 
 const ROTATION_ANGLE = 80;
 const DEFAULT_DIRECTION: EffectFourDirections = 'right';
-const DEFAULT_DEPTH = { value: 200, type: 'px' };
+const DEFAULT_DEPTH = { value: 200, unit: 'px' };
 
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
@@ -32,7 +32,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
   const easing = options.easing || 'quintInOut';
 
   const { x, y, sign } = DIRECTION_MAP[direction];
-  const depthValue = `${depth.value}${depth.type === 'percentage' ? '%' : depth.type}`;
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
 
   const custom = {
     '--motion-perspective': `${perspective}px`,

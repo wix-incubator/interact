@@ -4,7 +4,7 @@ import type { ExpandIn } from '../../types';
 import { FOUR_DIRECTIONS } from '../../consts';
 
 const DEFAULT_DIRECTION = 90;
-const DEFAULT_DISTANCE = { value: 120, type: 'percentage' };
+const DEFAULT_DISTANCE = { value: 120, unit: 'percentage' };
 const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
   top: 90,
   right: 0,
@@ -41,7 +41,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
 
   const easing = options.easing || 'cubicInOut';
   const angleInRad = (direction * Math.PI) / 180;
-  const unit = getCssUnits(distance.type);
+  const unit = getCssUnits(distance.unit);
 
   const x = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
   const y = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
