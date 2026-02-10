@@ -1,4 +1,4 @@
-name: Motion Presets - Bump Version and Publish
+name: Interact - Bump Version and Publish
 
 on:
   workflow_dispatch:
@@ -61,25 +61,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: NPQ_PKG_MGR=yarn npx npq install
 
-      - name: Build motion-presets package
-        run: |
-          yarn workspace @wix/motion build
-          yarn workspace @wix/motion-presets build
+      - name: Build motion package
+        run: yarn workspace @wix/motion build
 
-      - name: Test motion-presets package
-        run: yarn workspace @wix/motion-presets test
+      - name: Build interact package
+        run: yarn workspace @wix/interact build
+
+      - name: Test interact package
+        run: yarn workspace @wix/interact test
 
       # ---- BUMP VERSION ----
 
       - name: Bump version
         if: ${{ github.event.inputs.dry_run == 'false' }}
-        working-directory: packages/motion-presets
+        working-directory: packages/interact
         run: yarn version ${{ github.event.inputs.version_strategy }}
 
       - name: Get new version
         if: ${{ github.event.inputs.dry_run == 'false' }}
         id: get_version
-        working-directory: packages/motion-presets
+        working-directory: packages/interact
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -90,7 +91,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add .
-          git commit -m "chore: bump @wix/motion-presets to ${{ steps.get_version.outputs.version }} [skip ci]"
+          git commit -m "chore: bump @wix/interact to ${{ steps.get_version.outputs.version }} [skip ci]"
           git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -107,7 +108,7 @@ jobs:
             const { data: pr } = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `chore: bump @wix/motion-presets to ${{ steps.get_version.outputs.version }} [skip ci]`,
+              title: `chore: bump @wix/interact to ${{ steps.get_version.outputs.version }} [skip ci]`,
               head: 'release',
               base: 'master',
               body: 'Automated version bump and release PR',
@@ -126,21 +127,21 @@ jobs:
 
       # ---- PUBLISH WITH TRUSTED PUBLISHING ----
 
-      - name: npm publish @wix/motion-presets RC (trusted)
+      - name: npm publish @wix/interact RC (trusted)
         if: ${{ github.event.inputs.dry_run == 'false' && (github.event.inputs.version_strategy == 'prerelease' || github.event.inputs.version_strategy == 'premajor' || github.event.inputs.version_strategy == 'preminor' || github.event.inputs.version_strategy == 'prepatch') }}
         run: |
-          cd packages/motion-presets
+          cd packages/interact
           npm publish --tag next --provenance --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_PRESETS_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
 
-      - name: npm publish @wix/motion-presets Stable (trusted)
+      - name: npm publish @wix/interact Stable (trusted)
         if: ${{ github.event.inputs.dry_run == 'false' && (github.event.inputs.version_strategy == 'major' || github.event.inputs.version_strategy == 'minor' || github.event.inputs.version_strategy == 'patch') }}
         run: |
-          cd packages/motion-presets
+          cd packages/interact
           npm publish --tag latest --provenance --access=public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.RELEASE_MOTION_PRESETS_NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.INTERACT_NPM_TOKEN }}
 
       # ---- MERGE PR BACK TO MASTER ----
 
