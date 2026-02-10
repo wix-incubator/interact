@@ -393,8 +393,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { filter: 'grayscale(100%)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         },
         {
             key: 'foreground-text',
@@ -405,8 +405,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { opacity: '0', transform: 'scale(0.8)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }
@@ -428,8 +428,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { transform: 'scaleX(1)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }

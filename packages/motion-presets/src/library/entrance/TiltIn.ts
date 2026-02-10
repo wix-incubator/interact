@@ -1,10 +1,15 @@
 import {
-  getAdjustedDirection,
   getClipPolygonParams,
-  INITIAL_FRAME_OFFSET,
   toKeyframeValue,
+  parseDirection,
+  parseLength,
+  INITIAL_FRAME_OFFSET,
 } from '../../utils';
-import type { TiltIn, TimeAnimationOptions, DomApi } from '../../types';
+import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION: EffectTwoSides = 'left';
+const DEFAULT_DEPTH = { value: 200, unit: 'px' };
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-tiltInRotate', 'motion-tiltInClip'];
@@ -15,36 +20,28 @@ const ROTATION_MAP = {
   right: -30,
 };
 
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'] as (keyof typeof ROTATION_MAP)[];
-
-function getClipStart(rotateZ: number) {
-  const clipDirection = getAdjustedDirection(
-    DIRECTIONS,
-    'top',
-    rotateZ,
-  ) as (typeof DIRECTIONS)[number];
-
-  return getClipPolygonParams({
-    direction: clipDirection,
-    minimum: 0,
-  });
-}
-
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'left' } = options.namedEffect as TiltIn;
+  const namedEffect = options.namedEffect as TiltIn;
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
+  const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
+  const { perspective = 800 } = namedEffect;
   const [fadeIn, tiltInRotate, tiltInClip] = getNames(options);
 
   const easing = options.easing || 'cubicOut';
-  const clipStart = getClipStart(0);
+  const clipStart = getClipPolygonParams({ direction: 'top', minimum: 0 });
   const rotationZ = ROTATION_MAP[direction];
   const clipEnd = getClipPolygonParams({ direction: 'initial' });
-  const translateZ = '(var(--motion-height, 200px) / 2)';
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
+
+  const rotateCustom = {
+    '--motion-perspective': `${perspective}px`,
+    '--motion-depth-negative': `calc(${depthValue} / 2 * -1)`,
+    '--motion-depth-positive': `calc(${depthValue} / 2)`,
+  };
 
   const clipCustom = {
     '--motion-rotate-z': `${rotationZ}deg`,
@@ -58,25 +55,25 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.2,
       easing: 'cubicOut',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
       name: tiltInRotate,
       easing,
-      custom: {},
+      custom: rotateCustom,
       keyframes: [
         {
           offset: 0,
           easing: 'step-end',
-          transform: 'perspective(800px)',
+          transform: `perspective(${toKeyframeValue(rotateCustom, '--motion-perspective', asWeb)})`,
         },
         {
           offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(-90deg) translateZ(calc${translateZ}) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${toKeyframeValue(rotateCustom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-negative', asWeb)}) rotateX(-90deg) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(calc(${translateZ} * -1)) rotateX(0deg) translateZ(calc${translateZ}) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${toKeyframeValue(rotateCustom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-negative', asWeb)}) rotateX(0deg) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },
@@ -89,7 +86,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom: clipCustom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: `var(--motion-clip-start, ${clipCustom['--motion-clip-start']})`,
           transform: `rotateZ(${toKeyframeValue(clipCustom, '--motion-rotate-z', asWeb)})`,
         },
@@ -100,21 +96,4 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ],
     },
   ];
-}
-
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let rotation = '0deg';
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-      rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-    });
-
-    dom.mutate((target_) => {
-      target_?.style.setProperty('--motion-clip-start', getClipStart(parseInt(rotation, 10)));
-    });
-  }
 }
