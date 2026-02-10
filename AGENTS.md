@@ -22,16 +22,16 @@ Declarative web animation library — trigger-based interactions using the Web A
 
 ## Structure
 
-| Path | What it is |
-|------|-----------|
-| `packages/interact/` | Core interaction library (`@wix/interact`) — triggers, handlers, React/Web Components |
-| `packages/motion/` | Animation engine (`@wix/motion`) — Web Animations API wrapper |
-| `packages/motion-presets/` | 82+ animation presets for `@wix/motion` |
-| `apps/demo/` | Demo app (Vite + React) |
-| `apps/docs/` | Documentation site (Vite + React + React Router) |
-| `packages/interact/rules/` | **Library interaction rules** (markdown specs for triggers) — NOT AI/cursor rules |
-| `packages/interact/dev/` | Internal spec/plan documents — not shipped code |
-| `packages/interact/docs/` | Package API docs, guides, and examples |
+| Path                       | What it is                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| `packages/interact/`       | Core interaction library (`@wix/interact`) — triggers, handlers, React/Web Components |
+| `packages/motion/`         | Animation engine (`@wix/motion`) — Web Animations API wrapper                         |
+| `packages/motion-presets/` | 82+ animation presets for `@wix/motion`                                               |
+| `apps/demo/`               | Demo app (Vite + React)                                                               |
+| `apps/docs/`               | Documentation site (Vite + React + React Router)                                      |
+| `packages/interact/rules/` | **Library interaction rules** (markdown specs for triggers) — NOT AI/cursor rules     |
+| `packages/interact/dev/`   | Internal spec/plan documents — not shipped code                                       |
+| `packages/interact/docs/`  | Package API docs, guides, and examples                                                |
 
 ## Conventions
 
@@ -51,15 +51,18 @@ Declarative web animation library — trigger-based interactions using the Web A
 ## Boundaries
 
 **Always:**
+
 - Run `yarn build && yarn test && yarn lint` before committing
 - Add tests for new functions/features — reviewers always request this
 - Keep PRs focused on one logical change
 
 **Ask first:**
+
 - Before adding new dependencies
 - Before architectural changes or new APIs
 
 **Never:**
+
 - Edit `dist/` directories — they are build output
 - Confuse `packages/interact/rules/` with AI rules — those are library interaction rule specs
 - Import between apps — packages are the shared layer
@@ -67,9 +70,9 @@ Declarative web animation library — trigger-based interactions using the Web A
 
 ## Documentation Index
 
-| Doc | Contents |
-|-----|----------|
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Dev setup, PR process, code standards |
+| Doc                                                              | Contents                                      |
+| ---------------------------------------------------------------- | --------------------------------------------- |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                               | Dev setup, PR process, code standards         |
 | [packages/interact/docs/guides/](packages/interact/docs/guides/) | Getting started, config shape, usage patterns |
-| [packages/interact/docs/](packages/interact/docs/) | API reference, guides, examples |
-| [packages/motion/docs/](packages/motion/) | Motion API, animation categories |
+| [packages/interact/docs/](packages/interact/docs/)               | API reference, guides, examples               |
+| [packages/motion/docs/](packages/motion/)                        | Motion API, animation categories              |
