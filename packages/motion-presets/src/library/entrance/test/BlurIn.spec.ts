@@ -66,7 +66,7 @@ describe('BlurIn', () => {
         duration: duration! * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-blurIn',
@@ -100,7 +100,7 @@ describe('BlurIn', () => {
         duration: duration! * 0.7,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-blurIn',

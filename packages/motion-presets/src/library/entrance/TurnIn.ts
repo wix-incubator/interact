@@ -49,7 +49,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.6,
       easing: 'sineIn',
       custom: {},
-      keyframes: [{ opacity: 0 }, {}],
+      keyframes: [{ opacity: 0 }],
     },
     {
       ...options,

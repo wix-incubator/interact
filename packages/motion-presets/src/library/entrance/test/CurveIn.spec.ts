@@ -30,7 +30,7 @@ describe('CurveIn', () => {
         },
         {
           easing: 'quadOut',
-          keyframes: [{ opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }],
         },
       ];
 
@@ -63,7 +63,7 @@ describe('CurveIn', () => {
         },
         {
           easing: 'quadOut',
-          keyframes: [{ opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }],
         },
       ];
 
@@ -106,7 +106,7 @@ describe('CurveIn', () => {
           name: 'motion-fadeIn',
           easing: 'quadOut',
           custom: {},
-          keyframes: [{ opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }],
         },
       ];
 
@@ -147,7 +147,7 @@ describe('CurveIn', () => {
           name: 'motion-fadeIn',
           easing: 'quadOut',
           custom: {},
-          keyframes: [{ opacity: 0 }, {}],
+          keyframes: [{ opacity: 0 }],
         },
       ];
 

@@ -27,7 +27,7 @@ describe('RevealIn', () => {
       {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -56,7 +56,7 @@ describe('RevealIn', () => {
       },
       {
         name: 'motion-fadeIn',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -91,7 +91,7 @@ describe('RevealIn', () => {
         easing: 'cubicInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -124,7 +124,7 @@ describe('RevealIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 

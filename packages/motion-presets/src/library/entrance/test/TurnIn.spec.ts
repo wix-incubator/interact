@@ -155,7 +155,7 @@ describe('TurnIn', () => {
         duration: 600,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-turnIn',
@@ -192,7 +192,7 @@ describe('TurnIn', () => {
         name: 'motion-fadeIn',
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-turnIn',
@@ -231,7 +231,7 @@ describe('TurnIn', () => {
         name: 'motion-fadeIn',
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-turnIn',

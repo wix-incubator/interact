@@ -63,7 +63,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ opacity: 0 }, {}],
+      keyframes: [{ opacity: 0 }],
     },
   ];
 }

@@ -14,7 +14,7 @@ describe('FoldIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'quadOut',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'backOut',
@@ -49,7 +49,7 @@ describe('FoldIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'quadOut',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'cubicInOut',
@@ -82,7 +82,7 @@ describe('FoldIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'backOut',
@@ -127,7 +127,7 @@ describe('FoldIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'cubicInOut',

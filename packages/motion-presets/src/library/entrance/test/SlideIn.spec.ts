@@ -36,7 +36,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -76,7 +76,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -116,7 +116,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -156,7 +156,7 @@ describe('SlideIn', () => {
         name: 'motion-fadeIn',
         easing: 'cubicInOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 

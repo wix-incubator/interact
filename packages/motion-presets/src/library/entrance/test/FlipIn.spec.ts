@@ -14,7 +14,7 @@ describe('FlipIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'quadOut',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'backOut',
@@ -49,7 +49,7 @@ describe('FlipIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'quadOut',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing,
@@ -80,7 +80,7 @@ describe('FlipIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing: 'backOut',
@@ -123,7 +123,7 @@ describe('FlipIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         easing,

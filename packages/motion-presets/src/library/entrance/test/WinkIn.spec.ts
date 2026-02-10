@@ -147,7 +147,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',
@@ -206,7 +206,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',
@@ -266,7 +266,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',

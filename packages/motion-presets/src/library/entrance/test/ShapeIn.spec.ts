@@ -119,7 +119,7 @@ describe('ShapeIn', () => {
         easing: 'quadOut',
         duration: duration * 0.8,
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-shapeIn',
@@ -150,7 +150,7 @@ describe('ShapeIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-shapeIn',
@@ -180,7 +180,7 @@ describe('ShapeIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-shapeIn',
@@ -210,7 +210,7 @@ describe('ShapeIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-shapeIn',
@@ -240,7 +240,7 @@ describe('ShapeIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
       {
         name: 'motion-shapeIn',

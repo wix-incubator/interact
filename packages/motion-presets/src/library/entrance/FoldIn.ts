@@ -53,7 +53,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ opacity: 0 }, {}],
+      keyframes: [{ opacity: 0 }],
     },
     {
       ...options,

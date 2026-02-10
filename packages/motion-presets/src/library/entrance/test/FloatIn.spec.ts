@@ -25,7 +25,7 @@ describe('FloatIn', () => {
       },
       {
         easing: 'sineInOut',
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -52,7 +52,7 @@ describe('FloatIn', () => {
         ],
       },
       {
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -89,7 +89,7 @@ describe('FloatIn', () => {
         easing: 'sineInOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 
@@ -124,7 +124,7 @@ describe('FloatIn', () => {
       {
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, {}],
+        keyframes: [{ opacity: 0 }],
       },
     ];
 

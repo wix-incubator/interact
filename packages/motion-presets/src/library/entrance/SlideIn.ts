@@ -1,6 +1,6 @@
 import type { EffectFourDirections, SlideIn, TimeAnimationOptions } from '../../types';
 import { getClipPolygonParams, parseDirection } from '../../utils';
-import { FOUR_DIRECTIONS } from '../../consts';
+import { FOUR_DIRECTIONS, INITIAL_FRAME_OFFSET } from '../../consts';
 
 const DEFAULT_DIRECTION: EffectFourDirections = 'left';
 
@@ -65,7 +65,7 @@ export function style(options: TimeAnimationOptions) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ opacity: 0 }, {}],
+      keyframes: [{ opacity: 0 }],
     },
   ];
 }
