@@ -16,7 +16,7 @@ export function style(options: TimeAnimationOptions) {
       ...options,
       name: fadeIn,
       easing: 'sineInOut',
-      keyframes: [{ opacity: 0 }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
   ];
 }

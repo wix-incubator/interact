@@ -41,7 +41,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ opacity: 0 }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

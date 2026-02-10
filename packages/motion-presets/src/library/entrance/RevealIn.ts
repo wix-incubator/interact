@@ -45,7 +45,7 @@ export function style(options: TimeAnimationOptions) {
       name: fadeIn,
       easing,
       custom: {},
-      keyframes: [{ opacity: 0 }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
   ];
 }

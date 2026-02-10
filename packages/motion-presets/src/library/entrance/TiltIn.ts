@@ -55,7 +55,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.2,
       easing: 'cubicOut',
       custom: {},
-      keyframes: [{ opacity: 0 }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

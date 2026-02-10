@@ -38,7 +38,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'cubicIn',
       duration: options.duration! * initialScale,
       custom: {},
-      keyframes: [{ opacity: 0 }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,

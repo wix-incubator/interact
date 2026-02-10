@@ -70,7 +70,7 @@ describe('DropIn', () => {
           easing: 'quadOut',
           duration: 800,
           custom: {},
-          keyframes: [{ opacity: 0 }],
+          keyframes: [{ offset: 0, opacity: 0 }],
         },
         {
           name: 'motion-dropIn',
@@ -110,7 +110,7 @@ describe('DropIn', () => {
           easing: 'quadOut',
           duration: 800,
           custom: {},
-          keyframes: [{ opacity: 0 }],
+          keyframes: [{ offset: 0, opacity: 0 }],
         },
         {
           name: 'motion-dropIn',

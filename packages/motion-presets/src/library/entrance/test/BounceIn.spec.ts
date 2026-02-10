@@ -509,7 +509,7 @@ describe('BounceIn style method', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-bounceIn',
