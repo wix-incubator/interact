@@ -1,6 +1,7 @@
 import { AnimationGroup } from './AnimationGroup';
-import { SequenceOptions } from './types';
+import type { AnimationOptions, SequenceOptions } from './types';
 import { calculateOffsets, resolveEasingFunction } from './utils';
+import { getAnimation } from './motion';
 
 export class Sequence extends AnimationGroup {
   animationGroups: AnimationGroup[];
@@ -54,6 +55,17 @@ export class Sequence extends AnimationGroup {
       this.offset,
       this.offsetEasing,
     );
+  }
+
+  static build(
+    configs: Array<{ target: HTMLElement | string | null; animationOptions: AnimationOptions }>,
+    sequenceOptions?: SequenceOptions,
+    reducedMotion: boolean = false,
+  ): Sequence | null {
+    const groups = configs
+      .map((cfg) => getAnimation(cfg.target, cfg.animationOptions, undefined, reducedMotion))
+      .filter((a): a is AnimationGroup => a instanceof AnimationGroup);
+    return groups.length ? new Sequence(groups, sequenceOptions) : null;
   }
 
   // Note: play(), pause(), reverse(), cancel(), setPlaybackRate(), onFinish(),

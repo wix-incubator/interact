@@ -37,7 +37,7 @@ export class Interact {
     [listContainer: string]: { [interactionId: string]: boolean };
   };
   controllers: Set<IInteractionController>;
-  sequenceCache: Map<string, MotionSequence> = new Map();
+  static sequenceCache: Map<string, MotionSequence> = new Map();
   static forceReducedMotion: boolean = false;
   static allowA11yTriggers: boolean = true;
   static instances: Interact[] = [];
@@ -94,7 +94,7 @@ export class Interact {
     this.addedInteractions = {};
     this.listInteractionsCache = {};
     this.controllers.clear();
-    this.sequenceCache.clear();
+    Interact.sequenceCache.clear();
     this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
     Interact.instances.splice(Interact.instances.indexOf(this), 1);
   }
@@ -171,7 +171,7 @@ export class Interact {
     Interact.controllerCache.forEach((controller: IInteractionController) => {
       controller.disconnect();
     });
-    Interact.instances.forEach((instance) => instance.sequenceCache.clear());
+    Interact.sequenceCache.clear();
     Interact.instances.length = 0;
     Interact.controllerCache.clear();
   }

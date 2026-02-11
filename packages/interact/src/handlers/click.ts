@@ -8,7 +8,6 @@ import type {
   EffectBase,
   IInteractionController,
   InteractOptions,
-  GetAnimationFn,
 } from '../types';
 import { isSequenceEffect } from '../types';
 import {
@@ -16,6 +15,7 @@ import {
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import { getAnimation } from '../core/add';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 
@@ -23,7 +23,6 @@ function createTimeEffectHandler(
   element: HTMLElement,
   effect: TimeEffect & EffectBase,
   options: PointerTriggerParams,
-  getAnimation: GetAnimationFn,
   reducedMotion: boolean = false,
   selectorCondition?: string,
 ) {
@@ -121,7 +120,6 @@ function addClickHandler(
     targetController,
     selectorCondition,
     allowA11yTriggers,
-    getAnimation,
   }: InteractOptions,
 ) {
   let handler: ((event: MouseEvent | KeyboardEvent) => void) | null;
@@ -139,12 +137,10 @@ function addClickHandler(
       selectorCondition,
     );
   } else {
-    if (!getAnimation) return;
     handler = createTimeEffectHandler(
       target,
       effect as TimeEffect & EffectBase,
       options as PointerTriggerParams,
-      getAnimation,
       reducedMotion,
       selectorCondition,
     );

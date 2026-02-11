@@ -5,6 +5,7 @@ import {
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import { getAnimation } from '../core/add';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 
@@ -13,10 +14,8 @@ function addAnimationEndHandler(
   target: HTMLElement,
   effect: TimeEffect,
   __: AnimationEndParams,
-  { reducedMotion, selectorCondition, getAnimation }: InteractOptions,
+  { reducedMotion, selectorCondition }: InteractOptions,
 ): void {
-  if (!getAnimation) return;
-
   const animation = getAnimation(
     target,
     effectToAnimationOptions(effect),

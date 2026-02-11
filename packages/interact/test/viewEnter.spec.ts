@@ -21,6 +21,10 @@ vi.mock('@wix/motion', () => ({
   registerEffects: vi.fn(),
 }));
 
+vi.mock('../src/core/add', () => ({
+  getAnimation: (...args: any[]) => mockGetAnimation(...args),
+}));
+
 vi.mock('fastdom', () => ({
   default: {
     measure: vi.fn((cb) => cb()),
@@ -112,7 +116,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         {},
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       expect(IntersectionObserverMock).toHaveBeenCalled();
@@ -125,7 +129,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'once' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry();
@@ -142,7 +146,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold: 0.5 },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({
@@ -165,7 +169,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({
@@ -196,7 +200,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: true, threshold },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({
@@ -223,7 +227,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { useSafeViewEnter: false, threshold },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({
@@ -245,7 +249,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -260,7 +264,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -282,7 +286,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -307,7 +311,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -322,7 +326,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'alternate' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -336,7 +340,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -352,7 +356,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -376,7 +380,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -403,7 +407,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -418,7 +422,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'repeat' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -432,7 +436,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -447,7 +451,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -469,7 +473,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -494,7 +498,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       // First entry
@@ -520,7 +524,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       const entry = createEntry({ isIntersecting: true });
@@ -535,7 +539,7 @@ describe('viewEnter handler', () => {
         target,
         { duration: 1000, namedEffect: { type: 'FadeIn' } },
         { type: 'state' },
-        { getAnimation: mockGetAnimation },
+        {},
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
@@ -544,12 +548,13 @@ describe('viewEnter handler', () => {
 
   describe('Null animation handling', () => {
     it('should not create IntersectionObserver when animation is null', async () => {
+      mockGetAnimation.mockReturnValueOnce(null);
       viewEnterHandler.add(
         element,
         target,
         { duration: 1000, namedEffect: { type: 'NonExistentEffect' } },
         {},
-        { getAnimation: () => null },
+        {},
       );
 
       // IntersectionObserver should not be created when animation is null

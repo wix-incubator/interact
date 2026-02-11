@@ -257,19 +257,11 @@ export function isSequenceEffect(effect: Effect): effect is SequenceEffect {
   return '_sequenceId' in effect && 'duration' in effect;
 }
 
-export type GetAnimationFn = (
-  target: HTMLElement | string | null,
-  animationOptions: Record<string, unknown>,
-  trigger?: unknown,
-  reducedMotion?: boolean,
-) => unknown;
-
 export type InteractOptions = {
   reducedMotion?: boolean;
   targetController?: IInteractionController;
   selectorCondition?: string;
   allowA11yTriggers?: boolean;
-  getAnimation?: GetAnimationFn;
 };
 
 export type InteractionHandlerModule<T extends TriggerType> = {

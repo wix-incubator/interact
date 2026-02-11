@@ -6,6 +6,7 @@ import {
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import { getAnimation } from '../core/add';
 import fastdom from 'fastdom';
 
 const SAFE_OBSERVER_CONFIG: IntersectionObserverInit = {
@@ -137,15 +138,13 @@ function addViewEnterHandler(
   target: HTMLElement,
   effect: TimeEffect,
   options: ViewEnterParams = {},
-  { reducedMotion, selectorCondition, getAnimation }: InteractOptions = {},
+  { reducedMotion, selectorCondition }: InteractOptions = {},
 ) {
   // For sequence effects, only the first effect (index 0) controls playback
   if (isSequenceEffect(effect) && effect._sequenceIndex !== 0) {
     // Non-leader sequence effects don't need handlers - the leader controls the Sequence
     return;
   }
-
-  if (!getAnimation) return;
 
   const mergedOptions = { ...viewEnterOptions, ...options };
   const type = mergedOptions.type || 'once';
