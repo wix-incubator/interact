@@ -18,10 +18,10 @@ describe('PanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -36,7 +36,7 @@ describe('PanScroll', () => {
       const mockOptions: ScrubAnimationOptions = {
         ...baseMockOptions,
         namedEffect: {
-          distance: { value: 200, type: 'percentage' },
+          distance: { value: 200, unit: 'percentage' },
         } as PanScrollType,
       };
 
@@ -45,10 +45,10 @@ describe('PanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -70,10 +70,10 @@ describe('PanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -95,11 +95,11 @@ describe('PanScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform: 'translateX(0) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -123,11 +123,11 @@ describe('PanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -150,10 +150,10 @@ describe('PanScroll', () => {
         {
           keyframes: [
             {
-              transform: 'translateX(-400px) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(-400px) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -177,10 +177,10 @@ describe('PanScroll', () => {
           fill: 'backwards',
           keyframes: [
             {
-              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -201,10 +201,10 @@ describe('PanScroll', () => {
         {
           keyframes: [
             {
-              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -226,10 +226,10 @@ describe('PanScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -252,10 +252,10 @@ describe('PanScroll', () => {
           fill: 'both',
           keyframes: [
             {
-              transform: 'translateX(var(--motion-pan-from)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-from)) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(var(--motion-pan-to)) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(var(--motion-pan-to)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },

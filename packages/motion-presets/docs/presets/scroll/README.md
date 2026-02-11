@@ -143,11 +143,11 @@ const scene = getScrubScene(
     },
     startOffset: {
       name: 'entry',
-      offset: { value: 20, type: 'percentage' },
+      offset: { value: 20, unit: 'percentage' },
     },
     endOffset: {
       name: 'cover',
-      offset: { value: 0, type: 'percentage' },
+      offset: { value: 0, unit: 'percentage' },
     },
   },
   {
@@ -173,7 +173,7 @@ document.querySelectorAll('.card').forEach((card, index) => {
       },
       startOffset: {
         name: 'entry',
-        offset: { value: index * 10, type: 'percentage' },
+        offset: { value: index * 10, unit: 'percentage' },
       },
     },
     {

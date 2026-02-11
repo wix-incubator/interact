@@ -14,7 +14,7 @@ describe('FadeIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'sineInOut',
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
     ];
 
@@ -32,7 +32,7 @@ describe('FadeIn', () => {
     const expectedResult: Partial<AnimationData>[] = [
       {
         easing: 'sineInOut',
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
     ];
 

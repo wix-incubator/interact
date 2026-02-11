@@ -1,11 +1,20 @@
-import type { Fold, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
+import type {
+  Fold,
+  TimeAnimationOptions,
+  DomApi,
+  AnimationExtraOptions,
+  EffectFourDirections,
+} from '../../types';
+import {
+  getEasing,
+  getEasingFamily,
+  getTimingFactor,
+  toKeyframeValue,
+  parseDirection,
+} from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
-const POWER_TO_ROTATION_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
+const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 
 const DIRECTION_MAP = {
   top: {
@@ -43,21 +52,22 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { direction = 'top', power, angle = MIN_ROTATE_ANGLE } = options.namedEffect as Fold;
+  const namedEffect = options.namedEffect as Fold;
+  const direction = parseDirection(
+    namedEffect.direction,
+    FOUR_DIRECTIONS,
+    DEFAULT_DIRECTION,
+  ) as EffectFourDirections;
+  const { angle = MIN_ROTATE_ANGLE } = namedEffect;
 
   const easing = options.easing || 'cubicInOut';
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
   const [name] = getNames(options);
 
-  const isResponsive = typeof power === 'undefined';
   const { rotation, origin } = DIRECTION_MAP[direction];
   const { x, y } = origin;
-  const ease = getEasingFamily(isResponsive ? easing : 'cubicInOut');
-
-  const rotateTransform = isResponsive
-    ? angle
-    : MIN_ROTATE_ANGLE * POWER_TO_ROTATION_FACTOR_MAP[power];
+  const ease = getEasingFamily(easing);
 
   const totalDurationWithDelay = 3.2 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
@@ -67,12 +77,12 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const custom: Record<string, string | number> = {
     '--motion-origin-x': `${x}%`,
     '--motion-origin-y': `${y}%`,
-    '--motion-rotate-angle': `${rotateTransform}deg`,
+    '--motion-rotate-angle': `${angle}deg`,
     '--motion-rotate-x': `${rotation.x}`,
     '--motion-rotate-y': `${rotation.y}`,
   };
 
-  const transformLeft = `rotateZ(var(--comp-rotate-z, 0deg)) translateX(${toKeyframeValue(
+  const transformLeft = `rotateZ(var(--motion-rotate, 0deg)) translateX(${toKeyframeValue(
     custom,
     '--motion-origin-x',
     asWeb,
@@ -88,11 +98,11 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       custom,
       '--motion-rotate-x',
       asWeb,
-    )} * ${value} * ${rotateTransform}deg)) rotateY(calc(${toKeyframeValue(
+    )} * ${value} * ${angle}deg)) rotateY(calc(${toKeyframeValue(
       custom,
       '--motion-rotate-y',
       asWeb,
-    )} * ${value} * ${rotateTransform}deg)) ${transformRight}`;
+    )} * ${value} * ${angle}deg)) ${transformRight}`;
 
   // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay

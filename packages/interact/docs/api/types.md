@@ -124,7 +124,7 @@ type Interaction = {
 
 - `key` - Unique identifier for the custom element that triggers the interaction
 - `trigger` - Type of trigger event
-- `selector` - Optional CSS selector to target an element within the custom element or within each list item if combined with `listContainer`
+- `selector` - Optional CSS selector to target elements. When `listContainer` is also specified, uses `querySelectorAll` within the container to find matching elements as list items. Without `listContainer`, uses `querySelectorAll` within the root element. For dynamically added list items, uses `querySelector` within each item.
 - `listContainer` - Optional selector for list container when targeting list items
 - `params` - Optional parameters for the trigger
 - `conditions` - Optional array of condition IDs to evaluate
@@ -516,7 +516,7 @@ type Fill = 'none' | 'forwards' | 'backwards' | 'both';
 **Properties:**
 
 - `key` - unique identifier for targeting a custom element (optional, defaults to source key from the `Interaction`)
-- `selector` - CSS selector for targeting an element inside the custom element or each list item if combined with `listContainer` (optional, defaults to `firstElementChild`)
+- `selector` - CSS selector for targeting elements inside the custom element (uses `querySelectorAll`) or each list item if combined with `listContainer` (optional, defaults to `firstElementChild`)
 - `listContainer` - CSS selector for list container when targeting list items (optional)
 - `duration` - Animation duration in milliseconds (required)
 - `easing` - Easing function name or custom cubic-bezier

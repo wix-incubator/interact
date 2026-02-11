@@ -2,12 +2,12 @@ type LengthUnit = 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
 
 export declare type Length = {
   value: number;
-  type: LengthUnit;
+  unit: LengthUnit;
 };
 
 export declare type Percentage = {
   value: number;
-  type: 'percentage';
+  unit: 'percentage';
 };
 
 export declare type LengthPercentage = Length | Percentage;
