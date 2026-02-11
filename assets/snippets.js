@@ -38,7 +38,6 @@ effects: [
 ]`,
   entrance: `trigger: 'viewEnter',
 effects: [{
-  fill: 'both', 
   keyframeEffect: {
     name: 'slideFromLeft',
     keyframes: [

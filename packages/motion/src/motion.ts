@@ -157,6 +157,7 @@ function getScrubScene(
 
     if (animationOptions.customEffect && transitionDuration) {
       typeSpecificOptions.transitionDuration = transitionDuration;
+      // TODO: refactor js easings
       typeSpecificOptions.transitionEasing = getJsEasing(transitionEasing);
     }
     typeSpecificOptions.target = (animation as MouseAnimationInstance).target;

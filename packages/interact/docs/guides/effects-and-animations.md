@@ -16,7 +16,7 @@ Time effects are traditional time-based animations perfect for entrance effects,
 
 ### Using Named Effects
 
-Named effects are pre-built animations from `@wix/motion`:
+Named effects are pre-built animations from `@wix/motion-presets` or effects registered via `Interact.registerEffects()`:
 
 ```typescript
 {
@@ -29,29 +29,6 @@ Named effects are pre-built animations from `@wix/motion`:
     fill: 'forwards'           // Animation fill mode
 }
 ```
-
-### Available Named Effects
-
-Entrance named effects include:
-
-- `ArcIn`
-- `BlurIn`
-- `BounceIn`
-- `ExpandIn`
-- `FadeIn`
-- `FlipIn`
-- `FloatIn`
-- `FoldIn`
-- `GlitchIn`
-- `GrowIn`
-- `RevealIn`
-- `ShapeIn`
-- `ShuttersIn`
-- `SlideIn`
-- `SpinIn`
-- `TiltIn`
-- `TurnIn`
-- `WinkIn`
 
 ### Using Keyframe Effects
 
@@ -131,8 +108,8 @@ Scrub effects are progress-based animations that respond to scroll position or p
     },
     // No duration - controlled by scroll/pointer progress
     easing: 'linear',
-    rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-    rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } }
+    rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+    rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } }
 }
 ```
 
@@ -150,8 +127,8 @@ Control when the animation starts and stops:
             { opacity: '0' }
         ]
     },
-    rangeStart: { name: 'cover', offset: { type: 'percentage', value: 30 } },  // Start at 30% scroll
-    rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 80 } }     // End at 80% scroll
+    rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 30 } },  // Start at 30% scroll
+    rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 80 } }     // End at 80% scroll
 }
 ```
 
@@ -176,8 +153,8 @@ TBD
                     { transform: 'translateY(-150px)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } }
         },
         // Text fades out faster
         {
@@ -189,8 +166,8 @@ TBD
                     { opacity: '0', transform: 'translateY(-50px)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 20 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 60 } }
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 20 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 60 } }
         }
     ]
 }

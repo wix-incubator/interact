@@ -1,6 +1,8 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6/dist/es/web.js';
+import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8/dist/es/web.js';
 // import { Interact } from './packages/interact/dist/es/web.js';
+import * as presets from 'https://esm.sh/@wix/motion-presets@1.0.0-1/dist/es/motion-presets.js';
+// import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
 
 // =============================================================================
 // FUNCTIONS & METHODS
@@ -686,7 +688,6 @@ const config = {
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -698,7 +699,6 @@ const config = {
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -779,7 +779,6 @@ const config = {
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 100,
-          fill: 'both',
         },
       ],
     },
@@ -792,7 +791,6 @@ const config = {
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 250,
-          fill: 'both',
         },
       ],
     },
@@ -805,19 +803,18 @@ const config = {
           duration: 1200,
           easing: 'ease-out',
           delay: 600,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'nav-logo',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000 }],
     },
     {
       key: 'nav-cta',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200 }],
     },
 
     // Primitive Interactions (generated)
@@ -829,7 +826,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromLeftToTop',
             keyframes: [
@@ -839,7 +836,6 @@ const config = {
           },
           duration: ENTRANCE_DURATION,
           easing: ENTRANCE_EASING,
-          delay: 0,
         },
       ],
     },
@@ -848,7 +844,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromTopToRight',
             keyframes: [
@@ -867,7 +863,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromRightToBottom',
             keyframes: [
@@ -886,7 +882,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromBottomToLeft',
             keyframes: [
@@ -977,8 +973,8 @@ const config = {
         {
           key: 'orbit-y',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateY',
             keyframes: [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(360deg)' }],
@@ -988,8 +984,8 @@ const config = {
         {
           key: 'orbit-x',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateX',
             keyframes: [
@@ -1002,8 +998,8 @@ const config = {
         {
           key: 'orbit-diag-1',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag1',
             keyframes: [
@@ -1016,8 +1012,8 @@ const config = {
         {
           key: 'orbit-diag-2',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag2',
             keyframes: [
@@ -1044,7 +1040,6 @@ const config = {
           },
           duration: 1000,
           easing: 'ease-out',
-          fill: 'both',
         },
       ],
     },
@@ -1053,12 +1048,14 @@ const config = {
     {
       key: 'visual-break',
       trigger: 'viewEnter',
-      threshold: 0.2,
+      params: {
+        type: 'once',
+        threshold: 0.2,
+      },
       effects: [
         {
           namedEffect: { type: 'ScaleIn', power: 'soft' },
           duration: 1200,
-          fill: 'both',
         },
       ],
     },
@@ -1070,7 +1067,6 @@ const config = {
           namedEffect: { type: 'ParallaxScroll', range: 'continuous', speed: -0.05 },
           rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
           rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } },
-          fill: 'both',
           composite: 'add',
         },
       ],
@@ -1084,8 +1080,8 @@ const config = {
         {
           key: 'pyramid-target',
           fill: 'both',
-          rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'pyramid-tumble',
             keyframes: [
@@ -1162,8 +1158,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 30, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 45, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 45, unit: 'percentage' } },
           fill: 'both',
         },
       ],
@@ -1223,7 +1219,6 @@ const config = {
         {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
-          fill: 'both',
         },
       ],
     },
@@ -1236,7 +1231,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 100,
-          fill: 'both',
         },
       ],
     },
@@ -1249,7 +1243,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 200,
-          fill: 'both',
         },
       ],
     },
@@ -1262,7 +1255,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 300,
-          fill: 'both',
         },
       ],
     },
@@ -1276,8 +1268,8 @@ const config = {
           key: 'spread-card-0',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'stayCenter',
             keyframes: [
@@ -1290,8 +1282,8 @@ const config = {
           key: 'spread-card-1',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftInner',
             keyframes: [
@@ -1304,8 +1296,8 @@ const config = {
           key: 'spread-card-2',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightInner',
             keyframes: [
@@ -1318,8 +1310,8 @@ const config = {
           key: 'spread-card-3',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftOuter',
             keyframes: [
@@ -1332,8 +1324,8 @@ const config = {
           key: 'spread-card-4',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightOuter',
             keyframes: [
@@ -1437,8 +1429,8 @@ const config = {
           key: 'h-track',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'moveLeft',
             keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(-5824px)' }],
@@ -1718,12 +1710,12 @@ const config = {
     {
       key: 'footer-brand',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600 }],
     },
     {
       key: 'footer-link',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100 }],
     },
   ],
 };
@@ -1747,6 +1739,9 @@ window.addEventListener('resize', updateTunnelBounds);
 
 // Respect reduced motion settings
 Interact.forceReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Register presets
+Interact.registerEffects(presets);
 
 // Initialize Interact
 Interact.create(config);

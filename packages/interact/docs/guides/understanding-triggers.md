@@ -11,7 +11,6 @@ Triggers are the heart of `@wix/interact` - they define when an interaction shou
 | `interest`     | Accessibility-friendly hover (focus events)         |
 | `activate`     | Accessibility-friendly click (keyboard Enter/Space) |
 | `viewEnter`    | Element enters viewport                             | Entrance animations, lazy loading |
-| `pageVisible`  | Page becomes visible                                | Loop animations, Auto-play videos |
 | `animationEnd` | Previous animation completes                        | Animation sequences, chaining     |
 | `viewProgress` | Scroll progress through element                     | Parallax, progress bars           |
 | `pointerMove`  | Mouse movement over element                         | Interactive cards, 3D effects     |
@@ -352,11 +351,7 @@ const cardAnimations = [
 ];
 ```
 
-## 6. PageVisible Trigger
-
-TBD
-
-## 7. ViewProgress Trigger
+## 6. ViewProgress Trigger
 
 The `viewProgress` trigger creates scroll-driven animations as elements move through the viewport.
 
@@ -398,8 +393,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { filter: 'grayscale(100%)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         },
         {
             key: 'foreground-text',
@@ -410,8 +405,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { opacity: '0', transform: 'scale(0.8)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }
@@ -433,8 +428,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { transform: 'scaleX(1)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }
