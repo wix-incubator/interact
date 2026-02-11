@@ -28,7 +28,7 @@ export function getAnimation(
   if (sequenceId) {
     return Interact.sequenceCache.get(sequenceId) ?? null;
   }
-  return motionGetAnimation(target, animationOptions, trigger , reducedMotion);
+  return motionGetAnimation(target, animationOptions, trigger, reducedMotion);
 }
 
 function buildSequences(

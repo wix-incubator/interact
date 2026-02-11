@@ -119,12 +119,7 @@ function addClickHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {} as StateParams,
-  {
-    reducedMotion,
-    targetController,
-    selectorCondition,
-    allowA11yTriggers,
-  }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
   let handler: ((event: MouseEvent | KeyboardEvent) => void) | null;
   let once = false;

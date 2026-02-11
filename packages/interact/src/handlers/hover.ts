@@ -134,12 +134,7 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  {
-    reducedMotion,
-    targetController,
-    selectorCondition,
-    allowA11yTriggers,
-  }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
   let handler: ((event: MouseEvent | FocusEvent) => void) | null;
   let isStateTrigger = false;
