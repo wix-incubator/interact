@@ -440,6 +440,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -451,6 +452,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -487,6 +489,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -499,6 +502,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
@@ -511,6 +515,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { ...FADE_UP_OPTS, distance: '30px' },
           duration: 1200,
           easing: 'ease-out',
@@ -521,12 +526,12 @@ const config = {
     {
       key: 'nav-logo',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000 }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 1000 }],
     },
     {
       key: 'nav-cta',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200 }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200 }],
     },
 
     // Primitive Interactions (generated)
@@ -538,7 +543,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'forwards',
+          fill: 'both',
           keyframeEffect: {
             name: 'slideFromLeftToTop',
             keyframes: [
@@ -556,7 +561,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'forwards',
+          fill: 'both',
           keyframeEffect: {
             name: 'slideFromTopToRight',
             keyframes: [
@@ -575,7 +580,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'forwards',
+          fill: 'both',
           keyframeEffect: {
             name: 'slideFromRightToBottom',
             keyframes: [
@@ -594,7 +599,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'forwards',
+          fill: 'both',
           keyframeEffect: {
             name: 'slideFromBottomToLeft',
             keyframes: [
@@ -744,6 +749,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: {
             type: 'SlideIn',
             direction: 'bottom',
@@ -766,6 +772,7 @@ const config = {
       },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'ScaleIn', power: 'soft' },
           duration: 1200,
         },
@@ -913,6 +920,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
         },
@@ -923,6 +931,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 100,
@@ -934,6 +943,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 200,
@@ -945,6 +955,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 300,
@@ -1165,12 +1176,12 @@ const config = {
     {
       key: 'footer-brand',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600 }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 600 }],
     },
     {
       key: 'footer-link',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100 }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100 }],
     },
   ],
 };
