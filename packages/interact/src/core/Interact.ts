@@ -367,7 +367,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
 
     const listContainer = interaction.listContainer;
 
-    effects.forEach((effect) => {
+    effects.forEach((effect: (Effect | EffectRef) & { interactionId?: string }) => {
       /*
        * Target cascade order is the first of:
        *  -> Config.interactions.effects.effect.key
@@ -401,7 +401,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
       }
 
       const interactionId = `${target}::${effectId}::${interactionIdx}`;
-      (effect as any).interactionId = interactionId;
+      effect.interactionId = interactionId;
       interactions[source].interactionIds.add(interactionId);
 
       if (target === source) {
