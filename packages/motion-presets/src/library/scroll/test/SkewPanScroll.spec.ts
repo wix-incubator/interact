@@ -19,10 +19,10 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) skewX(0deg) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -44,10 +44,10 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-20deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-20deg) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) skewX(0deg) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -69,85 +69,10 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) skewX(10deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) skewX(10deg) rotate(var(--motion-rotate, 0))',
             },
             {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
-            },
-          ],
-        },
-      ];
-
-      const result = SkewPanScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as SkewPanScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--comp-rotate-z, 0))',
-            },
-            {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
-            },
-          ],
-        },
-      ];
-
-      const result = SkewPanScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - medium', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SkewPanScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-17deg) rotate(var(--comp-rotate-z, 0))',
-            },
-            {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
-            },
-          ],
-        },
-      ];
-
-      const result = SkewPanScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - hard', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as SkewPanScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-24deg) rotate(var(--comp-rotate-z, 0))',
-            },
-            {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) skewX(0deg) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -169,11 +94,11 @@ describe('SkewPanScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform: 'translateX(0) skewX(0deg) rotate(var(--comp-rotate-z, 0))',
+              transform: 'translateX(0) skewX(0deg) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(10deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(10deg) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -195,11 +120,11 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(100vw - var(--motion-left, 0px))) skewX(-10deg) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) skewX(10deg) rotate(var(--comp-rotate-z, 0))',
+                'translateX(calc(var(--motion-left, calc(100vw - 100%)) * -1 - 100%)) skewX(10deg) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -225,11 +150,11 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -251,11 +176,11 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },
@@ -278,11 +203,11 @@ describe('SkewPanScroll', () => {
           keyframes: [
             {
               transform:
-                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-start-x)) skewX(var(--motion-skewpan-from-skew)) rotate(var(--motion-rotate, 0))',
             },
             {
               transform:
-                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--comp-rotate-z, 0))',
+                'translateX(var(--motion-skewpan-end-x)) skewX(var(--motion-skewpan-to-skew)) rotate(var(--motion-rotate, 0))',
             },
           ],
         },

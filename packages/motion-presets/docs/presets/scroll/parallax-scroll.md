@@ -185,11 +185,11 @@ const customRangeParallax = getWebAnimation(
     },
     startOffset: {
       name: 'entry',
-      offset: { value: 20, type: 'percentage' },
+      offset: { value: 20, unit: 'percentage' },
     },
     endOffset: {
       name: 'exit',
-      offset: { value: 80, type: 'percentage' },
+      offset: { value: 80, unit: 'percentage' },
     },
   },
   {

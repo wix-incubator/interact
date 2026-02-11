@@ -3,17 +3,21 @@ import {
   AnimationExtraOptions,
   TrackMouse,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
+  MouseEffectAxis,
 } from '../../types';
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import {
+  getCssUnits,
+  getMouseTransitionEasing,
+  mapRange,
+  parseLength,
+  parseDirection,
+} from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
-const easingMap: Record<EffectPower, ScrubTransitionEasing> = {
-  soft: 'linear',
-  medium: 'easeOut',
-  hard: 'hardBackOut',
-};
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
+const DEFAULT_AXIS: MouseEffectAxis = 'both';
+const AXES = ['both', 'horizontal', 'vertical'] as const;
+
 class TrackMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
     const { invert, distance, axis } = this.options;
@@ -32,9 +36,9 @@ class TrackMouseAnimation extends CustomMouse {
       translateY = mapRange(0, 1, -distance.value, distance.value, progressY) * invert;
     }
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
-    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) rotate(var(--comp-rotate-z, 0deg))`;
+    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) rotate(var(--motion-rotate, 0deg))`;
   }
   cancel() {
     this.target.style.transform = '';
@@ -44,18 +48,14 @@ class TrackMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    power,
-    inverted = false,
-    distance = { value: 200, type: 'px' },
-    axis = 'both',
-  } = options.namedEffect as TrackMouse;
+  const namedEffect = options.namedEffect as TrackMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+  const axis = parseDirection(namedEffect.axis, AXES, DEFAULT_AXIS) as MouseEffectAxis;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? easingMap[power] : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,

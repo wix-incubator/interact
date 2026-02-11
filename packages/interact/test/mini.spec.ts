@@ -247,7 +247,7 @@ describe('interact (mini)', () => {
       'logo-track-mouse': {
         namedEffect: {
           type: 'TrackMouse',
-          distance: { value: 20, type: 'px' },
+          distance: { value: 20, unit: 'px' },
           axis: 'both',
           power: 'medium',
         } as NamedEffect,
@@ -272,11 +272,11 @@ describe('interact (mini)', () => {
         } as NamedEffect,
         rangeStart: {
           name: 'contain',
-          offset: { value: -10, type: 'percentage' },
+          offset: { value: -10, unit: 'percentage' },
         },
         rangeEnd: {
           name: 'contain',
-          offset: { value: 110, type: 'percentage' },
+          offset: { value: 110, unit: 'percentage' },
         },
       },
       'logo-transition-hover': {
@@ -302,7 +302,7 @@ describe('interact (mini)', () => {
     // Mock Web Animations API
     (window as any).KeyframeEffect = class KeyframeEffect {
       constructor(element: Element | null, keyframes: any[], options: any) {
-        return { element, keyframes, options };
+        return { element, keyframes, options, setKeyframes: vi.fn() };
       }
     };
 
@@ -2026,7 +2026,7 @@ describe('interact (mini)', () => {
         add(targetElement, 'invalid-target');
 
         expect(consoleSpy).toHaveBeenCalledWith(
-          'Interact: No element found for selector ".non-existent-element"',
+          'Interact: No elements found for selector ".non-existent-element"',
         );
       });
 
@@ -3002,19 +3002,19 @@ describe('interact (mini)', () => {
 
         expect(result.startOffset).toEqual({
           name: 'cover',
-          offset: { value: 0, type: 'percentage' },
+          offset: { value: 0, unit: 'percentage' },
         });
         expect(result.endOffset).toEqual({
           name: 'cover',
-          offset: { value: 100, type: 'percentage' },
+          offset: { value: 100, unit: 'percentage' },
         });
       });
 
       it('should use provided rangeStart and rangeEnd values when supplied', () => {
         const scrubEffect: ScrubEffect = {
           namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
-          rangeStart: { name: 'contain', offset: { value: 10, type: 'percentage' } },
-          rangeEnd: { name: 'entry', offset: { value: 90, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 10, unit: 'percentage' } },
+          rangeEnd: { name: 'entry', offset: { value: 90, unit: 'percentage' } },
         };
 
         const result = effectToAnimationOptions(scrubEffect) as {
@@ -3024,18 +3024,18 @@ describe('interact (mini)', () => {
 
         expect(result.startOffset).toEqual({
           name: 'contain',
-          offset: { value: 10, type: 'percentage' },
+          offset: { value: 10, unit: 'percentage' },
         });
         expect(result.endOffset).toEqual({
           name: 'entry',
-          offset: { value: 90, type: 'percentage' },
+          offset: { value: 90, unit: 'percentage' },
         });
       });
 
       it('should use rangeStart.name for endOffset.name when only rangeStart is provided', () => {
         const scrubEffect: ScrubEffect = {
           namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
-          rangeStart: { name: 'entry', offset: { value: 25, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 25, unit: 'percentage' } },
         };
 
         const result = effectToAnimationOptions(scrubEffect) as {
@@ -3045,11 +3045,11 @@ describe('interact (mini)', () => {
 
         expect(result.startOffset).toEqual({
           name: 'entry',
-          offset: { value: 25, type: 'percentage' },
+          offset: { value: 25, unit: 'percentage' },
         });
         expect(result.endOffset).toEqual({
           name: 'entry',
-          offset: { value: 100, type: 'percentage' },
+          offset: { value: 100, unit: 'percentage' },
         });
       });
 
@@ -3066,18 +3066,18 @@ describe('interact (mini)', () => {
 
         expect(result.startOffset).toEqual({
           name: 'exit',
-          offset: { value: 0, type: 'percentage' },
+          offset: { value: 0, unit: 'percentage' },
         });
         expect(result.endOffset).toEqual({
           name: 'exit',
-          offset: { value: 100, type: 'percentage' },
+          offset: { value: 100, unit: 'percentage' },
         });
       });
 
       it('should use default startOffset.name when only rangeEnd is provided', () => {
         const scrubEffect: ScrubEffect = {
           namedEffect: { type: 'FadeScroll', range: 'in', opacity: 0 } as NamedEffect,
-          rangeEnd: { name: 'exit', offset: { value: 75, type: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 75, unit: 'percentage' } },
         };
 
         const result = effectToAnimationOptions(scrubEffect) as {
@@ -3087,11 +3087,11 @@ describe('interact (mini)', () => {
 
         expect(result.startOffset).toEqual({
           name: 'cover',
-          offset: { value: 0, type: 'percentage' },
+          offset: { value: 0, unit: 'percentage' },
         });
         expect(result.endOffset).toEqual({
           name: 'exit',
-          offset: { value: 75, type: 'percentage' },
+          offset: { value: 75, unit: 'percentage' },
         });
       });
     });

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Interaction, createInteractRef, Interact } from '../src/react';
 import * as domApi from '../src/dom/api';
 import type { InteractConfig } from '../src/types';
@@ -132,11 +132,11 @@ describe('interact (react)', () => {
         } as NamedEffect,
         rangeStart: {
           name: 'contain',
-          offset: { value: -10, type: 'percentage' },
+          offset: { value: -10, unit: 'percentage' },
         },
         rangeEnd: {
           name: 'contain',
-          offset: { value: 110, type: 'percentage' },
+          offset: { value: 110, unit: 'percentage' },
         },
       },
     },
@@ -370,7 +370,9 @@ describe('interact (react)', () => {
 
       function TestComponent() {
         const ref = useRef<HTMLDivElement>(null);
-        refValue.current = ref.current;
+        useEffect(() => {
+          refValue.current = ref.current;
+        });
 
         return (
           <Interaction tagName="div" interactKey="logo-click" ref={ref}>

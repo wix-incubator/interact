@@ -97,7 +97,7 @@ const scene = getScrubScene(
     type: 'ScrubAnimationOptions',
     namedEffect: {
       type: 'TrackMouse',
-      distance: { value: 50, type: 'px' },
+      distance: { value: 50, unit: 'px' },
       power: 'medium',
     },
     transitionDuration: 300,
@@ -136,7 +136,7 @@ const dramaticEffect = {
 // Horizontal-only cursor following
 const horizontalTrack = {
   type: 'TrackMouse',
-  distance: { value: 100, type: 'px' },
+  distance: { value: 100, unit: 'px' },
   axis: 'horizontal',
   power: 'medium',
 };
@@ -144,7 +144,7 @@ const horizontalTrack = {
 // Vertical-only scaling
 const verticalScale = {
   type: 'ScaleMouse',
-  distance: { value: 150, type: 'px' },
+  distance: { value: 150, unit: 'px' },
   axis: 'vertical',
   scale: 1.2,
 };
@@ -241,7 +241,7 @@ class CursorFollower {
         type: 'ScrubAnimationOptions',
         namedEffect: {
           type: 'TrackMouse',
-          distance: { value: 0, type: 'px' }, // Perfect following
+          distance: { value: 0, unit: 'px' }, // Perfect following
           axis: 'both',
           power: 'medium',
         },
@@ -266,11 +266,11 @@ const cursorFollower = new CursorFollower();
 const mouseResponders = [
   {
     element: '.bg-layer',
-    effect: { type: 'AiryMouse', distance: { value: 30, type: 'px' }, power: 'soft' },
+    effect: { type: 'AiryMouse', distance: { value: 30, unit: 'px' }, power: 'soft' },
   },
   {
     element: '.mid-layer',
-    effect: { type: 'TrackMouse', distance: { value: 50, type: 'px' }, power: 'medium' },
+    effect: { type: 'TrackMouse', distance: { value: 50, unit: 'px' }, power: 'medium' },
   },
   {
     element: '.fg-layer',

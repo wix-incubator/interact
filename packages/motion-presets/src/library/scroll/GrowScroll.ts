@@ -1,12 +1,15 @@
-import type { AnimationFillMode, GrowScroll, ScrubAnimationOptions, DomApi } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import type {
+  AnimationFillMode,
+  GrowScroll,
+  ScrubAnimationOptions,
+  DomApi,
+  EffectNineDirections,
+} from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { NINE_DIRECTIONS } from '../../consts';
 
 const MAX_Y_TRAVEL = 40;
-const POWER_MAP = {
-  soft: { scaleFrom: 0.8, scaleTo: 1.2, travelY: 0 },
-  medium: { scaleFrom: 0.3, scaleTo: 1.7, travelY: 0.75 },
-  hard: { scaleFrom: 0, scaleTo: 4, travelY: 1 },
-};
+const DEFAULT_DIRECTION: EffectNineDirections = 'center';
 
 const directionMap = {
   top: [0, -50],
@@ -29,26 +32,17 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    power,
-    range = 'in',
-    scale = range === 'in' ? POWER_MAP.hard.scaleFrom : POWER_MAP.hard.scaleTo,
-    direction = 'center',
-    speed = 0,
-  } = options.namedEffect as GrowScroll;
+  const namedEffect = options.namedEffect as GrowScroll;
+  const { range = 'in', scale = range === 'in' ? 0 : 4, speed = 0 } = namedEffect;
+  const direction = parseDirection(namedEffect?.direction, NINE_DIRECTIONS, DEFAULT_DIRECTION);
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const { scaleFrom, scaleTo, travelY } =
-    power && POWER_MAP[power]
-      ? POWER_MAP[power]
-      : {
-          scaleFrom: scale,
-          scaleTo: scale,
-          travelY: speed,
-        };
+  const scaleFrom = scale;
+  const scaleTo = scale;
+  const travelY = speed;
   const travel = travelY * MAX_Y_TRAVEL;
 
   const fromValues = {
@@ -60,7 +54,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     travel: range === 'in' ? 0 : travel,
   };
 
-  const offset = Math.abs(power && POWER_MAP[power] ? POWER_MAP[power].travelY : travel);
+  const offset = Math.abs(travel);
   const startOffsetAdd = range === 'out' ? '0px' : `${-offset}vh`;
   const endOffsetAdd = range === 'in' ? '0px' : `${offset}vh`;
 
@@ -108,7 +102,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-trans-y',
             asWeb,
-          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )})) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translateY(${toKeyframeValue(
@@ -131,7 +125,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-trans-y',
             asWeb,
-          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )})) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

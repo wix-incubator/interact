@@ -20,18 +20,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 0deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 360deg)',
             },
           ],
         },
@@ -58,18 +58,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(1, 0, 0, 0deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(1, 0, 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(1, 0, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(1, 0, 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(1, 0, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(1, 0, 0, 360deg)',
             },
           ],
         },
@@ -99,74 +99,20 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 0deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 0deg)',
               easing: 'ease-in-out',
             },
             {
               offset: 0.5,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(0, 1, 0, 360deg)',
+                'perspective(800px) rotateZ(var(--motion-rotate, 0deg)) rotate3d(0, 1, 0, 360deg)',
             },
           ],
-        },
-      ];
-
-      const result = FlipAnimation.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - soft', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          keyframes: [{ easing: 'linear' }, {}, {}],
-        },
-      ];
-
-      const result = FlipAnimation.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - medium', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          keyframes: [{ easing: 'cubic-bezier(0.86, 0, 0.07, 1)' }, {}, {}],
-        },
-      ];
-
-      const result = FlipAnimation.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - hard', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          keyframes: [{ easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' }, {}, {}],
         },
       ];
 
@@ -187,6 +133,7 @@ describe('Flip', () => {
         {
           name: 'motion-flip-1',
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '0',
             '--motion-rotate-y': '1',
           },
@@ -194,18 +141,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
         },
@@ -228,6 +175,7 @@ describe('Flip', () => {
           easing: 'linear',
           delay: 0,
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '1',
             '--motion-rotate-y': '0',
           },
@@ -235,18 +183,18 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'linear',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
         },
@@ -273,6 +221,7 @@ describe('Flip', () => {
           delay: 0,
           duration: 2000,
           custom: {
+            '--motion-perspective': '800px',
             '--motion-rotate-x': '0',
             '--motion-rotate-y': '1',
           },
@@ -280,111 +229,20 @@ describe('Flip', () => {
             {
               offset: 0,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 0deg)',
               easing: 'ease-in-out',
             },
             {
               offset: 0.5,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
             {
               offset: 1,
               transform:
-                'perspective(800px) rotateZ(var(--comp-rotate-z, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
+                'perspective(var(--motion-perspective)) rotateZ(var(--motion-rotate, 0deg)) rotate3d(var(--motion-rotate-x), var(--motion-rotate-y), 0, 360deg)',
             },
           ],
-        },
-      ];
-
-      const result = FlipAnimation.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - soft', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          custom: {
-            '--motion-rotate-x': '0',
-            '--motion-rotate-y': '1',
-          },
-          keyframes: [{ easing: 'linear' }, {}, {}],
-        },
-      ];
-
-      const result = FlipAnimation.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - medium', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          custom: {
-            '--motion-rotate-x': '0',
-            '--motion-rotate-y': '1',
-          },
-          keyframes: [{ easing: 'cubic-bezier(0.86, 0, 0.07, 1)' }, {}, {}],
-        },
-      ];
-
-      const result = FlipAnimation.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom power - hard', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as Flip,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          custom: {
-            '--motion-rotate-x': '0',
-            '--motion-rotate-y': '1',
-          },
-          keyframes: [{ easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' }, {}, {}],
-        },
-      ];
-
-      const result = FlipAnimation.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('Flip animation with custom easing override should be ignored when power is set', () => {
-      const mockOptions: TimeAnimationOptions = {
-        ...baseMockOptions,
-        duration: 1,
-        delay: 0,
-        easing: 'easeInOut',
-        namedEffect: { power: 'medium' } as Flip, // Power should take precedence
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-flip-1',
-          custom: {
-            '--motion-rotate-x': '0',
-            '--motion-rotate-y': '1',
-          },
-          keyframes: [{ easing: 'cubic-bezier(0.86, 0, 0.07, 1)' }, {}, {}],
         },
       ];
 

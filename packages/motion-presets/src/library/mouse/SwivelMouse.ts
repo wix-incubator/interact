@@ -4,20 +4,13 @@ import {
   SwivelMouse,
   MousePivotAxis,
   Progress,
-  EffectPower,
-  ScrubTransitionEasing,
 } from '../../types';
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
 
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; perspective: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 25, perspective: 1000, easing: 'easeOut' },
-  medium: { angle: 50, perspective: 700, easing: 'easeOut' },
-  hard: { angle: 85, perspective: 300, easing: 'easeOut' },
-};
+const DEFAULT_ANGLE = 5;
+const DEFAULT_PIVOT_AXIS: MousePivotAxis = 'center-horizontal';
+const AXES = ['top', 'bottom', 'right', 'left', 'center-horizontal', 'center-vertical'] as const;
 
 const transformOrigins: Record<MousePivotAxis, [number, number]> = {
   top: [0, -50],
@@ -41,11 +34,10 @@ class SwivelMouseAnimation extends CustomMouse {
       invertVertical = 1;
     }
 
-    // if progress  === 0, rotate === angle, if progress === 0.5, rotate === 0, if progress === 1, rotate === angle
     const rotate = mapRange(0, 1, -angle, angle, progress) * invertVertical * invert;
 
     const [translateX, translateY] = transformOrigins[pivotAxis as MousePivotAxis];
-    const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--comp-rotate-z, 0deg))`;
+    const transform = `perspective(${perspective}px) translateX(${translateX}%) translateY(${translateY}%) ${rotateAxis}(${rotate}deg) translateX(${-translateX}%) translateY(${-translateY}%) rotate(var(--motion-rotate, 0deg))`;
 
     this.target.style.transform = transform;
   }
@@ -58,23 +50,23 @@ class SwivelMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    power,
-    inverted = false,
-    angle = 5,
-    perspective = 800,
-    pivotAxis = 'center-horizontal',
-  } = options.namedEffect as SwivelMouse;
+  const namedEffect = options.namedEffect as SwivelMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const pivotAxis = parseDirection(
+    namedEffect.pivotAxis,
+    AXES,
+    DEFAULT_PIVOT_AXIS,
+  ) as MousePivotAxis;
+  const { perspective = 800 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle,
+    perspective,
     pivotAxis,
   };
 
