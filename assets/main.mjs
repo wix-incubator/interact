@@ -1,6 +1,8 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6/dist/es/web.js';
+import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8/dist/es/web.js';
 // import { Interact } from './packages/interact/dist/es/web.js';
+import * as presets from 'https://esm.sh/@wix/motion-presets@1.0.0-1/dist/es/motion-presets.js';
+// import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
 
 // =============================================================================
 // FUNCTIONS & METHODS
@@ -441,7 +443,6 @@ const config = {
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -453,7 +454,6 @@ const config = {
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -491,7 +491,6 @@ const config = {
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 100,
-          fill: 'both',
         },
       ],
     },
@@ -504,7 +503,6 @@ const config = {
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 250,
-          fill: 'both',
         },
       ],
     },
@@ -517,19 +515,18 @@ const config = {
           duration: 1200,
           easing: 'ease-out',
           delay: 600,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'nav-logo',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000 }],
     },
     {
       key: 'nav-cta',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200 }],
     },
 
     // Primitive Interactions (generated)
@@ -541,7 +538,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromLeftToTop',
             keyframes: [
@@ -551,7 +548,6 @@ const config = {
           },
           duration: ENTRANCE_DURATION,
           easing: ENTRANCE_EASING,
-          delay: 0,
         },
       ],
     },
@@ -560,7 +556,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromTopToRight',
             keyframes: [
@@ -579,7 +575,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromRightToBottom',
             keyframes: [
@@ -598,7 +594,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
-          fill: 'both',
+          fill: 'forwards',
           keyframeEffect: {
             name: 'slideFromBottomToLeft',
             keyframes: [
@@ -756,7 +752,6 @@ const config = {
           },
           duration: 1000,
           easing: 'ease-out',
-          fill: 'both',
         },
       ],
     },
@@ -765,12 +760,14 @@ const config = {
     {
       key: 'visual-break',
       trigger: 'viewEnter',
-      threshold: 0.2,
+      params: {
+        type: 'once',
+        threshold: 0.2,
+      },
       effects: [
         {
           namedEffect: { type: 'ScaleIn', power: 'soft' },
           duration: 1200,
-          fill: 'both',
         },
       ],
     },
@@ -782,7 +779,6 @@ const config = {
           namedEffect: { type: 'ParallaxScroll', range: 'continuous', speed: -0.05 },
           rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
           rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } },
-          fill: 'both',
           composite: 'add',
         },
       ],
@@ -919,7 +915,6 @@ const config = {
         {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
-          fill: 'both',
         },
       ],
     },
@@ -931,7 +926,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 100,
-          fill: 'both',
         },
       ],
     },
@@ -943,7 +937,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 200,
-          fill: 'both',
         },
       ],
     },
@@ -955,7 +948,6 @@ const config = {
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 300,
-          fill: 'both',
         },
       ],
     },
@@ -1173,12 +1165,12 @@ const config = {
     {
       key: 'footer-brand',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600 }],
     },
     {
       key: 'footer-link',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100, fill: 'both' }],
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100 }],
     },
   ],
 };
@@ -1202,6 +1194,9 @@ window.addEventListener('resize', updateTunnelBounds);
 
 // Respect reduced motion settings
 Interact.forceReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Register presets
+Interact.registerEffects(presets);
 
 // Initialize Interact
 Interact.create(config);
