@@ -1,0 +1,43 @@
+# @wix/interact
+
+> Declarative, config-based web animation library — trigger-based interactions using the Web Animations API.
+
+`@wix/interact` lets you define animations and interactions as a single configuration object. Bind triggers (hover, click, scroll, pointer-move) to elements and apply effects (presets, keyframes, transitions) without writing imperative code.
+
+- Three entry points: `@wix/interact` (types/core), `@wix/interact/react` (React components), `@wix/interact/web` (Web Components + Custom Elements)
+- Nine trigger types: `hover`, `click`, `interest`, `activate`, `viewEnter`, `viewProgress`, `pointerMove`, `pageVisible`, `animationEnd`
+- Four effect types: `namedEffect` (presets from `@wix/motion`), `keyframeEffect` (custom keyframes), `transition` / `transitionProperties` (CSS transitions), `customEffect` (JS callback)
+- Scroll-driven animations via `viewProgress` with `rangeStart` / `rangeEnd`
+- Pointer-driven animations via `pointerMove` with `hitArea` and `centeredToTarget`
+- Conditions system for responsive / reduced-motion behavior
+
+## Docs
+
+- [Full AI Reference](./llms-full.txt): Complete self-contained usage guide for AI consumption
+- [Getting Started](./docs/guides/getting-started.md): First interaction in under 5 minutes
+- [Configuration Structure](./docs/guides/configuration-structure.md): Config object shape and organization
+- [Understanding Triggers](./docs/guides/understanding-triggers.md): All 9 trigger types explained
+- [Effects and Animations](./docs/guides/effects-and-animations.md): Integration with @wix/motion
+- [API Reference](./docs/api/README.md): Full API documentation
+
+## Examples
+
+- [Entrance Animations](./docs/examples/entrance-animations.md): Viewport-triggered reveals (fade, slide, scale)
+- [Click Interactions](./docs/examples/click-interactions.md): Button feedback, toggles, progressive disclosure
+- [Hover Effects](./docs/examples/hover-effects.md): Card hovers, button states, image overlays
+- [List Patterns](./docs/examples/list-patterns.md): List entrance, stagger, dynamic lists
+
+## Optional
+
+- [React Integration](./docs/integration/react.md): React-specific setup and SSR
+- [Custom Elements](./docs/guides/custom-elements.md): Web Components integration guide
+- [Interact Class API](./docs/api/interact-class.md): Static and instance methods
+- [Functions Reference](./docs/api/functions.md): `generate()`, `add()`, `remove()` functions
+- [Types Reference](./docs/api/types.md): TypeScript interfaces for config, triggers, effects
+- [Element Selection](./docs/api/element-selection.md): Element targeting and selectors
+- [Interact Element](./docs/api/interact-element.md): `<interact-element>` custom element API
+- [Interaction Controller](./docs/api/interaction-controller.md): InteractionController API
+- [Lists and Dynamic Content](./docs/guides/lists-and-dynamic-content.md): Dynamic lists and mutation handling
+- [State Management](./docs/guides/state-management.md): CSS states vs data attributes
+- [Conditions and Media Queries](./docs/guides/conditions-and-media-queries.md): Responsive interactions
+- [Advanced Topics](./docs/advanced/README.md): Advanced usage patterns

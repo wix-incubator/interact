@@ -1,0 +1,1196 @@
+# @wix/interact — Complete AI Reference
+
+> Declarative, config-based web animation library — trigger-based interactions using the Web Animations API.
+
+This is the comprehensive reference for `@wix/interact`. It contains everything needed to generate correct code using this library: installation, configuration structure, all trigger and effect types, element binding, presets, conditions, patterns, and common pitfalls.
+
+---
+
+## 1. Installation and Setup
+
+```bash
+npm install @wix/interact
+# or
+yarn add @wix/interact
+```
+
+Optional peer dependencies (only needed for React integration):
+
+```bash
+npm install react react-dom
+```
+
+Three entry points:
+
+| Entry point             | Import                              | Use case                       |
+| ----------------------- | ----------------------------------- | ------------------------------ |
+| `@wix/interact`         | Types and core utilities            | Type imports, `generate()`     |
+| `@wix/interact/web`     | Web Components / Custom Elements    | Vanilla JS, any framework      |
+| `@wix/interact/react`   | React components                    | React apps                     |
+
+---
+
+## 2. Quick Start
+
+### Web (Custom Elements)
+
+```typescript
+import { Interact } from '@wix/interact/web';
+import type { InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' },
+          duration: 800,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
+};
+
+Interact.create(config);
+```
+
+```html
+<interact-element data-interact-key="hero">
+  <section class="hero">
+    <h1>Welcome</h1>
+  </section>
+</interact-element>
+```
+
+### React
+
+```typescript
+import { Interact } from '@wix/interact/react';
+import { Interaction } from '@wix/interact/react';
+import type { InteractConfig } from '@wix/interact';
+
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [
+        {
+          namedEffect: { type: 'FadeIn' },
+          duration: 800,
+          easing: 'ease-out',
+        },
+      ],
+    },
+  ],
+};
+
+Interact.create(config);
+
+function Hero() {
+  return (
+    <Interaction tagName="section" interactKey="hero" className="hero">
+      <h1>Welcome</h1>
+    </Interaction>
+  );
+}
+```
+
+### CDN (no build tools)
+
+```html
+<script type="module">
+  import { Interact } from 'https://esm.sh/@wix/interact/web';
+
+  Interact.create({
+    interactions: [
+      {
+        key: 'hero',
+        trigger: 'viewEnter',
+        params: { type: 'once' },
+        effects: [{ namedEffect: { type: 'FadeIn' }, duration: 800 }],
+      },
+    ],
+  });
+</script>
+```
+
+**Important**: Call `Interact.create(config)` once with the full configuration. Subsequent calls replace the previous config.
+
+---
+
+## 3. Configuration Structure
+
+The `InteractConfig` object has three top-level sections:
+
+```typescript
+type InteractConfig = {
+  interactions: Interaction[];                    // REQUIRED — trigger-to-effect mappings
+  effects: Record<string, Effect>;               // REQUIRED — reusable named effect definitions
+  conditions?: Record<string, Condition>;        // OPTIONAL — guards (media queries, container queries)
+};
+```
+
+### Global Rules
+
+- You MUST provide an `interactions` array.
+- You SHOULD provide an `effects` registry when you want to reference reusable effects by id.
+- `conditions` are OPTIONAL.
+- All cross-references (by id) MUST point to existing entries (e.g., an `effectId` MUST exist in `effects`).
+- All element keys (`key` fields) refer to the `data-interact-key` attribute value and MUST be stable.
+- Missing required fields or invalid references are treated as no-ops for the offending interaction/effect while leaving the rest functional.
+
+### Interaction
+
+```typescript
+type Interaction = {
+  key: string;                      // REQUIRED — source element key (matches data-interact-key)
+  trigger: TriggerType;             // REQUIRED — one of the 9 trigger types
+  params?: TriggerParams;           // OPTIONAL — trigger-specific parameters
+  effects: Array<Effect | EffectRef>;  // REQUIRED — effects to apply when triggered
+  conditions?: string[];            // OPTIONAL — condition ids that must all pass
+  selector?: string;                // OPTIONAL — CSS selector to refine source element
+  listContainer?: string;           // OPTIONAL — CSS selector for list container
+  listItemSelector?: string;        // OPTIONAL — CSS selector for list items
+};
+```
+
+### Condition
+
+```typescript
+type Condition = {
+  type: 'media' | 'container';
+  predicate?: string;   // e.g. '(min-width: 768px)' or '(prefers-reduced-motion: reduce)'
+};
+```
+
+---
+
+## 4. Element Binding
+
+### Web: `<interact-element>` Custom Element
+
+- Wrap the interactive DOM subtree and set `data-interact-key` to match the config `key`.
+- MUST have a `data-interact-key` attribute with a unique value within scope.
+- MUST contain at least one child element.
+- If an effect targets a different element than the source, that target MUST also be wrapped.
+
+```html
+<interact-element data-interact-key="my-button">
+  <button>Click me</button>
+</interact-element>
+
+<!-- Separate target element -->
+<interact-element data-interact-key="my-badge">
+  <span>Badge</span>
+</interact-element>
+```
+
+```typescript
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'my-button',     // source
+      trigger: 'click',
+      effects: [
+        { key: 'my-badge' }, // target is different from source
+      ],
+    },
+  ],
+};
+```
+
+### React: `<Interaction>` Component
+
+- MUST replace the element itself with `<Interaction>`.
+- MUST set `tagName` to the tag of the replaced element.
+- MUST set `interactKey` to a unique string.
+
+```tsx
+import { Interaction } from '@wix/interact/react';
+
+function MyComponent() {
+  return (
+    <>
+      <Interaction tagName="button" interactKey="my-button" className="btn">
+        Click me
+      </Interaction>
+      <Interaction tagName="span" interactKey="my-badge" className="badge">
+        Badge
+      </Interaction>
+    </>
+  );
+}
+```
+
+The config is identical for both integrations — only the HTML/JSX setup differs.
+
+---
+
+## 5. Triggers Reference
+
+### 5.1 `hover`
+
+Mouse enter/leave interactions.
+
+**Params** (`PointerTriggerParams` for animations, `StateParams` for transitions):
+
+| Param  | Values                                          | Default       | Description                                       |
+| ------ | ----------------------------------------------- | ------------- | ------------------------------------------------- |
+| `type` | `'alternate'`, `'repeat'`, `'once'`, `'state'`  | `'alternate'` | For time animations (namedEffect / keyframeEffect) |
+| `method` | `'toggle'`, `'add'`, `'remove'`, `'clear'`    | `'toggle'`    | For TransitionEffect state toggles                |
+
+- `alternate`: Play forward on enter, reverse on leave.
+- `repeat`: Restart from 0 on each enter; cancel on leave.
+- `once`: Play once on enter; no leave handler.
+- `state`: Play on enter if idle, pause on leave if running.
+
+**Spatial effects** (translation, rotation) that change the hit-area considerably should use different source and target keys to avoid flickering.
+
+**Example — Card hover with scale**:
+
+```typescript
+{
+  key: 'card',
+  trigger: 'hover',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      keyframeEffect: {
+        name: 'card-lift',
+        keyframes: [
+          { transform: 'translateY(0)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
+          { transform: 'translateY(-8px)', boxShadow: '0 12px 24px rgba(0,0,0,0.15)' },
+        ],
+      },
+      fill: 'both',
+      duration: 300,
+      easing: 'ease-out',
+    },
+  ],
+}
+```
+
+**Example — Hover with named effect**:
+
+```typescript
+{
+  key: 'feature-card',
+  trigger: 'hover',
+  effects: [
+    {
+      namedEffect: { type: 'Pulse', power: 'soft' },
+      fill: 'both',
+      duration: 250,
+      easing: 'ease-out',
+    },
+  ],
+}
+```
+
+**Example — Hover with transition (state toggle)**:
+
+```typescript
+{
+  key: 'btn',
+  trigger: 'hover',
+  effects: [
+    {
+      effectId: 'scaleUp',
+    },
+  ],
+}
+// In effects registry:
+// scaleUp: {
+//   transitionProperties: [
+//     { name: 'transform', value: 'scale(1.1)', duration: 300, easing: 'ease-out' },
+//   ],
+// }
+```
+
+**Timing**: 100–400ms for hover effects. Use `ease-out` for enter animations, `ease-in-out` for interactive elements.
+
+### 5.2 `click`
+
+Mouse click interactions.
+
+**Params**: Same as `hover` (`type` for animations, `method` for transitions).
+
+- `alternate`: Toggle play/reverse on successive clicks.
+- `repeat`: Restart from 0 on each click.
+- `once`: Play once, then remove listener.
+- `state`: Toggle play/pause on successive clicks.
+
+**Example — Accordion toggle**:
+
+```typescript
+{
+  key: 'accordion-header',
+  trigger: 'click',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      key: 'accordion-content',
+      keyframeEffect: {
+        name: 'accordion',
+        keyframes: [
+          { clipPath: 'inset(0 0 100% 0)', opacity: '0' },
+          { clipPath: 'inset(0 0 0 0)', opacity: '1' },
+        ],
+      },
+      fill: 'both',
+      reversed: true,
+      duration: 400,
+      easing: 'ease-in-out',
+    },
+  ],
+}
+```
+
+**Example — Click with transition (theme toggle)**:
+
+```typescript
+{
+  key: 'theme-switcher',
+  trigger: 'click',
+  effects: [
+    {
+      key: 'page-body',
+      transition: {
+        duration: 400,
+        easing: 'ease-in-out',
+        styleProperties: [
+          { name: 'background-color', value: '#1a1a1a' },
+          { name: 'color', value: '#ffffff' },
+        ],
+      },
+    },
+  ],
+}
+```
+
+**Timing**: 100–500ms for click feedback.
+
+### 5.3 `interest`
+
+Accessibility-friendly version of `hover`. Responds to both mouse hover events and keyboard focus events, making hover interactions accessible to keyboard and screen reader users.
+
+**Params**: Same as `hover` (`type` for animations, `method` for transitions).
+
+**How it works**:
+- **Mouse users**: Triggers on `mouseenter` / `mouseleave` (identical to `hover`).
+- **Keyboard users**: Triggers on `focusin` / `focusout`.
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable.
+
+Use `interest` instead of `hover` when the interaction must be accessible to keyboard users.
+
+**Example — Accessible card hover**:
+
+```typescript
+{
+  key: 'feature-card',
+  trigger: 'interest',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      keyframeEffect: {
+        name: 'card-lift',
+        keyframes: [
+          { transform: 'translateY(0)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
+          { transform: 'translateY(-8px)', boxShadow: '0 12px 24px rgba(0,0,0,0.15)' },
+        ],
+      },
+      fill: 'both',
+      duration: 300,
+      easing: 'ease-out',
+    },
+  ],
+}
+```
+
+### 5.4 `activate`
+
+Accessibility-friendly version of `click`. Responds to both mouse clicks and keyboard activation (Enter/Space keys), making click interactions accessible to keyboard users.
+
+**Params**: Same as `click` (`type` for animations, `method` for transitions).
+
+**How it works**:
+- **Mouse users**: Triggers on `click` (identical to `click`).
+- **Keyboard users**: Triggers on `keydown` for Enter and Space keys.
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable.
+
+Use `activate` instead of `click` when the interaction must be accessible to keyboard users.
+
+**Example — Accessible accordion toggle**:
+
+```typescript
+{
+  key: 'accordion-header',
+  trigger: 'activate',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      key: 'accordion-content',
+      keyframeEffect: {
+        name: 'accordion',
+        keyframes: [
+          { clipPath: 'inset(0 0 100% 0)', opacity: '0' },
+          { clipPath: 'inset(0 0 0 0)', opacity: '1' },
+        ],
+      },
+      fill: 'both',
+      reversed: true,
+      duration: 400,
+      easing: 'ease-in-out',
+    },
+  ],
+}
+```
+
+### 5.5 `viewEnter`
+
+Fires when an element enters the viewport (IntersectionObserver-based).
+
+**Params** (`ViewEnterParams`):
+
+| Param       | Type     | Default  | Description                                              |
+| ----------- | -------- | -------- | -------------------------------------------------------- |
+| `type`      | string   | `'once'` | `'once'`, `'repeat'`, `'alternate'`, `'state'`           |
+| `threshold` | number   | —        | 0–1, how much of element must be visible (e.g. 0.3 = 30%) |
+| `inset`     | string   | —        | CSS-style rootMargin (e.g. `'-100px'` to trigger earlier)  |
+
+- `once`: Play on first visibility and unobserve. Best for entrance animations.
+- `repeat`: Play each time the element re-enters based on threshold/inset.
+- `alternate`: Play forward on enter; when using with animations that change the element's visibility, use separate source and target keys.
+- `state`: Start a looping animation on enter, pause when leaving.
+
+**Example — One-time entrance**:
+
+```typescript
+{
+  key: 'hero',
+  trigger: 'viewEnter',
+  params: { type: 'once', threshold: 0.2 },
+  effects: [
+    {
+      namedEffect: { type: 'FadeIn' },
+      duration: 800,
+      easing: 'ease-out',
+      fill: 'backwards',
+    },
+  ],
+}
+```
+
+**Example — Staggered card entrances**:
+
+```typescript
+// In interactions array — one per card with increasing delays:
+{ key: 'card-1', trigger: 'viewEnter', params: { type: 'once', threshold: 0.3 },
+  effects: [{ namedEffect: { type: 'SlideIn', direction: 'bottom' }, duration: 600, fill: 'backwards', delay: 0 }] },
+{ key: 'card-2', trigger: 'viewEnter', params: { type: 'once', threshold: 0.3 },
+  effects: [{ namedEffect: { type: 'SlideIn', direction: 'bottom' }, duration: 600, fill: 'backwards', delay: 150 }] },
+{ key: 'card-3', trigger: 'viewEnter', params: { type: 'once', threshold: 0.3 },
+  effects: [{ namedEffect: { type: 'SlideIn', direction: 'bottom' }, duration: 600, fill: 'backwards', delay: 300 }] },
+```
+
+**Threshold guidelines**: Hero sections 0.1–0.3, content blocks 0.3–0.5, small elements 0.5–0.8, huge sections 0.01–0.05.
+
+### 5.6 `viewProgress`
+
+Scroll-driven animation — progress updates continuously as the element moves through the viewport. Uses ViewTimeline/scroll scenes.
+
+**No trigger params** — progress range is controlled on the effect via `rangeStart` / `rangeEnd`.
+
+Effects used with `viewProgress` MUST include `rangeStart` and `rangeEnd`:
+
+```typescript
+type RangeOffset = {
+  name?: 'entry' | 'exit' | 'contain' | 'cover' | 'entry-crossing' | 'exit-crossing';
+  offset: { value: number; type: 'percentage' | 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax' };
+};
+```
+
+Range names:
+- `entry`: Leading edge crosses into the viewport.
+- `exit`: Trailing edge crosses out of the viewport.
+- `contain`: Element is fully within the viewport.
+- `cover`: Viewport is fully covered by the element.
+
+For scroll `namedEffect` presets, include `range: 'in' | 'out' | 'continuous'` in options. Prefer `range: 'continuous'`.
+
+Prefer `fill: 'both'` for scroll-driven animations to preserve start/end states and avoid flicker.
+
+**Example — Parallax scroll**:
+
+```typescript
+{
+  key: 'parallax-section',
+  trigger: 'viewProgress',
+  effects: [
+    {
+      key: 'parallax-bg',
+      keyframeEffect: {
+        name: 'parallax',
+        keyframes: [
+          { transform: 'translateY(200px)' },
+          { transform: 'translateY(-200px)' },
+        ],
+      },
+      rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
+      rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+      fill: 'both',
+      easing: 'linear',
+    },
+  ],
+}
+```
+
+**Example — Scroll entrance with named effect**:
+
+```typescript
+{
+  key: 'content-block',
+  trigger: 'viewProgress',
+  effects: [
+    {
+      namedEffect: { type: 'RevealScroll', direction: 'left' },
+      rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
+      rangeEnd: { name: 'entry', offset: { value: 60, type: 'percentage' } },
+      easing: 'ease-out',
+    },
+  ],
+}
+```
+
+**Example — Multi-phase scroll (entry + exit)**:
+
+```typescript
+{
+  key: 'section',
+  trigger: 'viewProgress',
+  effects: [
+    // Entrance
+    {
+      keyframeEffect: {
+        name: 'section-enter',
+        keyframes: [
+          { opacity: '0', transform: 'translateY(50px)' },
+          { opacity: '1', transform: 'translateY(0)' },
+        ],
+      },
+      rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
+      rangeEnd: { name: 'entry', offset: { value: 50, type: 'percentage' } },
+      easing: 'ease-out',
+      fill: 'both',
+    },
+    // Exit
+    {
+      keyframeEffect: {
+        name: 'section-exit',
+        keyframes: [
+          { opacity: '1', transform: 'scale(1)' },
+          { opacity: '0', transform: 'scale(0.8)' },
+        ],
+      },
+      rangeStart: { name: 'exit', offset: { value: 50, type: 'percentage' } },
+      rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+      easing: 'ease-in',
+      fill: 'both',
+    },
+  ],
+}
+```
+
+### 5.7 `pointerMove`
+
+Continuous pointer motion tracking over an area.
+
+**Params** (`PointerMoveParams`):
+
+| Param     | Values              | Default  | Description                                      |
+| --------- | ------------------- | -------- | ------------------------------------------------ |
+| `hitArea` | `'self'`, `'root'`  | `'self'` | Track within element bounds or entire viewport   |
+| `axis`    | `'x'`, `'y'`       | `'y'`    | Only for `keyframeEffect` — which axis maps to progress |
+
+Effect-level `centeredToTarget`:
+- `true`: Centers coordinate range at the target element (use when source differs from target).
+- `false`: Uses source element bounds (for cursor followers, global effects).
+
+**Effect type selection for pointerMove**:
+- `namedEffect` (preferred): Pre-built mouse presets that handle 2D progress internally.
+- `customEffect`: Full control with `progress: { x, y, v?, active? }`.
+- `keyframeEffect`: Single-axis only (set `axis` in params). For 2D, use two interactions with `composite: 'add'`.
+- Do NOT use `keyframeEffect` without `axis` for 2D pointer effects.
+
+**Available mouse presets**: `Tilt3DMouse`, `Track3DMouse`, `SwivelMouse`, `TrackMouse`, `AiryMouse`, `BounceMouse`, `ScaleMouse`, `BlobMouse`, `SkewMouse`, `BlurMouse`, `SpinMouse`.
+
+**Example — 3D tilt card**:
+
+```typescript
+{
+  key: 'product-card',
+  trigger: 'pointerMove',
+  params: { hitArea: 'self' },
+  effects: [
+    {
+      namedEffect: {
+        type: 'Tilt3DMouse',
+        angle: 15,
+        perspective: 1000,
+        power: 'medium',
+      },
+      centeredToTarget: true,
+    },
+  ],
+}
+```
+
+**Example — Multi-layer parallax**:
+
+```typescript
+{
+  key: 'hero-container',
+  trigger: 'pointerMove',
+  params: { hitArea: 'self' },
+  effects: [
+    {
+      key: 'bg-layer',
+      namedEffect: { type: 'AiryMouse', distance: { value: 15, type: 'px' }, power: 'soft' },
+      centeredToTarget: true,
+    },
+    {
+      key: 'fg-layer',
+      namedEffect: { type: 'TrackMouse', distance: { value: 35, type: 'px' }, power: 'medium' },
+      centeredToTarget: true,
+    },
+  ],
+}
+```
+
+**Example — Custom magnetic button**:
+
+```typescript
+{
+  key: 'magnetic-button',
+  trigger: 'pointerMove',
+  params: { hitArea: 'self' },
+  effects: [
+    {
+      customEffect: (element, progress) => {
+        const dx = (progress.x - 0.5) * 2;
+        const dy = (progress.y - 0.5) * 2;
+        element.style.transform = `translate(${dx * 20}px, ${dy * 20}px)`;
+      },
+      centeredToTarget: true,
+    },
+  ],
+}
+```
+
+### 5.8 `animationEnd`
+
+Fires when a specific effect completes on the source element. Used for chaining sequences.
+
+**Params** (`AnimationEndParams`):
+
+| Param      | Type   | Description                            |
+| ---------- | ------ | -------------------------------------- |
+| `effectId` | string | ID of the effect to wait for completion |
+
+**Example — Chained entrance**:
+
+```typescript
+// Step 1: viewEnter triggers title entrance
+{
+  key: 'section',
+  trigger: 'viewEnter',
+  params: { type: 'once', threshold: 0.3 },
+  effects: [
+    { key: 'title', namedEffect: { type: 'FadeIn' }, duration: 600, effectId: 'title-entrance' },
+  ],
+},
+// Step 2: animationEnd chains content entrance
+{
+  key: 'title',
+  trigger: 'animationEnd',
+  params: { effectId: 'title-entrance' },
+  effects: [
+    { key: 'content', namedEffect: { type: 'SlideIn' }, duration: 500 },
+  ],
+}
+```
+
+### 5.9 `pageVisible`
+
+Fires when the page becomes visible (similar to `viewEnter` but at the page level). Same params as `viewEnter`.
+
+---
+
+## 6. Effects Reference
+
+Effects define what happens when a trigger fires. Exactly one animation payload MUST be provided per effect.
+
+### Target Resolution (TARGET CASCADE)
+
+When applying an effect, the target is resolved as:
+1. `Effect.key` (if provided)
+2. Registry Effect's `key` (when using `EffectRef` via `effectId`)
+3. `Interaction.key` (source acts as target — the default)
+
+### Common Effect Fields
+
+```typescript
+type EffectBase = {
+  key?: string;                 // Target element key (defaults to interaction source)
+  effectId?: string;            // For EffectRef: MUST reference an entry in effects registry
+  conditions?: string[];        // All must pass for effect to run
+  selector?: string;            // CSS selector to refine target
+  listContainer?: string;       // Must match interaction's list context
+  listItemSelector?: string;    // Must match interaction's list context
+  composite?: 'replace' | 'add' | 'accumulate';  // Default: 'replace'
+  fill?: 'none' | 'forwards' | 'backwards' | 'both';
+};
+```
+
+### 6.1 TimeEffect (animation over time)
+
+Used with `hover`, `click`, `viewEnter`, `pageVisible`, `animationEnd`.
+
+```typescript
+type TimeEffect = EffectBase & {
+  duration: number;             // REQUIRED (ms)
+  easing?: string;              // CSS easing (default: browser default)
+  iterations?: number;          // >= 1 or Infinity
+  alternate?: boolean;          // Direction alternation
+  reversed?: boolean;           // Play reversed
+  delay?: number;               // Delay in ms
+  // Exactly one of:
+  namedEffect?: { type: string; /* preset options */ };
+  keyframeEffect?: { name: string; keyframes: Keyframe[] };
+  customEffect?: (element: Element, progress: number) => void;
+};
+```
+
+### 6.2 ScrubEffect (scroll/pointer-driven)
+
+Used with `viewProgress` and `pointerMove`.
+
+```typescript
+type ScrubEffect = EffectBase & {
+  rangeStart: RangeOffset;      // REQUIRED for viewProgress
+  rangeEnd: RangeOffset;        // REQUIRED for viewProgress
+  easing?: string;
+  iterations?: number;          // NOT Infinity for scrub
+  alternate?: boolean;
+  reversed?: boolean;
+  centeredToTarget?: boolean;   // For pointerMove: center range at target element
+  transitionDuration?: number;  // Smoothing on progress jumps (ms)
+  transitionDelay?: number;
+  transitionEasing?: string;
+  // Exactly one of:
+  namedEffect?: { type: string; /* preset options */ };
+  keyframeEffect?: { name: string; keyframes: Keyframe[] };
+  customEffect?: (element: Element, progress: any) => void;
+};
+```
+
+### 6.3 TransitionEffect (CSS transition-style state toggle)
+
+Used with `hover` and `click` (with `method` param).
+
+```typescript
+// Option A: Shared transition options for all properties
+type TransitionEffect = EffectBase & {
+  transition: {
+    duration?: number;
+    delay?: number;
+    easing?: string;
+    styleProperties: Array<{ name: string; value: string }>;
+  };
+};
+
+// Option B: Per-property transition options
+type TransitionEffect = EffectBase & {
+  transitionProperties: Array<{
+    name: string;
+    value: string;
+    duration?: number;
+    delay?: number;
+    easing?: string;
+  }>;
+};
+```
+
+### 6.4 EffectRef (reference to registry)
+
+```typescript
+type EffectRef = {
+  effectId: string;    // REQUIRED — references an entry in the top-level effects registry
+  key?: string;        // Override target
+  conditions?: string[];
+};
+```
+
+---
+
+## 7. Animation Payloads
+
+### `namedEffect` (Preferred)
+
+Pre-built presets from `@wix/motion`. GPU-friendly and performance-tuned. Use first.
+
+```typescript
+namedEffect: {
+  type: 'FadeIn',
+  // Optional preset-specific options like direction, power, etc.
+  // Do NOT guess option types — omit unknown options and rely on defaults.
+}
+```
+
+**Common presets by category**:
+
+| Category   | Presets                                                                                |
+| ---------- | -------------------------------------------------------------------------------------- |
+| Entrance   | `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`, `GlideIn`, `FloatIn`, `GlitchIn`, `ExpandIn`, `GrowIn`, `BlurIn`, `DropIn`, `CircleIn`, `CurveIn`, `FoldIn`, `PunchIn`, `RevealIn`, `ShapeIn`, `ShuttersIn`, `SpinIn`, `TiltIn`, `TurnIn`, `WinkIn` |
+| Ongoing    | `Pulse`, `Spin`, `Wiggle`, `Bounce`, `Rubber`, `Jello`, `Swing`, `Poke`, `Flash`, `Breathe`, `Cross`, `Flip`, `Fold` |
+| Scroll     | `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`, `GrowScroll`, `MoveScroll`, `SlideScroll`, `PanScroll`, `BlurScroll`, `SpinScroll`, `FlipScroll`, `ArcScroll`, `Spin3dScroll`, `TurnScroll`, `ShapeScroll`, `ShuttersScroll`, `ShrinkScroll`, `SkewPanScroll`, `StretchScroll` |
+| Mouse      | `TrackMouse`, `Tilt3DMouse`, `Track3DMouse`, `SwivelMouse`, `ScaleMouse`, `BlurMouse`, `AiryMouse`, `BounceMouse`, `BlobMouse`, `SkewMouse`, `SpinMouse`, `CustomMouse` |
+| Background | `BgParallax`, `BgPan`, `BgZoom`, `BgFade`, `BgReveal`, `BgCloseUp`, `BgFadeBack`, `BgFake3D`, `BgPullBack`, `BgRotate`, `BgSkew`, `ImageParallax` |
+
+For scroll presets with `viewProgress`, include `range: 'continuous'` in options.
+
+### `keyframeEffect` (Custom animations)
+
+Standard CSS/WAAPI keyframes. Not compatible with `pointerMove` in 2D (pointer progress is two-dimensional).
+
+```typescript
+keyframeEffect: {
+  name: 'my-animation',  // Unique name
+  keyframes: [
+    { opacity: 0, transform: 'translateY(20px)' },
+    { opacity: 1, transform: 'translateY(0)' },
+  ],
+}
+```
+
+### `customEffect` (Last resort)
+
+Use only when presets or keyframes cannot achieve the effect (DOM manipulation, randomized visuals, WebGL).
+
+```typescript
+customEffect: (element: Element, progress: number | PointerProgress) => void
+```
+
+For `pointerMove`, `progress` is `{ x: number, y: number, v?: { x, y }, active?: boolean }`.
+
+---
+
+## 8. Conditions and Media Queries
+
+Conditions act as guards. If any condition evaluates to false, the interaction or effect is not applied.
+
+```typescript
+const config: InteractConfig = {
+  conditions: {
+    'desktop-only': {
+      type: 'media',
+      predicate: '(min-width: 1024px)',
+    },
+    'prefers-motion': {
+      type: 'media',
+      predicate: '(prefers-reduced-motion: no-preference)',
+    },
+  },
+  interactions: [
+    {
+      key: 'card',
+      trigger: 'hover',
+      conditions: ['desktop-only'],
+      effects: [{ effectId: 'lift' }],
+    },
+  ],
+  effects: {
+    lift: {
+      duration: 200,
+      keyframeEffect: {
+        name: 'lift',
+        keyframes: [
+          { transform: 'translateY(0)' },
+          { transform: 'translateY(-8px)' },
+        ],
+      },
+    },
+  },
+};
+```
+
+Use conditions to provide reduced-motion alternatives:
+
+```typescript
+// Full animation for users who prefer motion
+{
+  key: 'hero', trigger: 'viewEnter', conditions: ['prefers-motion'],
+  effects: [{ namedEffect: { type: 'BounceIn' }, duration: 1000 }],
+},
+// Simplified fallback
+{
+  key: 'hero', trigger: 'viewEnter', conditions: ['reduced-motion'],
+  effects: [{ namedEffect: { type: 'FadeIn' }, duration: 400 }],
+}
+```
+
+---
+
+## 9. Common Patterns
+
+### Hover — Button scale with transition
+
+```typescript
+{
+  effects: {
+    scaleUp: {
+      transitionProperties: [
+        { name: 'transform', value: 'scale(1.1)', duration: 300, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' },
+      ],
+    },
+  },
+  interactions: [
+    { key: 'btn', trigger: 'hover', effects: [{ effectId: 'scaleUp' }] },
+  ],
+}
+```
+
+### Hover — Multi-target product card
+
+```typescript
+{
+  key: 'product-card',
+  trigger: 'hover',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      key: 'product-card',
+      keyframeEffect: { name: 'card-move', keyframes: [{ transform: 'translateY(0)' }, { transform: 'translateY(-8px)' }] },
+      fill: 'both', duration: 200,
+    },
+    {
+      key: 'product-image',
+      keyframeEffect: { name: 'img-scale', keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }] },
+      fill: 'both', duration: 300, delay: 50,
+    },
+  ],
+}
+```
+
+### Click — Menu toggle with animation chaining
+
+```typescript
+{
+  interactions: [
+    {
+      key: 'hamburger-menu',
+      trigger: 'click',
+      params: { type: 'alternate' },
+      effects: [
+        {
+          key: 'mobile-nav',
+          namedEffect: { type: 'SlideIn', direction: 'left', power: 'medium' },
+          fill: 'both', reversed: true, duration: 300, effectId: 'nav-toggle',
+        },
+      ],
+    },
+    // Chain: after nav opens, fade in nav items
+    {
+      key: 'mobile-nav',
+      trigger: 'animationEnd',
+      params: { effectId: 'nav-toggle' },
+      effects: [
+        { key: 'nav-items', namedEffect: { type: 'FadeIn' }, duration: 200 },
+      ],
+    },
+  ],
+}
+```
+
+### ViewEnter — Hero with multi-element entrance
+
+```typescript
+{
+  key: 'hero-trigger',
+  trigger: 'viewEnter',
+  params: { type: 'once', threshold: 0.2 },
+  effects: [
+    {
+      key: 'hero-bg',
+      keyframeEffect: { name: 'blur-bg', keyframes: [{ filter: 'blur(20px)' }, { filter: 'blur(0)' }] },
+      duration: 1200, easing: 'ease-out', fill: 'backwards',
+    },
+    {
+      key: 'hero-title',
+      namedEffect: { type: 'SlideIn' },
+      duration: 800, delay: 300,
+    },
+    {
+      key: 'hero-subtitle',
+      keyframeEffect: { name: 'sub-slide', keyframes: [{ opacity: '0', transform: 'translateY(30px)' }, { opacity: '1', transform: 'translateY(0)' }] },
+      duration: 600, fill: 'backwards', delay: 600,
+    },
+  ],
+}
+```
+
+### ViewProgress — Parallax with responsive conditions
+
+```typescript
+{
+  conditions: {
+    'desktop-only': { type: 'media', predicate: '(min-width: 1024px)' },
+    'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+  },
+  interactions: [
+    {
+      key: 'parallax-section',
+      trigger: 'viewProgress',
+      conditions: ['desktop-only', 'prefers-motion'],
+      effects: [
+        {
+          key: 'parallax-bg',
+          keyframeEffect: { name: 'parallax', keyframes: [{ transform: 'translateY(0)' }, { transform: 'translateY(-300px)' }] },
+          rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+          easing: 'linear', fill: 'both',
+        },
+      ],
+    },
+  ],
+}
+```
+
+### PointerMove — Interactive card with 3D tilt
+
+```typescript
+{
+  key: 'interactive-card',
+  trigger: 'pointerMove',
+  params: { hitArea: 'self' },
+  effects: [
+    {
+      namedEffect: { type: 'Tilt3DMouse', angle: 15, perspective: 1000, power: 'medium' },
+      centeredToTarget: true,
+    },
+  ],
+}
+```
+
+### Scroll list — Staggered card entrance with reusable effect
+
+```typescript
+{
+  effects: {
+    'card-entrance': {
+      namedEffect: { type: 'SlideScroll' },
+      rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
+      rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
+      easing: 'linear',
+    },
+  },
+  interactions: [
+    { key: 'card-1', trigger: 'viewProgress', effects: [{ effectId: 'card-entrance' }] },
+    { key: 'card-2', trigger: 'viewProgress', effects: [{ effectId: 'card-entrance' }] },
+    { key: 'card-3', trigger: 'viewProgress', effects: [{ effectId: 'card-entrance' }] },
+  ],
+}
+```
+
+---
+
+## 10. Preventing FOUC (Flash of Unstyled Content)
+
+For `viewEnter` entrance animations, elements may briefly appear before the animation plays. Use `generate()` to create critical CSS.
+
+```typescript
+import { generate } from '@wix/interact';
+
+const config = { /* your config */ };
+const css = generate(config);
+
+const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>${css}</style>
+</head>
+<body>
+    <interact-element data-interact-key="hero" data-interact-initial="true">
+        <section class="hero">
+            <h1>Welcome</h1>
+        </section>
+    </interact-element>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
+`;
+```
+
+Rules:
+- Call `generate(config)` at build time or on the server.
+- Add `data-interact-initial="true"` to `<interact-element>` that should be hidden until entrance animation plays.
+- Only use for elements with `viewEnter` trigger. Do NOT use for `hover` or `click`.
+- The generated CSS hides marked elements, resets transforms for IntersectionObserver, and respects `prefers-reduced-motion`.
+
+---
+
+## 11. Common Pitfalls and Best Practices
+
+### Overflow and viewProgress
+
+Using `overflow: hidden` or `overflow: auto` can break `viewProgress` animations. Prefer `overflow: clip` for clipping semantics while preserving normal ViewTimeline behavior.
+
+### Stacking contexts and viewProgress
+
+Creating a new stacking context on the target or its ancestors can prevent or freeze ViewTimeline sampling. Avoid these on the observed subtree:
+- `transform`, `filter`, `perspective`, `opacity < 1`
+- `mix-blend-mode`, `isolation: isolate`
+- Aggressive `will-change`, `contain: paint/layout/size`
+
+If needed for visuals, wrap content and apply these styles to an inner child.
+
+### Perspective in animations
+
+Prefer `transform: perspective(...)` inside keyframes. Reserve the static CSS `perspective` property for cases where multiple children of the same container must share the same viewpoint.
+
+### Params with incorrect types
+
+Params with incorrect types (especially for `namedEffect` preset options) can produce console errors. If you do not know the expected type/structure for a param, omit it and rely on defaults.
+
+### pointerMove with keyframeEffect
+
+Pointer progress is two-dimensional. `keyframeEffect` only works with a single axis (set `axis` in params). For 2D effects, use `namedEffect` mouse presets or `customEffect`.
+
+### Performance
+
+- Use `transform` and `opacity` for animations — they are GPU-accelerated.
+- Avoid animating layout properties (`width`, `height`, `margin`, `padding`).
+- Keep hover durations short (100–400ms) for responsiveness.
+- Use `once` type for entrance animations to avoid repeated observer triggers.
+- Limit concurrent `pointerMove` effects.
+
+### Reduced motion
+
+- Use `conditions` to provide alternatives for users who prefer reduced motion.
+- Avoid reliance on specific durations or continuous motion.
+- Provide shorter durations, fewer transforms, and no perpetual motion/parallax/3D for reduced-motion variants.
+
+### List context consistency
+
+When both `listContainer` and `listItemSelector` are provided on an interaction, they MUST describe the same list context across the interaction and its effects. Mismatched contexts are ignored.
+
+### Element binding
+
+Do NOT add observers/listeners manually. The runtime binds triggers/effects via `data-interact-key` (web) or `interactKey` (React). Use the same key in your config.

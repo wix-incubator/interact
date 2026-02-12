@@ -342,15 +342,14 @@ remove(key: string): void
 - [Examples and Patterns](https://wix-incubator.github.io/interact/docs/examples)
 - [Integration Guides](https://wix-incubator.github.io/interact/docs/integration)
 
-## AI Support
+## AI / LLM Support
 
-- [Full-flow, lean rules](https://wix-incubator.github.io/interact/rules/full-lean.md)
-- [Rules for integration](https://wix-incubator.github.io/interact/rules/integration.md)
-- [Rules for view entrance interactions](https://wix-incubator.github.io/interact/rules/viewenter.md)
-- [Rules for click interactions](https://wix-incubator.github.io/interact/rules/click.md)
-- [Rules for hover interactions](https://wix-incubator.github.io/interact/rules/click.md)
-- [Rules for scroll interactions](https://wix-incubator.github.io/interact/rules/viewprogress.md)
-- [Rules for pointer-move interactions](https://wix-incubator.github.io/interact/rules/pointermove.md)
+This package ships with documentation optimized for AI coding assistants following the [llms.txt standard](https://llmstxt.org):
+
+- [`llms.txt`](./llms.txt) — Structured overview with links to detailed docs
+- [`llms-full.txt`](./llms-full.txt) — Comprehensive single-file reference for AI consumption
+
+When using an AI assistant, point it to `node_modules/@wix/interact/llms-full.txt` for complete usage guidance.
 
 ## Development
 
