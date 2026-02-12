@@ -1,6 +1,6 @@
 {
   "name": "@wix/motion-presets",
-  "version": "1.0.0",
+  "version": "1.0.0-1",
   "description": "Animation presets for @wix/motion",
   "license": "MIT",
   "main": "dist/cjs/motion-presets.js",
@@ -11,11 +11,6 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/es/motion-presets.js",
       "require": "./dist/cjs/motion-presets.js"
-    },
-    "./types": {
-      "types": "./dist/types/types.d.ts",
-      "import": "./dist/es/types.js",
-      "require": "./dist/cjs/types.js"
     },
     "./package.json": "./package.json"
   },
@@ -43,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix-incubator/interact"
+    "url": "git+https://github.com/wix-incubator/interact.git"
   },
   "bugs": {
     "url": "https://github.com/wix-incubator/interact/issues"
@@ -53,7 +48,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@wix/motion": "^2.0.0-rc.2"
+    "@wix/motion": "^2.0.0-rc.6"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.14",
@@ -61,5 +56,6 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
-  }
+  },
+  "stableVersion": "0.1.0"
 }

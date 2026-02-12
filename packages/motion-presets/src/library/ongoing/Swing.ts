@@ -1,11 +1,20 @@
-import type { Swing, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getEasingFamily, getTimingFactor, toKeyframeValue } from '../../utils';
+import type {
+  Swing,
+  TimeAnimationOptions,
+  DomApi,
+  AnimationExtraOptions,
+  EffectFourDirections,
+} from '../../types';
+import {
+  getEasing,
+  getEasingFamily,
+  getTimingFactor,
+  toKeyframeValue,
+  parseDirection,
+} from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
-const POWER_TO_SWING_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 3,
-};
+const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 
 const DIRECTION_MAP = {
   top: { x: 0, y: -1 },
@@ -31,7 +40,9 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, swing = 20, direction = 'top' } = options.namedEffect as Swing;
+  const namedEffect = options.namedEffect as Swing;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+  const { swing = 20 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
@@ -39,15 +50,13 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const ease = getEasingFamily(easing);
   const [name] = getNames(options);
 
-  const swingDeg = typeof power !== 'undefined' ? 20 * POWER_TO_SWING_FACTOR_MAP[power] : swing;
-
   const { x, y } = DIRECTION_MAP[direction];
   const totalDuration = 3.55 * duration + delay;
   const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
 
   // Create CSS custom properties for the swing configuration
   const custom: Record<string, string | number> = {
-    '--motion-swing-deg': `${swingDeg}deg`,
+    '--motion-swing-deg': `${swing}deg`,
     '--motion-trans-x': `${x * TRANSLATE_DISTANCE}%`,
     '--motion-trans-y': `${y * TRANSLATE_DISTANCE}%`,
     '--motion-ease-in': getEasing(ease.in),
@@ -77,7 +86,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         return {
           offset: keyframeOffset,
           easing: toKeyframeValue(custom, '--motion-ease-inout', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -88,7 +97,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0.25,
           easing: toKeyframeValue(custom, '--motion-ease-inout', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -97,7 +106,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0.75,
           easing: toKeyframeValue(custom, '--motion-ease-in', asWeb),
-          transform: `rotate(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
+          transform: `rotate(var(--motion-rotate, 0deg)) ${translateBefore} rotate(calc(${toKeyframeValue(
             custom,
             '--motion-swing-deg',
             asWeb,
@@ -117,12 +126,12 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         {
           offset: 0,
           easing: toKeyframeValue(custom, '--motion-ease-out', asWeb),
-          transform: `rotateZ(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
+          transform: `rotateZ(var(--motion-rotate, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
         },
         ...keyframes,
         {
           offset: 1,
-          transform: `rotateZ(var(--comp-rotate-z, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
+          transform: `rotateZ(var(--motion-rotate, 0deg)) ${translateBefore} rotate(0deg) ${translateAfter}`,
         },
       ],
     },

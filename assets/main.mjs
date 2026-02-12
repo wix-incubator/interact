@@ -1,6 +1,8 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6/dist/es/web.js';
+import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8/dist/es/web.js';
 // import { Interact } from './packages/interact/dist/es/web.js';
+import * as presets from 'https://esm.sh/@wix/motion-presets@1.0.0-1/dist/es/motion-presets.js';
+// import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
 
 // =============================================================================
 // FUNCTIONS & METHODS
@@ -9,9 +11,15 @@ import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.6/dist/es/web.js
 // --- Hero Grid Functions ---
 const gridContainer = document.getElementById('grid-container');
 const lineCache = new Map();
+const lineStates = new Map();
 let centerX, centerY, maxDist;
-let windowWidth, windowHeight;
 
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
+/* this is the old grid function
 function updateGrid() {
   gridContainer.innerHTML = '';
   lineCache.clear();
@@ -52,7 +60,132 @@ function updateGrid() {
     });
   }
 }
+*/
 
+function buildGrid() {
+  gridContainer.innerHTML = '';
+  lineCache.clear();
+  lineStates.clear();
+
+  windowWidth = window.innerWidth;
+  windowHeight = window.innerHeight;
+  const cellSize = 40;
+  const containerWidth = gridContainer.offsetWidth || windowWidth;
+  const containerHeight = gridContainer.offsetHeight || windowHeight;
+  const cols = Math.ceil(containerWidth / cellSize);
+  const rows = Math.ceil(containerHeight / cellSize);
+  const neededCells = cols * rows;
+
+  gridContainer.style.display = 'grid';
+  gridContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  gridContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < neededCells; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'grid-cell';
+    const line = document.createElement('div');
+    line.className = 'grid-line';
+    cell.appendChild(line);
+    fragment.appendChild(cell);
+  }
+  gridContainer.appendChild(fragment);
+
+  const lines = document.getElementsByClassName('grid-line');
+  for (let line of lines) {
+    const rect = line.getBoundingClientRect();
+    lineCache.set(line, {
+      x: rect.left + rect.width / 2 + window.scrollX,
+      y: rect.top + rect.height / 2 + window.scrollY,
+    });
+
+    lineStates.set(line, {
+      currentAngle: 0,
+      angleVelocity: 0,
+      currentScale: 0.2,
+      scaleVelocity: 0,
+      currentOpacity: 0.3,
+    });
+  }
+}
+
+const pointerMoveEffect = (element, progress) => {
+  mouseX = progress.x * windowWidth;
+  mouseY = progress.y * windowHeight;
+};
+
+const gridWaveEffect = (element, progress) => {
+  const time = progress * Math.PI * 2 * 10;
+  for (const [line, cache] of lineCache) {
+    const state = lineStates.get(line);
+    if (!state) continue;
+
+    const dx = mouseX - cache.x;
+    const dy = mouseY - cache.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    const targetAngle = Math.atan2(dy, dx) * (180 / Math.PI) - 90;
+    const maxDist = 800;
+    const distRatio = Math.min(1, dist / maxDist);
+
+    const easedDistRatio = Math.pow(distRatio, 0.35);
+
+    const stiffness = 0.35 - easedDistRatio * 0.32;
+    const damping = 0.82 - easedDistRatio * 0.12;
+
+    let angleDiff = targetAngle - state.currentAngle;
+    while (angleDiff > 180) angleDiff -= 360;
+    while (angleDiff < -180) angleDiff += 360;
+
+    const springForce = angleDiff * stiffness * (1 + Math.abs(angleDiff) * 0.002);
+
+    const velocityFactor = Math.abs(state.angleVelocity) / 25;
+    const dynamicDamping = damping - velocityFactor * 0.08;
+
+    state.angleVelocity += springForce;
+    state.angleVelocity *= Math.max(0.6, dynamicDamping);
+
+    state.angleVelocity = Math.max(-25, Math.min(25, state.angleVelocity));
+    state.currentAngle += state.angleVelocity;
+
+    if (state.currentAngle > 360) state.currentAngle -= 360;
+    if (state.currentAngle < -360) state.currentAngle += 360;
+
+    const wavePhase = time - Math.pow(dist, 1.15) * 0.004;
+    const wave = Math.sin(wavePhase);
+    const normalizedWave = (wave + 1) / 2;
+
+    const distFactor = Math.min(1, dist / 1500);
+    const minScale = 0.2;
+    const growthAmplitude = 1.2 * (1 - distFactor);
+    const baseScale = minScale + growthAmplitude * normalizedWave;
+
+    const velocityStretch = 1 + (Math.abs(state.angleVelocity) / 25) * 0.6;
+    const targetScale = baseScale * velocityStretch;
+
+    const scaleDiff = targetScale - state.currentScale;
+    const scaleStiffness = stiffness * 1.2;
+    state.scaleVelocity += scaleDiff * scaleStiffness;
+    state.scaleVelocity *= damping;
+    state.currentScale += state.scaleVelocity;
+
+    state.currentScale = Math.max(0.1, state.currentScale);
+
+    const targetOpacity = 0.3 + 0.7 * normalizedWave * (1 - distFactor * 0.5);
+    state.currentOpacity += (targetOpacity - state.currentOpacity) * stiffness * 0.5;
+
+    const hideRadius = 25;
+    const fadeZone = 40;
+    let proximityMask = (dist - hideRadius) / fadeZone;
+    proximityMask = Math.max(0, Math.min(1, proximityMask));
+
+    line.style.transform = `rotate(${state.currentAngle}deg) scaleY(${state.currentScale * proximityMask})`;
+    line.style.opacity = state.currentOpacity * proximityMask;
+  }
+};
+
+/* this is the old desktop effect with the mouse movement... I added a new effect that also uses mouse
+movement but it's a bit different. It's a bit more subtle and it's more like a wind effect.
 function rotateGridEffect(_containerElement, progress) {
   const mouseX = progress.x * windowWidth;
   const mouseY = progress.y * windowHeight;
@@ -81,6 +214,42 @@ function rotateGridEffect(_containerElement, progress) {
     line.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${angle}deg) scaleY(${lengthScale})`;
   }
 }
+*/
+/* OPTION 2: this is the second iteration of the grid effect with the mouse movement... 
+it's a bit different. It's a bit more subtle and it's more like a wind effect.
+const rotateGridEffect = (containerElement, progress) => {
+    const mouseX = progress.x * windowWidth;
+    const mouseY = progress.y * windowHeight;
+    
+    for (const [line, cache] of lineCache) {
+        const dx = mouseX - cache.x;
+        const dy = mouseY - cache.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = dist * 0.5;
+        const influenceRadius = 3000;
+        const rawProximity = Math.max(0, 1 - dist / influenceRadius);
+        const proximity = Math.pow(rawProximity, 1.5); 
+        const scale = 1 + (proximity * 0.9);
+        const twist = proximity * 100;
+        line.style.transform = `rotate(${angle + 45 + twist}deg) scaleY(${scale})`;
+    }
+};
+*/
+
+const rotateGridEffectMobile = (containerElement, progress) => {
+  const time = progress * Math.PI * 2 * 3; // 3 full wave cycles per animation loop
+
+  for (const [line, cache] of lineCache) {
+    const dist = cache.x + cache.y;
+    const spatialPhase = dist * 0.004;
+    const wave = Math.sin(time - spatialPhase);
+    const windForce = (wave + 1) / 2;
+    const sharpWind = Math.pow(windForce, 2);
+    const angle = sharpWind * 360;
+    const scale = 1 + sharpWind * 0.4;
+    line.style.transform = `rotate(${angle}deg) scaleY(${scale})`;
+  }
+};
 
 // --- Tunnel Effect Functions ---
 const NUM_CIRCLES = 45;
@@ -137,7 +306,7 @@ function generateTunnel() {
   }
 }
 
-function animateTunnel(_rootElement, progress) {
+const animateTunnel = (_rootElement, progress) => {
   const localMouseX = progress.x * windowWidth;
   const localMouseY = progress.y * windowHeight;
 
@@ -162,7 +331,49 @@ function animateTunnel(_rootElement, progress) {
 
     ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0)`;
   });
-}
+};
+
+const animateTunnelMobile = (_rootElement, progress) => {
+  const normalizedProgress = (progress - 0.05) * 2;
+
+  const wavePhase = progress * Math.PI * 5;
+  const slowWave = Math.sin(wavePhase * 0.5);
+  const fastWave = Math.sin(wavePhase * 2.5);
+
+  tunnelRings.forEach((ring, index) => {
+    const depth = 1 - index / NUM_CIRCLES;
+    const depthCubed = Math.pow(depth, 4.5);
+
+    const baseY = normalizedProgress * depthCubed;
+    const waveY = slowWave * 5 * depth;
+    const targetY = baseY + waveY;
+
+    const sway = fastWave * 50 * depthCubed;
+    const drift = Math.sin(wavePhase + index * 0.3) * 8 * depth;
+    const targetX = sway + drift;
+
+    const breathe = 1 + slowWave * 0.08 * depth;
+    const zoomPush = 1 + normalizedProgress * 0.15 * depthCubed;
+    const targetScale = breathe * zoomPush;
+
+    const tiltAmount = normalizedProgress * 3 * depthCubed;
+    const spinOffset = fastWave * 1.5 * depth;
+    const targetRotation = tiltAmount + spinOffset;
+
+    const ease = 0.02 + 0.08 * depth;
+    ring.x = ring.x || 0;
+    ring.y = ring.y || 0;
+    ring.scale = ring.scale || 1;
+    ring.rotation = ring.rotation || 0;
+
+    ring.x += (targetX - ring.x) * ease;
+    ring.y += (targetY - ring.y) * ease;
+    ring.scale += (targetScale - ring.scale) * ease * 0.5;
+    ring.rotation += (targetRotation - ring.rotation) * ease;
+
+    ring.element.style.transform = `translate(-50%, -50%) translate3d(${ring.x}px, ${ring.y}px, 0) scale(${ring.scale}) rotate(${ring.rotation}deg)`;
+  });
+};
 
 // --- Mouse Track Tunnel Functions ---
 function generateMouseTunnel() {
@@ -371,6 +582,7 @@ const ENTRANCE_DURATION = 1000;
 const ENTRANCE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
 const ENTRANCE_OFFSET = '50px';
 const ENTRANCE_SLIDE_DIST = '120px';
+const mobileEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
 const HOVER_SCALE = {
   name: 'hoverScale',
@@ -404,6 +616,27 @@ const primitiveInteractions = primitivePrefixes.flatMap((prefix) =>
 
 // --- Interact Configuration ---
 const config = {
+  conditions: {
+    Mobile: {
+      type: 'media',
+      predicate: '(max-width: 1000px)',
+    },
+    Desktop: {
+      type: 'media',
+      predicate: '(min-width: 1001px)',
+    },
+
+    // Hover media queries, when you hover over the page, in mobile
+    hover: {
+      type: 'media',
+      predicate: '(hover: hover)',
+    },
+    notHover: {
+      type: 'media',
+      predicate: 'not (hover: hover)',
+    },
+  },
+
   effects: {
     spongeTumble: {
       key: 'sponge',
@@ -429,6 +662,20 @@ const config = {
         keyframes: [{ '--spacing': '0px' }, { '--spacing': '100px' }],
       },
     },
+    spongeExplodeMobile: {
+      key: 'sponge',
+      duration: 3600,
+      fill: 'both',
+      composite: 'replace',
+      keyframeEffect: {
+        keyframes: [
+          { '--spacing': '0px', offset: 0, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' },
+          { '--spacing': '100px', offset: 0.5, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' },
+          { '--spacing': '100px', offset: 0.667, easing: 'cubic-bezier(0.19, 1, 0.22, 1)' },
+          { '--spacing': '0px', offset: 1 },
+        ],
+      },
+    },
   },
 
   interactions: [
@@ -438,10 +685,10 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -450,10 +697,10 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 1000,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-          fill: 'both',
         },
       ],
     },
@@ -469,29 +716,72 @@ const config = {
     {
       key: 'hitbox',
       trigger: 'hover',
+      conditions: ['Desktop'],
       params: { type: 'alternate' },
       effects: [{ effectId: 'spongeExplode' }],
+    },
+    {
+      key: 'hitbox',
+      trigger: 'viewEnter',
+
+      params: { type: 'alternate' },
+      effects: [
+        {
+          conditions: ['Mobile'],
+          effectId: 'spongeExplodeMobile',
+        },
+      ],
     },
 
     // Hero Grid Interaction
     {
-      key: 'hero-section',
+      key: 'hero-grid',
       trigger: 'pointerMove',
-      params: { hitArea: 'self' },
-      effects: [{ customEffect: rotateGridEffect, centeredToTarget: false }],
+      params: { hitArea: 'root' },
+      conditions: ['Desktop'],
+      effects: [{ customEffect: pointerMoveEffect, centeredToTarget: true }],
     },
 
+    {
+      key: 'hero-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once' },
+      conditions: ['Desktop'],
+      effects: [
+        {
+          customEffect: gridWaveEffect,
+          duration: 16000,
+          iterations: Infinity,
+          easing: 'linear',
+        },
+      ],
+    },
+
+    {
+      key: 'hero-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once' },
+      conditions: ['Mobile'],
+      effects: [
+        {
+          customEffect: rotateGridEffectMobile,
+          duration: 8000,
+          iterations: Infinity,
+          easing: 'linear',
+        },
+      ],
+    },
     // Hero Text
     {
       key: 'hero-line-1',
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 100,
-          fill: 'both',
         },
       ],
     },
@@ -500,11 +790,11 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           keyframeEffect: { ...TILT_UP_OPTS },
           duration: 900,
           easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
           delay: 250,
-          fill: 'both',
         },
       ],
     },
@@ -513,23 +803,23 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { ...FADE_UP_OPTS, distance: '30px' },
           duration: 1200,
           easing: 'ease-out',
           delay: 600,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'nav-logo',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, fill: 'both' }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 1000 }],
     },
     {
       key: 'nav-cta',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200, fill: 'both' }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 1000, delay: 200 }],
     },
 
     // Primitive Interactions (generated)
@@ -551,7 +841,6 @@ const config = {
           },
           duration: ENTRANCE_DURATION,
           easing: ENTRANCE_EASING,
-          delay: 0,
         },
       ],
     },
@@ -689,8 +978,8 @@ const config = {
         {
           key: 'orbit-y',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateY',
             keyframes: [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(360deg)' }],
@@ -700,8 +989,8 @@ const config = {
         {
           key: 'orbit-x',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateX',
             keyframes: [
@@ -714,8 +1003,8 @@ const config = {
         {
           key: 'orbit-diag-1',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag1',
             keyframes: [
@@ -728,8 +1017,8 @@ const config = {
         {
           key: 'orbit-diag-2',
           fill: 'both',
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'rotateDiag2',
             keyframes: [
@@ -748,6 +1037,7 @@ const config = {
       trigger: 'viewEnter',
       effects: [
         {
+          fill: 'backwards',
           namedEffect: {
             type: 'SlideIn',
             direction: 'bottom',
@@ -756,7 +1046,6 @@ const config = {
           },
           duration: 1000,
           easing: 'ease-out',
-          fill: 'both',
         },
       ],
     },
@@ -765,12 +1054,15 @@ const config = {
     {
       key: 'visual-break',
       trigger: 'viewEnter',
-      threshold: 0.2,
+      params: {
+        type: 'once',
+        threshold: 0.2,
+      },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'ScaleIn', power: 'soft' },
           duration: 1200,
-          fill: 'both',
         },
       ],
     },
@@ -782,7 +1074,6 @@ const config = {
           namedEffect: { type: 'ParallaxScroll', range: 'continuous', speed: -0.05 },
           rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
           rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } },
-          fill: 'both',
           composite: 'add',
         },
       ],
@@ -796,8 +1087,8 @@ const config = {
         {
           key: 'pyramid-target',
           fill: 'both',
-          rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'pyramid-tumble',
             keyframes: [
@@ -810,60 +1101,60 @@ const config = {
           key: 'word-1',
           keyframeEffect: {
             keyframes: [
-              { opacity: 0, transform: 'translateY(150px)' },
+              { opacity: 0, transform: 'translateY(100px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 15, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 25, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 40, type: 'percentage' } },
           fill: 'both',
         },
         {
           key: 'word-2',
           keyframeEffect: {
             keyframes: [
-              { opacity: 0, transform: 'translateY(150px)' },
+              { opacity: 0, transform: 'translateY(100px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 5, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 20, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 28, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 43, type: 'percentage' } },
           fill: 'both',
         },
         {
           key: 'word-3',
           keyframeEffect: {
             keyframes: [
-              { opacity: 0, transform: 'translateY(150px)' },
+              { opacity: 0, transform: 'translateY(50px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 31, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 46, type: 'percentage' } },
           fill: 'both',
         },
         {
           key: 'word-4',
           keyframeEffect: {
             keyframes: [
-              { opacity: 0, transform: 'translateY(150px)' },
+              { opacity: 0, transform: 'translateY(50px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 34, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 49, type: 'percentage' } },
           fill: 'both',
         },
         {
           key: 'word-5',
           keyframeEffect: {
             keyframes: [
-              { opacity: 0, transform: 'translateY(150px)' },
+              { opacity: 0, transform: 'translateY(50px)' },
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 15, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 38, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 53, type: 'percentage' } },
           fill: 'both',
         },
         {
@@ -874,8 +1165,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 30, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 45, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 45, unit: 'percentage' } },
           fill: 'both',
         },
       ],
@@ -886,11 +1177,26 @@ const config = {
       key: 'tunnel-root',
       trigger: 'pointerMove',
       params: { hitArea: 'root' },
+      conditions: ['Desktop'],
       effects: [
         {
           customEffect: animateTunnel,
           centeredToTarget: true,
           fill: 'both',
+        },
+      ],
+    },
+    {
+      key: 'performance-section',
+      trigger: 'viewProgress',
+      effects: [
+        {
+          key: 'tunnel-root',
+          customEffect: animateTunnelMobile,
+          fill: 'both',
+          conditions: ['Mobile'],
+          rangeStart: { name: 'cover', offset: { value: 10, type: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
         },
       ],
     },
@@ -915,61 +1221,66 @@ const config = {
     {
       key: 'tailored-header',
       trigger: 'viewEnter',
+      params: { type: 'once' },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'tailored-col-1',
       trigger: 'viewEnter',
+      params: { type: 'once' },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 100,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'tailored-col-2',
       trigger: 'viewEnter',
+      params: { type: 'once' },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 200,
-          fill: 'both',
         },
       ],
     },
     {
       key: 'tailored-col-3',
       trigger: 'viewEnter',
+      params: { type: 'once' },
       effects: [
         {
+          fill: 'backwards',
           namedEffect: { type: 'FadeIn', distance: '40px', direction: 'bottom' },
           duration: 800,
           delay: 300,
-          fill: 'both',
         },
       ],
     },
 
-    // Spread Section
+    // Spread Section (Desktop)
     {
       key: 'spread-section',
       trigger: 'viewProgress',
       effects: [
         {
           key: 'spread-card-0',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'stayCenter',
             keyframes: [
@@ -980,9 +1291,10 @@ const config = {
         },
         {
           key: 'spread-card-1',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftInner',
             keyframes: [
@@ -993,9 +1305,10 @@ const config = {
         },
         {
           key: 'spread-card-2',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightInner',
             keyframes: [
@@ -1006,9 +1319,10 @@ const config = {
         },
         {
           key: 'spread-card-3',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftOuter',
             keyframes: [
@@ -1019,14 +1333,97 @@ const config = {
         },
         {
           key: 'spread-card-4',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightOuter',
             keyframes: [
               { transform: 'translate(-50%, -50%) scale(1)' },
               { transform: 'translate(calc(-50% + 32vw), -50%) scale(0.9)' },
+            ],
+          },
+        },
+
+        // Spread Section (Mobile)
+
+        {
+          key: 'spread-card-0',
+          conditions: ['Mobile'],
+          fill: 'both',
+          easing: mobileEasing,
+          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'card-0-scaleDown',
+            keyframes: [
+              { transform: 'translateX(-50%) translateY(0) scale(1)' },
+              { transform: 'translateX(-50%) translateY(0) scale(0.85)' },
+            ],
+          },
+        },
+        {
+          key: 'spread-card-1',
+          conditions: ['Mobile'],
+          fill: 'both',
+          easing: mobileEasing,
+          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'card-1-slideUp-scaleDown',
+            keyframes: [
+              { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+              { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+              { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' },
+            ],
+          },
+        },
+        {
+          key: 'spread-card-2',
+          conditions: ['Mobile'],
+          fill: 'both',
+          easing: mobileEasing,
+          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'card-2-slideUp-scaleDown',
+            keyframes: [
+              { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+              { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+              { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' },
+            ],
+          },
+        },
+        {
+          key: 'spread-card-3',
+          conditions: ['Mobile'],
+          fill: 'both',
+          easing: mobileEasing,
+          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'card-3-slideUp-scaleDown',
+            keyframes: [
+              { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+              { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+              { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' },
+            ],
+          },
+        },
+        {
+          key: 'spread-card-4',
+          conditions: ['Mobile'],
+          fill: 'both',
+          easing: mobileEasing,
+          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'card-4-slideUp-scaleDown',
+            keyframes: [
+              { offset: 0, transform: 'translateX(-50%) translateY(100vh) scale(1)' },
+              { offset: 0.5, transform: 'translateX(-50%) translateY(0) scale(1)' },
+              { offset: 1, transform: 'translateX(-50%) translateY(0) scale(0.85)' },
             ],
           },
         },
@@ -1038,18 +1435,34 @@ const config = {
       key: 'h-section',
       trigger: 'viewProgress',
       effects: [
+        // Desktop: h-track movement (9 cards × 600px + 8 gaps × 128px - 600px = 5824px)
         {
           key: 'h-track',
+          conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'moveLeft',
             keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(-5824px)' }],
           },
         },
+        // Mobile: h-track movement (8 × (95vw + 4vw) = 792vw)
+        {
+          key: 'h-track',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'moveLeftMobile',
+            keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(-792vw)' }],
+          },
+        },
+        // Desktop card scaling
         {
           key: 'h-card-1',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
@@ -1060,6 +1473,7 @@ const config = {
         },
         {
           key: 'h-card-2',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
@@ -1074,6 +1488,7 @@ const config = {
         },
         {
           key: 'h-card-3',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
@@ -1088,6 +1503,7 @@ const config = {
         },
         {
           key: 'h-card-4',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
@@ -1102,6 +1518,7 @@ const config = {
         },
         {
           key: 'h-card-5',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
@@ -1116,6 +1533,7 @@ const config = {
         },
         {
           key: 'h-card-6',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
@@ -1130,6 +1548,7 @@ const config = {
         },
         {
           key: 'h-card-7',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
@@ -1144,6 +1563,7 @@ const config = {
         },
         {
           key: 'h-card-8',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
@@ -1158,12 +1578,140 @@ const config = {
         },
         {
           key: 'h-card-9',
+          conditions: ['Desktop'],
           fill: 'both',
           rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
           rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter9',
             keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }],
+          },
+        },
+        {
+          key: 'h-card-1',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM1',
+            keyframes: [{ transform: 'scale(1.05)' }, { transform: 'scale(1)' }],
+          },
+        },
+        {
+          key: 'h-card-2',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM2',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-3',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM3',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-4',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM4',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-5',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM5',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-6',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM6',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-7',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM7',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-8',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM8',
+            keyframes: [
+              { transform: 'scale(1)' },
+              { transform: 'scale(1.05)', offset: 0.5 },
+              { transform: 'scale(1)' },
+            ],
+          },
+        },
+        {
+          key: 'h-card-9',
+          conditions: ['Mobile'],
+          fill: 'both',
+          rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          keyframeEffect: {
+            name: 'scaleCenterM9',
+            keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }],
           },
         },
       ],
@@ -1173,12 +1721,12 @@ const config = {
     {
       key: 'footer-brand',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, fill: 'both' }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 600 }],
     },
     {
       key: 'footer-link',
       trigger: 'viewEnter',
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100, fill: 'both' }],
+      effects: [{ fill: 'backwards', namedEffect: { type: 'FadeIn' }, duration: 600, delay: 100 }],
     },
   ],
 };
@@ -1188,7 +1736,7 @@ const config = {
 // =============================================================================
 
 // Generate DOM elements
-updateGrid();
+buildGrid();
 generateTunnel();
 generateMouseTunnel();
 generateSpongeGeometry();
@@ -1197,11 +1745,14 @@ generateSpongeGeometry();
 updateTunnelBounds();
 
 // Event listeners
-window.addEventListener('resize', updateGrid);
+window.addEventListener('resize', buildGrid);
 window.addEventListener('resize', updateTunnelBounds);
 
 // Respect reduced motion settings
 Interact.forceReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Register presets
+Interact.registerEffects(presets);
 
 // Initialize Interact
 Interact.create(config);

@@ -15,6 +15,7 @@ import {
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import fastdom from 'fastdom';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 
@@ -62,7 +63,10 @@ function createTimeEffectHandler(
 
         if (animation.isCSS) {
           animation.onFinish(() => {
-            element.dataset.motionEnter = 'done';
+            // remove the animation from style
+            fastdom.mutate(() => {
+              element.dataset.motionEnter = 'done';
+            });
           });
         }
 
@@ -73,7 +77,9 @@ function createTimeEffectHandler(
         animation.reverse();
       } else if (type === 'repeat') {
         animation.cancel();
-        delete element.dataset.motionEnter;
+        fastdom.mutate(() => {
+          delete element.dataset.interactEnter;
+        });
       } else if (type === 'state') {
         if (animation.playState === 'running') {
           animation.pause();

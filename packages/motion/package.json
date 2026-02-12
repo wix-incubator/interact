@@ -1,6 +1,6 @@
 {
   "name": "@wix/motion",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0-rc.6",
   "description": "High-performance animation toolkit for the web, powering Wix motion presets and tooling.",
   "license": "MIT",
   "main": "dist/cjs/motion.js",
@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix-incubator/interact"
+    "url": "git+https://github.com/wix-incubator/interact.git"
   },
   "bugs": {
     "url": "https://github.com/wix-incubator/interact/issues"

@@ -1,7 +1,11 @@
 import type { ArcIn, TimeAnimationOptions, EffectFourDirections, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
 
 const ROTATION_ANGLE = 80;
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
+const DEFAULT_DEPTH = { value: 200, unit: 'px' };
+
 const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: number }> = {
   top: { x: 1, y: 0, sign: 1 },
   right: { x: 0, y: 1, sign: 1 },
@@ -9,15 +13,7 @@ const DIRECTION_MAP: Record<EffectFourDirections, { x: number; y: number; sign: 
   left: { x: 0, y: 1, sign: -1 },
 };
 
-const EASING_MAP = {
-  soft: 'cubicInOut',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
-
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
@@ -26,23 +22,25 @@ export function getNames(_: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, direction = 'right' } = options.namedEffect as ArcIn;
+  const namedEffect = options.namedEffect as ArcIn;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+
+  const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
+  const { perspective = 800 } = namedEffect;
   const [fadeIn, arcIn] = getNames(options);
 
-  const easing = (power && EASING_MAP[power]) || options.easing || 'quintInOut';
-
-  // we can remove dependency on measurement here if we use a "layout wrapper" as a `container`: https://jsbin.com/mulojuwogi/edit?css,output
-  // we could also consider a fixed value for z, e.g. 300px like in ArcScroll
-  // const { width, height } = element.getBoundingClientRect();
+  const easing = options.easing || 'quintInOut';
 
   const { x, y, sign } = DIRECTION_MAP[direction];
-  // const z = rotateX ? height / 2 : width / 2;
-  const z = `(-1 * (var(--motion-height, 100vh) * var(--motion-arc-x, 1) + var(--motion-width, 100vw) * var(--motion-arc-y, 0))) / 2`;
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-arc-x': `${x}`,
     '--motion-arc-y': `${y}`,
     '--motion-arc-sign': `${sign}`,
+    '--motion-depth-negative': `calc(-1 * ${depthValue} / 2)`,
+    '--motion-depth-positive': `calc(${depthValue} / 2)`,
   };
 
   return [
@@ -52,7 +50,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       duration: options.duration! * 0.7,
       easing: 'sineIn',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -61,8 +59,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) translateZ(calc(${z})) rotateX(calc(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(calc(${toKeyframeValue(
             custom,
             '--motion-arc-x',
             asWeb,
@@ -78,33 +75,12 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-arc-sign',
             asWeb,
-          )} * ${ROTATION_ANGLE}deg)) translateZ(calc(-1 * ${z})) rotate(var(--comp-rotate-z, 0deg))`,
+          )} * ${ROTATION_ANGLE}deg)) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          transform: `perspective(800px) translateZ(calc(${z})) rotateX(0deg) rotateY(0deg) translateZ(calc(-1 * ${z})) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
       ],
     },
   ];
-}
-
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let width: number, height: number;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-height', `${height}px`);
-      target?.style.setProperty('--motion-width', `${width}px`);
-    });
-  }
 }

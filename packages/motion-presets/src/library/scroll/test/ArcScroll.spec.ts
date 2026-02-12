@@ -19,11 +19,11 @@ describe('ArcScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(-68deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(-68deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(0deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(0deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -45,11 +45,11 @@ describe('ArcScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateX(-68deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateX(-68deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateX(0deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateX(0deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -71,11 +71,11 @@ describe('ArcScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(0deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(0deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(68deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(68deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -99,11 +99,11 @@ describe('ArcScroll', () => {
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(-68deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(-68deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) rotateY(68deg) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(500px) translateZ(-300px) rotateY(68deg) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -126,14 +126,17 @@ describe('ArcScroll', () => {
         {
           fill: 'backwards',
           easing: 'linear',
+          custom: {
+            '--motion-perspective': '500px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -152,14 +155,17 @@ describe('ArcScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '500px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -178,14 +184,17 @@ describe('ArcScroll', () => {
 
       const expectedResult = [
         {
+          custom: {
+            '--motion-perspective': '500px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },
@@ -206,14 +215,17 @@ describe('ArcScroll', () => {
       const expectedResult = [
         {
           fill: 'forwards',
+          custom: {
+            '--motion-perspective': '500px',
+          },
           keyframes: [
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-from) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
             {
               transform:
-                'perspective(500px) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--comp-rotate-z, 0deg))',
+                'perspective(var(--motion-perspective)) translateZ(-300px) var(--motion-arc-to) translateZ(300px) rotate(var(--motion-rotate, 0deg))',
             },
           ],
         },

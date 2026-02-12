@@ -1,11 +1,20 @@
-import type { AnimationFillMode, ScrubAnimationOptions, ShuttersScroll, DomApi } from '../../types';
+import type {
+  AnimationFillMode,
+  ScrubAnimationOptions,
+  ShuttersScroll,
+  DomApi,
+  EffectFourDirections,
+} from '../../types';
 import {
   getOppositeDirection,
   getShuttersClipPaths,
   getEasing,
   toKeyframeValue,
   FOUR_DIRECTIONS,
+  parseDirection,
 } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
 
 export function getNames(options: ScrubAnimationOptions) {
   const { range = 'in' } = options.namedEffect as ShuttersScroll;
@@ -17,12 +26,9 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    direction = 'right',
-    shutters = 12,
-    staggered = true,
-    range = 'in',
-  } = options.namedEffect as ShuttersScroll;
+  const namedEffect = options.namedEffect as ShuttersScroll;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+  const { shutters = 12, staggered = true, range = 'in' } = namedEffect;
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
