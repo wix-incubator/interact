@@ -3,25 +3,25 @@ name: Update interact system rules
 overview: Update the 8 rule files in `packages/interact/rules/` to fix bugs, add missing features, and align with the current codebase (types, handlers, core logic, and docs).
 todos:
   - id: fix-full-lean
-    content: "Update full-lean.md: add selector condition type, activate/interest triggers, state to ViewEnterParams, axis to PointerMoveParams"
+    content: 'Update full-lean.md: add selector condition type, activate/interest triggers, state to ViewEnterParams, axis to PointerMoveParams'
     status: completed
   - id: fix-click-md
-    content: "Fix click.md: change source/target to key in Rule 2, fix TransitionEffect params in Rule 4"
+    content: 'Fix click.md: change source/target to key in Rule 2, fix TransitionEffect params in Rule 4'
     status: completed
   - id: fix-viewprogress-md
     content: "Fix viewprogress.md: fix missing comma in Rule 3, fix 'enter' to 'entry' in Rule 4, fix customEffect 3-param signatures"
     status: completed
   - id: fix-viewenter-md
-    content: "Fix viewenter.md: fix broken FOUC section, fix import path, rename SELECTOR variables to KEY"
+    content: 'Fix viewenter.md: fix broken FOUC section, fix import path, rename SELECTOR variables to KEY'
     status: completed
   - id: fix-integration-md
-    content: "Update integration.md: add activate, interest, pageVisible to triggers table"
+    content: 'Update integration.md: add activate, interest, pageVisible to triggers table'
     status: completed
   - id: fix-scroll-list-md
-    content: "Fix scroll-list.md: fix customEffect 3-param signature, standardize variable naming"
+    content: 'Fix scroll-list.md: fix customEffect 3-param signature, standardize variable naming'
     status: completed
   - id: fix-pointermove-md
-    content: "Review pointermove.md: fix any customEffect 3-param signatures if present"
+    content: 'Review pointermove.md: fix any customEffect 3-param signatures if present'
     status: completed
 isProject: false
 ---
@@ -39,7 +39,7 @@ The rules in `packages/interact/rules/` have several discrepancies with the curr
 - **Line 118**: Condition `type` only lists `'media' | 'container'` -- add `'selector'`. The `selector` type is used in code (`getSelectorCondition` in [utils.ts](packages/interact/src/utils.ts)) to produce a CSS selector predicate (with `&` replacement) that guards when an effect/interaction applies:
 
 ```typescript
-type: 'media' | 'container' | 'selector'
+type: 'media' | 'container' | 'selector';
 ```
 
 Add documentation:
@@ -126,4 +126,3 @@ Per [types.ts](packages/interact/src/types.ts) line 90, the actual signature is 
 - **[viewenter.md](packages/interact/rules/viewenter.md)**: Uses `[SOURCE_SELECTOR]`, `[TARGET_SELECTOR]`, `[OBSERVER_SELECTOR]` -- these are element keys (`data-interact-key` values), not CSS selectors. Rename to `[SOURCE_KEY]`, `[TARGET_KEY]`, `[OBSERVER_KEY]` for consistency with [pointermove.md](packages/interact/rules/pointermove.md) which correctly uses `[SOURCE_KEY]`.
 - **[viewprogress.md](packages/interact/rules/viewprogress.md)**: Same issue -- rename `[SOURCE_SELECTOR]`/`[TARGET_SELECTOR]` to `[SOURCE_KEY]`/`[TARGET_KEY]`.
 - **[scroll-list.md](packages/interact/rules/scroll-list.md)**: Uses a mix (`[CONTAINER_SELECTOR]` vs `[ITEM_KEY]`) -- standardize to `KEY` suffix for interact key values, reserving `SELECTOR` for actual CSS selector fields like `selector` or `listItemSelector`.
-

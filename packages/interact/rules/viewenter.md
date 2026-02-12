@@ -904,11 +904,11 @@ const config: InteractConfig = {
         {
           namedEffect: { type: 'FadeIn' },
           duration: 800,
-          fill: 'backwards'
-        }
-      ]
-    }
-  ]
+          fill: 'backwards',
+        },
+      ],
+    },
+  ],
 };
 
 // Generate CSS at build time or on server

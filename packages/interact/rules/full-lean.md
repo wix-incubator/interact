@@ -398,7 +398,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
   - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
   - Short list of common preset names:
     - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `F
-    lipIn`, `ArcIn`
+lipIn`, `ArcIn`
     - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
     - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`
     - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity.
