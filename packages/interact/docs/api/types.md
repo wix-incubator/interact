@@ -749,7 +749,7 @@ type EffectProperty =
 **Types:**
 
 - `keyframeEffect` - Raw keyframe animation definition
-- `namedEffect` - Pre-built animation from `@wix/motion`
+- `namedEffect` - Pre-built animations from `@wix/motion-presets`
 - `customEffect` - Function `(element: Element, progress: number) => void` for custom scrub/behavior
 
 **Examples:**

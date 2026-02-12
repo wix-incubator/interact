@@ -346,7 +346,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
      - `delay?`: number (ms)
      - One of:
        - `keyframeEffect`: `{ name: string; keyframes: Keyframe[] }`
-       - `namedEffect`: `NamedEffect` (from `@wix/motion`)
+       - `namedEffect`: `NamedEffect` (from `@wix/motion-presets`)
        - `customEffect`: `(element: Element, progress: any) => void`
 
   2. **ScrubEffect** (animation driven by scroll/progress)

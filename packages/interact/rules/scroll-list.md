@@ -121,7 +121,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Variables**:
 
 - `[ITEM_KEY]`: Unique identifier for individual list items
-- `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion scroll animations:
+- `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion-presets scroll animations:
   - **Reveal/Fade**: 'FadeScroll', 'BlurScroll', 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
   - **Movement**: 'MoveScroll', 'SlideScroll', 'PanScroll', 'SkewPanScroll'
   - **Scale**: 'GrowScroll', 'ShrinkScroll', 'StretchScroll'
@@ -213,7 +213,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 - `[ITEM_CONTAINER_KEY]`: Unique identifier for the containing list item
 - `[CONTENT_KEY]`: Unique identifier for content within the item (or use `selector` for CSS selector)
-- `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion:
+- `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion-presets:
   - **Opacity/Visibility**: 'FadeScroll', 'BlurScroll'
   - **Reveal**: 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
   - **3D Transforms**: 'TiltScroll', 'FlipScroll', 'ArcScroll', 'TurnScroll', 'Spin3dScroll'

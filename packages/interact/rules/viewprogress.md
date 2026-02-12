@@ -69,7 +69,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 }
 ```
 
-- `[NAMED_EFFECT]`: Pre-built scroll effect name from @wix/motion (e.g., 'ParallaxScroll', 'MoveScroll', 'FadeScroll', 'RevealScroll', 'GrowScroll', 'SlideScroll', 'SpinScroll', 'PanScroll', 'BlurScroll', 'ArcScroll', 'FlipScroll', 'Spin3dScroll', 'TiltScroll', 'TurnScroll', 'ShapeScroll', 'ShuttersScroll', 'ShrinkScroll', 'SkewPanScroll', 'StretchScroll')
+- `[NAMED_EFFECT]`: Pre-built scroll effect name from @wix/motion-presets (e.g., 'ParallaxScroll', 'MoveScroll', 'FadeScroll', 'RevealScroll', 'GrowScroll', 'SlideScroll', 'SpinScroll', 'PanScroll', 'BlurScroll', 'ArcScroll', 'FlipScroll', 'Spin3dScroll', 'TiltScroll', 'TurnScroll', 'ShapeScroll', 'ShuttersScroll', 'ShrinkScroll', 'SkewPanScroll', 'StretchScroll')
 
 **Example - Background Parallax**:
 
@@ -127,7 +127,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 **Variables**:
 
-- `[ENTRANCE_EFFECT]`: Named entrance effect from @wix/motion scroll animations (e.g., 'FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll', 'GrowScroll', 'MoveScroll', 'BlurScroll')
+- `[ENTRANCE_EFFECT]`: Named entrance effect from @wix/motion-presets scroll animations (e.g., 'FadeScroll', 'SlideScroll', 'RevealScroll', 'ShapeScroll', 'GrowScroll', 'MoveScroll', 'BlurScroll')
 - `[ENTRY_START]`: Entry animation start percentage (typically 0-30)
 - `[ENTRY_END]`: Entry animation end percentage (typically 70-100)
 - Other variables same as Rule 1
