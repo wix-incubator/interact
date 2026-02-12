@@ -4,11 +4,11 @@ Welcome to the complete documentation for the `@wix/interact` package - a powerf
 
 ## Package Entry Points
 
-| Entry Point           | Use Case           | Key Exports                                          |
-| --------------------- | ------------------ | ---------------------------------------------------- |
-| `@wix/interact/web`   | Web Components     | `Interact`, `add`, `remove`, `generate`             |
+| Entry Point           | Use Case           | Key Exports                                                                 |
+| --------------------- | ------------------ | --------------------------------------------------------------------------- |
+| `@wix/interact/web`   | Web Components     | `Interact`, `add`, `remove`, `generate`                                     |
 | `@wix/interact/react` | React applications | `Interact`, `add`, `remove`, `generate`, `Interaction`, `createInteractRef` |
-| `@wix/interact`       | Vanilla JS         | `Interact`, `add`, `remove`, `generate`             |
+| `@wix/interact`       | Vanilla JS         | `Interact`, `add`, `remove`, `generate`                                     |
 
 ## Table of Contents
 

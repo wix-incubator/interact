@@ -3,25 +3,25 @@ name: Update Interact docs
 overview: Update the Interact documentation to match the current library code, fixing factual errors in API signatures, type definitions, and examples, while trimming for conciseness per user request.
 todos:
   - id: fix-interact-class
-    content: "Fix `api/interact-class.md`: correct `setup()` signature (scrollOptionsGetter, pointerOptionsGetter instead of forceReducedMotion/viewProgress/pointerMove), update class overview block and examples"
+    content: 'Fix `api/interact-class.md`: correct `setup()` signature (scrollOptionsGetter, pointerOptionsGetter instead of forceReducedMotion/viewProgress/pointerMove), update class overview block and examples'
     status: completed
   - id: fix-functions
-    content: "Fix `api/functions.md`: correct `generate()` signature (add useFirstChild param), fix CSS output to show actual key-based selectors, fix availability claim (all 3 entry points)"
+    content: 'Fix `api/functions.md`: correct `generate()` signature (add useFirstChild param), fix CSS output to show actual key-based selectors, fix availability claim (all 3 entry points)'
     status: completed
   - id: fix-types
     content: "Fix `api/types.md`: add 'state' to ViewEnterType, add useSafeViewEnter to ViewEnterParams, add axis to PointerMoveParams, add 'selector' to Condition.type, add activate/interest to InteractionParamsTypes, add useFirstChild to IInteractionController, fix customEffect signature, remove fabricated InteractConfigBuilder, remove internal types"
     status: completed
   - id: fix-controller
-    content: "Fix `api/interaction-controller.md`: add useFirstChild to interface, fix disconnect() signature, remove internal _childListChangeHandler, trim verbose sections"
+    content: 'Fix `api/interaction-controller.md`: add useFirstChild to interface, fix disconnect() signature, remove internal _childListChangeHandler, trim verbose sections'
     status: completed
   - id: fix-triggers-guide
     content: "Fix `guides/understanding-triggers.md`: add 'state' to viewEnter behaviors, add axis param to pointerMove, fix section numbering, add brief pageVisible note"
     status: completed
   - id: fix-react-integration
-    content: "Fix `integration/react.md`: add `initial` prop to Interaction component props table, fix accordion example config"
+    content: 'Fix `integration/react.md`: add `initial` prop to Interaction component props table, fix accordion example config'
     status: completed
   - id: fix-readme
-    content: "Fix root `README.md`: update entry points table, remove all broken links to non-existent doc files, simplify TOC to only existing pages"
+    content: 'Fix root `README.md`: update entry points table, remove all broken links to non-existent doc files, simplify TOC to only existing pages'
     status: completed
 isProject: false
 ---
@@ -87,7 +87,7 @@ All of these are in `api/types.md`, comparing against `src/types.ts`:
 - `**Condition.type**`: Missing `'selector'` -- should be `'media' | 'container' | 'selector'`
 - `**InteractionParamsTypes**`: Missing `activate` and `interest` entries
 - `**IInteractionController**`: Missing `useFirstChild: boolean` property
-- `**customEffect` signature**: Docs show `(element: HTMLElement) => Animation` but code has `(element: Element, progress: any) => void`
+- `**customEffect` signature\*\*: Docs show `(element: HTMLElement) => Animation` but code has `(element: Element, progress: any) => void`
 - `**HandlerObject.handler**`: Docs show `handler?: () => void` but code has `handler?: (isIntersecting?: boolean) => void`
 - **Remove fabricated `InteractConfigBuilder**`: This class does not exist anywhere in the source code
 
@@ -99,7 +99,7 @@ All of these are in `api/types.md`, comparing against `src/types.ts`:
 
 - **ViewEnter section**: Only lists `once`, `repeat`, `alternate` -- missing `state` behavior type
 - **PointerMove section**: Missing `axis` parameter documentation
-- `**pageVisible` trigger**: Listed in overview table but has no dedicated section (add a brief note or remove from table)
+- `**pageVisible` trigger\*\*: Listed in overview table but has no dedicated section (add a brief note or remove from table)
 - Section numbering jumps from 6 to 8 (missing 7 for PointerMove)
 
 ---
@@ -108,7 +108,7 @@ All of these are in `api/types.md`, comparing against `src/types.ts`:
 
 ### [integration/react.md](packages/interact/docs/integration/react.md)
 
-- `**Interaction` component props table**: Missing the `initial` prop (`initial?: boolean` sets `data-interact-initial="true"`)
+- `**Interaction` component props table\*\*: Missing the `initial` prop (`initial?: boolean` sets `data-interact-initial="true"`)
 - The accordion config example uses a non-existent `transitionEffect` structure (should use `transition`/`transitionProperties`)
 
 ---
@@ -132,7 +132,7 @@ All of these are in `api/types.md`, comparing against `src/types.ts`:
 Across all docs:
 
 - **Remove internal types** from `api/types.md`: `HandlerObject`, `HandlerObjectMap`, `InteractCache`, `CreateTransitionCSSParams`, `InteractionHandlerModule`, `TriggerHandlerMap` -- these are internal implementation details
-- **Remove `_childListChangeHandler**` from `api/interaction-controller.md` -- it's an internal method (prefixed with `_`)
+- **Remove `\_childListChangeHandler**`from`api/interaction-controller.md`-- it's an internal method (prefixed with`\_`)
 - **Trim verbose examples** in `api/interaction-controller.md` (e.g. the programmatic state management / dynamic list management sections can be shortened)
 - **Trim `api/types.md**` significantly by removing internal types and overly detailed examples for rarely-used types
 - **Simplify "See Also" sections** across all API docs -- many link to the same set of files repeatedly
@@ -140,7 +140,6 @@ Across all docs:
 ---
 
 ## File-by-File Summary
-
 
 | File                               | Changes                                                                     |
 | ---------------------------------- | --------------------------------------------------------------------------- |
@@ -151,5 +150,3 @@ Across all docs:
 | `api/types.md`                     | Fix 8+ type discrepancies, remove fabricated builder, remove internal types |
 | `guides/understanding-triggers.md` | Add `state` to viewEnter, add `axis` to pointerMove, fix numbering          |
 | `integration/react.md`             | Add `initial` prop, fix accordion example                                   |
-
-

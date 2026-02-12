@@ -12,10 +12,10 @@ import { add, remove, generate } from '@wix/interact';
 
 ## Functions Overview
 
-| Function     | Purpose                                                   | Parameters        | Returns  |
-| ------------ | --------------------------------------------------------- | ----------------- | -------- |
-| `add()`      | Add interactions to an element                            | `element`, `key?` | `void`   |
-| `remove()`   | Remove interactions from an element                       | `key`             | `void`   |
+| Function     | Purpose                                                   | Parameters                 | Returns  |
+| ------------ | --------------------------------------------------------- | -------------------------- | -------- |
+| `add()`      | Add interactions to an element                            | `element`, `key?`          | `void`   |
+| `remove()`   | Remove interactions from an element                       | `key`                      | `void`   |
 | `generate()` | Generate CSS for hiding elements with entrance animations | `config`, `useFirstChild?` | `string` |
 
 ---
@@ -228,7 +228,7 @@ The function generates CSS that:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-key="hero"]:not([data-interact-enter]) {
+  [data-interact-key='hero']:not([data-interact-enter]) {
     visibility: hidden;
     transform: none;
     translate: none;
@@ -242,7 +242,7 @@ The function generates CSS that:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-key="hero"] > :first-child:not([data-interact-enter]) {
+  [data-interact-key='hero'] > :first-child:not([data-interact-enter]) {
     visibility: hidden;
     transform: none;
     translate: none;

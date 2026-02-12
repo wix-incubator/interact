@@ -20,23 +20,23 @@ import { Interact } from '@wix/interact';
 ```typescript
 class Interact {
   // Static methods
-  static create(config: InteractConfig, options?: { useCutsomElement?: boolean }): Interact
-  static getInstance(key: string): Interact | undefined
-  static destroy(): void
+  static create(config: InteractConfig, options?: { useCutsomElement?: boolean }): Interact;
+  static getInstance(key: string): Interact | undefined;
+  static destroy(): void;
   static setup(options: {
     scrollOptionsGetter?: () => Partial<scrollConfig>;
     pointerOptionsGetter?: () => Partial<PointerConfig>;
     viewEnter?: Partial<ViewEnterParams>;
     allowA11yTriggers?: boolean;
-  }): void
-  static registerEffects(effects: Record<string, NamedEffect>): void
-  static getController(key: string | undefined): IInteractionController | undefined
+  }): void;
+  static registerEffects(effects: Record<string, NamedEffect>): void;
+  static getController(key: string | undefined): IInteractionController | undefined;
 
   // Instance methods
-  init(config: InteractConfig, options?: { useCutsomElement?: boolean }): void
-  destroy(): void
-  has(key: string): boolean
-  get(key: string): InteractCache['interactions'][string] | undefined
+  init(config: InteractConfig, options?: { useCutsomElement?: boolean }): void;
+  destroy(): void;
+  has(key: string): boolean;
+  get(key: string): InteractCache['interactions'][string] | undefined;
 }
 ```
 
@@ -146,8 +146,12 @@ Interact.setup({
 
 // Provide scroll/pointer options via getters
 Interact.setup({
-  scrollOptionsGetter: () => ({ /* scroll config */ }),
-  pointerOptionsGetter: () => ({ /* pointer config */ }),
+  scrollOptionsGetter: () => ({
+    /* scroll config */
+  }),
+  pointerOptionsGetter: () => ({
+    /* pointer config */
+  }),
 });
 
 // Enable accessibility for click and hover triggers

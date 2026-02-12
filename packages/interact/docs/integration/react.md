@@ -64,14 +64,14 @@ The `Interaction` component is a wrapper that automatically manages interaction 
 
 ### Props
 
-| Prop          | Type                          | Required | Description                                                      |
-| ------------- | ----------------------------- | -------- | ---------------------------------------------------------------- |
-| `tagName`     | `keyof JSX.IntrinsicElements` | Yes      | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`) |
-| `interactKey` | `string`                      | Yes      | Unique identifier matching the interaction configuration         |
+| Prop          | Type                          | Required | Description                                                                                   |
+| ------------- | ----------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `tagName`     | `keyof JSX.IntrinsicElements` | Yes      | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`)                              |
+| `interactKey` | `string`                      | Yes      | Unique identifier matching the interaction configuration                                      |
 | `initial`     | `boolean`                     | No       | When `true`, sets `data-interact-initial="true"` for FOUC prevention with entrance animations |
-| `children`    | `React.ReactNode`             | No       | Child elements to render                                         |
-| `ref`         | `React.Ref<any>`              | No       | Forwarded ref to the underlying DOM element                      |
-| `...rest`     | `JSX.IntrinsicElements[T]`    | No       | Any valid props for the specified `tagName`                      |
+| `children`    | `React.ReactNode`             | No       | Child elements to render                                                                      |
+| `ref`         | `React.Ref<any>`              | No       | Forwarded ref to the underlying DOM element                                                   |
+| `...rest`     | `JSX.IntrinsicElements[T]`    | No       | Any valid props for the specified `tagName`                                                   |
 
 ### Basic Usage
 
