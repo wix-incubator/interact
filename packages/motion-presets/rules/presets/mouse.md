@@ -1,11 +1,11 @@
 ---
 name: Mouse Animations
-trigger: mouse
+category: mouse
 ---
 
 # Mouse Animations
 
-Animations that respond to cursor position. Desktop-only.
+Animations that respond to cursor position. May behave differently on mobile.
 
 ## When to Use Mouse Animations
 
@@ -16,16 +16,15 @@ Animations that respond to cursor position. Desktop-only.
 
 ## When NOT to Use Mouse Animations
 
-- Mobile-first designs (won't work on touch)
 - Accessibility-critical interfaces
-- Essential functionality
-- Multiple simultaneous effects
+- Essential functionality (never rely on mouse for core features)
+- Multiple simultaneous effects on many elements
 
 ## Available Mouse Presets
 
 See [Mouse Presets](presets-reference.md#mouse-presets) for full details:
 
-Tilt3DMouse, TrackMouse, BounceMouse, Track3DMouse, SpinMouse, ScaleMouse, SwivelMouse, SkewMouse, BlurMouse, AiryMouse, BlobMouse, CustomMouse
+AiryMouse, BlobMouse, BlurMouse, BounceMouse, CustomMouse, ScaleMouse, SkewMouse, SpinMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, TrackMouse
 
 ## Mouse Quick Decision
 
@@ -44,9 +43,9 @@ Tilt3DMouse, TrackMouse, BounceMouse, Track3DMouse, SpinMouse, ScaleMouse, Swive
 | Interactive portfolios | Tilt3DMouse, Track3DMouse           |
 | Playful interfaces     | BounceMouse, BlobMouse              |
 
-## Mobile Fallback
+## Mobile Considerations
 
-Mouse animations don't work on touch devices. Options:
+Mouse animations may behave differently on touch devices. Options:
 
 1. Do nothing (static on mobile)
 2. Use entrance animation instead

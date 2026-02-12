@@ -1,11 +1,11 @@
 ---
 name: Scroll Animations
-trigger: scroll
+category: scroll
 ---
 
 # Scroll Animations
 
-Animations tied to scroll position. Can animate in, out, or continuously.
+Animations whose progress is tied to a ViewTimeline - the element's position in the viewport.
 
 ## When to Use Scroll Animations
 
@@ -16,20 +16,19 @@ Animations tied to scroll position. Can animate in, out, or continuously.
 
 ## When NOT to Use Scroll Animations
 
-- One-time entrance → see [Entrance](presets-reference.md#entrance) (more performant)
-- Continuous loops → see [Ongoing](presets-reference.md#ongoing)
-- Background images → see [Background Scroll](presets-reference.md#background-scroll)
+- One-time entrance → see [Entrance](presets-reference.md#entrance-presets) (more performant)
+- Continuous loops → see [Ongoing](presets-reference.md#ongoing-presets)
 
 ## Available Scroll Presets
 
 See [Scroll Presets](presets-reference.md#scroll-presets) for full details:
 
-ParallaxScroll, FadeScroll, ArcScroll, BlurScroll, FlipScroll, GrowScroll, ShrinkScroll, MoveScroll, PanScroll, RevealScroll, ShapeScroll, ShuttersScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, TurnScroll
+ArcScroll, BlurScroll, FadeScroll, FlipScroll, GrowScroll, MoveScroll, PanScroll, ParallaxScroll, RevealScroll, ShapeScroll, ShrinkScroll, ShuttersScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, TurnScroll
 
 ## Scroll Range Modes
 
-- `in`: Animates as element enters viewport (0% → 50%)
-- `out`: Animates as element exits viewport (50% → 100%)
+- `in`: Animates as element enters viewport
+- `out`: Animates as element exits viewport
 - `continuous`: Animates throughout entire scroll range
 
 ## Scroll Quick Decision

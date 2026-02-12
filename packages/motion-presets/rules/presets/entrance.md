@@ -1,42 +1,30 @@
 ---
 name: Entrance Animations
-trigger: entrance
+category: entrance
 ---
 
 # Entrance Animations
 
-One-shot animations that play once when an element first enters the viewport.
-
-## Trigger Mechanism
-
-Uses the `viewEnter` trigger (intersection observer). Plays automatically when element scrolls into view for the first time.
-
-**Note:** For click, toggle, or other event-based triggers, implement the triggering logic separately and call the animation programmatically.
+One-shot animations optimized for viewport entry, but can also be triggered by hover, click, animationEnd, and other triggers.
 
 ## When to Use Entrance Animations
 
 - Element reveals on viewport entry
 - First-time visibility animations
+- Click/hover-triggered transitions
 - Content appearing as user scrolls down
 
 ## When NOT to Use Entrance Animations
 
-- Scroll-driven reveals → see [Scroll](presets-reference.md#scroll)
-- Continuous/looping → see [Ongoing](presets-reference.md#ongoing)
-- Mouse-reactive → see [Mouse](presets-reference.md#mouse)
+- Scroll-driven reveals → see [Scroll](presets-reference.md#scroll-presets)
+- Continuous/looping → see [Ongoing](presets-reference.md#ongoing-presets)
+- Mouse-reactive → see [Mouse](presets-reference.md#mouse-presets)
 
 ## Available Entrance Presets
 
 See [Entrance Presets](presets-reference.md#entrance-presets) for full details:
 
-FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, FlipIn, FloatIn, FoldIn, GlideIn, GrowIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
-
-## Entrance Common Parameters
-
-All entrance presets share:
-
-- `duration`: 0-4000 in ms (default: 1200)
-- `delay`: 0-8000 in ms (default: 0)
+FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
 
 ## Entrance Quick Decision
 
@@ -52,14 +40,7 @@ All entrance presets share:
 | Use Case               | Recommended                |
 | ---------------------- | -------------------------- |
 | Hero sections          | ArcIn, FloatIn, RevealIn   |
-| Modals/Popups          | FadeIn, DropIn, GrowIn     |
+| Modals/Popups          | FadeIn, DropIn, ExpandIn   |
 | List items (staggered) | FadeIn, SlideIn with delay |
 | Notifications          | BounceIn, DropIn           |
 | Cards                  | FlipIn, ArcIn, TiltIn      |
-
-## Combining with Ongoing
-
-Entrance + Ongoing is the only combination supported on a single element. Example:
-
-- BounceIn plays on viewport entry
-- Pulse continues indefinitely after

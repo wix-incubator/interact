@@ -35,11 +35,11 @@ rules/presets/
 | BounceIn   | Bouncy entrance with overshoot                           |
 | CurveIn    | Curved path entry                                        |
 | DropIn     | Drop from above with scale                               |
+| ExpandIn   | Scale + translate entry from edge                        |
 | FlipIn     | 3D flip rotation                                         |
 | FloatIn    | Gentle floating entry                                    |
 | FoldIn     | 3D fold unfold                                           |
 | GlideIn    | Smooth directional slide (default: from left, angle 270) |
-| GrowIn     | Scale + translate entry                                  |
 | RevealIn   | Directional clip-path reveal                             |
 | ShapeIn    | Geometric shape clip-path reveal                         |
 | ShuttersIn | Multi-segment reveal                                     |
@@ -117,12 +117,12 @@ rules/presets/
 
 These are categories of presets, each optimized for certain use cases but not limited to a single trigger mechanism.
 
-| Category | Optimized For                       | Notes                                                                    |
-| -------- | ----------------------------------- | ------------------------------------------------------------------------ |
-| entrance | `viewEnter` (intersection observer) | Can also be triggered by hover, click, animationend, and other triggers  |
-| scroll   | ViewTimeline (scroll progress)      | Animation progress tied to element's position in the viewport            |
-| ongoing  | Continuous loop                     | Runs indefinitely until stopped                                          |
-| mouse    | Pointer position binding            | Real-time response to cursor position; may behave differently on mobile  |
+| Category | Optimized For                       | Notes                                                                   |
+| -------- | ----------------------------------- | ----------------------------------------------------------------------- |
+| entrance | `viewEnter` (intersection observer) | Can also be triggered by hover, click, animationend, and other triggers |
+| scroll   | ViewTimeline (scroll progress)      | Animation progress tied to element's position in the viewport           |
+| ongoing  | Continuous loop                     | Runs indefinitely until stopped                                         |
+| mouse    | Pointer position binding            | Real-time response to cursor position; may behave differently on mobile |
 
 ### Combining Animations
 
@@ -162,11 +162,11 @@ These are set on the animation/effect configuration level, not on the preset its
 
 The `direction` parameter accepts different values depending on the preset:
 
-| Meaning            | Accepted Values                                                    | Presets                              |
-| ------------------ | ------------------------------------------------------------------ | ------------------------------------ |
-| Cardinal direction | 'top', 'right', 'bottom', 'left'                                  | FlipIn, FoldIn, SlideIn, FloatIn    |
-| Extended cardinal  | + 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center' | BounceIn, ShapeIn                    |
-| Rotation direction | 'clockwise', 'counter-clockwise'                                  | SpinIn, SpinScroll, Spin             |
+| Meaning            | Accepted Values                                                    | Presets                          |
+| ------------------ | ------------------------------------------------------------------ | -------------------------------- |
+| Cardinal direction | 'top', 'right', 'bottom', 'left'                                   | FlipIn, FoldIn, SlideIn, FloatIn |
+| Extended cardinal  | + 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center' | BounceIn, ShapeIn                |
+| Rotation direction | 'clockwise', 'counter-clockwise'                                   | SpinIn, SpinScroll, Spin         |
 
 ### Coordinate System
 
@@ -331,17 +331,17 @@ Parameters:
 
 ### Preset Selection By Use Case
 
-| Use Case               | Recommended Presets                              |
-| ---------------------- | ------------------------------------------------ |
-| Hero sections          | ArcIn, FloatIn, RevealIn                          |
-| Modals/Popups          | FadeIn, DropIn, GrowIn, SlideIn                  |
-| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay   |
-| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)      |
-| Notifications/Badges   | BounceIn, DropIn + Pulse                         |
-| CTAs/Buttons           | BounceIn, GrowIn + Pulse                         |
-| Loading indicators     | Spin, Pulse                                      |
-| Product images         | Tilt3DMouse, ScaleMouse                          |
-| Background depth       | ParallaxScroll, TrackMouse (layered)              |
+| Use Case               | Recommended Presets                            |
+| ---------------------- | ---------------------------------------------- |
+| Hero sections          | ArcIn, FloatIn, RevealIn                       |
+| Modals/Popups          | FadeIn, DropIn, ExpandIn, SlideIn              |
+| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay |
+| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)    |
+| Notifications/Badges   | BounceIn, DropIn + Pulse                       |
+| CTAs/Buttons           | BounceIn, ExpandIn + Pulse                     |
+| Loading indicators     | Spin, Pulse                                    |
+| Product images         | Tilt3DMouse, ScaleMouse                        |
+| Background depth       | ParallaxScroll, TrackMouse (layered)           |
 
 ---
 
@@ -349,7 +349,7 @@ Parameters:
 
 To regenerate `presets-reference.md`:
 
-1. Check Preset Registry in this file for active presets
+1. Verify Preset Registry in this file is aligned with actual preset files in `motion-presets/src/library/{category}/` (exclude index.ts and test files)
 2. Read preset type definitions from `motion-presets/src/types.ts`
 3. For each active preset, get params from `motion-presets/src/library/{category}/{Preset}.ts`
 4. Apply parameter naming conventions from this file
@@ -375,7 +375,7 @@ When users ask for "soft", "subtle", "medium", or "hard"/"dramatic" effects, use
 | DropIn   | initialScale     | 1.2         | 1.6        | 2             |
 | FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
 | FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
-| GrowIn   | initialScale     | 0.8         | 0.6        | 0             |
+| ExpandIn | initialScale     | 0.8         | 0.6        | 0             |
 | SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
 | SpinIn   | initialScale     | 1           | 0.6        | 0             |
 
@@ -427,4 +427,3 @@ When users ask for "soft", "subtle", "medium", or "hard"/"dramatic" effects, use
 When a user asks: "I want a subtle flip entrance"
 
 Suggest: `{ type: 'FlipIn', initialRotate: 45 }`
-

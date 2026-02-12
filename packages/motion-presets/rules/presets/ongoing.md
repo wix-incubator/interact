@@ -1,6 +1,6 @@
 ---
 name: Ongoing Animations
-trigger: ongoing
+category: ongoing
 ---
 
 # Ongoing Animations
@@ -18,14 +18,13 @@ Continuous looping animations that run indefinitely.
 
 - Multiple simultaneous animations (visual chaos)
 - Content that needs to be read
-- Professional/minimal interfaces
-- One-time reveals → see [Entrance](presets-reference.md#entrance)
+- One-time reveals → see [Entrance](presets-reference.md#entrance-presets)
 
 ## Available Ongoing Presets
 
 See [Ongoing Presets](presets-reference.md#ongoing-presets) for full details:
 
-Pulse, Bounce, Spin, Breathe, Flash, Swing, Wiggle, Flip, Fold, Jello, Rubber, Poke, Cross, DVD
+Bounce, Breathe, Cross, DVD, Flash, Flip, Fold, Jello, Poke, Pulse, Rubber, Spin, Swing, Wiggle
 
 ## Ongoing Quick Decision
 
@@ -38,10 +37,10 @@ Pulse, Bounce, Spin, Breathe, Flash, Swing, Wiggle, Flip, Fold, Jello, Rubber, P
 
 ## Ongoing Common Use Cases
 
-| Use Case           | Recommended             |
-| ------------------ | ----------------------- |
-| Loading spinner    | Spin (duration: 1500ms) |
-| Status indicator   | Pulse, Breathe          |
-| Notification badge | Bounce, Pulse, Poke     |
-| CTA emphasis       | Pulse, Bounce           |
-| Character/Mascot   | Bounce, Wiggle, Jello   |
+| Use Case           | Recommended           |
+| ------------------ | --------------------- |
+| Loading spinner    | Spin                  |
+| Status indicator   | Pulse, Breathe        |
+| Notification badge | Bounce, Pulse, Poke   |
+| CTA emphasis       | Pulse, Bounce         |
+| Character/Mascot   | Bounce, Wiggle, Jello |
