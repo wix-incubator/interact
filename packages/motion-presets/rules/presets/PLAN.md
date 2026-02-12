@@ -1,6 +1,6 @@
 ---
 name: LLM Preset Rules
-overview: Consolidated single-file reference with lightweight trigger entry points.
+overview: Consolidated single-file reference with category-specific preset guides.
 status: in-progress
 version: 2.0
 last-updated: 2026-02-01
@@ -15,11 +15,10 @@ This file serves as the **source of truth** for regenerating `presets-reference.
 ```text
 rules/presets/
 ├── presets-reference.md      # Comprehensive reference (all presets, all info)
-├── entrance.md               # Lightweight trigger entry point
-├── scroll.md                 # Lightweight trigger entry point
-├── ongoing.md                # Lightweight trigger entry point
-├── mouse.md                  # Lightweight trigger entry point
-└── background-scroll.md      # Lightweight trigger entry point
+├── entrance.md               # Entrance preset category guide
+├── scroll.md                 # Scroll preset category guide
+├── ongoing.md                # Ongoing preset category guide
+└── mouse.md                  # Mouse preset category guide
 ```
 
 ---
@@ -28,174 +27,146 @@ rules/presets/
 
 ### Entrance Presets
 
-| Preset     | Status      | Notes                                                    |
-| ---------- | ----------- | -------------------------------------------------------- |
-| FadeIn     | Active      | Simple opacity transition                                |
-| ArcIn      | Active      | 3D arc rotation entry                                    |
-| BlurIn     | Active      | Blur-to-clear transition                                 |
-| BounceIn   | Active      | Bouncy entrance with overshoot                           |
-| CurveIn    | Active      | Curved path entry                                        |
-| DropIn     | Active      | Drop from above with scale                               |
-| FlipIn     | Active      | 3D flip rotation                                         |
-| FloatIn    | Active      | Gentle floating entry                                    |
-| FoldIn     | Active      | 3D fold unfold                                           |
-| GlideIn    | Active      | Smooth directional slide (default: from left, angle 270) |
-| GrowIn     | Active      | Scale + translate entry                                  |
-| RevealIn   | Active      | Directional clip-path reveal                             |
-| ShapeIn    | Active      | Geometric shape clip-path reveal                         |
-| ShuttersIn | Active      | Multi-segment reveal                                     |
-| SlideIn    | Active      | Directional slide with clip                              |
-| SpinIn     | Active      | Rotation entry                                           |
-| TiltIn     | Active      | 3D tilt entry                                            |
-| TurnIn     | Active      | Corner-pivot rotation                                    |
-| WinkIn     | Active      | Axis-based scale reveal                                  |
-| CircleIn   | **REMOVED** | Legacy preset                                            |
-| ExpandIn   | **REMOVED** | Consolidated into GrowIn                                 |
-| GlitchIn   | **REMOVED** | Was wrapper for GlideIn                                  |
-| PunchIn    | **REMOVED** | Legacy preset                                            |
+| Preset     | Notes                                                    |
+| ---------- | -------------------------------------------------------- |
+| FadeIn     | Simple opacity transition                                |
+| ArcIn      | 3D arc rotation entry                                    |
+| BlurIn     | Blur-to-clear transition                                 |
+| BounceIn   | Bouncy entrance with overshoot                           |
+| CurveIn    | Curved path entry                                        |
+| DropIn     | Drop from above with scale                               |
+| FlipIn     | 3D flip rotation                                         |
+| FloatIn    | Gentle floating entry                                    |
+| FoldIn     | 3D fold unfold                                           |
+| GlideIn    | Smooth directional slide (default: from left, angle 270) |
+| GrowIn     | Scale + translate entry                                  |
+| RevealIn   | Directional clip-path reveal                             |
+| ShapeIn    | Geometric shape clip-path reveal                         |
+| ShuttersIn | Multi-segment reveal                                     |
+| SlideIn    | Directional slide with clip                              |
+| SpinIn     | Rotation entry                                           |
+| TiltIn     | 3D tilt entry                                            |
+| TurnIn     | Corner-pivot rotation                                    |
+| WinkIn     | Axis-based scale reveal                                  |
 
 ### Scroll Presets
 
-| Preset         | Status | Notes                         |
-| -------------- | ------ | ----------------------------- |
-| ArcScroll      | Active | 3D arc on scroll              |
-| BlurScroll     | Active | Blur based on scroll          |
-| FadeScroll     | Active | Opacity on scroll             |
-| FlipScroll     | Active | 3D flip on scroll             |
-| GrowScroll     | Active | Scale up on scroll            |
-| MoveScroll     | Active | Translate on scroll           |
-| PanScroll      | Active | Horizontal pan on scroll      |
-| ParallaxScroll | Active | Depth-based parallax          |
-| RevealScroll   | Active | Clip-path reveal on scroll    |
-| ShapeScroll    | Active | Shape clip-path on scroll     |
-| ShrinkScroll   | Active | Scale down on scroll          |
-| ShuttersScroll | Active | Multi-segment on scroll       |
-| SkewPanScroll  | Active | Skew + pan on scroll          |
-| SlideScroll    | Active | Slide on scroll               |
-| Spin3dScroll   | Active | 3D spin on scroll             |
-| SpinScroll     | Active | 2D spin on scroll             |
-| StretchScroll  | Active | Stretch deformation on scroll |
-| TiltScroll     | Active | 3D tilt on scroll             |
-| TurnScroll     | Active | Turn rotation on scroll       |
+| Preset         | Notes                         |
+| -------------- | ----------------------------- |
+| ArcScroll      | 3D arc on scroll              |
+| BlurScroll     | Blur based on scroll          |
+| FadeScroll     | Opacity on scroll             |
+| FlipScroll     | 3D flip on scroll             |
+| GrowScroll     | Scale up on scroll            |
+| MoveScroll     | Translate on scroll           |
+| PanScroll      | Horizontal pan on scroll      |
+| ParallaxScroll | Depth-based parallax          |
+| RevealScroll   | Clip-path reveal on scroll    |
+| ShapeScroll    | Shape clip-path on scroll     |
+| ShrinkScroll   | Scale down on scroll          |
+| ShuttersScroll | Multi-segment on scroll       |
+| SkewPanScroll  | Skew + pan on scroll          |
+| SlideScroll    | Slide on scroll               |
+| Spin3dScroll   | 3D spin on scroll             |
+| SpinScroll     | 2D spin on scroll             |
+| StretchScroll  | Stretch deformation on scroll |
+| TiltScroll     | 3D tilt on scroll             |
+| TurnScroll     | Turn rotation on scroll       |
 
 ### Ongoing Presets
 
-| Preset  | Status | Notes                  |
-| ------- | ------ | ---------------------- |
-| Bounce  | Active | Continuous bounce      |
-| Breathe | Active | Gentle scale pulse     |
-| Cross   | Active | Cross-pattern movement |
-| DVD     | Active | DVD screensaver bounce |
-| Flash   | Active | Opacity flash          |
-| Flip    | Active | Continuous flip        |
-| Fold    | Active | Continuous fold        |
-| Jello   | Active | Jello wobble           |
-| Poke    | Active | Directional poke       |
-| Pulse   | Active | Scale pulse            |
-| Rubber  | Active | Rubber stretch         |
-| Spin    | Active | Continuous rotation    |
-| Swing   | Active | Pendulum swing         |
-| Wiggle  | Active | Shake wiggle           |
+| Preset  | Notes                  |
+| ------- | ---------------------- |
+| Bounce  | Continuous bounce      |
+| Breathe | Gentle scale pulse     |
+| Cross   | Cross-pattern movement |
+| DVD     | DVD screensaver bounce |
+| Flash   | Opacity flash          |
+| Flip    | Continuous flip        |
+| Fold    | Continuous fold        |
+| Jello   | Jello wobble           |
+| Poke    | Directional poke       |
+| Pulse   | Scale pulse            |
+| Rubber  | Rubber stretch         |
+| Spin    | Continuous rotation    |
+| Swing   | Pendulum swing         |
+| Wiggle  | Shake wiggle           |
 
 ### Mouse Presets
 
-| Preset       | Status | Notes                    |
-| ------------ | ------ | ------------------------ |
-| AiryMouse    | Active | Light floating follow    |
-| BlobMouse    | Active | Blob-like scale response |
-| BlurMouse    | Active | Blur on distance         |
-| BounceMouse  | Active | Bouncy follow            |
-| CustomMouse  | Active | Custom mouse effect      |
-| ScaleMouse   | Active | Scale on mouse           |
-| SkewMouse    | Active | Skew on mouse            |
-| SpinMouse    | Active | Spin on mouse            |
-| SwivelMouse  | Active | 3D swivel on mouse       |
-| Tilt3DMouse  | Active | 3D tilt on mouse         |
-| Track3DMouse | Active | 3D tracking on mouse     |
-| TrackMouse   | Active | Direct mouse tracking    |
-
-### Background Scroll Presets
-
-| Preset        | Status | Notes                                       |
-| ------------- | ------ | ------------------------------------------- |
-| BgCloseUp     | Active | Zoom close-up effect                        |
-| BgFade        | Active | Background fade                             |
-| BgFadeBack    | Active | Fade with pullback                          |
-| BgFake3D      | Active | Fake 3D depth                               |
-| BgPan         | Active | Horizontal pan                              |
-| BgParallax    | Active | Parallax depth                              |
-| BgPullBack    | Active | Pull back zoom                              |
-| BgReveal      | Active | Background reveal                           |
-| BgRotate      | Active | Background rotation                         |
-| BgSkew        | Active | Background skew                             |
-| BgZoom        | Active | Background zoom                             |
-| ImageParallax | Active | Image parallax (no data-motion-part needed) |
+| Preset       | Notes                    |
+| ------------ | ------------------------ |
+| AiryMouse    | Light floating follow    |
+| BlobMouse    | Blob-like scale response |
+| BlurMouse    | Blur on distance         |
+| BounceMouse  | Bouncy follow            |
+| CustomMouse  | Custom mouse effect      |
+| ScaleMouse   | Scale on mouse           |
+| SkewMouse    | Skew on mouse            |
+| SpinMouse    | Spin on mouse            |
+| SwivelMouse  | 3D swivel on mouse       |
+| Tilt3DMouse  | 3D tilt on mouse         |
+| Track3DMouse | 3D tracking on mouse     |
+| TrackMouse   | Direct mouse tracking    |
 
 ---
 
 ## Key Constraints
 
-### Trigger Mechanisms
+### Preset Categories
 
-| Trigger           | Mechanism                             | Notes                                   |
-| ----------------- | ------------------------------------- | --------------------------------------- |
-| entrance          | `viewEnter` (intersection observer)   | Plays once when element enters viewport |
-| scroll            | Scroll position binding               | Tied to scroll progress (0-100%)        |
-| ongoing           | Continuous loop                       | Runs indefinitely until stopped         |
-| mouse             | Pointer position binding              | Desktop only, real-time response        |
-| background-scroll | Scroll + `data-motion-part` targeting | Requires structured DOM (see below)     |
+These are categories of presets, each optimized for certain use cases but not limited to a single trigger mechanism.
 
-**Important:** Entrance animations only support the `viewEnter` trigger natively. For click, toggle, or other event-based triggers, implement triggering logic separately.
+| Category | Optimized For                       | Notes                                                                    |
+| -------- | ----------------------------------- | ------------------------------------------------------------------------ |
+| entrance | `viewEnter` (intersection observer) | Can also be triggered by hover, click, animationend, and other triggers  |
+| scroll   | ViewTimeline (scroll progress)      | Animation progress tied to element's position in the viewport            |
+| ongoing  | Continuous loop                     | Runs indefinitely until stopped                                          |
+| mouse    | Pointer position binding            | Real-time response to cursor position; may behave differently on mobile  |
 
 ### Combining Animations
 
-| Combination           | Support                         |
-| --------------------- | ------------------------------- |
-| Entrance + Ongoing    | Single element (native support) |
-| Entrance + Mouse      | Requires nested containers      |
-| Entrance + Scroll     | Requires nested containers      |
-| Scroll + Mouse        | Requires nested containers      |
-| Any other combination | Requires multiple containers    |
-
-### Background Scroll Requirements
-
-Requires `data-motion-part` attributes: `BG_LAYER`, `BG_MEDIA`, `BG_IMG`
-
-Animates DOM elements via CSS transforms (not `background-position`).
-
-**Exception:** `ImageParallax` works on regular `<img>` elements without `data-motion-part`.
+1. Avoid mixing multiple animations on the same element when possible
+2. Never combine animations that affect the same CSS properties (e.g., two animations both using `transform`)
+3. When combining is necessary, animation order matters - later animations may override earlier ones
+4. If possible, use nested containers to separate animations that would conflict - place each animation on a separate wrapper element
 
 ---
 
 ## Parameter Standards
 
-### Common Parameters
+### Animation Options (Not Preset Parameters)
 
-**All Entrance presets:**
+These are set on the animation/effect configuration level, not on the preset itself:
 
-- `duration`: 0-4000ms (default: 1200)
-- `delay`: 0-8000ms (default: 0)
+- `duration`: Animation duration in ms (entrance, ongoing)
+- `delay`: Animation delay in ms (entrance, ongoing)
+- `easing`: Easing function
+- `iterations`: Number of iterations
+- `alternate`: Alternate direction on each iteration
+- `fill`: Animation fill mode
+- `reversed`: Reverse the animation
+
+**Scroll-specific animation options:**
+
+- `rangeStart` / `rangeEnd`: `RangeOffset` controlling when the scroll animation starts/ends
+- `transitionDuration` / `transitionDelay` / `transitionEasing`: Transition smoothing
+
+### Preset-Specific Parameters
 
 **Most Scroll presets:**
 
-- `range`: 'in' | 'out' | 'continuous'
-- `start`: 0-100%
-- `end`: 0-100%
+- `range`: 'in' | 'out' | 'continuous' (controls animation direction relative to scroll)
 
-**Most Ongoing presets:**
+### Overloaded Parameter Names
 
-- `duration`: 100-4000ms
-- `delay`: 0-8000ms
+The `direction` parameter accepts different values depending on the preset:
 
-### Parameter Naming Conventions
-
-| Meaning                 | Parameter Name | Values                                                             | Example Presets                              |
-| ----------------------- | -------------- | ------------------------------------------------------------------ | -------------------------------------------- |
-| Numeric angle (degrees) | `angle`        | 0-360                                                              | GrowIn, GlideIn, MoveScroll                  |
-| Cardinal direction      | `direction`    | 'top', 'right', 'bottom', 'left'                                   | FlipIn, FoldIn, SlideIn, FloatIn             |
-| Extended cardinal       | `direction`    | + 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center' | BounceIn, ShapeIn                            |
-| Rotation direction      | `direction`    | 'clockwise', 'counter-clockwise'                                   | SpinIn, SpinScroll, Spin                     |
-| Axis                    | `axis`         | 'horizontal', 'vertical'                                           | WinkIn, FlipScroll, ArcScroll, Flip, Breathe |
+| Meaning            | Accepted Values                                                    | Presets                              |
+| ------------------ | ------------------------------------------------------------------ | ------------------------------------ |
+| Cardinal direction | 'top', 'right', 'bottom', 'left'                                  | FlipIn, FoldIn, SlideIn, FloatIn    |
+| Extended cardinal  | + 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center' | BounceIn, ShapeIn                    |
+| Rotation direction | 'clockwise', 'counter-clockwise'                                  | SpinIn, SpinScroll, Spin             |
 
 ### Coordinate System
 
@@ -208,20 +179,21 @@ Animates DOM elements via CSS transforms (not `background-position`).
 
 ### Distance Units
 
-All distance parameters accept any CSS unit with a default:
+Distance parameters use the `UnitLengthPercentage` type:
 
 ```typescript
-distance: { value: 120, type: 'px' }      // pixels
+distance: { value: 120, type: 'px' }       // pixels
 distance: { value: 50, type: 'percentage' } // percentage
-distance: { value: 10, type: 'vh' }       // viewport height
+distance: { value: 10, type: 'vh' }        // viewport height
 ```
+
+Supported unit types: `px`, `em`, `rem`, `vh`, `vw`, `vmin`, `vmax`, `percentage`
 
 ### CSS Custom Properties
 
 The library uses these CSS custom properties for runtime control:
 
-- `--motion-opacity`: Target opacity (default: 1)
-- `--motion-rotate`: Element rotation for scroll effects
+- `--motion-rotate`: Element rotation (used by SpinIn and other rotation presets)
 
 ---
 
@@ -270,7 +242,11 @@ This section documents preset selection guidance for accessibility. It is not ab
 
 ### Host vs Preset Responsibility
 
-The presets provide animations; the host platform decides when/whether to apply them. When the host handles accessibility globally (e.g., disabling all animations under `prefers-reduced-motion`), presets don't need to address it separately.
+The presets provide animations; the host platform decides when/whether to apply them.
+
+Interact supports `conditions` in the config for handling reduced motion. Define a media condition for `(prefers-reduced-motion: reduce)` and use it to swap high-risk presets for safer alternatives (e.g., SpinIn → FadeIn, BounceIn → FadeIn). Conditions can be applied per-interaction or per-effect, and automatically re-evaluate when the user's preference changes.
+
+When the host handles accessibility globally (e.g., disabling all animations), presets don't need to address it separately.
 
 ### Preset Risk Levels
 
@@ -284,7 +260,7 @@ The presets provide animations; the host platform decides when/whether to apply 
 **Medium risk** (strong motion, may affect some users):
 
 - TurnIn
-- ParallaxScroll, BgParallax at high speed values
+- ParallaxScroll at high speed values
 
 **Low risk / safe** (opacity/blur changes, minimal spatial movement):
 
@@ -302,7 +278,6 @@ The presets provide animations; the host platform decides when/whether to apply 
 | Flash                             | Reduce frequency (<3/sec) |
 | ParallaxScroll                    | Static position           |
 | ArcScroll, FlipScroll, SpinScroll | FadeScroll or disable     |
-| BgParallax, BgZoom                | Static background         |
 | All mouse animations              | Static state              |
 
 ### LLM Guidance Principles
@@ -310,7 +285,7 @@ The presets provide animations; the host platform decides when/whether to apply 
 1. **Do not limit creativity by default** - generate what the user asks for
 2. **Apply constraints only when explicitly requested** - keywords: "accessible", "a11y", "reduced motion safe", "subtle", "tone down"
 3. **High-risk presets are informational, not blockers** - optionally note vestibular concerns in response
-4. **Mouse presets are desktop-only** - note this as context, not a restriction
+4. **Mouse presets may behave differently on mobile** - note this as context, not a restriction
 5. **Duration guidelines are suggestions** - functional UI <500ms, decorative up to 1200ms, hero up to 2000ms
 
 ---
@@ -358,7 +333,7 @@ Parameters:
 
 | Use Case               | Recommended Presets                              |
 | ---------------------- | ------------------------------------------------ |
-| Hero sections          | ArcIn, FloatIn, RevealIn + BgParallax, BgZoom    |
+| Hero sections          | ArcIn, FloatIn, RevealIn                          |
 | Modals/Popups          | FadeIn, DropIn, GrowIn, SlideIn                  |
 | List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay   |
 | Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)      |
@@ -366,53 +341,43 @@ Parameters:
 | CTAs/Buttons           | BounceIn, GrowIn + Pulse                         |
 | Loading indicators     | Spin, Pulse                                      |
 | Product images         | Tilt3DMouse, ScaleMouse                          |
-| Background depth       | BgParallax, ParallaxScroll, TrackMouse (layered) |
+| Background depth       | ParallaxScroll, TrackMouse (layered)              |
 
 ---
 
-## Data Sources
-
-To regenerate presets-reference.md:
-
-1. **Preset registry**: This file (PLAN.md) - see Preset Registry section for active/removed status
-2. **Preset list**: `motion-presets/src/types.ts` - EntranceAnimation, ScrollAnimation, OngoingAnimation, MouseAnimation, BackgroundScrollAnimation unions
-3. **Parameter constraints**: `motion-presets/src/library/{category}/{Preset}.ts` - parameter types and defaults
-4. **Parameter standards**: This file (PLAN.md) - see Parameter Standards section
-5. **Optional parameters**: This file (PLAN.md) - see Optional Parameters section
-6. **Accessibility**: This file (PLAN.md) - see Accessibility section
-7. **Selection tables**: This file (PLAN.md) - see Selection Tables section
-
 ## Regeneration Steps
 
-1. Check Preset Registry in this file for active presets (skip REMOVED presets)
-2. Read preset type definitions from types.ts
-3. For each active preset, get params from library implementation
+To regenerate `presets-reference.md`:
+
+1. Check Preset Registry in this file for active presets
+2. Read preset type definitions from `motion-presets/src/types.ts`
+3. For each active preset, get params from `motion-presets/src/library/{category}/{Preset}.ts`
 4. Apply parameter naming conventions from this file
 5. Generate using preset entry format above
-6. Organize by trigger category
+6. Organize by preset category
 7. Include selection tables from this file
 8. Include accessibility section from this file
 9. Run `yarn format` on all generated markdown files to ensure they pass CI formatting checks
 
 ---
 
-## Intensity Value Guide (Legacy Power Reference)
+## Intensity Value Guide
 
-The `power` parameter was removed from presets. When users ask for "soft", "subtle", "medium", or "hard"/"dramatic" effects, use these value mappings as guidance for suggesting appropriate parameter values.
+When users ask for "soft", "subtle", "medium", or "hard"/"dramatic" effects, use these value mappings as guidance for suggesting appropriate parameter values.
 
 ### Entrance Presets Intensity Values
 
-| Preset   | Parameter        | Subtle/Soft | Medium  | Dramatic/Hard |
-| -------- | ---------------- | ----------- | ------- | ------------- |
-| ArcIn    | easing           | quintInOut  | backOut | backInOut     |
-| BlurIn   | blur             | 6px         | 25px    | 50px          |
-| BounceIn | distanceFactor   | 1           | 2       | 3             |
-| DropIn   | initialScale     | 1.2         | 1.6     | 2             |
-| FlipIn   | initialRotate    | 45°         | 90°     | 270°          |
-| FoldIn   | initialRotate    | 35°         | 60°     | 90°           |
-| GrowIn   | initialScale     | 0.8         | 0.6     | 0             |
-| SlideIn  | initialTranslate | 0.2         | 0.8     | 1             |
-| SpinIn   | initialScale     | 0.8         | 0.5     | 0             |
+| Preset   | Parameter        | Subtle/Soft | Medium     | Dramatic/Hard |
+| -------- | ---------------- | ----------- | ---------- | ------------- |
+| ArcIn    | easing           | cubicInOut  | quintInOut | backOut       |
+| BlurIn   | blur             | 6px         | 25px       | 50px          |
+| BounceIn | distanceFactor   | 1           | 2          | 3             |
+| DropIn   | initialScale     | 1.2         | 1.6        | 2             |
+| FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
+| FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
+| GrowIn   | initialScale     | 0.8         | 0.6        | 0             |
+| SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
+| SpinIn   | initialScale     | 1           | 0.6        | 0             |
 
 ### Scroll Presets Intensity Values
 
@@ -427,21 +392,21 @@ The `power` parameter was removed from presets. When users ask for "soft", "subt
 | Spin3dScroll  | rotate    | 45°         | 100°   | 200°          |
 | SpinScroll    | scale     | 1           | 0.7    | 0.4           |
 | StretchScroll | stretch   | 1.2         | 1.5    | 2             |
-| TiltScroll    | distance  | 0.25        | 0.5    | 1             |
+| TiltScroll    | distance  | 0           | 0.5    | 1             |
 | TurnScroll    | scale     | 1           | 1.3    | 1.6           |
 
 ### Ongoing Presets Intensity Values
 
 | Preset | Parameter | Subtle/Soft | Medium | Dramatic/Hard |
 | ------ | --------- | ----------- | ------ | ------------- |
-| Bounce | intensity | 0.3         | 0.5    | 1             |
+| Bounce | intensity | 0           | 0.5    | 1             |
 | Fold   | angle     | 15°         | 30°    | 45°           |
-| Jello  | intensity | 0.25        | 0.5    | 1             |
-| Poke   | intensity | 0.25        | 0.5    | 1             |
-| Pulse  | intensity | 0           | 0.06   | 0.12          |
-| Rubber | intensity | 0           | 0.05   | 0.1           |
+| Jello  | intensity | 0           | 0.33   | 1             |
+| Poke   | intensity | 0           | 0.33   | 1             |
+| Pulse  | intensity | 0           | 0.5    | 1             |
+| Rubber | intensity | 0           | 0.5    | 1             |
 | Swing  | swing     | 20°         | 40°    | 60°           |
-| Wiggle | intensity | 0.25        | 0.5    | 1             |
+| Wiggle | intensity | 0           | 0.33   | 1             |
 
 ### Mouse Presets Intensity Values
 
@@ -461,23 +426,5 @@ The `power` parameter was removed from presets. When users ask for "soft", "subt
 
 When a user asks: "I want a subtle flip entrance"
 
-Instead of: `{ type: 'FlipIn', power: 'soft' }`
-
 Suggest: `{ type: 'FlipIn', initialRotate: 45 }`
 
----
-
-## Migration Reference
-
-For users migrating from removed presets:
-
-| Removed Preset | Migration                                                                   |
-| -------------- | --------------------------------------------------------------------------- |
-| GlitchIn       | Use `GlideIn` with desired `angle` (default 270 = from left)                |
-| ExpandIn       | Use `GrowIn` with `angle` and `distance` to achieve expand-from-edge effect |
-| CircleIn       | No direct replacement (legacy preset)                                       |
-| PunchIn        | No direct replacement (legacy preset)                                       |
-
-### GlideIn Default Change
-
-GlideIn default `angle` changed from `0` (from top) to `270` (from left) to match the more common slide-in-from-left behavior.
