@@ -17,11 +17,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             keyframeEffect: {
               name: '[EFFECT_NAME]',
               keyframes: [EFFECT_KEYFRAMES]
@@ -38,8 +38,8 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 **Variables**:
 
-- `[SOURCE_SELECTOR]`: Unique identifier for element that tracks scroll progress
-- `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
+- `[SOURCE_KEY]`: Unique identifier for element that tracks scroll progress
+- `[TARGET_KEY]`: Unique identifier for element to animate (can be same as source or different)
 - `[EFFECT_NAME]`: Optional unique name for the effec
 - `[EFFECT_KEYFRAMES]`: Keyframes for the effect
 - `[RANGE_NAME]`: 'cover', 'contain', 'entry', 'exit', 'entry-crossing', or 'exit-crossing'
@@ -52,11 +52,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             namedEffect: {
               type: '[NAMED_EFFECT]'
             },
@@ -108,11 +108,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             namedEffect: {
                 type: '[ENTRANCE_EFFECT]'
             },
@@ -191,11 +191,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             keyframeEffect: {
                 name: '[EFFECT_NAME]',
                 keyframes: [EFFECT_KEYFRAMES]
@@ -226,7 +226,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
         {
             key: 'hero-text',
             keyframeEffect: {
-                name: 'fade-out'
+                name: 'fade-out',
                 keyframes: [{
                     opacity: 0
                 }]
@@ -257,11 +257,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -329,7 +329,7 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
                     { transform: 'scale(1) translateY(-100px)', filter: 'blur(2px)' }
                 ]
             },
-            rangeStart: { name: 'enter', offset: { type: 'percentage', value: 0 } },
+            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
             rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both',
@@ -356,11 +356,11 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -449,11 +449,11 @@ Same as Rule 4, with focus on entry range
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             keyframeEffect: {
                 name: '[UNIQUE_KEYFRAME_EFFECT_NAME]',
                 keyframes: [
@@ -542,12 +542,12 @@ Same as Rule 4, with focus on exit range
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
-            customEffect: (element, progress, params) => {
+            key: '[TARGET_KEY]',
+            customEffect: (element, progress) => {
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_ANIMATION_LOGIC]
             },
@@ -640,12 +640,12 @@ Same as Rule 4, with focus on exit range
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
-            customEffect: (element, progress, params) => {
+            key: '[TARGET_KEY]',
+            customEffect: (element, progress) => {
                 // progress is 0-1 representing entry progress
                 [ENTRY_ANIMATION_LOGIC]
             },
@@ -734,12 +734,12 @@ Same as Rule 4, with focus on exit range
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
-            customEffect: (element, progress, params) => {
+            key: '[TARGET_KEY]',
+            customEffect: (element, progress) => {
                 // progress is 0-1 representing exit progress
                 [EXIT_ANIMATION_LOGIC]
             },

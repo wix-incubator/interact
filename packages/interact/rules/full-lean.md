@@ -34,7 +34,7 @@ Interact.create(config);
 
 ```html
 <script type="module">
-  import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.4';
+  import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8';
 
   const config = {
     // config-props
@@ -48,7 +48,7 @@ Interact.create(config);
 
 - Use `generate(config)` to create critical CSS that hides elements until their `viewEnter` entrance animation plays.
 - Add `data-interact-initial="true"` to the `<interact-element>` that should have its first child hidden initially.
-- Only use `data-interact-initial="true"` for `<interact-element>` with `viewEnter` trigger.
+- Only use `data-interact-initial="true"` for `<interact-element>` with `viewEnter` trigger and `type: 'once'`, where the source and target elements are the same.
 - Do NOT use for `hover` or `click` interactions.
 
 **Usage:**
@@ -115,9 +115,10 @@ This configuration declares what user/system triggers occur on which source elem
   - **Purpose**: Named predicates that gate interactions/effects by runtime context.
   - **Key (string)**: The condition id. MUST be unique across the registry.
   - **Value (Condition)**:
-    - **type**: `'media' | 'container'`
+    - **type**: `'media' | 'container' | 'selector'`
       - `'media'`: The predicate MUST be a valid CSS media query expression without the outer `@media` keyword (e.g., `'(min-width: 768px)'`).
       - `'container'`: The predicate SHOULD be a valid CSS container query condition string relative to the relevant container context.
+      - `'selector'`: The predicate is a CSS selector pattern. If it contains `&`, the `&` is replaced with the base element selector; otherwise the predicate is appended to the base selector. Used for conditional styling (e.g., `:nth-of-type(odd)`, `.active`).
     - **predicate?**: OPTIONAL textual predicate for the given type. If omitted, the condition is treated as always-true (i.e., a no-op guard).
 
 - **interactions: Interaction[]**
@@ -131,13 +132,13 @@ This configuration declares what user/system triggers occur on which source elem
       - OPTIONAL. A CSS selector used to select items within `listContainer`.
     - **trigger: TriggerType**
       - REQUIRED. One of:
-        - `'hover' | 'click'`: Pointer interactions.
+        - `'hover' | 'click' | 'activate' | 'interest'`: Pointer interactions (`activate` = click with keyboard Space/Enter; `interest` = hover with focus).
         - `'viewEnter' | 'pageVisible' | 'viewProgress'`: Viewport visibility/progress triggers.
         - `'animationEnd'`: Fires when a specific effect completes on the source element.
         - `'pointerMove'`: Continuous pointer motion over an area.
     - **params?: TriggerParams**
       - OPTIONAL. Parameter object that MUST match the trigger:
-        - hover/click: `StateParams | PointerTriggerParams`
+        - hover/click/activate/interest: `StateParams | PointerTriggerParams` (activate uses same params as click; interest uses same params as hover).
           - `StateParams.method`: `'add' | 'remove' | 'toggle' | 'clear'`
           - `PointerTriggerParams.type?`: `'once' | 'repeat' | 'alternate' | 'state'`
           - Usage:
@@ -153,13 +154,14 @@ This configuration declares what user/system triggers occur on which source elem
               - `'once'`: Play once and remove the listener (hover attaches only the enter listener; no leave).
               - `'state'`: Hover — play on enter if idle/paused, pause on leave if running. Click — toggle play/pause on successive clicks until finished.
         - viewEnter/pageVisible/viewProgress: `ViewEnterParams`
-          - `type?`: `'once' | 'repeat' | 'alternate'`
+          - `type?`: `'once' | 'repeat' | 'alternate' | 'state'`
           - `threshold?`: number in [0,1] describing intersection threshold
           - `inset?`: string CSS-style inset for rootMargin/observer geometry
           - Usage:
             - `'once'`: Play on first visibility and unobserve the element.
             - `'repeat'`: Play each time the element re‑enters visibility according to `threshold`/`inset`.
             - `'alternate'`: Triggers on re‑entries; if you need alternating direction, set it on the effect (e.g., `alternate: true`) rather than relying on the trigger.
+            - `'state'`: Play on entry, pause on exit (for looping/continuous animations).
             - `threshold`: Passed to `IntersectionObserver.threshold` — typical values are 0.1–0.6 for entrances.
             - `inset`: Applied as vertical `rootMargin` (`top/bottom`), e.g., `'-100px'` to trigger earlier/later; left/right remain 0.
             - Note: For `viewProgress`, `threshold` and `inset` are ignored; progress is driven by ViewTimeline/scroll scenes. Control the range via `ScrubEffect.rangeStart/rangeEnd` and `namedEffect.range`.
@@ -168,10 +170,11 @@ This configuration declares what user/system triggers occur on which source elem
           - Usage: Fire when the specified effect (by `effectId`) on the source element finishes, useful for chaining sequences.
         - pointerMove: `PointerMoveParams`
           - `hitArea?`: `'root' | 'self'` (default `'self'`)
+          - `axis?`: `'x' | 'y'` - when using `keyframeEffect` with `pointerMove`, selects which pointer coordinate maps to linear 0-1 progress; defaults to `'y'`. Ignored for `namedEffect` and `customEffect`.
           - Usage:
             - `'self'`: Track pointer within the source element’s bounds.
             - `'root'`: Track pointer anywhere in the viewport (document root).
-            - Only use with `ScrubEffect` mouse presets (`namedEffect`) or `customEffect` that consumes pointer progress; avoid `keyframeEffect` with `pointerMove`.
+            - Only use with `ScrubEffect` mouse presets (`namedEffect`) or `customEffect` that consumes pointer progress; avoid `keyframeEffect` with `pointerMove` unless mapping a single axis via `axis`.
           - When using `customEffect` with `pointerMove`, the progress parameter is an object:
             - ```typescript
               type Progress = {
@@ -391,10 +394,11 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
 
 ### Authoring rules for animation payloads (`namedEffect`, `keyframeEffect`, `customEffect`):
 
-- **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion` that are GPU-friendly and tuned.
-  - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), power ('soft'|'medium'|'hard'), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
+- **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion-presets` that are GPU-friendly and tuned.
+  - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
   - Short list of common preset names:
-    - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`
+    - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `F
+    lipIn`, `ArcIn`
     - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
     - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`
     - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity.

@@ -17,7 +17,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
@@ -192,11 +192,11 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[ITEM_CONTAINER_SELECTOR]',
+    key: '[ITEM_CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[CONTENT_SELECTOR]',
+            key: '[CONTENT_KEY]',
             namedEffect: {
                 type: '[CONTENT_NAMED_EFFECT]'
             },
@@ -211,8 +211,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 **Variables**:
 
-- `[ITEM_CONTAINER_SELECTOR]`: CSS selector for the containing list item
-- `[CONTENT_SELECTOR]`: CSS selector for content within the item
+- `[ITEM_CONTAINER_KEY]`: Unique identifier for the containing list item
+- `[CONTENT_KEY]`: Unique identifier for content within the item (or use `selector` for CSS selector)
 - `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion:
   - **Opacity/Visibility**: 'FadeScroll', 'BlurScroll'
   - **Reveal**: 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
@@ -299,7 +299,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
@@ -510,7 +510,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     },
     interactions: [
         {
-            key: '[ITEM_SELECTOR_N]',
+            key: '[ITEM_KEY_N]',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -637,12 +637,12 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[LIST_CONTAINER_SELECTOR]',
+    key: '[LIST_CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[DYNAMIC_CONTENT_SELECTOR]',
-            customEffect: (element, progress, params) => {
+            key: '[DYNAMIC_CONTENT_KEY]',
+            customEffect: (element, progress) => {
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_CALCULATION_LOGIC]
                 [DYNAMIC_CONTENT_UPDATE]
