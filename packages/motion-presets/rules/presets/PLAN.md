@@ -221,7 +221,7 @@ distance: { value: 10, type: 'vh' }       // viewport height
 The library uses these CSS custom properties for runtime control:
 
 - `--motion-opacity`: Target opacity (default: 1)
-- `--motion-rotate-z`: Element rotation for scroll effects
+- `--motion-rotate`: Element rotation for scroll effects
 
 ---
 
