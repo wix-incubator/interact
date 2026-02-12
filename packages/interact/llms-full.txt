@@ -131,7 +131,7 @@ The `InteractConfig` object has three top-level sections:
 ```typescript
 type InteractConfig = {
   interactions: Interaction[];                    // REQUIRED — trigger-to-effect mappings
-  effects?: Record<string, Effect>;              // OPTIONAL — reusable named effect definitions
+  effects: Record<string, Effect>;               // REQUIRED — reusable named effect definitions
   conditions?: Record<string, Condition>;        // OPTIONAL — guards (media queries, container queries)
 };
 ```
@@ -150,7 +150,7 @@ type InteractConfig = {
 ```typescript
 type Interaction = {
   key: string;                      // REQUIRED — source element key (matches data-interact-key)
-  trigger: TriggerType;             // REQUIRED — one of the 7 trigger types
+  trigger: TriggerType;             // REQUIRED — one of the 9 trigger types
   params?: TriggerParams;           // OPTIONAL — trigger-specific parameters
   effects: Array<Effect | EffectRef>;  // REQUIRED — effects to apply when triggered
   conditions?: string[];            // OPTIONAL — condition ids that must all pass
@@ -376,7 +376,83 @@ Mouse click interactions.
 
 **Timing**: 100–500ms for click feedback.
 
-### 5.3 `viewEnter`
+### 5.3 `interest`
+
+Accessibility-friendly version of `hover`. Responds to both mouse hover events and keyboard focus events, making hover interactions accessible to keyboard and screen reader users.
+
+**Params**: Same as `hover` (`type` for animations, `method` for transitions).
+
+**How it works**:
+- **Mouse users**: Triggers on `mouseenter` / `mouseleave` (identical to `hover`).
+- **Keyboard users**: Triggers on `focusin` / `focusout`.
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable.
+
+Use `interest` instead of `hover` when the interaction must be accessible to keyboard users.
+
+**Example — Accessible card hover**:
+
+```typescript
+{
+  key: 'feature-card',
+  trigger: 'interest',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      keyframeEffect: {
+        name: 'card-lift',
+        keyframes: [
+          { transform: 'translateY(0)', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
+          { transform: 'translateY(-8px)', boxShadow: '0 12px 24px rgba(0,0,0,0.15)' },
+        ],
+      },
+      fill: 'both',
+      duration: 300,
+      easing: 'ease-out',
+    },
+  ],
+}
+```
+
+### 5.4 `activate`
+
+Accessibility-friendly version of `click`. Responds to both mouse clicks and keyboard activation (Enter/Space keys), making click interactions accessible to keyboard users.
+
+**Params**: Same as `click` (`type` for animations, `method` for transitions).
+
+**How it works**:
+- **Mouse users**: Triggers on `click` (identical to `click`).
+- **Keyboard users**: Triggers on `keydown` for Enter and Space keys.
+- Automatically sets `tabIndex={0}` on the element to make it keyboard-focusable.
+
+Use `activate` instead of `click` when the interaction must be accessible to keyboard users.
+
+**Example — Accessible accordion toggle**:
+
+```typescript
+{
+  key: 'accordion-header',
+  trigger: 'activate',
+  params: { type: 'alternate' },
+  effects: [
+    {
+      key: 'accordion-content',
+      keyframeEffect: {
+        name: 'accordion',
+        keyframes: [
+          { clipPath: 'inset(0 0 100% 0)', opacity: '0' },
+          { clipPath: 'inset(0 0 0 0)', opacity: '1' },
+        ],
+      },
+      fill: 'both',
+      reversed: true,
+      duration: 400,
+      easing: 'ease-in-out',
+    },
+  ],
+}
+```
+
+### 5.5 `viewEnter`
 
 Fires when an element enters the viewport (IntersectionObserver-based).
 
@@ -425,7 +501,7 @@ Fires when an element enters the viewport (IntersectionObserver-based).
 
 **Threshold guidelines**: Hero sections 0.1–0.3, content blocks 0.3–0.5, small elements 0.5–0.8, huge sections 0.01–0.05.
 
-### 5.4 `viewProgress`
+### 5.6 `viewProgress`
 
 Scroll-driven animation — progress updates continuously as the element moves through the viewport. Uses ViewTimeline/scroll scenes.
 
@@ -531,7 +607,7 @@ Prefer `fill: 'both'` for scroll-driven animations to preserve start/end states 
 }
 ```
 
-### 5.5 `pointerMove`
+### 5.7 `pointerMove`
 
 Continuous pointer motion tracking over an area.
 
@@ -617,7 +693,7 @@ Effect-level `centeredToTarget`:
 }
 ```
 
-### 5.6 `animationEnd`
+### 5.8 `animationEnd`
 
 Fires when a specific effect completes on the source element. Used for chaining sequences.
 
@@ -650,7 +726,7 @@ Fires when a specific effect completes on the source element. Used for chaining 
 }
 ```
 
-### 5.7 `pageVisible`
+### 5.9 `pageVisible`
 
 Fires when the page becomes visible (similar to `viewEnter` but at the page level). Same params as `viewEnter`.
 
@@ -781,11 +857,11 @@ namedEffect: {
 
 | Category   | Presets                                                                                |
 | ---------- | -------------------------------------------------------------------------------------- |
-| Entrance   | `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`, `GlideIn`, `FloatIn`, `GlitchIn`, `ExpandIn`, `GrowIn`, `BlurIn`, `DropIn` |
-| Ongoing    | `Pulse`, `Spin`, `Wiggle`, `Bounce`, `Rubber`, `Jello`, `Swing`, `Poke`, `Flash`      |
+| Entrance   | `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`, `GlideIn`, `FloatIn`, `GlitchIn`, `ExpandIn`, `GrowIn`, `BlurIn`, `DropIn`, `CircleIn`, `CurveIn`, `FoldIn`, `PunchIn`, `RevealIn`, `ShapeIn`, `ShuttersIn`, `SpinIn`, `TiltIn`, `TurnIn`, `WinkIn` |
+| Ongoing    | `Pulse`, `Spin`, `Wiggle`, `Bounce`, `Rubber`, `Jello`, `Swing`, `Poke`, `Flash`, `Breathe`, `Cross`, `Flip`, `Fold` |
 | Scroll     | `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`, `GrowScroll`, `MoveScroll`, `SlideScroll`, `PanScroll`, `BlurScroll`, `SpinScroll`, `FlipScroll`, `ArcScroll`, `Spin3dScroll`, `TurnScroll`, `ShapeScroll`, `ShuttersScroll`, `ShrinkScroll`, `SkewPanScroll`, `StretchScroll` |
-| Mouse      | `TrackMouse`, `Tilt3DMouse`, `Track3DMouse`, `SwivelMouse`, `ScaleMouse`, `BlurMouse`, `AiryMouse`, `BounceMouse`, `BlobMouse`, `SkewMouse`, `SpinMouse` |
-| Background | `BgParallax`, `BgPan`, `BgZoom`, `BgFade`, `BgReveal`                                 |
+| Mouse      | `TrackMouse`, `Tilt3DMouse`, `Track3DMouse`, `SwivelMouse`, `ScaleMouse`, `BlurMouse`, `AiryMouse`, `BounceMouse`, `BlobMouse`, `SkewMouse`, `SpinMouse`, `CustomMouse` |
+| Background | `BgParallax`, `BgPan`, `BgZoom`, `BgFade`, `BgReveal`, `BgCloseUp`, `BgFadeBack`, `BgFake3D`, `BgPullBack`, `BgRotate`, `BgSkew`, `ImageParallax` |
 
 For scroll presets with `viewProgress`, include `range: 'continuous'` in options.
 
@@ -1039,7 +1115,7 @@ Use conditions to provide reduced-motion alternatives:
 For `viewEnter` entrance animations, elements may briefly appear before the animation plays. Use `generate()` to create critical CSS.
 
 ```typescript
-import { generate } from '@wix/interact/web';
+import { generate } from '@wix/interact';
 
 const config = { /* your config */ };
 const css = generate(config);
