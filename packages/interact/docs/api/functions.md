@@ -8,7 +8,7 @@ The `@wix/interact` package exports standalone functions for managing interactio
 import { add, remove, generate } from '@wix/interact';
 ```
 
-> **Note**: The `add` and `remove` functions are available from both `@wix/interact/web` and `@wix/interact/react` entry points. The `generate` function is only available from the main `@wix/interact` entry point.
+> **Note**: `add`, `remove`, and `generate` are available from all entry points: `@wix/interact`, `@wix/interact/web`, and `@wix/interact/react`.
 
 ## Functions Overview
 
@@ -16,7 +16,7 @@ import { add, remove, generate } from '@wix/interact';
 | ------------ | --------------------------------------------------------- | ----------------- | -------- |
 | `add()`      | Add interactions to an element                            | `element`, `key?` | `void`   |
 | `remove()`   | Remove interactions from an element                       | `key`             | `void`   |
-| `generate()` | Generate CSS for hiding elements with entrance animations | `config`          | `string` |
+| `generate()` | Generate CSS for hiding elements with entrance animations | `config`, `useFirstChild?` | `string` |
 
 ---
 
@@ -196,40 +196,39 @@ console.log('Interactions removed for hero');
 
 ---
 
-## `generate(config)`
+## `generate(config, useFirstChild?)`
 
-Generates CSS styles needed to hide elements that have entrance animations with a `viewEnter` trigger. This prevents a flash of unstyled content (FOUC) where elements briefly appear before their entrance animation starts.
+Generates CSS styles needed to hide elements that have entrance animations with a `viewEnter` trigger and `type: 'once'`. This prevents a flash of unstyled content (FOUC) where elements briefly appear before their entrance animation starts.
 
 ### Signature
 
 ```typescript
-function generate(config: InteractConfig): string;
+function generate(config: InteractConfig, useFirstChild?: boolean): string;
 ```
 
 ### Parameters
 
-**`config: InteractConfig`**
+**`config: InteractConfig`** - The interaction configuration; used to find `viewEnter`/`once` interactions and build selectors.
 
-- The interaction configuration object
-- Used to determine which elements need initial hiding styles
+**`useFirstChild?: boolean`** - When `true`, targets the first child of each key (e.g. for `<interact-element>`). Default `false`.
 
 ### Returns
 
-**`string`** - A CSS string that can be injected into a `<style>` tag or stylesheet
+**`string`** - A CSS string to inject into a `<style>` tag or stylesheet.
 
 ### Generated CSS
 
 The function generates CSS that:
 
-1. **Respects reduced motion preferences**: Wrapped in `@media (prefers-reduced-motion: no-preference)` to ensure accessibility
-2. **Targets first child of elements with `data-interact-initial="true"`**: Only affects elements explicitly marked for entrance animations
-3. **Excludes completed animations**: Uses `:not([data-interact-enter])` to show elements after their animation completes
+1. **Respects reduced motion**: Wrapped in `@media (prefers-reduced-motion: no-preference)`.
+2. **Targets elements by key**: Selectors use `[data-interact-key="..."]` for each interaction key that has a `viewEnter`/`once` entrance.
+3. **Excludes completed animations**: Uses `:not([data-interact-enter])` so elements are shown after the animation runs.
 
-**For the `web` integration (with custom elements)**:
+**With `useFirstChild: false` (vanilla/React, element is the target)**:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial='true'] > :first-child:not([data-interact-enter]) {
+  [data-interact-key="hero"]:not([data-interact-enter]) {
     visibility: hidden;
     transform: none;
     translate: none;
@@ -239,11 +238,11 @@ The function generates CSS that:
 }
 ```
 
-**For other integrations (without custom elements)**:
+**With `useFirstChild: true` (e.g. custom elements, first child is the target)**:
 
 ```css
 @media (prefers-reduced-motion: no-preference) {
-  [data-interact-initial='true']:not([data-interact-enter]) {
+  [data-interact-key="hero"] > :first-child:not([data-interact-enter]) {
     visibility: hidden;
     transform: none;
     translate: none;
@@ -283,8 +282,8 @@ const config = {
   effects: {},
 };
 
-// Generate the CSS
-const css = generate(config);
+// Generate the CSS (pass true when using custom elements so first child is targeted)
+const css = generate(config, false);
 
 // Inject into page
 const styleElement = document.createElement('style');
@@ -328,21 +327,7 @@ const html = `
 
 ### HTML Setup
 
-For the generated CSS to work, the `<interact-element>` must have the `data-interact-initial="true"` attribute:
-
-```html
-<interact-element data-interact-key="hero" data-interact-initial="true">
-  <!-- First child will be hidden until viewEnter animation completes -->
-  <section class="hero">
-    <h1>Welcome</h1>
-  </section>
-</interact-element>
-
-<!-- Without the attribute, element is visible immediately -->
-<interact-element data-interact-key="footer">
-  <footer>Footer content</footer>
-</interact-element>
-```
+Elements must have `data-interact-key` matching the interaction key in your config. When using `<interact-element>`, use `generate(config, true)` so the first child is targeted. With the React `Interaction` component, use `initial={true}` to set `data-interact-initial="true"` for FOUC prevention; the generated CSS still selects by `data-interact-key`.
 
 ---
 
