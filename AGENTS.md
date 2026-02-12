@@ -75,4 +75,4 @@ Declarative web animation library — trigger-based interactions using the Web A
 | [CONTRIBUTING.md](CONTRIBUTING.md)                               | Dev setup, PR process, code standards         |
 | [packages/interact/docs/guides/](packages/interact/docs/guides/) | Getting started, config shape, usage patterns |
 | [packages/interact/docs/](packages/interact/docs/)               | API reference, guides, examples               |
-| [packages/motion/docs/](packages/motion/)                        | Motion API, animation categories              |
+| [packages/motion/docs/](packages/motion/docs/)                   | Motion API, animation categories              |
