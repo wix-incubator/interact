@@ -28,6 +28,7 @@ vi.mock('@wix/motion', () => {
         reducedMotion,
       });
     }),
+    Sequence: vi.fn(),
     registerEffects: vi.fn(),
   };
 

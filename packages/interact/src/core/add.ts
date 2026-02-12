@@ -9,10 +9,78 @@ import type {
   CreateTransitionCSSParams,
   IInteractionController,
 } from '../types';
+import { isSequenceEffect } from '../types';
 import { createTransitionCSS, getMediaQuery, getSelectorCondition } from '../utils';
 import { getInterpolatedKey } from './utilities';
 import { Interact, getSelector } from './Interact';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
+import { getAnimation as motionGetAnimation, Sequence as MotionSequence } from '@wix/motion';
+import type { AnimationOptions, TriggerVariant } from '@wix/motion';
+import { effectToAnimationOptions } from '../handlers/utilities';
+
+export function getAnimation(
+  target: HTMLElement | string | null,
+  animationOptions: AnimationOptions & { _sequenceId?: string },
+  trigger?: Partial<TriggerVariant> & { element?: HTMLElement },
+  reducedMotion: boolean = false,
+) {
+  const sequenceId = animationOptions._sequenceId;
+  if (sequenceId) {
+    return Interact.sequenceCache.get(sequenceId) ?? null;
+  }
+  return motionGetAnimation(target, animationOptions, trigger, reducedMotion);
+}
+
+function buildSequences(
+  interactionsToApply: InteractionsToApply,
+  sequenceCache: Map<string, MotionSequence>,
+  reducedMotion: boolean,
+) {
+  const sequenceGroups = new Map<
+    string,
+    {
+      configs: Array<{
+        target: HTMLElement;
+        animationOptions: AnimationOptions;
+        index: number;
+      }>;
+      sequenceOptions: {
+        delay?: number;
+        offset?: number;
+        offsetEasing?: string | ((t: number) => number);
+      };
+    }
+  >();
+
+  for (const [, , effect, , targetElements] of interactionsToApply) {
+    if (!isSequenceEffect(effect)) continue;
+
+    const sequenceId = effect._sequenceId;
+    if (!sequenceGroups.has(sequenceId)) {
+      sequenceGroups.set(sequenceId, {
+        configs: [],
+        sequenceOptions: effect._sequenceOptions || {},
+      });
+    }
+    const group = sequenceGroups.get(sequenceId)!;
+    const targets = Array.isArray(targetElements) ? targetElements : [targetElements];
+    for (const target of targets) {
+      group.configs.push({
+        target,
+        animationOptions: effectToAnimationOptions(effect) as AnimationOptions,
+        index: effect._sequenceIndex,
+      });
+    }
+  }
+
+  for (const [sequenceId, { configs, sequenceOptions }] of sequenceGroups) {
+    configs.sort((a, b) => a.index - b.index);
+    const sequence = MotionSequence.build(configs, sequenceOptions, reducedMotion);
+    if (sequence) {
+      sequenceCache.set(sequenceId, sequence);
+    }
+  }
+}
 
 type InteractionsToApply = Array<
   [
@@ -96,8 +164,8 @@ function _applyInteraction(
   effect: Effect,
   sourceElements: HTMLElement | HTMLElement[],
   targetElements: HTMLElement | HTMLElement[],
-  selectorCondition?: string,
-  useFirstChild?: boolean,
+  selectorCondition: string | undefined,
+  useFirstChild: boolean,
 ) {
   const isSourceArray = Array.isArray(sourceElements);
   const isTargetArray = Array.isArray(targetElements);
@@ -147,7 +215,7 @@ function _addInteraction(
 
   const interactionsToApply: InteractionsToApply = [];
 
-  interaction.effects.forEach((effect) => {
+  (interaction.effects || []).forEach((effect) => {
     const effectId = (effect as EffectRef).effectId;
 
     const effectOptions = {
@@ -234,7 +302,12 @@ function _addInteraction(
   });
 
   // apply the effects in reverse to return to the order specified by the user to ensure order of composition is as defined
-  interactionsToApply.reverse().forEach((interaction) => {
+  interactionsToApply.reverse();
+
+  // Build MotionSequences eagerly before calling handlers
+  buildSequences(interactionsToApply, Interact.sequenceCache, Interact.forceReducedMotion);
+
+  interactionsToApply.forEach((interaction) => {
     _applyInteraction(...interaction);
   });
 }
