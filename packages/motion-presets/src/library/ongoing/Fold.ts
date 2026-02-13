@@ -38,13 +38,13 @@ const DIRECTION_MAP = {
 const MIN_ROTATE_ANGLE = 15;
 
 const KEYFRAME_FACTORS = [
-  { fold: 1, frameFactor: 0.25 },
-  { fold: -0.7, frameFactor: 0.5 },
-  { fold: 0.6, frameFactor: 0.5 },
-  { fold: -0.3, frameFactor: 0.45 },
-  { fold: 0.2, frameFactor: 0.4 },
-  { fold: -0.05, frameFactor: 0.5 },
-  { fold: 0, frameFactor: 0.35 },
+  { fold: 1, frameFactor: 0.1 },
+  { fold: -0.7, frameFactor: 0.302 },
+  { fold: 0.6, frameFactor: 0.504 },
+  { fold: -0.3, frameFactor: 0.686 },
+  { fold: 0.2, frameFactor: 0.847 },
+  { fold: -0.05, frameFactor: 1.049 },
+  { fold: 0, frameFactor: 1.189 },
 ];
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
@@ -71,7 +71,6 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
 
   const totalDurationWithDelay = duration + delay;
   const timingFactor = getTimingFactor(duration, delay) as number;
-  let currentOffset = 0;
 
   // Create CSS custom properties for the fold configuration
   const custom: Record<string, string | number> = {
@@ -107,8 +106,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? KEYFRAME_FACTORS.map(({ fold, frameFactor }) => {
-        const keyframeOffset = currentOffset + frameFactor * timingFactor;
-        currentOffset = keyframeOffset;
+        const keyframeOffset = frameFactor * timingFactor;
         return {
           offset: keyframeOffset,
           easing: getEasing('sineInOut'),
