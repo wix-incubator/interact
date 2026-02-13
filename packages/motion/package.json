@@ -63,5 +63,5 @@
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
   },
-  "stableVersion": "2.0.0"
+  "stableVersion": "2.0.0-rc.6"
 }
