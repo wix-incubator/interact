@@ -17,7 +17,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewEnter',
     params: {
         type: 'once',
@@ -26,7 +26,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -39,8 +39,8 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 **Variables**:
 
-- `[SOURCE_SELECTOR]`: Unique identifier for element that triggers when visible (often same as target key)
-- `[TARGET_SELECTOR]`: Unique identifier for element to animate (can be same as source or different)
+- `[SOURCE_KEY]`: Unique identifier for element that triggers when visible (often same as target key)
+- `[TARGET_KEY]`: Unique identifier for element to animate (can be same as source or different)
 - `[VISIBILITY_THRESHOLD]`: Number between 0-1 indicating how much of element must be visible (e.g., 0.3 = 30%)
 - `[VIEWPORT_INSETS]`: String insets around viewport (e.g., '50px', '10%', '-100px')
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
@@ -121,7 +121,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 ```typescript
 {
-    key: '[OBSERVER_SELECTOR]',
+    key: '[OBSERVER_KEY]',
     trigger: 'viewEnter',
     params: {
         type: 'repeat',
@@ -130,7 +130,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            key: '[ANIMATION_TARGET_SELECTOR]',
+            key: '[ANIMATION_TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -143,8 +143,8 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 **Variables**:
 
-- `[OBSERVER_SELECTOR]`: CSS selector for element that acts as scroll trigger
-- `[ANIMATION_TARGET_SELECTOR]`: CSS selector for element that gets animated (different from observer)
+- `[OBSERVER_KEY]`: Unique identifier for element that acts as scroll trigger
+- `[ANIMATION_TARGET_KEY]`: Unique identifier for element that gets animated (different from observer)
 - Other variables same as Rule 1
 
 **Example - Image Reveal on Scroll**:
@@ -219,7 +219,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
 
 ```typescript
 {
-    key: '[OBSERVER_SELECTOR]',
+    key: '[OBSERVER_KEY]',
     trigger: 'viewEnter',
     params: {
         type: 'alternate',
@@ -228,7 +228,7 @@ These rules help generate viewport-based interactions using the `@wix/interact` 
     },
     effects: [
         {
-            key: '[ANIMATION_TARGET_SELECTOR]',
+            key: '[ANIMATION_TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -316,7 +316,7 @@ Same as Rule 2
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewEnter',
     params: {
         type: 'state',
@@ -325,7 +325,7 @@ Same as Rule 2
     },
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -417,7 +417,7 @@ Same as Rule 2
 
 ```typescript
 {
-    key: '[SOURCE_SELECTOR]',
+    key: '[SOURCE_KEY]',
     trigger: 'viewEnter',
     params: {
         type: '[BEHAVIOR_TYPE]',
@@ -426,7 +426,7 @@ Same as Rule 2
     },
     effects: [
         {
-            key: '[TARGET_SELECTOR]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]'
@@ -576,7 +576,7 @@ Same as Rule 2
 
 **Variables**:
 
-- `[ELEMENT_N_SELECTOR]`: CSS selector for each individual element in sequence
+- `[ELEMENT_N_KEY]`: Unique identifier for each individual element in sequence
 - `[DELAY_N]`: Progressive delay values (e.g., 0, 100, 200, 300ms)
 - `[SHARED_*]`: Common values used across all elements in the sequence
 - Other variables same as Rule 1
@@ -885,14 +885,14 @@ Combining with conditions for responsive behavior:
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-When using `viewEnter` with for entrance animations, elements may briefly appear in their final state before the animation plays. Use the `generate` function to create critical CSS that prevents this.
+When using `viewEnter` for entrance animations, elements may briefly appear in their final state before the animation plays. Use the `generate` function to create critical CSS that prevents this.
 
 ### Using the `generate` Function
 
 **Import and generate CSS:**
 
-````typescript
-import { generate } from '@wix/interact';
+```typescript
+import { generate } from '@wix/interact/web';
 
 const config: InteractConfig = {
   interactions: [
@@ -904,18 +904,12 @@ const config: InteractConfig = {
         {
           namedEffect: { type: 'FadeIn' },
           duration: 800,
-          fill: 'backwards'
-        }
-      ]
-    }
-  ]
+          fill: 'backwards',
+        },
+      ],
+    },
+  ],
 };
-
-/**Usage:**
-```javascript
-import { generate } from '@wix/interact';
-
-const config = {/*...*/};
 
 // Generate CSS at build time or on server
 const css = generate(config);
@@ -938,7 +932,7 @@ const html = `
 </body>
 </html>
 `;
-````
+```
 
 ### Generated CSS Behavior
 
