@@ -1,6 +1,6 @@
 {
   "name": "@wix/interact",
-  "version": "2.0.0-rc.8",
+  "version": "2.0.0",
   "description": "A powerful, declarative interaction library for creating engaging web apps.",
   "license": "MIT",
   "main": "dist/cjs/index.js",
@@ -86,6 +86,5 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
-  },
-  "stableVersion": "2.0.0-rc.6"
+  }
 }
