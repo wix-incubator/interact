@@ -8,7 +8,7 @@ These rules help generate pointer-driven interactions using the `@wix/interact` 
 
 The `pointerMove` trigger provides 2D progress (x and y coordinates). You can use:
 
-1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion` that handle 2D progress internally
+1. **`namedEffect`** (Preferred): Pre-built mouse presets from `@wix/motion-presets` that handle 2D progress internally
 2. **`customEffect`** (Advanced): Custom function receiving the 2D progress object for full control
 3. **`keyframeEffect`** (Single-axis): The pointer position on a single axis is mapped to linear 0-1 progress for keyframe animations. Use `axis: 'x'` or `axis: 'y'` (defaults to `'y'`)
 
