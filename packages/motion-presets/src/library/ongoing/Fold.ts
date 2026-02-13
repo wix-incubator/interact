@@ -69,8 +69,8 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const { x, y } = origin;
   const ease = getEasingFamily(easing);
 
-  const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
+  const totalDurationWithDelay = duration + delay;
+  const timingFactor = getTimingFactor(duration, delay) as number;
   let currentOffset = 0;
 
   // Create CSS custom properties for the fold configuration
@@ -136,7 +136,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       name,
       easing: 'linear',
       delay: 0,
-      duration: delay ? totalDurationWithDelay : duration,
+      duration: totalDurationWithDelay,
       custom,
       keyframes: [
         {
@@ -162,8 +162,7 @@ export function getNames(options: TimeAnimationOptions & AnimationExtraOptions) 
     return ['motion-fold'];
   }
 
-  const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration, true) as string;
+  const timingFactor = getTimingFactor(duration, delay, true) as string;
 
   return [`motion-fold-${timingFactor}`];
 }

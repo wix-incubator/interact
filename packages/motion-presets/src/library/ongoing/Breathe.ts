@@ -41,8 +41,8 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const easing = options.easing || 'sineInOut';
   const duration = options.duration || 1;
   const delay = options.delay || 0;
-  const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
+  const totalDurationWithDelay = duration + delay;
+  const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
   const { x, y, z } = DIRECTION_MAP[direction];
@@ -103,7 +103,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       name,
       easing: 'linear',
       delay: 0,
-      duration: delay ? totalDurationWithDelay : duration,
+      duration: totalDurationWithDelay,
       custom,
       keyframes: [
         {

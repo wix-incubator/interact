@@ -51,8 +51,8 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const [name] = getNames(options);
 
   const { x, y } = DIRECTION_MAP[direction];
-  const totalDuration = 3.55 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
+  const totalDuration = duration + delay;
+  const timingFactor = getTimingFactor(duration, delay) as number;
 
   // Create CSS custom properties for the swing configuration
   const custom: Record<string, string | number> = {
@@ -120,7 +120,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       name,
       easing: 'linear',
       delay: 0,
-      duration: delay ? totalDuration : duration,
+      duration: totalDuration,
       custom,
       keyframes: [
         {

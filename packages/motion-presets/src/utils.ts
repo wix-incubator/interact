@@ -6,8 +6,6 @@ import type {
   ScrubTransitionEasing,
 } from '@wix/motion';
 
-export const INITIAL_FRAME_OFFSET = 1e-6;
-
 export type Direction =
   | 'initial'
   | 'top'
