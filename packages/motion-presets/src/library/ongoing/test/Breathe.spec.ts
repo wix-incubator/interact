@@ -65,7 +65,7 @@ describe('Breathe', () => {
       const expectedResult: Partial<AnimationData>[] = [
         {
           name: 'motion-breathe-067',
-          duration: 3700,
+          duration: 1500,
           custom: {
             '--motion-breathe-perspective': '',
             '--motion-breathe-distance': '25px',
@@ -81,31 +81,31 @@ describe('Breathe', () => {
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.0675,
+              offset: 0.067,
               transform:
                 ' translate3d(calc(0 * 25px * 1), calc(1 * 25px * 1), calc(0 * 25px * 1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.2025,
+              offset: 0.20234,
               transform:
                 ' translate3d(calc(0 * 25px * -1), calc(1 * 25px * -1), calc(0 * 25px * -1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.3375,
+              offset: 0.33768000000000004,
               transform:
                 ' translate3d(calc(0 * 25px * 1), calc(1 * 25px * 1), calc(0 * 25px * 1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.47250000000000003,
+              offset: 0.47235,
               transform:
                 ' translate3d(calc(0 * 25px * -0.7), calc(1 * 25px * -0.7), calc(0 * 25px * -0.7)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.5624910000000001,
+              offset: 0.56213,
               transform:
                 ' translate3d(calc(0 * 25px * 0.6), calc(1 * 25px * 0.6), calc(0 * 25px * 0.6)) rotateZ(var(--motion-rotate, 0deg))',
             },
@@ -379,7 +379,7 @@ describe('Breathe', () => {
       const expectedResult: Partial<AnimationData>[] = [
         {
           name: 'motion-breathe-067',
-          duration: 3700,
+          duration: 1500,
           custom: {
             '--motion-breathe-perspective': '',
             '--motion-breathe-distance': '25px',
@@ -396,31 +396,31 @@ describe('Breathe', () => {
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.0675,
+              offset: 0.067,
               transform:
                 'var(--motion-breathe-perspective, ) translate3d(calc(var(--motion-breathe-x) * var(--motion-breathe-distance) * 1), calc(var(--motion-breathe-y) * var(--motion-breathe-distance) * 1), calc(var(--motion-breathe-z) * var(--motion-breathe-distance) * 1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.2025,
+              offset: 0.20234,
               transform:
                 'var(--motion-breathe-perspective, ) translate3d(calc(var(--motion-breathe-x) * var(--motion-breathe-distance) * -1), calc(var(--motion-breathe-y) * var(--motion-breathe-distance) * -1), calc(var(--motion-breathe-z) * var(--motion-breathe-distance) * -1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.3375,
+              offset: 0.33768000000000004,
               transform:
                 'var(--motion-breathe-perspective, ) translate3d(calc(var(--motion-breathe-x) * var(--motion-breathe-distance) * 1), calc(var(--motion-breathe-y) * var(--motion-breathe-distance) * 1), calc(var(--motion-breathe-z) * var(--motion-breathe-distance) * 1)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.47250000000000003,
+              offset: 0.47235,
               transform:
                 'var(--motion-breathe-perspective, ) translate3d(calc(var(--motion-breathe-x) * var(--motion-breathe-distance) * -0.7), calc(var(--motion-breathe-y) * var(--motion-breathe-distance) * -0.7), calc(var(--motion-breathe-z) * var(--motion-breathe-distance) * -0.7)) rotateZ(var(--motion-rotate, 0deg))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.5624910000000001,
+              offset: 0.56213,
               transform:
                 'var(--motion-breathe-perspective, ) translate3d(calc(var(--motion-breathe-x) * var(--motion-breathe-distance) * 0.6), calc(var(--motion-breathe-y) * var(--motion-breathe-distance) * 0.6), calc(var(--motion-breathe-z) * var(--motion-breathe-distance) * 0.6)) rotateZ(var(--motion-rotate, 0deg))',
             },

@@ -1,10 +1,4 @@
-import {
-  getClipPolygonParams,
-  toKeyframeValue,
-  parseDirection,
-  parseLength,
-  INITIAL_FRAME_OFFSET,
-} from '../../utils';
+import { getClipPolygonParams, toKeyframeValue, parseDirection, parseLength } from '../../utils';
 import type { TiltIn, TimeAnimationOptions, EffectTwoSides } from '../../types';
 import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
@@ -64,12 +58,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom: rotateCustom,
       keyframes: [
         {
-          offset: 0,
-          easing: 'step-end',
-          transform: `perspective(${toKeyframeValue(rotateCustom, '--motion-perspective', asWeb)})`,
-        },
-        {
-          offset: INITIAL_FRAME_OFFSET,
           transform: `perspective(${toKeyframeValue(rotateCustom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-negative', asWeb)}) rotateX(-90deg) translateZ(${toKeyframeValue(rotateCustom, '--motion-depth-positive', asWeb)}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
