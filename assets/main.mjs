@@ -1,7 +1,7 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8/dist/es/web.js';
+import { Interact } from 'https://esm.sh/@wix/interact@latest/dist/es/web.js';
 // import { Interact } from './packages/interact/dist/es/web.js';
-import * as presets from 'https://esm.sh/@wix/motion-presets@1.0.0-1/dist/es/motion-presets.js';
+import * as presets from 'https://esm.sh/@wix/motion-presets@latest/dist/es/motion-presets.js';
 // import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
 
 // =============================================================================
