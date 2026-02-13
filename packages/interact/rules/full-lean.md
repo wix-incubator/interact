@@ -396,14 +396,8 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
 
 - **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion-presets` that are GPU-friendly and tuned.
   - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
-  - Short list of common preset names:
-    - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `F
-lipIn`, `ArcIn`
-    - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
-    - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll`
-    - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity.
-    - Mouse: For `pointerMove` (mouse-effects), prefer `namedEffect` presets (e.g., `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`); avoid `keyframeEffect` with `pointerMove` since progress is two‑dimensional.
-    - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`
+  - Short list of common preset names: - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `F
+lipIn`, `ArcIn` - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce` - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll` - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity. - Mouse: For `pointerMove` (mouse-effects), prefer `namedEffect` presets (e.g., `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`); avoid `keyframeEffect` with `pointerMove` since progress is two‑dimensional. - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`
 - **keyframeEffect (Default for custom animations)**: Prefer this when you need a custom-made animation.
   - Structure: `keyframeEffect: { name: string; keyframes: Keyframe[] }` (keyframes use standard CSS/WAAPI properties).
   - Not compatible with `pointerMove` (mouse-effects) because pointer progress is two‑dimensional; use `customEffect` for custom pointer‑driven animations.
