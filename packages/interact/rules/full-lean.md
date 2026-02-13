@@ -34,7 +34,7 @@ Interact.create(config);
 
 ```html
 <script type="module">
-  import { Interact } from 'https://esm.sh/@wix/interact@2.0.0-rc.8';
+  import { Interact } from 'https://esm.sh/@wix/interact';
 
   const config = {
     // config-props
