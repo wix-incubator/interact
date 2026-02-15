@@ -1,11 +1,12 @@
 import type { AnimationGroup } from '@wix/motion';
-import { getAnimation } from '@wix/motion';
 import type { TimeEffect, HandlerObjectMap, ViewEnterParams, InteractOptions } from '../types';
+import { isSequenceEffect } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import { getAnimation } from '../core/add';
 import fastdom from 'fastdom';
 
 const SAFE_OBSERVER_CONFIG: IntersectionObserverInit = {
@@ -139,6 +140,12 @@ function addViewEnterHandler(
   options: ViewEnterParams = {},
   { reducedMotion, selectorCondition }: InteractOptions = {},
 ) {
+  // For sequence effects, only the first effect (index 0) controls playback
+  if (isSequenceEffect(effect) && effect._sequenceIndex !== 0) {
+    // Non-leader sequence effects don't need handlers - the leader controls the Sequence
+    return;
+  }
+
   const mergedOptions = { ...viewEnterOptions, ...options };
   const type = mergedOptions.type || 'once';
   const animation = getAnimation(
