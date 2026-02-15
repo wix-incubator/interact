@@ -350,7 +350,7 @@ Restrict movement to specific axes:
 ```typescript
 {
   distance: { value: 200, type: 'px' },      // Pixel-based range
-  distance: { value: 50, type: 'percentage' }, // Percentage-based range
+  distance: { value: 50, unit: 'percentage' }, // Percentage-based range
   distance: { value: 10, type: 'vh' }         // Viewport-based range
 }
 ```

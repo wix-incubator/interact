@@ -70,8 +70,8 @@ const scene = getScrubScene(
   {
     type: 'ScrubAnimationOptions',
     namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
-    startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-    endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+    startOffset: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+    endOffset: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
   },
   {
     trigger: 'view-progress',
@@ -393,7 +393,7 @@ startOffset: { name: 'exit' }       // Element leaving viewport
 // With percentage offsets
 startOffset: {
   name: 'cover',
-  offset: { value: 20, type: 'percentage' }
+  offset: { value: 20, unit: 'percentage' }
 }
 
 // With pixel offsets
@@ -411,11 +411,11 @@ const scene = getScrubScene(element, animationOptions, {
   trigger: 'view-progress',
   startOffset: {
     name: 'entry',
-    offset: { value: 20, type: 'percentage' },
+    offset: { value: 20, unit: 'percentage' },
   },
   endOffset: {
     name: 'exit',
-    offset: { value: 0, type: 'percentage' },
+    offset: { value: 0, unit: 'percentage' },
   },
 });
 ```
@@ -507,7 +507,7 @@ document.querySelectorAll('.reveal-item').forEach((item, index) => {
       // Stagger timing with offset
       startOffset: {
         name: 'entry',
-        offset: { value: index * 10, type: 'percentage' },
+        offset: { value: index * 10, unit: 'percentage' },
       },
     },
     {

@@ -192,9 +192,34 @@ Effects define _what_ happens. They can be inline or referenced by ID.
 
 ### Effect Types
 
-#### 1. Named Effects (Pre-built)
+#### 1. Named Effects (Pre-built effect library)>
 
-Use Motion effect presets for consistency.
+Use the @wix/motion-presets library for consistency.
+
+**Install:**
+
+```bash
+> npm install @wix/motion-presets
+```
+
+**Import and register:**
+
+```typescript
+import { Interact } from '@wix/interact/web';
+import * as presets from '@wix/motion-presets';
+
+Interact.registerEffects(presets);
+```
+
+**Or register only required presets:**
+
+```typescript
+import { Interact } from '@wix/interact/web';
+import { FadeIn, ParallaxScroll } from '@wix/motion-presets';
+
+Interact.registerEffects({ FadeIn, ParallaxScroll });
+```
+
 
 ```typescript
 {
@@ -241,8 +266,8 @@ Used with `viewProgress`, linked to scroll progress while element is inside view
 ```typescript
 {
   keyframeEffect: { ... },
-  rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+  rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+  rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
   fill: 'both'
 }
 ```

@@ -40,8 +40,8 @@ These animations are driven by external progress (scroll, mouse movement):
 {
   type: 'ScrubAnimationOptions',
   namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
-  startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } }
+  startOffset: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+  endOffset: { name: 'cover', offset: { value: 100, unit: 'percentage' } }
 }
 ```
 
@@ -261,7 +261,7 @@ Wix Motion supports multiple unit types:
 ```typescript
 // Distance units
 distance: { value: 100, type: 'px' }
-distance: { value: 50, type: 'percentage' }
+distance: { value: 50, unit: 'percentage' }
 distance: { value: 2, type: 'em' }
 distance: { value: 100, type: 'vh' }
 
@@ -271,7 +271,7 @@ direction: 270  // 0° = up, 90° = right, 180° = down, 270° = left
 
 // Duration (milliseconds for time, percentage for scrub)
 duration: 1000                          // Time-based
-duration: { value: 50, type: 'percentage' } // Scrub-based
+duration: { value: 50, unit: 'percentage' } // Scrub-based
 ```
 
 ## Rendering Modes
@@ -366,11 +366,11 @@ Fine-tune when scroll animations trigger:
   namedEffect: { type: 'FadeScroll' },
   startOffset: {
     name: 'cover',                    // Viewport intersection
-    offset: { value: 20, type: 'percentage' }  // Start at 20% intersection
+    offset: { value: 20, unit: 'percentage' }  // Start at 20% intersection
   },
   endOffset: {
     name: 'exit-crossing',            // Element leaving viewport
-    offset: { value: 0, type: 'percentage' }   // End immediately
+    offset: { value: 0, unit: 'percentage' }   // End immediately
   }
 }
 ```

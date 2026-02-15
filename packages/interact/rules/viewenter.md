@@ -596,8 +596,7 @@ Same as Rule 2
       {
         namedEffect: {
           type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
+          direction: 'bottom'
         },
         duration: 600,
         easing: 'ease-out',
@@ -617,8 +616,7 @@ Same as Rule 2
       {
         namedEffect: {
           type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
+          direction: 'bottom'
         },
         duration: 600,
         easing: 'ease-out',
@@ -638,8 +636,7 @@ Same as Rule 2
       {
         namedEffect: {
           type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
+          direction: 'bottom'
         },
         duration: 600,
         easing: 'ease-out',

@@ -66,8 +66,8 @@ const timeOptions: TimeAnimationOptions = {
 const scrubOptions: ScrubAnimationOptions = {
   type: 'ScrubAnimationOptions',
   namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
-  startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+  startOffset: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+  endOffset: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
 };
 ```
 
@@ -233,8 +233,8 @@ Trigger configuration specifying how the animation responds:
 {
   trigger: 'view-progress',
   element: element,
-  startOffset: { name: 'cover', offset: { value: 20, type: 'percentage' } },
-  endOffset: { name: 'exit', offset: { value: 0, type: 'percentage' } }
+  startOffset: { name: 'cover', offset: { value: 20, unit: 'percentage' } },
+  endOffset: { name: 'exit', offset: { value: 0, unit: 'percentage' } }
 }
 
 // Pointer trigger with container
@@ -301,11 +301,11 @@ const preciseScene = getScrubScene(
     },
     startOffset: {
       name: 'entry',
-      offset: { value: 30, type: 'percentage' },
+      offset: { value: 30, unit: 'percentage' },
     },
     endOffset: {
       name: 'cover',
-      offset: { value: 70, type: 'percentage' },
+      offset: { value: 70, unit: 'percentage' },
     },
   },
   {

@@ -168,7 +168,7 @@ export default function create(
         { transform: 'translateY(100px)', offset: 1 },
       ],
       timing: {
-        duration: { value: 100, type: 'percentage' },
+        duration: { value: 100, unit: 'percentage' },
       },
       custom: {
         mass,

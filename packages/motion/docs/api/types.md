@@ -463,7 +463,7 @@ type Percentage = {
   value: number;
   unit: 'percentage';
 };
-  type: 'percentage';
+  unit: 'percentage';
 };
 
 // Combined length/percentage
@@ -481,7 +481,7 @@ type Point = [number, number];
 const pixelDistance: Length = { value: 100, type: 'px' };
 const remDistance: Length = { value: 2, type: 'rem' };
 const viewportDistance: Length = { value: 50, type: 'vh' };
-const percentDistance: Percentage = { value: 75, type: 'percentage' };
+const percentDistance: Percentage = { value: 75, unit: 'percentage' };
 
 // Points for coordinates
 const centerPoint: Point = [0.5, 0.5];
@@ -639,7 +639,7 @@ type RangeOffset = {
 // Start when element is 20% visible
 const startOffset: RangeOffset = {
   name: 'entry',
-  offset: { value: 20, type: 'percentage' },
+  offset: { value: 20, unit: 'percentage' },
 };
 
 // End 100px before element exits
