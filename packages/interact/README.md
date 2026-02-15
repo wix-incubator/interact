@@ -295,8 +295,8 @@ remove(key: string): void
           { transform: 'translateY(-200px)' }
         ]
       },
-      rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-      rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+      rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+      rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
       fill: 'both',
       easing: 'linear'
     }

@@ -16,8 +16,8 @@ const config = {
           key: 'spread-card-0',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'stayCenter',
             keyframes: [
@@ -30,8 +30,8 @@ const config = {
           key: 'spread-card-1',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftInner',
             keyframes: [
@@ -44,8 +44,8 @@ const config = {
           key: 'spread-card-2',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightInner',
             keyframes: [
@@ -58,8 +58,8 @@ const config = {
           key: 'spread-card-3',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadLeftOuter',
             keyframes: [
@@ -72,8 +72,8 @@ const config = {
           key: 'spread-card-4',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'spreadRightOuter',
             keyframes: [
@@ -87,8 +87,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-0-scaleDown',
             keyframes: [
@@ -102,8 +102,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 40, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-1-slideUp-scaleDown',
             keyframes: [
@@ -118,8 +118,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 20, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 60, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-2-slideUp-scaleDown',
             keyframes: [
@@ -134,8 +134,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 40, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 80, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-3-slideUp-scaleDown',
             keyframes: [
@@ -150,8 +150,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 60, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-4-slideUp-scaleDown',
             keyframes: [

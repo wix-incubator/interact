@@ -1,6 +1,6 @@
 import { cssEasings, jsEasings } from './easings';
-export function getCssUnits(type: 'percentage' | string) {
-  return type === 'percentage' ? '%' : type || 'px';
+export function getCssUnits(unit: 'percentage' | string) {
+  return unit === 'percentage' ? '%' : unit || 'px';
 }
 
 export function getEasing(easing?: keyof typeof cssEasings | string): string {

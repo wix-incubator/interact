@@ -159,8 +159,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             key: 'feature-card',
             namedEffect: {
-                type: 'Pulse',
-                power: 'soft'
+                type: 'Pulse'
             },
             fill: 'both',
             duration: 250,
@@ -181,8 +180,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             key: 'button-icon',
             namedEffect: {
                 type: 'SpinIn',
-                direction: 'clockwise',
-                power: 'soft'
+                direction: 'clockwise'
             },
             fill: 'both',
             duration: 200,

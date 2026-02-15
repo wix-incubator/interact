@@ -376,12 +376,12 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
          - 'exit-crossing': The moment the target's center crosses the exit boundary.
          - If omitted, the runtime chooses a context-appropriate anchor; specify explicitly for deterministic behavior.
        - offset: A `LengthPercentage` that shifts the anchor boundary.
-         - Explicit format: `{ value: number; type: 'percentage' | 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax' }`
+         - Explicit format: `{ value: number; unit: 'percentage' | 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax' }`
          - Percentages are interpreted along the relevant scroll axis relative to the observation area (e.g., viewport or container size).
          - Positive values move the anchor "forward" along the scroll direction; negative values move it "backward".
        - Examples:
-         - Start when the element is 20% inside the viewport: `rangeStart: { name: 'entry', offset: { value: 20, type: 'percentage' } }`
-         - End when the element is leaving: `rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } }`
+         - Start when the element is 20% inside the viewport: `rangeStart: { name: 'entry', offset: { value: 20, unit: 'percentage' } }`
+         - End when the element is leaving: `rangeEnd: { name: 'exit', offset: { value: 0, unit: 'percentage' } }`
 
   3. **TransitionEffect** (CSS transition-style state toggles)
      - `key?`: string (target override; see TARGET CASCADE)
