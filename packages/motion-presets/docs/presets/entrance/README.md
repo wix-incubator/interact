@@ -39,6 +39,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 | **[DropIn](drop-in.md)**     | Simple     | -              | Scale-based drop with easing      |
 | **[ExpandIn](expand-in.md)** | Medium     | 9-way          | Scale from specific origin points |
 | **[SpinIn](spin-in.md)**     | Medium     | 2-way          | Rotation with scale entrance      |
+
 ### 🎨 Shape & Clip
 
 | Animation                        | Complexity | Directions | Description                  |

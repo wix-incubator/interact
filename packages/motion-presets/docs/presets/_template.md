@@ -40,7 +40,6 @@ export type [AnimationName] = BaseDataItemLike<'[AnimationName]'> & {
 | `[param1]` | `[type]` | `[default]` | [Description] | `[example values]` |
 | `[param2]` | `[type]` | `[default]` | [Description] | `[example values]` |
 
-
 ### Directional Support (if applicable)
 
 - **Four directions**: `top`, `right`, `bottom`, `left`

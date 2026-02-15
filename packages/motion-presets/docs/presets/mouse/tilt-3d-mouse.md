@@ -37,10 +37,10 @@ export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
 
 ### Parameters
 
-| Parameter     | Type     | Default    | Description                         | Examples                       |
-| ------------- | -------- | ---------- | ----------------------------------- | ------------------------------ |
-| `angle`       | `number` | `15`      | Maximum tilt angle in degrees     | `5`, `15`, `25`, `45`        |
-| `perspective` | `number` | `800`     | 3D perspective distance in pixels | `400`, `800`, `1200`         |
+| Parameter     | Type     | Default | Description                       | Examples              |
+| ------------- | -------- | ------- | --------------------------------- | --------------------- |
+| `angle`       | `number` | `15`    | Maximum tilt angle in degrees     | `5`, `15`, `25`, `45` |
+| `perspective` | `number` | `800`   | 3D perspective distance in pixels | `400`, `800`, `1200`  |
 
 ### Angle Guidelines
 

@@ -244,15 +244,15 @@ async function performAsyncOperation() {
 function createStatusIndicator(element, status) {
   const configs = {
     online: {
-      namedEffect: { type: 'Pulse',  intensity: 0.8 },
+      namedEffect: { type: 'Pulse', intensity: 0.8 },
       duration: 2000,
     },
     warning: {
-      namedEffect: { type: 'Pulse',  intensity: 1.2 },
+      namedEffect: { type: 'Pulse', intensity: 1.2 },
       duration: 1000,
     },
     error: {
-      namedEffect: { type: 'Pulse',  intensity: 1.5 },
+      namedEffect: { type: 'Pulse', intensity: 1.5 },
       duration: 600,
     },
   };
