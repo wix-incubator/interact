@@ -32,7 +32,6 @@
 export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
   angle?: number;
   perspective?: number;
-  power?: EffectPower;
 };
 ```
 
@@ -40,15 +39,8 @@ export type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
 
 | Parameter     | Type     | Default    | Description                         | Examples                       |
 | ------------- | -------- | ---------- | ----------------------------------- | ------------------------------ |
-| `angle`       | `number` | `15`       | Maximum tilt angle in degrees       | `5`, `15`, `25`, `45`          |
-| `perspective` | `number` | `800`      | 3D perspective distance in pixels   | `400`, `800`, `1200`           |
-| `power`       | `string` | `'medium'` | Tilt sensitivity and responsiveness | `'soft'`, `'medium'`, `'hard'` |
-
-### Power Levels
-
-- **`soft`** - Gentle, minimal tilt response (30% sensitivity)
-- **`medium`** - Balanced, natural tilt feel (60% sensitivity)
-- **`hard`** - Strong, dramatic tilt response (100% sensitivity)
+| `angle`       | `number` | `15`      | Maximum tilt angle in degrees     | `5`, `15`, `25`, `45`        |
+| `perspective` | `number` | `800`     | 3D perspective distance in pixels | `400`, `800`, `1200`         |
 
 ### Angle Guidelines
 
@@ -77,7 +69,6 @@ const scene = getScrubScene(
       type: 'Tilt3DMouse',
       angle: 15,
       perspective: 800,
-      power: 'medium',
     },
     transitionDuration: 200,
     transitionEasing: 'easeOut',
@@ -101,7 +92,6 @@ const scene = getScrubScene(
       type: 'Tilt3DMouse',
       angle: 8,
       perspective: 1000,
-      power: 'soft',
     },
     transitionDuration: 300,
   },
@@ -120,7 +110,6 @@ const scene = getScrubScene(
       type: 'Tilt3DMouse',
       angle: 30,
       perspective: 600,
-      power: 'hard',
     },
     transitionDuration: 150,
   },
@@ -143,7 +132,6 @@ const scene = getScrubScene(
       type: 'Tilt3DMouse',
       angle: 20,
       perspective: 500, // Closer perspective = stronger effect
-      power: 'medium',
     },
   },
   triggerConfig,
@@ -158,7 +146,6 @@ const scene = getScrubScene(
       type: 'Tilt3DMouse',
       angle: 15,
       perspective: 1200, // Distant perspective = gentler effect
-      power: 'medium',
     },
   },
   triggerConfig,
@@ -173,7 +160,6 @@ const professionalTilt = {
   type: 'Tilt3DMouse',
   angle: 10,
   perspective: 1000,
-  power: 'soft', // 30% sensitivity
 };
 
 // Creative interface - maximum response
@@ -181,7 +167,6 @@ const creativeTilt = {
   type: 'Tilt3DMouse',
   angle: 25,
   perspective: 600,
-  power: 'hard', // 100% sensitivity
 };
 ```
 
@@ -200,7 +185,6 @@ document.querySelectorAll('.tilt-card').forEach((card) => {
         type: 'Tilt3DMouse',
         angle: 12,
         perspective: 1000,
-        power: 'soft',
       },
       transitionDuration: 200,
       transitionEasing: 'easeOut',
@@ -237,7 +221,6 @@ function createProductShowcase(productElement) {
         type: 'Tilt3DMouse',
         angle: 25,
         perspective: 800,
-        power: 'medium',
       },
       transitionDuration: 250,
       transitionEasing: 'easeOut',
@@ -279,7 +262,6 @@ portfolioItems.forEach((item, index) => {
         type: 'Tilt3DMouse',
         angle: isStrong ? 20 : 12,
         perspective: isStrong ? 600 : 1000,
-        power: isStrong ? 'medium' : 'soft',
       },
       transitionDuration: 200,
     },
@@ -304,7 +286,6 @@ function createTiltButton(button) {
         type: 'Tilt3DMouse',
         angle: 8,
         perspective: 800,
-        power: 'soft',
       },
       transitionDuration: 150,
       transitionEasing: 'easeOut',
@@ -343,7 +324,6 @@ function setupModalTilt(modal) {
         type: 'Tilt3DMouse',
         angle: 15,
         perspective: 1000,
-        power: 'medium',
       },
       transitionDuration: 300,
     },
@@ -367,7 +347,6 @@ interface Tilt3DProps {
   children: React.ReactNode;
   angle?: number;
   perspective?: number;
-  power?: 'soft' | 'medium' | 'hard';
   transitionDuration?: number;
   className?: string;
   disabled?: boolean;
@@ -377,7 +356,6 @@ function Tilt3D({
   children,
   angle = 15,
   perspective = 800,
-  power = 'medium',
   transitionDuration = 200,
   className,
   disabled = false
@@ -397,8 +375,7 @@ function Tilt3D({
       namedEffect: {
         type: 'Tilt3DMouse',
         angle,
-        perspective,
-        power
+        perspective
       },
       transitionDuration,
       transitionEasing: 'easeOut'
@@ -412,7 +389,7 @@ function Tilt3D({
         animationRef.current.cancel();
       }
     };
-  }, [angle, perspective, power, transitionDuration, disabled]);
+  }, [angle, perspective, transitionDuration, disabled]);
 
   return (
     <div
@@ -431,7 +408,6 @@ function ProductCard({ product }) {
     <Tilt3D
       angle={20}
       perspective={600}
-      power="medium"
       className="product-card"
     >
       <img src={product.image} alt={product.name} />
@@ -458,7 +434,6 @@ export default {
   props: {
     angle: { type: Number, default: 15 },
     perspective: { type: Number, default: 800 },
-    power: { type: String, default: 'medium' },
     transitionDuration: { type: Number, default: 200 },
     className: { type: String, default: '' },
     disabled: { type: Boolean, default: false },
@@ -504,7 +479,6 @@ export default {
             type: 'Tilt3DMouse',
             angle: this.angle,
             perspective: this.perspective,
-            power: this.power,
           },
           transitionDuration: this.transitionDuration,
           transitionEasing: 'easeOut',
@@ -557,7 +531,7 @@ export default {
 
 ## Interactive Example
 
-▶️ **[Try it in Storybook](../../playground/)** - Experiment with Tilt3DMouse angles and power levels
+▶️ **[Try it in Storybook](../../playground/)** - Experiment with Tilt3DMouse angles
 
 ---
 

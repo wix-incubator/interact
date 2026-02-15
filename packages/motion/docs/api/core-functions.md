@@ -164,7 +164,6 @@ const mouseAnimation = getWebAnimation(
       type: 'Tilt3DMouse',
       angle: 15,
       perspective: 800,
-      power: 'medium',
     },
   },
   {
@@ -186,7 +185,6 @@ const multiAnimation = getWebAnimation(
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'hard',
     },
     duration: 1200,
     delay: 300,
@@ -324,9 +322,8 @@ const mouseScene = getScrubScene(
     type: 'ScrubAnimationOptions',
     namedEffect: {
       type: 'ScaleMouse',
-      distance: { value: 100, type: 'px' },
+      distance: { value: 100, unit: 'px' },
       scale: 1.1,
-      power: 'soft',
     },
     transitionDuration: 200,
     transitionEasing: 'easeOut',
@@ -439,7 +436,6 @@ prepareAnimation(
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'hard',
     },
   },
   () => {
@@ -561,14 +557,14 @@ function createResponsiveAnimation(element: HTMLElement) {
     // Lighter animation for mobile
     options = {
       type: 'TimeAnimationOptions',
-      namedEffect: { type: 'SlideIn', direction: 'bottom', power: 'soft' },
+      namedEffect: { type: 'SlideIn', direction: 'bottom' },
       duration: 600,
     };
   } else {
     // Full animation for desktop
     options = {
       type: 'TimeAnimationOptions',
-      namedEffect: { type: 'ArcIn', direction: 'bottom', power: 'hard' },
+      namedEffect: { type: 'ArcIn', direction: 'bottom' },
       duration: 1000,
       easing: 'backOut',
     };
