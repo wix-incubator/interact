@@ -141,7 +141,7 @@ describe('AnimationGroup', () => {
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {
@@ -977,7 +977,7 @@ describe('AnimationGroup', () => {
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {
