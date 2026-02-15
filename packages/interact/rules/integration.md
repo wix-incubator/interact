@@ -220,7 +220,6 @@ import { FadeIn, ParallaxScroll } from '@wix/motion-presets';
 Interact.registerEffects({ FadeIn, ParallaxScroll });
 ```
 
-
 ```typescript
 {
   namedEffect: { type: 'FadeIn' },

@@ -1041,7 +1041,7 @@ const config = {
           namedEffect: {
             type: 'SlideIn',
             direction: 'bottom',
-            distance: '100px'
+            distance: '100px',
           },
           duration: 1000,
           easing: 'ease-out',
