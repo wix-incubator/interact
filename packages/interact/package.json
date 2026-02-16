@@ -49,10 +49,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/interact.git"
+    "url": "git+https://github.com/wix/interact.git"
   },
   "bugs": {
-    "url": "https://github.com/wix-incubator/interact/issues"
+    "url": "https://github.com/wix/interact/issues"
   },
   "dependencies": {
     "@wix/motion": "^2.0.0",

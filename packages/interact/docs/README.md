@@ -189,4 +189,4 @@ This documentation is for `@wix/interact` v2.0.0.
 
 ## Feedback
 
-Found an issue with the documentation? Please [open an issue](https://github.com/wix-incubator/interact/issues) or contribute improvements via pull request.
+Found an issue with the documentation? Please [open an issue](https://github.com/wix/interact/issues) or contribute improvements via pull request.
