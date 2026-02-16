@@ -1,6 +1,6 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@latest/dist/es/web.js';
-// import { Interact } from './packages/interact/dist/es/web.js';
+import { Interact } from 'https://esm.sh/@wix/interact@2.0.0/dist/es/web.js';
+// import { Interact } from '../packages/interact/dist/es/web.js';
 import * as presets from 'https://esm.sh/@wix/motion-presets@latest/dist/es/motion-presets.js';
 // import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
 
@@ -12,7 +12,7 @@ import * as presets from 'https://esm.sh/@wix/motion-presets@latest/dist/es/moti
 const gridContainer = document.getElementById('grid-container');
 const lineCache = new Map();
 const lineStates = new Map();
-let centerX, centerY, maxDist;
+// let centerX, centerY, maxDist;
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
