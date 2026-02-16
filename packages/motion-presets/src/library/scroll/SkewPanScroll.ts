@@ -1,10 +1,18 @@
-import type { AnimationFillMode, DomApi, ScrubAnimationOptions, SkewPanScroll } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import type {
+  AnimationFillMode,
+  DomApi,
+  ScrubAnimationOptions,
+  SkewPanScroll,
+  EffectTwoSides,
+} from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
-const POWER_MAP = {
-  soft: 10,
-  medium: 17,
-  hard: 24,
+const DEFAULT_DIRECTION: EffectTwoSides = 'right';
+
+const DIRECTION_MAP = {
+  right: -1,
+  left: 1,
 };
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -33,19 +41,15 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    skew = 10,
-    direction = 'right',
-    power,
-    range = 'in',
-  } = options.namedEffect as SkewPanScroll;
+  const namedEffect = options.namedEffect as SkewPanScroll;
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
+  const { skew = 10, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const skewX =
-    (power && POWER_MAP[power] ? POWER_MAP[power] : skew) * (direction === 'left' ? 1 : -1);
+  const skewX = skew * DIRECTION_MAP[direction];
   const startXLeft = `calc(${toKeyframeValue(
     {},
     '--motion-left',
@@ -90,7 +94,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-skewpan-from-skew',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translateX(${toKeyframeValue(
@@ -101,7 +105,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-skewpan-to-skew',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

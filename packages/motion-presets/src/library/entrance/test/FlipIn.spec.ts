@@ -12,14 +12,19 @@ describe('FlipIn', () => {
     };
 
     const expectedResult: Partial<AnimationData>[] = [
-      {},
+      {
+        easing: 'quadOut',
+        keyframes: [{ offset: 0, opacity: 0 }],
+      },
       {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 90deg)) rotateY(var(--motion-rotate-y , 0deg))`,
+            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 90deg)) rotateY(var(--motion-rotate-y, 0deg))`,
           },
-          {},
+          {
+            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
+          },
         ],
       },
     ];
@@ -32,26 +37,29 @@ describe('FlipIn', () => {
   test('FlipIn animation with custom values', () => {
     const easing = 'backIn';
     const direction = 'right';
-    const power = 'soft';
     const mockOptions = {
       ...baseMockOptions,
       easing,
       namedEffect: {
         direction,
-        power,
         initialRotate: 50,
       } as FlipInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
-      {},
+      {
+        easing: 'quadOut',
+        keyframes: [{ offset: 0, opacity: 0 }],
+      },
       {
         easing,
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 45deg))`,
+            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 50deg))`,
           },
-          {},
+          {
+            transform: `perspective(800px) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
+          },
         ],
       },
     ];
@@ -72,21 +80,22 @@ describe('FlipIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         easing: 'backOut',
         name: 'motion-flipIn',
         custom: {
+          '--motion-perspective': '800px',
           '--motion-rotate-x': '90deg',
           '--motion-rotate-y': '0deg',
         },
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 90deg)) rotateY(var(--motion-rotate-y , 0deg))`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 90deg)) rotateY(var(--motion-rotate-y, 0deg))`,
           },
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
           },
         ],
       },
@@ -100,13 +109,11 @@ describe('FlipIn', () => {
   test('FlipIn style with custom values', () => {
     const easing = 'backIn';
     const direction = 'right';
-    const power = 'soft';
     const mockOptions = {
       ...baseMockOptions,
       easing,
       namedEffect: {
         direction,
-        power,
         initialRotate: 50,
       } as FlipInType,
     };
@@ -116,21 +123,22 @@ describe('FlipIn', () => {
         easing: 'quadOut',
         name: 'motion-fadeIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         easing,
         name: 'motion-flipIn',
         custom: {
+          '--motion-perspective': '800px',
           '--motion-rotate-x': '0deg',
-          '--motion-rotate-y': '45deg',
+          '--motion-rotate-y': '50deg',
         },
         keyframes: [
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , 0deg)) rotateY(var(--motion-rotate-y , 45deg))`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, 0deg)) rotateY(var(--motion-rotate-y, 50deg))`,
           },
           {
-            transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,
+            transform: `perspective(var(--motion-perspective)) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
           },
         ],
       },

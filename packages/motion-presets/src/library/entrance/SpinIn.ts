@@ -1,40 +1,33 @@
-import type { SpinIn, AnimationExtraOptions, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import type { SpinIn, TimeAnimationOptions } from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-spinIn'];
 }
-
-const SCALE_MAP = {
-  soft: 1,
-  medium: 0.6,
-  hard: 0,
-};
 
 const DIRECTION_MAP = {
   clockwise: -1,
   'counter-clockwise': 1,
 };
 
-export function web(options: TimeAnimationOptions & AnimationExtraOptions) {
+export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const {
-    direction = 'clockwise',
-    spins = 0.5,
-    initialScale = 0,
-    power,
-  } = options.namedEffect as SpinIn;
+  const namedEffect = options.namedEffect as SpinIn;
+  const direction = parseDirection(namedEffect?.direction, SPIN_DIRECTIONS, DEFAULT_DIRECTION);
+  const { spins = 0.5, initialScale = 0 } = namedEffect;
   const [fadeIn, spinIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale = typeof power !== 'undefined' ? SCALE_MAP[power] : initialScale;
   const transformRotate = (DIRECTION_MAP[direction] > 0 ? 1 : -1) * 360 * spins;
 
   const custom = {
-    '--motion-scale': `${scale}`,
+    '--motion-scale': `${initialScale}`,
     '--motion-rotate': `${transformRotate}deg`,
   };
 
@@ -43,9 +36,9 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       ...options,
       name: fadeIn,
       easing: 'cubicIn',
-      duration: options.duration! * scale,
+      duration: options.duration! * initialScale,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -54,7 +47,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           scale: toKeyframeValue(custom, '--motion-scale', asWeb),
           rotate: toKeyframeValue(custom, '--motion-rotate', asWeb),
         },

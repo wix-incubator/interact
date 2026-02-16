@@ -48,12 +48,12 @@ function _getElementsFromData(
   }
 
   if (data.selector) {
-    const element = root.querySelector(data.selector);
+    const elements = root.querySelectorAll(data.selector);
 
-    if (element) {
-      return element as HTMLElement;
+    if (elements.length > 0) {
+      return Array.from(elements) as HTMLElement[];
     } else {
-      console.warn(`Interact: No element found for selector "${data.selector}"`);
+      console.warn(`Interact: No elements found for selector "${data.selector}"`);
     }
   }
 

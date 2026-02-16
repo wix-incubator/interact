@@ -1,56 +1,16 @@
 import type {
   AnimationFillMode,
-  EffectPower,
+  DomApi,
   ScrubAnimationOptions,
   ShapeScroll,
-  DomApi,
+  ShapeType,
 } from '../../types';
 import { toKeyframeValue, getEasing } from '../../utils';
 
-const SHAPES: Record<ShapeScroll['shape'], { start: Record<EffectPower, string>; end: string }> = {
-  diamond: {
-    start: {
-      soft: 'polygon(50% 20%, 80% 50%, 50% 80%, 20% 50%)',
-      medium: 'polygon(50% 40%, 60% 50%, 50% 60%, 40% 50%)',
-      hard: 'polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)',
-    },
-    end: 'polygon(50% -50%, 150% 50%, 50% 150%, -50% 50%)',
-  },
-  window: {
-    start: {
-      soft: 'inset(20% round 50% 50% 0% 0%)',
-      medium: 'inset(35% round 50% 50% 0% 0%)',
-      hard: 'inset(50% round 50% 50% 0% 0%)',
-    },
-    end: 'inset(-20% round 50% 50% 0% 0%)',
-  },
-  rectangle: {
-    start: {
-      soft: 'inset(20%)',
-      medium: 'inset(50%)',
-      hard: 'inset(80%)',
-    },
-    end: 'inset(0%)',
-  },
-  circle: {
-    start: {
-      soft: 'circle(40%)',
-      medium: 'circle(25%)',
-      hard: 'circle(0%)',
-    },
-    end: 'circle(75%)',
-  },
-  ellipse: {
-    start: {
-      soft: 'ellipse(50% 50%)',
-      medium: 'ellipse(30% 30%)',
-      hard: 'ellipse(0% 0%)',
-    },
-    end: 'ellipse(75% 75%)',
-  },
-};
-
-const RESPONSIVE_SHAPES_MAP = {
+const RESPONSIVE_SHAPES_MAP: Record<
+  ShapeType,
+  (clipFactor: number) => [string, string] | string[]
+> = {
   diamond: (clipFactor: number) => {
     const clip = clipFactor / 2;
     const clipNeg = 100 - clip;
@@ -81,9 +41,9 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { power, intensity = 0.5, range = 'in' } = options.namedEffect as ShapeScroll;
+  const { intensity = 0.5, range = 'in' } = options.namedEffect as ShapeScroll;
   let { shape = 'circle' } = options.namedEffect as ShapeScroll;
-  if (!(shape in SHAPES)) {
+  if (!(shape in RESPONSIVE_SHAPES_MAP)) {
     shape = 'circle';
   }
 
@@ -91,10 +51,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const [start, end] =
-    power && SHAPES[shape].start[power]
-      ? [SHAPES[shape].start[power], SHAPES[shape].end]
-      : RESPONSIVE_SHAPES_MAP[shape](intensity * 100);
+  const [start, end] = RESPONSIVE_SHAPES_MAP[shape](intensity * 100);
 
   const [shapeScroll] = getNames(options);
 

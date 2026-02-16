@@ -455,12 +455,14 @@ const bg3D: BgFake3D = {
 // Length with unit
 type Length = {
   value: number;
-  type: 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
+  unit: 'px' | 'em' | 'rem' | 'vh' | 'vw' | 'vmin' | 'vmax';
 };
 
 // Percentage
 type Percentage = {
   value: number;
+  unit: 'percentage';
+};
   type: 'percentage';
 };
 

@@ -5,7 +5,7 @@ The `Interact` class is the main entry point for managing interactions in your a
 ## Import
 
 ```typescript
-// Web entry point with automatic custom-eleemnt registration
+// Web entry point with automatic custom-element registration
 import { Interact } from '@wix/interact/web';
 
 // React entry point
@@ -20,19 +20,23 @@ import { Interact } from '@wix/interact';
 ```typescript
 class Interact {
   // Static methods
-  static create(config: InteractConfig): Interact
-  static getInstance(key: string): Interact | undefined
-  static destroy(): void
-  static setup(options: { forceReducedMotion?: boolean, ... }): void
-  static registerEffects(effects: Record<string, NamedEffect>): void
-  static getController(key: string): IInteractController | undefined
-
+  static create(config: InteractConfig, options?: { useCutsomElement?: boolean }): Interact;
+  static getInstance(key: string): Interact | undefined;
+  static destroy(): void;
+  static setup(options: {
+    scrollOptionsGetter?: () => Partial<scrollConfig>;
+    pointerOptionsGetter?: () => Partial<PointerConfig>;
+    viewEnter?: Partial<ViewEnterParams>;
+    allowA11yTriggers?: boolean;
+  }): void;
+  static registerEffects(effects: Record<string, NamedEffect>): void;
+  static getController(key: string | undefined): IInteractionController | undefined;
 
   // Instance methods
-  init(config: InteractConfig): void
-  destroy(): void
-  has(key: string): boolean
-  get(key: string): CachedInteractionData | undefined
+  init(config: InteractConfig, options?: { useCutsomElement?: boolean }): void;
+  destroy(): void;
+  has(key: string): boolean;
+  get(key: string): InteractCache['interactions'][string] | undefined;
 }
 ```
 
@@ -125,22 +129,29 @@ Configures global settings for the Interact system.
 
 **Parameters:**
 
-- `options: { forceReducedMotion?: boolean, viewEnter?: object, viewProgress?: object, pointerMove?: object, allowA11yTriggers?: boolean}`
+- `options.scrollOptionsGetter` - Optional callback returning default partial scroll config for `viewProgress` trigger
+- `options.pointerOptionsGetter` - Optional callback returning default partial pointer config for `pointerMove` trigger
+- `options.viewEnter` - Optional default partial `ViewEnterParams` (e.g. `threshold`, `inset`, `useSafeViewEnter`)
+- `options.allowA11yTriggers` - When `true`, `click` and `hover` triggers also respond to keyboard (Enter/Space) and focus
+
+To force reduced motion globally, set `Interact.forceReducedMotion = true` (static property, not via `setup`).
 
 **Example:**
 
 ```typescript
-// Force reduced motion globally
-Interact.setup({
-  forceReducedMotion: true,
-});
-
-// Configure trigger-specific options
+// Configure viewEnter defaults
 Interact.setup({
   viewEnter: { threshold: 0.5 },
-  viewProgress: {
-    /* scroll options */
-  },
+});
+
+// Provide scroll/pointer options via getters
+Interact.setup({
+  scrollOptionsGetter: () => ({
+    /* scroll config */
+  }),
+  pointerOptionsGetter: () => ({
+    /* pointer config */
+  }),
 });
 
 // Enable accessibility for click and hover triggers

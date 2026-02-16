@@ -1,11 +1,14 @@
-import type { TimeAnimationOptions, FloatIn } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import type { TimeAnimationOptions, FloatIn, EffectFourDirections } from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'left';
 
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-floatIn'];
+  return ['motion-floatIn', 'motion-fadeIn'];
 }
 
-const PARAMS_MAP = {
+const DIRECTION_MAP = {
   top: { dx: 0, dy: -1, distance: 120 },
   right: { dx: 1, dy: 0, distance: 120 },
   bottom: { dx: 0, dy: 1, distance: 120 },
@@ -17,9 +20,10 @@ export function web(options: TimeAnimationOptions) {
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'left' } = options.namedEffect as FloatIn;
-  const [floatIn] = getNames(options);
-  const fromParams = PARAMS_MAP[direction];
+  const namedEffect = options.namedEffect as FloatIn;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+  const [floatIn, fadeIn] = getNames(options);
+  const fromParams = DIRECTION_MAP[direction];
 
   const translateX = fromParams.dx * fromParams.distance;
   const translateY = fromParams.dy * fromParams.distance;
@@ -29,21 +33,16 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
     '--motion-translate-y': `${translateY}px`,
   };
 
+  const easing = 'sineInOut';
+
   return [
     {
       ...options,
       name: floatIn,
-      easing: 'sineInOut',
+      easing,
       custom,
       keyframes: [
         {
-          offset: 0,
-          opacity: 0,
-          easing: 'step-end',
-        },
-        {
-          offset: INITIAL_FRAME_OFFSET,
-          opacity: 0,
           transform: `translate(${toKeyframeValue(
             custom,
             '--motion-translate-x',
@@ -52,13 +51,19 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-translate-y',
             asWeb,
-          )}) rotate(var(--comp-rotate-z, 0deg))`,
+          )}) rotate(var(--motion-rotate, 0deg))`,
         },
         {
-          opacity: 'var(--comp-opacity, 1)',
-          transform: 'translate(0, 0) rotate(var(--comp-rotate-z, 0deg))',
+          transform: 'translate(0, 0) rotate(var(--motion-rotate, 0deg))',
         },
       ],
+    },
+    {
+      ...options,
+      name: fadeIn,
+      easing,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
   ];
 }

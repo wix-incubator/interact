@@ -33,10 +33,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -76,10 +76,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 1), var(--motion-scale-y, 0))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 1), var(--motion-scale-y, 0))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -120,10 +120,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -147,7 +147,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',
@@ -178,10 +178,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -206,7 +206,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',
@@ -237,10 +237,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 1), var(--motion-scale-y, 0))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 1), var(--motion-scale-y, 0))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },
@@ -266,7 +266,7 @@ describe('WinkIn', () => {
         name: 'motion-fadeIn',
         easing: 'quadOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-winkInClip',
@@ -297,10 +297,10 @@ describe('WinkIn', () => {
         keyframes: [
           {
             transform:
-              'rotate(var(--comp-rotate-z, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
+              'rotate(var(--motion-rotate, 0deg)) scale(var(--motion-scale-x, 0), var(--motion-scale-y, 1))',
           },
           {
-            transform: 'rotate(var(--comp-rotate-z, 0deg)) scale(1, 1)',
+            transform: 'rotate(var(--motion-rotate, 0deg)) scale(1, 1)',
           },
         ],
       },

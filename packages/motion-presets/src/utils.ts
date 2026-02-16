@@ -4,10 +4,7 @@ import type {
   EffectScrollRange,
   Point,
   ScrubTransitionEasing,
-  DomApi,
 } from '@wix/motion';
-
-export const INITIAL_FRAME_OFFSET = 1e-6;
 
 export type Direction =
   | 'initial'
@@ -116,6 +113,12 @@ export function getClipPolygonParams({
 export const INITIAL_CLIP = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
 export const FOUR_DIRECTIONS: EffectFourDirections[] = ['bottom', 'left', 'top', 'right'];
 
+export function getOppositeDirection<T>(availableDirections: T[], direction: T) {
+  const index = Math.max(0, availableDirections.indexOf(direction));
+  const length = availableDirections.length;
+  return availableDirections[(index + (length >> 1)) % length];
+}
+
 export function getRevealClipFrom(direction: EffectFourDirections, range: EffectScrollRange) {
   return range === 'out'
     ? INITIAL_CLIP
@@ -132,50 +135,6 @@ export function getRevealClipTo(direction: EffectFourDirections, range: EffectSc
       });
 }
 
-export function applyRotationAdjustedClip(
-  dom: DomApi,
-  direction: EffectFourDirections,
-  range: EffectScrollRange,
-) {
-  dom.measure((target) => {
-    if (!target) {
-      return;
-    }
-
-    const rotation = parseInt(
-      getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0',
-      10,
-    );
-    dom.mutate(() => {
-      const adjDirection = getAdjustedDirection(
-        FOUR_DIRECTIONS,
-        direction,
-        rotation,
-      ) as EffectFourDirections;
-      target.style.setProperty('--motion-clip-from', getRevealClipFrom(adjDirection, range));
-      target.style.setProperty('--motion-clip-to', getRevealClipTo(adjDirection, range));
-    });
-  });
-}
-
-export function getAdjustedDirection(
-  availableDirections: string[],
-  direction: string,
-  angleInDeg: number,
-) {
-  const index = availableDirections.indexOf(direction);
-  const length = availableDirections.length;
-  const shiftBy = Math.round(((angleInDeg || 0) / 360) * length);
-  const newIndex = (index + (length - 1) * shiftBy) % length;
-  return availableDirections[newIndex];
-}
-
-export function getOppositeDirection<T>(availableDirections: T[], direction: T) {
-  const index = Math.max(0, availableDirections.indexOf(direction));
-  const length = availableDirections.length;
-  return availableDirections[(index + (length >> 1)) % length];
-}
-
 export function transformPolarToXY(angle: number, distance: number) {
   const radians = (angle * Math.PI) / 180;
   const x = Math.cos(radians) * distance;
@@ -183,8 +142,8 @@ export function transformPolarToXY(angle: number, distance: number) {
   return [x, y];
 }
 
-export function getCssUnits(type: 'percentage' | string) {
-  return type === 'percentage' ? '%' : type || 'px';
+export function getCssUnits(unit: 'percentage' | string) {
+  return unit === 'percentage' ? '%' : unit || 'px';
 }
 
 export function getEasing(easing?: keyof typeof cssEasings | string): string {
@@ -197,8 +156,8 @@ export function getJsEasing(
   return easing ? jsEasings[easing as keyof typeof jsEasings] : undefined;
 }
 
-export function getCssUnitValue(length: { value: number; type: string }) {
-  return `${length.value}${getCssUnits(length.type)}`;
+export function getCssUnitValue(length: { value: number; unit: string }) {
+  return `${length.value}${getCssUnits(length.unit)}`;
 }
 
 export function getEasingFamily(easing: string) {
@@ -421,4 +380,121 @@ export function getTimingFactor(
   const delay_ = delay || 0;
   const timingFactor = roundNumber(duration_ / (duration_ + delay_));
   return asString ? timingFactor.toString().replace(/\./g, '') : timingFactor;
+}
+
+export type LengthValue = { value: number; unit: string };
+export type LengthInput =
+  | string
+  | number
+  | LengthValue
+  | { value: number; unit?: string }
+  | undefined;
+
+const CSS_UNIT_REGEX = /^(-?\d*\.?\d+)(px|%|em|rem|vw|vh|vmin|vmax|ch|ex|cm|mm|in|pt|pc)$/i;
+
+/**
+ * Normalize unit string to internal format
+ */
+function normalizeUnit(unit: string): string {
+  const lower = unit.toLowerCase();
+  return lower === '%' ? 'percentage' : lower;
+}
+
+/**
+ * Parse length value from number, string, or object format
+ * @param input - Number, String (e.g., "100px", "50%", "100"), or object { value, type }
+ * @param defaultValue - Fallback value if input is invalid
+ * @returns Normalized length object { value, type }
+ */
+export function parseLength(input: LengthInput, defaultValue: LengthValue): LengthValue {
+  if (input === undefined || input === null) {
+    return defaultValue;
+  }
+
+  // Handle number input - use default unit type
+  if (typeof input === 'number') {
+    return { value: input, unit: defaultValue.unit };
+  }
+
+  // Handle object input { value, unit }
+  if (typeof input === 'object' && 'value' in input && 'unit' in input) {
+    const value = typeof input.value === 'string' ? parseFloat(input.value) : input.value;
+    if (typeof value === 'number' && !isNaN(value) && typeof input.unit === 'string') {
+      return { value, unit: normalizeUnit(input.unit) };
+    }
+    return defaultValue;
+  }
+
+  // Handle string input
+  if (typeof input === 'string') {
+    const trimmed = input.trim();
+
+    // Try parsing as number + unit (e.g., "100px", "50%")
+    const match = trimmed.match(CSS_UNIT_REGEX);
+    if (match) {
+      return { value: parseFloat(match[1]), unit: normalizeUnit(match[2]) };
+    }
+
+    // Try parsing as plain number string (e.g., "100", "100.5")
+    if (trimmed !== '') {
+      const numValue = Number(trimmed);
+      if (!isNaN(numValue)) {
+        return { value: numValue, unit: defaultValue.unit };
+      }
+    }
+  }
+
+  return defaultValue;
+}
+
+export type DirectionKeywords = readonly string[];
+
+/**
+ * Parse direction value from keyword, number (degrees), or string with "deg" suffix
+ * @param input - String keyword, number, or "45deg" string
+ * @param allowedKeywords - Array of valid keyword strings for this preset
+ * @param defaultValue - Fallback value if input is invalid
+ * @param acceptAngles - Whether to accept numeric angle values (default: false)
+ * @returns Normalized direction value (number for angles, string for keywords)
+ */
+export function parseDirection<T extends string | number>(
+  input: string | number | undefined,
+  allowedKeywords: DirectionKeywords,
+  defaultValue: T,
+  acceptAngles = false,
+): T {
+  if (input === undefined || input === null) {
+    return defaultValue;
+  }
+
+  if (typeof input === 'number') {
+    return acceptAngles ? (input as T) : defaultValue;
+  }
+
+  if (typeof input === 'string') {
+    const trimmed = input.trim().toLowerCase();
+
+    // Check if it's a valid keyword
+    if (allowedKeywords.includes(trimmed)) {
+      return trimmed as T;
+    }
+
+    if (acceptAngles) {
+      // Check if it's a degree string (e.g., "45deg", "90DEG")
+      const degMatch = trimmed.match(/^(-?\d*\.?\d+)deg$/i);
+      if (degMatch) {
+        return parseFloat(degMatch[1]) as T;
+      }
+
+      // Check if it's just a number as string
+      if (trimmed !== '') {
+        const numValue = Number(trimmed);
+        if (!isNaN(numValue)) {
+          return numValue as T;
+        }
+      }
+    }
+  }
+
+  return defaultValue;
 }

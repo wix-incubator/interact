@@ -44,7 +44,7 @@ describe('SpinIn', () => {
       namedEffect: {
         direction: 'counter-clockwise',
         spins: 2,
-        power: 'soft',
+        initialScale: 1,
       } as SpinInType,
     };
 
@@ -83,7 +83,7 @@ describe('SpinIn', () => {
         easing: 'cubicIn',
         duration: 0,
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-spinIn',
@@ -120,7 +120,7 @@ describe('SpinIn', () => {
       namedEffect: {
         direction: 'counter-clockwise',
         spins: 2,
-        power: 'soft',
+        initialScale: 1,
       } as SpinInType,
     };
 
@@ -130,7 +130,7 @@ describe('SpinIn', () => {
         easing: 'cubicIn',
         duration: 1000,
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-spinIn',

@@ -5,6 +5,7 @@ dist/
 build/
 coverage/
 .DS_Store
+.idea/
 *.log
 pnpm-lock.yaml
 .yarn/

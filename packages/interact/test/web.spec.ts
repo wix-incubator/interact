@@ -254,7 +254,7 @@ describe('interact (web)', () => {
       'logo-track-mouse': {
         namedEffect: {
           type: 'TrackMouse',
-          distance: { value: 20, type: 'px' },
+          distance: { value: 20, unit: 'px' },
           axis: 'both',
           power: 'medium',
         } as NamedEffect,
@@ -279,11 +279,11 @@ describe('interact (web)', () => {
         } as NamedEffect,
         rangeStart: {
           name: 'contain',
-          offset: { value: -10, type: 'percentage' },
+          offset: { value: -10, unit: 'percentage' },
         },
         rangeEnd: {
           name: 'contain',
-          offset: { value: 110, type: 'percentage' },
+          offset: { value: 110, unit: 'percentage' },
         },
       },
       'logo-transition-hover': {
@@ -2080,7 +2080,7 @@ describe('interact (web)', () => {
         add(targetElement, 'invalid-target');
 
         expect(consoleSpy).toHaveBeenCalledWith(
-          'Interact: No element found for selector ".non-existent-element"',
+          'Interact: No elements found for selector ".non-existent-element"',
         );
       });
 

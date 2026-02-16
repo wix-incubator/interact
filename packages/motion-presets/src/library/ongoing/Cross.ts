@@ -1,5 +1,17 @@
-import type { Cross, DomApi, TimeAnimationOptions, AnimationExtraOptions } from '../../types';
-import { getElementOffset, getTimingFactor } from '../../utils';
+import { EIGHT_DIRECTIONS } from '../../consts';
+import type {
+  AnimationExtraOptions,
+  Cross,
+  DomApi,
+  EffectEightDirections,
+  HorizontalOffsetByDirectionParams,
+  OffsetByDirectionParams,
+  TimeAnimationOptions,
+  VerticalOffsetByDirectionParams,
+} from '../../types';
+import { getElementOffset, getTimingFactor, parseDirection } from '../../utils';
+
+const DEFAULT_DIRECTION: EffectEightDirections = 'right';
 
 const FOUR_DIRECTIONS_TRANSLATIONS = {
   // 100cqw - left
@@ -58,20 +70,6 @@ const TRANSLATE_BY_DIRECTION_MAP = {
     to: `0 ${BOTTOM}`,
   },
 };
-
-type HorizontalOffsetByDirectionParams = {
-  left: number;
-  width: number;
-  parentWidth: number;
-};
-
-type VerticalOffsetByDirectionParams = {
-  top: number;
-  height: number;
-  parentHeight: number;
-};
-
-type OffsetByDirectionParams = HorizontalOffsetByDirectionParams & VerticalOffsetByDirectionParams;
 
 const GET_OFFSET_BY_DIRECTION_MAP = {
   // (width + left) / (100cqw + width)
@@ -167,7 +165,8 @@ function generateTranslate(direction: keyof typeof FOUR_CORNERS_TRANSLATIONS) {
 }
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, dom?: DomApi) {
-  const { direction = 'right' } = options.namedEffect as Cross;
+  const namedEffect = options.namedEffect as Cross;
+  const direction = parseDirection(namedEffect?.direction, EIGHT_DIRECTIONS, DEFAULT_DIRECTION);
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;

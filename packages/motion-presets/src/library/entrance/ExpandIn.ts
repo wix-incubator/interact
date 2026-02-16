@@ -1,95 +1,91 @@
-import type { DomApi, ExpandIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import type { TimeAnimationOptions } from '../../types';
+import { getCssUnits, toKeyframeValue, parseLength, parseDirection } from '../../utils';
+import type { ExpandIn } from '../../types';
+import { FOUR_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION = 90;
+const DEFAULT_DISTANCE = { value: 120, unit: 'percentage' };
+const DIRECTION_KEYWORD_TO_ANGLE: Record<string, number> = {
+  top: 90,
+  right: 0,
+  bottom: 270,
+  left: 180,
+};
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-expandIn'];
 }
 
-const SCALE_MAP = {
-  soft: 0.8,
-  medium: 0.6,
-  hard: 0,
-};
-
-const TRANSFORM_ORIGIN_MAP = {
-  top: { x: 0, y: -0.5 },
-  'top-right': { x: 0.5, y: -0.5 },
-  right: { x: 0.5, y: 0 },
-  'bottom-right': { x: 0.5, y: 0.5 },
-  bottom: { x: 0, y: 0.5 },
-  'bottom-left': { x: -0.5, y: 0.5 },
-  left: { x: -0.5, y: 0 },
-  'top-left': { x: -0.5, y: -0.5 },
-  center: { x: 0, y: 0 },
-};
-
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { power, initialScale = 0, direction = 'center' } = options.namedEffect as ExpandIn;
+  const namedEffect = options.namedEffect as ExpandIn;
+  const { initialScale = 0 } = namedEffect;
+
+  const parsedDirection = parseDirection(
+    namedEffect?.direction,
+    FOUR_DIRECTIONS,
+    DEFAULT_DIRECTION,
+    true,
+  );
+  const direction =
+    typeof parsedDirection === 'string'
+      ? DIRECTION_KEYWORD_TO_ANGLE[parsedDirection]
+      : parsedDirection;
+
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+
   const [fadeIn, expandIn] = getNames(options);
 
   const easing = options.easing || 'cubicInOut';
-  const scale_ = power && power in SCALE_MAP ? SCALE_MAP[power] : initialScale;
-  const { x, y } = TRANSFORM_ORIGIN_MAP[direction];
+  const angleInRad = (direction * Math.PI) / 180;
+  const unit = getCssUnits(distance.unit);
+
+  const x = `${(Math.cos(angleInRad) * distance.value) | 0}${unit}`;
+  const y = `${(Math.sin(angleInRad) * distance.value * -1) | 0}${unit}`;
 
   const custom = {
-    '--motion-translate-x': x,
-    '--motion-translate-y': y,
-    '--motion-scale': scale_,
+    '--motion-translate-x': `${x}`,
+    '--motion-translate-y': `${y}`,
+    '--motion-scale': `${initialScale}`,
   };
-
-  const transX = toKeyframeValue(custom, '--motion-translate-x', asWeb);
-  const transY = toKeyframeValue(custom, '--motion-translate-y', asWeb);
-  const scale = toKeyframeValue(custom, '--motion-scale', asWeb);
 
   return [
     {
       ...options,
+      easing,
+      duration: options.duration! * 0.7,
       name: fadeIn,
-      easing: 'linear',
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
-      name: expandIn,
       easing,
+      name: expandIn,
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
-          transform: `translateX(calc(var(--motion-width, 100%) * ${transX})) translateY(calc(var(--motion-height, 100%) * ${transY})) scale(${scale}) translateX(calc(var(--motion-width, 100%) * -1 * ${transX})) translateY(calc(var(--motion-height, 100%) * -1 * ${transY}))  rotate(var(--comp-rotate-z, 0deg))`,
+          transform: `translate(${toKeyframeValue(
+            custom,
+            '--motion-translate-x',
+            asWeb,
+          )}, ${toKeyframeValue(
+            custom,
+            '--motion-translate-y',
+            asWeb,
+          )}) rotate(var(--motion-rotate, 0deg)) scale(${toKeyframeValue(
+            custom,
+            '--motion-scale',
+            asWeb,
+          )})`,
         },
         {
-          transform: `translateX(calc(var(--motion-width, 100%) * ${transX})) translateY(calc(var(--motion-height, 100%) * ${transY})) scale(1) translateX(calc(var(--motion-width, 100%) * -1 * ${transX})) translateY(calc(var(--motion-height, 100%) * -1 * ${transY})) rotate(var(--comp-rotate-z, 0deg))`,
+          transform: 'translate(0px, 0px) rotate(var(--motion-rotate, 0deg)) scale(1)',
         },
       ],
     },
   ];
-}
-
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let width: number, height: number;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rect = target.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-width', `${width}px`);
-      target?.style.setProperty('--motion-height', `${height}px`);
-    });
-  }
 }

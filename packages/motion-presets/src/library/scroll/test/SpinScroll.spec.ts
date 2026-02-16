@@ -18,10 +18,10 @@ describe('SpinScroll', () => {
           easing: 'linear',
           keyframes: [
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + -54deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -42,10 +42,10 @@ describe('SpinScroll', () => {
         {
           keyframes: [
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -180deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + -180deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -66,10 +66,10 @@ describe('SpinScroll', () => {
         {
           keyframes: [
             {
-              transform: 'scale(0.5) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
+              transform: 'scale(0.5) rotate(calc(var(--motion-rotate, 0deg) + -54deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -90,82 +90,10 @@ describe('SpinScroll', () => {
         {
           keyframes: [
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 54deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
-            },
-            {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - medium', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform: 'scale(0.7) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
-            },
-            {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - hard', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform: 'scale(0.4) rotate(calc(var(--comp-rotate-z, 0deg) + -54deg))',
-            },
-            {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
           ],
         },
@@ -187,10 +115,10 @@ describe('SpinScroll', () => {
           fill: 'forwards',
           keyframes: [
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 0deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 0deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 54deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 54deg))',
             },
           ],
         },
@@ -211,10 +139,10 @@ describe('SpinScroll', () => {
         {
           keyframes: [
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + -27deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + -27deg))',
             },
             {
-              transform: 'scale(1) rotate(calc(var(--comp-rotate-z, 0deg) + 27deg))',
+              transform: 'scale(1) rotate(calc(var(--motion-rotate, 0deg) + 27deg))',
             },
           ],
         },
@@ -240,11 +168,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },
@@ -266,11 +194,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },
@@ -292,11 +220,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },
@@ -318,89 +246,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - soft', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'soft' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
-            },
-            {
-              transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - medium', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'medium' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
-            },
-            {
-              transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
-            },
-          ],
-        },
-      ];
-
-      const result = SpinScroll.style(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('custom power - hard', () => {
-      const mockOptions: ScrubAnimationOptions = {
-        ...baseMockOptions,
-        namedEffect: { power: 'hard' } as SpinScrollType,
-      };
-
-      const expectedResult = [
-        {
-          keyframes: [
-            {
-              transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
-            },
-            {
-              transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },
@@ -423,11 +273,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },
@@ -449,11 +299,11 @@ describe('SpinScroll', () => {
           keyframes: [
             {
               transform:
-                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-from)))',
+                'scale(var(--motion-spin-scale-from)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-from)))',
             },
             {
               transform:
-                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--comp-rotate-z, 0deg) + var(--motion-spin-to)))',
+                'scale(var(--motion-spin-scale-to)) rotate(calc(var(--motion-rotate, 0deg) + var(--motion-spin-to)))',
             },
           ],
         },

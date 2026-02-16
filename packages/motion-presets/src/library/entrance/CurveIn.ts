@@ -1,8 +1,13 @@
 import type { CurveIn, TimeAnimationOptions, DomApi } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection, parseLength } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DEPTH = { value: 300, unit: 'px' };
+const DIRECTIONS = [...TWO_SIDES_DIRECTIONS, 'pseudoLeft', 'pseudoRight'] as const;
+const DEFAULT_DIRECTION: (typeof DIRECTIONS)[number] = 'right';
 
 export function getNames(_: TimeAnimationOptions) {
-  return ['motion-curveIn'];
+  return ['motion-curveIn', 'motion-fadeIn'];
 }
 
 const PARAMS_MAP = {
@@ -12,39 +17,39 @@ const PARAMS_MAP = {
   left: { rotationX: '0', rotationY: '-180' },
 };
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
+export function web(options: TimeAnimationOptions, _dom?: DomApi) {
   return style(options, true);
 }
 
 export function style(options: TimeAnimationOptions, asWeb = false) {
-  const { direction = 'right' } = options.namedEffect as CurveIn;
-  const [curveIn] = getNames(options);
+  const namedEffect = options.namedEffect as CurveIn;
+  const direction = parseDirection(namedEffect?.direction, DIRECTIONS, DEFAULT_DIRECTION);
+  const depth = parseLength(namedEffect.depth, DEFAULT_DEPTH);
+  const { perspective = 200 } = namedEffect;
+  const [curveIn, fadeIn] = getNames(options);
 
   const { rotationX, rotationY } = PARAMS_MAP[direction];
+  const depthValue = `${depth.value}${depth.unit === 'percentage' ? '%' : depth.unit}`;
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': `${rotationX}deg`,
     '--motion-rotate-y': `${rotationY}deg`,
+    '--motion-depth-negative': `calc(${depthValue} * -3)`,
+    '--motion-depth-positive': `calc(${depthValue} * 3)`,
   };
+
+  const easing = 'quadOut';
 
   return [
     {
       ...options,
       name: curveIn,
-      easing: 'quadOut',
+      easing,
       custom,
       keyframes: [
         {
-          offset: 0,
-          opacity: 0,
-          easing: 'step-end',
-        },
-        {
-          offset: INITIAL_FRAME_OFFSET,
-          opacity: 0,
-          transform: `perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(${toKeyframeValue(
             custom,
             '--motion-rotate-x',
             asWeb,
@@ -52,32 +57,19 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
             custom,
             '--motion-rotate-y',
             asWeb,
-          )}) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))`,
+          )}) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
         {
-          opacity: 'var(--comp-opacity, 1)',
-          transform:
-            'perspective(200px) translateZ(calc(var(--motion-width, 300px) * -3)) rotateX(0deg) rotateY(0deg) translateZ(calc(var(--motion-width, 300px) * 3)) rotateZ(var(--comp-rotate-z, 0deg))',
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateZ(${toKeyframeValue(custom, '--motion-depth-negative', asWeb)}) rotateX(0deg) rotateY(0deg) translateZ(${toKeyframeValue(custom, '--motion-depth-positive', asWeb)}) rotateZ(var(--motion-rotate, 0deg))`,
         },
       ],
     },
+    {
+      ...options,
+      name: fadeIn,
+      easing,
+      custom: {},
+      keyframes: [{ offset: 0, opacity: 0 }],
+    },
   ];
-}
-
-export function prepare(_: TimeAnimationOptions, dom?: DomApi) {
-  if (dom) {
-    let width: number;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      width = target.getBoundingClientRect().width;
-    });
-
-    dom.mutate((target) => {
-      target?.style.setProperty('--motion-width', `${width}px`);
-    });
-  }
 }

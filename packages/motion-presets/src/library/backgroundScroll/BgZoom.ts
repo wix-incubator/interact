@@ -78,11 +78,11 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       easing: 'linear',
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       keyframes: [
         {
@@ -100,11 +100,11 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       composite: isIn ? ('add' as const) : ('replace' as const),
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;
@@ -135,11 +135,11 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       easing: 'linear',
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return `calc(100svh + ${toKeyframeValue(measures, '--motion-comp-height', asWeb)})`;

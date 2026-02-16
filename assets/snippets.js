@@ -38,7 +38,6 @@ effects: [
 ]`,
   entrance: `trigger: 'viewEnter',
 effects: [{
-  fill: 'both', 
   keyframeEffect: {
     name: 'slideFromLeft',
     keyframes: [
@@ -141,6 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = d.getAttribute('data-snippet');
     if (snippets[id]) {
       d.textContent = snippets[id];
+      // Syntax highlight (highlight.js) after injecting text
+      d.classList.add('language-javascript');
+      if (window.hljs) window.hljs.highlightElement(d);
     }
   });
 

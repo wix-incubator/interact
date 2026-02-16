@@ -1,7 +1,7 @@
 import type { ScrubAnimationOptions, ParallaxScroll, AnimationFillMode, DomApi } from '../../types';
 import { toKeyframeValue } from '../../utils';
 
-const DEFAULT_SPEED = 0.5;
+const DEFAULT_PARALLAX_FACTOR = 0.5;
 
 export function getNames(_: ScrubAnimationOptions) {
   return ['motion-parallaxScroll'];
@@ -12,11 +12,12 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const { speed = DEFAULT_SPEED } = options.namedEffect as ParallaxScroll;
+  const namedEffect = options.namedEffect as ParallaxScroll;
+  const { parallaxFactor = DEFAULT_PARALLAX_FACTOR } = namedEffect;
   const easing = 'linear';
 
-  const start = `${-50 * speed}vh`;
-  const end = `${50 * speed}vh`;
+  const start = `${-50 * parallaxFactor}vh`;
+  const end = `${50 * parallaxFactor}vh`;
 
   const [parallaxScroll] = getNames(options);
 
@@ -40,14 +41,14 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             custom,
             '--motion-parallax-to',
             asWeb,
-          )})) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )})) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
         {
           transform: `translateY(${toKeyframeValue(
             custom,
             '--motion-parallax-to',
             asWeb,
-          )}) rotate(${toKeyframeValue({}, '--comp-rotate-z', false, '0')})`,
+          )}) rotate(${toKeyframeValue({}, '--motion-rotate', false, '0')})`,
         },
       ],
     },

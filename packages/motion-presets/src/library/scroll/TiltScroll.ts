@@ -1,15 +1,21 @@
-import type { AnimationFillMode, ScrubAnimationOptions, TiltScroll, DomApi } from '../../types';
+import type {
+  AnimationFillMode,
+  ScrubAnimationOptions,
+  TiltScroll,
+  DomApi,
+  EffectTwoSides,
+} from '../../types';
 import { cssEasings as easings } from '@wix/motion';
-import { toKeyframeValue } from '../../utils';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const MAX_Y_TRAVEL = 40;
-
 const [ROTATION_X, ROTATION_Y, ROTATION_Z] = [10, 25, 25];
+const DEFAULT_DIRECTION: EffectTwoSides = 'right';
 
-const TRANSLATE_Y_POWER_MAP = {
-  soft: 0,
-  medium: 0.5,
-  hard: 1,
+const DIRECTIONS_MAP = {
+  right: 1,
+  left: -1,
 };
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -21,21 +27,17 @@ export function web(options: ScrubAnimationOptions, _dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    power,
-    distance = 0,
-    range = 'in',
-    direction = 'right',
-  } = options.namedEffect as TiltScroll;
+  const namedEffect = options.namedEffect as TiltScroll;
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
+  const { parallaxFactor = 0, perspective = 400 } = namedEffect;
+  const { range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
   ) as AnimationFillMode;
 
-  const travelY =
-    MAX_Y_TRAVEL *
-    (power && power in TRANSLATE_Y_POWER_MAP ? TRANSLATE_Y_POWER_MAP[power] : distance);
-  const dir = direction === 'left' ? -1 : 1;
+  const travelY = MAX_Y_TRAVEL * parallaxFactor;
+  const dir = DIRECTIONS_MAP[direction];
 
   const from = {
     x: ROTATION_X * (range === 'out' ? 0 : -1),
@@ -56,6 +58,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const [tiltScrollTranslate, tiltScrollRotate] = getNames(options);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-tilt-y-from': `${from.transY}vh`,
     '--motion-tilt-y-to': `${to.transY}vh`,
     '--motion-tilt-x-from': `${from.x}deg`,
@@ -77,7 +80,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          transform: `perspective(400px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-from',
             asWeb,
@@ -88,7 +91,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
           )}) rotateY(${toKeyframeValue(custom, '--motion-tilt-y-rot-from', asWeb)})`,
         },
         {
-          transform: `perspective(400px) translateY(${toKeyframeValue(
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) translateY(${toKeyframeValue(
             custom,
             '--motion-tilt-y-to',
             asWeb,
@@ -113,7 +116,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
         {
           transform: `rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-tilt-z-from', asWeb)}))`,
@@ -121,7 +124,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
         {
           transform: `rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-tilt-z-to', asWeb)}))`,

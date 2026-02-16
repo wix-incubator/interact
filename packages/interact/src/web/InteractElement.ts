@@ -65,9 +65,11 @@ export function getInteractElement() {
 
       if (this._internals && !item) {
         if (method === 'toggle') {
-          this._internals.states.has(effectId)
-            ? this._internals.states.delete(effectId)
-            : this._internals.states.add(effectId);
+          if (this._internals.states.has(effectId)) {
+            this._internals.states.delete(effectId);
+          } else {
+            this._internals.states.add(effectId);
+          }
         } else if (method === 'add') {
           this._internals.states.add(effectId);
         } else if (method === 'remove') {

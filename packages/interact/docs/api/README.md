@@ -138,7 +138,7 @@ InteractConfig
 The `@wix/interact` package provides a declarative layer on top of `@wix/motion`. Effect definitions can include:
 
 - `keyframeEffect` - Raw keyframe animations
-- `namedEffect` - Pre-built animation effects from @wix/motion
+- `namedEffect` - Pre-built animation effects from @wix/motion-presets
 - `customEffect` - Custom animation functions with full control
 
 **Example Integration:**

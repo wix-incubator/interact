@@ -1,11 +1,8 @@
-import type { Spin, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getEasing, getTimingFactor, toKeyframeValue } from '../../utils';
+import type { AnimationExtraOptions, DomApi, Spin, TimeAnimationOptions } from '../../types';
+import { getEasing, getTimingFactor, toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS } from '../../consts';
 
-const POWER_EASING_MAP = {
-  soft: 'linear',
-  medium: 'quintInOut',
-  hard: 'backOut',
-};
+const DEFAULT_DIRECTION: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
 
 const DIRECTION_MAP = {
   clockwise: -1,
@@ -17,19 +14,20 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, direction = 'clockwise' } = options.namedEffect as Spin;
+  const namedEffect = options.namedEffect as Spin;
+  const direction = parseDirection(namedEffect?.direction, SPIN_DIRECTIONS, DEFAULT_DIRECTION);
 
   const duration = options.duration || 1;
   const delay = options.delay || 0;
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const easing = (power && POWER_EASING_MAP[power]) || options.easing || 'linear';
+  const easing = options.easing || 'linear';
 
   const transformRotate = (DIRECTION_MAP[direction] > 0 ? 1 : -1) * 360;
 
   const custom = {
-    '--motion-rotate-start': `calc(var(--comp-rotate-z, 0deg) + ${transformRotate}deg)`,
+    '--motion-rotate-start': `calc(var(--motion-rotate, 0deg) + ${transformRotate}deg)`,
   };
 
   return [
@@ -48,7 +46,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
         },
         {
           offset: timingFactor,
-          rotate: `var(--comp-rotate-z, 0deg)`,
+          rotate: `var(--motion-rotate, 0deg)`,
         },
       ],
     },

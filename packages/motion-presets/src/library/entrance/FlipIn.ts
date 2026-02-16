@@ -1,49 +1,42 @@
-import { getAdjustedDirection, INITIAL_FRAME_OFFSET } from '../../utils';
-import type { FlipIn, TimeAnimationOptions, DomApi } from '../../types';
+import { parseDirection, toKeyframeValue } from '../../utils';
+import type { EffectFourDirections, FlipIn, TimeAnimationOptions } from '../../types';
+import { FOUR_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'top';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-flipIn'];
 }
 
-const DIRECTIONS = ['top', 'right', 'bottom', 'left'];
-
-type Direction = (typeof DIRECTIONS)[number];
-
-const POWER_TO_ROTATE_MAP = {
-  soft: 45,
-  medium: 90,
-  hard: 270,
-};
-
-function getRotateFrom(direction: Direction, rotate: number) {
+function getRotateFrom(direction: EffectFourDirections, rotate: number) {
   return {
     x: ROTATE_MAP[direction].x * rotate,
     y: ROTATE_MAP[direction].y * rotate,
   };
 }
 
-const ROTATE_MAP: Record<Direction, { x: number; y: number }> = {
+const ROTATE_MAP: Record<EffectFourDirections, { x: number; y: number }> = {
   top: { x: 1, y: 0 },
   right: { x: 0, y: 1 },
   bottom: { x: -1, y: 0 },
   left: { x: 0, y: -1 },
 };
 
-export function web(options: TimeAnimationOptions, dom?: DomApi) {
-  prepare(options, dom);
-
-  return style(options);
+export function web(options: TimeAnimationOptions) {
+  return style(options, true);
 }
 
-export function style(options: TimeAnimationOptions) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
+export function style(options: TimeAnimationOptions, asWeb = false) {
+  const namedEffect = options.namedEffect as FlipIn;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+  const { initialRotate = 90, perspective = 800 } = namedEffect;
   const [fadeIn, flipIn] = getNames(options);
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
   const easing = options.easing || 'backOut';
 
-  const from = getRotateFrom(direction, rotate);
+  const from = getRotateFrom(direction, initialRotate);
 
   const custom = {
+    '--motion-perspective': `${perspective}px`,
     '--motion-rotate-x': `${from.x}deg`,
     '--motion-rotate-y': `${from.y}deg`,
   };
@@ -54,7 +47,7 @@ export function style(options: TimeAnimationOptions) {
       easing: 'quadOut',
       name: fadeIn,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -63,43 +56,12 @@ export function style(options: TimeAnimationOptions) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
-          transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(var(--motion-rotate-x , ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y , ${custom['--motion-rotate-y']}))`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotate(var(--motion-rotate, 0deg)) rotateX(var(--motion-rotate-x, ${custom['--motion-rotate-x']})) rotateY(var(--motion-rotate-y, ${custom['--motion-rotate-y']}))`,
         },
         {
-          transform: `perspective(800px) rotate(var(--comp-rotate-z, 0deg)) rotateX(0deg) rotateY(0deg)`,
+          transform: `perspective(${toKeyframeValue(custom, '--motion-perspective', asWeb)}) rotate(var(--motion-rotate, 0deg)) rotateX(0deg) rotateY(0deg)`,
         },
       ],
     },
   ];
-}
-
-export function prepare(options: TimeAnimationOptions, dom?: DomApi) {
-  const { direction = 'top', power, initialRotate = 90 } = options.namedEffect as FlipIn;
-
-  const rotate = (power && POWER_TO_ROTATE_MAP[power]) || initialRotate;
-
-  if (dom) {
-    let adjustedDirection: string = direction;
-
-    dom.measure((target) => {
-      if (!target) {
-        return;
-      }
-
-      const rotation = getComputedStyle(target).getPropertyValue('--comp-rotate-z') || '0deg';
-      adjustedDirection = getAdjustedDirection(
-        DIRECTIONS,
-        direction,
-        parseInt(rotation, 10),
-      ) as (typeof DIRECTIONS)[number];
-    });
-
-    dom.mutate((target) => {
-      const from = getRotateFrom(adjustedDirection, rotate);
-
-      target?.style.setProperty('--motion-rotate-x', `${from.x}deg`);
-      target?.style.setProperty('--motion-rotate-y', `${from.y}deg`);
-    });
-  }
 }

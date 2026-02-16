@@ -31,14 +31,14 @@ function getDirection(effect: AnimationData): KeyframeEffectOptions['direction']
 }
 
 function getLength(length: UnitLengthPercentage): string {
-  return `${length.value}${getCssUnits(length.type)}`;
+  return `${length.value}${getCssUnits(length.unit)}`;
 }
 
 function getRange(range: RangeOffset, add: string | undefined, isEnd?: boolean) {
   // according to the CSS spec if the end range is a <length> then it is calculated from the start of the named range
   // our model assumes that <length> in end range is calculated from the end of the named range
   return `${range.name || 'cover'} ${
-    isEnd && range.offset!.type !== 'percentage'
+    isEnd && range.offset!.unit !== 'percentage'
       ? `calc(100% + ${getLength(range.offset!)}${add ? ` + ${add}` : ''})`
       : add
         ? `calc(${getLength(range.offset!)} + ${add})`

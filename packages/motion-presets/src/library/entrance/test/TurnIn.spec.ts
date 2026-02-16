@@ -22,10 +22,10 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -36,62 +36,10 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn animation with bottom-right direction and soft power', () => {
+  test('TurnIn animation with bottom-right direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {},
-      {
-        easing: 'cubicInOut',
-        keyframes: [
-          {
-            transform: `translate(50%, 50%) rotate(50deg) translate(-50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
-          },
-          {
-            transform: `translate(50%, 50%) rotate(0deg) translate(-50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
-          },
-        ],
-      },
-    ];
-
-    const result = TurnIn.web(mockOptions);
-
-    expect(result).toMatchObject(expectedResult);
-  });
-
-  test('TurnIn animation with top-right direction and medium power', () => {
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: { direction: 'top-right', power: 'medium' } as TurnInType,
-    };
-
-    const expectedResult: Partial<AnimationData>[] = [
-      {},
-      {
-        easing: 'quintInOut',
-        keyframes: [
-          {
-            transform: `translate(50%, -50%) rotate(50deg) translate(-50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
-          },
-          {
-            transform: `translate(50%, -50%) rotate(0deg) translate(-50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
-          },
-        ],
-      },
-    ];
-
-    const result = TurnIn.web(mockOptions);
-
-    expect(result).toMatchObject(expectedResult);
-  });
-
-  test('TurnIn animation with bottom-left direction and hard power', () => {
-    const mockOptions = {
-      ...baseMockOptions,
-      namedEffect: { direction: 'bottom-left', power: 'hard' } as TurnInType,
+      namedEffect: { direction: 'bottom-right' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -100,10 +48,62 @@ describe('TurnIn', () => {
         easing: 'backOut',
         keyframes: [
           {
-            transform: `translate(-50%, 50%) rotate(-50deg) translate(50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, 50%) rotate(50deg) translate(-50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, 50%) rotate(0deg) translate(50%, -50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(50%, 50%) rotate(0deg) translate(-50%, -50%) rotate(var(--motion-rotate, 0deg))`,
+          },
+        ],
+      },
+    ];
+
+    const result = TurnIn.web(mockOptions);
+
+    expect(result).toMatchObject(expectedResult);
+  });
+
+  test('TurnIn animation with top-right direction', () => {
+    const mockOptions = {
+      ...baseMockOptions,
+      namedEffect: { direction: 'top-right' } as TurnInType,
+    };
+
+    const expectedResult: Partial<AnimationData>[] = [
+      {},
+      {
+        easing: 'backOut',
+        keyframes: [
+          {
+            transform: `translate(50%, -50%) rotate(50deg) translate(-50%, 50%) rotate(var(--motion-rotate, 0deg))`,
+          },
+          {
+            transform: `translate(50%, -50%) rotate(0deg) translate(-50%, 50%) rotate(var(--motion-rotate, 0deg))`,
+          },
+        ],
+      },
+    ];
+
+    const result = TurnIn.web(mockOptions);
+
+    expect(result).toMatchObject(expectedResult);
+  });
+
+  test('TurnIn animation with bottom-left direction', () => {
+    const mockOptions = {
+      ...baseMockOptions,
+      namedEffect: { direction: 'bottom-left' } as TurnInType,
+    };
+
+    const expectedResult: Partial<AnimationData>[] = [
+      {},
+      {
+        easing: 'backOut',
+        keyframes: [
+          {
+            transform: `translate(-50%, 50%) rotate(-50deg) translate(50%, -50%) rotate(var(--motion-rotate, 0deg))`,
+          },
+          {
+            transform: `translate(-50%, 50%) rotate(0deg) translate(50%, -50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -128,10 +128,10 @@ describe('TurnIn', () => {
         easing: customEasing,
         keyframes: [
           {
-            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(-50deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(-50%, -50%) rotate(0deg) translate(50%, 50%) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -155,7 +155,7 @@ describe('TurnIn', () => {
         duration: 600,
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-turnIn',
@@ -167,10 +167,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -181,10 +181,10 @@ describe('TurnIn', () => {
     expect(result).toMatchObject(expectedResult);
   });
 
-  test('TurnIn.style animation with bottom-right direction and soft power', () => {
+  test('TurnIn.style animation with bottom-right direction', () => {
     const mockOptions = {
       ...baseMockOptions,
-      namedEffect: { direction: 'bottom-right', power: 'soft' } as TurnInType,
+      namedEffect: { direction: 'bottom-right' } as TurnInType,
     };
 
     const expectedResult: Partial<AnimationData>[] = [
@@ -192,11 +192,11 @@ describe('TurnIn', () => {
         name: 'motion-fadeIn',
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-turnIn',
-        easing: 'cubicInOut',
+        easing: 'backOut',
         custom: {
           '--motion-origin': '50%, 50%',
           '--motion-origin-invert': '-50%, -50%',
@@ -204,10 +204,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },
@@ -231,7 +231,7 @@ describe('TurnIn', () => {
         name: 'motion-fadeIn',
         easing: 'sineIn',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-turnIn',
@@ -243,10 +243,10 @@ describe('TurnIn', () => {
         },
         keyframes: [
           {
-            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(var(--motion-rotate-z)) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
           {
-            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--comp-rotate-z, 0deg))`,
+            transform: `translate(var(--motion-origin)) rotate(0deg) translate(var(--motion-origin-invert)) rotate(var(--motion-rotate, 0deg))`,
           },
         ],
       },

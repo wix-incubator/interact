@@ -112,7 +112,11 @@ export class InteractionController {
     );
 
     if (method === 'toggle') {
-      currentEffects.has(effectId) ? currentEffects.delete(effectId) : currentEffects.add(effectId);
+      if (currentEffects.has(effectId)) {
+        currentEffects.delete(effectId);
+      } else {
+        currentEffects.add(effectId);
+      }
     } else if (method === 'add') {
       currentEffects.add(effectId);
     } else if (method === 'remove') {
@@ -168,6 +172,9 @@ export class InteractionController {
     });
 
     removeListItems(removedElements);
-    key && addListItems(this, listContainer, addedElements);
+
+    if (key) {
+      addListItems(this, listContainer, addedElements);
+    }
   }
 }

@@ -1,5 +1,14 @@
-import type { Poke, TimeAnimationOptions, DomApi, AnimationExtraOptions } from '../../types';
-import { getTimingFactor, toKeyframeValue, mapRange } from '../../utils';
+import type {
+  Poke,
+  TimeAnimationOptions,
+  DomApi,
+  AnimationExtraOptions,
+  EffectFourDirections,
+} from '../../types';
+import { getTimingFactor, toKeyframeValue, mapRange, parseDirection } from '../../utils';
+import { FOUR_DIRECTIONS } from '../../consts';
+
+const DEFAULT_DIRECTION: EffectFourDirections = 'right';
 
 const TRANSLATE_KEYFRAMES = [
   { keyframe: 17, translate: 7 },
@@ -11,11 +20,8 @@ const TRANSLATE_KEYFRAMES = [
   { keyframe: 100, translate: 0 },
 ];
 
-const POWER_TO_POKE_FACTOR_MAP = {
-  soft: 1,
-  medium: 2,
-  hard: 4,
-};
+const POKE_FACTOR_SOFT = 1;
+const POKE_FACTOR_HARD = 4;
 
 const DIRECTION_MAP = {
   top: { x: 0, y: -1 },
@@ -29,7 +35,9 @@ export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?
 }
 
 export function style(options: TimeAnimationOptions & AnimationExtraOptions, asWeb = false) {
-  const { power, intensity = 0.5, direction = 'right' } = options.namedEffect as Poke;
+  const namedEffect = options.namedEffect as Poke;
+  const direction = parseDirection(namedEffect?.direction, FOUR_DIRECTIONS, DEFAULT_DIRECTION);
+  const { intensity = 0.5 } = namedEffect;
 
   const duration = options.duration || 1;
   const delay = +(options.delay || 0);
@@ -37,15 +45,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
-  const responsivePokeFactor = mapRange(
-    0,
-    1,
-    POWER_TO_POKE_FACTOR_MAP.soft,
-    POWER_TO_POKE_FACTOR_MAP.hard,
-    intensity,
-  );
-
-  const pokeFactor = power ? POWER_TO_POKE_FACTOR_MAP[power] : responsivePokeFactor;
+  const pokeFactor = mapRange(0, 1, POKE_FACTOR_SOFT, POKE_FACTOR_HARD, intensity);
 
   // Create CSS custom properties for the poke configuration
   const custom: Record<string, string | number> = {

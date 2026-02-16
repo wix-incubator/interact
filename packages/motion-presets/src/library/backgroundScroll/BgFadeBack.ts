@@ -45,12 +45,12 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       part: 'BG_LAYER',
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       startOffsetAdd: '100vh',
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return `calc(100vh + ${toKeyframeValue(
@@ -75,12 +75,12 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       part: 'BG_LAYER',
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       startOffsetAdd: '100vh',
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return `calc(100vh + ${toKeyframeValue(

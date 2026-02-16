@@ -1,12 +1,20 @@
-import type { TurnScroll, ScrubAnimationOptions, DomApi, AnimationFillMode } from '../../types';
-import { toKeyframeValue } from '../../utils';
+import type {
+  AnimationFillMode,
+  DomApi,
+  EffectTwoSides,
+  ScrubAnimationOptions,
+  TurnScroll,
+} from '../../types';
+import { toKeyframeValue, parseDirection } from '../../utils';
+import { SPIN_DIRECTIONS, TWO_SIDES_DIRECTIONS } from '../../consts';
 
 const ELEMENT_ROTATION = 45;
+const DEFAULT_DIRECTION: EffectTwoSides = 'right';
+const DEFAULT_SPIN: (typeof SPIN_DIRECTIONS)[number] = 'clockwise';
 
-const POWER_MAP = {
-  soft: { scaleFrom: 1, scaleTo: 1 },
-  medium: { scaleFrom: 0.7, scaleTo: 1.3 },
-  hard: { scaleFrom: 0.4, scaleTo: 1.6 },
+const ROTATE_DIRECTION_MAP = {
+  clockwise: 1,
+  'counter-clockwise': -1,
 };
 
 export function getNames(_: ScrubAnimationOptions) {
@@ -35,13 +43,10 @@ export function web(options: ScrubAnimationOptions, dom?: DomApi) {
 }
 
 export function style(options: ScrubAnimationOptions, asWeb = false) {
-  const {
-    power,
-    spin = 'clockwise',
-    direction = 'right',
-    scale = 1,
-    range = 'in',
-  } = options.namedEffect as TurnScroll;
+  const namedEffect = options.namedEffect as TurnScroll;
+  const direction = parseDirection(namedEffect?.direction, TWO_SIDES_DIRECTIONS, DEFAULT_DIRECTION);
+  const spin = parseDirection(namedEffect?.spin, SPIN_DIRECTIONS, DEFAULT_SPIN);
+  const { scale = 1, range = 'in' } = namedEffect;
   const easing = 'linear';
   const fill = (
     range === 'out' ? 'forwards' : range === 'in' ? 'backwards' : options.fill
@@ -56,19 +61,16 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
   const endXLeft = `calc(100vw - ${toKeyframeValue({}, '--motion-left', false, '0px')})`;
   const [startX, endX] = direction === 'left' ? [startXLeft, endXLeft] : [endXLeft, startXLeft];
 
-  const rotate = spin === 'clockwise' ? ELEMENT_ROTATION : -1 * ELEMENT_ROTATION;
-
-  const { scaleFrom, scaleTo } =
-    power && POWER_MAP[power] ? POWER_MAP[power] : { scaleFrom: scale, scaleTo: scale };
+  const rotate = ELEMENT_ROTATION * ROTATE_DIRECTION_MAP[spin];
 
   const fromValues = {
     rotation: range === 'out' ? 0 : -rotate,
-    scale: range === 'out' ? 1 : scaleFrom,
+    scale: range === 'out' ? 1 : scale,
     translate: range === 'out' ? '0px' : startX,
   };
   const toValues = {
     rotation: range === 'in' ? 0 : rotate,
-    scale: range === 'in' ? 1 : range === 'continuous' ? scaleTo : scaleFrom,
+    scale: range === 'in' ? 1 : scale,
     translate: range === 'in' ? '0px' : endX,
   };
 
@@ -102,7 +104,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-turn-rotation-from', asWeb)}))`,
@@ -118,7 +120,7 @@ export function style(options: ScrubAnimationOptions, asWeb = false) {
             asWeb,
           )}) rotate(calc(${toKeyframeValue(
             {},
-            '--comp-rotate-z',
+            '--motion-rotate',
             false,
             '0deg',
           )} + ${toKeyframeValue(custom, '--motion-turn-rotation-to', asWeb)}))`,

@@ -1,19 +1,8 @@
-import { getCssUnits, getMouseTransitionEasing, mapRange } from '../../utils';
+import { getCssUnits, getMouseTransitionEasing, mapRange, parseLength } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  BlobMouse,
-  Progress,
-  EffectPower,
-  ScrubTransitionEasing,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, BlobMouse, Progress } from '../../types';
 
-const paramsMap: Record<EffectPower, { scale: number; easing: ScrubTransitionEasing }> = {
-  soft: { scale: 1.2, easing: 'easeOut' },
-  medium: { scale: 1.6, easing: 'easeOut' },
-  hard: { scale: 2.4, easing: 'easeOut' },
-};
+const DEFAULT_DISTANCE = { value: 200, unit: 'px' };
 
 class BlobMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -33,9 +22,9 @@ class BlobMouseAnimation extends CustomMouse {
         ? mapRange(0, 0.5, scale, 1, progressY)
         : mapRange(0.5, 1, 1, scale, progressY);
 
-    const units = getCssUnits(distance.type);
+    const units = getCssUnits(distance.unit);
 
-    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleX}, ${scaleY}) rotate(var(--comp-rotate-z, 0deg))`;
+    this.target.style.transform = `translateX(${translateX}${units}) translateY(${translateY}${units}) scale(${scaleX}, ${scaleY}) rotate(var(--motion-rotate, 0deg))`;
   }
 
   cancel() {
@@ -46,22 +35,18 @@ class BlobMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    power,
-    inverted = false,
-    distance = { value: 200, type: 'px' },
-    scale = 1.4,
-  } = options.namedEffect as BlobMouse;
+  const namedEffect = options.namedEffect as BlobMouse;
+  const { inverted = false, scale = 1.4 } = namedEffect;
+  const distance = parseLength(namedEffect.distance, DEFAULT_DISTANCE);
+
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
     distance,
-    scale: power ? paramsMap[power].scale : scale,
+    scale,
   };
 
   return (target: HTMLElement) => new BlobMouseAnimation(target, animationOptions);
