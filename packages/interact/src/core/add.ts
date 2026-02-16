@@ -262,6 +262,16 @@ function addEffectsForTarget(
 
     // use `some` to short-circuit after the first effect that matches the conditions
     effectVariations.some(({ effect, ...interaction }) => {
+      const interactionMql = getMediaQuery(
+        interaction.conditions || [],
+        instance!.dataCache.conditions,
+      );
+
+      if (interactionMql && !interactionMql.matches) {
+        // skip this effect if the interaction's media conditions don't match
+        return false;
+      }
+
       const effectId = (effect as EffectRef).effectId;
 
       const effectOptions = {
