@@ -38,7 +38,6 @@ effects: [
 ]`,
   entrance: `trigger: 'viewEnter',
 effects: [{
-  fill: 'both', 
   keyframeEffect: {
     name: 'slideFromLeft',
     keyframes: [
@@ -77,8 +76,8 @@ effects: [
     key: 'orbit-y',
     fill: 'both',
     // Updated range to cover full entry to exit
-    rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-    rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+    rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+    rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
     keyframeEffect: {
         name: 'rotateY',
         keyframes: [
@@ -91,8 +90,8 @@ effects: [
 {
     key: 'orbit-x',
     fill: 'both',
-    rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-    rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+    rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+    rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
     keyframeEffect: {
         name: 'rotateX',
         keyframes: [
@@ -106,8 +105,8 @@ effects: [
 {
     key: 'orbit-diag-1',
     fill: 'both',
-    rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-    rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+    rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+    rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
     keyframeEffect: {
         name: 'rotateDiag1',
         keyframes: [
@@ -120,8 +119,8 @@ effects: [
 {
     key: 'orbit-diag-2',
     fill: 'both',
-    rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-    rangeEnd: { name: 'exit', offset: { value: 100, type: 'percentage' } },
+    rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+    rangeEnd: { name: 'exit', offset: { value: 100, unit: 'percentage' } },
     keyframeEffect: {
         name: 'rotateDiag2',
         keyframes: [
@@ -141,6 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = d.getAttribute('data-snippet');
     if (snippets[id]) {
       d.textContent = snippets[id];
+      // Syntax highlight (highlight.js) after injecting text
+      d.classList.add('language-javascript');
+      if (window.hljs) window.hljs.highlightElement(d);
     }
   });
 

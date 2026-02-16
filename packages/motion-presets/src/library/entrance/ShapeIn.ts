@@ -1,5 +1,5 @@
 import type { Shape, ShapeIn, TimeAnimationOptions } from '../../types';
-import { INITIAL_FRAME_OFFSET, toKeyframeValue } from '../../utils';
+import { toKeyframeValue } from '../../utils';
 
 export function getNames(_: TimeAnimationOptions) {
   return ['motion-fadeIn', 'motion-shapeIn'];
@@ -42,7 +42,7 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       easing: 'quadOut',
       duration: options.duration! * 0.8,
       custom: {},
-      keyframes: [{ offset: 0, opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+      keyframes: [{ offset: 0, opacity: 0 }],
     },
     {
       ...options,
@@ -51,7 +51,6 @@ export function style(options: TimeAnimationOptions, asWeb = false) {
       custom,
       keyframes: [
         {
-          offset: INITIAL_FRAME_OFFSET,
           clipPath: toKeyframeValue(custom, '--motion-shape-start', asWeb),
         },
         {

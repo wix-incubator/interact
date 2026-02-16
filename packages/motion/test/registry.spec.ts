@@ -6,11 +6,9 @@ import type {
   AnimationEffectAPI,
   TimeAnimationOptions,
   AnimationExtraOptions,
-  ScrollEffectModule,
-  WebAnimationEffectFactory,
 } from '../src/types';
-import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
-import type { ScrubAnimationOptions } from '@wix/motion-presets/types';
+// import { FadeIn, SlideIn, FadeScroll } from '@wix/motion-presets';
+import type { ScrubAnimationOptions } from '../src/types';
 
 // Mock fastdom
 vi.mock('fastdom', () => ({
@@ -19,6 +17,60 @@ vi.mock('fastdom', () => ({
     mutate: vi.fn((fn) => fn()),
   },
 }));
+
+const FadeIn = {
+  style: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'fade-in',
+      keyframes: [{ opacity: 0 }, { opacity: 1 }],
+    },
+  ]),
+  web: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'fade-in',
+      keyframes: [{ opacity: 0 }, { opacity: 1 }],
+    },
+  ]),
+  getNames: vi.fn(() => ['fade-in']),
+};
+
+const SlideIn = {
+  style: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'slide-in',
+      keyframes: [{ transform: 'translateY(-100%)' }, { transform: 'translateY(0)' }],
+    },
+  ]),
+  web: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'slide-in',
+      keyframes: [{ transform: 'translateY(-100%)' }, { transform: 'translateY(0)' }],
+    },
+  ]),
+  getNames: vi.fn(() => ['slide-in']),
+};
+
+const FadeScroll = {
+  style: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'fade-scroll',
+      keyframes: [{ opacity: 1 }, { opacity: 0 }],
+    },
+  ]),
+  web: vi.fn((options: AnimationOptions) => [
+    {
+      ...options,
+      name: 'fade-scroll',
+      keyframes: [{ opacity: 1 }, { opacity: 0 }],
+    },
+  ]),
+  getNames: vi.fn(() => ['fade-scroll']),
+};
 
 describe('Registry Flow', () => {
   describe('registerEffects', () => {

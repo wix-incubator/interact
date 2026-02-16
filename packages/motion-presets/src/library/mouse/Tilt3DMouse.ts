@@ -1,22 +1,8 @@
-import { getMouseTransitionEasing, mapRange } from '../../utils';
+import { getMouseTransitionEasing, mapRange, parseDirection } from '../../utils';
 import { CustomMouse } from './CustomMouse';
-import {
-  ScrubAnimationOptions,
-  AnimationExtraOptions,
-  Tilt3DMouse,
-  Progress,
-  EffectPower,
-  ScrubTransitionEasing,
-} from '../../types';
+import { ScrubAnimationOptions, AnimationExtraOptions, Tilt3DMouse, Progress } from '../../types';
 
-const paramsMap: Record<
-  EffectPower,
-  { angle: number; perspective: number; easing: ScrubTransitionEasing }
-> = {
-  soft: { angle: 25, perspective: 1000, easing: 'easeOut' },
-  medium: { angle: 50, perspective: 500, easing: 'easeOut' },
-  hard: { angle: 85, perspective: 200, easing: 'easeOut' },
-};
+const DEFAULT_ANGLE = 5;
 
 class Tilt3DMouseAnimation extends CustomMouse {
   progress({ x: progressX, y: progressY }: Progress) {
@@ -26,7 +12,7 @@ class Tilt3DMouseAnimation extends CustomMouse {
     const rotateX = mapRange(0, 1, angle, -angle, progressY) * invert;
     const rotateY = mapRange(0, 1, -angle, angle, progressX) * invert;
 
-    this.target.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--comp-rotate-z, 0deg))`;
+    this.target.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotate(var(--motion-rotate, 0deg))`;
   }
 
   cancel() {
@@ -37,22 +23,18 @@ class Tilt3DMouseAnimation extends CustomMouse {
 
 export default function create(options: ScrubAnimationOptions & AnimationExtraOptions) {
   const { transitionDuration, transitionEasing } = options;
-  const {
-    power,
-    inverted = false,
-    angle = 5,
-    perspective = 800,
-  } = options.namedEffect as Tilt3DMouse;
+  const namedEffect = options.namedEffect as Tilt3DMouse;
+  const inverted = namedEffect.inverted ?? false;
+  const angle = parseDirection(namedEffect.angle, [], DEFAULT_ANGLE, true) as number;
+  const { perspective = 800 } = namedEffect;
   const invert = inverted ? -1 : 1;
   const animationOptions = {
     transition: transitionDuration
-      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(
-          power ? paramsMap[power].easing : transitionEasing,
-        )}`
+      ? `transform ${transitionDuration}ms ${getMouseTransitionEasing(transitionEasing)}`
       : '',
     invert,
-    angle: power ? paramsMap[power].angle : angle,
-    perspective: power ? paramsMap[power].perspective : perspective,
+    angle,
+    perspective,
   };
 
   return (target: HTMLElement) => new Tilt3DMouseAnimation(target, animationOptions);

@@ -302,6 +302,7 @@ The `viewEnter` trigger uses Intersection Observer to detect when elements enter
 - **`once`** (recommended): Triggers only when element first enters viewport
 - **`repeat`**: Triggers every time element enters viewport
 - **`alternate`**: Plays forward on enter, reverses on exit
+- **`state`**: Plays on enter, pauses on exit
 
 ### Real-World Example: Staggered Card Animation
 
@@ -393,8 +394,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { filter: 'grayscale(100%)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         },
         {
             key: 'foreground-text',
@@ -405,8 +406,8 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { opacity: '0', transform: 'scale(0.8)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }
@@ -428,14 +429,14 @@ The `viewProgress` trigger creates scroll-driven animations as elements move thr
                     { transform: 'scaleX(1)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } }
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } }
         }
     ]
 }
 ```
 
-## 8. PointerMove Trigger
+## 7. PointerMove Trigger
 
 The `pointerMove` trigger creates mouse-following effects and 3D interactions.
 
@@ -467,7 +468,8 @@ The `pointerMove` trigger creates mouse-following effects and 3D interactions.
     key: 'card-section',
     trigger: 'pointerMove',
     params: {
-        hitArea: 'self'  // 'self' | 'root'
+        hitArea: 'self',  // 'self' | 'root'
+        axis: 'y'         // 'x' | 'y' – scrub axis (default 'y')
     },
     effects: [
         {
@@ -508,7 +510,7 @@ The `pointerMove` trigger creates mouse-following effects and 3D interactions.
 }
 ```
 
-## 9. AnimationEnd Trigger
+## 8. AnimationEnd Trigger
 
 The `animationEnd` trigger allows you to chain animations by waiting for a previous animation to complete.
 

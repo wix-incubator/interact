@@ -19,36 +19,36 @@ When `@wix/interact` needs to determine which element to use (either as a trigge
     │ YES         │ NO
     ▼             ▼
 ┌───────────┐  ┌──────────────────────┐
-│ Find all  │  │ Is selector          │
-│ children  │  │ specified?           │
-│ of list   │  └──────┬───────────────┘
-│ container │         │
-└─────┬─────┘   ┌─────┴──────┐
-      │         │ YES        │ NO
-      │         ▼            ▼
-      │    ┌─────────┐  ┌─────────────────────┐
-      │    │ Query   │  │ Is root element an  │
-      │    │ selector│  │ interact-element    │
-      │    │ within  │  │ custom element?     │
-      │    │ element │  │                     │
-      │    └─────────┘  └───────┬─────────────┘
+│ Find list │  │ Is selector          │
+│ container │  │ specified?           │
+│ element   │  └──────┬───────────────┘
+│           │         │
+└─────┬─────┘   ┌─────┴───────────┐
+      │         │ YES             │ NO
+      │         ▼                 ▼
+      │    ┌──────────────┐  ┌─────────────────────┐
+      │    │ Query        │  │ Is root element an  │
+      │    │ selector all │  │ interact-element    │
+      │    │ within       │  │ custom element?     │
+      │    │ element      │  │                     │
+      │    └──────────────┘  └───────┬─────────────┘
       │                         │
       ▼                   ┌─────┴──────┐
 ┌─────────────┐           │ YES        │ NO
-│ Is selector |           ▼            ▼
-│ specified?  |    ┌─────────────┐ ┌─────────────┐
+│ Is selector │           ▼            ▼
+│ specified?  │    ┌─────────────┐ ┌─────────────┐
 └────────┬────┘    │ Use first   │ │ Use root    │
-         │         | child       | | element     |
-         │         | element     | |             |
+         │         │ child       │ │ element     │
+         │         │ element     │ │             │
          │         └─────────────┘ └─────────────┘
     ┌────┴───────────────┐
     │ YES                │ NO
     ▼                    ▼
 ┌─────────────┐      ┌───────────────┐
-| Query       |      │ Use each      │
-| selector    |      │ child element │
-| within each |      |               |
-| child       |      └───────────────┘
+│ Query       │      │ Use each      │
+│ selector    │      │ direct child  │
+│ all within  │      │ as item       │
+│ container   │      └───────────────┘
 └─────────────┘
 ```
 
@@ -61,8 +61,8 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 **Behavior:**
 
 - Finds the container element using the CSS selector
-- Targets all direct children of that container
-- If `selector` is also specified, applies it on each child or within each child
+- If `selector` is also specified, uses `querySelectorAll` within the container to find all matching elements as list items
+- If `selector` is not specified, targets all direct children of that container as list items
 
 **Example:**
 
@@ -70,7 +70,7 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 {
     key: 'gallery',
     listContainer: '.gallery-grid',     // Priority 1: Find this container
-    selector: '.gallery-item img',      // Then: Find img within each child
+    selector: '.gallery-item img',      // Then: Find all matching elements as list items
     trigger: 'hover',
     effects: [/* ... */]
 }
@@ -79,38 +79,37 @@ When `listContainer` is specified, it takes precedence over all other selectors.
 ```html
 <interact-element data-interact-key="gallery">
   <div class="gallery-grid">
-    <!-- listContainer targets this -->
+    <!-- listContainer targets this container -->
     <div class="gallery-item">
-      <!-- Each child is processed -->
       <img src="1.jpg" />
-      <!-- selector finds this -->
+      <!-- selector finds this as item 1 -->
     </div>
     <div class="gallery-item">
-      <!-- Each child is processed -->
       <img src="2.jpg" />
-      <!-- selector finds this -->
+      <!-- selector finds this as item 2 -->
     </div>
   </div>
 </interact-element>
 ```
 
-**Result:** Hover interactions apply to each `img` element within each gallery item.
+**Result:** Hover interactions apply to each `.gallery-item img` element found by `querySelectorAll` within the container.
 
 ### Priority 2: selector (Medium)
 
-When only `selector` is specified (no `listContainer`), it selects a single element within the `interact-element`.
+When only `selector` is specified (no `listContainer`), it selects all matching elements within the `interact-element`.
 
 **Behavior:**
 
-- Queries for the first matching element within the custom element
-- Uses `querySelector()` internally
+- Queries for all matching elements within the custom element
+- Uses `querySelectorAll()` internally
+- Each matched element receives the interaction/effect independently
 
 **Example:**
 
 ```typescript
 {
     key: 'card',
-    selector: '.card-image',    // Priority 2: Find this specific element
+    selector: '.card-image',    // Priority 2: Find all matching elements
     trigger: 'hover',
     effects: [/* ... */]
 }
@@ -129,7 +128,7 @@ When only `selector` is specified (no `listContainer`), it selects a single elem
 </interact-element>
 ```
 
-**Result:** Hover interaction applies only to `.card-image`.
+**Result:** Hover interaction applies to all `.card-image` elements.
 
 ### Priority 3: Root element or First Child (Fallback)
 
@@ -625,6 +624,7 @@ selector: 'div > div.card > div.image > img:first-child';
 <interact-element>
     <div>
         <span class="target"> ← Selected (matches selector)
+        <span class="target"> ← Selected (matches selector)
         <span class="other">Not selected</span>
     </div>
 </interact-element>
@@ -667,9 +667,9 @@ selector: 'div > div.card > div.image > img:first-child';
 
 **Use selector when:**
 
-- Need specific element within structure
-- Multiple potential targets
-- Element is nested
+- Need specific elements within structure
+- Multiple matching elements should receive the same interaction
+- Elements are nested
 
 **Use listContainer when:**
 

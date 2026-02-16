@@ -124,7 +124,7 @@ type Interaction = {
 
 - `key` - Unique identifier for the custom element that triggers the interaction
 - `trigger` - Type of trigger event
-- `selector` - Optional CSS selector to target an element within the custom element or within each list item if combined with `listContainer`
+- `selector` - Optional CSS selector to target elements. When `listContainer` is also specified, uses `querySelectorAll` within the container to find matching elements as list items. Without `listContainer`, uses `querySelectorAll` within the root element. For dynamically added list items, uses `querySelector` within each item.
 - `listContainer` - Optional selector for list container when targeting list items
 - `params` - Optional parameters for the trigger
 - `conditions` - Optional array of condition IDs to evaluate
@@ -161,16 +161,14 @@ Interface for the controller that manages interactions on an element. This is th
 
 ```typescript
 interface IInteractionController {
-  // Properties
   element: HTMLElement;
   key: string | undefined;
   connected: boolean;
   sheet: CSSStyleSheet | null;
-  _observers: WeakMap<HTMLElement, MutationObserver>;
+  useFirstChild: boolean;
 
-  // Methods
   connect(key?: string): void;
-  disconnect(): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
   update(): void;
   toggleEffect(
     effectId: string,
@@ -181,7 +179,6 @@ interface IInteractionController {
   getActiveEffects(): string[];
   renderStyle(cssRules: string[]): void;
   watchChildList(listContainer: string): void;
-  _childListChangeHandler(listContainer: string, entries: MutationRecord[]): void;
 }
 ```
 
@@ -189,14 +186,14 @@ interface IInteractionController {
 
 - `element` - The DOM element this controller manages
 - `key` - The unique identifier for this element's interactions
-- `connected` - Whether the controller is currently connected to the interaction system
+- `connected` - Whether the controller is currently connected
 - `sheet` - The adopted stylesheet for dynamic CSS rules
-- `_observers` - Internal storage for mutation observers
+- `useFirstChild` - When true, interaction target is the first child (e.g. custom elements)
 
 **Methods:**
 
 - `connect(key?)` - Connects the controller to the interaction system
-- `disconnect()` - Disconnects and cleans up all resources
+- `disconnect(options?)` - Disconnects and cleans up; `removeFromCache: true` removes from `Interact.controllerCache`
 - `update()` - Disconnects and reconnects (refreshes interactions)
 - `toggleEffect()` - Toggles a CSS state effect on the element
 - `getActiveEffects()` - Returns array of currently active effect IDs
@@ -232,7 +229,7 @@ interface IInteractElement extends HTMLElement {
   connectedCallback(): void;
   disconnectedCallback(): void;
   connect(key?: string): void;
-  disconnect(): void;
+  disconnect(options?: { removeFromCache?: boolean }): void;
   toggleEffect(effectId: string, method: StateParams['method'], item?: HTMLElement | null): void;
   getActiveEffects(): string[];
 }
@@ -362,19 +359,18 @@ type ViewEnterParams = {
   type?: ViewEnterType;
   threshold?: number;
   inset?: string;
+  useSafeViewEnter?: boolean;
 };
 
-type ViewEnterType = 'once' | 'repeat' | 'alternate';
+type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 ```
 
 **Properties:**
 
-- `type` - How the trigger behaves on repeated intersections
-  - `'once'` - Trigger only the first time (default)
-  - `'repeat'` - Trigger every time element enters viewport
-  - `'alternate'` - Alternate between enter/exit effects
+- `type` - How the trigger behaves: `'once'` (default), `'repeat'`, `'alternate'`, `'state'` (play on enter, pause on exit)
 - `threshold` - Percentage of element that must be visible (0-1)
 - `inset` - CSS-style inset to shrink the root intersection area
+- `useSafeViewEnter` - When true, handles elements taller than viewport
 
 **Examples:**
 
@@ -438,22 +434,25 @@ const hoverState: StateParams = {
 Parameters for pointer/mouse movement triggers.
 
 ```typescript
+type PointerMoveAxis = 'x' | 'y';
+
 type PointerMoveParams = {
   hitArea?: 'root' | 'self';
+  axis?: PointerMoveAxis;
 };
 ```
 
 **Properties:**
 
-- `hitArea` - Defines the area that responds to pointer movement
-  - `'self'` - Only the source element (default)
-  - `'root'` - The entire viewport/root container
+- `hitArea` - `'self'` (default) or `'root'` (viewport)
+- `axis` - `'x'` or `'y'` (default `'y'`) for scrub direction
 
 **Example:**
 
 ```typescript
 const pointerParams: PointerMoveParams = {
-  hitArea: 'root', // Track mouse across entire page
+  hitArea: 'self',
+  axis: 'y',
 };
 ```
 
@@ -516,7 +515,7 @@ type Fill = 'none' | 'forwards' | 'backwards' | 'both';
 **Properties:**
 
 - `key` - unique identifier for targeting a custom element (optional, defaults to source key from the `Interaction`)
-- `selector` - CSS selector for targeting an element inside the custom element or each list item if combined with `listContainer` (optional, defaults to `firstElementChild`)
+- `selector` - CSS selector for targeting elements inside the custom element (uses `querySelectorAll`) or each list item if combined with `listContainer` (optional, defaults to `firstElementChild`)
 - `listContainer` - CSS selector for list container when targeting list items (optional)
 - `duration` - Animation duration in milliseconds (required)
 - `easing` - Easing function name or custom cubic-bezier
@@ -605,8 +604,8 @@ type ScrubEffect = {
 // Parallax background
 const parallaxEffect: ScrubEffect = {
   easing: 'linear',
-  rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-  rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+  rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+  rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
   keyframeEffect: {
     name: 'parallax',
     keyframes: [{ transform: 'translateY(0)' }, { transform: 'translateY(-50px)' }],
@@ -750,8 +749,8 @@ type EffectProperty =
 **Types:**
 
 - `keyframeEffect` - Raw keyframe animation definition
-- `namedEffect` - Pre-built animation from `@wix/motion`
-- `customEffect` - Custom animation function
+- `namedEffect` - Pre-built animations from `@wix/motion-presets`
+- `customEffect` - Function `(element: Element, progress: number) => void` for custom scrub/behavior
 
 **Examples:**
 
@@ -769,18 +768,13 @@ const keyframeEffect = {
 
 // Named effect
 const namedEffect = {
-  namedEffect: {
-    type: 'SlideIn',
-  }, // Pre-built animation
+  namedEffect: { type: 'SlideIn' },
 };
 
-// Custom effect
+// Custom effect (signature: element, progress)
 const customEffect = {
-  customEffect: (element: HTMLElement) => {
-    // Custom animation logic
-    return element.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], {
-      duration: 1000,
-    });
+  customEffect: (element: Element, progress: number) => {
+    (element as HTMLElement).style.opacity = String(progress);
   },
 };
 ```
@@ -793,17 +787,15 @@ Defines conditional logic for interactions.
 
 ```typescript
 type Condition = {
-  type: 'media' | 'container';
+  type: 'media' | 'container' | 'selector';
   predicate?: string;
 };
 ```
 
 **Properties:**
 
-- `type` - Type of condition check
-  - `'media'` - Media query condition
-  - `'container'` - Container query condition
-- `predicate` - The query string to evaluate
+- `type` - `'media'` (media query), `'container'` (container query), or `'selector'`
+- `predicate` - The query string or selector to evaluate
 
 **Examples:**
 
@@ -831,31 +823,7 @@ const wideContainer: Condition = {
 };
 ```
 
-## Handler Types
-
-### `InteractionHandlerModule`
-
-Interface for trigger handler modules.
-
-```typescript
-type InteractionHandlerModule<T extends TriggerType> = {
-  registerOptionsGetter?: (getter: () => any) => void;
-  add: (
-    source: HTMLElement,
-    target: HTMLElement,
-    effect: Effect,
-    options: InteractionParamsTypes[T],
-    interactOptions: InteractOptions,
-  ) => void;
-  remove: (element: HTMLElement) => void;
-};
-```
-
-**Properties:**
-
-- `registerOptionsGetter` - Optional function to register global options getter
-- `add` - Function to add a handler for this trigger type
-- `remove` - Function to remove all handlers from an element
+## Trigger parameter types
 
 ### `InteractionParamsTypes`
 
@@ -865,32 +833,13 @@ Map of trigger types to their parameter types.
 type InteractionParamsTypes = {
   hover: StateParams | PointerTriggerParams;
   click: StateParams | PointerTriggerParams;
+  interest: StateParams | PointerTriggerParams;
+  activate: StateParams | PointerTriggerParams;
   viewEnter: ViewEnterParams;
   pageVisible: ViewEnterParams;
   animationEnd: AnimationEndParams;
   viewProgress: ViewEnterParams;
   pointerMove: PointerMoveParams;
-};
-```
-
-## Cache and Internal Types
-
-### `InteractCache`
-
-Internal cache structure for parsed configuration.
-
-```typescript
-type InteractCache = {
-  effects: { [effectId: string]: Effect };
-  conditions: { [conditionId: string]: Condition };
-  interactions: {
-    [key: string]: {
-      triggers: Interaction[];
-      effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
-      interactionIds: Set<string>;
-      selectors: Set<string>;
-    };
-  };
 };
 ```
 
@@ -905,68 +854,6 @@ type TriggerParams =
   | ViewEnterParams
   | PointerMoveParams
   | AnimationEndParams;
-```
-
-## Utility Types
-
-### `HandlerObject`
-
-Internal type for event handler management.
-
-```typescript
-type HandlerObject = {
-  source: HTMLElement;
-  target: HTMLElement;
-  cleanup: () => void;
-  handler?: () => void;
-};
-
-type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
-```
-
-### Configuration Builders
-
-```typescript
-// Type-safe configuration builder
-class InteractConfigBuilder {
-  private config: Partial<InteractConfig> = { interactions: [], effects: {} };
-
-  addInteraction(interaction: Interaction): this {
-    this.config.interactions!.push(interaction);
-    return this;
-  }
-
-  addEffect(id: string, effect: Effect): this {
-    this.config.effects![id] = effect;
-    return this;
-  }
-
-  addCondition(id: string, condition: Condition): this {
-    if (!this.config.conditions) this.config.conditions = {};
-    this.config.conditions[id] = condition;
-    return this;
-  }
-
-  build(): InteractConfig {
-    return this.config as InteractConfig;
-  }
-}
-
-// Usage
-const config = new InteractConfigBuilder()
-  .addEffect('fade', {
-    duration: 1000,
-    keyframeEffect: {
-      name: 'fade',
-      keyframes: [{ opacity: 0 }, { opacity: 1 }],
-    },
-  })
-  .addInteraction({
-    trigger: 'viewEnter',
-    key: 'hero',
-    effects: [{ effectId: 'fade' }],
-  })
-  .build();
 ```
 
 ## See Also

@@ -90,26 +90,24 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-tiltInRotate',
         easing: 'cubicOut',
-        custom: {},
+        custom: {
+          '--motion-perspective': '800px',
+          '--motion-depth-negative': 'calc(200px / 2 * -1)',
+          '--motion-depth-positive': 'calc(200px / 2)',
+        },
         keyframes: [
           {
-            offset: 0,
-            easing: 'step-end',
-            transform: 'perspective(800px)',
-          },
-          {
-            offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc((var(--motion-height, 200px) / 2) * -1)) rotateX(-90deg) translateZ(calc(var(--motion-height, 200px) / 2)) rotate(var(--comp-rotate-z, 0deg))',
+              'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc((var(--motion-height, 200px) / 2) * -1)) rotateX(0deg) translateZ(calc(var(--motion-height, 200px) / 2)) rotate(var(--comp-rotate-z, 0deg))',
+              'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },
@@ -156,26 +154,24 @@ describe('TiltIn', () => {
         duration: 200,
         easing: 'cubicOut',
         custom: {},
-        keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+        keyframes: [{ offset: 0, opacity: 0 }],
       },
       {
         name: 'motion-tiltInRotate',
         easing,
-        custom: {},
+        custom: {
+          '--motion-perspective': '800px',
+          '--motion-depth-negative': 'calc(200px / 2 * -1)',
+          '--motion-depth-positive': 'calc(200px / 2)',
+        },
         keyframes: [
           {
-            offset: 0,
-            easing: 'step-end',
-            transform: 'perspective(800px)',
-          },
-          {
-            offset: 0.000001,
             transform:
-              'perspective(800px) translateZ(calc((var(--motion-height, 200px) / 2) * -1)) rotateX(-90deg) translateZ(calc(var(--motion-height, 200px) / 2)) rotate(var(--comp-rotate-z, 0deg))',
+              'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
           {
             transform:
-              'perspective(800px) translateZ(calc((var(--motion-height, 200px) / 2) * -1)) rotateX(0deg) translateZ(calc(var(--motion-height, 200px) / 2)) rotate(var(--comp-rotate-z, 0deg))',
+              'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(0deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
         ],
       },

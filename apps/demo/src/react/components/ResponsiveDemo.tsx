@@ -59,7 +59,6 @@ const complexConfig: InteractConfig = {
       namedEffect: {
         type: 'BounceIn',
         direction: 'center',
-        power: 'hard',
       },
       duration: 1800,
     },

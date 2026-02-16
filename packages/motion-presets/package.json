@@ -12,11 +12,6 @@
       "import": "./dist/es/motion-presets.js",
       "require": "./dist/cjs/motion-presets.js"
     },
-    "./types": {
-      "types": "./dist/types/types.d.ts",
-      "import": "./dist/es/types.js",
-      "require": "./dist/cjs/types.js"
-    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -43,17 +38,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wix-incubator/interact"
+    "url": "git+https://github.com/wix/interact.git"
   },
   "bugs": {
-    "url": "https://github.com/wix-incubator/interact/issues"
+    "url": "https://github.com/wix/interact/issues"
   },
-  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "homepage": "https://github.com/wix/interact#readme",
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "@wix/motion": "^2.0.0-rc.2"
+    "@wix/motion": "^2.0.0"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.14",

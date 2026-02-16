@@ -41,11 +41,11 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       part: 'BG_MEDIA',
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return `calc(100svh + ${toKeyframeValue(

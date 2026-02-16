@@ -49,12 +49,12 @@ export function style(options: ScrubAnimationOptions & AnimationExtraOptions, as
       easing,
       startOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       startOffsetAdd: isOut ? '100vh' : '0px',
       endOffset: {
         name: 'cover',
-        offset: { type: 'percentage', value: 0 },
+        offset: { unit: 'percentage', value: 0 },
       } as RangeOffset,
       get endOffsetAdd() {
         return isOut

@@ -29,29 +29,6 @@ describe('DropIn', () => {
       expect(result).toMatchObject(expectedResult);
     });
 
-    test('DropIn animation with custom power', () => {
-      const duration = 1000;
-      const mockOptions = {
-        ...baseMockOptions,
-        duration,
-        namedEffect: { power: 'hard' } as DropInType,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          duration: 800,
-        },
-        {
-          easing: 'backOut',
-          keyframes: [{ scale: '2' }, { scale: '1' }],
-        },
-      ];
-
-      const result = DropIn.web(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
     test('DropIn animation with custom easing', () => {
       const duration = 1000;
       const customEasing = 'circInOut';
@@ -93,51 +70,13 @@ describe('DropIn', () => {
           easing: 'quadOut',
           duration: 800,
           custom: {},
-          keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+          keyframes: [{ offset: 0, opacity: 0 }],
         },
         {
           name: 'motion-dropIn',
           easing: 'quintInOut',
           custom: {
             '--motion-scale': '1.6',
-          },
-          keyframes: [
-            {
-              scale: 'var(--motion-scale)',
-            },
-            {
-              scale: '1',
-            },
-          ],
-        },
-      ];
-
-      const result = DropIn.style?.(mockOptions);
-
-      expect(result).toMatchObject(expectedResult);
-    });
-
-    test('DropIn style with custom power', () => {
-      const duration = 1000;
-      const mockOptions = {
-        ...baseMockOptions,
-        duration,
-        namedEffect: { power: 'hard' } as DropInType,
-      };
-
-      const expectedResult: Partial<AnimationData>[] = [
-        {
-          name: 'motion-fadeIn',
-          easing: 'quadOut',
-          duration: 800,
-          custom: {},
-          keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
-        },
-        {
-          name: 'motion-dropIn',
-          easing: 'backOut',
-          custom: {
-            '--motion-scale': '2',
           },
           keyframes: [
             {
@@ -171,7 +110,7 @@ describe('DropIn', () => {
           easing: 'quadOut',
           duration: 800,
           custom: {},
-          keyframes: [{ opacity: 0 }, { opacity: 'var(--comp-opacity, 1)' }],
+          keyframes: [{ offset: 0, opacity: 0 }],
         },
         {
           name: 'motion-dropIn',

@@ -17,7 +17,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
@@ -25,8 +25,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: '[CONTAINER_NAMED_EFFECT]'
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: 'linear',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -54,8 +54,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'PanScroll'
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             effectId: 'gallery-slide'
         }
@@ -75,8 +75,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'BgParallax'
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             effectId: 'bg-parallax'
         }
@@ -109,8 +109,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: '[ITEM_NAMED_EFFECT]'
             },
-            rangeStart: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -121,7 +121,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 **Variables**:
 
 - `[ITEM_KEY]`: Unique identifier for individual list items
-- `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion scroll animations:
+- `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion-presets scroll animations:
   - **Reveal/Fade**: 'FadeScroll', 'BlurScroll', 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
   - **Movement**: 'MoveScroll', 'SlideScroll', 'PanScroll', 'SkewPanScroll'
   - **Scale**: 'GrowScroll', 'ShrinkScroll', 'StretchScroll'
@@ -145,8 +145,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                 type: 'RevealScroll',
                 direction: 'bottom'
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 60 } },
             easing: 'ease-out',
             effectId: 'item-reveal'
         }
@@ -166,8 +166,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'GrowScroll'
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 50 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 50 } },
             easing: 'ease-in-out',
             effectId: 'item-grow'
         }
@@ -192,16 +192,16 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[ITEM_CONTAINER_SELECTOR]',
+    key: '[ITEM_CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[CONTENT_SELECTOR]',
+            key: '[CONTENT_KEY]',
             namedEffect: {
                 type: '[CONTENT_NAMED_EFFECT]'
             },
-            rangeStart: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -211,9 +211,9 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 **Variables**:
 
-- `[ITEM_CONTAINER_SELECTOR]`: CSS selector for the containing list item
-- `[CONTENT_SELECTOR]`: CSS selector for content within the item
-- `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion:
+- `[ITEM_CONTAINER_KEY]`: Unique identifier for the containing list item
+- `[CONTENT_KEY]`: Unique identifier for content within the item (or use `selector` for CSS selector)
+- `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion-presets:
   - **Opacity/Visibility**: 'FadeScroll', 'BlurScroll'
   - **Reveal**: 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
   - **3D Transforms**: 'TiltScroll', 'FlipScroll', 'ArcScroll', 'TurnScroll', 'Spin3dScroll'
@@ -234,8 +234,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'FadeScroll'
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 20 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 20 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 80 } },
             easing: 'ease-out',
             effectId: 'text-reveal-1'
         }
@@ -251,8 +251,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'FadeScroll'
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 20 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 20 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 80 } },
             easing: 'ease-out',
             effectId: 'text-reveal-2'
         }
@@ -273,8 +273,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'RevealScroll'
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 50 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 50 } },
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             effectId: 'product-image-reveal'
         }
@@ -299,7 +299,7 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[CONTAINER_SELECTOR]',
+    key: '[CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
@@ -312,8 +312,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { [CSS_PROPERTY_1]: '[END_VALUE_1]', [CSS_PROPERTY_2]: '[END_VALUE_2]', [CSS_PROPERTY_3]: '[END_VALUE_3]' }
                 ]
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: 'linear',
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
@@ -347,8 +347,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { transform: 'translateX(-100%)', filter: 'brightness(1)', backgroundColor: 'rgb(255 255 255 / 0)' }
                 ]
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both',
             effectId: 'container-slide'
@@ -373,8 +373,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { transform: 'scale(1) rotate(0deg)', opacity: '1', filter: 'hue-rotate(0deg)' }
                 ]
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both',
             effectId: 'bg-transform'
@@ -413,8 +413,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { [CSS_PROPERTY_1]: '[END_VALUE_1]', [CSS_PROPERTY_2]: '[END_VALUE_2]' }
                 ]
             },
-            rangeStart: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
@@ -447,8 +447,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { opacity: '1', transform: 'translateY(0) scale(1) rotate(0deg)', filter: 'blur(0)', boxShadow: '0 20px 40px rgb(0 0 0 / 0.15)' }
                 ]
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 80 } },
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             fill: 'both',
             effectId: 'timeline-entrance'
@@ -474,8 +474,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { opacity: '0', transform: 'scale(0.8) rotate(-5deg)', filter: 'brightness(0.6)' }
                 ]
             },
-            rangeStart: { name: 'exit', offset: { type: 'percentage', value: 20 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 20 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } },
             easing: 'ease-in',
             fill: 'both',
             effectId: 'card-exit'
@@ -503,14 +503,14 @@ These rules help generate scroll-driven list animations using the `@wix/interact
     effects: {
         [EFFECT_ID]: {
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
-            rangeStart: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]'
         }
     },
     interactions: [
         {
-            key: '[ITEM_SELECTOR_N]',
+            key: '[ITEM_KEY_N]',
             trigger: 'viewProgress',
             effects: [
                 {
@@ -532,8 +532,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
             namedEffect: {
                 type: 'SlideScroll'
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 60 } },
             easing: 'linear'
         }
     },
@@ -582,8 +582,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     { opacity: '1', transform: 'translateY(0) scale(1)' }
                 ]
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 100 } },
             easing: 'expoOut',
             fill: 'both'
         }
@@ -637,19 +637,19 @@ These rules help generate scroll-driven list animations using the `@wix/interact
 
 ```typescript
 {
-    key: '[LIST_CONTAINER_SELECTOR]',
+    key: '[LIST_CONTAINER_KEY]',
     trigger: 'viewProgress',
     effects: [
         {
-            key: '[DYNAMIC_CONTENT_SELECTOR]',
-            customEffect: (element, progress, params) => {
+            key: '[DYNAMIC_CONTENT_KEY]',
+            customEffect: (element, progress) => {
                 // progress is 0-1 representing scroll position within range
                 [CUSTOM_CALCULATION_LOGIC]
                 [DYNAMIC_CONTENT_UPDATE]
                 [VISUAL_PROPERTY_UPDATES]
             },
-            rangeStart: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [START_PERCENTAGE] } },
-            rangeEnd: { name: '[RANGE_TYPE]', offset: { type: 'percentage', value: [END_PERCENTAGE] } },
+            rangeStart: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
+            rangeEnd: { name: '[RANGE_TYPE]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         }
@@ -692,8 +692,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     progressBar.style.width = `${percentage}%`;
                 }
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } },
             fill: 'both',
             effectId: 'stats-counter'
         }
@@ -748,8 +748,8 @@ These rules help generate scroll-driven list animations using the `@wix/interact
                     progressIndicator.textContent = `${Math.floor(progress * 100)}% Complete`;
                 }
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } },
             fill: 'both',
             effectId: 'task-progress'
         }
@@ -780,8 +780,8 @@ Coordinating container, items, and content simultaneously:
                     { transform: 'scale(1) translateY(-50px)', filter: 'blur(2px)' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both'
         },
@@ -795,8 +795,8 @@ Coordinating container, items, and content simultaneously:
                     { transform: 'translateX(-50%)' }
                 ]
             },
-            rangeStart: { name: 'contain', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'contain', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'contain', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both'
         },
@@ -810,8 +810,8 @@ Coordinating container, items, and content simultaneously:
                     { transform: 'translateY(-100px)', opacity: '1' }
                 ]
             },
-            rangeStart: { name: 'cover', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { type: 'percentage', value: 100 } },
+            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } },
             easing: 'linear',
             fill: 'both'
         }
@@ -839,8 +839,8 @@ Adaptive patterns based on screen size and device capabilities:
                     { transform: 'translateY(0) rotateY(0deg)', boxShadow: '0 0 0 rgb(0 0 0 / 0)' }
                 ]
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 80 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 80 } },
             easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             fill: 'both'
         }
@@ -861,8 +861,8 @@ Adaptive patterns based on screen size and device capabilities:
                     { opacity: '1', transform: 'translateY(0)' }
                 ]
             },
-            rangeStart: { name: 'entry', offset: { type: 'percentage', value: 0 } },
-            rangeEnd: { name: 'entry', offset: { type: 'percentage', value: 60 } },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 60 } },
             easing: 'ease-out',
             fill: 'both'
         }

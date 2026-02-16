@@ -63,11 +63,11 @@ const mockFadeScrollPreset = {
       iterations: 1,
       startOffset: (options as any).startOffset || {
         name: 'entry',
-        offset: { value: 0, type: 'percentage' },
+        offset: { value: 0, unit: 'percentage' },
       },
       endOffset: (options as any).endOffset || {
         name: 'exit',
-        offset: { value: 100, type: 'percentage' },
+        offset: { value: 100, unit: 'percentage' },
       },
     },
   ]),
@@ -77,13 +77,13 @@ const mockFadeScrollPreset = {
           name: (options as any).startOffset.name || 'cover',
           offset: (options as any).startOffset.offset,
         }
-      : { name: 'cover', offset: { value: 0, type: 'percentage' } };
+      : { name: 'cover', offset: { value: 0, unit: 'percentage' } };
     const endOffset = (options as any).endOffset
       ? {
           name: (options as any).endOffset.name || 'cover',
           offset: (options as any).endOffset.offset,
         }
-      : { name: 'cover', offset: { value: 100, type: 'percentage' } };
+      : { name: 'cover', offset: { value: 100, unit: 'percentage' } };
 
     return [
       {
@@ -151,11 +151,11 @@ const mockParallaxScrollPreset = {
       iterations: 1,
       startOffset: (options as any).startOffset || {
         name: 'entry',
-        offset: { value: 0, type: 'percentage' },
+        offset: { value: 0, unit: 'percentage' },
       },
       endOffset: (options as any).endOffset || {
         name: 'exit',
-        offset: { value: 100, type: 'percentage' },
+        offset: { value: 100, unit: 'percentage' },
       },
     },
   ]),
@@ -226,11 +226,11 @@ describe('motion.ts', () => {
           },
           startOffset: {
             name: 'entry',
-            offset: { value: 0, type: 'percentage' },
+            offset: { value: 0, unit: 'percentage' },
           },
           endOffset: {
             name: 'exit',
-            offset: { value: 100, type: 'percentage' },
+            offset: { value: 100, unit: 'percentage' },
           },
         };
 
@@ -260,11 +260,11 @@ describe('motion.ts', () => {
           },
           startOffset: {
             name: 'entry',
-            offset: { value: 20, type: 'percentage' },
+            offset: { value: 20, unit: 'percentage' },
           },
           endOffset: {
             name: 'exit',
-            offset: { value: 80, type: 'percentage' },
+            offset: { value: 80, unit: 'percentage' },
           },
         };
 
@@ -327,7 +327,7 @@ describe('motion.ts', () => {
             type: 'GlitchIn',
             id: 'some-glitch',
             direction: 1,
-            distance: { value: 100, type: 'percentage' },
+            distance: { value: 100, unit: 'percentage' },
           },
           duration: 1500,
         };
@@ -610,10 +610,10 @@ describe('motion.ts', () => {
             opacity: 0,
           },
           startOffset: {
-            offset: { value: 10, type: 'percentage' },
+            offset: { value: 10, unit: 'percentage' },
           },
           endOffset: {
-            offset: { value: 90, type: 'percentage' },
+            offset: { value: 90, unit: 'percentage' },
           },
         };
 
@@ -654,11 +654,11 @@ describe('motion.ts', () => {
           namedEffect: { type: 'BgPan', id: 'bg-pan', direction: 'left' },
           startOffset: {
             name: 'entry',
-            offset: { value: 0, type: 'percentage' },
+            offset: { value: 0, unit: 'percentage' },
           },
           endOffset: {
             name: 'exit',
-            offset: { value: 100, type: 'percentage' },
+            offset: { value: 100, unit: 'percentage' },
           },
         };
 
@@ -686,11 +686,11 @@ describe('motion.ts', () => {
           namedEffect: { type: 'BgPan', id: 'bg-pan', direction: 'left' },
           startOffset: {
             name: 'entry',
-            offset: { value: 0, type: 'percentage' },
+            offset: { value: 0, unit: 'percentage' },
           },
           endOffset: {
             name: 'exit',
-            offset: { value: 100, type: 'percentage' },
+            offset: { value: 100, unit: 'percentage' },
           },
         };
 
@@ -2004,7 +2004,7 @@ describe('motion.ts', () => {
             type: 'GlitchIn',
             id: 'glitch',
             direction: 45,
-            distance: { value: 100, type: 'percentage' },
+            distance: { value: 100, unit: 'percentage' },
           }, // Use GlitchIn which doesn't have prepare
           duration: 1000,
         };
