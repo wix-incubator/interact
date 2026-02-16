@@ -1,5 +1,3 @@
-import type { AnimationGroup } from '@wix/motion';
-import { getAnimation } from '@wix/motion';
 import type {
   TimeEffect,
   TransitionEffect,
@@ -7,120 +5,16 @@ import type {
   HandlerObjectMap,
   PointerTriggerParams,
   EffectBase,
-  IInteractionController,
   InteractOptions,
 } from '../types';
+import { addHandlerToMap, removeElementFromHandlerMap } from './utilities';
 import {
-  effectToAnimationOptions,
-  addHandlerToMap,
-  removeElementFromHandlerMap,
-} from './utilities';
-import fastdom from 'fastdom';
+  createTimeEffectHandler,
+  createTransitionHandler,
+  EVENT_TRIGGER_PRESETS,
+} from './effectHandlers';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
-
-function createTimeEffectHandler(
-  element: HTMLElement,
-  effect: TimeEffect & EffectBase,
-  options: PointerTriggerParams,
-  reducedMotion: boolean = false,
-  selectorCondition?: string,
-) {
-  const animation = getAnimation(
-    element,
-    effectToAnimationOptions(effect),
-    undefined,
-    reducedMotion,
-  ) as AnimationGroup | null;
-
-  // Return null if animation could not be created
-  if (!animation) {
-    return null;
-  }
-
-  const type = options.type || 'alternate';
-  let initialPlay = true;
-
-  return (event: MouseEvent | FocusEvent) => {
-    if (selectorCondition && !element.matches(selectorCondition)) return;
-    if (event.type === 'mouseenter' || event.type === 'focusin') {
-      if (type === 'alternate') {
-        if (initialPlay) {
-          initialPlay = false;
-          animation.play();
-        } else {
-          animation.reverse();
-        }
-      } else if (type === 'state') {
-        if (animation.playState !== 'finished') {
-          // 'idle' OR 'paused'
-          animation.play();
-        }
-      } else {
-        // type === 'repeat'
-        // type === 'once'
-        animation.progress(0);
-
-        if (animation.isCSS) {
-          animation.onFinish(() => {
-            // remove the animation from style
-            fastdom.mutate(() => {
-              element.dataset.motionEnter = 'done';
-            });
-          });
-        }
-
-        animation.play();
-      }
-    } else if (event.type === 'mouseleave' || event.type === 'focusout') {
-      if (type === 'alternate') {
-        animation.reverse();
-      } else if (type === 'repeat') {
-        animation.cancel();
-        fastdom.mutate(() => {
-          delete element.dataset.interactEnter;
-        });
-      } else if (type === 'state') {
-        if (animation.playState === 'running') {
-          animation.pause();
-        }
-      }
-    }
-  };
-}
-
-function createTransitionHandler(
-  element: HTMLElement,
-  targetController: IInteractionController,
-  {
-    effectId,
-    listContainer,
-    listItemSelector,
-  }: TransitionEffect & EffectBase & { effectId: string },
-  options: StateParams,
-  selectorCondition?: string,
-) {
-  const method = options.method || 'toggle';
-  const isToggle = method === 'toggle';
-  const shouldSetStateOnElement = !!listContainer;
-
-  return (event: MouseEvent | FocusEvent) => {
-    if (selectorCondition && !element.matches(selectorCondition)) return;
-    let item;
-    if (shouldSetStateOnElement) {
-      item = element.closest(
-        `${listContainer} > ${listItemSelector || ''}:has(:scope)`,
-      ) as HTMLElement | null;
-    }
-
-    if (event.type === 'mouseenter' || event.type === 'focusin') {
-      const method_ = isToggle ? 'add' : method;
-      targetController.toggleEffect(effectId, method_, item);
-    } else if ((event.type === 'mouseleave' || event.type === 'focusout') && isToggle) {
-      targetController.toggleEffect(effectId, 'remove', item);
-    }
-  };
-}
 
 function addHoverHandler(
   source: HTMLElement,
@@ -129,6 +23,10 @@ function addHoverHandler(
   options: StateParams | PointerTriggerParams = {},
   { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
+  const enterLeaveConfig = allowA11yTriggers
+    ? EVENT_TRIGGER_PRESETS.interest
+    : EVENT_TRIGGER_PRESETS.hover;
+
   let handler: ((event: MouseEvent | FocusEvent) => void) | null;
   let isStateTrigger = false;
   let once = false;
@@ -143,6 +41,7 @@ function addHoverHandler(
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
       selectorCondition,
+      enterLeaveConfig,
     );
     isStateTrigger = true;
   } else {
@@ -152,6 +51,7 @@ function addHoverHandler(
       options as PointerTriggerParams,
       reducedMotion,
       selectorCondition,
+      enterLeaveConfig,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }

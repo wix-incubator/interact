@@ -1,5 +1,3 @@
-import { getAnimation } from '@wix/motion';
-import type { AnimationGroup } from '@wix/motion';
 import type {
   TimeEffect,
   TransitionEffect,
@@ -7,105 +5,12 @@ import type {
   HandlerObjectMap,
   PointerTriggerParams,
   EffectBase,
-  IInteractionController,
   InteractOptions,
 } from '../types';
-import {
-  effectToAnimationOptions,
-  addHandlerToMap,
-  removeElementFromHandlerMap,
-} from './utilities';
-import fastdom from 'fastdom';
+import { addHandlerToMap, removeElementFromHandlerMap } from './utilities';
+import { createTimeEffectHandler, createTransitionHandler } from './effectHandlers';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
-
-function createTimeEffectHandler(
-  element: HTMLElement,
-  effect: TimeEffect & EffectBase,
-  options: PointerTriggerParams,
-  reducedMotion: boolean = false,
-  selectorCondition?: string,
-) {
-  const animation = getAnimation(
-    element,
-    effectToAnimationOptions(effect),
-    undefined,
-    reducedMotion,
-  ) as AnimationGroup | null;
-
-  // Return null if animation could not be created
-  if (!animation) {
-    return null;
-  }
-
-  let initialPlay = true;
-  const type = options.type || 'alternate';
-
-  return (__: MouseEvent | KeyboardEvent) => {
-    if (selectorCondition && !element.matches(selectorCondition)) return;
-    if (type === 'alternate') {
-      if (initialPlay) {
-        initialPlay = false;
-        animation.play();
-      } else {
-        animation.reverse();
-      }
-    } else if (type === 'state') {
-      if (initialPlay) {
-        initialPlay = false;
-        animation.play();
-      } else {
-        if (animation.playState === 'running') {
-          animation.pause();
-        } else if (animation.playState !== 'finished') {
-          // 'idle' OR 'paused'
-          animation.play();
-        }
-      }
-    } else {
-      // type === 'repeat'
-      // type === 'once'
-      animation.progress(0);
-
-      if (animation.isCSS) {
-        animation.onFinish(() => {
-          // remove the animation from style
-          fastdom.mutate(() => {
-            element.dataset.interactEnter = 'done';
-          });
-        });
-      }
-
-      animation.play();
-    }
-  };
-}
-
-function createTransitionHandler(
-  element: HTMLElement,
-  targetController: IInteractionController,
-  {
-    effectId,
-    listContainer,
-    listItemSelector,
-  }: TransitionEffect & EffectBase & { effectId: string },
-  options: StateParams,
-  selectorCondition?: string,
-) {
-  const shouldSetStateOnElement = !!listContainer;
-
-  return (__: MouseEvent | KeyboardEvent) => {
-    if (selectorCondition && !element.matches(selectorCondition)) return;
-    let item;
-    if (shouldSetStateOnElement) {
-      item = element.closest(
-        `${listContainer} > ${listItemSelector || ''}:has(:scope)`,
-      ) as HTMLElement | null;
-    }
-
-    targetController.toggleEffect(effectId, options.method || 'toggle', item);
-  };
-}
 
 function addClickHandler(
   source: HTMLElement,
@@ -127,6 +32,7 @@ function addClickHandler(
       effect as TransitionEffect & EffectBase & { effectId: string },
       options as StateParams,
       selectorCondition,
+      undefined,
     );
   } else {
     handler = createTimeEffectHandler(
@@ -135,6 +41,7 @@ function addClickHandler(
       options as PointerTriggerParams,
       reducedMotion,
       selectorCondition,
+      undefined,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }

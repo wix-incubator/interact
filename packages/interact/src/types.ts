@@ -34,6 +34,15 @@ export type TriggerType =
   | 'activate'
   | 'interest';
 
+export type EventTriggerKind = 'toggle' | 'enterLeave';
+export type EventTriggerConfigToggle = string[];
+export type EventTriggerConfigEnterLeave = {
+  enter?: readonly string[];
+  leave?: readonly string[];
+};
+
+export type EventTriggerConfig = EventTriggerConfigToggle | EventTriggerConfigEnterLeave;
+
 export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 
 export type TransitionMethod = 'add' | 'remove' | 'toggle' | 'clear';
