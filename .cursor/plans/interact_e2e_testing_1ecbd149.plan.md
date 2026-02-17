@@ -1,6 +1,6 @@
 ---
 name: Interact E2E Testing
-overview: "Set up Playwright-based E2E test infrastructure for the @wix/interact package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite."
+overview: 'Set up Playwright-based E2E test infrastructure for the @wix/interact package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite.'
 todos:
   - id: install-playwright
     content: Install Playwright dependencies and add scripts to packages/interact/package.json
@@ -193,7 +193,6 @@ Create `[packages/interact/e2e/fixtures/vite.config.ts](packages/interact/e2e/fi
 
 Create `[packages/interact/e2e/utils/](packages/interact/e2e/utils/)` directory with:
 
-
 | File                     | Purpose                                                                                    |
 | ------------------------ | ------------------------------------------------------------------------------------------ |
 | `animation-helpers.ts`   | Functions to wait for animations, check computed styles, measure transform values          |
@@ -201,11 +200,9 @@ Create `[packages/interact/e2e/utils/](packages/interact/e2e/utils/)` directory 
 | `pointer-helpers.ts`     | Functions to simulate mouse movements, track pointer position across hit areas             |
 | `interaction-helpers.ts` | Functions to verify interaction states, check active effects via `getActiveEffects()`      |
 
-
 ### 1.5 Create Page Objects
 
 Create `[packages/interact/e2e/pages/](packages/interact/e2e/pages/)` directory with:
-
 
 | File                        | Purpose                                                                   |
 | --------------------------- | ------------------------------------------------------------------------- |
@@ -222,7 +219,6 @@ Create `[packages/interact/e2e/pages/](packages/interact/e2e/pages/)` directory 
 | `state-management-page.ts`  | Page object for state management fixture                                  |
 | `react-integration-page.ts` | Page object for React integration fixture                                 |
 | `web-components-page.ts`    | Page object for Web Components fixture                                    |
-
 
 ---
 
@@ -854,4 +850,3 @@ packages/interact/
 - **Animation Timing**: Use Playwright's `waitForFunction` or animation helpers to wait for animations to complete before asserting
 - **Scroll Simulation**: Use `page.mouse.wheel()` for realistic scroll behavior with ViewProgress tests
 - **Reduced Motion**: Consider adding tests that verify `prefers-reduced-motion` behavior
-

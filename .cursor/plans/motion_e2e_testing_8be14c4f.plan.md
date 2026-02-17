@@ -1,6 +1,6 @@
 ---
 name: Motion E2E Testing
-overview: "Set up Playwright-based E2E test infrastructure for the @wix/motion package with dedicated test fixture pages. Tests run on-demand via the motion-e2e GitHub Actions workflow (not in the CI workflow). The plan covers named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, play/pause, scroll-driven, pointer-driven, responsive, and selector scenarios."
+overview: 'Set up Playwright-based E2E test infrastructure for the @wix/motion package with dedicated test fixture pages. Tests run on-demand via the motion-e2e GitHub Actions workflow (not in the CI workflow). The plan covers named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, play/pause, scroll-driven, pointer-driven, responsive, and selector scenarios.'
 todos:
   - id: install-playwright
     content: Install Playwright dependencies and add scripts to packages/motion/package.json
@@ -21,7 +21,7 @@ todos:
     content: Create test fixture page for AnimationGroup API (lifecycle, progress, callbacks)
     status: pending
   - id: test-fixtures-effects
-    content: "Create test fixture page for effect types — named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, and play/pause — with ad-hoc registered named effects"
+    content: 'Create test fixture page for effect types — named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, and play/pause — with ad-hoc registered named effects'
     status: pending
   - id: test-fixtures-responsive
     content: Create test fixture page for responsive conditions (breakpoints)
@@ -45,7 +45,7 @@ todos:
     content: Create animation-group.spec.ts with test titles
     status: pending
   - id: scaffold-effects
-    content: "Create effects.spec.ts with test titles for named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, and play/pause"
+    content: 'Create effects.spec.ts with test titles for named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, and play/pause'
     status: pending
   - id: scaffold-responsive
     content: Create responsive-conditions.spec.ts with test titles
@@ -63,7 +63,7 @@ todos:
     content: Implement AnimationGroup API tests (lifecycle, progress, callbacks)
     status: pending
   - id: impl-effects
-    content: "Implement effects tests — named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, play/pause"
+    content: 'Implement effects tests — named effects (WAAPI + CSS), keyframe effects (WAAPI + CSS), custom effects, play/reverse, play/pause'
     status: pending
   - id: impl-responsive
     content: Implement responsive conditions tests (breakpoints, resize)
@@ -104,13 +104,37 @@ import { registerEffects } from '@wix/motion';
 registerEffects({
   TestFadeIn: {
     getNames: () => ['test-fadeIn'],
-    web: (options) => [{ ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] }],
-    style: (options) => [{ ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] }],
+    web: (options) => [
+      { ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] },
+    ],
+    style: (options) => [
+      { ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] },
+    ],
   },
   TestSlideIn: {
     getNames: () => ['test-slideIn'],
-    web: (options) => [{ ...options, name: 'test-slideIn', easing: 'linear', keyframes: [{ offset: 0, transform: 'translateX(-100%)' }, { offset: 1, transform: 'translateX(0)' }] }],
-    style: (options) => [{ ...options, name: 'test-slideIn', easing: 'linear', keyframes: [{ offset: 0, transform: 'translateX(-100%)' }, { offset: 1, transform: 'translateX(0)' }] }],
+    web: (options) => [
+      {
+        ...options,
+        name: 'test-slideIn',
+        easing: 'linear',
+        keyframes: [
+          { offset: 0, transform: 'translateX(-100%)' },
+          { offset: 1, transform: 'translateX(0)' },
+        ],
+      },
+    ],
+    style: (options) => [
+      {
+        ...options,
+        name: 'test-slideIn',
+        easing: 'linear',
+        keyframes: [
+          { offset: 0, transform: 'translateX(-100%)' },
+          { offset: 1, transform: 'translateX(0)' },
+        ],
+      },
+    ],
   },
 });
 ```
@@ -162,18 +186,15 @@ Create `[packages/motion/e2e/fixtures/vite.config.ts](packages/motion/e2e/fixtur
 
 Create `[packages/motion/e2e/utils/](packages/motion/e2e/utils/)` directory with:
 
-
 | File                   | Purpose                                                                                      |
 | ---------------------- | -------------------------------------------------------------------------------------------- |
 | `animation-helpers.ts` | Functions to wait for animations, check play states, measure progress, get computed styles   |
 | `scroll-helpers.ts`    | Functions to scroll elements into view, simulate scroll gestures, calculate scroll positions |
 | `pointer-helpers.ts`   | Functions to simulate mouse movements, track pointer position within bounded areas           |
 
-
 ### 1.5 Create Page Objects
 
 Create `[packages/motion/e2e/pages/](packages/motion/e2e/pages/)` directory with:
-
 
 | File                      | Purpose                                                                   |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -184,7 +205,6 @@ Create `[packages/motion/e2e/pages/](packages/motion/e2e/pages/)` directory with
 | `effects-page.ts`         | Page object for effects fixture (named, keyframe, custom)                 |
 | `responsive-page.ts`      | Page object for responsive conditions fixture                             |
 | `selector-page.ts`        | Page object for selector conditions fixture                               |
-
 
 ---
 
@@ -260,13 +280,37 @@ import { registerEffects, getWebAnimation, getCSSAnimation } from '@wix/motion';
 registerEffects({
   TestFadeIn: {
     getNames: () => ['test-fadeIn'],
-    web: (options) => [{ ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] }],
-    style: (options) => [{ ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] }],
+    web: (options) => [
+      { ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] },
+    ],
+    style: (options) => [
+      { ...options, name: 'test-fadeIn', easing: 'linear', keyframes: [{ offset: 0, opacity: 0 }] },
+    ],
   },
   TestScale: {
     getNames: () => ['test-scale'],
-    web: (options) => [{ ...options, name: 'test-scale', easing: 'linear', keyframes: [{ offset: 0, transform: 'scale(0)' }, { offset: 1, transform: 'scale(1)' }] }],
-    style: (options) => [{ ...options, name: 'test-scale', easing: 'linear', keyframes: [{ offset: 0, transform: 'scale(0)' }, { offset: 1, transform: 'scale(1)' }] }],
+    web: (options) => [
+      {
+        ...options,
+        name: 'test-scale',
+        easing: 'linear',
+        keyframes: [
+          { offset: 0, transform: 'scale(0)' },
+          { offset: 1, transform: 'scale(1)' },
+        ],
+      },
+    ],
+    style: (options) => [
+      {
+        ...options,
+        name: 'test-scale',
+        easing: 'linear',
+        keyframes: [
+          { offset: 0, transform: 'scale(0)' },
+          { offset: 1, transform: 'scale(1)' },
+        ],
+      },
+    ],
   },
 });
 ```
@@ -601,4 +645,3 @@ The workflow:
 - Caches and installs Playwright browsers
 - Runs `npx playwright test` (with `--project` filter for single-browser runs)
 - Uploads the Playwright HTML report as an artifact (retained 14 days)
-
