@@ -1,6 +1,6 @@
 ---
 name: Interact E2E Testing
-overview: 'Set up Playwright-based E2E test infrastructure for the @wix/interact package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite.'
+overview: "Set up Playwright-based E2E test infrastructure for the @wix/interact package with dedicated test fixture pages. The plan is divided into phases: infrastructure setup, test fixtures creation, test scaffolding with titles, and incremental test implementation per suite."
 todos:
   - id: install-playwright
     content: Install Playwright dependencies and add scripts to packages/interact/package.json
@@ -126,8 +126,8 @@ todos:
     content: Implement Web Components integration tests (interact-element lifecycle)
     status: pending
   - id: ci-integration
-    content: Update CI workflow to run E2E tests with Playwright
-    status: pending
+    content: Create dedicated interact-e2e.yml workflow (on-demand via workflow_dispatch) to run E2E tests with Playwright
+    status: completed
 isProject: false
 ---
 
@@ -150,7 +150,7 @@ Dedicated test fixture pages will be created within the interact package to serv
 
 ### 1.1 Install Playwright Dependencies
 
-Add to [`packages/interact/package.json`](packages/interact/package.json):
+Add to `[packages/interact/package.json](packages/interact/package.json)`:
 
 ```json
 "devDependencies": {
@@ -170,7 +170,7 @@ Add scripts:
 
 ### 1.2 Create Playwright Configuration
 
-Create [`packages/interact/playwright.config.ts`](packages/interact/playwright.config.ts):
+Create `[packages/interact/playwright.config.ts](packages/interact/playwright.config.ts)`:
 
 - Base URL: `http://localhost:5173` (test fixtures dev server)
 - Test directory: `e2e/tests/`
@@ -181,7 +181,7 @@ Create [`packages/interact/playwright.config.ts`](packages/interact/playwright.c
 
 ### 1.3 Create Test Fixtures Server
 
-Create [`packages/interact/e2e/fixtures/vite.config.ts`](packages/interact/e2e/fixtures/vite.config.ts):
+Create `[packages/interact/e2e/fixtures/vite.config.ts](packages/interact/e2e/fixtures/vite.config.ts)`:
 
 - Multi-page app with each fixture as an entry point
 - React plugin for JSX/TSX support (needed for React integration tests)
@@ -191,53 +191,38 @@ Create [`packages/interact/e2e/fixtures/vite.config.ts`](packages/interact/e2e/f
 
 ### 1.4 Create Test Utilities
 
-Create [`packages/interact/e2e/utils/`](packages/interact/e2e/utils/) directory with:
+Create `[packages/interact/e2e/utils/](packages/interact/e2e/utils/)` directory with:
 
-| File | Purpose |
 
-|------|---------|
+| File                     | Purpose                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| `animation-helpers.ts`   | Functions to wait for animations, check computed styles, measure transform values          |
+| `scroll-helpers.ts`      | Functions to scroll elements into view, simulate scroll gestures with `page.mouse.wheel()` |
+| `pointer-helpers.ts`     | Functions to simulate mouse movements, track pointer position across hit areas             |
+| `interaction-helpers.ts` | Functions to verify interaction states, check active effects via `getActiveEffects()`      |
 
-| `animation-helpers.ts` | Functions to wait for animations, check computed styles, measure transform values |
-
-| `scroll-helpers.ts` | Functions to scroll elements into view, simulate scroll gestures with `page.mouse.wheel()` |
-
-| `pointer-helpers.ts` | Functions to simulate mouse movements, track pointer position across hit areas |
-
-| `interaction-helpers.ts` | Functions to verify interaction states, check active effects via `getActiveEffects()` |
 
 ### 1.5 Create Page Objects
 
-Create [`packages/interact/e2e/pages/`](packages/interact/e2e/pages/) directory with:
+Create `[packages/interact/e2e/pages/](packages/interact/e2e/pages/)` directory with:
 
-| File | Purpose |
 
-|------|---------|
+| File                        | Purpose                                                                   |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `base-fixture-page.ts`      | Base page object with common fixture utilities, navigation, window access |
+| `hover-page.ts`             | Page object for hover trigger fixture                                     |
+| `click-page.ts`             | Page object for click trigger fixture                                     |
+| `view-enter-page.ts`        | Page object for viewEnter trigger fixture                                 |
+| `view-progress-page.ts`     | Page object for viewProgress trigger fixture                              |
+| `pointer-move-page.ts`      | Page object for pointerMove trigger fixture                               |
+| `animation-end-page.ts`     | Page object for animationEnd trigger fixture                              |
+| `conditional-page.ts`       | Page object for conditional effects fixture                               |
+| `effect-types-page.ts`      | Page object for effect types fixture                                      |
+| `list-container-page.ts`    | Page object for list container fixture                                    |
+| `state-management-page.ts`  | Page object for state management fixture                                  |
+| `react-integration-page.ts` | Page object for React integration fixture                                 |
+| `web-components-page.ts`    | Page object for Web Components fixture                                    |
 
-| `base-fixture-page.ts` | Base page object with common fixture utilities, navigation, window access |
-
-| `hover-page.ts` | Page object for hover trigger fixture |
-
-| `click-page.ts` | Page object for click trigger fixture |
-
-| `view-enter-page.ts` | Page object for viewEnter trigger fixture |
-
-| `view-progress-page.ts` | Page object for viewProgress trigger fixture |
-
-| `pointer-move-page.ts` | Page object for pointerMove trigger fixture |
-
-| `animation-end-page.ts` | Page object for animationEnd trigger fixture |
-
-| `conditional-page.ts` | Page object for conditional effects fixture |
-
-| `effect-types-page.ts` | Page object for effect types fixture |
-
-| `list-container-page.ts` | Page object for list container fixture |
-
-| `state-management-page.ts` | Page object for state management fixture |
-
-| `react-integration-page.ts` | Page object for React integration fixture |
-
-| `web-components-page.ts` | Page object for Web Components fixture |
 
 ---
 
@@ -252,7 +237,7 @@ Create dedicated HTML/TypeScript pages for each test scenario. Each fixture:
 
 ### 2.1 Hover Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/hover.html`](packages/interact/e2e/fixtures/hover.html) + [`hover.tsx`](packages/interact/e2e/fixtures/hover.tsx)
+File: `[packages/interact/e2e/fixtures/hover.html](packages/interact/e2e/fixtures/hover.html)` + `[hover.tsx](packages/interact/e2e/fixtures/hover.tsx)`
 
 Elements:
 
@@ -269,7 +254,7 @@ Test IDs: `hover-target`, `hover-toggle-target`, `interest-target`
 
 ### 2.2 Click Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/click.html`](packages/interact/e2e/fixtures/click.html) + [`click.tsx`](packages/interact/e2e/fixtures/click.tsx)
+File: `[packages/interact/e2e/fixtures/click.html](packages/interact/e2e/fixtures/click.html)` + `[click.tsx](packages/interact/e2e/fixtures/click.tsx)`
 
 Elements:
 
@@ -286,7 +271,7 @@ Test IDs: `click-target`, `click-toggle-target`, `activate-target`
 
 ### 2.3 ViewEnter Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/view-enter.html`](packages/interact/e2e/fixtures/view-enter.html) + [`view-enter.tsx`](packages/interact/e2e/fixtures/view-enter.tsx)
+File: `[packages/interact/e2e/fixtures/view-enter.html](packages/interact/e2e/fixtures/view-enter.html)` + `[view-enter.tsx](packages/interact/e2e/fixtures/view-enter.tsx)`
 
 Elements:
 
@@ -305,7 +290,7 @@ Test IDs: `view-once`, `view-repeat`, `view-alternate`, `view-state`, `scroll-co
 
 ### 2.4 ViewProgress Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/view-progress.html`](packages/interact/e2e/fixtures/view-progress.html) + [`view-progress.tsx`](packages/interact/e2e/fixtures/view-progress.tsx)
+File: `[packages/interact/e2e/fixtures/view-progress.html](packages/interact/e2e/fixtures/view-progress.html)` + `[view-progress.tsx](packages/interact/e2e/fixtures/view-progress.tsx)`
 
 Elements:
 
@@ -322,7 +307,7 @@ Test IDs: `scroll-container`, `scroll-target-1`, `scroll-target-2`, `scroll-targ
 
 ### 2.5 PointerMove Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/pointer-move.html`](packages/interact/e2e/fixtures/pointer-move.html) + [`pointer-move.tsx`](packages/interact/e2e/fixtures/pointer-move.tsx)
+File: `[packages/interact/e2e/fixtures/pointer-move.html](packages/interact/e2e/fixtures/pointer-move.html)` + `[pointer-move.tsx](packages/interact/e2e/fixtures/pointer-move.tsx)`
 
 Elements:
 
@@ -340,7 +325,7 @@ Test IDs: `pointer-container`, `pointer-target`, `pointer-composite`, `pointer-x
 
 ### 2.6 AnimationEnd Trigger Fixture
 
-File: [`packages/interact/e2e/fixtures/animation-end.html`](packages/interact/e2e/fixtures/animation-end.html) + [`animation-end.tsx`](packages/interact/e2e/fixtures/animation-end.tsx)
+File: `[packages/interact/e2e/fixtures/animation-end.html](packages/interact/e2e/fixtures/animation-end.html)` + `[animation-end.tsx](packages/interact/e2e/fixtures/animation-end.tsx)`
 
 Elements:
 
@@ -360,7 +345,7 @@ Test IDs: `animation-source`, `animation-target`, `chain-step-1`, `chain-step-2`
 
 ### 2.7 Conditional Effects Fixture
 
-File: [`packages/interact/e2e/fixtures/conditional.html`](packages/interact/e2e/fixtures/conditional.html) + [`conditional.tsx`](packages/interact/e2e/fixtures/conditional.tsx)
+File: `[packages/interact/e2e/fixtures/conditional.html](packages/interact/e2e/fixtures/conditional.html)` + `[conditional.tsx](packages/interact/e2e/fixtures/conditional.tsx)`
 
 Elements:
 
@@ -380,7 +365,7 @@ Test IDs: `desktop-target`, `tablet-target`, `mobile-target`, `trigger-btn`, `se
 
 ### 2.8 Effect Types Fixture
 
-File: [`packages/interact/e2e/fixtures/effect-types.html`](packages/interact/e2e/fixtures/effect-types.html) + [`effect-types.tsx`](packages/interact/e2e/fixtures/effect-types.tsx)
+File: `[packages/interact/e2e/fixtures/effect-types.html](packages/interact/e2e/fixtures/effect-types.html)` + `[effect-types.tsx](packages/interact/e2e/fixtures/effect-types.tsx)`
 
 Elements:
 
@@ -400,7 +385,7 @@ Test IDs: `time-effect-target`, `transition-effect-target`, `keyframe-effect-tar
 
 ### 2.9 List Container Fixture
 
-File: [`packages/interact/e2e/fixtures/list-container.html`](packages/interact/e2e/fixtures/list-container.html) + [`list-container.tsx`](packages/interact/e2e/fixtures/list-container.tsx)
+File: `[packages/interact/e2e/fixtures/list-container.html](packages/interact/e2e/fixtures/list-container.html)` + `[list-container.tsx](packages/interact/e2e/fixtures/list-container.tsx)`
 
 Elements:
 
@@ -418,7 +403,7 @@ Test IDs: `list-container`, `list-item-{n}`, `add-item-btn`, `remove-item-btn`
 
 ### 2.10 State Management Fixture
 
-File: [`packages/interact/e2e/fixtures/state-management.html`](packages/interact/e2e/fixtures/state-management.html) + [`state-management.tsx`](packages/interact/e2e/fixtures/state-management.tsx)
+File: `[packages/interact/e2e/fixtures/state-management.html](packages/interact/e2e/fixtures/state-management.html)` + `[state-management.tsx](packages/interact/e2e/fixtures/state-management.tsx)`
 
 Elements:
 
@@ -435,7 +420,7 @@ Test IDs: `state-target`, `toggle-add-btn`, `toggle-remove-btn`, `toggle-toggle-
 
 ### 2.11 React Integration Fixture
 
-File: [`packages/interact/e2e/fixtures/react-integration.html`](packages/interact/e2e/fixtures/react-integration.html) + [`react-integration.tsx`](packages/interact/e2e/fixtures/react-integration.tsx)
+File: `[packages/interact/e2e/fixtures/react-integration.html](packages/interact/e2e/fixtures/react-integration.html)` + `[react-integration.tsx](packages/interact/e2e/fixtures/react-integration.tsx)`
 
 Elements:
 
@@ -453,7 +438,7 @@ Test IDs: `interaction-component`, `ref-target`, `mount-toggle-btn`
 
 ### 2.12 Web Components Fixture
 
-File: [`packages/interact/e2e/fixtures/web-components.html`](packages/interact/e2e/fixtures/web-components.html) + [`web-components.ts`](packages/interact/e2e/fixtures/web-components.ts)
+File: `[packages/interact/e2e/fixtures/web-components.html](packages/interact/e2e/fixtures/web-components.html)` + `[web-components.ts](packages/interact/e2e/fixtures/web-components.ts)`
 
 Elements:
 
@@ -477,7 +462,7 @@ Create test files with `describe` blocks and empty `test()` stubs.
 
 ### 3.1 Hover Trigger Suite
 
-File: [`packages/interact/e2e/tests/hover-trigger.spec.ts`](packages/interact/e2e/tests/hover-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/hover-trigger.spec.ts](packages/interact/e2e/tests/hover-trigger.spec.ts)`
 
 ```
 describe('Hover Trigger')
@@ -495,7 +480,7 @@ describe('Hover Trigger')
 
 ### 3.2 Click Trigger Suite
 
-File: [`packages/interact/e2e/tests/click-trigger.spec.ts`](packages/interact/e2e/tests/click-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/click-trigger.spec.ts](packages/interact/e2e/tests/click-trigger.spec.ts)`
 
 ```
 describe('Click Trigger')
@@ -513,7 +498,7 @@ describe('Click Trigger')
 
 ### 3.3 ViewEnter Trigger Suite
 
-File: [`packages/interact/e2e/tests/view-enter-trigger.spec.ts`](packages/interact/e2e/tests/view-enter-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/view-enter-trigger.spec.ts](packages/interact/e2e/tests/view-enter-trigger.spec.ts)`
 
 ```
 describe('ViewEnter Trigger')
@@ -533,7 +518,7 @@ describe('ViewEnter Trigger')
 
 ### 3.4 ViewProgress Trigger Suite
 
-File: [`packages/interact/e2e/tests/view-progress-trigger.spec.ts`](packages/interact/e2e/tests/view-progress-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/view-progress-trigger.spec.ts](packages/interact/e2e/tests/view-progress-trigger.spec.ts)`
 
 ```
 describe('ViewProgress Trigger')
@@ -549,7 +534,7 @@ describe('ViewProgress Trigger')
 
 ### 3.5 PointerMove Trigger Suite
 
-File: [`packages/interact/e2e/tests/pointer-move-trigger.spec.ts`](packages/interact/e2e/tests/pointer-move-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/pointer-move-trigger.spec.ts](packages/interact/e2e/tests/pointer-move-trigger.spec.ts)`
 
 ```
 describe('PointerMove Trigger')
@@ -569,7 +554,7 @@ describe('PointerMove Trigger')
 
 ### 3.6 AnimationEnd Trigger Suite
 
-File: [`packages/interact/e2e/tests/animation-end-trigger.spec.ts`](packages/interact/e2e/tests/animation-end-trigger.spec.ts)
+File: `[packages/interact/e2e/tests/animation-end-trigger.spec.ts](packages/interact/e2e/tests/animation-end-trigger.spec.ts)`
 
 ```
 describe('AnimationEnd Trigger')
@@ -586,7 +571,7 @@ describe('AnimationEnd Trigger')
 
 ### 3.7 Conditional Effects Suite
 
-File: [`packages/interact/e2e/tests/conditional-effects.spec.ts`](packages/interact/e2e/tests/conditional-effects.spec.ts)
+File: `[packages/interact/e2e/tests/conditional-effects.spec.ts](packages/interact/e2e/tests/conditional-effects.spec.ts)`
 
 ```
 describe('Conditional Effects')
@@ -603,7 +588,7 @@ describe('Conditional Effects')
 
 ### 3.8 Effect Types Suite
 
-File: [`packages/interact/e2e/tests/effect-types.spec.ts`](packages/interact/e2e/tests/effect-types.spec.ts)
+File: `[packages/interact/e2e/tests/effect-types.spec.ts](packages/interact/e2e/tests/effect-types.spec.ts)`
 
 ```
 describe('Effect Types')
@@ -621,7 +606,7 @@ describe('Effect Types')
 
 ### 3.9 List Container Suite
 
-File: [`packages/interact/e2e/tests/list-container.spec.ts`](packages/interact/e2e/tests/list-container.spec.ts)
+File: `[packages/interact/e2e/tests/list-container.spec.ts](packages/interact/e2e/tests/list-container.spec.ts)`
 
 ```
 describe('List Container')
@@ -635,7 +620,7 @@ describe('List Container')
 
 ### 3.10 State Management Suite
 
-File: [`packages/interact/e2e/tests/state-management.spec.ts`](packages/interact/e2e/tests/state-management.spec.ts)
+File: `[packages/interact/e2e/tests/state-management.spec.ts](packages/interact/e2e/tests/state-management.spec.ts)`
 
 ```
 describe('State Management')
@@ -651,7 +636,7 @@ describe('State Management')
 
 ### 3.11 React Integration Suite
 
-File: [`packages/interact/e2e/tests/react-integration.spec.ts`](packages/interact/e2e/tests/react-integration.spec.ts)
+File: `[packages/interact/e2e/tests/react-integration.spec.ts](packages/interact/e2e/tests/react-integration.spec.ts)`
 
 ```
 describe('React Integration')
@@ -666,7 +651,7 @@ describe('React Integration')
 
 ### 3.12 Web Components Integration Suite
 
-File: [`packages/interact/e2e/tests/web-components-integration.spec.ts`](packages/interact/e2e/tests/web-components-integration.spec.ts)
+File: `[packages/interact/e2e/tests/web-components-integration.spec.ts](packages/interact/e2e/tests/web-components-integration.spec.ts)`
 
 ```
 describe('Web Components Integration')
@@ -780,12 +765,11 @@ describe('Web Components Integration')
 
 ## Phase 5: CI Integration
 
-Update [`.github/workflows/ci.yml`](.github/workflows/ci.yml) to:
+Create a dedicated `[.github/workflows/interact-e2e.yml](.github/workflows/interact-e2e.yml)` workflow (matching the `motion-e2e.yml` pattern):
 
-- Install Playwright browsers (`npx playwright install --with-deps chromium`)
-- Run `yarn workspace @wix/interact test:e2e` after unit tests
-- Upload HTML report as artifact on failure
-- Cache Playwright browsers for faster CI runs
+- **Trigger**: `workflow_dispatch` with a browser choice input (chromium / firefox / webkit / all, default: webkit)
+- **Steps**: Checkout, setup Node 24, cache Yarn deps, enable Corepack, install deps, build motion & interact packages, cache & install Playwright browsers, run E2E tests for selected or all browsers, upload HTML report artifact (14-day retention)
+- E2E tests are **not** run in the main CI workflow (`ci.yml`) — they are triggered on demand via the GitHub Actions UI
 
 ---
 
@@ -870,3 +854,4 @@ packages/interact/
 - **Animation Timing**: Use Playwright's `waitForFunction` or animation helpers to wait for animations to complete before asserting
 - **Scroll Simulation**: Use `page.mouse.wheel()` for realistic scroll behavior with ViewProgress tests
 - **Reduced Motion**: Consider adding tests that verify `prefers-reduced-motion` behavior
+
