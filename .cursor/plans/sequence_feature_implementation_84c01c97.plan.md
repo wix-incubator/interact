@@ -1,28 +1,3 @@
----
-name: Sequence Feature Implementation
-overview: Implement a new Sequence feature in @wix/motion that manages a list of AnimationGroup instances with staggered delays, and integrate it into @eix/interact for declarative configuration.
-todos:
-  - id: motion-sequence-class
-    content: Create Sequence class in @wix/motion that extends AnimationGroup and manages AnimationGroup instances
-    status: pending
-  - id: motion-types
-    content: Add SequenceOptions type to @wix/motion/types.ts and export from index.ts
-    status: pending
-  - id: interact-types
-    content: Update InteractConfig, Interaction, and InteractCache types to include sequences
-    status: pending
-  - id: interact-parse-config
-    content: Update parseConfig in Interact.ts to process sequence declarations and sequence effects
-    status: pending
-  - id: interact-add-sequence
-    content: Update add.ts to create Sequence instances and apply calculated delay offsets
-    status: pending
-  - id: handler-integration
-    content: Update trigger handlers to work with Sequence instances for coordinated playback
-    status: pending
-isProject: false
----
-
 # Sequence Feature Implementation
 
 This plan implements the Sequence feature as specified in [sequences-spec.md](packages/interact/dev/sequences-spec.md). The feature enables managing multiple Effects as a coordinated timeline with staggered delays.
@@ -66,7 +41,7 @@ classDiagram
 Create new file `packages/motion/src/Sequence.ts`:
 
 - Extend `AnimationGroup` to inherit the playback control API
-- Store `animationGroups: AnimationGroup[]` instead of `animations: Animation[]`
+- Store `animations: AnimationGroup[]` instead of `animations: Animation[]`
 - Add properties: `delay`, `offset`, `offsetEasing`
 - Implement `calculateOffsets()` method using the formula from spec:
 
@@ -75,7 +50,7 @@ const last = indices.at(-1);
 indices.map((n) => (easing(n / last) * last * offset) | 0);
 ```
 
-- Override playback methods (`play`, `pause`, `reverse`, `cancel`) to delegate to child `AnimationGroup` instances
+- Override playback methods/properties where needed to delegate to child `AnimationGroup` instances
 - Apply calculated delay offsets to each effect's animation timing
 
 ### 1.2 Add Sequence Types
@@ -97,7 +72,28 @@ Update `packages/motion/src/index.ts` to export:
 - `Sequence` class
 - `SequenceOptions` type
 
-## Part 2: @eix/interact Package Changes
+### 1.4 Implement a `getSequence()`
+
+- Create this function in `packages/motion/src/motion.ts`
+- Export it via `packages/motion/src/index.ts`
+- It should have the following signature:
+
+```ts
+type AnimationGroupArgs = {
+  target: HTMLElement | HTMLElement[] | string | null,
+  options: AnimationOptions,
+  context?: Record<string, any>,
+};
+
+type getSequence = (options: SequenceOptions, animations: AnimationGroupArgs | AnimationGroupArgs[]) => Sequence;
+```
+
+The `getSequence()` funciton has 2 flows:
+
+- If passed `animations: AnimationGroupArgs` it creates a `Sequence` from a single effect definition applied to multiple targets.
+- If passed `animations: AnimationGroupArgs[]` it creates a `Sequence` from a each effect definition in the array.
+
+## Part 2: @wix/interact Package Changes
 
 ### 2.1 Update Types
 
@@ -138,7 +134,13 @@ export type InteractCache = {
   sequences: { [sequenceId: string]: Sequence }; // NEW
   conditions: { [conditionId: string]: Condition };
   interactions: {
-    /* existing structure */
+    [path: string]: {
+      triggers: Interaction[];
+      effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
+      sequences: Record<string, (InteractionTrigger & { sequence: Sequence })[]>
+      interactionIds: Set<string>;
+      selectors: Set<string>;
+    };
   };
 };
 ```
@@ -155,7 +157,7 @@ Modify `packages/interact/src/core/Interact.ts`:
 
 3. Track sequence membership for effects (needed for delay calculation)
 
-### 2.4 Update Effect Processing in add.ts
+### 2.4 Update Effect Processing in `add.ts`
 
 Modify `packages/interact/src/core/add.ts`:
 
@@ -164,12 +166,21 @@ Modify `packages/interact/src/core/add.ts`:
 3. Apply calculated delay offsets based on effect index in sequence
 4. Handle sequence removal (when conditions change or elements removed)
 
-### 2.5 Handler Integration
+### 2.5 Create `Sequence` caching:
+
+- Cache created `Sequence` instances on a static property `Interact.sequenceCache`
+- Add endpoint on `Interact` class to get cached `Sequence` instances
+- Add a new endpoint on `Interact.getEffect()` class that wraps `getAnimation()` and `getSequence()` of `@wix/motion` and, depending on the provided arguments, either:
+  - Returns a cached `Sequence` if there's one, or
+  - Creates a new `Sequence`, or
+  - Returns an `AnimationGroup`
+
+### 2.6 Handler Integration
 
 Update relevant trigger handlers (e.g., `viewEnter.ts`, `click.ts`) to:
 
 - Accept `Sequence` instances in addition to individual `AnimationGroup`
-- Properly manage sequence lifecycle (play, pause, cancel)
+- Properly manage sequence playback (play, pause, cancel)
 
 ## Part 3: Offset Calculation Implementation
 
