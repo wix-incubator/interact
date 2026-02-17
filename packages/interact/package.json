@@ -1,6 +1,6 @@
 {
   "name": "@wix/interact",
-  "version": "2.0.0-rc.8",
+  "version": "2.0.1",
   "description": "A powerful, declarative interaction library for creating engaging web apps.",
   "license": "MIT",
   "main": "dist/cjs/index.js",
@@ -49,13 +49,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/interact.git"
+    "url": "git+https://github.com/wix/interact.git"
   },
   "bugs": {
-    "url": "https://github.com/wix-incubator/interact/issues"
+    "url": "https://github.com/wix/interact/issues"
   },
   "dependencies": {
-    "@wix/motion": "^2.0.0-rc.6",
+    "@wix/motion": "^2.0.0",
     "fastdom": "^1.0.12",
     "fizban": "^0.7.2",
     "kuliso": "^0.4.13"
@@ -86,6 +86,5 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
-  },
-  "stableVersion": "2.0.0-rc.6"
+  }
 }

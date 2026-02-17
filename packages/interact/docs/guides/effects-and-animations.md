@@ -450,7 +450,7 @@ Avoid animating:
 ### Named Effects vs Keyframes
 
 ```typescript
-// Preferred - optimized by @wix/motion
+// Preferred - optimized; from @wix/motion-presets
 {
     namedEffect: {
         type: 'FadeIn'

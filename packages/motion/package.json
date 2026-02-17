@@ -1,6 +1,6 @@
 {
   "name": "@wix/motion",
-  "version": "2.0.0-rc.6",
+  "version": "2.0.0",
   "description": "High-performance animation toolkit for the web, powering Wix motion presets and tooling.",
   "license": "MIT",
   "main": "dist/cjs/motion.js",
@@ -40,12 +40,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/interact.git"
+    "url": "git+https://github.com/wix/interact.git"
   },
   "bugs": {
-    "url": "https://github.com/wix-incubator/interact/issues"
+    "url": "https://github.com/wix/interact/issues"
   },
-  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "homepage": "https://github.com/wix/interact#readme",
   "engines": {
     "node": ">=18"
   },
@@ -62,6 +62,5 @@
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.14"
-  },
-  "stableVersion": "2.0.0"
+  }
 }

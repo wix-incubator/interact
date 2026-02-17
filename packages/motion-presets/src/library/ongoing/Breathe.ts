@@ -21,11 +21,11 @@ const DIRECTION_MAP = {
 };
 
 const FACTORS_SEQUENCE = [
-  { translateFactor: 1, timeFactor: 0.25 },
-  { translateFactor: -1, timeFactor: 0.5 },
-  { translateFactor: 1, timeFactor: 0.5 },
-  { translateFactor: -0.7, timeFactor: 0.5 },
-  { translateFactor: 0.6, timeFactor: 0.3333 },
+  { translateFactor: 1, timeFactor: 0.1 },
+  { translateFactor: -1, timeFactor: 0.302 },
+  { translateFactor: 1, timeFactor: 0.504 },
+  { translateFactor: -0.7, timeFactor: 0.705 },
+  { translateFactor: 0.6, timeFactor: 0.839 },
 ];
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
@@ -41,8 +41,8 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const easing = options.easing || 'sineInOut';
   const duration = options.duration || 1;
   const delay = options.delay || 0;
-  const totalDurationWithDelay = 3.2 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDurationWithDelay - duration) as number;
+  const totalDurationWithDelay = duration + delay;
+  const timingFactor = getTimingFactor(duration, delay) as number;
   const [name] = getNames(options);
 
   const { x, y, z } = DIRECTION_MAP[direction];
@@ -69,13 +69,10 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   )}`;
   const breatheDistance = `${toKeyframeValue(custom, '--motion-breathe-distance', asWeb)}`;
 
-  let currentOffset = 0;
-
   // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? FACTORS_SEQUENCE.map(({ translateFactor, timeFactor }) => {
-        const keyframeOffset = currentOffset + timeFactor * timingFactor;
-        currentOffset = keyframeOffset;
+        const keyframeOffset = timeFactor * timingFactor;
         const distancePart = `${breatheDistance} * ${translateFactor}`;
 
         return {
@@ -103,7 +100,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       name,
       easing: 'linear',
       delay: 0,
-      duration: delay ? totalDurationWithDelay : duration,
+      duration: totalDurationWithDelay,
       custom,
       keyframes: [
         {

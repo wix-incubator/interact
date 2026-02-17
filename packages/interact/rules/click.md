@@ -61,8 +61,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
             key: 'mobile-nav',
             namedEffect: {
                 type: 'SlideIn',
-                direction: 'left',
-                power: 'medium'
+                direction: 'left'
             },
             fill: 'both',
             reversed: true,
@@ -119,14 +118,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ```typescript
 {
-    source: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
         type: 'state'
     },
     effects: [
         {
-            target: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_IDENTIFIER]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             fill: 'both',
             reversed: [INITIAL_REVERSED_BOOL],
@@ -277,8 +276,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
             key: 'success-badge',
             namedEffect: {
                 type: 'BounceIn',
-                direction: 'center',
-                power: 'medium'
+                direction: 'center'
             },
             duration: 600,
             easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -309,7 +307,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     key: '[SOURCE_IDENTIFIER]',
     trigger: 'click',
     params: {
-        type: 'alternate'
+        method: 'toggle'
     },
     effects: [
         {
@@ -342,7 +340,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     key: 'theme-switcher',
     trigger: 'click',
     params: {
-        type: 'alternate'
+        method: 'toggle'
     },
     effects: [
         {
@@ -370,7 +368,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     key: 'style-toggle',
     trigger: 'click',
     params: {
-        type: 'alternate'
+        method: 'toggle'
     },
     effects: [
         {
@@ -397,7 +395,7 @@ These rules help generate click-based interactions using the `@wix/interact` lib
     key: 'interactive-card',
     trigger: 'click',
     params: {
-        type: 'alternate'
+        method: 'toggle'
     },
     effects: [
         {

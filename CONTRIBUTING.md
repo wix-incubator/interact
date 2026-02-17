@@ -106,7 +106,7 @@ yarn workspace @wix/interact-demo dev
 
 ## Bug Reports
 
-Please use the [Bug Report template](https://github.com/wix-incubator/interact/issues/new?template=bug_report.md) and include:
+Please use the [Bug Report template](https://github.com/wix/interact/issues/new?template=bug_report.md) and include:
 
 - [ ] A clear, descriptive title
 - [ ] Steps to reproduce (preferably a minimal example on [JSBin](https://jsbin.com), [CodeSandbox](https://codesandbox.io), or similar)
@@ -118,7 +118,7 @@ Please use the [Bug Report template](https://github.com/wix-incubator/interact/i
 
 ## Feature Proposals
 
-Please use the [Feature Request template](https://github.com/wix-incubator/interact/issues/new?template=feature_request.md) and include:
+Please use the [Feature Request template](https://github.com/wix/interact/issues/new?template=feature_request.md) and include:
 
 - [ ] The problem you're trying to solve
 - [ ] Your proposed solution or API
@@ -255,9 +255,9 @@ If you discover a security vulnerability, **do not open a public issue**. Instea
 
 ## Questions & Discussion
 
-- **Questions:** Open a [GitHub Discussion](https://github.com/wix-incubator/interact/discussions) for general questions or ideas.
-- **Bugs:** Use the [Bug Report template](https://github.com/wix-incubator/interact/issues/new?template=bug_report.md).
-- **Features:** Use the [Feature Request template](https://github.com/wix-incubator/interact/issues/new?template=feature_request.md).
+- **Questions:** Open a [GitHub Discussion](https://github.com/wix/interact/discussions) for general questions or ideas.
+- **Bugs:** Use the [Bug Report template](https://github.com/wix/interact/issues/new?template=bug_report.md).
+- **Features:** Use the [Feature Request template](https://github.com/wix/interact/issues/new?template=feature_request.md).
 
 ---
 
