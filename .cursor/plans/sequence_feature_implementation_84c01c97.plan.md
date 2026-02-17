@@ -80,12 +80,15 @@ Update `packages/motion/src/index.ts` to export:
 
 ```ts
 type AnimationGroupArgs = {
-  target: HTMLElement | HTMLElement[] | string | null,
-  options: AnimationOptions,
-  context?: Record<string, any>,
+  target: HTMLElement | HTMLElement[] | string | null;
+  options: AnimationOptions;
+  context?: Record<string, any>;
 };
 
-type getSequence = (options: SequenceOptions, animations: AnimationGroupArgs | AnimationGroupArgs[]) => Sequence;
+type getSequence = (
+  options: SequenceOptions,
+  animations: AnimationGroupArgs | AnimationGroupArgs[],
+) => Sequence;
 ```
 
 The `getSequence()` funciton has 2 flows:
@@ -137,7 +140,7 @@ export type InteractCache = {
     [path: string]: {
       triggers: Interaction[];
       effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
-      sequences: Record<string, (InteractionTrigger & { sequence: Sequence })[]>
+      sequences: Record<string, (InteractionTrigger & { sequence: Sequence })[]>;
       interactionIds: Set<string>;
       selectors: Set<string>;
     };

@@ -43,7 +43,7 @@ type Sequence = {
   offset?: number; // default 100
   offsetEasing?: string | (p: number) => number; // linear
   effects: Effect[];
-  sequenceId: string;
+  sequenceId: string; // provided or generated automatically
 };
 ```
 
@@ -79,7 +79,7 @@ const items = [0, 1, 2, 3, 4];
 const offset = 200;
 
 const linear = (t) => t;
-// 0, 200, 400, 300, 400
+// 0, 200, 400, 600, 800
 
 const quadIn = (t) => t ** 2;
 // 0, 50, 200, 450, 800
