@@ -1,30 +1,43 @@
 ---
-name: entrance-presets-reference
-description: Full parameter details, examples, and intensity guide for entrance presets. Read when configuring specific entrance preset parameters or choosing intensity levels for entrance animations.
-category: entrance
+name: entrance-presets
+description: Full parameter reference for entrance motion presets. Read when configuring FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, or WinkIn entrance animations.
 ---
 
 # Entrance Presets
 
-All entrance preset parameters and TypeScript examples. For category overview and selection guidance, see [presets-main.md](presets-main.md).
+Entrance presets animate an element's first appearance, typically triggered when it enters the viewport. They can also be triggered by hover, click, or other events.
 
 ## Table of Contents
 
-- [Preset Reference](#preset-reference)
-- [Intensity Values](#intensity-values)
+- [FadeIn](#fadein)
+- [ArcIn](#arcin)
+- [BlurIn](#blurin)
+- [BounceIn](#bouncein)
+- [CurveIn](#curvein)
+- [DropIn](#dropin)
+- [ExpandIn](#expandin)
+- [FlipIn](#flipin)
+- [FloatIn](#floatin)
+- [FoldIn](#foldin)
+- [GlideIn](#glidein)
+- [RevealIn](#revealin)
+- [ShapeIn](#shapein)
+- [ShuttersIn](#shuttersin)
+- [SlideIn](#slidein)
+- [SpinIn](#spinin)
+- [TiltIn](#tiltin)
+- [TurnIn](#turnin)
+- [WinkIn](#winkin)
 - [Optional Parameters](#optional-parameters)
+- [Intensity Value Guide](#intensity-value-guide)
 
 ---
 
-## Preset Reference
-
 ### FadeIn
 
-Visual: Element transitions from invisible to visible. Simple opacity change, no movement.
+Visual: Element fades in smoothly from fully transparent to fully opaque.
 
-Parameters:
-
-- No preset-specific parameters
+Parameters: None — this preset has no configurable parameters.
 
 ```typescript
 {
@@ -32,249 +45,273 @@ Parameters:
 }
 ```
 
+---
+
 ### ArcIn
 
-Visual: Element swings in along a curved 3D path, like a door opening. Dramatic, cinematic.
+Visual: Element enters along a 3D arc path, rotating into view with depth motion and a fade-in.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'right')
-- `depth`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `perspective`: number (default: 800)
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'right'`)
+- `depth`: UnitLengthPercentage — Z translation distance (default: `{ value: 200, unit: 'px' }`)
+- `perspective`: number — 3D perspective in px (default: `800`)
 
 ```typescript
 { type: 'ArcIn', direction: 'bottom' }
-{ type: 'ArcIn', direction: 'left', depth: { value: 500, type: 'px' } }
 ```
+
+---
 
 ### BlurIn
 
-Visual: Element transitions from blurry to sharp focus while fading in. Soft, dreamy.
+Visual: Element transitions from blurred to clear while fading in.
 
 Parameters:
 
-- `blur`: number in px (default: 6)
+- `blur`: number — initial blur amount in px (default: `6`)
 
 ```typescript
-{ type: 'BlurIn' }
-{ type: 'BlurIn', blur: 25 }   // Medium
-{ type: 'BlurIn', blur: 50 }   // Dramatic
+{ type: 'BlurIn', blur: 25 }
 ```
+
+---
 
 ### BounceIn
 
-Visual: Element bounces into view with spring physics. Playful, attention-grabbing.
+Visual: Element bounces into place from a direction with an elastic multi-step curve.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' | 'center' (default: 'bottom')
-- `distanceFactor`: number (default: 1)
-- `perspective`: number (default: 800) - only used with 'center' direction
+- `direction`: 'top' | 'right' | 'bottom' | 'left' | 'center' (default: `'bottom'`)
+- `distanceFactor`: number — bounce distance multiplier (default: `1`)
+- `perspective`: number — 3D perspective for center direction (default: `800`)
 
 ```typescript
-{ type: 'BounceIn' }
-{ type: 'BounceIn', direction: 'center', distanceFactor: 2 }
+{ type: 'BounceIn', direction: 'left', distanceFactor: 2 }
 ```
+
+---
 
 ### CurveIn
 
-Visual: Curved 3D motion path entry. Cinematic arc trajectory.
+Visual: Element curves in with a 180° rotation and depth motion, creating a swinging arc entrance.
 
 Parameters:
 
-- `direction`: 'left' | 'right' | 'pseudoLeft' | 'pseudoRight' (default: 'right')
-- `depth`: UnitLengthPercentage (default: { value: 300, type: 'px' })
-- `perspective`: number (default: 200)
+- `direction`: 'left' | 'right' | 'pseudoLeft' | 'pseudoRight' (default: `'right'`)
+- `depth`: UnitLengthPercentage — Z translation distance (default: `{ value: 300, unit: 'px' }`)
+- `perspective`: number — 3D perspective in px (default: `200`)
 
 ```typescript
 { type: 'CurveIn', direction: 'left' }
 ```
 
+---
+
 ### DropIn
 
-Visual: Falls from above with subtle scale on landing. Gravity-like, natural.
+Visual: Element drops in from above, scaling down from a larger size to its final scale.
 
 Parameters:
 
-- `initialScale`: number (default: 1.6)
+- `initialScale`: number — starting scale before settling to 1 (default: `1.6`)
 
 ```typescript
-{ type: 'DropIn' }
 { type: 'DropIn', initialScale: 2 }
 ```
 
+---
+
 ### ExpandIn
 
-Visual: Scale from small to full size with directional expansion from edge. Emerging, growing outward.
+Visual: Element expands from a point in a given direction, scaling from small to full size with a fade-in.
 
 Parameters:
 
-- `direction`: number in degrees or keyword ('top' | 'right' | 'bottom' | 'left') (default: 90, from top)
-- `distance`: UnitLengthPercentage (default: { value: 120, type: 'percentage' })
-- `initialScale`: number (default: 0)
+- `initialScale`: number — starting scale, 0 = invisible (default: `0`)
+- `direction`: number | 'top' | 'right' | 'bottom' | 'left' — angle or cardinal direction (default: `90` / top). 0° = right, 90° = top, 180° = left, 270° = bottom
+- `distance`: UnitLengthPercentage — how far the element travels (default: `{ value: 120, unit: 'percentage' }`)
 
 ```typescript
-{ type: 'ExpandIn' }
-{ type: 'ExpandIn', direction: 'bottom', distance: { value: 100, type: 'px' }, initialScale: 0.3 }
+{ type: 'ExpandIn', direction: 'bottom', initialScale: 0.5 }
 ```
+
+---
 
 ### FlipIn
 
-Visual: 3D card flip rotation to reveal element. Dramatic, card-like metaphor.
+Visual: Element flips into view with a 3D rotation around the X or Y axis.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'top')
-- `initialRotate`: number in degrees (default: 90)
-- `perspective`: number (default: 800)
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'top'`)
+- `initialRotate`: number — starting rotation in degrees (default: `90`)
+- `perspective`: number — 3D perspective in px (default: `800`)
 
 ```typescript
-{ type: 'FlipIn', direction: 'left' }
-{ type: 'FlipIn', direction: 'top', initialRotate: 270 }
+{ type: 'FlipIn', direction: 'right', initialRotate: 180 }
 ```
+
+---
 
 ### FloatIn
 
-Visual: Gentle floating/drifting entrance. Ethereal, light, dreamy.
+Visual: Element drifts gently into place from a direction with a fade-in.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'left')
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'left'`)
 
 ```typescript
 { type: 'FloatIn', direction: 'bottom' }
 ```
 
+---
+
 ### FoldIn
 
-Visual: Paper-folding 3D effect. Origami-like, creative.
+Visual: Element unfolds from an edge, rotating around an axis at the edge as if hinged.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'top')
-- `initialRotate`: number in degrees (default: 90)
-- `perspective`: number (default: 800)
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'top'`)
+- `initialRotate`: number — starting fold angle in degrees (default: `90`)
+- `perspective`: number — 3D perspective in px (default: `800`)
 
 ```typescript
-{ type: 'FoldIn', direction: 'left' }
-{ type: 'FoldIn', direction: 'top', initialRotate: 45 }
+{ type: 'FoldIn', direction: 'left', initialRotate: 60 }
 ```
+
+---
 
 ### GlideIn
 
-Visual: Smooth 2D glide from any angle with distance control. Clean, directional.
+Visual: Element glides in smoothly from off-screen along a direction with a fade-in.
 
 Parameters:
 
-- `direction`: number in degrees (default: 180, from left). 0° = right, 90° = top, 180° = left, 270° = bottom
-- `distance`: UnitLengthPercentage | EffectFourDirections (default: { value: 100, type: 'percentage' })
+- `direction`: number | 'top' | 'right' | 'bottom' | 'left' — angle or cardinal (default: `180` / left). 0° = right, 90° = top, 180° = left, 270° = bottom
+- `distance`: UnitLengthPercentage | 'top' | 'right' | 'bottom' | 'left' — travel distance or edge keyword (default: `{ value: 100, unit: 'percentage' }`)
 
 ```typescript
-{ type: 'GlideIn' }
-{ type: 'GlideIn', direction: 90, distance: { value: 50, type: 'percentage' } }
+{ type: 'GlideIn', direction: 270, distance: { value: 200, type: 'px' } }
 ```
+
+---
 
 ### RevealIn
 
-Visual: Directional clip/mask reveal like a curtain opening. Theatrical.
+Visual: Element is progressively revealed by an expanding clip-path from one edge.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'left')
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'left'`)
 
 ```typescript
-{ type: 'RevealIn', direction: 'left' }
+{ type: 'RevealIn', direction: 'bottom' }
 ```
+
+---
 
 ### ShapeIn
 
-Visual: Shape mask reveal (circle, square, diamond, etc.). Geometric, precise.
+Visual: Element appears through an expanding geometric clip-path shape.
 
 Parameters:
 
-- `shape`: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window' (default: 'rectangle')
+- `shape`: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window' (default: `'rectangle'`)
 
 ```typescript
 { type: 'ShapeIn', shape: 'circle' }
-{ type: 'ShapeIn', shape: 'diamond' }
 ```
+
+---
 
 ### ShuttersIn
 
-Visual: Venetian blind strip reveal. Segmented, rhythmic.
+Visual: Element is revealed through multiple shutter-like strips that open in sequence.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'right')
-- `shutters`: number of strips (default: 12)
-- `staggered`: boolean - animate strips sequentially (default: true)
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'right'`)
+- `shutters`: number — number of shutter segments (default: `12`)
+- `staggered`: boolean — whether shutters open in a staggered pattern (default: `true`)
 
 ```typescript
-{ type: 'ShuttersIn', direction: 'left', shutters: 5, staggered: true }
+{ type: 'ShuttersIn', direction: 'top', shutters: 8 }
 ```
+
+---
 
 ### SlideIn
 
-Visual: Straight movement from direction with clip. Clean, simple, versatile.
+Visual: Element slides in from one side while being revealed with a clip-path mask.
 
 Parameters:
 
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'left')
-- `initialTranslate`: number 0-1 (default: 1) - starting offset ratio
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'left'`)
+- `initialTranslate`: number — 0 to 1, how far off-screen the element starts (default: `1`)
 
 ```typescript
-{ type: 'SlideIn', direction: 'bottom' }
-{ type: 'SlideIn', direction: 'left', initialTranslate: 0.2 }
+{ type: 'SlideIn', direction: 'right', initialTranslate: 0.5 }
 ```
+
+---
 
 ### SpinIn
 
-Visual: Rotating entrance with spin. Dynamic, playful.
+Visual: Element spins into view while scaling from small to full size.
 
 Parameters:
 
-- `direction`: 'clockwise' | 'counter-clockwise' (default: 'clockwise')
-- `spins`: number of rotations (default: 0.5)
-- `initialScale`: number (default: 0) - starting scale
+- `spins`: number — number of full rotations (default: `0.5`)
+- `direction`: 'clockwise' | 'counter-clockwise' (default: `'clockwise'`)
+- `initialScale`: number — starting scale, 0 = invisible (default: `0`)
 
 ```typescript
-{ type: 'SpinIn', direction: 'clockwise', spins: 1 }
-{ type: 'SpinIn', direction: 'counter-clockwise', spins: 2, initialScale: 0.5 }
+{ type: 'SpinIn', spins: 1, direction: 'counter-clockwise' }
 ```
+
+---
 
 ### TiltIn
 
-Visual: 3D tilt into view. Subtle depth, elegant perspective.
+Visual: Element tilts in from the side with 3D rotation and a clip-path reveal.
 
 Parameters:
 
-- `direction`: 'left' | 'right' (default: 'left')
-- `depth`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `perspective`: number (default: 800)
+- `direction`: 'left' | 'right' (default: `'left'`)
+- `depth`: UnitLengthPercentage — Z translation distance (default: `{ value: 200, unit: 'px' }`)
+- `perspective`: number — 3D perspective in px (default: `800`)
 
 ```typescript
-{ type: 'TiltIn', direction: 'left' }
+{ type: 'TiltIn', direction: 'right' }
 ```
+
+---
 
 ### TurnIn
 
-Visual: Corner-pivot 3D rotation. Complex, dramatic, premium.
+Visual: Element rotates into view around a corner pivot point.
 
 Parameters:
 
-- `direction`: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' (default: 'top-left')
+- `direction`: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' (default: `'top-left'`)
 
 ```typescript
-{ type: 'TurnIn', direction: 'bottom-left' }
+{ type: 'TurnIn', direction: 'bottom-right' }
 ```
+
+---
 
 ### WinkIn
 
-Visual: Split-in-half reveal from center. Unique, eye-like opening.
+Visual: Element winks into view by scaling along one axis while being revealed with a clip-path.
 
 Parameters:
 
-- `direction`: 'vertical' | 'horizontal' (default: 'horizontal')
+- `direction`: 'horizontal' | 'vertical' (default: `'horizontal'`)
 
 ```typescript
 { type: 'WinkIn', direction: 'vertical' }
@@ -282,29 +319,9 @@ Parameters:
 
 ---
 
-## Intensity Values
-
-Tested values for different intensity levels. When a user asks for "soft", "subtle", "medium", or "hard"/"dramatic" motion, use these as guidelines.
-
-| Preset   | Parameter        | Subtle/Soft | Medium     | Dramatic/Hard |
-| -------- | ---------------- | ----------- | ---------- | ------------- |
-| ArcIn    | easing           | cubicInOut  | quintInOut | backOut       |
-| BlurIn   | blur             | 6px         | 25px       | 50px          |
-| BounceIn | distanceFactor   | 1           | 2          | 3             |
-| DropIn   | initialScale     | 1.2         | 1.6        | 2             |
-| FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
-| FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
-| ExpandIn | initialScale     | 0.8         | 0.6        | 0             |
-| SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
-| SpinIn   | initialScale     | 1           | 0.6        | 0             |
-
-Example -- "I want a subtle flip entrance": `{ type: 'FlipIn', initialRotate: 45 }`
-
----
-
 ## Optional Parameters
 
-These parameters are exposed but their defaults have been tuned for good visual results and rarely need adjustment.
+Some preset parameters are exposed but their defaults have been tuned for good visual results and rarely need adjustment.
 
 ### 3D Perspective
 
@@ -324,3 +341,25 @@ These parameters are exposed but their defaults have been tuned for good visual 
 | ArcIn   | `depth`   | 200px   | Z translation distance |
 | CurveIn | `depth`   | 300px   | Z translation distance |
 | TiltIn  | `depth`   | 200px   | Z translation distance |
+
+## Intensity Value Guide
+
+Tested values for different intensity levels. When a user asks for "soft", "subtle", "medium", or "hard"/"dramatic" motion, use these as guidelines.
+
+| Preset   | Parameter        | Subtle/Soft | Medium     | Dramatic/Hard |
+| -------- | ---------------- | ----------- | ---------- | ------------- |
+| ArcIn    | easing           | cubicInOut  | quintInOut | backOut       |
+| BlurIn   | blur             | 6px         | 25px       | 50px          |
+| BounceIn | distanceFactor   | 1           | 2          | 3             |
+| DropIn   | initialScale     | 1.2         | 1.6        | 2             |
+| FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
+| FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
+| ExpandIn | initialScale     | 0.8         | 0.6        | 0             |
+| SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
+| SpinIn   | initialScale     | 1           | 0.6        | 0             |
+
+### Intensity Usage Example
+
+When a user asks: "I want a subtle flip entrance"
+
+Suggest: `{ type: 'FlipIn', initialRotate: 45 }`

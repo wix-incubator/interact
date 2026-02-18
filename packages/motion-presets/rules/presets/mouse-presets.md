@@ -1,91 +1,122 @@
 ---
-name: mouse-presets-reference
-description: Full parameter details, examples, and intensity guide for mouse presets. Read when configuring specific mouse preset parameters or choosing intensity levels for cursor-follow and pointer-reactive effects.
-category: mouse
+name: mouse-presets
+description: Full parameter reference for mouse motion presets. Read when configuring AiryMouse, BlobMouse, BlurMouse, BounceMouse, CustomMouse, ScaleMouse, SkewMouse, SpinMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, or TrackMouse pointer-driven animations.
 ---
 
 # Mouse Presets
 
-All mouse preset parameters and TypeScript examples. For category overview and selection guidance, see [presets-main.md](presets-main.md).
+Mouse presets drive element transforms in real-time based on pointer position. The element responds to cursor movement with translation, rotation, scale, or other effects. All mouse presets (except CustomMouse) share the `inverted` base parameter.
+
+**Mobile note:** Mouse presets respond to pointer events. On touch devices, behavior may differ — the element responds to touch position rather than a persistent cursor, so effects may only activate during active touch. Consider this when designing for cross-device experiences.
 
 ## Table of Contents
 
-- [Preset Reference](#preset-reference)
-- [Intensity Values](#intensity-values)
-- [Mobile Considerations](#mobile-considerations)
-
-All mouse presets accept an optional `inverted`: boolean parameter (default: false).
+- [Shared Parameters](#shared-parameters)
+- [AiryMouse](#airymouse)
+- [BlobMouse](#blobmouse)
+- [BlurMouse](#blurmouse)
+- [BounceMouse](#bouncemouse)
+- [CustomMouse](#custommouse)
+- [ScaleMouse](#scalemouse)
+- [SkewMouse](#skewmouse)
+- [SpinMouse](#spinmouse)
+- [SwivelMouse](#swivelmouse)
+- [Tilt3DMouse](#tilt3dmouse)
+- [Track3DMouse](#track3dmouse)
+- [TrackMouse](#trackmouse)
+- [Intensity Value Guide](#intensity-value-guide)
 
 ---
 
-## Preset Reference
+## Shared Parameters
+
+These parameters are available on all mouse presets (except CustomMouse):
+
+- `inverted`: boolean — reverses the movement/effect direction (default: `false`)
+
+The `axis` parameter, where available, accepts:
+
+- `'both'`: respond on both axes
+- `'horizontal'`: respond only on X
+- `'vertical'`: respond only on Y
+
+---
 
 ### AiryMouse
 
-Visual: Floating/airy cursor response. Ethereal, gentle drift.
+Visual: Element floats and rotates gently following the cursor, creating an airy, weightless feel.
 
 Parameters:
 
-- `distance`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-- `angle`: number (default: 30)
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 200, unit: 'px' }`)
+- `angle`: number — max rotation in degrees (default: `30`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
 
 ```typescript
-{ type: 'AiryMouse' }
-{ type: 'AiryMouse', angle: 10 }
+{ type: 'AiryMouse', angle: 50, distance: { value: 150, type: 'px' } }
 ```
+
+---
 
 ### BlobMouse
 
-Visual: Organic blob-like deformation. Fluid shape distortion.
+Visual: Element translates and scales non-uniformly following the cursor, creating a blob-like deformation.
 
 Parameters:
 
-- `distance`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `scale`: number (default: 1.4)
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 200, unit: 'px' }`)
+- `scale`: number — max scale at edges (default: `1.4`)
 
 ```typescript
-{ type: 'BlobMouse' }
-{ type: 'BlobMouse', scale: 2.4 }
+{ type: 'BlobMouse', scale: 2, distance: { value: 100, type: 'px' } }
 ```
+
+---
 
 ### BlurMouse
 
-Visual: Blur based on cursor distance. Focus/defocus by proximity.
+Visual: Element translates, tilts in 3D, scales, and blurs based on distance from the cursor — the farther away, the stronger the blur and tilt.
 
 Parameters:
 
-- `distance`: UnitLengthPercentage (default: { value: 80, type: 'px' })
-- `angle`: number (default: 5)
-- `scale`: number (default: 0.3)
-- `blur`: number (default: 20)
-- `perspective`: number (default: 600)
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 80, unit: 'px' }`)
+- `angle`: number — max 3D rotation in degrees (default: `5`)
+- `scale`: number — min scale at edges (default: `0.3`)
+- `blur`: number — max blur in px (default: `20`)
+- `perspective`: number — 3D perspective in px (default: `600`)
 
 ```typescript
-{ type: 'BlurMouse' }
-{ type: 'BlurMouse', angle: 65, scale: 0.25 }
+{ type: 'BlurMouse', blur: 30, angle: 10 }
 ```
+
+---
 
 ### BounceMouse
 
-Visual: Bouncy/elastic cursor following. Overshoots and wobbles.
+Visual: Element follows the cursor with an elastic, bouncy motion.
 
 Parameters:
 
-- `distance`: UnitLengthPercentage (default: { value: 80, type: 'px' })
-- `axis`: 'horizontal' | 'vertical' | 'both'
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 80, unit: 'px' }`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
 
 ```typescript
-{ type: 'BounceMouse', distance: { value: 80, type: 'px' }, axis: 'both' }
+{ type: 'BounceMouse', distance: { value: 120, type: 'px' } }
 ```
+
+---
 
 ### CustomMouse
 
-Visual: Configurable custom behavior. For advanced custom implementations.
+Visual: Fully custom effect — behavior is defined by a provided callback function.
 
 Parameters:
 
-- No preset-specific parameters
+- `customEffect`: (target: HTMLElement, progress: Progress) => void — custom function receiving the target element and normalized cursor progress `{ x, y, v: { x, y }, active }`
 
 ```typescript
 {
@@ -93,111 +124,125 @@ Parameters:
 }
 ```
 
+---
+
 ### ScaleMouse
 
-Visual: Scale based on cursor distance. Grows/shrinks by proximity.
+Visual: Element translates and scales uniformly following the cursor.
 
 Parameters:
 
-- `distance`: UnitLengthPercentage (default: { value: 80, type: 'px' })
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-- `scale`: number (default: 1.4)
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 80, unit: 'px' }`)
+- `scale`: number — scale at edges, >1 for grow, <1 for shrink (default: `1.4`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
 
 ```typescript
-{ type: 'ScaleMouse', distance: { value: 100, type: 'px' } }
-```
-
-### SkewMouse
-
-Visual: Skew distortion following cursor. Angular distortion.
-
-Parameters:
-
-- `distance`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `angle`: number (default: 25)
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-
-```typescript
-{ type: 'SkewMouse' }
-{ type: 'SkewMouse', angle: 45 }
-```
-
-### SpinMouse
-
-Visual: Rotation following mouse angle. Element spins based on cursor position.
-
-Parameters:
-
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-
-```typescript
-{ type: 'SpinMouse' }
-{ type: 'SpinMouse', axis: 'both' }
-```
-
-### SwivelMouse
-
-Visual: Pivot-axis rotation following cursor. Gyroscope-like rotation.
-
-Parameters:
-
-- `angle`: number (default: 5)
-- `perspective`: number (default: 800)
-- `pivotAxis`: 'top' | 'bottom' | 'right' | 'left' | 'center-horizontal' | 'center-vertical' (default: 'center-horizontal')
-
-```typescript
-{ type: 'SwivelMouse' }
-{ type: 'SwivelMouse', angle: 25, perspective: 1000 }
-```
-
-### Tilt3DMouse
-
-Visual: Element tilts toward cursor in 3D, like angling a card. Premium, interactive.
-
-Parameters:
-
-- `angle`: number (default: 5)
-- `perspective`: number (default: 800)
-
-```typescript
-{ type: 'Tilt3DMouse' }
-{ type: 'Tilt3DMouse', angle: 25, perspective: 1000 }
-{ type: 'Tilt3DMouse', angle: 85, perspective: 200 }
-```
-
-### Track3DMouse
-
-Visual: Combined translation + 3D rotation following mouse. Complex, immersive.
-
-Parameters:
-
-- `distance`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `angle`: number (default: 5)
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-- `perspective`: number (default: 800)
-
-```typescript
-{ type: 'Track3DMouse', distance: { value: 100, type: 'px' }, axis: 'both' }
-{ type: 'Track3DMouse', distance: { value: 50, type: 'px' }, angle: 25, perspective: 1000 }
-```
-
-### TrackMouse
-
-Visual: Element follows cursor position. Floating, parallax-like.
-
-Parameters:
-
-- `distance`: UnitLengthPercentage (default: { value: 200, type: 'px' })
-- `axis`: 'horizontal' | 'vertical' | 'both' (default: 'both')
-
-```typescript
-{ type: 'TrackMouse', distance: { value: 200, type: 'px' }, axis: 'both' }
-{ type: 'TrackMouse', distance: { value: 50, type: 'px' }, axis: 'horizontal' }
+{ type: 'ScaleMouse', scale: 0.5 }
 ```
 
 ---
 
-## Intensity Values
+### SkewMouse
+
+Visual: Element translates and skews following the cursor, creating a directional distortion.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 200, unit: 'px' }`)
+- `angle`: number — max skew angle in degrees (default: `25`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
+
+```typescript
+{ type: 'SkewMouse', angle: 15, axis: 'horizontal' }
+```
+
+---
+
+### SpinMouse
+
+Visual: Element rotates toward the cursor position.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
+
+```typescript
+{ type: 'SpinMouse', axis: 'horizontal' }
+```
+
+---
+
+### SwivelMouse
+
+Visual: Element tilts in 3D around a chosen pivot axis following the cursor.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `angle`: number — max tilt angle in degrees (default: `5`)
+- `perspective`: number — 3D perspective in px (default: `800`)
+- `pivotAxis`: 'top' | 'bottom' | 'right' | 'left' | 'center-horizontal' | 'center-vertical' (default: `'center-horizontal'`)
+
+```typescript
+{ type: 'SwivelMouse', angle: 25, pivotAxis: 'top' }
+```
+
+---
+
+### Tilt3DMouse
+
+Visual: Element tilts in 3D based on cursor position, rotating on X and Y axes from center.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `angle`: number — max tilt angle in degrees (default: `5`)
+- `perspective`: number — 3D perspective in px (default: `800`)
+
+```typescript
+{ type: 'Tilt3DMouse', angle: 15, perspective: 500 }
+```
+
+---
+
+### Track3DMouse
+
+Visual: Element translates and tilts in 3D following the cursor, combining movement with perspective rotation.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 200, unit: 'px' }`)
+- `angle`: number — max 3D rotation in degrees (default: `5`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
+- `perspective`: number — 3D perspective in px (default: `800`)
+
+```typescript
+{ type: 'Track3DMouse', angle: 15, distance: { value: 100, type: 'px' } }
+```
+
+---
+
+### TrackMouse
+
+Visual: Element follows the cursor with direct translation, no rotation.
+
+Parameters:
+
+- `inverted`: boolean (default: `false`)
+- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 200, unit: 'px' }`)
+- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
+
+```typescript
+{ type: 'TrackMouse', distance: { value: 100, type: 'px' }, axis: 'vertical' }
+```
+
+---
+
+## Intensity Value Guide
 
 Tested values for different intensity levels. When a user asks for "soft", "subtle", "medium", or "hard"/"dramatic" motion, use these as guidelines.
 
@@ -212,13 +257,3 @@ Tested values for different intensity levels. When a user asks for "soft", "subt
 | SwivelMouse       | angle, perspective | 25°, 1000   | 50°, 700 | 85°, 300      |
 | Tilt3DMouse       | angle, perspective | 25°, 1000   | 50°, 500 | 85°, 200      |
 | Track3DMouse      | angle, perspective | 25°, 1000   | 50°, 500 | 85°, 333      |
-
----
-
-## Mobile Considerations
-
-Mouse effects may behave differently on touch devices. Options:
-
-1. Do nothing (static on mobile)
-2. Use entrance animation instead
-3. Use device orientation (advanced)

@@ -1,6 +1,6 @@
 ---
-name: motion-presets-main-reference
-description: Entry point for selecting and configuring Interact motion presets. Read when the user asks about motion animations, presets, effects, entrance/scroll/ongoing/mouse animations, or interaction design.
+name: motion-presets
+description: Reference for selecting and configuring Interact motion presets. Read when applying entrance, scroll, ongoing, or mouse animations to elements, choosing presets by tone or use case, combining effects, or handling accessibility and reduced motion.
 ---
 
 # Motion Presets Reference
@@ -8,11 +8,14 @@ description: Entry point for selecting and configuring Interact motion presets. 
 ## Table of Contents
 
 - [Terminology](#terminology)
-- [Decision Flow](#decision-flow)
 - [Preset Categories](#preset-categories)
-- [Parameter Standards](#parameter-standards)
-- [Selection Tables](#selection-tables)
+- [Trigger and Effect Binding](#trigger-and-effect-binding)
 - [Combining Effects](#combining-effects)
+- [Parameter Standards](#parameter-standards)
+- [Available Presets](#available-presets)
+- [Selection by Tone](#selection-by-tone)
+- [Selection by Use Case](#selection-by-use-case)
+- [Cross-Category Parallels](#cross-category-parallels)
 - [Accessibility](#accessibility)
 
 ## Terminology
@@ -25,112 +28,36 @@ description: Entry point for selecting and configuring Interact motion presets. 
 
 A preset is a named effect. "Preset" is used when talking about selection and configuration; "effect" when talking about the Interact runtime; "animation" when referring to the visual motion or CSS/WAAPI mechanism.
 
-## Decision Flow
-
-1. **Select Category** - What kind of effect? (entrance, scroll, ongoing, mouse)
-2. **Select Preset** - Which visual effect matches the intent?
-3. **Configure Parameters** - Customize direction, intensity, timing, etc.
-
-### Quick Category Lookup
-
-| User Intent                                                          | Category | Notes                                                                   |
-| -------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------- |
-| "animate when element enters viewport", "reveal on scroll into view" | entrance | Optimized for `viewEnter`; also works with hover, click, animationEnd   |
-| "animate based on scroll position", "parallax", "scroll-driven"      | scroll   | Animation progress tied to element's position in the viewport           |
-| "always moving", "pulsing", "loading spinner", "continuous loop"     | ongoing  | Runs indefinitely until stopped                                         |
-| "react to mouse", "follow cursor", "tilt on hover"                   | mouse    | Real-time response to cursor position; may behave differently on mobile |
-
----
-
 ## Preset Categories
 
-### Entrance
+| Category | Optimized For                                      | Implementation                              | Notes                                                                   |
+| -------- | -------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------- |
+| entrance | When an element enters the viewport                | `viewEnter` (intersection observer)         | Can also be triggered by hover, click, animationend, and other triggers |
+| scroll   | Scroll position of an element relative to document | ViewTimeline (scroll progress)              | Animation progress tied to element's position in the viewport           |
+| ongoing  | Continuous loop                                    | infinite CSS/WAAPI animation                | Runs indefinitely until stopped                                         |
+| mouse    | Follow or Repel by Pointer position                | transform values driven by pointer position | Real-time response to cursor position; may behave differently on mobile |
 
-One-shot animations optimized for viewport entry, but can also be triggered by hover, click, animationEnd, and other triggers.
+For full parameter details per category, see the dedicated reference files:
 
-**When to use:** Element reveals on viewport entry, first-time visibility animations, click/hover-triggered transitions
+- [Entrance Presets](./entrance-presets.md)
+- [Scroll Presets](./scroll-presets.md)
+- [Ongoing Presets](./ongoing-presets.md)
+- [Mouse Presets](./mouse-presets.md)
 
-**When NOT to use:** Scroll-driven reveals → use scroll | Continuous/looping → use ongoing | Mouse-reactive → use mouse
+## Trigger and Effect Binding
 
-**Available presets:** FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
+In the simplest case, a trigger and its effect are bound to the same element. However, an effect on one element can also be triggered by another element (e.g., hovering a button triggers a FadeIn on a sibling panel).
 
-| Tone                | Presets                                  |
-| ------------------- | ---------------------------------------- |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn |
-| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn            |
-| Playful/Energetic   | BounceIn, SpinIn                         |
-| Geometric/Modern    | ShapeIn, RevealIn, ShuttersIn, WinkIn    |
+## Combining Effects
 
-For full parameter details and examples, see [entrance-presets.md](entrance-presets.md).
-
-### Scroll
-
-Animations whose progress is tied to a ViewTimeline -- the element's position in the viewport.
-
-**When to use:** Progressive content reveals on scroll, parallax depth effects, storytelling tied to scroll progress, de-emphasizing passed content
-
-**When NOT to use:** One-time entrance → use entrance (more performant) | Continuous loops → use ongoing
-
-**Available presets:** ArcScroll, BlurScroll, FadeScroll, FlipScroll, GrowScroll, MoveScroll, PanScroll, ParallaxScroll, RevealScroll, ShapeScroll, ShrinkScroll, ShuttersScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, TurnScroll
-
-**Scroll range modes:**
-
-- `'in'`: animation ends at the element's idle state (element animates in as it enters)
-- `'out'`: animation starts from the element's idle state (element animates out as it exits)
-- `'continuous'`: animation passes through the idle state (animates across the full scroll range)
-
-| Effect Type | Presets                                            |
-| ----------- | -------------------------------------------------- |
-| Opacity     | FadeScroll, BlurScroll                             |
-| Movement    | ParallaxScroll, MoveScroll, PanScroll, SlideScroll |
-| Scale       | GrowScroll, ShrinkScroll                           |
-| 3D Rotation | ArcScroll, FlipScroll, TiltScroll, TurnScroll      |
-| Reveal/Mask | RevealScroll, ShapeScroll, ShuttersScroll          |
-
-For full parameter details and examples, see [scroll-presets.md](scroll-presets.md).
-
-### Ongoing
-
-Continuous looping animations that run indefinitely.
-
-**When to use:** Loading/processing indicators, status indicators (live, active, recording), attention-drawing elements (notifications, CTAs), decorative ambient motion
-
-**When NOT to use:** Multiple simultaneous effects (visual chaos) | Content that needs to be read | One-time reveals → use entrance
-
-**Available presets:** Bounce, Breathe, Cross, DVD, Flash, Flip, Fold, Jello, Poke, Pulse, Rubber, Spin, Swing, Wiggle
-
-| Tone                 | Presets                                 |
-| -------------------- | --------------------------------------- |
-| Subtle/Professional  | Pulse (subtle), Breathe, Flash (subtle) |
-| Playful/Energetic    | Bounce, Wiggle, Jello, DVD              |
-| Mechanical/Technical | Spin, Flip, Fold                        |
-| Attention-grabbing   | Flash, Bounce, Pulse (hard), Poke       |
-
-For full parameter details and examples, see [ongoing-presets.md](ongoing-presets.md).
-
-### Mouse
-
-Effects that respond to cursor position. May behave differently on mobile.
-
-**When to use:** Interactive cards/products (tilt effect), parallax depth with cursor, hero section interactivity, playful/game-like interfaces
-
-**When NOT to use:** Accessibility-critical interfaces | Essential functionality (never rely on mouse for core features)
-
-**Available presets:** AiryMouse, BlobMouse, BlurMouse, BounceMouse, CustomMouse, ScaleMouse, SkewMouse, SpinMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, TrackMouse
-
-| Tone                 | Presets                                      |
-| -------------------- | -------------------------------------------- |
-| Professional/Premium | Tilt3DMouse (subtle), TrackMouse, ScaleMouse |
-| Playful/Fun          | BounceMouse, BlobMouse, AiryMouse            |
-| Game-like/Dynamic    | SpinMouse, Track3DMouse, SkewMouse           |
-
-For full parameter details and examples, see [mouse-presets.md](mouse-presets.md).
-
----
+1. Avoid mixing multiple effects on the same element at the same time when possible
+2. Never combine effects that affect the same CSS properties (e.g., two effects both using `transform`)
+3. When combining is necessary, effect order matters — later effects may override earlier ones
+4. If possible, use nested containers to separate effects that would conflict — place each effect on a separate wrapper element. Note: here also order matters
 
 ## Parameter Standards
 
-### Effect Options (Not Preset Parameters)
+### Animation Options (Not Preset Parameters)
 
 These are set on the effect configuration level, not on the preset itself:
 
@@ -142,7 +69,7 @@ These are set on the effect configuration level, not on the preset itself:
 - `fill`: Animation fill mode
 - `reversed`: Reverse the animation
 
-**Scroll-specific effect options:**
+**Scroll-specific animation options:**
 
 - `rangeStart` / `rangeEnd`: `RangeOffset` controlling when the scroll animation starts/ends
 - `transitionDuration` / `transitionDelay` / `transitionEasing`: Transition smoothing
@@ -162,16 +89,16 @@ The `direction` parameter accepts different values depending on the preset:
 
 Interact supports both a CSSUnitValue-style object (e.g., `distance: { value: 120, type: 'px' }`, mapped to the internal type `UnitLengthPercentage`) and flat string values (e.g., `distance: '120px'`).
 
-Prefer the object notation. In any case, be consistent within a configuration -- use one format, not both.
+Prefer the object notation. Be consistent within a configuration — use one format, not both.
 
 ### Coordinate System
 
-For angle-based parameters:
+**Standard:** 0° = right (east), angles increase counter-clockwise
 
-- **0°** = right (east)
-- **90°** = top (north)
-- **180°** = left (west)
-- **270°** = bottom (south)
+- 0° = right (east)
+- 90° = top (north)
+- 180° = left (west)
+- 270° = bottom (south)
 
 ### Distance Units
 
@@ -189,15 +116,33 @@ The library uses these CSS custom properties for runtime control:
 
 - `--motion-rotate`: Element rotation (used by SpinIn and other rotation presets)
 
-### Trigger and Effect Binding
+## Available Presets
 
-In the simplest case, a trigger and its effect are bound to the same element. However, an effect on one element can also be triggered by another element (e.g., hovering a button triggers a FadeIn on a sibling panel).
+### Entrance (19 presets)
 
----
+FadeIn, ArcIn, BlurIn, BounceIn, CurveIn, DropIn, ExpandIn, FlipIn, FloatIn, FoldIn, GlideIn, RevealIn, ShapeIn, ShuttersIn, SlideIn, SpinIn, TiltIn, TurnIn, WinkIn
 
-## Selection Tables
+→ [Full entrance preset reference](./entrance-presets.md)
 
-### By Tone
+### Scroll (19 presets)
+
+ArcScroll, BlurScroll, FadeScroll, FlipScroll, GrowScroll, MoveScroll, PanScroll, ParallaxScroll, RevealScroll, ShapeScroll, ShrinkScroll, ShuttersScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, TurnScroll
+
+→ [Full scroll preset reference](./scroll-presets.md)
+
+### Ongoing (14 presets)
+
+Bounce, Breathe, Cross, DVD, Flash, Flip, Fold, Jello, Poke, Pulse, Rubber, Spin, Swing, Wiggle
+
+→ [Full ongoing preset reference](./ongoing-presets.md)
+
+### Mouse (12 presets)
+
+AiryMouse, BlobMouse, BlurMouse, BounceMouse, CustomMouse, ScaleMouse, SkewMouse, SpinMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, TrackMouse
+
+→ [Full mouse preset reference](./mouse-presets.md)
+
+## Selection by Tone
 
 | Tone                | Entrance                                 | Scroll                                    | Ongoing                    | Mouse                            |
 | ------------------- | ---------------------------------------- | ----------------------------------------- | -------------------------- | -------------------------------- |
@@ -206,7 +151,7 @@ In the simplest case, a trigger and its effect are bound to the same element. Ho
 | Playful/Energetic   | BounceIn, SpinIn                         | SpinScroll, Spin3dScroll                  | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse           |
 | Geometric/Modern    | ShapeIn, RevealIn, ShuttersIn, WinkIn    | ShapeScroll, RevealScroll, ShuttersScroll | Cross                      | -                                |
 
-### By Use Case
+## Selection by Use Case
 
 | Use Case               | Recommended Presets                            |
 | ---------------------- | ---------------------------------------------- |
@@ -220,9 +165,7 @@ In the simplest case, a trigger and its effect are bound to the same element. Ho
 | Product images         | Tilt3DMouse, ScaleMouse                        |
 | Background depth       | ParallaxScroll, TrackMouse (layered)           |
 
-### Cross-Category Parallels
-
-Effects with similar visual results across categories:
+## Cross-Category Parallels
 
 | Entrance | Scroll         | Ongoing | Mouse       |
 | -------- | -------------- | ------- | ----------- |
@@ -238,60 +181,17 @@ Effects with similar visual results across categories:
 | RevealIn | RevealScroll   | -       | -           |
 | -        | ParallaxScroll | -       | TrackMouse  |
 
----
-
-## Combining Effects
-
-1. Avoid mixing multiple effects on the same element at the same time when possible
-2. Never combine effects that affect the same CSS properties (e.g., two effects both using `transform`)
-3. When combining is necessary, effect order matters -- later effects may override earlier ones
-4. If possible, use nested containers to separate effects that would conflict -- place each effect on a separate wrapper element. Note: here also order matters
-
-### Common Patterns
-
-**Card reveal on scroll:**
-
-```typescript
-{ type: 'FadeScroll', range: 'in' }
-```
-
-**Interactive product card (nested containers):**
-
-```typescript
-// Outer container - entrance
-{ type: 'FadeIn' }
-// Inner container - mouse interaction
-{ type: 'Tilt3DMouse', angle: 25, perspective: 1000 }
-```
-
-**Notification badge:**
-
-```typescript
-{ type: 'BounceIn', direction: 'top', distanceFactor: 1 }
-{ type: 'Pulse', intensity: 0.5 }
-```
-
-**Loading indicator:**
-
-```typescript
-{ type: 'Spin', direction: 'clockwise' }
-```
-
----
-
 ## Accessibility
 
 ### Host vs Preset Responsibility
 
-The presets generally provide animations; the host platform decides when/whether to apply them.
+The presets provide animations; the host platform decides when/whether to apply them.
 
 Interact supports `conditions` in the config for handling reduced motion. Define a media condition for `(prefers-reduced-motion: reduce)` and use it to swap high-risk presets for safer alternatives (e.g., SpinIn → FadeIn, BounceIn → FadeIn). Conditions can be applied per-interaction or per-effect, and automatically re-evaluate when the user's preference changes.
 
-If it is known that the host handles accessibility globally (e.g., disabling all animations on `(prefers-reduced-motion: reduce)`), presets don't need to address it separately.
+If the host handles accessibility globally (e.g., disabling all animations on `(prefers-reduced-motion: reduce)`), presets don't need to address it separately.
 
 ### Preset Risk Levels
-
-_Note:_ this section should be confirmed by an a11y expert
 
 **High risk** (vestibular triggers, seizure risk if motion is fast and repetitive):
 
@@ -325,8 +225,8 @@ _Note:_ this section should be confirmed by an a11y expert
 
 ### LLM Guidance Principles
 
-1. **Do not limit creativity by default** -- generate what the user asks for
-2. **Apply constraints only when explicitly requested** -- keywords: "accessible", "a11y", "reduced motion safe", "subtle", "tone down"
-3. **High-risk presets are informational, not blockers** -- optionally note vestibular concerns in response
-4. **Mouse presets may behave differently on mobile** -- note this as context, not a restriction
-5. **Duration guidelines are suggestions** -- functional UI <500ms, decorative up to 1200ms, hero up to 2000ms
+1. **Do not limit creativity by default** — generate what the user asks for
+2. **Apply constraints only when explicitly requested** — keywords: "accessible", "a11y", "reduced motion safe", "subtle", "tone down"
+3. **High-risk presets are informational, not blockers** — optionally note vestibular concerns in response
+4. **Mouse presets may behave differently on mobile** — note this as context, not a restriction
+5. **Duration guidelines are suggestions** — functional UI <500ms, decorative up to 1200ms, hero up to 2000ms

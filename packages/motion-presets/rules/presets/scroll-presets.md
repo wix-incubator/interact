@@ -1,319 +1,367 @@
 ---
-name: scroll-presets-reference
-description: Full parameter details, examples, and intensity guide for scroll presets. Read when configuring specific scroll preset parameters or choosing intensity levels for scroll-driven animations.
-category: scroll
+name: scroll-presets
+description: Full parameter reference for scroll motion presets. Read when configuring ArcScroll, BlurScroll, FadeScroll, FlipScroll, GrowScroll, MoveScroll, PanScroll, ParallaxScroll, RevealScroll, ShapeScroll, ShrinkScroll, ShuttersScroll, SkewPanScroll, SlideScroll, Spin3dScroll, SpinScroll, StretchScroll, TiltScroll, or TurnScroll scroll animations.
 ---
 
 # Scroll Presets
 
-All scroll preset parameters and TypeScript examples. For category overview and selection guidance, see [presets-main.md](presets-main.md).
+Scroll presets tie animation progress to an element's scroll position relative to the viewport. They use ViewTimeline (scroll-driven animations) so the effect advances as the user scrolls.
 
 ## Table of Contents
 
-- [Preset Reference](#preset-reference)
-- [Intensity Values](#intensity-values)
+- [Scroll Range](#scroll-range)
+- [ArcScroll](#arcscroll)
+- [BlurScroll](#blurscroll)
+- [FadeScroll](#fadescroll)
+- [FlipScroll](#flipscroll)
+- [GrowScroll](#growscroll)
+- [MoveScroll](#movescroll)
+- [PanScroll](#panscroll)
+- [ParallaxScroll](#parallaxscroll)
+- [RevealScroll](#revealscroll)
+- [ShapeScroll](#shapescroll)
+- [ShrinkScroll](#shrinkscroll)
+- [ShuttersScroll](#shuttersscroll)
+- [SkewPanScroll](#skewpanscroll)
+- [SlideScroll](#slidescroll)
+- [Spin3dScroll](#spin3dscroll)
+- [SpinScroll](#spinscroll)
+- [StretchScroll](#stretchscroll)
+- [TiltScroll](#tiltscroll)
+- [TurnScroll](#turnscroll)
 - [Optional Parameters](#optional-parameters)
-
-All scroll presets accept a `range` parameter:
-
-- `'in'`: animation ends at the element's idle state (element animates in as it enters)
-- `'out'`: animation starts from the element's idle state (element animates out as it exits)
-- `'continuous'`: animation passes through the idle state (animates across the full scroll range)
+- [Intensity Value Guide](#intensity-value-guide)
 
 ---
 
-## Preset Reference
+## Scroll Range
+
+Most scroll presets accept a `range` parameter:
+
+- `'in'`: Animation ends at the element's idle state (element animates in as it enters)
+- `'out'`: Animation starts from the element's idle state (element animates out as it exits)
+- `'continuous'`: Animation passes through the idle state (animates across the full scroll range)
+
+---
 
 ### ArcScroll
 
-Visual: 3D arc rotation as user scrolls. Dramatic, cinematic.
+Visual: Element rotates along a 3D arc as it scrolls into or out of view.
 
 Parameters:
 
-- `direction`: 'vertical' | 'horizontal' (default: 'horizontal')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `perspective`: number (default: 500)
+- `direction`: 'vertical' | 'horizontal' (default: `'horizontal'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `perspective`: number — 3D perspective in px (default: `500`)
 
 ```typescript
-{ type: 'ArcScroll', direction: 'vertical' }
-{ type: 'ArcScroll', direction: 'horizontal', range: 'in' }
-```
-
-### BlurScroll
-
-Visual: Blur/unblur effect controlled by scroll. Focus transitions.
-
-Parameters:
-
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `blur`: number in px (default: 6)
-
-```typescript
-{ type: 'BlurScroll', range: 'in' }
-{ type: 'BlurScroll', range: 'out', blur: 50 }
-```
-
-### FadeScroll
-
-Visual: Opacity transition tied to scroll. Fade in on enter, out on exit.
-
-Parameters:
-
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `opacity`: number 0-1 (default: 0)
-
-```typescript
-{ type: 'FadeScroll', range: 'in' }
-{ type: 'FadeScroll', range: 'out' }
-```
-
-### FlipScroll
-
-Visual: Full 3D card flip driven by scroll. Dramatic rotation.
-
-Parameters:
-
-- `direction`: 'vertical' | 'horizontal' (default: 'horizontal')
-- `range`: 'in' | 'out' | 'continuous' (default: 'continuous')
-- `rotate`: number in degrees (default: 240)
-- `perspective`: number (default: 800)
-
-```typescript
-{ type: 'FlipScroll', direction: 'horizontal' }
-{ type: 'FlipScroll', direction: 'vertical', range: 'in', rotate: 420 }
-```
-
-### GrowScroll
-
-Visual: Scale up as element enters viewport.
-
-Parameters:
-
-- `direction`: 'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center' (default: 'center')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `scale`: number (default: varies by range)
-- `speed`: number (default: 0)
-
-```typescript
-{ type: 'GrowScroll', direction: 'center' }
-{ type: 'GrowScroll', direction: 'center', range: 'in', scale: 4 }
-```
-
-### MoveScroll
-
-Visual: Translation movement on scroll in any direction.
-
-Parameters:
-
-- `angle`: 0-360 degrees (default: 120). 0° = right, 90° = top, 180° = left, 270° = bottom
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `distance`: UnitLengthPercentage (default: { value: 400, type: 'px' })
-
-```typescript
-{ type: 'MoveScroll', angle: 90, distance: { value: 100, type: 'px' } }
-{ type: 'MoveScroll', angle: 0, distance: { value: 800, type: 'px' } }
-```
-
-### PanScroll
-
-Visual: Horizontal panning tied to scroll.
-
-Parameters:
-
-- `direction`: 'left' | 'right' (default: 'left')
-- `distance`: UnitLengthPercentage (default: { value: 400, type: 'px' })
-- `startFromOffScreen`: boolean (default: true)
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-
-```typescript
-{ type: 'PanScroll', direction: 'left', distance: { value: 200, type: 'px' } }
-```
-
-### ParallaxScroll
-
-Visual: Element moves slower/faster than scroll, creating depth illusion.
-
-Parameters:
-
-- `parallaxFactor`: number (default: 0.5) - movement speed relative to scroll
-- `range`: 'in' | 'out' | 'continuous'
-
-```typescript
-{ type: 'ParallaxScroll' }
-{ type: 'ParallaxScroll', parallaxFactor: 0.3 }
-```
-
-### RevealScroll
-
-Visual: Clip-based directional reveal on scroll.
-
-Parameters:
-
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'bottom')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-
-```typescript
-{ type: 'RevealScroll', direction: 'left' }
-{ type: 'RevealScroll', direction: 'bottom', range: 'in' }
-```
-
-### ShapeScroll
-
-Visual: Shape mask reveal controlled by scroll.
-
-Parameters:
-
-- `shape`: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window' (default: 'circle')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `intensity`: number 0-1 (default: 0.5)
-
-```typescript
-{ type: 'ShapeScroll', shape: 'circle' }
-{ type: 'ShapeScroll', shape: 'diamond', intensity: 0.8 }
-```
-
-### ShrinkScroll
-
-Visual: Scale down as element exits viewport.
-
-Parameters:
-
-- `direction`: 'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center' (default: 'center')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `scale`: number (default: varies by range)
-- `speed`: number (default: 0)
-
-```typescript
-{ type: 'ShrinkScroll', direction: 'center', range: 'out' }
-{ type: 'ShrinkScroll', direction: 'center', scale: 0 }
-```
-
-### ShuttersScroll
-
-Visual: Venetian blind strips revealing on scroll.
-
-Parameters:
-
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'right')
-- `shutters`: number of strips (default: 12)
-- `staggered`: boolean (default: true)
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-
-```typescript
-{ type: 'ShuttersScroll', direction: 'left', shutters: 5, staggered: true }
-```
-
-### SkewPanScroll
-
-Visual: Panning with skew distortion effect.
-
-Parameters:
-
-- `direction`: 'left' | 'right' (default: 'right')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `skew`: number in degrees (default: 10)
-
-```typescript
-{ type: 'SkewPanScroll', direction: 'left' }
-{ type: 'SkewPanScroll', direction: 'right', skew: 24 }
-```
-
-### SlideScroll
-
-Visual: Slide movement tied to scroll position.
-
-Parameters:
-
-- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: 'bottom')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-
-```typescript
-{ type: 'SlideScroll', direction: 'bottom' }
-{ type: 'SlideScroll', direction: 'left', range: 'in' }
-```
-
-### Spin3dScroll
-
-Visual: 3D rotation around axis on scroll.
-
-Parameters:
-
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `rotate`: number in degrees (default: -100)
-- `speed`: number (default: 0)
-- `perspective`: number (default: 1000)
-
-```typescript
-{ type: 'Spin3dScroll' }
-{ type: 'Spin3dScroll', range: 'continuous', rotate: 200 }
-```
-
-### SpinScroll
-
-Visual: 2D rotation driven by scroll.
-
-Parameters:
-
-- `direction`: 'clockwise' | 'counter-clockwise' (default: 'clockwise')
-- `spins`: number of rotations (default: 0.15)
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `scale`: number (default: 1)
-
-```typescript
-{ type: 'SpinScroll', direction: 'clockwise', spins: 1 }
-{ type: 'SpinScroll', direction: 'counter-clockwise', spins: 2, scale: 0.4 }
-```
-
-### StretchScroll
-
-Visual: Stretch/squeeze deformation on scroll.
-
-Parameters:
-
-- `range`: 'in' | 'out' | 'continuous' (default: 'out')
-- `stretch`: number (default: 0.6)
-
-```typescript
-{ type: 'StretchScroll' }
-{ type: 'StretchScroll', stretch: 2 }
-```
-
-### TiltScroll
-
-Visual: 3D tilt effect as user scrolls. Subtle perspective.
-
-Parameters:
-
-- `direction`: 'left' | 'right' (default: 'right')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `parallaxFactor`: number (default: 0) - tilt distance factor
-- `perspective`: number (default: 400)
-
-```typescript
-{ type: 'TiltScroll', direction: 'left' }
-{ type: 'TiltScroll', direction: 'right', parallaxFactor: 1 }
-```
-
-### TurnScroll
-
-Visual: Corner-pivot 3D rotation on scroll.
-
-Parameters:
-
-- `direction`: 'left' | 'right' (default: 'right')
-- `spin`: 'clockwise' | 'counter-clockwise' (default: 'clockwise')
-- `range`: 'in' | 'out' | 'continuous' (default: 'in')
-- `scale`: number (default: 1)
-- `rotation`: number
-
-```typescript
-{ type: 'TurnScroll', direction: 'left', spin: 'clockwise' }
-{ type: 'TurnScroll', direction: 'right', spin: 'counter-clockwise', scale: 1.6 }
+{ type: 'ArcScroll', direction: 'vertical', range: 'continuous' }
 ```
 
 ---
 
-## Intensity Values
+### BlurScroll
+
+Visual: Element blurs or unblurs as it scrolls through the viewport.
+
+Parameters:
+
+- `blur`: number — maximum blur amount in px (default: `6`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'BlurScroll', blur: 25, range: 'out' }
+```
+
+---
+
+### FadeScroll
+
+Visual: Element fades in or out based on scroll position.
+
+Parameters:
+
+- `opacity`: number — target opacity at the animated end (default: `0`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'FadeScroll', range: 'continuous' }
+```
+
+---
+
+### FlipScroll
+
+Visual: Element performs a 3D flip rotation as it scrolls.
+
+Parameters:
+
+- `direction`: 'vertical' | 'horizontal' (default: `'horizontal'`)
+- `rotate`: number — rotation amount in degrees (default: `240`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'continuous'`)
+- `perspective`: number — 3D perspective in px (default: `800`)
+
+```typescript
+{ type: 'FlipScroll', rotate: 360, direction: 'vertical' }
+```
+
+---
+
+### GrowScroll
+
+Visual: Element scales up from a direction as it scrolls into view.
+
+Parameters:
+
+- `direction`: EffectNineDirections — origin point for scaling (default: `'center'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `scale`: number — starting/ending scale (default: `0` for 'in', `4` for 'out')
+- `speed`: number — vertical movement factor (default: `0`)
+
+```typescript
+{ type: 'GrowScroll', direction: 'top-left', scale: 0.5 }
+```
+
+---
+
+### MoveScroll
+
+Visual: Element translates along an angle for a given distance as it scrolls.
+
+Parameters:
+
+- `angle`: number — movement angle in degrees, 0° = right (default: `120`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `distance`: UnitLengthPercentage — travel distance (default: `{ value: 400, unit: 'px' }`)
+
+```typescript
+{ type: 'MoveScroll', angle: 90, distance: { value: 200, type: 'px' } }
+```
+
+---
+
+### PanScroll
+
+Visual: Element pans horizontally across the viewport as it scrolls.
+
+Parameters:
+
+- `direction`: 'left' | 'right' (default: `'left'`)
+- `distance`: UnitLengthPercentage — pan distance (default: `{ value: 400, unit: 'px' }`)
+- `startFromOffScreen`: boolean — whether to start from off-screen (default: `true`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'PanScroll', direction: 'right', startFromOffScreen: false }
+```
+
+---
+
+### ParallaxScroll
+
+Visual: Element moves at a different speed than the scroll, creating a depth illusion.
+
+Parameters:
+
+- `parallaxFactor`: number — speed multiplier relative to scroll (default: `0.5`)
+- `range`: 'in' | 'out' | 'continuous'
+
+```typescript
+{ type: 'ParallaxScroll', parallaxFactor: 0.8 }
+```
+
+---
+
+### RevealScroll
+
+Visual: Element is progressively revealed from an edge via clip-path as it scrolls.
+
+Parameters:
+
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'bottom'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'RevealScroll', direction: 'left', range: 'continuous' }
+```
+
+---
+
+### ShapeScroll
+
+Visual: Element is revealed through an expanding geometric clip-path shape on scroll.
+
+Parameters:
+
+- `shape`: 'circle' | 'ellipse' | 'rectangle' | 'diamond' | 'window' (default: `'circle'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `intensity`: number — shape size factor (default: `0.5`)
+
+```typescript
+{ type: 'ShapeScroll', shape: 'diamond', range: 'out' }
+```
+
+---
+
+### ShrinkScroll
+
+Visual: Element shrinks toward a direction as it scrolls, the inverse of GrowScroll.
+
+Parameters:
+
+- `direction`: EffectNineDirections — shrink origin (default: `'center'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `scale`: number — target scale (default: `1.2` for 'in', `0.8` for 'out')
+- `speed`: number — vertical movement factor (default: `0`)
+
+```typescript
+{ type: 'ShrinkScroll', direction: 'bottom', scale: 0.5 }
+```
+
+---
+
+### ShuttersScroll
+
+Visual: Element is revealed through shutter-like strips that open on scroll.
+
+Parameters:
+
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'right'`)
+- `shutters`: number — number of shutter segments (default: `12`)
+- `staggered`: boolean — whether shutters open in a staggered pattern (default: `true`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'ShuttersScroll', shutters: 6, range: 'continuous' }
+```
+
+---
+
+### SkewPanScroll
+
+Visual: Element pans horizontally with a skew distortion as it scrolls.
+
+Parameters:
+
+- `direction`: 'left' | 'right' (default: `'right'`)
+- `skew`: number — skew angle in degrees (default: `10`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'SkewPanScroll', skew: 20, direction: 'left' }
+```
+
+---
+
+### SlideScroll
+
+Visual: Element slides in from an edge with a clip-path reveal as it scrolls.
+
+Parameters:
+
+- `direction`: 'top' | 'right' | 'bottom' | 'left' (default: `'bottom'`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'SlideScroll', direction: 'left', range: 'out' }
+```
+
+---
+
+### Spin3dScroll
+
+Visual: Element performs a 3D spin with rotation on multiple axes as it scrolls.
+
+Parameters:
+
+- `rotate`: number — rotation amount in degrees (default: `-100`)
+- `speed`: number — vertical movement factor (default: `0`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `perspective`: number — 3D perspective in px (default: `1000`)
+
+```typescript
+{ type: 'Spin3dScroll', rotate: 200, perspective: 600 }
+```
+
+---
+
+### SpinScroll
+
+Visual: Element spins (2D rotation) with optional scale change as it scrolls.
+
+Parameters:
+
+- `direction`: 'clockwise' | 'counter-clockwise' (default: `'clockwise'`)
+- `spins`: number — number of full rotations (default: `0.15`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+- `scale`: number — scale during spin (default: `1`)
+
+```typescript
+{ type: 'SpinScroll', spins: 0.5, direction: 'counter-clockwise' }
+```
+
+---
+
+### StretchScroll
+
+Visual: Element stretches vertically with scaleY increasing while scaleX decreases, with an opacity transition.
+
+Parameters:
+
+- `stretch`: number — stretch factor (default: `0.6`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'out'`)
+
+```typescript
+{ type: 'StretchScroll', stretch: 1.2, range: 'continuous' }
+```
+
+---
+
+### TiltScroll
+
+Visual: Element tilts in 3D with optional parallax vertical movement as it scrolls.
+
+Parameters:
+
+- `direction`: 'left' | 'right' (default: `'right'`)
+- `parallaxFactor`: number — vertical movement factor (default: `0`)
+- `perspective`: number — 3D perspective in px (default: `400`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'TiltScroll', direction: 'left', parallaxFactor: 0.5 }
+```
+
+---
+
+### TurnScroll
+
+Visual: Element pans in from off-screen while turning (rotating) as it scrolls.
+
+Parameters:
+
+- `direction`: 'left' | 'right' (default: `'right'`)
+- `spin`: 'clockwise' | 'counter-clockwise' (default: `'clockwise'`)
+- `scale`: number — scale during turn (default: `1`)
+- `range`: 'in' | 'out' | 'continuous' (default: `'in'`)
+
+```typescript
+{ type: 'TurnScroll', direction: 'left', spin: 'counter-clockwise' }
+```
+
+---
+
+## Optional Parameters
+
+### 3D Perspective
+
+| Preset       | Parameter     | Default | Range    |
+| ------------ | ------------- | ------- | -------- |
+| FlipScroll   | `perspective` | 800     | 200-2000 |
+| TiltScroll   | `perspective` | 400     | 200-2000 |
+| Spin3dScroll | `perspective` | 1000    | 200-2000 |
+
+## Intensity Value Guide
 
 Tested values for different intensity levels. When a user asks for "soft", "subtle", "medium", or "hard"/"dramatic" motion, use these as guidelines.
 
@@ -330,17 +378,3 @@ Tested values for different intensity levels. When a user asks for "soft", "subt
 | StretchScroll | stretch   | 1.2         | 1.5    | 2             |
 | TiltScroll    | distance  | 0           | 0.5    | 1             |
 | TurnScroll    | scale     | 1           | 1.3    | 1.6           |
-
----
-
-## Optional Parameters
-
-These parameters are exposed but their defaults have been tuned for good visual results and rarely need adjustment.
-
-### 3D Perspective
-
-| Preset       | Parameter     | Default | Range    |
-| ------------ | ------------- | ------- | -------- |
-| FlipScroll   | `perspective` | 800     | 200-2000 |
-| TiltScroll   | `perspective` | 400     | 200-2000 |
-| Spin3dScroll | `perspective` | 1000    | 200-2000 |
