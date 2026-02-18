@@ -61,7 +61,7 @@ function addEventTriggerHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: EventTriggerParams,
-  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition }: InteractOptions,
 ) {
   const genericConfig = createGenericEventConfig(options.eventConfig);
   const isTransition =
@@ -146,10 +146,8 @@ function addEventTriggerHandler(
     const leaveEvents = genericConfig.leave ?? [];
     enter.forEach((eventType) => {
       if (eventType === 'focusin') {
-        if (allowA11yTriggers) {
-          source.tabIndex = 0;
-          addListener(source, eventType, focusListener as EventListener, { once });
-        }
+        source.tabIndex = 0;
+        addListener(source, eventType, focusListener as EventListener, { once });
         return;
       }
       addListener(source, eventType, handler as EventListener, { passive: true, once });
@@ -160,9 +158,7 @@ function addEventTriggerHandler(
     if (addLeaveListeners) {
       leaveEvents.forEach((eventType) => {
         if (eventType === 'focusout') {
-          if (allowA11yTriggers) {
-            addListener(source, eventType, focusListener as EventListener, { once });
-          }
+          addListener(source, eventType, focusListener as EventListener, { once });
           return;
         }
         addListener(source, eventType, handler as EventListener, { passive: true });

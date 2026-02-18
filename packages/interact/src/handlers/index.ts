@@ -1,6 +1,5 @@
 import type {
   Effect,
-  EventTriggerConfig,
   InteractOptions,
   PointerTriggerParams,
   StateParams,
@@ -14,11 +13,13 @@ import animationEndHandler from './animationEnd';
 import eventTrigger from './eventTrigger';
 import { EVENT_TRIGGER_PRESETS } from './effectHandlers';
 
-type EventConfigOrGetter =
-  | (typeof EVENT_TRIGGER_PRESETS)[keyof typeof EVENT_TRIGGER_PRESETS]
-  | ((interactOptions?: InteractOptions) => EventTriggerConfig);
+const a11yTriggerOverrides = {
+  click: EVENT_TRIGGER_PRESETS.activate,
+  hover: EVENT_TRIGGER_PRESETS.interest,
+} as const;
 
-function withEventTriggerConfig(eventConfigOrGetter: EventConfigOrGetter) {
+function withEventTriggerConfig(presetKey: keyof typeof EVENT_TRIGGER_PRESETS) {
+  const preset = EVENT_TRIGGER_PRESETS[presetKey];
   return (
     source: HTMLElement,
     target: HTMLElement,
@@ -27,33 +28,21 @@ function withEventTriggerConfig(eventConfigOrGetter: EventConfigOrGetter) {
     interactOptions?: InteractOptions,
   ) => {
     const eventConfig =
-      typeof eventConfigOrGetter === 'function'
-        ? eventConfigOrGetter(interactOptions)
-        : eventConfigOrGetter;
+      interactOptions?.allowA11yTriggers && presetKey in a11yTriggerOverrides
+        ? a11yTriggerOverrides[presetKey as keyof typeof a11yTriggerOverrides]
+        : preset;
     eventTrigger.add(source, target, effect, { ...options, eventConfig }, interactOptions ?? {});
   };
-}
-
-function getClickEventConfig(interactOptions?: InteractOptions) {
-  return interactOptions?.allowA11yTriggers
-    ? EVENT_TRIGGER_PRESETS.activate
-    : EVENT_TRIGGER_PRESETS.click;
-}
-
-function getHoverEventConfig(interactOptions?: InteractOptions) {
-  return interactOptions?.allowA11yTriggers
-    ? EVENT_TRIGGER_PRESETS.interest
-    : EVENT_TRIGGER_PRESETS.hover;
 }
 
 export default {
   viewEnter: viewEnterHandler,
   hover: {
-    add: withEventTriggerConfig(getHoverEventConfig),
+    add: withEventTriggerConfig('hover'),
     remove: eventTrigger.remove,
   },
   click: {
-    add: withEventTriggerConfig(getClickEventConfig),
+    add: withEventTriggerConfig('click'),
     remove: eventTrigger.remove,
   },
   pageVisible: viewEnterHandler,
@@ -61,11 +50,11 @@ export default {
   viewProgress: viewProgressHandler,
   pointerMove: pointerMoveHandler,
   activate: {
-    add: withEventTriggerConfig(EVENT_TRIGGER_PRESETS.activate),
+    add: withEventTriggerConfig('activate'),
     remove: eventTrigger.remove,
   },
   interest: {
-    add: withEventTriggerConfig(EVENT_TRIGGER_PRESETS.interest),
+    add: withEventTriggerConfig('interest'),
     remove: eventTrigger.remove,
   },
 } as TriggerHandlerMap<TriggerType>;
