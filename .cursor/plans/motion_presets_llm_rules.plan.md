@@ -1,9 +1,8 @@
 ---
 name: LLM Preset Rules
 overview: Single source of truth for generating and maintaining all preset reference files.
-status: in-progress
-version: 3.0
-last-updated: 2026-02-18
+todos: []
+isProject: false
 ---
 
 # LLM Rules for Motion Presets
@@ -28,8 +27,7 @@ This file is the **single source of truth** for generating all preset reference 
 ## Generated Files
 
 ```text
-rules/presets/
-├── PLAN.md              # THIS FILE — source of truth, not read by LLM at runtime
+packages/motion-presets/rules/presets/
 ├── presets-main.md      # Generated: entry point (<500 lines) — decision flow, categories, standards, selection, a11y
 ├── entrance-presets.md  # Generated: full entrance preset params, examples, optional params, intensity
 ├── scroll-presets.md    # Generated: full scroll preset params, examples, optional params, intensity
@@ -107,9 +105,9 @@ A preset is a named effect. "Preset" is used when talking about selection and co
 
 ## Preset Registry
 
-A list of the presets present in the project. Before continuing, make sure this list is aligned with `../src/library` and update accordingly.
+A list of the presets present in the project. Before continuing, make sure this list is aligned with `packages/motion-presets/src/library` and update accordingly.
 
-_Note:_ the descriptions should be verified by a designer
+*Note:* the descriptions should be verified by a designer
 
 ### Entrance Presets
 
@@ -337,7 +335,7 @@ If it is known that the host handles accessibility globally (e.g., disabling all
 
 ### Preset Risk Levels
 
-_Note:_ this section should be confirmed by an a11y expert
+*Note:* this section should be confirmed by an a11y expert
 
 **High risk** (vestibular triggers, seizure risk if motion is fast and repetitive):
 
@@ -383,7 +381,7 @@ _Note:_ this section should be confirmed by an a11y expert
 
 ### Preset Selection By Tone
 
-_Note:_ the descriptions should be verified by a designer
+*Note:* the descriptions should be verified by a designer
 
 | Tone                | Entrance                                 | Scroll                                    | Ongoing                    | Mouse                            |
 | ------------------- | ---------------------------------------- | ----------------------------------------- | -------------------------- | -------------------------------- |
@@ -527,7 +525,7 @@ To regenerate the preset reference files:
 
 ### Step 1: Verify Registry
 
-Ensure the Preset Registry (above) is aligned with actual preset files in `motion-presets/src/library/{category}/` (exclude index.ts and test files).
+Ensure the Preset Registry (above) is aligned with actual preset files in `packages/motion-presets/src/library/{category}/` (exclude index.ts and test files).
 
 ### Step 2: Generate `presets-main.md`
 
@@ -546,8 +544,8 @@ Build from these sections of this file:
 
 For each category (entrance, scroll, ongoing, mouse):
 
-1. Read preset type definitions from `motion-presets/src/types.ts`
-2. For each preset in that category, get params from `motion-presets/src/library/{category}/{Preset}.ts`
+1. Read preset type definitions from `packages/motion-presets/src/types.ts`
+2. For each preset in that category, get params from `packages/motion-presets/src/library/{category}/{Preset}.ts`
 3. Write each preset entry using the **Preset Entry Format** above
 4. Append the **Optional Parameters** tables relevant to that category
 5. Append the **Intensity Value** table for that category from the Intensity Value Guide above
@@ -560,4 +558,5 @@ For each category (entrance, scroll, ongoing, mouse):
 3. Every file has a table of contents after the title
 4. Every file has YAML frontmatter with `name` and `description` (see [Skills Compatibility](#skills-compatibility))
 5. Run `yarn format` on all generated markdown files to ensure they pass CI formatting checks
-6. Verify no content duplication between PLAN.md and generated files (generated files should stand alone; PLAN.md is the source, not a supplement)
+6. Verify no content duplication between this plan and generated files (generated files should stand alone; this plan is the source, not a supplement)
+
