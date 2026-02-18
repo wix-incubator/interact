@@ -26,13 +26,13 @@ const DIRECTION_MAP = {
 const TRANSLATE_DISTANCE = 50;
 
 const FACTORS_SEQUENCE = [
-  { factor: 1, timeFactor: 0.25 },
-  { factor: -1, timeFactor: 0.5 },
-  { factor: 0.6, timeFactor: 0.5 },
-  { factor: -0.3, timeFactor: 0.5 },
-  { factor: 0.2, timeFactor: 0.5 },
-  { factor: -0.05, timeFactor: 0.5 },
-  { factor: 0, timeFactor: 0.4 },
+  { factor: 1, timeFactor: 0.0934 },
+  { factor: -1, timeFactor: 0.28 },
+  { factor: 0.6, timeFactor: 0.466 },
+  { factor: -0.3, timeFactor: 0.653 },
+  { factor: 0.2, timeFactor: 0.839 },
+  { factor: -0.05, timeFactor: 1.026 },
+  { factor: 0, timeFactor: 1.175 },
 ];
 
 export function web(options: TimeAnimationOptions & AnimationExtraOptions, _dom?: DomApi) {
@@ -51,8 +51,8 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
   const [name] = getNames(options);
 
   const { x, y } = DIRECTION_MAP[direction];
-  const totalDuration = 3.55 * duration + delay;
-  const timingFactor = getTimingFactor(duration, totalDuration - duration) as number;
+  const totalDuration = duration + delay;
+  const timingFactor = getTimingFactor(duration, delay) as number;
 
   // Create CSS custom properties for the swing configuration
   const custom: Record<string, string | number> = {
@@ -76,12 +76,10 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
     asWeb,
   )} * -1), calc(${toKeyframeValue(custom, '--motion-trans-y', asWeb)} * -1))`;
 
-  let currentOffset = 0;
   // in case a delay is applied, animate a different sequence which decays to a stop
   const keyframes = delay
     ? FACTORS_SEQUENCE.map(({ factor, timeFactor }) => {
-        const keyframeOffset = currentOffset + timeFactor * timingFactor;
-        currentOffset = keyframeOffset;
+        const keyframeOffset = timeFactor * timingFactor;
 
         return {
           offset: keyframeOffset,
@@ -120,7 +118,7 @@ export function style(options: TimeAnimationOptions & AnimationExtraOptions, asW
       name,
       easing: 'linear',
       delay: 0,
-      duration: delay ? totalDuration : duration,
+      duration: totalDuration,
       custom,
       keyframes: [
         {

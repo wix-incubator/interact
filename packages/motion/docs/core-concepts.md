@@ -40,8 +40,8 @@ These animations are driven by external progress (scroll, mouse movement):
 {
   type: 'ScrubAnimationOptions',
   namedEffect: { type: 'ParallaxScroll', speed: 0.5 },
-  startOffset: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  endOffset: { name: 'cover', offset: { value: 100, type: 'percentage' } }
+  startOffset: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+  endOffset: { name: 'cover', offset: { value: 100, unit: 'percentage' } }
 }
 ```
 
@@ -55,7 +55,6 @@ These animations are driven by external progress (scroll, mouse movement):
 
 **Common Patterns**:
 
-- **Power levels**: `soft`, `medium`, `hard` affect intensity
 - **Directional**: `top`, `right`, `bottom`, `left`, `center`
 - **Scale-based**: Start from different sizes
 - **3D transforms**: Perspective and rotation effects
@@ -66,8 +65,7 @@ These animations are driven by external progress (scroll, mouse movement):
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'ArcIn',
-    direction: 'right',
-    power: 'medium'
+    direction: 'right'
   },
   duration: 800
 }
@@ -83,7 +81,6 @@ These animations are driven by external progress (scroll, mouse movement):
 
 - **Intensity control**: Scale the effect strength
 - **Bidirectional**: Many support `alternate` for back-and-forth motion
-- **Power scaling**: Consistent power levels across presets
 
 ```typescript
 // Example: Gentle pulsing effect
@@ -91,7 +88,6 @@ These animations are driven by external progress (scroll, mouse movement):
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'soft',
     intensity: 0.8
   },
   duration: 2000,
@@ -135,7 +131,6 @@ These animations are driven by external progress (scroll, mouse movement):
 - **Distance control**: How far effects extend from pointer
 - **Axis constraints**: `horizontal`, `vertical`, `both`
 - **Inversion**: Opposite direction movement
-- **Power mapping**: Intensity curves for natural feel
 
 ```typescript
 // Example: 3D tilt following mouse
@@ -144,8 +139,7 @@ These animations are driven by external progress (scroll, mouse movement):
   namedEffect: {
     type: 'Tilt3DMouse',
     angle: 15,
-    perspective: 800,
-    power: 'medium'
+    perspective: 800
   }
 }
 ```
@@ -185,8 +179,7 @@ Use predefined animation presets:
 ```typescript
 namedEffect: {
   type: 'BounceIn',
-  direction: 'bottom',
-  power: 'medium'
+  direction: 'bottom'
 }
 ```
 
@@ -217,22 +210,6 @@ customEffect: {
 }
 ```
 
-### Power Levels
-
-Many animations support consistent power levels:
-
-- **`soft`** - Subtle, gentle effects (10-30% intensity)
-- **`medium`** - Balanced, noticeable effects (50-70% intensity)
-- **`hard`** - Strong, dramatic effects (80-100% intensity)
-
-```typescript
-// Power affects different properties per animation:
-// - BounceIn: distance and elasticity
-// - BlurIn: blur amount
-// - Spin: rotation speed
-// - Parallax: movement distance
-```
-
 ### Easing Functions
 
 Wix Motion provides both CSS and JavaScript easing functions:
@@ -260,10 +237,10 @@ Wix Motion supports multiple unit types:
 
 ```typescript
 // Distance units
-distance: { value: 100, type: 'px' }
-distance: { value: 50, type: 'percentage' }
-distance: { value: 2, type: 'em' }
-distance: { value: 100, type: 'vh' }
+distance: { value: 100, unit: 'px' }
+distance: { value: 50, unit: 'percentage' }
+distance: { value: 2, unit: 'em' }
+distance: { value: 100, unit: 'vh' }
 
 // Angles (always in degrees)
 angle: 45
@@ -271,7 +248,7 @@ direction: 270  // 0° = up, 90° = right, 180° = down, 270° = left
 
 // Duration (milliseconds for time, percentage for scrub)
 duration: 1000                          // Time-based
-duration: { value: 50, type: 'percentage' } // Scrub-based
+duration: { value: 50, unit: 'percentage' } // Scrub-based
 ```
 
 ## Rendering Modes
@@ -366,11 +343,11 @@ Fine-tune when scroll animations trigger:
   namedEffect: { type: 'FadeScroll' },
   startOffset: {
     name: 'cover',                    // Viewport intersection
-    offset: { value: 20, type: 'percentage' }  // Start at 20% intersection
+    offset: { value: 20, unit: 'percentage' }  // Start at 20% intersection
   },
   endOffset: {
     name: 'exit-crossing',            // Element leaving viewport
-    offset: { value: 0, type: 'percentage' }   // End immediately
+    offset: { value: 0, unit: 'percentage' }   // End immediately
   }
 }
 ```

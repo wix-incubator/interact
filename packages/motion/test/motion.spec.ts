@@ -83,7 +83,7 @@ const mockFadeScrollPreset = {
           name: (options as any).endOffset.name || 'cover',
           offset: (options as any).endOffset.offset,
         }
-      : { name: 'cover', offset: { value: 100, type: 'percentage' } };
+      : { name: 'cover', offset: { value: 100, unit: 'percentage' } };
 
     return [
       {

@@ -137,11 +137,11 @@ describe('AnimationGroup', () => {
     test('should handle animations with start and end range offsets', () => {
       const startOffset: RangeOffset = {
         name: 'entry',
-        offset: { type: 'percentage', value: 25 },
+        offset: { unit: 'percentage', value: 25 },
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {
@@ -973,11 +973,11 @@ describe('AnimationGroup', () => {
     test('should work with animations that have start and end range offsets', () => {
       const startOffset: RangeOffset = {
         name: 'entry',
-        offset: { type: 'percentage', value: 25 },
+        offset: { unit: 'percentage', value: 25 },
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {

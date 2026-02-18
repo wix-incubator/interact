@@ -64,13 +64,14 @@ The `Interaction` component is a wrapper that automatically manages interaction 
 
 ### Props
 
-| Prop          | Type                          | Required | Description                                                      |
-| ------------- | ----------------------------- | -------- | ---------------------------------------------------------------- |
-| `tagName`     | `keyof JSX.IntrinsicElements` | Yes      | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`) |
-| `interactKey` | `string`                      | Yes      | Unique identifier matching the interaction configuration         |
-| `children`    | `React.ReactNode`             | No       | Child elements to render                                         |
-| `ref`         | `React.Ref<any>`              | No       | Forwarded ref to the underlying DOM element                      |
-| `...rest`     | `JSX.IntrinsicElements[T]`    | No       | Any valid props for the specified `tagName`                      |
+| Prop          | Type                          | Required | Description                                                                                   |
+| ------------- | ----------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `tagName`     | `keyof JSX.IntrinsicElements` | Yes      | The HTML element to render (e.g., `'div'`, `'button'`, `'span'`)                              |
+| `interactKey` | `string`                      | Yes      | Unique identifier matching the interaction configuration                                      |
+| `initial`     | `boolean`                     | No       | When `true`, sets `data-interact-initial="true"` for FOUC prevention with entrance animations |
+| `children`    | `React.ReactNode`             | No       | Child elements to render                                                                      |
+| `ref`         | `React.Ref<any>`              | No       | Forwarded ref to the underlying DOM element                                                   |
+| `...rest`     | `JSX.IntrinsicElements[T]`    | No       | Any valid props for the specified `tagName`                                                   |
 
 ### Basic Usage
 
@@ -385,12 +386,14 @@ import { Interact, Interaction, InteractConfig } from '@wix/interact/react';
 const config: InteractConfig = {
   effects: {
     expanded: {
-      transitionEffect: {
-        properties: ['max-height', 'padding'],
-        from: { maxHeight: '0px', padding: '0' },
-        to: { maxHeight: '200px', padding: '16px' },
+      transition: {
+        duration: 300,
+        easing: 'ease-out',
+        styleProperties: [
+          { name: 'max-height', value: '200px' },
+          { name: 'padding', value: '16px' },
+        ],
       },
-      duration: 300,
     },
   },
   interactions: [

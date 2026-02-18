@@ -65,13 +65,12 @@ describe('Fold', () => {
         namedEffect: {} as Fold,
       };
 
-      // Calculate timing factor: 1000 / (3.2 * 1000 + 500) = 1000 / 3700 ≈ 0.27
-      const dynamicName = `motion-fold-027`;
+      const dynamicName = `motion-fold-067`;
 
       const expectedResult: Partial<AnimationData>[] = [
         {
           name: dynamicName,
-          duration: 3700,
+          duration: 1500,
           custom: {
             '--motion-origin-x': '0%',
             '--motion-origin-y': '-50%',
@@ -86,46 +85,45 @@ describe('Fold', () => {
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * 0 * 15deg)) rotateY(calc(0 * 0 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
-            // For delay-based animations, the keyframes use the KEYFRAME_FACTORS
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.0675,
+              offset: 0.067,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * 1 * 15deg)) rotateY(calc(0 * 1 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.2025,
+              offset: 0.20234,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * -0.7 * 15deg)) rotateY(calc(0 * -0.7 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.3375,
+              offset: 0.33768000000000004,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * 0.6 * 15deg)) rotateY(calc(0 * 0.6 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.459,
+              offset: 0.4596200000000001,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * -0.3 * 15deg)) rotateY(calc(0 * -0.3 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.5670000000000001,
+              offset: 0.56749,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * 0.2 * 15deg)) rotateY(calc(0 * 0.2 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.7020000000000001,
+              offset: 0.70283,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * -0.05 * 15deg)) rotateY(calc(0 * -0.05 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.7965000000000001,
+              offset: 0.7966300000000001,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(0%) translateY(-50%) perspective(800px) rotateX(calc(1 * 0 * 15deg)) rotateY(calc(0 * 0 * 15deg)) translateX(calc(-1 * 0%)) translateY(calc(-1 * -50%))',
             },
@@ -449,13 +447,12 @@ describe('Fold', () => {
         namedEffect: {} as Fold,
       };
 
-      // Calculate timing factor: 1000 / (3.2 * 1000 + 500) = 1000 / 3700 ≈ 0.27
-      const dynamicName = `motion-fold-027`;
+      const dynamicName = `motion-fold-067`;
 
       const expectedResult: Partial<AnimationData>[] = [
         {
           name: dynamicName,
-          duration: 3700,
+          duration: 1500,
           custom: {
             '--motion-origin-x': '0%',
             '--motion-origin-y': '-50%',
@@ -470,46 +467,45 @@ describe('Fold', () => {
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * 0 * 15deg)) rotateY(calc(var(--motion-rotate-y) * 0 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
-            // For delay-based animations, the keyframes use the KEYFRAME_FACTORS
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.0675,
+              offset: 0.067,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * 1 * 15deg)) rotateY(calc(var(--motion-rotate-y) * 1 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.2025,
+              offset: 0.20234,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * -0.7 * 15deg)) rotateY(calc(var(--motion-rotate-y) * -0.7 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.3375,
+              offset: 0.33768000000000004,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * 0.6 * 15deg)) rotateY(calc(var(--motion-rotate-y) * 0.6 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.459,
+              offset: 0.4596200000000001,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * -0.3 * 15deg)) rotateY(calc(var(--motion-rotate-y) * -0.3 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.5670000000000001,
+              offset: 0.56749,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * 0.2 * 15deg)) rotateY(calc(var(--motion-rotate-y) * 0.2 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.7020000000000001,
+              offset: 0.70283,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * -0.05 * 15deg)) rotateY(calc(var(--motion-rotate-y) * -0.05 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
             {
               easing: 'cubic-bezier(0.445, 0.05, 0.55, 0.95)',
-              offset: 0.7965000000000001,
+              offset: 0.7966300000000001,
               transform:
                 'rotateZ(var(--motion-rotate, 0deg)) translateX(var(--motion-origin-x)) translateY(var(--motion-origin-y)) perspective(800px) rotateX(calc(var(--motion-rotate-x) * 0 * 15deg)) rotateY(calc(var(--motion-rotate-y) * 0 * 15deg)) translateX(calc(-1 * var(--motion-origin-x))) translateY(calc(-1 * var(--motion-origin-y)))',
             },
