@@ -41,10 +41,7 @@ export type EventTriggerConfigEnterLeave = {
   leave?: readonly string[];
 };
 
-export type EventTriggerConfig =
-  | string
-  | EventTriggerConfigToggle
-  | EventTriggerConfigEnterLeave;
+export type EventTriggerConfig = string | EventTriggerConfigToggle | EventTriggerConfigEnterLeave;
 
 export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 

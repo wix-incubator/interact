@@ -60,7 +60,12 @@ export function createTimeEffectHandler(
     if ((isEnter || isToggle) && type === 'alternate' && !initialPlay) {
       animation.reverse();
     }
-    if ((isEnter || isToggle) && type === 'state' && !initialPlay && animation.playState === 'running') {
+    if (
+      (isEnter || isToggle) &&
+      type === 'state' &&
+      !initialPlay &&
+      animation.playState === 'running'
+    ) {
       animation.pause();
     }
     if (

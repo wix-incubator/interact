@@ -11,10 +11,7 @@ import type {
   EventTriggerParams,
 } from '../types';
 import { addHandlerToMap, removeElementFromHandlerMap } from './utilities';
-import {
-  createTimeEffectHandler,
-  createTransitionHandler,
-} from './effectHandlers';
+import { createTimeEffectHandler, createTransitionHandler } from './effectHandlers';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 
@@ -27,7 +24,9 @@ type GenericEventConfig = {
 function isEnterLeaveConfigShape(
   config: EventTriggerConfig,
 ): config is EventTriggerConfigEnterLeave {
-  return typeof config === 'object' && !Array.isArray(config) && ('enter' in config || 'leave' in config);
+  return (
+    typeof config === 'object' && !Array.isArray(config) && ('enter' in config || 'leave' in config)
+  );
 }
 
 function createGenericEventConfig(config: EventTriggerConfig): GenericEventConfig {
@@ -62,17 +61,11 @@ function addEventTriggerHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: EventTriggerParams,
-  {
-    reducedMotion,
-    targetController,
-    selectorCondition,
-    allowA11yTriggers,
-  }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
 ) {
   const genericConfig = createGenericEventConfig(options.eventConfig);
   const isTransition =
-    (effect as TransitionEffect).transition ||
-    (effect as TransitionEffect).transitionProperties;
+    (effect as TransitionEffect).transition || (effect as TransitionEffect).transitionProperties;
 
   const enterLeave = getEnterLeaveConfig(genericConfig);
 

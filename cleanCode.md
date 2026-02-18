@@ -7,12 +7,12 @@ Ordered by priority — higher rules take precedence when rules conflict.
 
 ## 1. Minimal Change Principle ⚡ Highest Priority
 
-* **Do not touch working code** unless strictly required for the requested behavior.
-* **Never refactor, rename, reorder, or restructure** unrelated code.
-* Prefer the **smallest possible diff**.
-* Assume all existing code is **intentional and correct**.
-* **Match the existing structure.** Use the same control flow, naming, patterns, and conventions as the code you're changing or the nearest similar file. Do not introduce new abstractions (wrapper factories, generic helpers) when the existing code uses direct approaches.
-* **Preserve intent over style.** Do not rewrite code solely to match these rules. These rules must never override domain meaning or deliberate design choices.
+- **Do not touch working code** unless strictly required for the requested behavior.
+- **Never refactor, rename, reorder, or restructure** unrelated code.
+- Prefer the **smallest possible diff**.
+- Assume all existing code is **intentional and correct**.
+- **Match the existing structure.** Use the same control flow, naming, patterns, and conventions as the code you're changing or the nearest similar file. Do not introduce new abstractions (wrapper factories, generic helpers) when the existing code uses direct approaches.
+- **Preserve intent over style.** Do not rewrite code solely to match these rules. These rules must never override domain meaning or deliberate design choices.
 
 > Change only what is directly linked to the requested behavior — nothing more. When in doubt, keep the same structure as the original.
 
@@ -20,20 +20,20 @@ Ordered by priority — higher rules take precedence when rules conflict.
 
 ## 2. Clarity Over Performance
 
-* Prefer **simple, explicit, readable code** over micro-optimizations.
-* Avoid clever tricks, compressed expressions, or obscure patterns.
-* Optimize **only when explicitly requested** or clearly critical.
-* Prefer direct boolean forms: `x === 'toggle'` over `x !== 'toggle' ? false : true`.
+- Prefer **simple, explicit, readable code** over micro-optimizations.
+- Avoid clever tricks, compressed expressions, or obscure patterns.
+- Optimize **only when explicitly requested** or clearly critical.
+- Prefer direct boolean forms: `x === 'toggle'` over `x !== 'toggle' ? false : true`.
 
 ---
 
 ## 3. Control Flow: Flat and Explicit
 
-* Prefer **flattened control flow** over nested `if` trees.
-* Unite `if` statements that lead to the same behavior.
-* Use **early guard returns** to simplify logic.
-* If flattening hurts readability, extract **well-named helpers**.
-* Prefer **a single final return** per function; multiple early returns are fine for guards and impossible states.
+- Prefer **flattened control flow** over nested `if` trees.
+- Unite `if` statements that lead to the same behavior.
+- Use **early guard returns** to simplify logic.
+- If flattening hurts readability, extract **well-named helpers**.
+- Prefer **a single final return** per function; multiple early returns are fine for guards and impossible states.
 
 ### Example
 
@@ -61,18 +61,18 @@ if (!b && c) doY();
 
 ## 4. Short, Focused Functions
 
-* Functions should fit on **one screen** (~100 lines max).
-* If a function does more than one thing, mixes abstraction levels, or needs explanation → extract helpers.
+- Functions should fit on **one screen** (~100 lines max).
+- If a function does more than one thing, mixes abstraction levels, or needs explanation → extract helpers.
 
-> If you need comments to explain *what* a function does, it's too big.
+> If you need comments to explain _what_ a function does, it's too big.
 
 ---
 
 ## 5. Separation of Concerns
 
-* High-level logic must not contain low-level details.
-* Extract validation, parsing, formatting, and calculations into helpers.
-* **Helpers are a feature, not a smell.** Prefer named helpers over inline complexity. Names should explain **why**, not **how**.
+- High-level logic must not contain low-level details.
+- Extract validation, parsing, formatting, and calculations into helpers.
+- **Helpers are a feature, not a smell.** Prefer named helpers over inline complexity. Names should explain **why**, not **how**.
 
 ### Example
 
@@ -94,21 +94,21 @@ if (isEligibleUser(user)) { ... }
 
 ## 6. Don't Repeat Yourself (DRY)
 
-* Never duplicate logic, conditions, or transformations.
-* Extract and reuse — even if the helper feels trivial.
+- Never duplicate logic, conditions, or transformations.
+- Extract and reuse — even if the helper feels trivial.
 
 ---
 
 ## 7. Immutability First
 
-* Always prefer `const` over `let`.
-* Avoid mutation unless unavoidable; return new values instead.
+- Always prefer `const` over `let`.
+- Avoid mutation unless unavoidable; return new values instead.
 
 ---
 
 ## 8. Limit Function Arguments
 
-* Avoid more than **4 arguments**. Group related arguments into objects or extract helpers.
+- Avoid more than **4 arguments**. Group related arguments into objects or extract helpers.
 
 > Many arguments signal unclear boundaries or mixed concerns.
 
@@ -116,15 +116,15 @@ if (isEligibleUser(user)) { ... }
 
 ## 9. Comments: Only When Necessary
 
-* Add comments only when **strictly necessary** (non-obvious workarounds, critical "why" that code/naming cannot express).
-* If a comment restates the code, remove it. If it explains *what*, improve the code instead.
+- Add comments only when **strictly necessary** (non-obvious workarounds, critical "why" that code/naming cannot express).
+- If a comment restates the code, remove it. If it explains _what_, improve the code instead.
 
 ---
 
 ## 10. Prefer Loose Data Shapes Over Discriminated Unions
 
-* Prefer a **single object with optional properties** over discriminated unions when the code only checks "which keys are present."
-* Don't add structure (e.g. a `kind` field) that exists only for the type system.
+- Prefer a **single object with optional properties** over discriminated unions when the code only checks "which keys are present."
+- Don't add structure (e.g. a `kind` field) that exists only for the type system.
 
 ### Example
 
@@ -147,13 +147,13 @@ type NotifyConfig = { at?: Date; ms?: number; immediate?: true };
 
 ## 11. Avoid Unnecessary Parameterization
 
-* Don't add a parameter when the only value ever passed is created in the same scope. Close over it instead.
+- Don't add a parameter when the only value ever passed is created in the same scope. Close over it instead.
 
 ---
 
 ## 12. Declare Variables Near Usage
 
-* Declare variables **close to where they're first used**, not at the top of a block.
+- Declare variables **close to where they're first used**, not at the top of a block.
 
 ---
 
