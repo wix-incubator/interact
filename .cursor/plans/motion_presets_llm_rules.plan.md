@@ -559,4 +559,3 @@ For each category (entrance, scroll, ongoing, mouse):
 4. Every file has YAML frontmatter with `name` and `description` (see [Skills Compatibility](#skills-compatibility))
 5. Run `yarn format` on all generated markdown files to ensure they pass CI formatting checks
 6. Verify no content duplication between this plan and generated files (generated files should stand alone; this plan is the source, not a supplement)
-
