@@ -53,53 +53,46 @@ export function createTimeEffectHandler(
     const isEnter = enterEvents.length > 0 && enterEvents.includes(event.type);
     const isLeave = leaveEvents.length > 0 && leaveEvents.includes(event.type);
 
-    if ((isEnter || isToggle) && (type === 'alternate' || type === 'state') && initialPlay) {
-      initialPlay = false;
-      animation.play();
-    }
-    if ((isEnter || isToggle) && type === 'alternate' && !initialPlay) {
-      animation.reverse();
-    }
-    if (
-      (isEnter || isToggle) &&
-      type === 'state' &&
-      !initialPlay &&
-      animation.playState === 'running'
-    ) {
-      animation.pause();
-    }
-    if (
-      (isEnter || isToggle) &&
-      type === 'state' &&
-      !initialPlay &&
-      animation.playState !== 'running' &&
-      animation.playState !== 'finished'
-    ) {
-      animation.play();
-    }
-    if ((isEnter || isToggle) && type !== 'alternate' && type !== 'state') {
-      animation.progress(0);
-      if (animation.isCSS) {
-        animation.onFinish(() => {
-          fastdom.mutate(() => {
-            element.dataset[enterLeave ? 'motionEnter' : 'interactEnter'] = 'done';
+    if (isEnter || isToggle) {
+      if (type === 'alternate' || type === 'state') {
+        if (initialPlay) {
+          initialPlay = false;
+          animation.play();
+        } else if (type === 'alternate') {
+          animation.reverse();
+        } else if (type === 'state') {
+          if (animation.playState === 'running') {
+            animation.pause();
+          } else if (animation.playState !== 'finished') {
+            animation.play();
+          }
+        }
+      } else {
+        animation.progress(0);
+        if (animation.isCSS) {
+          animation.onFinish(() => {
+            fastdom.mutate(() => {
+              element.dataset[enterLeave ? 'motionEnter' : 'interactEnter'] =
+                'done';
+            });
           });
-        });
+        }
+        animation.play();
       }
-      animation.play();
+      return;
     }
 
-    if (isLeave && type === 'alternate') {
-      animation.reverse();
-    }
-    if (isLeave && type === 'repeat') {
-      animation.cancel();
-      fastdom.mutate(() => {
-        delete element.dataset.interactEnter;
-      });
-    }
-    if (isLeave && type === 'state' && animation.playState === 'running') {
-      animation.pause();
+    if (isLeave) {
+      if (type === 'alternate') {
+        animation.reverse();
+      } else if (type === 'repeat') {
+        animation.cancel();
+        fastdom.mutate(() => {
+          delete element.dataset.interactEnter;
+        });
+      } else if (type === 'state' && animation.playState === 'running') {
+        animation.pause();
+      }
     }
   };
 }
