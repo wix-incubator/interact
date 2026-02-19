@@ -1,3 +1,10 @@
+---
+name: "Sequence implementation"
+overview: "implement a new Sequence class that allows controling playback of mutiple AnimationGroups, and integrate it with Motion and Interact libraries."
+todos: []
+isProject: false
+---
+
 # Sequence Feature Implementation
 
 This plan implements the Sequence feature as specified in [sequences-spec.md](packages/interact/dev/sequences-spec.md). The feature enables managing multiple Effects as a coordinated timeline with staggered delays.
@@ -60,8 +67,9 @@ Update `packages/motion/src/types.ts`:
 ```typescript
 export type SequenceOptions = {
   delay?: number; // default 0
-  offset?: number; // default 100
+  offset?: number; // default 0
   offsetEasing?: string | ((p: number) => number);
+  sequenceId?: string; // for referencing a reusable sequence declaration
 };
 ```
 
@@ -103,19 +111,24 @@ The `getSequence()` funciton has 2 flows:
 Update `packages/interact/src/types.ts`:
 
 ```typescript
-// New Sequence type
-export type Sequence = {
-  sequenceId: string; // for referencing reusable sequences
+// New SequenceOptions type
+export type SequenceOptions = {
   delay?: number; // default 0
-  offset?: number; // default 100
+  offset?: number; // default 0
   offsetEasing?: string | ((p: number) => number); // default linear
-  effects: (Effect | EffectRef)[];
 };
+
+// New SequenceConfig type
+export type SequenceConfig = SequenceOptions & ({
+  effect: Effect | EffectRef;
+} | {
+  effects: (Effect | EffectRef)[];
+});
 
 // Update InteractConfig
 export type InteractConfig = {
   effects: Record<string, Effect>;
-  sequences?: Record<string, Sequence>; // NEW: reusable sequences
+  sequences?: Record<string, SequenceConfig>; // NEW: reusable sequences
   conditions?: Record<string, Condition>;
   interactions: Interaction[];
 };
@@ -123,7 +136,7 @@ export type InteractConfig = {
 // Update Interaction
 export type Interaction = InteractionTrigger & {
   effects: ((Effect | EffectRef) & { interactionId?: string })[];
-  sequences?: Sequence[]; // NEW: inline sequences
+  sequences?: SequenceConfig[]; // NEW: inline sequences
 };
 ```
 
@@ -134,13 +147,13 @@ Add sequences to the cache structure in `packages/interact/src/types.ts`:
 ```typescript
 export type InteractCache = {
   effects: { [effectId: string]: Effect };
-  sequences: { [sequenceId: string]: Sequence }; // NEW
+  sequences: { [sequenceId: string]: SequenceConfig }; // NEW
   conditions: { [conditionId: string]: Condition };
   interactions: {
     [path: string]: {
       triggers: Interaction[];
       effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
-      sequences: Record<string, (InteractionTrigger & { sequence: Sequence })[]>;
+      sequences: Record<string, (InteractionTrigger & { sequence: SequenceConfig })[]>;
       interactionIds: Set<string>;
       selectors: Set<string>;
     };
@@ -154,10 +167,11 @@ Modify `packages/interact/src/core/Interact.ts`:
 
 1. Parse `config.sequences` into cache (similar to `config.effects`)
 2. Process `interaction.sequences` array:
-   - Resolve `sequenceId` references from `config.sequences`
-   - Process each effect within the sequence
-   - Generate unique IDs for sequence effects
-
+  - Resolve `sequenceId` references from `config.sequences`
+  - Process each effect within the sequence:
+    - Either as list of multiple effects as `effects: Effect[]`
+    - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
+  - Generate unique IDs for sequence effects
 3. Track sequence membership for effects (needed for delay calculation)
 
 ### 2.4 Update Effect Processing in `add.ts`
