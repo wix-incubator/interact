@@ -2769,7 +2769,6 @@ describe('interact (web)', () => {
 
     describe('interest trigger', () => {
       it('should add focusin listener alongside mouseenter', () => {
-        Interact.setup({ allowA11yTriggers: true });
         Interact.create(getA11yConfig('interest', 'interest-test'), { useCutsomElement: true });
         a11yElement = document.createElement('interact-element') as IInteractElement;
 

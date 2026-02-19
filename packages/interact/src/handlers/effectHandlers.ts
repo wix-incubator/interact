@@ -72,8 +72,7 @@ export function createTimeEffectHandler(
         if (animation.isCSS) {
           animation.onFinish(() => {
             fastdom.mutate(() => {
-              element.dataset[enterLeave ? 'motionEnter' : 'interactEnter'] =
-                'done';
+              element.dataset[enterLeave ? 'motionEnter' : 'interactEnter'] = 'done';
             });
           });
         }
