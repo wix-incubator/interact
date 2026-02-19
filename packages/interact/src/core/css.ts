@@ -75,24 +75,22 @@ function resolveEffect(
     fullEffect.key = interaction.key;
   }
 
-  if (interaction.conditions && interaction.conditions.length) {
-    const interactionConditions = interaction.conditions.filter((condition) => conditionDefinitions[condition]?.type === 'media');
-    fullEffect.conditions = [
-      ...new Set(...interactionConditions, ...(fullEffect.conditions || [])),
-    ].filter((condition) => conditionDefinitions[condition]);
-  }
+  fullEffect.conditions = [
+    ...new Set(...(fullEffect.conditions as string[] || [])),
+  ].filter((condition) => conditionDefinitions[condition]);
 
   const { keyframeEffect } = fullEffect;
   if (keyframeEffect && !keyframeEffect.name) {
-    // use effectId only if the keyframes are not overridden by effectRef or effectRef has a unique effectId (no reference)
     const canUseEffectId =
       (effectRef.effectId && !effectsMap[effectRef.effectId]) ||
       !(effectRef as TimeEffect & { keyframeEffect: MotionKeyframeEffect }).keyframeEffect;
     keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
   }
 
+  const { trigger, params } = interaction;
+  const { type } = params as ViewEnterParams;
   fullEffect.initial =
-    fullEffect.initial === false || interaction.trigger !== 'viewEnter'
+    fullEffect.initial === false || trigger !== 'viewEnter' || (type && type !== 'once')
       ? undefined
       : fullEffect.initial || DEFAULT_INITIAL;
 
@@ -391,18 +389,12 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
       return;
     }
 
-    const seenKeys = new Set<string>();
     for (const effectRef of interaction.effects) {
       const effect = resolveEffect(effectRef, config.effects, interaction, configConditions);
       if (/\[]/g.test(effect.key)) {
         continue;
       }
 
-      const isNewInteraction = !seenKeys.has(effect.key);
-      if (isNewInteraction) {
-        seenKeys.add(effect.key);
-      }
-      
       const escapedKey = CSS.escape(effect.key);
       const keyWithNoSpecialChars = effect.key.replace(/[^\w-]/g, '');
       const customPropName = `--interaction-${interactionIdx}-${keyWithNoSpecialChars}`;      
