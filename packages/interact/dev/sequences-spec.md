@@ -42,7 +42,7 @@ type SequenceOptions = {
   delay?: number; // default 0
   offset?: number; // default 0
   offsetEasing?: string | (p: number) => number; // linear
-  sequenceId: string; // provided or generated automatically
+  sequenceId?: string; // provided or generated automatically
 };
 
 /**

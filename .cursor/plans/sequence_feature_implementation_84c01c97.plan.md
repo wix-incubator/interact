@@ -1,6 +1,6 @@
 ---
-name: "Sequence implementation"
-overview: "implement a new Sequence class that allows controling playback of mutiple AnimationGroups, and integrate it with Motion and Interact libraries."
+name: Sequence implementation
+overview: implement a new Sequence class that allows controling playback of mutiple AnimationGroups, and integrate it with Motion and Interact libraries.
 todos: []
 isProject: false
 ---
@@ -69,7 +69,6 @@ export type SequenceOptions = {
   delay?: number; // default 0
   offset?: number; // default 0
   offsetEasing?: string | ((p: number) => number);
-  sequenceId?: string; // for referencing a reusable sequence declaration
 };
 ```
 
@@ -112,18 +111,28 @@ Update `packages/interact/src/types.ts`:
 
 ```typescript
 // New SequenceOptions type
-export type SequenceOptions = {
+export type SequenceOptionsConfig = {
   delay?: number; // default 0
   offset?: number; // default 0
   offsetEasing?: string | ((p: number) => number); // default linear
+  sequenceId?: string; // for referencing a reusable sequence declaration
 };
 
 // New SequenceConfig type
-export type SequenceConfig = SequenceOptions & ({
+export type SequenceConfig = SequenceOptionsConfig & ({
   effect: Effect | EffectRef;
 } | {
   effects: (Effect | EffectRef)[];
 });
+
+// New SequenceConfigRef type
+export type SequenceConfigRef = {
+  sequenceId: string;
+} & {
+  delay?: number; // default 0
+  offset?: number; // default 0
+  offsetEasing?: string | ((p: number) => number); // default linear
+};
 
 // Update InteractConfig
 export type InteractConfig = {
@@ -134,10 +143,14 @@ export type InteractConfig = {
 };
 
 // Update Interaction
-export type Interaction = InteractionTrigger & {
+export type Interaction = InteractionTrigger & ({
   effects: ((Effect | EffectRef) & { interactionId?: string })[];
-  sequences?: SequenceConfig[]; // NEW: inline sequences
-};
+} | {
+  sequences: (SequenceConfig | SequenceConfigRef)[]; // NEW: inline sequences
+} | {
+  effects: ((Effect | EffectRef) & { interactionId?: string })[];
+  sequences: (SequenceConfig | SequenceConfigRef)[]; // NEW: inline sequences
+});
 ```
 
 ### 2.2 Update InteractCache
@@ -232,3 +245,4 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
+
