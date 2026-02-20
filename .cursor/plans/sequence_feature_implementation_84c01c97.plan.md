@@ -142,15 +142,21 @@ export type InteractConfig = {
   interactions: Interaction[];
 };
 
-// Update Interaction
-export type Interaction = InteractionTrigger & ({
-  effects: ((Effect | EffectRef) & { interactionId?: string })[];
-} | {
-  sequences: (SequenceConfig | SequenceConfigRef)[]; // NEW: inline sequences
-} | {
-  effects: ((Effect | EffectRef) & { interactionId?: string })[];
-  sequences: (SequenceConfig | SequenceConfigRef)[]; // NEW: inline sequences
-});
+// Update Interaction - use mutually exclusive branches for proper type narrowing
+export type Interaction = InteractionTrigger & (
+  | {
+      effects: ((Effect | EffectRef) & { interactionId?: string })[];
+      sequences?: never; // effects-only: explicitly exclude sequences
+    }
+  | {
+      effects?: never; // sequences-only: explicitly exclude effects
+      sequences: (SequenceConfig | SequenceConfigRef)[];
+    }
+  | {
+      effects: ((Effect | EffectRef) & { interactionId?: string })[];
+      sequences: (SequenceConfig | SequenceConfigRef)[];
+    }
+);
 ```
 
 ### 2.2 Update InteractCache
