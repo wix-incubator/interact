@@ -1,7 +1,74 @@
 ---
 name: Sequence implementation
 overview: implement a new Sequence class that allows controling playback of mutiple AnimationGroups, and integrate it with Motion and Interact libraries.
-todos: []
+todos:
+  - id: motion-sequence-class
+    content: Create Sequence class in packages/motion/src/Sequence.ts
+    status: pending
+  - id: motion-sequence-types
+    content: Add SequenceOptions type to packages/motion/src/types.ts
+    status: pending
+    dependencies:
+      - motion-sequence-class
+  - id: motion-sequence-export
+    content: Export Sequence and SequenceOptions from packages/motion/src/index.ts
+    status: pending
+    dependencies:
+      - motion-sequence-class
+      - motion-sequence-types
+  - id: motion-get-sequence
+    content: Implement getSequence() function in packages/motion/src/motion.ts and export it
+    status: pending
+    dependencies:
+      - motion-sequence-class
+      - motion-sequence-types
+  - id: interact-types
+    content: Update types in packages/interact/src/types.ts (SequenceOptionsConfig, SequenceConfig, SequenceConfigRef, InteractConfig, Interaction)
+    status: pending
+    dependencies:
+      - motion-sequence-types
+  - id: interact-cache-types
+    content: Update InteractCache type to include sequences field
+    status: pending
+    dependencies:
+      - interact-types
+  - id: interact-parse-config
+    content: Update parseConfig in packages/interact/src/core/Interact.ts to handle sequences
+    status: pending
+    dependencies:
+      - interact-types
+      - interact-cache-types
+  - id: interact-add
+    content: Update effect processing in packages/interact/src/core/add.ts to create Sequence instances
+    status: pending
+    dependencies:
+      - motion-get-sequence
+      - interact-parse-config
+  - id: interact-sequence-cache
+    content: Implement Sequence caching on Interact class (sequenceCache static property and getEffect() endpoint)
+    status: pending
+    dependencies:
+      - interact-add
+  - id: interact-handlers
+    content: Update trigger handlers (viewEnter.ts, click.ts, etc.) to support Sequence instances
+    status: pending
+    dependencies:
+      - interact-add
+  - id: tests-unit
+    content: Write unit tests for Sequence class offset calculations and easing integration
+    status: pending
+    dependencies:
+      - motion-sequence-class
+  - id: tests-integration
+    content: Write integration tests for sequence parsing in Interact
+    status: pending
+    dependencies:
+      - interact-parse-config
+  - id: tests-e2e
+    content: Write E2E tests for staggered animations with various easing functions
+    status: pending
+    dependencies:
+      - interact-handlers
 isProject: false
 ---
 
@@ -119,11 +186,15 @@ export type SequenceOptionsConfig = {
 };
 
 // New SequenceConfig type
-export type SequenceConfig = SequenceOptionsConfig & ({
-  effect: Effect | EffectRef;
-} | {
-  effects: (Effect | EffectRef)[];
-});
+export type SequenceConfig = SequenceOptionsConfig &
+  (
+    | {
+        effect: Effect | EffectRef;
+      }
+    | {
+        effects: (Effect | EffectRef)[];
+      }
+  );
 
 // New SequenceConfigRef type
 export type SequenceConfigRef = {
@@ -143,20 +214,21 @@ export type InteractConfig = {
 };
 
 // Update Interaction - use mutually exclusive branches for proper type narrowing
-export type Interaction = InteractionTrigger & (
-  | {
-      effects: ((Effect | EffectRef) & { interactionId?: string })[];
-      sequences?: never; // effects-only: explicitly exclude sequences
-    }
-  | {
-      effects?: never; // sequences-only: explicitly exclude effects
-      sequences: (SequenceConfig | SequenceConfigRef)[];
-    }
-  | {
-      effects: ((Effect | EffectRef) & { interactionId?: string })[];
-      sequences: (SequenceConfig | SequenceConfigRef)[];
-    }
-);
+export type Interaction = InteractionTrigger &
+  (
+    | {
+        effects: ((Effect | EffectRef) & { interactionId?: string })[];
+        sequences?: never; // effects-only: explicitly exclude sequences
+      }
+    | {
+        effects?: never; // sequences-only: explicitly exclude effects
+        sequences: (SequenceConfig | SequenceConfigRef)[];
+      }
+    | {
+        effects: ((Effect | EffectRef) & { interactionId?: string })[];
+        sequences: (SequenceConfig | SequenceConfigRef)[];
+      }
+  );
 ```
 
 ### 2.2 Update InteractCache
@@ -186,11 +258,13 @@ Modify `packages/interact/src/core/Interact.ts`:
 
 1. Parse `config.sequences` into cache (similar to `config.effects`)
 2. Process `interaction.sequences` array:
-  - Resolve `sequenceId` references from `config.sequences`
-  - Process each effect within the sequence:
-    - Either as list of multiple effects as `effects: Effect[]`
-    - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
-  - Generate unique IDs for sequence effects
+
+- Resolve `sequenceId` references from `config.sequences`
+- Process each effect within the sequence:
+  - Either as list of multiple effects as `effects: Effect[]`
+  - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
+- Generate unique IDs for sequence effects
+
 3. Track sequence membership for effects (needed for delay calculation)
 
 ### 2.4 Update Effect Processing in `add.ts`
@@ -251,4 +325,3 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
-
