@@ -84,7 +84,7 @@ The API will have:
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
 - `Intl.Segmenter` **API** for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
-- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -233,7 +233,7 @@ Key files to implement:
 - **Use** `Intl.Segmenter` **API for locale-sensitive text splitting on meaningful items** (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-1. `**src/lineDetection.ts`** - Range-based line detection:
+1. `**src/lineDetection.ts`\*\* - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
@@ -374,7 +374,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 
 **Additional documentation for wrapper customization:**
 
-1. `**docs/api/types.md`** - Update with wrapper option types:
+1. `**docs/api/types.md`\*\* - Update with wrapper option types:
 
 - `WrapperClassConfig` interface documentation
 - `WrapperStyleConfig` interface documentation
@@ -399,7 +399,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - **CSS-only animations** using @keyframes and animation-delay
 - **Intersection Observer** trigger with wrapper data attributes
 
-1. `**docs/examples/css-animations.md`** - New CSS-focused examples:
+1. `**docs/examples/css-animations.md`\*\* - New CSS-focused examples:
 
 ```css
 /* Example: Typewriter effect */
@@ -754,7 +754,7 @@ class SplitTextResultImpl implements SplitTextResult {
 
 **Primary Approach: Range API with `getClientRects()`**
 
-Use the DOM Range API to detect line breaks from text nodes *before* creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+Use the DOM Range API to detect line breaks from text nodes _before_ creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
 
 ```typescript
 function detectLines(textNode: Text): string[] {
@@ -903,7 +903,6 @@ The Range API approach has O(n) character iteration complexity, but:
 ### Browser Compatibility
 
 - **Safari quirk**: Requires whitespace normalization before Range operations
-- `**Range.getClientRects()`**: Widely supported (all modern browsers)
+- `**Range.getClientRects()`\*\*: Widely supported (all modern browsers)
 - `**Range.getBoundingClientRect()**`: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
-
