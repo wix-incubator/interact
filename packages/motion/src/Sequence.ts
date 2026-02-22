@@ -26,7 +26,7 @@ export class Sequence extends AnimationGroup {
     this.offsetEasing =
       typeof options.offsetEasing === 'function'
         ? options.offsetEasing
-        : getJsEasing(options.offsetEasing) ?? linear;
+        : (getJsEasing(options.offsetEasing) ?? linear);
 
     this.ready = Promise.all(animationGroups.map((g) => g.ready)).then(() => {
       this.applyOffsets();

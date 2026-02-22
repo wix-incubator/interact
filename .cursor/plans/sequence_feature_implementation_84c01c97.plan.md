@@ -108,8 +108,6 @@ classDiagram
     Sequence "1" --> "*" AnimationGroup : manages
 ```
 
-
-
 ## Part 1: @wix/motion Package Changes
 
 ### 1.1 Create Sequence Class
@@ -327,4 +325,3 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
-

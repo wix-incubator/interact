@@ -214,7 +214,9 @@ function getAnimation(
   return getWebAnimation(target, animationOptions, trigger, { reducedMotion });
 }
 
-function resolveTargets(target: HTMLElement | HTMLElement[] | string | null): (HTMLElement | null)[] {
+function resolveTargets(
+  target: HTMLElement | HTMLElement[] | string | null,
+): (HTMLElement | null)[] {
   if (target === null) return [null];
   if (typeof target === 'string') {
     return Array.from(document.querySelectorAll<HTMLElement>(target));
@@ -243,7 +245,12 @@ function getSequence(
     const elements = resolveTargets(target);
 
     for (const element of elements) {
-      const result = getAnimation(element, animationGroupOptions, undefined, context?.reducedMotion);
+      const result = getAnimation(
+        element,
+        animationGroupOptions,
+        undefined,
+        context?.reducedMotion,
+      );
 
       if (result instanceof AnimationGroup) {
         groups.push(result);
