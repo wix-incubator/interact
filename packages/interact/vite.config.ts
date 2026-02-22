@@ -23,6 +23,7 @@ export default defineConfig(({ command }) => {
         external: ['react', 'react-dom'],
         output: {
           entryFileNames: '[format]/[name].js',
+          compact: true,
         },
       },
     },
