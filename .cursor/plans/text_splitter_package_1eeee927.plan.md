@@ -225,7 +225,7 @@ function useSplitText(
 
 Key files to implement:
 
-1. `**src/splitText.ts**` - Main function:
+1. `src/splitText.ts` - Main function:
 
 - Parse target (CSS selector or element)
 - **Use Range API for line detection** (see Key Implementation Details)
@@ -233,20 +233,20 @@ Key files to implement:
 - **Use** `Intl.Segmenter` **API for locale-sensitive text splitting on meaningful items** (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-1. `**src/lineDetection.ts`\*\* - Range-based line detection:
+1. `src/lineDetection.ts` - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
 - Handle Safari whitespace normalization
 - Support for nested elements via TreeWalker
 
-1. `**src/accessibility.ts**`:
+1. `src/accessibility.ts`:
 
 - Add `aria-label` with original text to container
 - Add `aria-hidden="true"` to split elements
 - Handle nested elements appropriately
 
-1. `**src/utils.ts**`:
+1. `src/utils.ts`:
 
 - Text segmentation (handle emoji, unicode)
 - DOM manipulation helpers
@@ -254,7 +254,7 @@ Key files to implement:
 
 ### Phase 3: React Integration
 
-1. `**src/react/useSplitText.ts**`:
+1. `src/react/useSplitText.ts`:
 
 - Hook that wraps core function
 - Handle cleanup on unmount
@@ -374,14 +374,14 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 
 **Additional documentation for wrapper customization:**
 
-1. `**docs/api/types.md`\*\* - Update with wrapper option types:
+1. `docs/api/types.md` - Update with wrapper option types:
 
 - `WrapperClassConfig` interface documentation
 - `WrapperStyleConfig` interface documentation
 - `WrapperAttrsConfig` interface documentation
 - Explanation of global vs per-type configuration
 
-1. `**docs/guides/styling-wrappers.md**` - New guide covering:
+1. `docs/guides/styling-wrappers.md` - New guide covering:
 
 - Default CSS classes (`split-c`, `split-w`, etc.)
 - Customizing wrapper classes
@@ -390,7 +390,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - Best practices for `display: inline-block` with transforms
 - CSS custom properties for staggered animations
 
-1. `**docs/examples/animations.md**` - Expanded with wrapper examples:
+1. `docs/examples/animations.md` - Expanded with wrapper examples:
 
 - **Fade-in character animation** using wrapperClass + CSS
 - **Slide-up word reveal** using wrapperStyle initial state
@@ -399,7 +399,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - **CSS-only animations** using @keyframes and animation-delay
 - **Intersection Observer** trigger with wrapper data attributes
 
-1. `**docs/examples/css-animations.md`\*\* - New CSS-focused examples:
+1. `docs/examples/css-animations.md` - New CSS-focused examples:
 
 ```css
 /* Example: Typewriter effect */
@@ -903,6 +903,6 @@ The Range API approach has O(n) character iteration complexity, but:
 ### Browser Compatibility
 
 - **Safari quirk**: Requires whitespace normalization before Range operations
-- `**Range.getClientRects()`\*\*: Widely supported (all modern browsers)
-- `**Range.getBoundingClientRect()**`: Not yet standard but widely supported
+- `Range.getClientRects()`: Widely supported (all modern browsers)
+- `Range.getBoundingClientRect()`: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
