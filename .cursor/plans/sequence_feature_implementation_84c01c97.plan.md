@@ -4,21 +4,21 @@ overview: implement a new Sequence class that allows controling playback of muti
 todos:
   - id: motion-sequence-class
     content: Create Sequence class in packages/motion/src/Sequence.ts
-    status: pending
+    status: completed
   - id: motion-sequence-types
     content: Add SequenceOptions type to packages/motion/src/types.ts
-    status: pending
+    status: completed
     dependencies:
       - motion-sequence-class
   - id: motion-sequence-export
     content: Export Sequence and SequenceOptions from packages/motion/src/index.ts
-    status: pending
+    status: completed
     dependencies:
       - motion-sequence-class
       - motion-sequence-types
   - id: motion-get-sequence
     content: Implement getSequence() function in packages/motion/src/motion.ts and export it
-    status: pending
+    status: completed
     dependencies:
       - motion-sequence-class
       - motion-sequence-types
@@ -107,6 +107,8 @@ classDiagram
     Sequence --|> AnimationGroup : extends
     Sequence "1" --> "*" AnimationGroup : manages
 ```
+
+
 
 ## Part 1: @wix/motion Package Changes
 
@@ -265,7 +267,7 @@ Modify `packages/interact/src/core/Interact.ts`:
   - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
 - Generate unique IDs for sequence effects
 
-3. Track sequence membership for effects (needed for delay calculation)
+1. Track sequence membership for effects (needed for delay calculation)
 
 ### 2.4 Update Effect Processing in `add.ts`
 
@@ -325,3 +327,4 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
+
