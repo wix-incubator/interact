@@ -254,6 +254,84 @@ function _isSequenceConfigRef(
   return 'sequenceId' in config && !('effect' in config) && !('effects' in config);
 }
 
+/**
+ * Shared logic for building animation group args from a sequence config.
+ * Handles sequence-level and effect-level media conditions, target resolution, and element lookup.
+ * Returns null when the sequence should be skipped (conditions not met, missing targets, etc.).
+ */
+function _buildAnimationGroupArgsFromSequence(
+  sequenceConfig: SequenceConfig,
+  cacheKey: string,
+  sourceKey: string,
+  sourceController: IInteractionController,
+  instance: Interact,
+  options: { updateKey: string; onUpdate: () => void },
+): AnimationGroupArgs[] | null {
+  const seqMql = getMediaQuery(
+    sequenceConfig.conditions || [],
+    instance.dataCache.conditions,
+  );
+
+  if (seqMql) {
+    instance.setupMediaQueryListener(cacheKey, seqMql, options.updateKey, options.onUpdate);
+  }
+
+  if (seqMql && !seqMql.matches) return null;
+
+  const seqEffects: (Effect | EffectRef)[] =
+    'effects' in sequenceConfig
+      ? sequenceConfig.effects
+      : 'effect' in sequenceConfig
+        ? [sequenceConfig.effect]
+        : [];
+
+  const animationGroupArgs: AnimationGroupArgs[] = [];
+
+  for (const effect of seqEffects) {
+    const effectId = (effect as EffectRef).effectId;
+    const effectOptions = {
+      ...(effectId ? instance.dataCache.effects[effectId] || {} : {}),
+      ...effect,
+    };
+
+    const effectMql = getMediaQuery(
+      effectOptions.conditions || [],
+      instance.dataCache.conditions,
+    );
+
+    if (effectMql) {
+      const effectCacheKey = `${cacheKey}::${effectId || 'eff'}`;
+      instance.setupMediaQueryListener(effectCacheKey, effectMql, options.updateKey, options.onUpdate);
+    }
+
+    if (effectMql && !effectMql.matches) continue;
+
+    const targetKey_ = effectOptions.key;
+    const target = targetKey_ && getInterpolatedKey(targetKey_, sourceKey);
+
+    let targetController;
+    if (target) {
+      targetController = Interact.getController(target);
+      if (!targetController) return null;
+    } else {
+      targetController = sourceController;
+    }
+
+    const targetElement = _getElementsFromData(
+      effectOptions,
+      targetController.element,
+      targetController.useFirstChild,
+    );
+
+    if (!targetElement) return null;
+
+    const animOptions = effectToAnimationOptions(effectOptions as TimeEffect);
+    animationGroupArgs.push({ target: targetElement, options: animOptions });
+  }
+
+  return animationGroupArgs.length > 0 ? animationGroupArgs : null;
+}
+
 function _processSequences(
   sourceKey: string,
   sourceController: IInteractionController,
@@ -278,82 +356,16 @@ function _processSequences(
 
     if (instance.addedInteractions[cacheKey]) return;
 
-    // Check sequence-level media conditions
-    const seqMql = getMediaQuery(
-      sequenceConfig.conditions || [],
-      instance.dataCache.conditions,
+    const animationGroupArgs = _buildAnimationGroupArgsFromSequence(
+      sequenceConfig,
+      cacheKey,
+      sourceKey,
+      sourceController,
+      instance,
+      { updateKey: sourceKey, onUpdate: () => sourceController.update() },
     );
 
-    if (seqMql) {
-      instance.setupMediaQueryListener(cacheKey, seqMql, sourceKey, () => {
-        sourceController.update();
-      });
-    }
-
-    if (seqMql && !seqMql.matches) return;
-
-    const seqEffects: (Effect | EffectRef)[] =
-      'effects' in sequenceConfig
-        ? sequenceConfig.effects
-        : 'effect' in sequenceConfig
-          ? [sequenceConfig.effect]
-          : [];
-
-    const animationGroupArgs: AnimationGroupArgs[] = [];
-
-    for (const effect of seqEffects) {
-      const effectId = (effect as EffectRef).effectId;
-      const effectOptions = {
-        ...(effectId ? instance.dataCache.effects[effectId] || {} : {}),
-        ...effect,
-      };
-
-      // Check per-effect media conditions
-      const effectMql = getMediaQuery(
-        effectOptions.conditions || [],
-        instance.dataCache.conditions,
-      );
-
-      if (effectMql) {
-        const effectCacheKey = `${cacheKey}::${effectId || 'eff'}`;
-        instance.setupMediaQueryListener(effectCacheKey, effectMql, sourceKey, () => {
-          sourceController.update();
-        });
-      }
-
-      if (effectMql && !effectMql.matches) continue;
-
-      const targetKey_ = effectOptions.key;
-      const target = targetKey_ && getInterpolatedKey(targetKey_, sourceKey);
-
-      let targetController;
-      if (target) {
-        targetController = Interact.getController(target);
-        if (!targetController) {
-          // Bail out :: no target element in cache
-          return;
-        };
-      } else {
-        targetController = sourceController;
-      }
-
-      const targetElement = _getElementsFromData(
-        effectOptions,
-        targetController.element,
-        targetController.useFirstChild,
-      );
-
-      if (!targetElement) {
-        // Bail out :: no target element found in DOM
-        return;
-      };
-
-      const animOptions = effectToAnimationOptions(effectOptions as TimeEffect);
-
-      animationGroupArgs.push({ target: targetElement, options: animOptions });
-    }
-
-    if (animationGroupArgs.length === 0) return;
+    if (!animationGroupArgs) return;
 
     const sequence = Interact.getEffect(cacheKey, sequenceConfig, animationGroupArgs, {
       reducedMotion: Interact.forceReducedMotion,
@@ -416,77 +428,16 @@ function _processSequencesForTarget(
         return true;
       }
 
-      const seqMql = getMediaQuery(
-        sequenceConfig.conditions || [],
-        instance.dataCache.conditions,
+      const animationGroupArgs = _buildAnimationGroupArgsFromSequence(
+        sequenceConfig,
+        cacheKey,
+        sourceKey!,
+        sourceController,
+        instance,
+        { updateKey: targetKey, onUpdate: () => targetController.update() },
       );
 
-      if (seqMql) {
-        instance.setupMediaQueryListener(cacheKey, seqMql, targetKey, () => {
-          targetController.update();
-        });
-      }
-
-      if (seqMql && !seqMql.matches) return true;
-
-      const seqEffects: (Effect | EffectRef)[] =
-        'effects' in sequenceConfig
-          ? sequenceConfig.effects
-          : 'effect' in sequenceConfig
-            ? [sequenceConfig.effect]
-            : [];
-
-      const animationGroupArgs: AnimationGroupArgs[] = [];
-
-      for (const effect of seqEffects) {
-        const effectId = (effect as EffectRef).effectId;
-        const effectOptions = {
-          ...(effectId ? instance.dataCache.effects[effectId] || {} : {}),
-          ...effect,
-        };
-
-        const effectMql = getMediaQuery(
-          effectOptions.conditions || [],
-          instance.dataCache.conditions,
-        );
-
-        if (effectMql) {
-          const effectCacheKey = `${cacheKey}::${effectId || 'eff'}`;
-          instance.setupMediaQueryListener(effectCacheKey, effectMql, targetKey, () => {
-            targetController.update();
-          });
-        }
-
-        if (effectMql && !effectMql.matches) continue;
-
-        const targetKey_ = effectOptions.key;
-        const target = targetKey_ && getInterpolatedKey(targetKey_, sourceKey!);
-
-        let effectTargetController;
-        if (target) {
-          effectTargetController = Interact.getController(target);
-          if (!effectTargetController) {
-            return true;
-          }
-        } else {
-          effectTargetController = sourceController;
-        }
-
-        const targetElement = _getElementsFromData(
-          effectOptions,
-          effectTargetController.element,
-          effectTargetController.useFirstChild,
-        );
-
-        if (!targetElement) {
-          return true;
-        }
-
-        const animOptions = effectToAnimationOptions(effectOptions as TimeEffect);
-        animationGroupArgs.push({ target: targetElement, options: animOptions });
-      }
-
-      if (animationGroupArgs.length === 0) return true;
+      if (!animationGroupArgs) return true;
 
       const sequence = Interact.getEffect(cacheKey, sequenceConfig, animationGroupArgs, {
         reducedMotion: Interact.forceReducedMotion,
