@@ -80,7 +80,8 @@ The API will have:
 - **Customizable `<span>` wrappers**: All split items wrapped in `<span>` tags with configurable classes, styles, and attributes for styling and animation
 - **Lazy evaluation with caching**: Split types are computed on-demand when accessed, not eagerly on invocation
 - **Eager split when `type` provided**: If `type` option is specified, only those types are split immediately
-- **Accessibility by default**: Add ARIA attributes automatically
+- **Lines are opt-in**: Line detection is expensive (layout queries); lines are only computed when explicitly requested via `type: 'lines'` or `type: [..., 'lines']`. Accessing `.lines` without having requested it returns `[]` (or throws with a helpful message).
+- **Accessibility by default**: Add ARIA at container level only (see Accessibility and SEO sections)
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
 - `Intl.Segmenter` **API** for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
@@ -146,7 +147,20 @@ interface SplitTextOptions {
   wrapperAttrs?: Record<string, string> | WrapperAttrsConfig;  // Custom attributes (data-*, etc.)
 
   // Accessibility
-  aria?: 'auto' | 'hidden' | 'none';  // default: 'auto'
+  aria?: 'auto' | 'none';  // default: 'auto'
+
+  // SEO and a11y
+  preserveText?: boolean;  // default: true - visually-hidden duplicate for SEO and screen readers
+
+  // Base CSS (inline-block, white-space, etc.)
+  injectStyles?: boolean;  // default: true - auto-inject minimal base stylesheet (deduplicated via data-splittext)
+
+  // DOM structure
+  nested?: 'flatten' | 'preserve' | number;  // default: 'flatten'
+
+  // BiDi and shaping (optional external algorithms)
+  bidiResolver?: (text: string) => Array<{ text: string; direction: 'ltr' | 'rtl' }>;
+  shaper?: (text: string, font: string) => string[];
 
   // Responsive re-splitting
   autoSplit?: boolean;
@@ -154,7 +168,7 @@ interface SplitTextOptions {
 
   // Advanced
   splitBy?: string;        // default: ' ' (space for words)
-  ignore?: string[];       // selectors to skip (e.g., ['sup', 'sub'])
+  ignore?: string[] | ((node: Node) => boolean);  // selectors to skip or predicate (e.g., ['sup', 'sub'])
   preserveWhitespace?: boolean;
 }
 
@@ -181,11 +195,11 @@ interface WrapperAttrsConfig {
 }
 
 interface SplitTextResult {
-  // Lazy getters - split on first access, return cached on subsequent access
+  // Lazy getters - split on first access, return cached on subsequent access (except lines, which are opt-in)
   // Each element is a <span> wrapper that can be styled/animated
   get chars: HTMLSpanElement[];      // Splits into characters on first access
   get words: HTMLSpanElement[];      // Splits into words on first access
-  get lines: HTMLSpanElement[];      // Splits into lines on first access
+  get lines: HTMLSpanElement[];      // Only computed when type included 'lines'; otherwise returns [] (or throws with helpful message)
   get sentences: HTMLSpanElement[];  // Splits into sentences on first access
 
   // Methods
@@ -233,20 +247,20 @@ Key files to implement:
 - **Use** `Intl.Segmenter` **API for locale-sensitive text splitting on meaningful items** (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-1. `**src/lineDetection.ts**` - Range-based line detection:
+1. `**src/lineDetection.ts`\*\* - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
 - Handle Safari whitespace normalization
 - Support for nested elements via TreeWalker
 
-1. `**src/accessibility.ts**`:
+1. `**src/accessibility.ts`\*\*:
 
-- Add `aria-label` with original text to container
-- Add `aria-hidden="true"` to split elements
-- Handle nested elements appropriately
+- Operate only on the container element (the element passed to `splitText`), not on individual wrapper spans.
+- When `aria: 'auto'`: add `aria-hidden="true"` to the container so the split visual content is hidden from assistive tech; expose the original text via either the visually-hidden block (when `preserveText` is true, see SEO section) or `aria-label` on the container when `preserveText` is false.
+- Do not add any ARIA attributes to individual wrapper spans.
 
-1. `**src/utils.ts**`:
+1. `**src/utils.ts`\*\*:
 
 - Text segmentation (handle emoji, unicode)
 - DOM manipulation helpers
@@ -273,7 +287,8 @@ Test coverage for:
 - React hook lifecycle
 - **Lazy evaluation**: Verify no DOM changes until getter accessed
 - **Caching**: Verify same array reference returned on repeated access
-- **Eager split with `type**`: Verify immediate DOM changes when type provided
+- **Eager split with `type`**: Verify immediate DOM changes when type provided
+- **Lines opt-in**: Verify `.lines` returns `[]` when `type` did not include `'lines'`; verify line detection runs only when `type: 'lines'` or `type: [..., 'lines']` was passed
 - **Cache invalidation**: Verify cache cleared on `revert()` and `autoSplit` resize
 - Use Playwright for E2E testing all APIs that depend on DOM APIs
 
@@ -363,6 +378,54 @@ test('data-index attributes enable staggered animations', async ({ page }) => {
 });
 ```
 
+**Safari whitespace normalization test (Playwright, run on WebKit):**
+
+```typescript
+test('Safari: getClientRects line detection requires whitespace normalization', async ({
+  page,
+}) => {
+  await page.setContent(`
+    <p class="sample" style="width: 300px;">
+      Hello    world    with     extra    spaces
+      and
+      newlines    that    collapse
+    </p>
+  `);
+
+  const { withoutNorm, withNorm } = await page.evaluate(() => {
+    function detectLineCount(textNode) {
+      const text = textNode.textContent;
+      const range = document.createRange();
+      let maxLineIndex = 0;
+      for (let i = 0; i < text.length; i++) {
+        range.setStart(textNode, 0);
+        range.setEnd(textNode, i + 1);
+        maxLineIndex = Math.max(maxLineIndex, range.getClientRects().length - 1);
+      }
+      return maxLineIndex + 1;
+    }
+
+    const el = document.querySelector('.sample');
+    const originalContent = el.firstChild!.textContent!;
+
+    // Without normalization (raw markup whitespace)
+    const withoutNorm = detectLineCount(el.firstChild as Text);
+
+    // With normalization (collapsed whitespace)
+    el.firstChild!.textContent = originalContent.trim().replace(/\s+/g, ' ');
+    const withNorm = detectLineCount(el.firstChild as Text);
+
+    el.firstChild!.textContent = originalContent;
+    return { withoutNorm, withNorm };
+  });
+
+  // After normalization both browsers should detect the same (correct) line count.
+  // Without normalization, Safari detects one "line" per whitespace-separated word.
+  // This test documents the quirk; the implementation must always normalize.
+  expect(withNorm).toBe(2);
+});
+```
+
 ### Phase 5: Documentation
 
 Following the [interact docs structure](packages/interact/docs/README.md):
@@ -374,14 +437,14 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 
 **Additional documentation for wrapper customization:**
 
-1. `**docs/api/types.md**` - Update with wrapper option types:
+1. `**docs/api/types.md`\*\* - Update with wrapper option types:
 
 - `WrapperClassConfig` interface documentation
 - `WrapperStyleConfig` interface documentation
 - `WrapperAttrsConfig` interface documentation
 - Explanation of global vs per-type configuration
 
-2. `**docs/guides/styling-wrappers.md**` - New guide covering:
+1. `**docs/guides/styling-wrappers.md`\*\* - New guide covering:
 
 - Default CSS classes (`split-c`, `split-w`, etc.)
 - Customizing wrapper classes
@@ -390,7 +453,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - Best practices for `display: inline-block` with transforms
 - CSS custom properties for staggered animations
 
-3. `**docs/examples/animations.md**` - Expanded with wrapper examples:
+1. `**docs/examples/animations.md`\*\* - Expanded with wrapper examples:
 
 - **Fade-in character animation** using wrapperClass + CSS
 - **Slide-up word reveal** using wrapperStyle initial state
@@ -399,7 +462,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - **CSS-only animations** using @keyframes and animation-delay
 - **Intersection Observer** trigger with wrapper data attributes
 
-4. `**docs/examples/css-animations.md**` - New CSS-focused examples:
+1. `**docs/examples/css-animations.md`\*\* - New CSS-focused examples:
 
 ```css
 /* Example: Typewriter effect */
@@ -424,7 +487,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 }
 ```
 
-5. **README.md** - Quick start section update:
+1. **README.md** - Quick start section update:
 
 ```typescript
 import { splitText } from '@wix/splittext';
@@ -460,15 +523,15 @@ const result = splitText('.headline');
 const chars = result.chars; // Splits into chars NOW, caches result
 const chars2 = result.chars; // Returns cached result (no re-split)
 
-// Lines are split separately when accessed
-const lines = result.lines; // Splits into lines NOW, caches result
+// Lines are only computed when type included 'lines' (opt-in; expensive)
+const lines = result.lines; // Returns [] unless type: 'lines' was passed
 
 // Example 2: Eager split with type option
 const eagerResult = splitText('.headline', { type: 'words' });
 // Words are split immediately on invocation
 
-// Other types still use lazy evaluation
-const lines2 = eagerResult.lines; // Splits into lines on access
+// Other types still use lazy evaluation; .lines returns [] unless type included 'lines'
+const lines2 = eagerResult.lines; // [] here since only 'words' was in type
 
 // Example 3: Multiple types eager
 const multiResult = splitText('.headline', { type: ['chars', 'words'] });
@@ -539,7 +602,7 @@ All split items are wrapped in `<span>` elements to enable styling and animation
 **Default wrapper structure:**
 
 ```html
-<!-- Characters -->
+<!-- Characters (space-only wrappers get .split-space for width preservation) -->
 <span class="split-c">H</span>
 <span class="split-c">e</span>
 <span class="split-c">l</span>
@@ -574,6 +637,11 @@ function createWrapper(
 
   // Apply default class
   span.classList.add(`split-${type[0]}`); // 'chars' -> 'split-c'
+
+  // Mark space-only wrappers so they can be styled for width (e.g. white-space: pre)
+  if (type === 'chars' && typeof content === 'string' && /^\s+$/.test(content)) {
+    span.classList.add('split-space');
+  }
 
   // Apply custom classes
   const customClass = resolveWrapperOption(options.wrapperClass, type);
@@ -673,6 +741,46 @@ chars.forEach((char, i) => {
 });
 ```
 
+### Base CSS Strategy
+
+When `injectStyles` is true (default), the package injects a minimal base stylesheet once per document via a `<style data-splittext>` tag (deduplicated). This ensures transforms and spacing work without requiring users to add CSS manually.
+
+**Injected base CSS:**
+
+- `.split-c`, `.split-w`: `display: inline-block; white-space: pre;` — enables transforms and preserves space width (a space alone in an inline-block has no width unless `white-space: pre` or an explicit width is set).
+- `.split-space`: same as above; space-only character wrappers get this class so they retain width.
+- `.split-l`: `display: block;`
+- `.split-s`: same inline-block treatment as chars/words if needed for animation.
+
+**Direction detection:** Before splitting, read `getComputedStyle(element).direction` and store it on the result object (e.g. `result.direction`) so consumers can adapt styling or BiDi handling.
+
+**Documentation note:** Connected scripts (Arabic, Devanagari, etc.) lose shaping when split per-character — each letter loses its positional form (initial/medial/final/isolated). This is a fundamental limitation. Recommend per-word splitting (or use the optional `shaper` injection) for these scripts.
+
+### Accessibility
+
+Apply ARIA only to the container element, not to individual wrapper spans.
+
+- `**aria: 'auto'` (default):\*\* Set `aria-hidden="true"` on the container so the split visual content is removed from the accessibility tree. The original text is exposed to screen readers and crawlers via the visually-hidden block when `preserveText` is true (see SEO Considerations), or via `aria-label` on the container when `preserveText` is false.
+- `**aria: 'none'`:\*\* No ARIA changes.
+
+### SEO Considerations
+
+When `preserveText` is true (default), create a visually-hidden duplicate of the original text for both SEO and accessibility:
+
+- Clone the original text content into a `<span>` with the visually-hidden pattern: `position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);` (or equivalent sr-only pattern).
+- Insert this span as the first child of the container.
+- The split content lives in the same container; the container has `aria-hidden="true"` so assistive tech and crawlers use the visually-hidden original.
+- When `preserveText` is false, do not create the hidden block; use `aria-label` with the original text on the container instead (ARIA is not used by crawlers, so SEO is weaker in this mode).
+
+### BiDi and Shaping
+
+Optional injection points for correct RTL and connected-script behavior:
+
+- `**bidiResolver`:\*\* When provided, run it on the text before splitting. It returns an array of runs `{ text, direction: 'ltr' | 'rtl' }`. Wrap each run in a `<span dir="ltr|rtl">` (and add `.split-rtl` / `.split-ltr` classes), then apply character/word splitting within each run. Enables correct ordering for mixed LTR/RTL (e.g. via `bidi-js`).
+- `**shaper`:\*\* When provided, use its output instead of `Intl.Segmenter` for character segmentation (e.g. HarfBuzz/OpenType.js) so Arabic and other connected scripts keep positional forms.
+- When neither is provided: use `getComputedStyle(element).direction` for the overall direction. If RTL text is detected and split type includes `'chars'` and `bidiResolver` is not provided, log a console warning recommending `bidiResolver` for correct display.
+- Document the injection API with examples (e.g. using `bidi-js`) in the guides.
+
 ### Lazy Evaluation & Caching Strategy
 
 The `SplitTextResult` object uses lazy getters with internal caching to avoid unnecessary DOM operations:
@@ -681,6 +789,7 @@ The `SplitTextResult` object uses lazy getters with internal caching to avoid un
 class SplitTextResultImpl implements SplitTextResult {
   private _element: HTMLElement;
   private _originalHTML: string;
+  private _linesRequested: boolean; // true only when type included 'lines'
 
   // Internal cache for split results
   private _cache: {
@@ -694,9 +803,11 @@ class SplitTextResultImpl implements SplitTextResult {
     this._element = element;
     this._originalHTML = element.innerHTML;
 
-    // Eager split if type is provided
+    // Eager split if type is provided; track whether 'lines' was requested (lines are opt-in and expensive)
+    this._linesRequested = false;
     if (options?.type) {
       const types = Array.isArray(options.type) ? options.type : [options.type];
+      this._linesRequested = types.includes('lines');
       for (const type of types) {
         this._performSplit(type);
       }
@@ -719,6 +830,7 @@ class SplitTextResultImpl implements SplitTextResult {
   }
 
   get lines(): HTMLElement[] {
+    if (!this._linesRequested) return []; // or throw with message: "Lines not requested; pass type: 'lines' or type: [..., 'lines']"
     if (!this._cache.lines) {
       this._cache.lines = this._performSplit('lines');
     }
@@ -746,44 +858,25 @@ class SplitTextResultImpl implements SplitTextResult {
 
 **Cache invalidation:**
 
-- `revert()` clears the cache
-- `autoSplit` on resize clears and re-populates cache for accessed types
+- `revert()` clears the cache (and resets `_linesRequested` if applicable)
+- `autoSplit` on resize clears and re-populates cache for accessed types; only re-run line detection if lines were previously requested
 - Manual `split()` call can force re-split with new options
 
 ### Line Detection Algorithm
 
-**Primary Approach: Range API with `getClientRects()**`
+Line detection is **opt-in**: it runs only when `type` includes `'lines'`. It is inherently expensive because it requires layout-triggering DOM queries (`getClientRects()`). For long text, prefer word-level splitting or rely on `autoSplit` rather than frequent re-detection.
 
-Use the DOM Range API to detect line breaks from text nodes _before_ creating wrapper elements. This avoids unnecessary DOM manipulation and provides accurate line detection based on the browser's actual rendering:
+#### Preferred approach: Binary search for line breakpoints
 
-```typescript
-function detectLines(textNode: Text): string[] {
-  const range = document.createRange();
-  const text = textNode.textContent || '';
-  const lines: string[][] = [];
-  let lineChars: string[] = [];
+Avoid calling `getClientRects()` inside a per-character loop. Instead:
 
-  // Normalize whitespace (Safari compatibility)
-  textNode.textContent = text.trim().replace(/\s+/g, ' ');
+1. Call `getClientRects()` once on the full text range to get total line count and Y positions.
+2. Binary-search for the character index where each line break occurs (where the rect count increments).
+3. This reduces layout queries from O(n) to O(k × log n) where k is the number of lines.
 
-  for (let i = 0; i < text.length; i++) {
-    range.setStart(textNode, 0);
-    range.setEnd(textNode, i + 1);
+**Naive approach (for reference; avoid for long text):** Iterate character-by-character, expanding the range and calling `getClientRects()` each time to see when the rect count increases. This is O(n) layout queries and should be replaced by the binary-search approach above.
 
-    // getClientRects() returns one rect per rendered line
-    const lineIndex = range.getClientRects().length - 1;
-
-    if (!lines[lineIndex]) {
-      lines.push((lineChars = []));
-    }
-    lineChars.push(text.charAt(i));
-  }
-
-  return lines.map((chars) => chars.join('').trim());
-}
-```
-
-**Alternative: Height-tracking approach (more efficient for long text)**
+#### Alternative: Height-tracking approach (more efficient than naive, still O(n) queries)
 
 ```typescript
 function detectLinesOptimized(element: HTMLElement): string[] {
@@ -865,31 +958,13 @@ const chars = [...segmenter.segment(text)].map((s) => s.segment);
 
 ### Nested Element Handling
 
-Unlike some libraries that strip nested tags, this implementation will:
+The `nested` option controls how inner DOM structure is handled (default: `'flatten'`).
 
-1. Use `TreeWalker` to traverse text nodes within nested elements
-2. Apply Range-based line detection to each text node
-3. Preserve nested element structure (links, bold, etc.)
-4. Split text nodes only while maintaining parent element references
+- `**'flatten'` (default):\*\* Extract plain text via `element.textContent`, ignore all inner DOM. Split that string only. Store original `innerHTML` for `revert()`. Safest and most predictable; avoids complex or malformed DOM.
+- `**'preserve'`:\*\* Use `TreeWalker` to traverse text nodes within nested elements. Apply line detection (when lines are requested) and splitting per text node while keeping parent element references. Preserves links, bold, etc. Use guards: skip non-text/non-element nodes; skip `script`/`style`; enforce a max depth safety limit (e.g. 10 levels) to avoid runaway traversal.
+- `**number`:\*\* Same as preserve but with a depth limit: preserve up to N levels of nesting, flatten content deeper than N (treat as plain text).
 
-```typescript
-function processNestedElements(element: HTMLElement): void {
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
-
-  const textNodes: Text[] = [];
-  let node: Text | null;
-  while ((node = walker.nextNode() as Text)) {
-    if (node.textContent?.trim()) {
-      textNodes.push(node);
-    }
-  }
-
-  // Process each text node with Range API
-  for (const textNode of textNodes) {
-    // Line detection happens here, wrapper creation follows
-  }
-}
-```
+The `ignore` option can be an array of selectors (e.g. `['sup', 'sub']`) or a predicate `(node: Node) => boolean` to skip nodes during traversal in preserve/number modes.
 
 ### Performance Considerations
 
@@ -899,10 +974,22 @@ The Range API approach has O(n) character iteration complexity, but:
 2. **No layout thrashing** - Detection happens before any DOM mutation
 3. **Efficient for repeated splits** - `autoSplit` re-detection is fast since original structure is preserved
 4. **Consider chunking for very long text** - For 10k+ character blocks, batch processing may help
+5. **Line detection is opt-in and expensive** - Use the binary-search algorithm (see Line Detection); for long text prefer word-level splitting or `autoSplit` rather than frequent line re-detection
 
 ### Browser Compatibility
 
-- **Safari quirk**: Requires whitespace normalization before Range operations
-- `**Range.getClientRects()**`: Widely supported (all modern browsers)
-- `**Range.getBoundingClientRect()**`: Not yet standard but widely supported
+- **Safari whitespace quirk (confirmed still present in Safari 26.2 / WebKit 605.1.15, Feb 2025):** Safari's `Range.getClientRects()` returns rects based on the physical markup structure, not the rendered layout. When a text node contains raw markup whitespace (multiple spaces, newlines that visually collapse), Safari treats each whitespace-separated chunk as a separate "line" rect. Chrome and Firefox correctly return rects based on the visual line breaks regardless of raw whitespace. **Whitespace normalization (`textNode.textContent = text.trim().replace(/\s+/g, ' ')`) is required before any `getClientRects()` line detection on Safari.** This must be done in the `lineDetection.ts` implementation, not left to consumers. Originally documented by Ben Nadel (blog #4310), confirmed with the test below.
+- `**Range.getClientRects()`\*\*: Widely supported (all modern browsers)
+- `**Range.getBoundingClientRect()`\*\*: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
+
+#### Safari whitespace test results (Feb 2025, test case described in this plan test section)
+
+Tested with a paragraph containing extra markup whitespace (multiple spaces, newlines that visually collapse). Ran `Range.getClientRects()`-based line detection with and without `textNode.textContent = text.trim().replace(/\s+/g, ' ')`:
+
+| Browser                       | Without normalization                       | With normalization | Verdict                                      |
+| ----------------------------- | ------------------------------------------- | ------------------ | -------------------------------------------- |
+| Chrome 145                    | 2 lines                                     | 2 lines            | Line count matches; normalization not needed |
+| Safari 26.2 (WebKit 605.1.15) | 9 lines (one per whitespace-separated word) | 2 lines            | Line count differs; normalization required   |
+
+Conclusion: whitespace normalization before `getClientRects()` is mandatory for Safari and must be applied unconditionally in `lineDetection.ts` (harmless on other browsers). A Playwright test for this is included in the Phase 4 test section.
