@@ -239,7 +239,7 @@ function useSplitText(
 
 Key files to implement:
 
-1. `**src/splitText.ts**` - Main function:
+1. `src/splitText.ts` - Main function:
 
 - Parse target (CSS selector or element)
 - **Use Range API for line detection** (see Key Implementation Details)
@@ -268,7 +268,7 @@ Key files to implement:
 
 ### Phase 3: React Integration
 
-1. `**src/react/useSplitText.ts**`:
+1. `src/react/useSplitText.ts`:
 
 - Hook that wraps core function
 - Handle cleanup on unmount
