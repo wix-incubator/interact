@@ -267,10 +267,7 @@ function _buildAnimationGroupArgsFromSequence(
   instance: Interact,
   options: { updateKey: string; onUpdate: () => void },
 ): AnimationGroupArgs[] | null {
-  const seqMql = getMediaQuery(
-    sequenceConfig.conditions || [],
-    instance.dataCache.conditions,
-  );
+  const seqMql = getMediaQuery(sequenceConfig.conditions || [], instance.dataCache.conditions);
 
   if (seqMql) {
     instance.setupMediaQueryListener(cacheKey, seqMql, options.updateKey, options.onUpdate);
@@ -294,14 +291,16 @@ function _buildAnimationGroupArgsFromSequence(
       ...effect,
     };
 
-    const effectMql = getMediaQuery(
-      effectOptions.conditions || [],
-      instance.dataCache.conditions,
-    );
+    const effectMql = getMediaQuery(effectOptions.conditions || [], instance.dataCache.conditions);
 
     if (effectMql) {
       const effectCacheKey = `${cacheKey}::${effectId || 'eff'}`;
-      instance.setupMediaQueryListener(effectCacheKey, effectMql, options.updateKey, options.onUpdate);
+      instance.setupMediaQueryListener(
+        effectCacheKey,
+        effectMql,
+        options.updateKey,
+        options.onUpdate,
+      );
     }
 
     if (effectMql && !effectMql.matches) continue;

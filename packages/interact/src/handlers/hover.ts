@@ -143,8 +143,7 @@ function addHoverHandler(
 
   if (
     !preCreatedAnimation &&
-    ((effect as TransitionEffect).transition ||
-      (effect as TransitionEffect).transitionProperties)
+    ((effect as TransitionEffect).transition || (effect as TransitionEffect).transitionProperties)
   ) {
     handler = createTransitionHandler(
       target,
