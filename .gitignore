@@ -8,5 +8,6 @@ coverage/
 .idea/
 *.log
 pnpm-lock.yaml
+package-lock.json
 .yarn/
 tmp/
