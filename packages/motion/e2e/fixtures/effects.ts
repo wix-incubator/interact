@@ -1,23 +1,6 @@
 import { registerEffects, getWebAnimation, getCSSAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type CssAnimationData = {
-  target: string;
-  animation: string;
-  name: string | undefined;
-  keyframes: Keyframe[];
-  composition: CompositeOperation | undefined;
-  custom: Record<string, string | number | undefined> | undefined;
-  id: string | undefined;
-  animationTimeline: string;
-  animationRange: string;
-};
-
-type CustomEffectEntry = { element: Element | null; progress: number | null };
+import type { CssAnimationData, CustomEffectEntry } from '../types';
 
 type EffectsFixtureWindow = typeof window & {
   namedWaapiGroup: AnimationGroup;

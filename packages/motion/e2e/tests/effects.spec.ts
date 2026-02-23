@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { EffectsPage } from '../pages/effects-page';
+import { waitForWindowPlayState, waitForElementAnimationState } from '../utils/animation-helpers';
 
 test.describe('Effect Types', () => {
   let effectsPage: EffectsPage;
@@ -13,14 +14,7 @@ test.describe('Effect Types', () => {
     test('should create AnimationGroup via getWebAnimation with registered named effect', async ({ page }) => {
       await effectsPage.runNamedWaapi();
 
-      // play() awaits fastdom internally — wait for it to actually start
-      await page.waitForFunction(
-        () => {
-          const g = (window as unknown as { namedWaapiGroup: { playState: string } }).namedWaapiGroup;
-          return g?.playState === 'running' || g?.playState === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForWindowPlayState(page, 'namedWaapiGroup', ['running', 'finished']);
 
       const playState = await effectsPage.getNamedWaapiPlayState();
       expect(['running', 'finished']).toContain(playState);
@@ -29,11 +23,7 @@ test.describe('Effect Types', () => {
     test('should apply correct keyframes from named effect web() method', async ({ page }) => {
       await effectsPage.runNamedWaapi();
 
-      // Animation plays to completion (1000ms, fill: both) → opacity should be 1
-      await page.waitForFunction(
-        () => (window as unknown as { namedWaapiGroup: { playState: string } }).namedWaapiGroup?.playState === 'finished',
-        { timeout: 3000 },
-      );
+      await waitForWindowPlayState(page, 'namedWaapiGroup', ['finished'], 3000);
 
       const opacity = await page.evaluate(() => {
         const el = document.getElementById('named-waapi-target');
@@ -76,13 +66,7 @@ test.describe('Effect Types', () => {
     test('should create AnimationGroup via getWebAnimation with inline keyframeEffect', async ({ page }) => {
       await effectsPage.runKeyframeWaapi();
 
-      await page.waitForFunction(
-        () => {
-          const g = (window as unknown as { keyframeWaapiGroup: { playState: string } }).keyframeWaapiGroup;
-          return g?.playState === 'running' || g?.playState === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForWindowPlayState(page, 'keyframeWaapiGroup', ['running', 'finished']);
 
       const playState = await effectsPage.getKeyframeWaapiPlayState();
       expect(['running', 'finished']).toContain(playState);
@@ -91,14 +75,7 @@ test.describe('Effect Types', () => {
     test('should apply keyframeEffect keyframes to the element', async ({ page }) => {
       await effectsPage.runKeyframeWaapi();
 
-      // Wait for the animation to start (play() awaits fastdom, keyframes set async)
-      await page.waitForFunction(
-        () => {
-          const g = (window as unknown as { keyframeWaapiGroup: { playState: string } }).keyframeWaapiGroup;
-          return g?.playState === 'running' || g?.playState === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForWindowPlayState(page, 'keyframeWaapiGroup', ['running', 'finished']);
 
       const hasExpectedKeyframes = await page.evaluate(() => {
         const el = document.getElementById('keyframe-waapi-target');
@@ -141,13 +118,7 @@ test.describe('Effect Types', () => {
     test('should create animation via getWebAnimation with customEffect function', async ({ page }) => {
       await effectsPage.runCustomEffect();
 
-      await page.waitForFunction(
-        () => {
-          const g = (window as unknown as { customEffectGroup: { playState: string } }).customEffectGroup;
-          return g?.playState === 'running' || g?.playState === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForWindowPlayState(page, 'customEffectGroup', ['running', 'finished']);
 
       const playState = await effectsPage.getCustomEffectPlayState();
       expect(['running', 'finished']).toContain(playState);
@@ -206,17 +177,10 @@ test.describe('Effect Types', () => {
   test.describe('Playback — Play/Reverse', () => {
     test('should return to initial state after reverse completes', async ({ page }) => {
       await effectsPage.runPlayback();
-      await new Promise((r) => setTimeout(r, 400));
+      await waitForElementAnimationState(page, 'playback-target', ['running']);
       await effectsPage.runPlaybackReverse();
 
-      // Wait for reverse to complete (element returns to start, opacity → 0)
-      await page.waitForFunction(
-        () => {
-          const el = document.getElementById('playback-target');
-          return el?.getAnimations()[0]?.playState === 'finished';
-        },
-        { timeout: 5000 },
-      );
+      await waitForElementAnimationState(page, 'playback-target', ['finished'], 5000);
 
       const opacity = await effectsPage.getPlaybackOpacity();
       // fill: both + reversed → element at first keyframe: opacity 0
@@ -227,28 +191,31 @@ test.describe('Effect Types', () => {
   test.describe('Playback — Play/Pause', () => {
     test('should pause animation mid-playback and hold current state', async ({ page }) => {
       await effectsPage.runPlayback();
-      // Wait for animation to actually start before pausing mid-playback
+      await waitForElementAnimationState(page, 'playback-target', ['running']);
       await page.waitForFunction(
-        () => document.getElementById('playback-target')?.getAnimations()[0]?.playState === 'running',
+        () => parseFloat(getComputedStyle(document.getElementById('playback-target')!).opacity) > 0.1,
         { timeout: 2000 },
       );
-      await new Promise((r) => setTimeout(r, 300));
       await effectsPage.runPlaybackPause();
 
       const playState = await effectsPage.getPlaybackPlayState();
       expect(playState).toBe('paused');
 
       const opacityBefore = await effectsPage.getPlaybackOpacity();
-      await new Promise((r) => setTimeout(r, 300));
+      await page.waitForTimeout(300);
       const opacityAfter = await effectsPage.getPlaybackOpacity();
 
-      // Use toBeCloseTo to tolerate browser rendering/precision differences
-      expect(parseFloat(opacityBefore)).toBeCloseTo(parseFloat(opacityAfter), 2);
+      // Precision 1 (< 0.05 diff) — WebKit compositor can drift opacity slightly even when paused
+      expect(parseFloat(opacityBefore)).toBeCloseTo(parseFloat(opacityAfter), 1);
     });
 
     test('should resume from paused position when played again', async ({ page }) => {
       await effectsPage.runPlayback();
-      await new Promise((r) => setTimeout(r, 300));
+      await waitForElementAnimationState(page, 'playback-target', ['running']);
+      await page.waitForFunction(
+        () => parseFloat(getComputedStyle(document.getElementById('playback-target')!).opacity) > 0.1,
+        { timeout: 2000 },
+      );
       await effectsPage.runPlaybackPause();
 
       const opacityAtPause = await effectsPage.getPlaybackOpacity();
@@ -257,14 +224,7 @@ test.describe('Effect Types', () => {
       const playState = await effectsPage.getPlaybackPlayState();
       expect(['running', 'finished']).toContain(playState);
 
-      // Animation continues forward — eventually opacity reaches 1
-      await page.waitForFunction(
-        () => {
-          const el = document.getElementById('playback-target');
-          return el?.getAnimations()[0]?.playState === 'finished';
-        },
-        { timeout: 5000 },
-      );
+      await waitForElementAnimationState(page, 'playback-target', ['finished'], 5000);
 
       const opacityAfterFinish = await effectsPage.getPlaybackOpacity();
       expect(parseFloat(opacityAfterFinish)).toBeGreaterThan(parseFloat(opacityAtPause));

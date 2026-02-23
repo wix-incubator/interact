@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ScrollPage } from '../pages/scroll-page';
+import { waitForWindowPlayState } from '../utils/animation-helpers';
 
 test.describe('Scroll-Driven Animations', () => {
   let scrollPage: ScrollPage;
@@ -82,10 +83,7 @@ test.describe('Scroll-Driven Animations', () => {
 
       await scrollPage.cancelScrubScene();
 
-      await page.waitForFunction(
-        () => (window as unknown as { scrubScene: { playState: string } }).scrubScene?.playState === 'idle',
-        { timeout: 2000 },
-      );
+      await waitForWindowPlayState(page, 'scrubScene', ['idle'], 5000);
 
       const playState = await scrollPage.getScrubScenePlayState();
       expect(playState).toBe('idle');

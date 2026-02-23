@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SelectorPage } from '../pages/selector-page';
+import { waitForElementAnimation } from '../utils/animation-helpers';
 
 test.describe('Selector Conditions', () => {
   let selectorPage: SelectorPage;
@@ -21,11 +22,7 @@ test.describe('Selector Conditions', () => {
     test('should apply keyframe animations to all grid items', async ({ page }) => {
       await selectorPage.animateGrid();
 
-      // play() awaits fastdom — wait for animations to actually start before counting
-      await page.waitForFunction(
-        () => document.querySelectorAll('#nth-child-grid .grid-item')[0]?.getAnimations().length > 0,
-        { timeout: 2000 },
-      );
+      await waitForElementAnimation(page, '#nth-child-grid .grid-item');
 
       // Grid has 10 items — each gets its own animation
       const animatedCount = await page.evaluate(() => {
@@ -56,11 +53,7 @@ test.describe('Selector Conditions', () => {
     test('should apply staggered animations to all list items', async ({ page }) => {
       await selectorPage.animateList();
 
-      // play() awaits fastdom — wait for animations to actually start
-      await page.waitForFunction(
-        () => document.querySelectorAll('#list-container .list-item')[0]?.getAnimations().length > 0,
-        { timeout: 2000 },
-      );
+      await waitForElementAnimation(page, '#list-container .list-item');
 
       const animatedCount = await page.evaluate(() => {
         const items = document.querySelectorAll('#list-container .list-item');

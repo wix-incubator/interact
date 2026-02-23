@@ -1,7 +1,7 @@
-import { test, expect, describe } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { AnimationGroupPage } from '../pages/animation-group-page';
 
-describe('AnimationGroup API', () => {
+test.describe('AnimationGroup API', () => {
   let animationGroupPage: AnimationGroupPage;
 
   test.beforeEach(async ({ page }) => {
@@ -9,7 +9,7 @@ describe('AnimationGroup API', () => {
     await animationGroupPage.goto();
   });
 
-  describe('Lifecycle Methods', () => {
+  test.describe('Lifecycle Methods', () => {
     test('should play animation and resolve ready promise', async () => {
       await animationGroupPage.play();
 
@@ -51,7 +51,7 @@ describe('AnimationGroup API', () => {
     });
   });
 
-  describe('Progress Control', () => {
+  test.describe('Progress Control', () => {
     test('should set progress manually', async () => {
       await animationGroupPage.setProgress(0.5);
 
@@ -71,7 +71,7 @@ describe('AnimationGroup API', () => {
     });
   });
 
-  describe('Callbacks', () => {
+  test.describe('Callbacks', () => {
     test('should fire onFinish callback when animation completes', async ({ page }) => {
       await animationGroupPage.play();
 

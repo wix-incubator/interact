@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { ResponsivePage } from '../pages/responsive-page';
+import { waitForElementAnimationState, getElementAnimationPlayState } from '../utils/animation-helpers';
 
 test.describe('Responsive Conditions', () => {
   let responsivePage: ResponsivePage;
@@ -19,19 +20,9 @@ test.describe('Responsive Conditions', () => {
       const condition = await responsivePage.getActiveCondition();
       expect(condition).toBe('desktop');
 
-      await page.waitForFunction(
-        () => {
-          const el = document.getElementById('desktop-target');
-          const state = el?.getAnimations()[0]?.playState;
-          return state === 'running' || state === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForElementAnimationState(page, 'desktop-target', ['running', 'finished']);
 
-      const playState = await page.evaluate(() => {
-        const el = document.getElementById('desktop-target');
-        return el?.getAnimations()[0]?.playState ?? 'none';
-      });
+      const playState = await getElementAnimationPlayState(page, 'desktop-target');
       expect(['running', 'finished']).toContain(playState);
     });
 
@@ -59,20 +50,9 @@ test.describe('Responsive Conditions', () => {
       const condition = await responsivePage.getActiveCondition();
       expect(condition).toBe('tablet');
 
-      // play() awaits fastdom — wait for the animation to actually start
-      await page.waitForFunction(
-        () => {
-          const el = document.getElementById('tablet-target');
-          const state = el?.getAnimations()[0]?.playState;
-          return state === 'running' || state === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForElementAnimationState(page, 'tablet-target', ['running', 'finished']);
 
-      const playState = await page.evaluate(() => {
-        const el = document.getElementById('tablet-target');
-        return el?.getAnimations()[0]?.playState ?? 'none';
-      });
+      const playState = await getElementAnimationPlayState(page, 'tablet-target');
       expect(['running', 'finished']).toContain(playState);
     });
   });
@@ -85,20 +65,9 @@ test.describe('Responsive Conditions', () => {
       const condition = await responsivePage.getActiveCondition();
       expect(condition).toBe('mobile');
 
-      // play() awaits fastdom — wait for the animation to actually start
-      await page.waitForFunction(
-        () => {
-          const el = document.getElementById('mobile-target');
-          const state = el?.getAnimations()[0]?.playState;
-          return state === 'running' || state === 'finished';
-        },
-        { timeout: 2000 },
-      );
+      await waitForElementAnimationState(page, 'mobile-target', ['running', 'finished']);
 
-      const playState = await page.evaluate(() => {
-        const el = document.getElementById('mobile-target');
-        return el?.getAnimations()[0]?.playState ?? 'none';
-      });
+      const playState = await getElementAnimationPlayState(page, 'mobile-target');
       expect(['running', 'finished']).toContain(playState);
     });
   });

@@ -64,5 +64,4 @@ export class AnimationGroupPage extends BaseFixturePage {
   getLifecycleEvents() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).lifecycleEvents);
   }
-
 }

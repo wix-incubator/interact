@@ -7,12 +7,6 @@ export class BaseFixturePage {
     await this.page.goto(`/${fixture}.html`);
   }
 
-  /** Evaluate an expression in the page context with typed return. */
-  evaluate<T>(fn: () => T): Promise<T> {
-    return this.page.evaluate(fn);
-  }
-
-  /** Wait for a selector to be visible. */
   async waitForElement(selector: string): Promise<void> {
     await this.page.waitForSelector(selector, { state: 'visible' });
   }
