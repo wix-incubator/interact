@@ -24,34 +24,34 @@ todos:
       - motion-sequence-types
   - id: interact-types
     content: Update types in packages/interact/src/types.ts (SequenceOptionsConfig, SequenceConfig, SequenceConfigRef, InteractConfig, Interaction)
-    status: pending
+    status: completed
     dependencies:
       - motion-sequence-types
   - id: interact-cache-types
     content: Update InteractCache type to include sequences field
-    status: pending
+    status: completed
     dependencies:
       - interact-types
   - id: interact-parse-config
     content: Update parseConfig in packages/interact/src/core/Interact.ts to handle sequences
-    status: pending
+    status: completed
     dependencies:
       - interact-types
       - interact-cache-types
   - id: interact-add
     content: Update effect processing in packages/interact/src/core/add.ts to create Sequence instances
-    status: pending
+    status: completed
     dependencies:
       - motion-get-sequence
       - interact-parse-config
   - id: interact-sequence-cache
     content: Implement Sequence caching on Interact class (sequenceCache static property and getEffect() endpoint)
-    status: pending
+    status: completed
     dependencies:
       - interact-add
   - id: interact-handlers
     content: Update trigger handlers (viewEnter.ts, click.ts, etc.) to support Sequence instances
-    status: pending
+    status: completed
     dependencies:
       - interact-add
   - id: tests-unit
@@ -107,6 +107,8 @@ classDiagram
     Sequence --|> AnimationGroup : extends
     Sequence "1" --> "*" AnimationGroup : manages
 ```
+
+
 
 ## Part 1: @wix/motion Package Changes
 
@@ -325,3 +327,4 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
+

@@ -25,13 +25,15 @@ function createTimeEffectHandler(
   options: PointerTriggerParams,
   reducedMotion: boolean = false,
   selectorCondition?: string,
+  preCreatedAnimation?: AnimationGroup | null,
 ) {
-  const animation = getAnimation(
-    element,
-    effectToAnimationOptions(effect),
-    undefined,
-    reducedMotion,
-  ) as AnimationGroup | null;
+  const animation = (preCreatedAnimation ??
+    getAnimation(
+      element,
+      effectToAnimationOptions(effect),
+      undefined,
+      reducedMotion,
+    )) as AnimationGroup | null;
 
   // Return null if animation could not be created
   if (!animation) {
@@ -127,15 +129,22 @@ function addHoverHandler(
   target: HTMLElement,
   effect: (TransitionEffect | TimeEffect) & EffectBase,
   options: StateParams | PointerTriggerParams = {},
-  { reducedMotion, targetController, selectorCondition, allowA11yTriggers }: InteractOptions,
+  {
+    reducedMotion,
+    targetController,
+    selectorCondition,
+    allowA11yTriggers,
+    animation: preCreatedAnimation,
+  }: InteractOptions,
 ) {
   let handler: ((event: MouseEvent | FocusEvent) => void) | null;
   let isStateTrigger = false;
   let once = false;
 
   if (
-    (effect as TransitionEffect).transition ||
-    (effect as TransitionEffect).transitionProperties
+    !preCreatedAnimation &&
+    ((effect as TransitionEffect).transition ||
+      (effect as TransitionEffect).transitionProperties)
   ) {
     handler = createTransitionHandler(
       target,
@@ -152,6 +161,7 @@ function addHoverHandler(
       options as PointerTriggerParams,
       reducedMotion,
       selectorCondition,
+      preCreatedAnimation,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }
