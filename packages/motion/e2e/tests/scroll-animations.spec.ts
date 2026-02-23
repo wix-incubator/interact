@@ -75,8 +75,17 @@ test.describe('Scroll-Driven Animations', () => {
       expect(progress).toBeLessThanOrEqual(1);
     });
 
-    test('should handle destroy cleanup properly', async () => {
+    test('should handle destroy cleanup properly', async ({ page, browserName }) => {
+      // Skip in WebKit: scroll-driven animations driven by progress() (never play()) report "paused" after
+      // cancel() instead of "idle" per WAAPI spec. Chromium/Firefox correctly return "idle".
+      test.skip(browserName === 'webkit', 'WebKit reports paused instead of idle after cancel');
+
       await scrollPage.cancelScrubScene();
+
+      await page.waitForFunction(
+        () => (window as unknown as { scrubScene: { playState: string } }).scrubScene?.playState === 'idle',
+        { timeout: 2000 },
+      );
 
       const playState = await scrollPage.getScrubScenePlayState();
       expect(playState).toBe('idle');
