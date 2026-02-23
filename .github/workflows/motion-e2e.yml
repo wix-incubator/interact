@@ -88,11 +88,3 @@ jobs:
         if: ${{ github.event.inputs.browser == 'all' }}
         working-directory: packages/motion
         run: npx playwright test
-
-      - name: Upload Playwright report
-        if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: playwright-report
-          path: packages/motion/playwright-report/
-          retention-days: 14

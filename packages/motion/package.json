@@ -27,6 +27,8 @@
     "coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --headed",
+    "test:e2e:report": "playwright test --reporter=html",
     "test:e2e:fixtures": "vite --config e2e/fixtures/vite.config.ts"
   },
   "keywords": [

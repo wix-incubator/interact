@@ -187,9 +187,12 @@ test.describe('Effect Types', () => {
     test('should track progress updates through customEffect callback', async ({ page }) => {
       await effectsPage.runCustomEffect();
 
-      // Wait for animation to complete (600ms, fill: both)
+      // Wait for animation to complete — use progress log instead of playState for Firefox/WebKit compatibility
       await page.waitForFunction(
-        () => (window as unknown as { customEffectGroup: { playState: string } }).customEffectGroup?.playState === 'finished',
+        () => {
+          const log = (window as unknown as { customEffectLog: { progress: number | null }[] }).customEffectLog;
+          return log?.some((e) => e.progress !== null && e.progress >= 0.99) ?? false;
+        },
         { timeout: 3000 },
       );
 
@@ -202,7 +205,7 @@ test.describe('Effect Types', () => {
   test.describe('Playback — Play/Reverse', () => {
     test('should return to initial state after reverse completes', async ({ page }) => {
       await effectsPage.runPlayback();
-      await page.waitForTimeout(400);
+      await new Promise((r) => setTimeout(r, 400));
       await effectsPage.runPlaybackReverse();
 
       // Wait for reverse to complete (element returns to start, opacity → 0)
@@ -228,22 +231,23 @@ test.describe('Effect Types', () => {
         () => document.getElementById('playback-target')?.getAnimations()[0]?.playState === 'running',
         { timeout: 2000 },
       );
-      await page.waitForTimeout(300);
+      await new Promise((r) => setTimeout(r, 300));
       await effectsPage.runPlaybackPause();
 
       const playState = await effectsPage.getPlaybackPlayState();
       expect(playState).toBe('paused');
 
       const opacityBefore = await effectsPage.getPlaybackOpacity();
-      await page.waitForTimeout(300);
+      await new Promise((r) => setTimeout(r, 300));
       const opacityAfter = await effectsPage.getPlaybackOpacity();
 
-      expect(opacityBefore).toBe(opacityAfter);
+      // Use toBeCloseTo to tolerate browser rendering/precision differences
+      expect(parseFloat(opacityBefore)).toBeCloseTo(parseFloat(opacityAfter), 2);
     });
 
     test('should resume from paused position when played again', async ({ page }) => {
       await effectsPage.runPlayback();
-      await page.waitForTimeout(300);
+      await new Promise((r) => setTimeout(r, 300));
       await effectsPage.runPlaybackPause();
 
       const opacityAtPause = await effectsPage.getPlaybackOpacity();

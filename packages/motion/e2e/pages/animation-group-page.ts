@@ -6,7 +6,11 @@ type FixtureWindow = {
   pause(): void;
   reverse(): Promise<void>;
   cancel(): void;
-  animationGroup: { getProgress(): number; playState: string };
+  animationGroup: {
+    getProgress(): number;
+    playState: string;
+    progress(p: number): void;
+  };
   lifecycleEvents: string[];
 };
 
@@ -37,6 +41,20 @@ export class AnimationGroupPage extends BaseFixturePage {
 
   getProgress() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).animationGroup.getProgress());
+  }
+
+  setProgress(p: number) {
+    return this.page.evaluate(
+      (progress) => (window as unknown as FixtureWindow).animationGroup.progress(progress),
+      p,
+    );
+  }
+
+  getGroupItemOpacity() {
+    return this.page.evaluate(() => {
+      const el = document.getElementById('group-item-1');
+      return el ? parseFloat(getComputedStyle(el).opacity) : 0;
+    });
   }
 
   getPlayState() {

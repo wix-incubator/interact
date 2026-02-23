@@ -51,6 +51,26 @@ describe('AnimationGroup API', () => {
     });
   });
 
+  describe('Progress Control', () => {
+    test('should set progress manually', async () => {
+      await animationGroupPage.setProgress(0.5);
+
+      const progress = await animationGroupPage.getProgress();
+      expect(progress).toBeCloseTo(0.5, 1);
+
+      const opacity = await animationGroupPage.getGroupItemOpacity();
+      expect(opacity).toBeCloseTo(0.5, 1);
+    });
+
+    test('should report accurate progress percentage', async () => {
+      for (const p of [0, 0.25, 0.5, 0.75, 1]) {
+        await animationGroupPage.setProgress(p);
+        const reported = await animationGroupPage.getProgress();
+        expect(reported).toBeCloseTo(p, 1);
+      }
+    });
+  });
+
   describe('Callbacks', () => {
     test('should fire onFinish callback when animation completes', async ({ page }) => {
       await animationGroupPage.play();

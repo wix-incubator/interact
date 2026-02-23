@@ -26,7 +26,7 @@ export async function movePointerWithinElement(
   const y = rect.top + rect.height * ratioY;
   await page.mouse.move(x, y);
   // Allow pointermove handlers to settle
-  await page.waitForTimeout(50);
+  await new Promise((r) => setTimeout(r, 50));
 }
 
 /** Return the x/y pointer progress exposed on window by the fixture. */

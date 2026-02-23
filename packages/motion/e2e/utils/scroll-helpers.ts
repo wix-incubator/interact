@@ -4,13 +4,13 @@ import type { Page } from '@playwright/test';
 export async function scrollBy(page: Page, deltaY: number): Promise<void> {
   await page.mouse.wheel(0, deltaY);
   // Allow IntersectionObserver / scroll event handlers to fire
-  await page.waitForTimeout(100);
+  await new Promise((r) => setTimeout(r, 100));
 }
 
 /** Scroll the window to an absolute Y position. */
 export async function scrollTo(page: Page, y: number): Promise<void> {
   await page.evaluate((scrollY) => window.scrollTo({ top: scrollY, behavior: 'instant' }), y);
-  await page.waitForTimeout(100);
+  await new Promise((r) => setTimeout(r, 100));
 }
 
 /** Scroll until the given element is fully in the viewport. */
@@ -18,7 +18,7 @@ export async function scrollElementIntoView(page: Page, selector: string): Promi
   await page.evaluate((sel) => {
     document.querySelector(sel)?.scrollIntoView({ behavior: 'instant', block: 'center' });
   }, selector);
-  await page.waitForTimeout(100);
+  await new Promise((r) => setTimeout(r, 100));
 }
 
 /** Return the element's scroll progress exposed on window by the fixture. */

@@ -100,9 +100,6 @@ const customEffectEl = document.getElementById('custom-effect-target') as HTMLEl
 const playbackEl = document.getElementById('playback-target') as HTMLElement;
 const playbackStateDisplay = document.querySelector('[data-testid="playback-state-display"]') as HTMLElement;
 
-namedCssEl.id = 'named-css-target';
-keyframeCssEl.id = 'keyframe-css-target';
-
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
