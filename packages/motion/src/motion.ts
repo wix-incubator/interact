@@ -8,8 +8,11 @@ import type {
   ScrubScrollScene,
   ScrubPointerScene,
   PointerMoveAxis,
+  SequenceOptions,
+  AnimationGroupArgs,
 } from './types';
 import { AnimationGroup } from './AnimationGroup';
+import { Sequence } from './Sequence';
 import { getEasing, getJsEasing } from './utils';
 import { getWebAnimation } from './api/webAnimations';
 import { getCSSAnimation } from './api/cssAnimations';
@@ -211,6 +214,53 @@ function getAnimation(
   return getWebAnimation(target, animationOptions, trigger, { reducedMotion });
 }
 
+function resolveTargets(
+  target: HTMLElement | HTMLElement[] | string | null,
+): (HTMLElement | null)[] {
+  if (target === null) return [null];
+  if (typeof target === 'string') {
+    return Array.from(document.querySelectorAll<HTMLElement>(target));
+  }
+  if (Array.isArray(target)) return target;
+
+  return [target];
+}
+
+/**
+ * Creates a Sequence that coordinates multiple AnimationGroups with staggered delays.
+ *
+ * Two flows:
+ * - Single AnimationGroupArgs: creates a Sequence from one effect applied to each resolved target.
+ * - Array of AnimationGroupArgs: creates a Sequence with one entry per definition.
+ */
+function getSequence(
+  options: SequenceOptions,
+  animationGroups: AnimationGroupArgs | AnimationGroupArgs[],
+  context?: Record<string, any>,
+): Sequence {
+  const animationGroupList = Array.isArray(animationGroups) ? animationGroups : [animationGroups];
+  const groups: AnimationGroup[] = [];
+
+  for (const { target, options: animationGroupOptions } of animationGroupList) {
+    const elements = resolveTargets(target);
+
+    for (const element of elements) {
+      const result = getAnimation(
+        element,
+        animationGroupOptions,
+        undefined,
+        context?.reducedMotion,
+      );
+
+      if (result instanceof AnimationGroup) {
+        groups.push(result);
+      }
+    }
+  }
+
+  return new Sequence(groups, options);
+}
+
 export {
   getCSSAnimation,
   getWebAnimation,
@@ -219,6 +269,7 @@ export {
   getScrubScene,
   prepareAnimation,
   getAnimation,
+  getSequence,
   getEasing,
 };
 
