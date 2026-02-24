@@ -29,7 +29,7 @@ export function createTimeEffectHandler(
   reducedMotion: boolean = false,
   selectorCondition?: string,
   enterLeave?: EventTriggerConfigEnterLeave,
-): ((event: MouseEvent | KeyboardEvent | FocusEvent) => void) | null {
+): ((event: Event) => void) | null {
   const animation = getAnimation(
     element,
     effectToAnimationOptions(effect),
@@ -43,10 +43,10 @@ export function createTimeEffectHandler(
 
   let initialPlay = true;
   const type = options.type || 'alternate';
-  const enterEvents: string[] = enterLeave?.enter ? [...enterLeave.enter] : [];
-  const leaveEvents: string[] = enterLeave?.leave ? [...enterLeave.leave] : [];
+  const enterEvents = enterLeave?.enter ?? [];
+  const leaveEvents = enterLeave?.leave ?? [];
 
-  return (event: MouseEvent | KeyboardEvent | FocusEvent) => {
+  return (event: Event) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
 
     const isToggle = !enterLeave;
@@ -69,10 +69,11 @@ export function createTimeEffectHandler(
         }
       } else {
         animation.progress(0);
+        delete element.dataset.interactEnter;
         if (animation.isCSS) {
           animation.onFinish(() => {
             fastdom.mutate(() => {
-              element.dataset[enterLeave ? 'motionEnter' : 'interactEnter'] = 'done';
+              element.dataset.interactEnter = 'done';
             });
           });
         }
@@ -107,14 +108,14 @@ export function createTransitionHandler(
   options: StateParams,
   selectorCondition?: string,
   enterLeave?: EventTriggerConfigEnterLeave,
-): (event: MouseEvent | KeyboardEvent | FocusEvent) => void {
+): (event: Event) => void {
   const shouldSetStateOnElement = !!listContainer;
   const method = options.method || 'toggle';
   const isToggle = method === 'toggle';
-  const enterEvents: string[] = enterLeave?.enter ? [...enterLeave.enter] : [];
-  const leaveEvents: string[] = enterLeave?.leave ? [...enterLeave.leave] : [];
+  const enterEvents = enterLeave?.enter ?? [];
+  const leaveEvents = enterLeave?.leave ?? [];
 
-  return (event: MouseEvent | KeyboardEvent | FocusEvent) => {
+  return (event: Event) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
 
     const item: HTMLElement | null | undefined = shouldSetStateOnElement
@@ -128,12 +129,13 @@ export function createTransitionHandler(
 
     if (isToggleMode) {
       targetController.toggleEffect(effectId, method, item);
-    }
-    if (!isToggleMode && isEnter) {
-      targetController.toggleEffect(effectId, isToggle ? 'add' : method, item);
-    }
-    if (!isToggleMode && isLeave && isToggle) {
-      targetController.toggleEffect(effectId, 'remove', item);
+    } else {
+      if (isEnter) {
+        targetController.toggleEffect(effectId, isToggle ? 'add' : method, item);
+      }
+      if (isLeave && isToggle) {
+        targetController.toggleEffect(effectId, 'remove', item);
+      }
     }
   };
 }

@@ -1,7 +1,14 @@
+---
+description: Clean code rules for JavaScript (apply only when user explicitly requests via @cleanCode)
+alwaysApply: false
+---
+
 # Clean Code Rules for LLM (JavaScript)
 
 Behavioral constraints for LLMs modifying or generating JavaScript code.
 Ordered by priority — higher rules take precedence when rules conflict.
+
+> **Note**: Apply this rule only when the user explicitly requests it (e.g., by @-mentioning @cleanCode or asking for clean code guidance).
 
 ---
 

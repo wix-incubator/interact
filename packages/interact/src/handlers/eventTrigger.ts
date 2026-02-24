@@ -15,6 +15,56 @@ import { createTimeEffectHandler, createTransitionHandler } from './effectHandle
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 
+type EventHandler = (event: Event) => void;
+
+function createFocusListener(source: HTMLElement, handler: EventHandler): EventListener {
+  return (e: Event) => {
+    const ev = e as FocusEvent;
+    if (!source.contains(ev.relatedTarget as HTMLElement)) {
+      handler(ev);
+    }
+  };
+}
+
+function createClickListener(handler: EventHandler): EventListener {
+  return (e: Event) => {
+    const ev = e as MouseEvent;
+    if ((ev as PointerEvent).pointerType) {
+      handler(ev);
+    }
+  };
+}
+
+function createKeydownListener(handler: EventHandler): EventListener {
+  return (e: Event) => {
+    const ev = e as KeyboardEvent;
+    if (ev.code === 'Space') {
+      ev.preventDefault();
+      handler(ev);
+    } else if (ev.code === 'Enter') {
+      handler(ev);
+    }
+  };
+}
+
+const LISTENER_FACTORY_BY_EVENT_TYPE: Partial<
+  Record<string, (source: HTMLElement, handler: EventHandler) => EventListener>
+> = {
+  focusin: (source, handler) => createFocusListener(source, handler),
+  focusout: (source, handler) => createFocusListener(source, handler),
+  click: (_source, handler) => createClickListener(handler),
+  keydown: (_source, handler) => createKeydownListener(handler),
+};
+
+function getListenerForEventType(
+  event: string,
+  source: HTMLElement,
+  handler: EventHandler,
+): EventListener {
+  const factory = LISTENER_FACTORY_BY_EVENT_TYPE[event];
+  return factory ? factory(source, handler) : createKeydownListener(handler);
+}
+
 type GenericEventConfig = {
   toggle?: string[];
   enter?: string[];
@@ -69,7 +119,7 @@ function addEventTriggerHandler(
 
   const enterLeave = getEnterLeaveConfig(genericConfig);
 
-  let handler: ((event: MouseEvent | KeyboardEvent | FocusEvent) => void) | null;
+  let handler: EventHandler | null;
   let once = false;
 
   if (isTransition) {
@@ -97,38 +147,14 @@ function addEventTriggerHandler(
     return;
   }
 
+  const resolvedHandler = handler;
   const listeners: { element: HTMLElement; event: string; fn: EventListener }[] = [];
 
-  function addListener(
-    element: HTMLElement,
-    event: string,
-    fn: EventListener,
-    options?: AddEventListenerOptions,
-  ) {
+  function addListener(element: HTMLElement, event: string, options?: AddEventListenerOptions) {
+    const fn = getListenerForEventType(event, source, resolvedHandler);
     element.addEventListener(event, fn, options);
     listeners.push({ element, event, fn });
   }
-
-  const focusListener = (e: FocusEvent) => {
-    if (!source.contains(e.relatedTarget as HTMLElement)) {
-      (handler as (e: FocusEvent) => void)(e);
-    }
-  };
-
-  const clickListener = (e: MouseEvent) => {
-    if ((e as PointerEvent).pointerType) {
-      (handler as (e: MouseEvent) => void)(e);
-    }
-  };
-
-  const keydownListener = (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
-      e.preventDefault();
-      (handler as (e: KeyboardEvent) => void)(e);
-    } else if (e.code === 'Enter') {
-      (handler as (e: KeyboardEvent) => void)(e);
-    }
-  };
 
   const cleanup = () => {
     listeners.forEach(({ element, event, fn }) => {
@@ -140,17 +166,14 @@ function addEventTriggerHandler(
   addHandlerToMap(handlerMap, source, handlerObj);
   addHandlerToMap(handlerMap, target, handlerObj);
 
-  const isEnterLeave = isEnterLeaveMode(genericConfig);
-  if (isEnterLeave) {
-    const enter = genericConfig.enter ?? [];
-    const leaveEvents = genericConfig.leave ?? [];
+  if (enterLeave) {
+    const enter = genericConfig.enter!;
+    const leaveEvents = genericConfig.leave!;
     enter.forEach((eventType) => {
       if (eventType === 'focusin') {
         source.tabIndex = 0;
-        addListener(source, eventType, focusListener as EventListener, { once });
-        return;
       }
-      addListener(source, eventType, handler as EventListener, { passive: true, once });
+      addListener(source, eventType, { passive: true, once });
     });
     const addLeaveListeners = isTransition
       ? (options as StateParams).method === 'toggle'
@@ -158,23 +181,17 @@ function addEventTriggerHandler(
     if (addLeaveListeners) {
       leaveEvents.forEach((eventType) => {
         if (eventType === 'focusout') {
-          addListener(source, eventType, focusListener as EventListener, { once });
+          addListener(source, eventType, { once });
           return;
         }
-        addListener(source, eventType, handler as EventListener, { passive: true });
+        addListener(source, eventType, { passive: true });
       });
     }
   } else {
     const events = genericConfig.toggle ?? [];
     events.forEach((eventType) => {
-      const opts = { passive: true, once };
-      if (eventType === 'click') {
-        addListener(source, 'click', clickListener as EventListener, opts);
-      } else if (eventType === 'keydown') {
-        addListener(source, 'keydown', keydownListener as EventListener, { once });
-      } else {
-        addListener(source, eventType, handler as EventListener, opts);
-      }
+      const opts = eventType === 'keydown' ? { once } : { passive: true, once };
+      addListener(source, eventType, opts);
     });
   }
 }
