@@ -70,7 +70,7 @@ describe('Swing', () => {
 
       expect(result[0]).toMatchObject({
         name: 'motion-swing-067',
-        duration: 4050,
+        duration: 1500,
         custom: {
           '--motion-swing-deg': '30deg',
           '--motion-trans-x': '0%',
@@ -84,6 +84,33 @@ describe('Swing', () => {
       // Check that delay sequence is used (more keyframes)
       expect(result[0].keyframes.length).toBe(9); // 7 delay sequence + start + end
       expect(result[0].keyframes[0].easing).toBe('var(--motion-ease-out)');
+    });
+
+    test('custom duration and delay - offsets and name', () => {
+      const mockOptions: TimeAnimationOptions = {
+        ...baseMockOptions,
+        duration: 1000,
+        delay: 500,
+        namedEffect: {} as SwingType,
+      };
+
+      const result = Swing.style(mockOptions);
+
+      expect(result[0]).toMatchObject({
+        name: 'motion-swing-067',
+        duration: 1500,
+      });
+
+      const keyframes = result[0].keyframes;
+      expect(keyframes[0].offset).toBe(0);
+      expect(keyframes[1].offset).toBe(0.062578);
+      expect(keyframes[2].offset).toBe(0.18760000000000002);
+      expect(keyframes[3].offset).toBe(0.31222000000000005);
+      expect(keyframes[4].offset).toBe(0.43751000000000007);
+      expect(keyframes[5].offset).toBe(0.56213);
+      expect(keyframes[6].offset).toBe(0.68742);
+      expect(keyframes[7].offset).toBe(0.7872500000000001);
+      expect(keyframes[8].offset).toBe(1);
     });
 
     test('custom direction - right', () => {
@@ -198,7 +225,7 @@ describe('Swing', () => {
 
       expect(result[0]).toMatchObject({
         name: 'motion-swing-067',
-        duration: 4050,
+        duration: 1500,
         custom: {
           '--motion-swing-deg': '30deg',
           '--motion-trans-x': '0%',
@@ -227,6 +254,33 @@ describe('Swing', () => {
           expect(keyframe.easing).toBe('linear');
         }
       });
+    });
+
+    test('custom duration and delay - offsets and name with web output', () => {
+      const mockOptions: TimeAnimationOptions = {
+        ...baseMockOptions,
+        duration: 1000,
+        delay: 500,
+        namedEffect: {} as SwingType,
+      };
+
+      const result = Swing.web(mockOptions);
+
+      expect(result[0]).toMatchObject({
+        name: 'motion-swing-067',
+        duration: 1500,
+      });
+
+      const keyframes = result[0].keyframes;
+      expect(keyframes[0].offset).toBe(0);
+      expect(keyframes[1].offset).toBe(0.062578);
+      expect(keyframes[2].offset).toBe(0.18760000000000002);
+      expect(keyframes[3].offset).toBe(0.31222000000000005);
+      expect(keyframes[4].offset).toBe(0.43751000000000007);
+      expect(keyframes[5].offset).toBe(0.56213);
+      expect(keyframes[6].offset).toBe(0.68742);
+      expect(keyframes[7].offset).toBe(0.7872500000000001);
+      expect(keyframes[8].offset).toBe(1);
     });
 
     test('custom direction - right with web output', () => {

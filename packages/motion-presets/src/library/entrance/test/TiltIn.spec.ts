@@ -102,12 +102,6 @@ describe('TiltIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            easing: 'step-end',
-            transform: 'perspective(var(--motion-perspective))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },
@@ -172,12 +166,6 @@ describe('TiltIn', () => {
         },
         keyframes: [
           {
-            offset: 0,
-            easing: 'step-end',
-            transform: 'perspective(var(--motion-perspective))',
-          },
-          {
-            offset: 0.000001,
             transform:
               'perspective(var(--motion-perspective)) translateZ(var(--motion-depth-negative)) rotateX(-90deg) translateZ(var(--motion-depth-positive)) rotate(var(--motion-rotate, 0deg))',
           },

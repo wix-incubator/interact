@@ -169,20 +169,22 @@ const html = `
 
 **When to Use:**
 
-- For elements with an entrance efffect that is triggered a with `viewEnter`
+- For elements with an entrance effect that is triggered with `viewEnter`
 - To prevent elements from being visible before their entrance animation plays
 - For server-side rendering (SSR) or static site generation (SSG) scenarios
 
 ## 5. Triggers & Behaviors
 
-| Trigger        | Description                      | Key Parameters                                                                                                            | Rules File          |
-| :------------- | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------ |
-| `hover`        | Mouse enter/leave                | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./hover.md`        |
-| `click`        | Mouse click                      | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./click.md`        |
-| `viewEnter`    | Element enters viewport          | `type`: 'once', 'alternate', 'repeat', 'state'; `threshold` (0-1)                                                         | `./viewEnter.md`    |
-| `viewProgress` | Scroll-driven using ViewTimeline | (No specific params, uses effect ranges)                                                                                  | `./viewprogress.md` |
-| `pointerMove`  | Mouse movement                   | `hitArea`: 'self' (default) or 'root'                                                                                     | `./pointermove.md`  |
-| `animationEnd` | Chaining animations              | `effectId`: ID of the previous effect                                                                                     | --                  |
+| Trigger        | Description                                     | Key Parameters                                                                                                            | Rules File          |
+| :------------- | :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :------------------ |
+| `hover`        | Mouse enter/leave                               | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./hover.md`        |
+| `click`        | Mouse click                                     | `type`: 'once', 'alternate', 'repeat', 'state' for animations, or `method`: 'add', 'remove', 'toggle', 'clear' for states | `./click.md`        |
+| `activate`     | Accessible click (click + keyboard Space/Enter) | Same as `click` with keyboard support                                                                                     | `./click.md`        |
+| `interest`     | Accessible hover (hover + focus)                | Same as `hover` with focus support                                                                                        | `./hover.md`        |
+| `viewEnter`    | Element enters viewport                         | `type`: 'once', 'alternate', 'repeat', 'state'; `threshold` (0-1)                                                         | `./viewenter.md`    |
+| `viewProgress` | Scroll-driven using ViewTimeline                | (No specific params, uses effect ranges)                                                                                  | `./viewprogress.md` |
+| `pointerMove`  | Mouse movement                                  | `hitArea`: 'self' (default) or 'root'; `axis`: 'x' or 'y' for keyframeEffect                                              | `./pointermove.md`  |
+| `animationEnd` | Chaining animations                             | `effectId`: ID of the previous effect                                                                                     | --                  |
 
 ## 6. Effects & Animations
 
@@ -190,9 +192,33 @@ Effects define _what_ happens. They can be inline or referenced by ID.
 
 ### Effect Types
 
-#### 1. Named Effects (Pre-built)
+#### 1. Named Effects (Pre-built effect library)>
 
-Use Motion effect presets for consistency.
+Use the @wix/motion-presets library for consistency.
+
+**Install:**
+
+```bash
+> npm install @wix/motion-presets
+```
+
+**Import and register:**
+
+```typescript
+import { Interact } from '@wix/interact/web';
+import * as presets from '@wix/motion-presets';
+
+Interact.registerEffects(presets);
+```
+
+**Or register only required presets:**
+
+```typescript
+import { Interact } from '@wix/interact/web';
+import { FadeIn, ParallaxScroll } from '@wix/motion-presets';
+
+Interact.registerEffects({ FadeIn, ParallaxScroll });
+```
 
 ```typescript
 {
@@ -239,8 +265,8 @@ Used with `viewProgress`, linked to scroll progress while element is inside view
 ```typescript
 {
   keyframeEffect: { ... },
-  rangeStart: { name: 'cover', offset: { value: 0, type: 'percentage' } },
-  rangeEnd: { name: 'cover', offset: { value: 100, type: 'percentage' } },
+  rangeStart: { name: 'cover', offset: { value: 0, unit: 'percentage' } },
+  rangeEnd: { name: 'cover', offset: { value: 100, unit: 'percentage' } },
   fill: 'both'
 }
 ```

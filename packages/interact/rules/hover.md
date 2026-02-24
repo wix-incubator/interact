@@ -95,7 +95,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
 
 ## Rule 2: Hover Enter/Leave Animations with Named Effects
 
-**Purpose**: Generate hover interactions using pre-built named effects from @wix/motion
+**Purpose**: Generate hover interactions using pre-built named effects from @wix/motion-presets
 
 **Pattern**:
 
@@ -125,7 +125,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
 **Variables**:
 
 - `[REVERSED_BOOL]`: Optional boolean value indicating whether the mouse enter animation is reversed (and mouse leave is forwards).
-- `[NAMED_EFFECT_TYPE]`: Name of the pre-built named effect from @wix/motion to use.
+- `[NAMED_EFFECT_TYPE]`: Name of the pre-built named effect from @wix/motion-presets to use.
 - `[EFFECT_PROPERTIES]`: Named effect specific properties (distance, angle, perspective, etc.)
 - Other variables same as Rule 1
 
@@ -159,8 +159,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
         {
             key: 'feature-card',
             namedEffect: {
-                type: 'Pulse',
-                power: 'soft'
+                type: 'Pulse'
             },
             fill: 'both',
             duration: 250,
@@ -181,8 +180,7 @@ This document contains rules for generating hover trigger interactions in `@wix/
             key: 'button-icon',
             namedEffect: {
                 type: 'SpinIn',
-                direction: 'clockwise',
-                power: 'soft'
+                direction: 'clockwise'
             },
             fill: 'both',
             duration: 200,

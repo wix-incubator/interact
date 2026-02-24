@@ -53,7 +53,6 @@ const bounceOptions: TimeAnimationOptions = {
   namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'hard',
   },
   duration: 1200,
   delay: 300,
@@ -66,7 +65,6 @@ const pulseOptions: TimeAnimationOptions = {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'soft',
     intensity: 0.8,
   },
   duration: 2000,
@@ -122,7 +120,6 @@ const mouseOptions: ScrubAnimationOptions = {
     type: 'Tilt3DMouse',
     angle: 15,
     perspective: 800,
-    power: 'medium',
   },
   transitionDuration: 200,
   transitionEasing: 'easeOut',
@@ -163,13 +160,11 @@ type FadeIn = BaseDataItemLike<'FadeIn'>;
 // Directional arc entrance
 type ArcIn = BaseDataItemLike<'ArcIn'> & {
   direction: EffectFourDirections; // 'top' | 'right' | 'bottom' | 'left'
-  power?: EffectPower; // 'soft' | 'medium' | 'hard'
 };
 
 // Bouncing entrance
 type BounceIn = BaseDataItemLike<'BounceIn'> & {
   direction: EffectFourDirections | 'center';
-  power?: EffectPower;
   distanceFactor?: number;
 };
 
@@ -177,7 +172,6 @@ type BounceIn = BaseDataItemLike<'BounceIn'> & {
 type GlideIn = BaseDataItemLike<'GlideIn'> & {
   direction: number; // Angle in degrees
   distance: UnitLengthPercentage; // Movement distance
-  power?: EffectPower;
   startFromOffScreen?: boolean;
 };
 ```
@@ -188,26 +182,23 @@ type GlideIn = BaseDataItemLike<'GlideIn'> & {
 // Simple fade
 const fadeIn: FadeIn = { type: 'FadeIn' };
 
-// Arc from right with medium power
+// Arc from right
 const arcIn: ArcIn = {
   type: 'ArcIn',
   direction: 'right',
-  power: 'medium',
 };
 
 // Bounce from bottom
 const bounceIn: BounceIn = {
   type: 'BounceIn',
   direction: 'bottom',
-  power: 'hard',
 };
 
 // Custom glide at 45 degrees
 const glideIn: GlideIn = {
   type: 'GlideIn',
   direction: 45,
-  distance: { value: 100, type: 'px' },
-  power: 'medium',
+  distance: { value: 100, unit: 'px' },
 };
 ```
 
@@ -220,7 +211,6 @@ Continuous looping animations for attention and ambient motion.
 ```typescript
 // Pulsing scale effect
 type Pulse = BaseDataItemLike<'Pulse'> & {
-  power?: EffectPower;
   intensity?: number; // 0.1 - 2.0 multiplier
 };
 
@@ -233,13 +223,11 @@ type Breathe = BaseDataItemLike<'Breathe'> & {
 // Spinning rotation
 type Spin = BaseDataItemLike<'Spin'> & {
   direction: 'clockwise' | 'counter-clockwise';
-  power?: EffectPower;
 };
 
 // Directional poking
 type Poke = BaseDataItemLike<'Poke'> & {
   direction: EffectFourDirections;
-  power?: EffectPower;
   intensity?: number;
 };
 ```
@@ -250,7 +238,6 @@ type Poke = BaseDataItemLike<'Poke'> & {
 // Soft pulse
 const pulse: Pulse = {
   type: 'Pulse',
-  power: 'soft',
   intensity: 0.6,
 };
 
@@ -258,14 +245,13 @@ const pulse: Pulse = {
 const breathe: Breathe = {
   type: 'Breathe',
   direction: 'vertical',
-  distance: { value: 10, type: 'px' },
+  distance: { value: 10, unit: 'px' },
 };
 
 // Clockwise spinning
 const spin: Spin = {
   type: 'Spin',
   direction: 'clockwise',
-  power: 'medium',
 };
 ```
 
@@ -291,7 +277,6 @@ type FadeScroll = BaseDataItemLike<'FadeScroll'> & {
 // Movement on scroll
 type MoveScroll = BaseDataItemLike<'MoveScroll'> & {
   angle: number; // Movement direction
-  power?: EffectPower;
   range?: EffectScrollRange;
   distance?: UnitLengthPercentage;
 };
@@ -299,7 +284,6 @@ type MoveScroll = BaseDataItemLike<'MoveScroll'> & {
 // Scaling on scroll
 type GrowScroll = BaseDataItemLike<'GrowScroll'> & {
   direction: EffectNineDirections; // Includes corners + center
-  power?: EffectPower;
   range?: EffectScrollRange;
   scale?: number;
   speed?: number; // Y-axis movement
@@ -326,7 +310,7 @@ const fadeScroll: FadeScroll = {
 const moveScroll: MoveScroll = {
   type: 'MoveScroll',
   angle: 225,
-  distance: { value: 200, type: 'px' },
+  distance: { value: 200, unit: 'px' },
   range: 'in',
 };
 ```
@@ -342,7 +326,6 @@ Interactive pointer-driven effects.
 type TrackMouse = BaseDataItemLike<'TrackMouse'> & {
   distance?: UnitLengthPercentage;
   axis?: MouseEffectAxis; // 'both' | 'horizontal' | 'vertical'
-  power?: EffectPower;
   inverted?: boolean;
 };
 
@@ -350,7 +333,6 @@ type TrackMouse = BaseDataItemLike<'TrackMouse'> & {
 type Tilt3DMouse = BaseDataItemLike<'Tilt3DMouse'> & {
   angle?: number; // Maximum tilt angle
   perspective?: number; // 3D perspective distance
-  power?: EffectPower;
   inverted?: boolean;
 };
 
@@ -359,7 +341,6 @@ type ScaleMouse = BaseDataItemLike<'ScaleMouse'> & {
   distance?: UnitLengthPercentage;
   axis?: MouseEffectAxis;
   scale?: number; // Maximum scale
-  power?: EffectPower;
   scaleDirection: EffectScaleDirection; // 'up' | 'down'
   inverted?: boolean;
 };
@@ -371,9 +352,8 @@ type ScaleMouse = BaseDataItemLike<'ScaleMouse'> & {
 // Track mouse movement
 const trackMouse: TrackMouse = {
   type: 'TrackMouse',
-  distance: { value: 50, type: 'px' },
+  distance: { value: 50, unit: 'px' },
   axis: 'both',
-  power: 'medium',
 };
 
 // 3D tilt effect
@@ -381,7 +361,6 @@ const tiltMouse: Tilt3DMouse = {
   type: 'Tilt3DMouse',
   angle: 15,
   perspective: 800,
-  power: 'soft',
 };
 
 // Scale on hover
@@ -389,7 +368,6 @@ const scaleMouse: ScaleMouse = {
   type: 'ScaleMouse',
   scale: 1.1,
   scaleDirection: 'up',
-  power: 'soft',
 };
 ```
 
@@ -463,8 +441,6 @@ type Percentage = {
   value: number;
   unit: 'percentage';
 };
-  type: 'percentage';
-};
 
 // Combined length/percentage
 type LengthPercentage = Length | Percentage;
@@ -478,10 +454,10 @@ type Point = [number, number];
 
 ```typescript
 // Different measurement types
-const pixelDistance: Length = { value: 100, type: 'px' };
-const remDistance: Length = { value: 2, type: 'rem' };
-const viewportDistance: Length = { value: 50, type: 'vh' };
-const percentDistance: Percentage = { value: 75, type: 'percentage' };
+const pixelDistance: Length = { value: 100, unit: 'px' };
+const remDistance: Length = { value: 2, unit: 'rem' };
+const viewportDistance: Length = { value: 50, unit: 'vh' };
+const percentDistance: Percentage = { value: 75, unit: 'percentage' };
 
 // Points for coordinates
 const centerPoint: Point = [0.5, 0.5];
@@ -510,9 +486,6 @@ type EffectTwoSides = 'left' | 'right';
 
 // Corner positions
 type EffectFourCorners = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
-
-// Power levels
-type EffectPower = 'soft' | 'medium' | 'hard';
 
 // Scroll ranges
 type EffectScrollRange = 'in' | 'out' | 'continuous';
@@ -639,13 +612,13 @@ type RangeOffset = {
 // Start when element is 20% visible
 const startOffset: RangeOffset = {
   name: 'entry',
-  offset: { value: 20, type: 'percentage' },
+  offset: { value: 20, unit: 'percentage' },
 };
 
 // End 100px before element exits
 const endOffset: RangeOffset = {
   name: 'exit',
-  offset: { value: 100, type: 'px' },
+  offset: { value: 100, unit: 'px' },
 };
 
 // Cover entire viewport interaction
@@ -898,24 +871,6 @@ class TypedAnimationFactory<T extends NamedEffect> implements AnimationFactory<T
     return {};
   }
 }
-```
-
-### Conditional Types for Effect Properties
-
-```typescript
-// Extract properties based on effect type
-type EffectProperties<T extends NamedEffect> = T extends { direction: infer D }
-  ? { direction: D }
-  : {} & T extends { power: infer P }
-    ? { power: P }
-    : {} & T extends { distance: infer D }
-      ? { distance: D }
-      : {};
-
-// Usage
-type FadeInProps = EffectProperties<FadeIn>; // {}
-type ArcInProps = EffectProperties<ArcIn>; // { direction: EffectFourDirections; power?: EffectPower }
-type GlideInProps = EffectProperties<GlideIn>; // { direction: number; distance: UnitLengthPercentage; power?: EffectPower }
 ```
 
 ---

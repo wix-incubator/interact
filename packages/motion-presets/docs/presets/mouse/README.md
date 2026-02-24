@@ -6,34 +6,34 @@ Interactive pointer-driven effects that respond to mouse movement in real-time. 
 
 ### 🎯 Position Tracking
 
-| Animation                          | Complexity | Power Levels | Axis Control | Description                     |
-| ---------------------------------- | ---------- | ------------ | ------------ | ------------------------------- |
-| **[TrackMouse](track-mouse.md)**   | Simple     | ✓            | ✓            | Element follows cursor movement |
-| **[AiryMouse](airy-mouse.md)**     | Medium     | ✓            | ✓            | Lightweight floating movement   |
-| **[BounceMouse](bounce-mouse.md)** | Simple     | ✓            | ✓            | Elastic cursor following        |
+| Animation                          | Complexity | Axis Control | Description                     |
+| ---------------------------------- | ---------- | ------------ | ------------------------------- |
+| **[TrackMouse](track-mouse.md)**   | Simple     | ✓            | Element follows cursor movement |
+| **[AiryMouse](airy-mouse.md)**     | Medium     | ✓            | Lightweight floating movement   |
+| **[BounceMouse](bounce-mouse.md)** | Simple     | ✓            | Elastic cursor following        |
 
 ### 🔄 3D Transformations
 
-| Animation                             | Complexity | Power Levels | Axis Control | Description                       |
-| ------------------------------------- | ---------- | ------------ | ------------ | --------------------------------- |
-| **[Tilt3DMouse](tilt-3d-mouse.md)**   | Medium     | ✓            | -            | 3D tilt based on pointer position |
-| **[Track3DMouse](track-3d-mouse.md)** | Medium     | ✓            | ✓            | 3D tracking with perspective      |
-| **[SwivelMouse](swivel-mouse.md)**    | Complex    | ✓            | -            | Pivot-point 3D rotation           |
+| Animation                             | Complexity | Axis Control | Description                       |
+| ------------------------------------- | ---------- | ------------ | --------------------------------- |
+| **[Tilt3DMouse](tilt-3d-mouse.md)**   | Medium     | -            | 3D tilt based on pointer position |
+| **[Track3DMouse](track-3d-mouse.md)** | Medium     | ✓            | 3D tracking with perspective      |
+| **[SwivelMouse](swivel-mouse.md)**    | Complex    | -            | Pivot-point 3D rotation           |
 
 ### 📏 Scale & Deformation
 
-| Animation                        | Complexity | Power Levels | Axis Control | Description                  |
-| -------------------------------- | ---------- | ------------ | ------------ | ---------------------------- |
-| **[ScaleMouse](scale-mouse.md)** | Medium     | ✓            | ✓            | Dynamic scaling on hover     |
-| **[BlobMouse](blob-mouse.md)**   | Medium     | ✓            | -            | Organic blob-like scaling    |
-| **[SkewMouse](skew-mouse.md)**   | Medium     | ✓            | ✓            | Skew transformation tracking |
+| Animation                        | Complexity | Axis Control | Description                  |
+| -------------------------------- | ---------- | ------------ | ---------------------------- |
+| **[ScaleMouse](scale-mouse.md)** | Medium     | ✓            | Dynamic scaling on hover     |
+| **[BlobMouse](blob-mouse.md)**   | Medium     | -            | Organic blob-like scaling    |
+| **[SkewMouse](skew-mouse.md)**   | Medium     | ✓            | Skew transformation tracking |
 
 ### ✨ Visual Effects
 
-| Animation                      | Complexity | Power Levels | Description                 |
-| ------------------------------ | ---------- | ------------ | --------------------------- |
-| **[BlurMouse](blur-mouse.md)** | Complex    | ✓            | Motion blur with 3D effects |
-| **[SpinMouse](spin-mouse.md)** | Simple     | ✓            | Rotation based on movement  |
+| Animation                      | Complexity | Description                 |
+| ------------------------------ | ---------- | --------------------------- |
+| **[BlurMouse](blur-mouse.md)** | Complex    | Motion blur with 3D effects |
+| **[SpinMouse](spin-mouse.md)** | Simple     | Rotation based on movement  |
 
 ### 🎨 Custom Behaviors
 
@@ -98,7 +98,6 @@ const scene = getScrubScene(
     namedEffect: {
       type: 'TrackMouse',
       distance: { value: 50, unit: 'px' },
-      power: 'medium',
     },
     transitionDuration: 300,
     transitionEasing: 'easeOut',
@@ -110,26 +109,6 @@ const scene = getScrubScene(
 );
 ```
 
-### Power Level Control
-
-```typescript
-// Gentle mouse response for professional interfaces
-const subtleEffect = {
-  type: 'Tilt3DMouse',
-  angle: 15,
-  perspective: 800,
-  power: 'soft', // Minimal response
-};
-
-// Strong mouse response for creative interfaces
-const dramaticEffect = {
-  type: 'Tilt3DMouse',
-  angle: 15,
-  perspective: 800,
-  power: 'hard', // Maximum response
-};
-```
-
 ### Axis Constraints
 
 ```typescript
@@ -138,7 +117,6 @@ const horizontalTrack = {
   type: 'TrackMouse',
   distance: { value: 100, unit: 'px' },
   axis: 'horizontal',
-  power: 'medium',
 };
 
 // Vertical-only scaling
@@ -161,7 +139,6 @@ const scene = getScrubScene(
     namedEffect: {
       type: 'Tilt3DMouse',
       angle: 20,
-      power: 'medium',
     },
   },
   {
@@ -186,7 +163,6 @@ document.querySelectorAll('.interactive-card').forEach((card) => {
         type: 'Tilt3DMouse',
         angle: 12,
         perspective: 1000,
-        power: 'soft',
       },
       transitionDuration: 200,
     },
@@ -243,7 +219,6 @@ class CursorFollower {
           type: 'TrackMouse',
           distance: { value: 0, unit: 'px' }, // Perfect following
           axis: 'both',
-          power: 'medium',
         },
         transitionDuration: 100,
         transitionEasing: 'easeOut',
@@ -266,15 +241,15 @@ const cursorFollower = new CursorFollower();
 const mouseResponders = [
   {
     element: '.bg-layer',
-    effect: { type: 'AiryMouse', distance: { value: 30, unit: 'px' }, power: 'soft' },
+    effect: { type: 'AiryMouse', distance: { value: 30, unit: 'px' } },
   },
   {
     element: '.mid-layer',
-    effect: { type: 'TrackMouse', distance: { value: 50, unit: 'px' }, power: 'medium' },
+    effect: { type: 'TrackMouse', distance: { value: 50, unit: 'px' } },
   },
   {
     element: '.fg-layer',
-    effect: { type: 'Tilt3DMouse', angle: 15, power: 'hard' },
+    effect: { type: 'Tilt3DMouse', angle: 15 },
   },
 ];
 
@@ -313,14 +288,12 @@ if (isTouchDevice) {
     type: 'Tilt3DMouse',
     angle: 20,
     perspective: 800,
-    power: 'medium',
   };
 } else {
   // Simplified effects on smaller screens
   mouseConfig = {
     type: 'ScaleMouse',
     scale: 1.05,
-    power: 'soft',
   };
 }
 
@@ -375,7 +348,6 @@ function InteractiveCard({ children }) {
   const cardRef = useMouseEffect('Tilt3DMouse', {
     angle: 15,
     perspective: 1000,
-    power: 'medium'
   });
 
   return (
