@@ -10,4 +10,8 @@ export type CssAnimationData = {
   animationRange: string;
 };
 
-export type CustomEffectEntry = { element: Element | null; progress: number | null };
+export type CustomEffectEntry = {
+  elementId: string | null;
+  tagName: string | null;
+  progress: number | null;
+};

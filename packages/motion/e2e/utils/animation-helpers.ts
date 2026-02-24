@@ -29,15 +29,37 @@ export async function waitForElementAnimationState(
   states: string[],
   timeout = 2000,
 ): Promise<void> {
-  await page.waitForFunction(
-    ({ id, targetStates }) => {
+  try {
+    await page.waitForFunction(
+      ({ id, targetStates }) => {
+        const el = document.getElementById(id);
+        const state = el?.getAnimations()[0]?.playState;
+        return targetStates.includes(state ?? '');
+      },
+      { id: elementId, targetStates: states },
+      { timeout },
+    );
+  } catch (error) {
+    const debug = await page.evaluate((id) => {
       const el = document.getElementById(id);
-      const state = el?.getAnimations()[0]?.playState;
-      return targetStates.includes(state ?? '');
-    },
-    { id: elementId, targetStates: states },
-    { timeout },
-  );
+      return {
+        exists: !!el,
+        animationCount: el?.getAnimations().length ?? 0,
+        playState: el?.getAnimations()[0]?.playState ?? 'none',
+      };
+    }, elementId);
+
+    throw new Error(
+      [
+        `Timed out waiting for #${elementId} animation state.`,
+        `Expected: [${states.join(', ')}]`,
+        `Actual: ${debug.playState}`,
+        `Element exists: ${debug.exists}`,
+        `Animation count: ${debug.animationCount}`,
+        `Original error: ${String(error)}`,
+      ].join('\n'),
+    );
+  }
 }
 
 /** Return the playState of a DOM element's first WAAPI animation (or 'none'). */

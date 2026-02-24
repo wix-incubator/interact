@@ -76,9 +76,7 @@ registerEffects({
 // ---------------------------------------------------------------------------
 
 const namedWaapiEl = document.getElementById('named-waapi-target') as HTMLElement;
-const namedCssEl = document.getElementById('named-css-target') as HTMLElement;
 const keyframeWaapiEl = document.getElementById('keyframe-waapi-target') as HTMLElement;
-const keyframeCssEl = document.getElementById('keyframe-css-target') as HTMLElement;
 const customEffectEl = document.getElementById('custom-effect-target') as HTMLElement;
 const playbackEl = document.getElementById('playback-target') as HTMLElement;
 const playbackStateDisplay = document.querySelector('[data-testid="playback-state-display"]') as HTMLElement;
@@ -178,7 +176,12 @@ function runCustomEffect() {
 
   customEffectGroup = getWebAnimation(customEffectEl, {
     customEffect: (element: Element | null, progress: number | null) => {
-      customEffectLog.push({ element, progress });
+      const htmlElement = element as HTMLElement | null;
+      customEffectLog.push({
+        elementId: htmlElement?.id ?? null,
+        tagName: htmlElement?.tagName ?? null,
+        progress,
+      });
       if (element && progress !== null) {
         (element as HTMLElement).style.opacity = String(progress);
         (element as HTMLElement).style.transform = `scale(${0.5 + progress * 0.5})`;

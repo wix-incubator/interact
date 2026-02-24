@@ -11,12 +11,28 @@ test.describe('Selector Conditions', () => {
   });
 
   test.describe('nth-child Selector', () => {
-    test('should animate even and odd grid items with different effects', async () => {
+    test('should apply different runtime keyframes for even and odd selectors', async ({ page }) => {
       await selectorPage.animateGrid();
 
-      const selectors = await selectorPage.getMatchedSelectors();
-      expect(selectors).toContain(':nth-child(even)');
-      expect(selectors).toContain(':nth-child(odd)');
+      await waitForElementAnimation(page, '#nth-child-grid .grid-item');
+
+      const { evenHasScale, oddHasTranslate } = await page.evaluate(() => {
+        const evenEl = document.querySelector('#nth-child-grid .grid-item:nth-child(even)') as HTMLElement | null;
+        const oddEl = document.querySelector('#nth-child-grid .grid-item:nth-child(odd)') as HTMLElement | null;
+
+        const evenKeyframes =
+          ((evenEl?.getAnimations()[0]?.effect as KeyframeEffect | undefined)?.getKeyframes?.() ?? []) as Keyframe[];
+        const oddKeyframes =
+          ((oddEl?.getAnimations()[0]?.effect as KeyframeEffect | undefined)?.getKeyframes?.() ?? []) as Keyframe[];
+
+        return {
+          evenHasScale: evenKeyframes.some((kf) => String(kf.transform).includes('scale')),
+          oddHasTranslate: oddKeyframes.some((kf) => String(kf.transform).includes('translateY')),
+        };
+      });
+
+      expect(evenHasScale).toBe(true);
+      expect(oddHasTranslate).toBe(true);
     });
 
     test('should apply keyframe animations to all grid items', async ({ page }) => {
@@ -32,22 +48,35 @@ test.describe('Selector Conditions', () => {
       expect(animatedCount).toBe(10);
     });
 
-    test('should track matched selectors per item type', async () => {
+    test('should apply even/odd animations to all 10 grid items', async ({ page }) => {
       await selectorPage.animateGrid();
+      await waitForElementAnimation(page, '#nth-child-grid .grid-item');
 
-      const selectors = await selectorPage.getMatchedSelectors();
-      // Only even/odd selectors should be recorded
-      expect(selectors.length).toBe(2);
-      expect(selectors).toEqual(expect.arrayContaining([':nth-child(even)', ':nth-child(odd)']));
+      const { evenAnimated, oddAnimated } = await page.evaluate(() => {
+        const evenItems = document.querySelectorAll('#nth-child-grid .grid-item:nth-child(even)');
+        const oddItems = document.querySelectorAll('#nth-child-grid .grid-item:nth-child(odd)');
+
+        return {
+          evenAnimated: Array.from(evenItems).filter((el) => el.getAnimations().length > 0).length,
+          oddAnimated: Array.from(oddItems).filter((el) => el.getAnimations().length > 0).length,
+        };
+      });
+
+      expect(evenAnimated).toBe(5);
+      expect(oddAnimated).toBe(5);
     });
   });
 
   test.describe('List Container Selector', () => {
-    test('should animate list items using container selector', async () => {
+    test('should animate list items selected by container child selector', async ({ page }) => {
       await selectorPage.animateList();
+      await waitForElementAnimation(page, '#list-container .list-item');
 
-      const selectors = await selectorPage.getMatchedSelectors();
-      expect(selectors).toContain('list-container > .list-item');
+      const animatedCount = await page.evaluate(() => {
+        const items = document.querySelectorAll('#list-container > .list-item');
+        return Array.from(items).filter((el) => el.getAnimations().length > 0).length;
+      });
+      expect(animatedCount).toBe(5);
     });
 
     test('should apply staggered animations to all list items', async ({ page }) => {
@@ -62,15 +91,18 @@ test.describe('Selector Conditions', () => {
       expect(animatedCount).toBeGreaterThan(0);
     });
 
-    test('should reset matched selectors on subsequent animateGrid calls', async () => {
+    test('should remain stable on subsequent animateGrid calls', async ({ page }) => {
       await selectorPage.animateGrid();
-      const firstRun = await selectorPage.getMatchedSelectors();
-      expect(firstRun.length).toBe(2);
+      await waitForElementAnimation(page, '#nth-child-grid .grid-item');
 
-      // animateGrid resets matchedSelectors before running
       await selectorPage.animateGrid();
-      const secondRun = await selectorPage.getMatchedSelectors();
-      expect(secondRun.length).toBe(2);
+      await waitForElementAnimation(page, '#nth-child-grid .grid-item');
+
+      const animatedCount = await page.evaluate(() => {
+        const items = document.querySelectorAll('#nth-child-grid .grid-item');
+        return Array.from(items).filter((el) => el.getAnimations().length > 0).length;
+      });
+      expect(animatedCount).toBe(10);
     });
   });
 });

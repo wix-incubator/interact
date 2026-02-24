@@ -2,63 +2,62 @@ import { getWebAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
 
 type SelectorFixtureWindow = typeof window & {
-  getMatchedSelectors: () => string[];
   animateGrid: () => void;
   animateList: () => void;
 };
 
 const matchedDisplay = document.querySelector('[data-testid="matched-display"]') as HTMLElement;
-const matchedSelectors: string[] = [];
-
-function recordMatch(selector: string) {
-  if (!matchedSelectors.includes(selector)) {
-    matchedSelectors.push(selector);
-  }
-  if (matchedDisplay) {
-    matchedDisplay.textContent = `matched: ${JSON.stringify(matchedSelectors)}`;
-  }
-}
+const GRID_EVEN_SELECTOR = '#nth-child-grid .grid-item:nth-child(even)';
+const GRID_ODD_SELECTOR = '#nth-child-grid .grid-item:nth-child(odd)';
+const LIST_SELECTOR = '#list-container > .list-item';
 
 // ---------------------------------------------------------------------------
 // nth-child grid animations
 // ---------------------------------------------------------------------------
 
 function animateGrid() {
-  matchedSelectors.length = 0;
+  const evenItems = Array.from(document.querySelectorAll(GRID_EVEN_SELECTOR)) as HTMLElement[];
+  const oddItems = Array.from(document.querySelectorAll(GRID_ODD_SELECTOR)) as HTMLElement[];
 
-  const grid = document.getElementById('nth-child-grid') as HTMLElement;
-  const items = Array.from(grid.querySelectorAll('.grid-item')) as HTMLElement[];
-
-  items.forEach((item, i) => {
-    const isEven = (i + 1) % 2 === 0;
-    const selector = isEven ? ':nth-child(even)' : ':nth-child(odd)';
-    recordMatch(selector);
-
-    // Even items: fade in (opacity)
-    // Odd items: slide + fade in
-    const keyframes: Keyframe[] = isEven
-      ? [
-          { offset: 0, opacity: 0, transform: 'scale(0.5)' },
-          { offset: 1, opacity: 1, transform: 'scale(1)' },
-        ]
-      : [
-          { offset: 0, opacity: 0, transform: 'translateY(20px)' },
-          { offset: 1, opacity: 1, transform: 'translateY(0px)' },
-        ];
-
+  evenItems.forEach((item, index) => {
     const group = getWebAnimation(item, {
       keyframeEffect: {
-        name: `grid-${selector.replace(/[^a-z0-9]/g, '-')}-${i}`,
-        keyframes,
+        name: `grid-even-${index}`,
+        keyframes: [
+          { offset: 0, opacity: 0, transform: 'scale(0.5)' },
+          { offset: 1, opacity: 1, transform: 'scale(1)' },
+        ],
       },
       duration: 500,
-      delay: i * 50,
+      delay: index * 50,
       fill: 'both',
       easing: 'ease-out',
     }) as AnimationGroup;
 
     group?.play();
   });
+
+  oddItems.forEach((item, index) => {
+    const group = getWebAnimation(item, {
+      keyframeEffect: {
+        name: `grid-odd-${index}`,
+        keyframes: [
+          { offset: 0, opacity: 0, transform: 'translateY(20px)' },
+          { offset: 1, opacity: 1, transform: 'translateY(0px)' },
+        ],
+      },
+      duration: 500,
+      delay: index * 50,
+      fill: 'both',
+      easing: 'ease-out',
+    }) as AnimationGroup;
+
+    group?.play();
+  });
+
+  if (matchedDisplay) {
+    matchedDisplay.textContent = `selectors: even=${evenItems.length}, odd=${oddItems.length}`;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -66,12 +65,9 @@ function animateGrid() {
 // ---------------------------------------------------------------------------
 
 function animateList() {
-  const container = document.getElementById('list-container') as HTMLElement;
-  const items = Array.from(container.querySelectorAll('.list-item')) as HTMLElement[];
+  const items = Array.from(document.querySelectorAll(LIST_SELECTOR)) as HTMLElement[];
 
   items.forEach((item, i) => {
-    recordMatch('list-container > .list-item');
-
     const group = getWebAnimation(item, {
       keyframeEffect: {
         name: `list-item-enter-${i}`,
@@ -88,9 +84,12 @@ function animateList() {
 
     group?.play();
   });
+
+  if (matchedDisplay) {
+    matchedDisplay.textContent = `selector: ${LIST_SELECTOR}, count=${items.length}`;
+  }
 }
 
 // Expose to tests
-(window as SelectorFixtureWindow).getMatchedSelectors = () => [...matchedSelectors];
 (window as SelectorFixtureWindow).animateGrid = animateGrid;
 (window as SelectorFixtureWindow).animateList = animateList;

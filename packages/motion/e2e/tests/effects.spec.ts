@@ -60,6 +60,7 @@ test.describe('Effect Types', () => {
       expect(String(keyframes[0].transform)).toContain('scale(0)');
       expect(String(keyframes[keyframes.length - 1].transform)).toContain('scale(1)');
     });
+
   });
 
   test.describe('Keyframe Effects — WAAPI', () => {
@@ -112,6 +113,7 @@ test.describe('Effect Types', () => {
       // rotate(0deg) → rotate(360deg)
       expect(String(keyframes[0].transform)).toContain('rotate(0deg)');
     });
+
   });
 
   test.describe('Custom Effects', () => {
@@ -136,7 +138,8 @@ test.describe('Effect Types', () => {
       const log = await effectsPage.getCustomEffectLog();
       const progressEntries = log.filter((e) => e.progress !== null && e.progress !== undefined);
       expect(progressEntries.length).toBeGreaterThan(0);
-      expect(progressEntries[0].element).not.toBeNull();
+      expect(progressEntries[0].tagName).toBeTruthy();
+      expect(progressEntries[0].elementId).toBe('custom-effect-target');
     });
 
     test('should call customEffect with null progress on cancel', async ({ page }) => {
