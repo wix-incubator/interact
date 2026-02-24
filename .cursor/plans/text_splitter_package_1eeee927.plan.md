@@ -86,7 +86,7 @@ The API will have:
 - **Accessibility by default**: Split content wrapped in an inner `aria-hidden` div; original text preserved via visually-hidden span (see Accessibility and SEO sections)
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
-- `Intl.Segmenter` **API** for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
+- `Intl.Segmenter` API for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
 - **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
@@ -243,23 +243,23 @@ Key files to implement:
 - Parse target (CSS selector or element)
 - **Use Range API for line detection** (see Key Implementation Details)
 - Extract text content preserving structure
-- **Use** `Intl.Segmenter` **API for locale-sensitive text splitting on meaningful items** (chars, words, sentences)
+- Use `Intl.Segmenter` API for locale-sensitive text splitting on meaningful items (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-2. **`src/lineDetection.ts`** - Range-based line detection:
+2. `src/lineDetection.ts` - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
 - Handle Safari whitespace normalization
 - Support for nested elements via TreeWalker
 
-3. **`src/accessibility.ts`**:
+3. `src/accessibility.ts`:
 
 - When `aria: 'auto'` and `preserveText` is true: insert a visually-hidden `<span>` with the original text as a direct child of the container (exposed to AT and crawlers). Wrap all split content in an inner `<div aria-hidden="true">` so assistive tech ignores the visual split spans while the original text remains accessible.
 - When `aria: 'auto'` and `preserveText` is false: set `aria-label` with the original text on the container and wrap split content in an inner `<div aria-hidden="true">`.
 - When `aria: 'none'`: no ARIA changes, no wrapper div.
 
-4. **`src/utils.ts`**:
+4. `src/utils.ts`:
 
 - Text segmentation (handle emoji, unicode)
 - DOM manipulation helpers
@@ -436,14 +436,14 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 
 **Additional documentation for wrapper customization:**
 
-1. **`docs/api/types.md`** - Update with wrapper option types:
+1. `docs/api/types.md` - Update with wrapper option types:
 
 - `WrapperClassConfig` interface documentation
 - `WrapperStyleConfig` interface documentation
 - `WrapperAttrsConfig` interface documentation
 - Explanation of global vs per-type configuration
 
-2. **`docs/guides/styling-wrappers.md`** - New guide covering:
+2. `docs/guides/styling-wrappers.md` - New guide covering:
 
 - Default CSS classes (`split-c`, `split-w`, etc.)
 - Customizing wrapper classes
@@ -452,7 +452,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - Best practices for `display: inline-block` with transforms
 - CSS custom properties for staggered animations
 
-3. **`docs/examples/animations.md`** - Expanded with wrapper examples:
+3. `docs/examples/animations.md` - Expanded with wrapper examples:
 
 - **Fade-in character animation** using wrapperClass + CSS
 - **Slide-up word reveal** using wrapperStyle initial state
@@ -461,7 +461,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - **CSS-only animations** using @keyframes and animation-delay
 - **Intersection Observer** trigger with wrapper data attributes
 
-4. **`docs/examples/css-animations.md`** - New CSS-focused examples:
+4. `docs/examples/css-animations.md` - New CSS-focused examples:
 
 ```css
 /* Example: Typewriter effect */
@@ -486,7 +486,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 }
 ```
 
-5. **README.md** - Quick start section update:
+5. `README.md` - Quick start section update:
 
 ```typescript
 import { splitText } from '@wix/splittext';
@@ -768,8 +768,8 @@ DOM structure when `aria: 'auto'` and `preserveText: true` (defaults):
 </container>
 ```
 
-- **`aria: 'auto'` (default):** Wrap all split content in an inner `<div aria-hidden="true">` so assistive tech ignores the visual split spans. The container itself remains accessible. When `preserveText` is true, the visually-hidden `<span>` with the original text sits as a sibling alongside the inner div, exposed to screen readers and crawlers. When `preserveText` is false, set `aria-label` with the original text on the container instead (the inner `<div aria-hidden="true">` still wraps the split spans).
-- **`aria: 'none'`:** No ARIA changes, no inner wrapper div.
+- `aria: 'auto'` (default): Wrap all split content in an inner `<div aria-hidden="true">` so assistive tech ignores the visual split spans. The container itself remains accessible. When `preserveText` is true, the visually-hidden `<span>` with the original text sits as a sibling alongside the inner div, exposed to screen readers and crawlers. When `preserveText` is false, set `aria-label` with the original text on the container instead (the inner `<div aria-hidden="true">` still wraps the split spans).
+- `aria: 'none'`: No ARIA changes, no inner wrapper div.
 
 ### SEO Considerations
 
@@ -1090,9 +1090,9 @@ const sentences = [...sentenceSegmenter.segment(text)].map((s) => s.segment);
 
 The `nested` option controls how inner DOM structure is handled (default: `'flatten'`).
 
-- **`'flatten'` (default):** Extract plain text via `element.textContent`, ignore all inner DOM. Split that string only. Store original `innerHTML` for `revert()`. Safest and most predictable; avoids complex or malformed DOM.
-- **`'preserve'`:** Use `TreeWalker` to traverse text nodes within nested elements. Apply line detection (when lines are requested) and splitting per text node while keeping parent element references. Preserves links, bold, etc. Use guards: skip non-text/non-element nodes; skip `script`/`style`; enforce a max depth safety limit (e.g. 10 levels) to avoid runaway traversal.
-- **`number`:** Same as preserve but with a depth limit: preserve DOM structure for elements up to N levels deep; for content nested deeper than N, strip the HTML tags and merge the text content into the parent at depth N (i.e. treat it as plain text within that parent). Example with `nested: 2` and input `<b>bold <i>italic <u>underlined</u></i></b>`: depth 1 is `<b>`, depth 2 is `<i>` — both are preserved. The `<u>` at depth 3 exceeds the limit, so it is flattened: its text "underlined" is kept but the `<u>` wrapper is removed. Result: `<b>bold <i>italic underlined</i></b>`.
+- `'flatten'` (default): Extract plain text via `element.textContent`, ignore all inner DOM. Split that string only. Store original `innerHTML` for `revert()`. Safest and most predictable; avoids complex or malformed DOM.
+- `'preserve'`: Use `TreeWalker` to traverse text nodes within nested elements. Apply line detection (when lines are requested) and splitting per text node while keeping parent element references. Preserves links, bold, etc. Use guards: skip non-text/non-element nodes; skip `script`/`style`; enforce a max depth safety limit (e.g. 10 levels) to avoid runaway traversal.
+- `number`: Same as preserve but with a depth limit: preserve DOM structure for elements up to N levels deep; for content nested deeper than N, strip the HTML tags and merge the text content into the parent at depth N (i.e. treat it as plain text within that parent). Example with `nested: 2` and input `<b>bold <i>italic <u>underlined</u></i></b>`: depth 1 is `<b>`, depth 2 is `<i>` — both are preserved. The `<u>` at depth 3 exceeds the limit, so it is flattened: its text "underlined" is kept but the `<u>` wrapper is removed. Result: `<b>bold <i>italic underlined</i></b>`.
 
 The `ignore` option can be an array of selectors (e.g. `['sup', 'sub']`) or a predicate `(node: Node) => boolean` to skip nodes during traversal in preserve/number modes.
 
@@ -1108,9 +1108,9 @@ The Range API approach has O(n) character iteration complexity, but:
 
 ### Browser Compatibility
 
-- **Safari whitespace quirk (confirmed still present in Safari 26.2 / WebKit 605.1.15, Feb 2025):** Safari's `Range.getClientRects()` returns rects based on the physical markup structure, not the rendered layout. When a text node contains raw markup whitespace (multiple spaces, newlines that visually collapse), Safari treats each whitespace-separated chunk as a separate "line" rect. Chrome and Firefox correctly return rects based on the visual line breaks regardless of raw whitespace. **Whitespace normalization (`textNode.textContent = text.trim().replace(/\s+/g, ' ')`) is required before any `getClientRects()` line detection on Safari.** This must be done in the `lineDetection.ts` implementation, not left to consumers. Originally documented by Ben Nadel (blog #4310), confirmed with the test below.
-- **`Range.getClientRects()`:** Widely supported (all modern browsers)
-- **`Range.getBoundingClientRect()`:** Not yet standard but widely supported
+- **Safari whitespace quirk (confirmed still present in Safari 26.2 / WebKit 605.1.15, Feb 2025):** Safari's `Range.getClientRects()` returns rects based on the physical markup structure, not the rendered layout. When a text node contains raw markup whitespace (multiple spaces, newlines that visually collapse), Safari treats each whitespace-separated chunk as a separate "line" rect. Chrome and Firefox correctly return rects based on the visual line breaks regardless of raw whitespace. Whitespace normalization (`textNode.textContent = text.trim().replace(/\s+/g, ' ')`) is required before any `getClientRects()` line detection on Safari. This must be done in the `lineDetection.ts` implementation, not left to consumers. Originally documented by Ben Nadel (blog #4310), confirmed with the test below.
+- `Range.getClientRects()`: Widely supported (all modern browsers)
+- `Range.getBoundingClientRect()`: Not yet standard but widely supported
 - **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
 
 #### Safari whitespace test results (Feb 2025, test case described in this plan test section)
