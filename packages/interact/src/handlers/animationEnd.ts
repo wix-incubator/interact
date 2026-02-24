@@ -1,11 +1,11 @@
 import type { AnimationGroup } from '@wix/motion';
-import { getAnimation } from '@wix/motion';
 import type { AnimationEndParams, TimeEffect, HandlerObjectMap, InteractOptions } from '../types';
 import {
   effectToAnimationOptions,
   addHandlerToMap,
   removeElementFromHandlerMap,
 } from './utilities';
+import { getAnimation } from '../core/add';
 
 const handlerMap = new WeakMap() as HandlerObjectMap;
 

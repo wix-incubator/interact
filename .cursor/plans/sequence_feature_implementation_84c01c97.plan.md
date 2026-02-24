@@ -108,6 +108,8 @@ classDiagram
     Sequence "1" --> "*" AnimationGroup : manages
 ```
 
+
+
 ## Part 1: @wix/motion Package Changes
 
 ### 1.1 Create Sequence Class
@@ -265,7 +267,7 @@ Modify `packages/interact/src/core/Interact.ts`:
   - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
 - Generate unique IDs for sequence effects
 
-3. Track sequence membership for effects (needed for delay calculation)
+1. Track sequence membership for effects (needed for delay calculation)
 
 ### 2.4 Update Effect Processing in `add.ts`
 
@@ -325,3 +327,4 @@ The calculated offsets are added to each effect's existing `delay` property.
 2. Unit tests for easing function integration
 3. Integration tests for sequence parsing in Interact
 4. E2E tests for staggered animations with various easing functions
+

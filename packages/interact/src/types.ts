@@ -147,6 +147,21 @@ export type EffectRef = EffectBase & { effectId: string };
 
 export type Effect = EffectBase & (TimeEffect | ScrubEffect | TransitionEffect);
 
+export type Sequence = {
+  sequenceId: string;
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((t: number) => number);
+  effects: (Effect | EffectRef)[];
+};
+
+export type SequenceRef = {
+  sequenceId: string;
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((t: number) => number);
+};
+
 export type Condition = {
   type: 'media' | 'container' | 'selector';
   predicate?: string;
@@ -163,11 +178,13 @@ export type InteractionTrigger = {
 };
 
 export type Interaction = InteractionTrigger & {
-  effects: ((Effect | EffectRef) & { interactionId?: string })[];
+  effects?: ((Effect | EffectRef) & { interactionId?: string })[];
+  sequences?: (Sequence | SequenceRef)[];
 };
 
 export type InteractConfig = {
   effects: Record<string, Effect>;
+  sequences?: Record<string, Sequence>;
   conditions?: Record<string, Condition>;
   interactions: Interaction[];
 };
@@ -224,6 +241,22 @@ export type InteractionParamsTypes = {
   interest: StateParams | PointerTriggerParams;
 };
 
+export type SequenceEffect = TimeEffect &
+  EffectBase & {
+    _sequenceId: string;
+    _sequenceIndex: number;
+    _sequenceTotal: number;
+    _sequenceOptions?: {
+      delay?: number;
+      offset?: number;
+      offsetEasing?: string | ((t: number) => number);
+    };
+  };
+
+export function isSequenceEffect(effect: Effect): effect is SequenceEffect {
+  return '_sequenceId' in effect && 'duration' in effect;
+}
+
 export type InteractOptions = {
   reducedMotion?: boolean;
   targetController?: IInteractionController;
@@ -263,6 +296,9 @@ export type HandlerObjectMap = WeakMap<HTMLElement, Set<HandlerObject>>;
 export type InteractCache = {
   effects: {
     [effectId: string]: Effect;
+  };
+  sequences: {
+    [sequenceId: string]: Sequence;
   };
   conditions: {
     [conditionId: string]: Condition;

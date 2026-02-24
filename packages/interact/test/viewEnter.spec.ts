@@ -1,19 +1,28 @@
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
+const mockAnimation = {
+  play: vi.fn(),
+  cancel: vi.fn(),
+  onFinish: vi.fn(),
+  pause: vi.fn(),
+  reverse: vi.fn(),
+  progress: vi.fn(),
+  persist: vi.fn(),
+  isCSS: false,
+  playState: 'idle',
+  ready: Promise.resolve(),
+};
+
+const mockGetAnimation = vi.fn().mockReturnValue(mockAnimation);
+
 vi.mock('@wix/motion', () => ({
-  getAnimation: vi.fn().mockReturnValue({
-    play: vi.fn(),
-    cancel: vi.fn(),
-    onFinish: vi.fn(),
-    pause: vi.fn(),
-    reverse: vi.fn(),
-    progress: vi.fn(),
-    persist: vi.fn(),
-    isCSS: false,
-    playState: 'idle',
-    ready: Promise.resolve(),
-  }),
+  getAnimation: vi.fn(),
+  Sequence: vi.fn(),
   registerEffects: vi.fn(),
+}));
+
+vi.mock('../src/core/add', () => ({
+  getAnimation: (...args: any[]) => mockGetAnimation(...args),
 }));
 
 vi.mock('fastdom', () => ({
@@ -52,6 +61,7 @@ describe('viewEnter handler', () => {
     document.body.appendChild(target);
 
     vi.clearAllMocks();
+    mockGetAnimation.mockReturnValue(mockAnimation);
 
     observeSpy = vi.fn();
     unobserveSpy = vi.fn();
@@ -234,9 +244,6 @@ describe('viewEnter handler', () => {
 
   describe('Alternate type', () => {
     it('should play animation on first entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -252,9 +259,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should reverse animation on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -277,9 +281,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should reverse animation on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -320,9 +321,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -337,9 +335,6 @@ describe('viewEnter handler', () => {
 
   describe('Repeat type', () => {
     it('should play animation from 0 on entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -356,9 +351,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should pause and reset progress to 0 on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -383,9 +375,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should play from 0 on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -428,9 +417,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -445,9 +431,6 @@ describe('viewEnter handler', () => {
 
   describe('State type', () => {
     it('should play animation on first entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -463,9 +446,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should pause animation on exit', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -488,9 +468,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should resume animation on subsequent re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -516,9 +493,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should NOT reset progress on re-entry', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -560,9 +534,6 @@ describe('viewEnter handler', () => {
     });
 
     it('should persist the animation', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      const mockAnimation = (getAnimation as any)();
-
       viewEnterHandler.add(
         element,
         target,
@@ -577,9 +548,7 @@ describe('viewEnter handler', () => {
 
   describe('Null animation handling', () => {
     it('should not create IntersectionObserver when animation is null', async () => {
-      const { getAnimation } = await import('@wix/motion');
-      (getAnimation as any).mockReturnValueOnce(null);
-
+      mockGetAnimation.mockReturnValueOnce(null);
       viewEnterHandler.add(
         element,
         target,

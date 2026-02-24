@@ -548,3 +548,306 @@ body {
   background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
   color: #333;
 }
+
+/* Sequence Demo */
+.sequence-demo-section {
+  margin-top: 2rem;
+}
+
+.sequence-demo-header {
+  margin-bottom: 1.5rem;
+}
+
+.sequence-demo-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.sequence-demo-description {
+  color: rgb(148 163 184 / 0.9);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.sequence-demo-description code {
+  background: rgb(30 41 59 / 0.8);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #a5b4fc;
+}
+
+.easing-presets {
+  margin-bottom: 1.5rem;
+}
+
+.easing-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.easing-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+  background: rgb(30 41 59 / 0.6);
+  border: 1px solid rgb(148 163 184 / 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.easing-preset-btn:hover {
+  background: rgb(30 41 59 / 0.9);
+  border-color: rgb(148 163 184 / 0.4);
+}
+
+.easing-preset-btn.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%);
+  border-color: #8b5cf6;
+}
+
+.preset-name {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.preset-type {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sequence-demo-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .sequence-demo-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sequence-config-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sequence-config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.parse-error {
+  font-size: 0.75rem;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.config-textarea {
+  width: 100%;
+  min-height: 400px;
+  padding: 1rem;
+  background: rgb(2 6 23 / 0.9);
+  border: 1px solid rgb(148 163 184 / 0.2);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #a5b4fc;
+  resize: vertical;
+  tab-size: 2;
+}
+
+.config-textarea:focus {
+  outline: none;
+  border-color: rgb(59 130 246 / 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.sequence-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sequence-apply-button,
+.sequence-reset-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.sequence-reset-button {
+  background: rgb(71 85 105 / 0.8);
+}
+
+.sequence-apply-button:hover,
+.sequence-reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.sequence-apply-button:active,
+.sequence-reset-button:active {
+  transform: translateY(0);
+}
+
+.sequence-demo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sequence-trigger-area {
+  background: rgb(30 41 59 / 0.5);
+  border: 2px dashed rgb(148 163 184 / 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.sequence-trigger-area:hover {
+  border-color: rgb(59 130 246 / 0.5);
+  background: rgb(30 41 59 / 0.7);
+}
+
+.sequence-trigger-hint {
+  text-align: center;
+  color: rgb(148 163 184 / 0.7);
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sequence-items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .sequence-items-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.sequence-item {
+  aspect-ratio: 1;
+  min-width: 80px;
+  background: linear-gradient(
+    135deg,
+    var(--item-color) 0%,
+    color-mix(in srgb, var(--item-color) 70%, white) 100%
+  );
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--item-color) 40%, transparent);
+  transition: transform 0.2s ease;
+}
+
+.sequence-item:hover {
+  transform: scale(1.05);
+}
+
+.sequence-item-label {
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sequence-timing-viz {
+  background: rgb(30 41 59 / 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.timing-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timing-bar-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.timing-bar-label {
+  font-size: 0.8rem;
+  color: rgb(148 163 184 / 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.timing-bar-track {
+  height: 8px;
+  background: rgb(15 23 42 / 0.6);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.timing-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.timing-bar-value {
+  font-size: 0.8rem;
+  color: rgb(148 163 184 / 0.9);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  text-align: right;
+}
+
+.sequence-formula {
+  background: rgb(30 41 59 / 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  text-align: center;
+}
+
+.formula-code {
+  display: inline-block;
+  background: rgb(15 23 42 / 0.8);
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9rem;
+  color: #a5b4fc;
+}
