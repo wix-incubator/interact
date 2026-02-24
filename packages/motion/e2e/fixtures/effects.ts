@@ -1,6 +1,7 @@
 import { registerEffects, getWebAnimation, getCSSAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
 import type { CssAnimationData, CustomEffectEntry } from '../types';
+import { EFFECTS_NAMES, EFFECTS_TARGET_IDS, EFFECTS_TEST_IDS } from '../constants/effects';
 
 type EffectsFixtureWindow = typeof window & {
   namedWaapiGroup: AnimationGroup;
@@ -11,14 +12,18 @@ type EffectsFixtureWindow = typeof window & {
   customEffectLog: CustomEffectEntry[];
   runNamedWaapi: () => void;
   runNamedCss: () => void;
+  runNamedCssApplied: () => void;
   runKeyframeWaapi: () => void;
   runKeyframeCss: () => void;
+  runKeyframeCssApplied: () => void;
   runCustomEffect: () => void;
   runPlayback: () => void;
   runPlaybackReverse: () => void;
   runPlaybackPause: () => void;
   runPlaybackResume: () => void;
 };
+
+type EffectOptions = Record<string, unknown>;
 
 // ---------------------------------------------------------------------------
 // Register ad-hoc named effects (self-contained, no @wix/motion-presets dep)
@@ -27,7 +32,7 @@ type EffectsFixtureWindow = typeof window & {
 registerEffects({
   TestFadeIn: {
     getNames: () => ['test-fadeIn'],
-    web: (options) => [
+    web: (options: EffectOptions) => [
       {
         ...options,
         name: 'test-fadeIn',
@@ -35,7 +40,7 @@ registerEffects({
         keyframes: [{ offset: 0, opacity: 0 }, { offset: 1, opacity: 1 }],
       },
     ],
-    style: (options) => [
+    style: (options: EffectOptions) => [
       {
         ...options,
         name: 'test-fadeIn',
@@ -46,7 +51,7 @@ registerEffects({
   },
   TestScale: {
     getNames: () => ['test-scale'],
-    web: (options) => [
+    web: (options: EffectOptions) => [
       {
         ...options,
         name: 'test-scale',
@@ -57,7 +62,7 @@ registerEffects({
         ],
       },
     ],
-    style: (options) => [
+    style: (options: EffectOptions) => [
       {
         ...options,
         name: 'test-scale',
@@ -75,11 +80,13 @@ registerEffects({
 // Element references
 // ---------------------------------------------------------------------------
 
-const namedWaapiEl = document.getElementById('named-waapi-target') as HTMLElement;
-const keyframeWaapiEl = document.getElementById('keyframe-waapi-target') as HTMLElement;
-const customEffectEl = document.getElementById('custom-effect-target') as HTMLElement;
-const playbackEl = document.getElementById('playback-target') as HTMLElement;
-const playbackStateDisplay = document.querySelector('[data-testid="playback-state-display"]') as HTMLElement;
+const namedWaapiEl = document.getElementById(EFFECTS_TARGET_IDS.namedWaapi) as HTMLElement;
+const keyframeWaapiEl = document.getElementById(EFFECTS_TARGET_IDS.keyframeWaapi) as HTMLElement;
+const customEffectEl = document.getElementById(EFFECTS_TARGET_IDS.customEffect) as HTMLElement;
+const playbackEl = document.getElementById(EFFECTS_TARGET_IDS.playback) as HTMLElement;
+const playbackStateDisplay = document.querySelector(
+  `[data-testid="${EFFECTS_TEST_IDS.playbackStateDisplay}"]`,
+) as HTMLElement;
 
 // ---------------------------------------------------------------------------
 // State
@@ -114,14 +121,67 @@ function runNamedWaapi() {
 // ---------------------------------------------------------------------------
 
 function runNamedCss() {
-  namedCssData = getCSSAnimation('named-css-target', {
-    namedEffect: { type: 'TestScale' },
+  namedCssData = getCSSAnimation(EFFECTS_TARGET_IDS.namedCss, {
+    namedEffect: { type: EFFECTS_NAMES.namedCssEffectType },
     duration: 1000,
     fill: 'both',
     easing: 'linear',
   }) as CssAnimationData[];
 
   (window as EffectsFixtureWindow).namedCssData = namedCssData;
+}
+
+function toKebabCase(property: string): string {
+  return property.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
+}
+
+function getCssTargetElement(target: string): HTMLElement | null {
+  const selector = target.startsWith('#') || target.startsWith('.') || target.startsWith('[') ? target : `#${target}`;
+  return document.querySelector(selector) as HTMLElement | null;
+}
+
+function formatKeyframeDeclaration([property, value]: [string, unknown]): string {
+  return `${toKebabCase(property)}: ${String(value)};`;
+}
+
+function formatKeyframeBlock(keyframe: Keyframe): string {
+  const declarations = Object.entries(keyframe)
+    .filter(([property, value]) => property !== 'offset' && value !== undefined)
+    .map(formatKeyframeDeclaration)
+    .join(' ');
+  const percent = typeof keyframe.offset === 'number' ? `${Math.round(keyframe.offset * 100)}%` : '0%';
+  return `${percent} { ${declarations} }`;
+}
+
+function applyCssAnimationData(data: CssAnimationData[]): void {
+  const firstAnimation = data[0];
+  if (!firstAnimation?.name) {
+    return;
+  }
+
+  const target = getCssTargetElement(firstAnimation.target);
+  if (!target) {
+    return;
+  }
+
+  const styleId = `generated-css-keyframes-${firstAnimation.name}`;
+  let styleTag = document.getElementById(styleId) as HTMLStyleElement | null;
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = styleId;
+    document.head.appendChild(styleTag);
+  }
+
+  styleTag.textContent = `@keyframes ${firstAnimation.name} { ${firstAnimation.keyframes.map(formatKeyframeBlock).join(' ')} }`;
+
+  target.style.animation = 'none';
+  void target.offsetWidth;
+  target.style.animation = firstAnimation.animation;
+}
+
+function runNamedCssApplied() {
+  runNamedCss();
+  applyCssAnimationData(namedCssData);
 }
 
 // ---------------------------------------------------------------------------
@@ -131,7 +191,7 @@ function runNamedCss() {
 function runKeyframeWaapi() {
   keyframeWaapiGroup = getWebAnimation(keyframeWaapiEl, {
     keyframeEffect: {
-      name: 'kf-slide',
+      name: EFFECTS_NAMES.keyframeWaapiName,
       keyframes: [
         { offset: 0, transform: 'translateX(-100%)' },
         { offset: 1, transform: 'translateX(0%)' },
@@ -151,9 +211,9 @@ function runKeyframeWaapi() {
 // ---------------------------------------------------------------------------
 
 function runKeyframeCss() {
-  keyframeCssData = getCSSAnimation('keyframe-css-target', {
+  keyframeCssData = getCSSAnimation(EFFECTS_TARGET_IDS.keyframeCss, {
     keyframeEffect: {
-      name: 'kf-rotate',
+      name: EFFECTS_NAMES.keyframeCssName,
       keyframes: [
         { offset: 0, transform: 'rotate(0deg)' },
         { offset: 1, transform: 'rotate(360deg)' },
@@ -165,6 +225,11 @@ function runKeyframeCss() {
   }) as CssAnimationData[];
 
   (window as EffectsFixtureWindow).keyframeCssData = keyframeCssData;
+}
+
+function runKeyframeCssApplied() {
+  runKeyframeCss();
+  applyCssAnimationData(keyframeCssData);
 }
 
 // ---------------------------------------------------------------------------
@@ -205,7 +270,7 @@ function ensurePlaybackGroup() {
   if (!playbackGroup) {
     playbackGroup = getWebAnimation(playbackEl, {
       keyframeEffect: {
-        name: 'playback-test',
+        name: EFFECTS_NAMES.playbackName,
         keyframes: [
           { offset: 0, opacity: 0, transform: 'translateX(-60px)' },
           { offset: 1, opacity: 1, transform: 'translateX(0px)' },
@@ -255,8 +320,10 @@ function runPlaybackResume() {
 (window as EffectsFixtureWindow).customEffectLog = customEffectLog;
 (window as EffectsFixtureWindow).runNamedWaapi = runNamedWaapi;
 (window as EffectsFixtureWindow).runNamedCss = runNamedCss;
+(window as EffectsFixtureWindow).runNamedCssApplied = runNamedCssApplied;
 (window as EffectsFixtureWindow).runKeyframeWaapi = runKeyframeWaapi;
 (window as EffectsFixtureWindow).runKeyframeCss = runKeyframeCss;
+(window as EffectsFixtureWindow).runKeyframeCssApplied = runKeyframeCssApplied;
 (window as EffectsFixtureWindow).runCustomEffect = runCustomEffect;
 (window as EffectsFixtureWindow).runPlayback = runPlayback;
 (window as EffectsFixtureWindow).runPlaybackReverse = runPlaybackReverse;

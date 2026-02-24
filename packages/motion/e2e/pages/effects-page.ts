@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
 import type { CssAnimationData, CustomEffectEntry } from '../types';
+import { EFFECTS_TARGET_IDS } from '../constants/effects';
 
 type FixtureWindow = {
   namedWaapiGroup: { playState: string };
@@ -11,8 +12,10 @@ type FixtureWindow = {
   customEffectLog: CustomEffectEntry[];
   runNamedWaapi(): void;
   runNamedCss(): void;
+  runNamedCssApplied(): void;
   runKeyframeWaapi(): void;
   runKeyframeCss(): void;
+  runKeyframeCssApplied(): void;
   runCustomEffect(): void;
   runPlayback(): void;
   runPlaybackReverse(): void;
@@ -37,12 +40,20 @@ export class EffectsPage extends BaseFixturePage {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).runNamedCss());
   }
 
+  runNamedCssApplied() {
+    return this.page.evaluate(() => (window as unknown as FixtureWindow).runNamedCssApplied());
+  }
+
   runKeyframeWaapi() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).runKeyframeWaapi());
   }
 
   runKeyframeCss() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).runKeyframeCss());
+  }
+
+  runKeyframeCssApplied() {
+    return this.page.evaluate(() => (window as unknown as FixtureWindow).runKeyframeCssApplied());
   }
 
   runCustomEffect() {
@@ -94,16 +105,16 @@ export class EffectsPage extends BaseFixturePage {
   }
 
   getPlaybackPlayState(): Promise<string> {
-    return this.page.evaluate(() => {
-      const el = document.getElementById('playback-target');
+    return this.page.evaluate((playbackId) => {
+      const el = document.getElementById(playbackId);
       return el?.getAnimations()[0]?.playState ?? 'idle';
-    });
+    }, EFFECTS_TARGET_IDS.playback);
   }
 
   getPlaybackOpacity(): Promise<string> {
-    return this.page.evaluate(() => {
-      const el = document.getElementById('playback-target');
+    return this.page.evaluate((playbackId) => {
+      const el = document.getElementById(playbackId);
       return el ? getComputedStyle(el).opacity : '1';
-    });
+    }, EFFECTS_TARGET_IDS.playback);
   }
 }
