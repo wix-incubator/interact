@@ -21,8 +21,6 @@ export default defineConfig({
         pointer: path.resolve(__dirname, 'pointer.html'),
         'animation-group': path.resolve(__dirname, 'animation-group.html'),
         effects: path.resolve(__dirname, 'effects.html'),
-        responsive: path.resolve(__dirname, 'responsive.html'),
-        selector: path.resolve(__dirname, 'selector.html'),
       },
     },
   },
