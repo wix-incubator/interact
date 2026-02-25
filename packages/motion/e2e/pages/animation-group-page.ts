@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
+import { ANIMATION_GROUP_IDS } from '../constants/animation-group';
 
 type FixtureWindow = {
   play(): Promise<void>;
@@ -51,10 +52,10 @@ export class AnimationGroupPage extends BaseFixturePage {
   }
 
   getGroupItemOpacity() {
-    return this.page.evaluate(() => {
-      const el = document.getElementById('group-item-1');
+    return this.page.evaluate((targetId) => {
+      const el = document.getElementById(targetId);
       return el ? parseFloat(getComputedStyle(el).opacity) : 0;
-    });
+    }, ANIMATION_GROUP_IDS.item1);
   }
 
   getPlayState() {

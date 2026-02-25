@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { ScrollPage } from '../pages/scroll-page';
 import { waitForWindowPlayState } from '../utils/animation-helpers';
+import { SCROLL_SELECTORS } from '../constants/scroll';
 
 test.describe('Scroll-Driven Animations', () => {
   let scrollPage: ScrollPage;
@@ -17,7 +18,7 @@ test.describe('Scroll-Driven Animations', () => {
       expect(initialProgress).toBe(0);
 
       // Scroll down to bring the target into view
-      await scrollPage.scrollElementIntoView('[data-testid="view-progress-target"]');
+      await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.viewProgressTarget);
 
       const progressAfterScroll = await scrollPage.getScrollProgress();
       expect(progressAfterScroll).toBeGreaterThan(0);
@@ -29,7 +30,7 @@ test.describe('Scroll-Driven Animations', () => {
       expect(startProgress).toBe(0);
 
       // Scroll past the target so it is above the viewport → progress reaches 1 (clamped)
-      await scrollPage.scrollElementIntoView('[data-testid="scrub-card-1"]');
+      await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.scrubCard1);
 
       const endProgress = await scrollPage.getScrollProgress();
       expect(endProgress).toBe(1);
@@ -37,7 +38,7 @@ test.describe('Scroll-Driven Animations', () => {
 
     test('should update progress on scroll direction change', async () => {
       // Scroll target into partial view
-      await scrollPage.scrollElementIntoView('[data-testid="view-progress-target"]');
+      await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.viewProgressTarget);
       const progressDown = await scrollPage.getScrollProgress();
       expect(progressDown).toBeGreaterThan(0);
 
@@ -68,7 +69,7 @@ test.describe('Scroll-Driven Animations', () => {
 
     test('should report accurate progress percentage', async () => {
       // Scroll to bring target partially into view
-      await scrollPage.scrollElementIntoView('[data-testid="view-progress-target"]');
+      await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.viewProgressTarget);
       await scrollPage.scrollTo((await scrollPage.getScrollY()) - 100);
 
       const progress = await scrollPage.getScrollProgress();

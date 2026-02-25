@@ -64,7 +64,7 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Named Effects — CSS Runtime Consumption', () => {
-    test('should apply generated named CSS keyframes to the target element', async ({ page }) => {
+    test('should apply generated named CSS descriptor to element in browser', async ({ page }) => {
       await effectsPage.runNamedCssApplied();
       await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.namedCss, ['running', 'finished']);
 
@@ -141,7 +141,7 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Keyframe Effects — CSS Runtime Consumption', () => {
-    test('should apply generated keyframe CSS animation to the target element', async ({ page }) => {
+    test('should apply generated keyframe CSS descriptor to element in browser', async ({ page }) => {
       await effectsPage.runKeyframeCssApplied();
       await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.keyframeCss, ['running', 'finished']);
 

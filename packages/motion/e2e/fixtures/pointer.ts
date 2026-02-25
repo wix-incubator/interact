@@ -1,5 +1,6 @@
 import { getWebAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
+import { POINTER_IDS, POINTER_TEST_IDS } from '../constants/pointer';
 
 type PointerProgress = { x: number; y: number };
 
@@ -8,11 +9,13 @@ type PointerFixtureWindow = typeof window & {
   getPointerProgress: () => PointerProgress;
 };
 
-const pointerArea = document.getElementById('pointer-area') as HTMLElement;
-const xAxisTarget = document.getElementById('x-axis-target') as HTMLElement;
-const yAxisTarget = document.getElementById('y-axis-target') as HTMLElement;
-const compositeTarget = document.getElementById('composite-target') as HTMLElement;
-const progressDisplay = document.querySelector('[data-testid="pointer-progress-display"]') as HTMLElement;
+const pointerArea = document.getElementById(POINTER_IDS.area) as HTMLElement;
+const xAxisTarget = document.getElementById(POINTER_IDS.xAxisTarget) as HTMLElement;
+const yAxisTarget = document.getElementById(POINTER_IDS.yAxisTarget) as HTMLElement;
+const compositeTarget = document.getElementById(POINTER_IDS.compositeTarget) as HTMLElement;
+const progressDisplay = document.querySelector(
+  `[data-testid="${POINTER_TEST_IDS.progressDisplay}"]`,
+) as HTMLElement;
 
 let currentProgress: PointerProgress = { x: 0, y: 0 };
 
@@ -103,14 +106,14 @@ pointerArea.addEventListener('pointermove', (e) => {
 });
 
 // Drive Y-axis from y-axis area
-const yAxisArea = document.getElementById('y-axis-area') as HTMLElement;
+const yAxisArea = document.getElementById(POINTER_IDS.yAxisArea) as HTMLElement;
 yAxisArea.addEventListener('pointermove', (e) => {
   const progress = getRelativeProgress(yAxisArea, e.clientX, e.clientY);
   yAxisGroup?.progress(progress.y);
 });
 
 // Drive composite from composite area
-const compositeArea = document.getElementById('composite-area') as HTMLElement;
+const compositeArea = document.getElementById(POINTER_IDS.compositeArea) as HTMLElement;
 compositeArea.addEventListener('pointermove', (e) => {
   const progress = getRelativeProgress(compositeArea, e.clientX, e.clientY);
   scaleXGroup?.progress(progress.x);

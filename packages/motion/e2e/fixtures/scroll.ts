@@ -1,5 +1,6 @@
 import { getWebAnimation, getScrubScene } from '@wix/motion';
 import type { AnimationGroup, RangeOffset, ScrubScrollScene } from '@wix/motion';
+import { SCROLL_IDS, SCROLL_TEST_IDS } from '../constants/scroll';
 
 type ScrollFixtureWindow = typeof window & {
   scrubScene: AnimationGroup;
@@ -8,8 +9,8 @@ type ScrollFixtureWindow = typeof window & {
   rangeConfig: { startOffset: RangeOffset; endOffset: RangeOffset };
 };
 
-const target = document.getElementById('view-progress-target') as HTMLElement;
-const progressDisplay = document.querySelector('[data-testid="progress-display"]') as HTMLElement;
+const target = document.getElementById(SCROLL_IDS.viewProgressTarget) as HTMLElement;
+const progressDisplay = document.querySelector(`[data-testid="${SCROLL_TEST_IDS.progressDisplay}"]`) as HTMLElement;
 
 function calculateProgress(el: HTMLElement): number {
   const rect = el.getBoundingClientRect();
@@ -47,7 +48,7 @@ animationGroup.ready.then(() => {
 });
 
 // Staggered scrub cards
-const cards = ['scrub-card-1', 'scrub-card-2', 'scrub-card-3'];
+const cards = [SCROLL_IDS.scrubCard1, SCROLL_IDS.scrubCard2, SCROLL_IDS.scrubCard3];
 cards.forEach((id, i) => {
   const card = document.getElementById(id) as HTMLElement;
 

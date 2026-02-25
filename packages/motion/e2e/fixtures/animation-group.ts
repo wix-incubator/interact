@@ -1,5 +1,6 @@
 import { getWebAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
+import { ANIMATION_GROUP_IDS } from '../constants/animation-group';
 
 type AnimationGroupFixtureWindow = typeof window & {
   animationGroup: AnimationGroup;
@@ -11,9 +12,9 @@ type AnimationGroupFixtureWindow = typeof window & {
 };
 
 const items = [
-  document.getElementById('group-item-1') as HTMLElement,
-  document.getElementById('group-item-2') as HTMLElement,
-  document.getElementById('group-item-3') as HTMLElement,
+  document.getElementById(ANIMATION_GROUP_IDS.item1) as HTMLElement,
+  document.getElementById(ANIMATION_GROUP_IDS.item2) as HTMLElement,
+  document.getElementById(ANIMATION_GROUP_IDS.item3) as HTMLElement,
 ];
 
 const lifecycleEvents: string[] = [];

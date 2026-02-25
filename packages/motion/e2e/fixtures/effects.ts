@@ -153,6 +153,12 @@ function formatKeyframeBlock(keyframe: Keyframe): string {
   return `${percent} { ${declarations} }`;
 }
 
+/**
+ * Fixture-side adapter for browser validation.
+ * This applies getCSSAnimation() output to DOM (inject keyframes + set style.animation)
+ * so E2E can verify descriptor usability in a real browser. It does not validate
+ * internal descriptor-generation logic itself (covered by unit tests).
+ */
 function applyCssAnimationData(data: CssAnimationData[]): void {
   const firstAnimation = data[0];
   if (!firstAnimation?.name) {
