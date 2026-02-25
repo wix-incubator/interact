@@ -1,12 +1,5 @@
 import type { Page } from '@playwright/test';
 
-/** Scroll the window by a delta in pixels using mouse wheel events. */
-export async function scrollBy(page: Page, deltaY: number): Promise<void> {
-  await page.mouse.wheel(0, deltaY);
-  // Allow IntersectionObserver / scroll event handlers to fire
-  await new Promise((r) => setTimeout(r, 100));
-}
-
 /** Scroll the window to an absolute Y position. */
 export async function scrollTo(page: Page, y: number): Promise<void> {
   await page.evaluate((scrollY) => window.scrollTo({ top: scrollY }), y);

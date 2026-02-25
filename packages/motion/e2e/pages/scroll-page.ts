@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
-import { scrollBy, scrollTo, scrollElementIntoView, getScrollProgress, getScrollY } from '../utils/scroll-helpers';
+import { scrollTo, scrollElementIntoView, getScrollProgress, getScrollY } from '../utils/scroll-helpers';
 
 type RangeOffset = { name?: string; offset?: number };
 
@@ -20,10 +20,6 @@ export class ScrollPage extends BaseFixturePage {
     await this.navigate('scroll');
   }
 
-  scrollBy(deltaY: number) {
-    return scrollBy(this.page, deltaY);
-  }
-
   scrollTo(y: number) {
     return scrollTo(this.page, y);
   }
@@ -38,10 +34,6 @@ export class ScrollPage extends BaseFixturePage {
 
   getScrollY() {
     return getScrollY(this.page);
-  }
-
-  getScrubScene() {
-    return this.page.evaluate(() => !!(window as unknown as FixtureWindow).scrubScene);
   }
 
   cancelScrubScene() {

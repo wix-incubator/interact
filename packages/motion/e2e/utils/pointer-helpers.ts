@@ -1,7 +1,5 @@
 import type { Page } from '@playwright/test';
 
-type PointerProgress = { x: number; y: number };
-
 /**
  * Move the mouse to a position expressed as a ratio (0–1) within
  * the bounding rect of the given container element.
@@ -29,9 +27,3 @@ export async function movePointerWithinElement(
   await new Promise((r) => setTimeout(r, 50));
 }
 
-/** Return the x/y pointer progress exposed on window by the fixture. */
-export function getPointerProgress(page: Page): Promise<PointerProgress> {
-  return page.evaluate(() =>
-    (window as unknown as { getPointerProgress(): PointerProgress }).getPointerProgress(),
-  );
-}

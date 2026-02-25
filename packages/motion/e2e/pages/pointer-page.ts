@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
-import { movePointerWithinElement, getPointerProgress } from '../utils/pointer-helpers';
+import { movePointerWithinElement } from '../utils/pointer-helpers';
 
 export class PointerPage extends BaseFixturePage {
   constructor(page: Page) {
@@ -13,14 +13,6 @@ export class PointerPage extends BaseFixturePage {
 
   movePointerWithinElement(containerSelector: string, ratioX: number, ratioY: number) {
     return movePointerWithinElement(this.page, containerSelector, ratioX, ratioY);
-  }
-
-  getPointerProgress() {
-    return getPointerProgress(this.page);
-  }
-
-  getPointerScene() {
-    return this.page.evaluate(() => !!(window as unknown as { pointerScene: unknown }).pointerScene);
   }
 
   cancelPointerScene() {

@@ -8,8 +8,6 @@ export const SCROLL_IDS = {
 export const SCROLL_TEST_IDS = {
   viewProgressTarget: 'view-progress-target',
   scrubCard1: 'scrub-card-1',
-  scrubCard2: 'scrub-card-2',
-  scrubCard3: 'scrub-card-3',
   progressDisplay: 'progress-display',
 } as const;
 

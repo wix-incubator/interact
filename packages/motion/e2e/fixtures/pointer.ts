@@ -2,11 +2,8 @@ import { getWebAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
 import { POINTER_IDS, POINTER_TEST_IDS } from '../constants/pointer';
 
-type PointerProgress = { x: number; y: number };
-
 type PointerFixtureWindow = typeof window & {
   pointerScene: AnimationGroup;
-  getPointerProgress: () => PointerProgress;
 };
 
 const pointerArea = document.getElementById(POINTER_IDS.area) as HTMLElement;
@@ -16,8 +13,6 @@ const compositeTarget = document.getElementById(POINTER_IDS.compositeTarget) as 
 const progressDisplay = document.querySelector(
   `[data-testid="${POINTER_TEST_IDS.progressDisplay}"]`,
 ) as HTMLElement;
-
-let currentProgress: PointerProgress = { x: 0, y: 0 };
 
 // X-axis animation: translateX driven by horizontal mouse position
 const xAxisGroup = getWebAnimation(
@@ -86,7 +81,7 @@ const scaleYGroup = getWebAnimation(
   },
 ) as AnimationGroup;
 
-function getRelativeProgress(area: HTMLElement, clientX: number, clientY: number): PointerProgress {
+function getRelativeProgress(area: HTMLElement, clientX: number, clientY: number) {
   const rect = area.getBoundingClientRect();
   const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
   const y = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
@@ -96,7 +91,6 @@ function getRelativeProgress(area: HTMLElement, clientX: number, clientY: number
 // Drive animations from pointermove inside the pointer area
 pointerArea.addEventListener('pointermove', (e) => {
   const progress = getRelativeProgress(pointerArea, e.clientX, e.clientY);
-  currentProgress = progress;
 
   xAxisGroup?.progress(progress.x);
 
@@ -122,4 +116,3 @@ compositeArea.addEventListener('pointermove', (e) => {
 
 // Expose to tests — primary scene is the x-axis group for the main pointer area
 (window as PointerFixtureWindow).pointerScene = xAxisGroup;
-(window as PointerFixtureWindow).getPointerProgress = () => currentProgress;
