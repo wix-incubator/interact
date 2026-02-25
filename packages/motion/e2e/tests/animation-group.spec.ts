@@ -53,7 +53,10 @@ test.describe('AnimationGroup API', () => {
 
   test.describe('Progress Control', () => {
     test('should set progress manually', async ({ page }) => {
-      await page.evaluate(() => (window as unknown as { animationGroup: { ready: Promise<void> } }).animationGroup.ready);
+      await page.evaluate(
+        () =>
+          (window as unknown as { animationGroup: { ready: Promise<void> } }).animationGroup.ready,
+      );
       await animationGroupPage.setProgress(0.5);
 
       const progress = await animationGroupPage.getProgress();
@@ -77,7 +80,8 @@ test.describe('AnimationGroup API', () => {
       await animationGroupPage.play();
 
       await page.waitForFunction(
-        () => (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.includes('finish'),
+        () =>
+          (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.includes('finish'),
         { timeout: 3000 },
       );
 
@@ -88,7 +92,8 @@ test.describe('AnimationGroup API', () => {
       await animationGroupPage.play();
 
       await page.waitForFunction(
-        () => (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.includes('finish'),
+        () =>
+          (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.includes('finish'),
         { timeout: 3000 },
       );
 
@@ -96,7 +101,10 @@ test.describe('AnimationGroup API', () => {
       await animationGroupPage.play();
 
       await page.waitForFunction(
-        () => (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.filter((e: string) => e === 'finish').length >= 2,
+        () =>
+          (window as unknown as { lifecycleEvents: string[] }).lifecycleEvents.filter(
+            (e: string) => e === 'finish',
+          ).length >= 2,
         { timeout: 3000 },
       );
 

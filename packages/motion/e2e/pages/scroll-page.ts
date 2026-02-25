@@ -1,6 +1,11 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
-import { scrollTo, scrollElementIntoView, getScrollProgress, getScrollY } from '../utils/scroll-helpers';
+import {
+  scrollTo,
+  scrollElementIntoView,
+  getScrollProgress,
+  getScrollY,
+} from '../utils/scroll-helpers';
 
 type RangeOffset = { name?: string; offset?: number };
 

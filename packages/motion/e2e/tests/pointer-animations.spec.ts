@@ -45,7 +45,9 @@ test.describe('Pointer-Driven Animations', () => {
   });
 
   test.describe('Composite Operations', () => {
-    test('should create two independent AnimationGroup instances on the same element', async ({ page }) => {
+    test('should create two independent AnimationGroup instances on the same element', async ({
+      page,
+    }) => {
       // Trigger progress on both groups so animations leave idle state and become visible to getAnimations()
       await pointerPage.movePointerWithinElement(POINTER_SELECTORS.compositeArea, 0.5, 0.5);
 

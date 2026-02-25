@@ -93,15 +93,21 @@ export class EffectsPage extends BaseFixturePage {
   }
 
   getCustomEffectPlayState(): Promise<string> {
-    return this.page.evaluate(() => (window as unknown as FixtureWindow).customEffectGroup.playState);
+    return this.page.evaluate(
+      () => (window as unknown as FixtureWindow).customEffectGroup.playState,
+    );
   }
 
   getKeyframeWaapiPlayState(): Promise<string> {
-    return this.page.evaluate(() => (window as unknown as FixtureWindow).keyframeWaapiGroup.playState);
+    return this.page.evaluate(
+      () => (window as unknown as FixtureWindow).keyframeWaapiGroup.playState,
+    );
   }
 
   cancelCustomEffect() {
-    return this.page.evaluate(() => (window as unknown as FixtureWindow).customEffectGroup.cancel());
+    return this.page.evaluate(() =>
+      (window as unknown as FixtureWindow).customEffectGroup.cancel(),
+    );
   }
 
   getPlaybackPlayState(): Promise<string> {

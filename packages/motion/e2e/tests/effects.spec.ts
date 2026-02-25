@@ -12,7 +12,9 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Named Effects — WAAPI', () => {
-    test('should create AnimationGroup via getWebAnimation with registered named effect', async ({ page }) => {
+    test('should create AnimationGroup via getWebAnimation with registered named effect', async ({
+      page,
+    }) => {
       await effectsPage.runNamedWaapi();
 
       await waitForWindowPlayState(page, 'namedWaapiGroup', ['running', 'finished']);
@@ -32,7 +34,6 @@ test.describe('Effect Types', () => {
       }, EFFECTS_TARGET_IDS.namedWaapi);
       expect(opacity).toBe('1');
     });
-
   });
 
   test.describe('Named Effects — CSS', () => {
@@ -66,7 +67,12 @@ test.describe('Effect Types', () => {
   test.describe('Named Effects — CSS Runtime Consumption', () => {
     test('should apply generated named CSS descriptor to element in browser', async ({ page }) => {
       await effectsPage.runNamedCssApplied();
-      await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.namedCss, ['paused', 'running', 'finished'], 5000);
+      await waitForElementAnimationState(
+        page,
+        EFFECTS_TARGET_IDS.namedCss,
+        ['paused', 'running', 'finished'],
+        5000,
+      );
 
       const result = await page.evaluate((targetId) => {
         const target = document.getElementById(targetId) as HTMLElement;
@@ -89,7 +95,9 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Keyframe Effects — WAAPI', () => {
-    test('should create AnimationGroup via getWebAnimation with inline keyframeEffect', async ({ page }) => {
+    test('should create AnimationGroup via getWebAnimation with inline keyframeEffect', async ({
+      page,
+    }) => {
       await effectsPage.runKeyframeWaapi();
 
       await waitForWindowPlayState(page, 'keyframeWaapiGroup', ['running', 'finished']);
@@ -105,7 +113,8 @@ test.describe('Effect Types', () => {
 
       const hasExpectedKeyframes = await page.evaluate((targetId) => {
         const el = document.getElementById(targetId);
-        const keyframes = (el?.getAnimations()[0]?.effect as KeyframeEffect)?.getKeyframes?.() ?? [];
+        const keyframes =
+          (el?.getAnimations()[0]?.effect as KeyframeEffect)?.getKeyframes?.() ?? [];
         return keyframes.some((kf) => String(kf.transform).includes('translateX'));
       }, EFFECTS_TARGET_IDS.keyframeWaapi);
 
@@ -141,7 +150,9 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Keyframe Effects — CSS Runtime Consumption', () => {
-    test('should apply generated keyframe CSS descriptor to element in browser', async ({ page }) => {
+    test('should apply generated keyframe CSS descriptor to element in browser', async ({
+      page,
+    }) => {
       await effectsPage.runKeyframeCssApplied();
       await waitForElementAnimationState(
         page,
@@ -171,7 +182,9 @@ test.describe('Effect Types', () => {
   });
 
   test.describe('Custom Effects', () => {
-    test('should create animation via getWebAnimation with customEffect function', async ({ page }) => {
+    test('should create animation via getWebAnimation with customEffect function', async ({
+      page,
+    }) => {
       await effectsPage.runCustomEffect();
 
       await waitForWindowPlayState(page, 'customEffectGroup', ['running', 'finished']);
@@ -180,7 +193,9 @@ test.describe('Effect Types', () => {
       expect(['running', 'finished']).toContain(playState);
     });
 
-    test('should call customEffect function with (element, progress) during playback', async ({ page }) => {
+    test('should call customEffect function with (element, progress) during playback', async ({
+      page,
+    }) => {
       await effectsPage.runCustomEffect();
 
       // Wait for at least some log entries to accumulate
@@ -218,14 +233,17 @@ test.describe('Effect Types', () => {
       // Wait for animation to complete — use progress log instead of playState for Firefox/WebKit compatibility
       await page.waitForFunction(
         () => {
-          const log = (window as unknown as { customEffectLog: { progress: number | null }[] }).customEffectLog;
+          const log = (window as unknown as { customEffectLog: { progress: number | null }[] })
+            .customEffectLog;
           return log?.some((e) => e.progress !== null && e.progress >= 0.9) ?? false;
         },
         { timeout: 3000 },
       );
 
       const log = await effectsPage.getCustomEffectLog();
-      const progressValues = log.filter((e) => e.progress !== null).map((e) => e.progress as number);
+      const progressValues = log
+        .filter((e) => e.progress !== null)
+        .map((e) => e.progress as number);
       // Browsers may not deliver progress=1; 0.9+ confirms the callback tracked the full animation
       expect(Math.max(...progressValues)).toBeGreaterThanOrEqual(0.9);
     });
@@ -249,10 +267,14 @@ test.describe('Effect Types', () => {
     test('should pause animation mid-playback and hold current state', async ({ page }) => {
       await effectsPage.runPlayback();
       await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.playback, ['running']);
-      await page.waitForFunction((targetId) => {
-        const target = document.getElementById(targetId);
-        return target ? parseFloat(getComputedStyle(target).opacity) > 0.1 : false;
-      }, EFFECTS_TARGET_IDS.playback, { timeout: 2000 });
+      await page.waitForFunction(
+        (targetId) => {
+          const target = document.getElementById(targetId);
+          return target ? parseFloat(getComputedStyle(target).opacity) > 0.1 : false;
+        },
+        EFFECTS_TARGET_IDS.playback,
+        { timeout: 2000 },
+      );
       await effectsPage.runPlaybackPause();
 
       const playState = await effectsPage.getPlaybackPlayState();
@@ -269,10 +291,14 @@ test.describe('Effect Types', () => {
     test('should resume from paused position when played again', async ({ page }) => {
       await effectsPage.runPlayback();
       await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.playback, ['running']);
-      await page.waitForFunction((targetId) => {
-        const target = document.getElementById(targetId);
-        return target ? parseFloat(getComputedStyle(target).opacity) > 0.1 : false;
-      }, EFFECTS_TARGET_IDS.playback, { timeout: 2000 });
+      await page.waitForFunction(
+        (targetId) => {
+          const target = document.getElementById(targetId);
+          return target ? parseFloat(getComputedStyle(target).opacity) > 0.1 : false;
+        },
+        EFFECTS_TARGET_IDS.playback,
+        { timeout: 2000 },
+      );
       await effectsPage.runPlaybackPause();
 
       const opacityAtPause = await effectsPage.getPlaybackOpacity();

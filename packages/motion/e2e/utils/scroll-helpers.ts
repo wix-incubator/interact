@@ -16,7 +16,9 @@ export async function scrollElementIntoView(page: Page, selector: string): Promi
 
 /** Return the element's scroll progress exposed on window by the fixture. */
 export function getScrollProgress(page: Page): Promise<number> {
-  return page.evaluate(() => (window as unknown as { getScrollProgress(): number }).getScrollProgress());
+  return page.evaluate(() =>
+    (window as unknown as { getScrollProgress(): number }).getScrollProgress(),
+  );
 }
 
 /** Return the current window scroll position. */

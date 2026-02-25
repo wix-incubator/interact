@@ -26,4 +26,3 @@ export async function movePointerWithinElement(
   // Allow pointermove handlers to settle
   await new Promise((r) => setTimeout(r, 50));
 }
-

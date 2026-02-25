@@ -16,10 +16,14 @@ export class PointerPage extends BaseFixturePage {
   }
 
   cancelPointerScene() {
-    return this.page.evaluate(() => (window as unknown as { pointerScene: { cancel(): void } }).pointerScene.cancel());
+    return this.page.evaluate(() =>
+      (window as unknown as { pointerScene: { cancel(): void } }).pointerScene.cancel(),
+    );
   }
 
   getPointerScenePlayState() {
-    return this.page.evaluate(() => (window as unknown as { pointerScene: { playState: string } }).pointerScene.playState);
+    return this.page.evaluate(
+      () => (window as unknown as { pointerScene: { playState: string } }).pointerScene.playState,
+    );
   }
 }

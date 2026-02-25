@@ -37,7 +37,10 @@ registerEffects({
         ...options,
         name: 'test-fadeIn',
         easing: 'linear',
-        keyframes: [{ offset: 0, opacity: 0 }, { offset: 1, opacity: 1 }],
+        keyframes: [
+          { offset: 0, opacity: 0 },
+          { offset: 1, opacity: 1 },
+        ],
       },
     ],
     style: (options: EffectOptions) => [
@@ -45,7 +48,10 @@ registerEffects({
         ...options,
         name: 'test-fadeIn',
         easing: 'linear',
-        keyframes: [{ offset: 0, opacity: 0 }, { offset: 1, opacity: 1 }],
+        keyframes: [
+          { offset: 0, opacity: 0 },
+          { offset: 1, opacity: 1 },
+        ],
       },
     ],
   },
@@ -136,7 +142,10 @@ function toKebabCase(property: string): string {
 }
 
 function getCssTargetElement(target: string): HTMLElement | null {
-  const selector = target.startsWith('#') || target.startsWith('.') || target.startsWith('[') ? target : `#${target}`;
+  const selector =
+    target.startsWith('#') || target.startsWith('.') || target.startsWith('[')
+      ? target
+      : `#${target}`;
   return document.querySelector(selector) as HTMLElement | null;
 }
 
@@ -149,7 +158,8 @@ function formatKeyframeBlock(keyframe: Keyframe): string {
     .filter(([property, value]) => property !== 'offset' && value !== undefined)
     .map(formatKeyframeDeclaration)
     .join(' ');
-  const percent = typeof keyframe.offset === 'number' ? `${Math.round(keyframe.offset * 100)}%` : '0%';
+  const percent =
+    typeof keyframe.offset === 'number' ? `${Math.round(keyframe.offset * 100)}%` : '0%';
   return `${percent} { ${declarations} }`;
 }
 

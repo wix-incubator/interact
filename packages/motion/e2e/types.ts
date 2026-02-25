@@ -1,4 +1,6 @@
-export type CssAnimationData = ReturnType<(typeof import('@wix/motion'))['getCSSAnimation']>[number];
+export type CssAnimationData = ReturnType<
+  (typeof import('@wix/motion'))['getCSSAnimation']
+>[number];
 
 export type CustomEffectLogEntry = {
   elementId: string | null;

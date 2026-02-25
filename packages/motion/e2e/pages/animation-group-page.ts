@@ -41,7 +41,9 @@ export class AnimationGroupPage extends BaseFixturePage {
   }
 
   getProgress() {
-    return this.page.evaluate(() => (window as unknown as FixtureWindow).animationGroup.getProgress());
+    return this.page.evaluate(() =>
+      (window as unknown as FixtureWindow).animationGroup.getProgress(),
+    );
   }
 
   setProgress(p: number) {

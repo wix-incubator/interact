@@ -15,71 +15,59 @@ const progressDisplay = document.querySelector(
 ) as HTMLElement;
 
 // X-axis animation: translateX driven by horizontal mouse position
-const xAxisGroup = getWebAnimation(
-  xAxisTarget,
-  {
-    keyframeEffect: {
-      name: 'pointer-x',
-      keyframes: [
-        { offset: 0, transform: 'translateX(-80px)' },
-        { offset: 1, transform: 'translateX(80px)' },
-      ],
-    },
-    duration: 1000,
-    fill: 'both',
-    easing: 'linear',
+const xAxisGroup = getWebAnimation(xAxisTarget, {
+  keyframeEffect: {
+    name: 'pointer-x',
+    keyframes: [
+      { offset: 0, transform: 'translateX(-80px)' },
+      { offset: 1, transform: 'translateX(80px)' },
+    ],
   },
-) as AnimationGroup;
+  duration: 1000,
+  fill: 'both',
+  easing: 'linear',
+}) as AnimationGroup;
 
 // Y-axis animation: translateY driven by vertical mouse position
-const yAxisGroup = getWebAnimation(
-  yAxisTarget,
-  {
-    keyframeEffect: {
-      name: 'pointer-y',
-      keyframes: [
-        { offset: 0, transform: 'translateY(-40px)' },
-        { offset: 1, transform: 'translateY(40px)' },
-      ],
-    },
-    duration: 1000,
-    fill: 'both',
-    easing: 'linear',
+const yAxisGroup = getWebAnimation(yAxisTarget, {
+  keyframeEffect: {
+    name: 'pointer-y',
+    keyframes: [
+      { offset: 0, transform: 'translateY(-40px)' },
+      { offset: 1, transform: 'translateY(40px)' },
+    ],
   },
-) as AnimationGroup;
+  duration: 1000,
+  fill: 'both',
+  easing: 'linear',
+}) as AnimationGroup;
 
 // Composite: independent scaleX and scaleY driven by x/y pointer
-const scaleXGroup = getWebAnimation(
-  compositeTarget,
-  {
-    keyframeEffect: {
-      name: 'pointer-scale-x',
-      keyframes: [
-        { offset: 0, transform: 'scaleX(0.5)' },
-        { offset: 1, transform: 'scaleX(1.5)' },
-      ],
-    },
-    duration: 1000,
-    fill: 'both',
-    easing: 'linear',
+const scaleXGroup = getWebAnimation(compositeTarget, {
+  keyframeEffect: {
+    name: 'pointer-scale-x',
+    keyframes: [
+      { offset: 0, transform: 'scaleX(0.5)' },
+      { offset: 1, transform: 'scaleX(1.5)' },
+    ],
   },
-) as AnimationGroup;
+  duration: 1000,
+  fill: 'both',
+  easing: 'linear',
+}) as AnimationGroup;
 
-const scaleYGroup = getWebAnimation(
-  compositeTarget,
-  {
-    keyframeEffect: {
-      name: 'pointer-scale-y',
-      keyframes: [
-        { offset: 0, transform: 'scaleY(0.5)' },
-        { offset: 1, transform: 'scaleY(1.5)' },
-      ],
-    },
-    duration: 1000,
-    fill: 'both',
-    easing: 'linear',
+const scaleYGroup = getWebAnimation(compositeTarget, {
+  keyframeEffect: {
+    name: 'pointer-scale-y',
+    keyframes: [
+      { offset: 0, transform: 'scaleY(0.5)' },
+      { offset: 1, transform: 'scaleY(1.5)' },
+    ],
   },
-) as AnimationGroup;
+  duration: 1000,
+  fill: 'both',
+  easing: 'linear',
+}) as AnimationGroup;
 
 function getRelativeProgress(area: HTMLElement, clientX: number, clientY: number) {
   const rect = area.getBoundingClientRect();

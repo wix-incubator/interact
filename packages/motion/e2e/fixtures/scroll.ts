@@ -10,7 +10,9 @@ type ScrollFixtureWindow = typeof window & {
 };
 
 const target = document.getElementById(SCROLL_IDS.viewProgressTarget) as HTMLElement;
-const progressDisplay = document.querySelector(`[data-testid="${SCROLL_TEST_IDS.progressDisplay}"]`) as HTMLElement;
+const progressDisplay = document.querySelector(
+  `[data-testid="${SCROLL_TEST_IDS.progressDisplay}"]`,
+) as HTMLElement;
 
 function calculateProgress(el: HTMLElement): number {
   const rect = el.getBoundingClientRect();
@@ -18,21 +20,18 @@ function calculateProgress(el: HTMLElement): number {
   return Math.max(0, Math.min(1, progress));
 }
 
-const animationGroup = getWebAnimation(
-  target,
-  {
-    keyframeEffect: {
-      name: 'scroll-fade-slide',
-      keyframes: [
-        { offset: 0, opacity: 0, transform: 'translateY(60px)' },
-        { offset: 1, opacity: 1, transform: 'translateY(0px)' },
-      ],
-    },
-    duration: 1000,
-    fill: 'both',
-    easing: 'linear',
+const animationGroup = getWebAnimation(target, {
+  keyframeEffect: {
+    name: 'scroll-fade-slide',
+    keyframes: [
+      { offset: 0, opacity: 0, transform: 'translateY(60px)' },
+      { offset: 1, opacity: 1, transform: 'translateY(0px)' },
+    ],
   },
-) as AnimationGroup;
+  duration: 1000,
+  fill: 'both',
+  easing: 'linear',
+}) as AnimationGroup;
 
 animationGroup.ready.then(() => {
   function onScroll() {
@@ -103,7 +102,9 @@ const rangeSceneResult = getScrubScene(
 );
 
 // getScrubScene returns ScrubScrollScene[] in the fallback path (no native ViewTimeline)
-const rangeScene = Array.isArray(rangeSceneResult) ? (rangeSceneResult[0] as ScrubScrollScene) : null;
+const rangeScene = Array.isArray(rangeSceneResult)
+  ? (rangeSceneResult[0] as ScrubScrollScene)
+  : null;
 
 (window as ScrollFixtureWindow).rangeScene = rangeScene;
 (window as ScrollFixtureWindow).rangeConfig = { startOffset: RANGE_START, endOffset: RANGE_END };
