@@ -1,6 +1,6 @@
 import { registerEffects, getWebAnimation, getCSSAnimation } from '@wix/motion';
 import type { AnimationGroup } from '@wix/motion';
-import type { CssAnimationData, CustomEffectEntry } from '../types';
+import type { CssAnimationData, CustomEffectLogEntry } from '../types';
 import { EFFECTS_NAMES, EFFECTS_TARGET_IDS, EFFECTS_TEST_IDS } from '../constants/effects';
 
 type EffectsFixtureWindow = typeof window & {
@@ -9,7 +9,7 @@ type EffectsFixtureWindow = typeof window & {
   keyframeWaapiGroup: AnimationGroup;
   keyframeCssData: CssAnimationData[];
   customEffectGroup: AnimationGroup;
-  customEffectLog: CustomEffectEntry[];
+  customEffectLog: CustomEffectLogEntry[];
   runNamedWaapi: () => void;
   runNamedCss: () => void;
   runNamedCssApplied: () => void;
@@ -92,7 +92,7 @@ const playbackStateDisplay = document.querySelector(
 // State
 // ---------------------------------------------------------------------------
 
-const customEffectLog: CustomEffectEntry[] = [];
+const customEffectLog: CustomEffectLogEntry[] = [];
 let namedWaapiGroup: AnimationGroup;
 let namedCssData: CssAnimationData[];
 let keyframeWaapiGroup: AnimationGroup;

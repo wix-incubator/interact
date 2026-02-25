@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import { BaseFixturePage } from './base-fixture-page';
-import type { CssAnimationData, CustomEffectEntry } from '../types';
+import type { CssAnimationData, CustomEffectLogEntry } from '../types';
 import { EFFECTS_TARGET_IDS } from '../constants/effects';
 
 type FixtureWindow = {
@@ -9,7 +9,7 @@ type FixtureWindow = {
   keyframeWaapiGroup: { playState: string };
   keyframeCssData: CssAnimationData[];
   customEffectGroup: { playState: string; cancel(): void };
-  customEffectLog: CustomEffectEntry[];
+  customEffectLog: CustomEffectLogEntry[];
   runNamedWaapi(): void;
   runNamedCss(): void;
   runNamedCssApplied(): void;
@@ -84,7 +84,7 @@ export class EffectsPage extends BaseFixturePage {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).keyframeCssData);
   }
 
-  getCustomEffectLog(): Promise<CustomEffectEntry[]> {
+  getCustomEffectLog(): Promise<CustomEffectLogEntry[]> {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).customEffectLog);
   }
 

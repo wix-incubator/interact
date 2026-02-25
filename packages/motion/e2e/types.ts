@@ -1,16 +1,6 @@
-export type CssAnimationData = {
-  target: string;
-  animation: string;
-  name: string | undefined;
-  keyframes: Keyframe[];
-  composition: CompositeOperation | undefined;
-  custom: Record<string, string | number | undefined> | undefined;
-  id: string | undefined;
-  animationTimeline: string;
-  animationRange: string;
-};
+export type CssAnimationData = ReturnType<(typeof import('@wix/motion'))['getCSSAnimation']>[number];
 
-export type CustomEffectEntry = {
+export type CustomEffectLogEntry = {
   elementId: string | null;
   tagName: string | null;
   progress: number | null;
