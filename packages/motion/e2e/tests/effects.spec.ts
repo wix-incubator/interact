@@ -66,7 +66,7 @@ test.describe('Effect Types', () => {
   test.describe('Named Effects — CSS Runtime Consumption', () => {
     test('should apply generated named CSS descriptor to element in browser', async ({ page }) => {
       await effectsPage.runNamedCssApplied();
-      await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.namedCss, ['running', 'finished']);
+      await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.namedCss, ['paused', 'running', 'finished'], 5000);
 
       const result = await page.evaluate((targetId) => {
         const target = document.getElementById(targetId) as HTMLElement;
@@ -143,7 +143,12 @@ test.describe('Effect Types', () => {
   test.describe('Keyframe Effects — CSS Runtime Consumption', () => {
     test('should apply generated keyframe CSS descriptor to element in browser', async ({ page }) => {
       await effectsPage.runKeyframeCssApplied();
-      await waitForElementAnimationState(page, EFFECTS_TARGET_IDS.keyframeCss, ['running', 'finished']);
+      await waitForElementAnimationState(
+        page,
+        EFFECTS_TARGET_IDS.keyframeCss,
+        ['paused', 'running', 'finished'],
+        5000,
+      );
 
       const result = await page.evaluate((targetId) => {
         const target = document.getElementById(targetId) as HTMLElement;

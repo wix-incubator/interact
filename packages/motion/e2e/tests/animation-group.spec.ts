@@ -52,7 +52,8 @@ test.describe('AnimationGroup API', () => {
   });
 
   test.describe('Progress Control', () => {
-    test('should set progress manually', async () => {
+    test('should set progress manually', async ({ page }) => {
+      await page.evaluate(() => (window as unknown as { animationGroup: { ready: Promise<void> } }).animationGroup.ready);
       await animationGroupPage.setProgress(0.5);
 
       const progress = await animationGroupPage.getProgress();
