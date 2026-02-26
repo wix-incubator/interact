@@ -1142,6 +1142,16 @@ This example shows a pointer-driven slider where the X position controls both a 
             },
             fill: 'both',
         },
+        'indicator-effect': {
+            keyframeEffect: {
+                name: 'indicator-fade-scale',
+                keyframes: [
+                    { opacity: '0.3', transform: 'scale(0.8)' },
+                    { opacity: '1', transform: 'scale(1)' },
+                ],
+            },
+            fill: 'both',
+        },
     },
 }
 ```
@@ -1374,12 +1384,11 @@ Controlling movement direction for specific design needs:
 
 ### Performance Guidelines
 
-1. **Use hardware-accelerated properties** - prefer transforms over position changes
-2. **Limit simultaneous pointer effects** - too many can cause performance issues
-3. **Test on various devices** - pointer sensitivity varies across hardware
-4. **Cache DOM queries in customEffect** - avoid repeated `querySelector` calls
-5. **Use `requestAnimationFrame` sparingly** - the library already handles frame timing
-6. **Prefer `namedEffect` over `customEffect`** - named effects are optimized for GPU acceleration
+1. **Limit simultaneous pointer effects** - too many can cause performance issues
+2. **Test on various devices** - pointer sensitivity varies across hardware
+3. **Cache DOM queries outside `customEffect` callbacks** - avoid repeated `querySelector` calls inside the callback
+4. **Use `requestAnimationFrame` sparingly** - the library already handles frame timing
+5. **Prefer `namedEffect` over `customEffect`** - named effects are optimized for GPU acceleration
 
 ### Hit Area Guidelines
 
@@ -1397,19 +1406,9 @@ Controlling movement direction for specific design needs:
 4. **Consider responsive design** when setting centering
 5. **Centering affects how progress.x/y map to element position**
 
-### User Experience Guidelines
+### Accessibility via Conditions API
 
-1. **Keep pointer effects subtle** to avoid overwhelming users
-2. **Ensure effects enhance rather than distract** from content
-3. **Provide visual feedback** that feels natural and responsive
-4. **Test with actual users** to validate interaction quality
-
-### Accessibility Considerations
-
-1. **Respect `prefers-reduced-motion`** for all pointer animations
-2. **Ensure touch device compatibility** with appropriate alternatives
-3. **Don't rely solely on pointer effects** for important interactions
-4. **Provide keyboard alternatives** for interactive elements
+Use the `conditions` field to provide touch-device alternatives: e.g. `conditions: ['supports-hover']` for pointer effects, `conditions: ['touch-device']` for simplified versions. Wire `prefers-reduced-motion` via conditions for reduced-motion users.
 
 ### Common Use Cases by Pattern
 
@@ -1512,7 +1511,6 @@ Controlling movement direction for specific design needs:
 **customEffect not updating smoothly**:
 
 - Add `transitionDuration` and `transitionEasing` for smoother transitions
-- Ensure style changes use transform/opacity for GPU acceleration
 - Avoid expensive calculations inside the callback
 - Consider debouncing complex logic
 
@@ -1551,7 +1549,3 @@ Controlling movement direction for specific design needs:
 | Custom physics              | `customEffect`                             | Full control over calculations                         |
 | Velocity-based effects      | `customEffect`                             | Access to `progress.v`                                 |
 | Grid/particle systems       | `customEffect`                             | Can manipulate many elements                           |
-
----
-
-These rules provide comprehensive coverage for PointerMove trigger interactions in `@wix/interact`, supporting all hit area configurations, centering options, named effect types, keyframe effects, composite animations, and custom effect patterns.

@@ -17,14 +17,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ```typescript
 {
-    key: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
         type: 'alternate'
     },
     effects: [
         {
-            key: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             fill: 'both',
             reversed: [INITIAL_REVERSED_BOOL],
@@ -38,8 +38,8 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 **Variables**:
 
-- `[SOURCE_IDENTIFIER]`: Unique identifier for clickable element (e.g., 'menu-button', 'accordion-header'). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
-- `[TARGET_IDENTIFIER]`: Unique identifier for animated element (can be same as trigger or different). Should equal the value of the data-interact-key attribute on the wrapping interact-element.
+- `[SOURCE_KEY]`: Unique identifier for clickable element. Should equal the value of the `data-interact-key` attribute on the wrapping `<interact-element>`.
+- `[TARGET_KEY]`: Unique identifier for animated element (can be same as `[SOURCE_KEY]` for self-targeting, or different for cross-targeting).
 - `[EFFECT_TYPE]`: Either `namedEffect` or `keyframeEffect`
 - `[EFFECT_DEFINITION]`: Named effect object (e.g., { type: 'SlideIn', ...params }, { type: 'FadeIn', ...params }) or keyframe object (e.g., { name: 'custom-fade', keyframes: [{ opacity: 0 }, { opacity: 1 }] }, { name: 'custom-slide', keyframes: [{ transform: 'translateX(-100%)' }, { transform: 'translateX(0)' }] })
 - `[INITIAL_REVERSED_BOOL]`: Optional boolean value indicating whether the first toggle should play the reversed animation.
@@ -118,14 +118,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ```typescript
 {
-    key: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
         type: 'state'
     },
     effects: [
         {
-            key: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             fill: 'both',
             reversed: [INITIAL_REVERSED_BOOL],
@@ -212,14 +212,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ```typescript
 {
-    key: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
         type: 'repeat'
     },
     effects: [
         {
-            key: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_KEY]',
             [EFFECT_TYPE]: [EFFECT_DEFINITION],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -304,14 +304,14 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ```typescript
 {
-    key: '[SOURCE_IDENTIFIER]',
+    key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
-        method: 'toggle'
+        method: 'toggle'  // also: 'add', 'remove', 'clear' — see full-lean.md StateParams
     },
     effects: [
         {
-            key: '[TARGET_IDENTIFIER]',
+            key: '[TARGET_KEY]',
             transition: {
                 duration: [DURATION_MS],
                 delay: [DELAY_MS],
@@ -501,27 +501,12 @@ Using effectId for sequential animations:
 
 ## Best Practices for Click Interactions
 
-### Performance Guidelines
+### Timing and Pattern Guidelines
 
 1. **Keep click animations short** (100-500ms) for immediate feedback
-2. **Use `transform` and `opacity`** for smooth animations
-3. **Avoid animating layout properties** like width/height in clicks
-4. **Consider using `will-change`** for complex click animations
-
-### User Experience Guidelines
-
-1. **Provide immediate visual feedback** (within 100ms)
 2. **Use alternate pattern** for toggle states
 3. **Use repeat pattern** for confirmation actions
 4. **Use state pattern** for media controls
-5. **Ensure click targets are accessible** (minimum 44px touch target)
-
-### Accessibility Considerations
-
-1. **Respect `prefers-reduced-motion`** setting
-2. **Provide alternative interaction methods** (keyboard support)
-3. **Ensure sufficient color contrast** during transitions
-4. **Don't rely solely on animation** to convey state changes
 
 ### Common Use Cases by Pattern
 
@@ -555,7 +540,3 @@ Using effectId for sequential animations:
 - Color changes
 - Simple state toggles
 - CSS custom property updates
-
----
-
-These rules provide comprehensive coverage for click trigger interactions in `@wix/interact`, supporting the four main behavior patterns and two primary effect types as outlined in the development plan.
