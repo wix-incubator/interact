@@ -11,7 +11,7 @@ import viewProgressHandler from './viewProgress';
 import pointerMoveHandler from './pointerMove';
 import animationEndHandler from './animationEnd';
 import eventTrigger from './eventTrigger';
-import { EVENT_TRIGGER_PRESETS } from './effectHandlers';
+import { EVENT_TRIGGER_PRESETS } from './constants';
 
 const a11yTriggerOverrides = {
   click: EVENT_TRIGGER_PRESETS.activate,

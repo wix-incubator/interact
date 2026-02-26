@@ -62,7 +62,7 @@ function getListenerForEventType(
   handler: EventHandler,
 ): EventListener {
   const factory = LISTENER_FACTORY_BY_EVENT_TYPE[event];
-  return factory ? factory(source, handler) : createKeydownListener(handler);
+  return factory ? factory(source, handler) : (e: Event) => handler(e);
 }
 
 type GenericEventConfig = {
@@ -95,7 +95,7 @@ function createGenericEventConfig(config: EventTriggerConfig): GenericEventConfi
 }
 
 function isEnterLeaveMode(genericConfig: GenericEventConfig): boolean {
-  return (genericConfig.enter?.length ?? 0) > 0 || (genericConfig.leave?.length ?? 0) > 0;
+  return !!(genericConfig.enter?.length || genericConfig.leave?.length);
 }
 
 function getEnterLeaveConfig(
@@ -148,18 +148,17 @@ function addEventTriggerHandler(
   }
 
   const resolvedHandler = handler;
+  const controller = new AbortController();
   const listeners: { element: HTMLElement; event: string; fn: EventListener }[] = [];
 
   function addListener(element: HTMLElement, event: string, options?: AddEventListenerOptions) {
     const fn = getListenerForEventType(event, source, resolvedHandler);
-    element.addEventListener(event, fn, options);
+    element.addEventListener(event, fn, { ...options, signal: controller.signal });
     listeners.push({ element, event, fn });
   }
 
   const cleanup = () => {
-    listeners.forEach(({ element, event, fn }) => {
-      element.removeEventListener(event, fn);
-    });
+    controller.abort();
   };
 
   const handlerObj = { source, target, cleanup };
@@ -169,6 +168,7 @@ function addEventTriggerHandler(
   if (enterLeave) {
     const enter = genericConfig.enter!;
     const leaveEvents = genericConfig.leave!;
+
     enter.forEach((eventType) => {
       if (eventType === 'focusin') {
         source.tabIndex = 0;
@@ -178,6 +178,7 @@ function addEventTriggerHandler(
     const addLeaveListeners = isTransition
       ? (options as StateParams).method === 'toggle'
       : (options as PointerTriggerParams).type !== 'once';
+
     if (addLeaveListeners) {
       leaveEvents.forEach((eventType) => {
         if (eventType === 'focusout') {
@@ -190,7 +191,8 @@ function addEventTriggerHandler(
   } else {
     const events = genericConfig.toggle ?? [];
     events.forEach((eventType) => {
-      const opts = eventType === 'keydown' ? { once } : { passive: true, once };
+      const passive = eventType !== 'keydown';
+      const opts = { once, passive };
       addListener(source, eventType, opts);
     });
   }

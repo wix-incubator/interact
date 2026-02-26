@@ -12,16 +12,6 @@ import type {
 import { effectToAnimationOptions } from './utilities';
 import fastdom from 'fastdom';
 
-export const EVENT_TRIGGER_PRESETS = {
-  click: ['click'] as const,
-  activate: ['click', 'keydown'] as const,
-  hover: { enter: ['mouseenter'], leave: ['mouseleave'] } as const,
-  interest: {
-    enter: ['mouseenter', 'focusin'],
-    leave: ['mouseleave', 'focusout'],
-  } as const,
-} as const;
-
 export function createTimeEffectHandler(
   element: HTMLElement,
   effect: TimeEffect & EffectBase,
@@ -43,15 +33,13 @@ export function createTimeEffectHandler(
 
   let initialPlay = true;
   const type = options.type || 'alternate';
-  const enterEvents = enterLeave?.enter ?? [];
-  const leaveEvents = enterLeave?.leave ?? [];
 
   return (event: Event) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
 
     const isToggle = !enterLeave;
-    const isEnter = enterEvents.length > 0 && enterEvents.includes(event.type);
-    const isLeave = leaveEvents.length > 0 && leaveEvents.includes(event.type);
+    const isEnter = enterLeave?.enter?.includes(event.type);
+    const isLeave = enterLeave?.leave?.includes(event.type);
 
     if (isEnter || isToggle) {
       if (type === 'alternate' || type === 'state') {
@@ -112,8 +100,6 @@ export function createTransitionHandler(
   const shouldSetStateOnElement = !!listContainer;
   const method = options.method || 'toggle';
   const isToggle = method === 'toggle';
-  const enterEvents = enterLeave?.enter ?? [];
-  const leaveEvents = enterLeave?.leave ?? [];
 
   return (event: Event) => {
     if (selectorCondition && !element.matches(selectorCondition)) return;
@@ -124,8 +110,8 @@ export function createTransitionHandler(
         ) as HTMLElement | null)
       : undefined; // undefined when no listContainer so controller delegates to element.toggleEffect
     const isToggleMode = !enterLeave;
-    const isEnter = enterEvents.length > 0 && enterEvents.includes(event.type);
-    const isLeave = leaveEvents.length > 0 && leaveEvents.includes(event.type);
+    const isEnter = enterLeave?.enter?.includes(event.type);
+    const isLeave = enterLeave?.leave?.includes(event.type);
 
     if (isToggleMode) {
       targetController.toggleEffect(effectId, method, item);
