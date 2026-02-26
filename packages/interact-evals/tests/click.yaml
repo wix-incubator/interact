@@ -1,0 +1,110 @@
+- description: 'Click — hamburger menu toggle (alternate + SlideIn)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/click.md
+    prompt: >
+      Create a hamburger menu button that slides in a navigation sidebar from
+      the left when clicked, and slides it back out when clicked again.
+    expected_trigger: click
+    expected:
+      params_type: alternate
+      effect_type: namedEffect
+      cross_target: true
+      has_fill_both: true
+      has_reversed: true
+      has_duration: true
+      has_easing: true
+  assert:
+    - type: javascript
+      value: file://assertions/click-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['SlideIn', 'slideIn']
+      weight: 1
+      metric: effect_choice
+
+- description: 'Click — theme toggle (transition + method toggle)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/click.md
+    prompt: >
+      Create a dark mode toggle button. When clicked, transition the page
+      background to #1a1a1a, text color to white, and border-color to #333.
+    expected_trigger: click
+    expected:
+      params_method: toggle
+      effect_type: transition
+      cross_target: true
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/click-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'background-color'
+      weight: 1
+      metric: completeness
+    - type: contains
+      value: 'color'
+      weight: 1
+      metric: completeness
+
+- description: 'Click — button pulse feedback (repeat)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/click.md
+    prompt: >
+      Make a "Save" button pulse with a scale-up animation each time it is
+      clicked, restarting from scratch every time.
+    expected_trigger: click
+    expected:
+      params_type: repeat
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/click-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['scale', 'Scale', 'Pulse']
+      weight: 1
+      metric: effect_choice
+
+- description: 'Click — play/pause spinner (state)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/click.md
+    prompt: >
+      Create a button that toggles a loading spinner between playing and paused
+      states. The spinner should rotate continuously (infinite loop) when
+      playing.
+    expected_trigger: click
+    expected:
+      params_type: state
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/click-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['Infinity', 'iterations']
+      weight: 1
+      metric: effect_choice
+
+- description: 'Click — accordion expand/collapse'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/click.md
+    prompt: >
+      Build an accordion where clicking the header expands the content section
+      with a reveal animation, and clicking again collapses it.
+    expected_trigger: click
+    expected:
+      params_type: alternate
+      cross_target: true
+      has_fill_both: true
+      has_reversed: true
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/click-checks.js
+      weight: 3
+      metric: semantic

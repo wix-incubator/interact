@@ -1,0 +1,3825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interact Eval Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3345;
+    --text: #e1e4ed;
+    --text2: #8b90a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --green: #00cec9;
+    --green-dim: rgba(0,206,201,.12);
+    --red: #ff6b6b;
+    --red-dim: rgba(255,107,107,.12);
+    --orange: #fdcb6e;
+    --blue: #74b9ff;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(0,0,0,.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent2), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  header .meta {
+    font-size: .85rem;
+    color: var(--text2);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .card .label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+
+  .card .value {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .card .sub {
+    font-size: .8rem;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .card .value.pass { color: var(--green); }
+  .card .value.fail { color: var(--red); }
+  .card .value.neutral { color: var(--blue); }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .chart-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .bar-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .bar-group .bar-label {
+    width: 110px;
+    font-size: .85rem;
+    color: var(--text2);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 28px;
+    background: var(--surface2);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--bg);
+    min-width: fit-content;
+  }
+
+  .bar-fill.rules { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .bar-fill.nocontext { background: linear-gradient(90deg, #00b894, var(--green)); }
+
+  .bar-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    font-size: .8rem;
+  }
+
+  .bar-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text2);
+  }
+
+  .bar-legend .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+
+  .dot.rules { background: var(--accent); }
+  .dot.nocontext { background: var(--green); }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filters button {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: .8rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .filters button:hover { border-color: var(--accent); color: var(--text); }
+  .filters button.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: .85rem;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text2);
+    font-weight: 600;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background .15s;
+  }
+
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: .75rem;
+    font-weight: 600;
+  }
+
+  .badge.pass { background: var(--green-dim); color: var(--green); }
+  .badge.fail { background: var(--red-dim); color: var(--red); }
+
+  .badge.cat {
+    background: rgba(108,92,231,.15);
+    color: var(--accent2);
+  }
+
+  .badge.variant-rules {
+    background: rgba(108,92,231,.15);
+    color: var(--accent2);
+  }
+
+  .badge.variant-nocontext {
+    background: rgba(0,206,201,.12);
+    color: var(--green);
+  }
+
+  .checks-row td {
+    padding: 0 12px 0 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .checks-container {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .3s ease, padding .3s ease;
+  }
+
+  .checks-container.open {
+    max-height: 600px;
+    padding: 12px 0;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: .8rem;
+    color: var(--text2);
+  }
+
+  .check-icon { font-size: .9rem; }
+  .check-icon.pass { color: var(--green); }
+  .check-icon.fail { color: var(--red); }
+  .check-weight { color: var(--text2); opacity: .5; font-size: .7rem; }
+
+  .token-bars {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 16px; }
+    .token-bars { grid-template-columns: 1fr; }
+    .bar-group .bar-label { width: 80px; font-size: .75rem; }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: var(--text2);
+  }
+
+  .score-cell {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .token-cell {
+    font-variant-numeric: tabular-nums;
+    color: var(--text2);
+  }
+
+  .delta-badge {
+    font-size: .7rem;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 4px;
+  }
+
+  .delta-badge.positive { background: var(--green-dim); color: var(--green); }
+  .delta-badge.negative { background: var(--red-dim); color: var(--red); }
+  .delta-badge.zero { background: var(--surface2); color: var(--text2); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>@wix/interact Eval Dashboard</h1>
+  <div class="meta" id="meta"></div>
+</header>
+
+<div class="cards" id="summary-cards"></div>
+
+<div class="chart-section">
+  <div class="section-title">Pass Rate by Category</div>
+  <div class="bar-legend">
+    <span><span class="dot rules"></span> With Rules</span>
+    <span><span class="dot nocontext"></span> No Context</span>
+  </div>
+  <div id="pass-chart"></div>
+</div>
+
+<div class="chart-section">
+  <div class="section-title">Token Usage</div>
+  <div class="bar-legend">
+    <span><span class="dot rules"></span> With Rules</span>
+    <span><span class="dot nocontext"></span> No Context</span>
+  </div>
+  <div class="token-bars">
+    <div>
+      <div style="font-size:.85rem;color:var(--text2);margin-bottom:12px">Avg Input Tokens</div>
+      <div id="input-token-chart"></div>
+    </div>
+    <div>
+      <div style="font-size:.85rem;color:var(--text2);margin-bottom:12px">Avg Output Tokens</div>
+      <div id="output-token-chart"></div>
+    </div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <div class="section-title">Test Results</div>
+  <div class="filters" id="filters"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Test</th>
+        <th>Category</th>
+        <th>Variant</th>
+        <th>Score</th>
+        <th>Status</th>
+        <th>Input Tok</th>
+        <th>Output Tok</th>
+        <th>Checks</th>
+      </tr>
+    </thead>
+    <tbody id="results-body"></tbody>
+  </table>
+</div>
+
+<script>
+const data = /*SCORES_DATA*/[
+  {
+    "id": "01-click-click-hamburger-menu-toggle",
+    "variant": "with-rules",
+    "category": "click",
+    "description": "Click — hamburger menu toggle (alternate + SlideIn)",
+    "inputTokens": 3339,
+    "outputTokens": 77,
+    "chars": 435,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 9 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"SlideIn\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "01-click-click-hamburger-menu-toggle",
+    "variant": "no-context",
+    "category": "click",
+    "description": "Click — hamburger menu toggle (alternate + SlideIn)",
+    "inputTokens": 95,
+    "outputTokens": 87,
+    "chars": 376,
+    "score": 0.4,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'namedEffect' not found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0,
+        "reason": "FAIL: has click trigger; FAIL: has params type 'alternate'; FAIL: params block exists; FAIL: uses namedEffect; FAIL: source and target keys differ (cross-targeting); FAIL: has fill: both; FAIL: has reversed: true; FAIL: has duration; FAIL: has easing",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing any of: SlideIn, slideIn",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "02-click-click-theme-toggle",
+    "variant": "with-rules",
+    "category": "click",
+    "description": "Click — theme toggle (transition + method toggle)",
+    "inputTokens": 3340,
+    "outputTokens": 99,
+    "chars": 553,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"background-color\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"color\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "02-click-click-theme-toggle",
+    "variant": "no-context",
+    "category": "click",
+    "description": "Click — theme toggle (transition + method toggle)",
+    "inputTokens": 96,
+    "outputTokens": 105,
+    "chars": 540,
+    "score": 0.5,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'transition' not found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.16666666666666666,
+        "reason": "FAIL: has click trigger; FAIL: has params method 'toggle'; FAIL: uses transition effect; FAIL: source and target keys differ (cross-targeting); FAIL: has duration",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"background-color\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"color\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "03-click-click-button-pulse-feedback",
+    "variant": "with-rules",
+    "category": "click",
+    "description": "Click — button pulse feedback (repeat)",
+    "inputTokens": 3334,
+    "outputTokens": 83,
+    "chars": 496,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"scale\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "03-click-click-button-pulse-feedback",
+    "variant": "no-context",
+    "category": "click",
+    "description": "Click — button pulse feedback (repeat)",
+    "inputTokens": 90,
+    "outputTokens": 106,
+    "chars": 443,
+    "score": 0.5,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0,
+        "reason": "FAIL: has click trigger; FAIL: has params type 'repeat'; FAIL: params block exists; FAIL: has duration",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"scale\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "04-click-click-play-pause-spinner",
+    "variant": "with-rules",
+    "category": "click",
+    "description": "Click — play/pause spinner (state)",
+    "inputTokens": 3344,
+    "outputTokens": 92,
+    "chars": 523,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"Infinity\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "04-click-click-play-pause-spinner",
+    "variant": "no-context",
+    "category": "click",
+    "description": "Click — play/pause spinner (state)",
+    "inputTokens": 100,
+    "outputTokens": 98,
+    "chars": 454,
+    "score": 0.4,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0,
+        "reason": "FAIL: has click trigger; FAIL: has params type 'state'; FAIL: params block exists; FAIL: has duration",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing any of: Infinity, iterations",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "05-click-click-accordion-expand-collapse",
+    "variant": "with-rules",
+    "category": "click",
+    "description": "Click — accordion expand/collapse",
+    "inputTokens": 3339,
+    "outputTokens": 99,
+    "chars": 556,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 7 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "05-click-click-accordion-expand-collapse",
+    "variant": "no-context",
+    "category": "click",
+    "description": "Click — accordion expand/collapse",
+    "inputTokens": 95,
+    "outputTokens": 104,
+    "chars": 524,
+    "score": 0.44,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0,
+        "reason": "FAIL: has click trigger; FAIL: has params type 'alternate'; FAIL: params block exists; FAIL: source and target keys differ (cross-targeting); FAIL: has fill: both; FAIL: has reversed: true; FAIL: has duration",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "06-hover-hover-card-lift-with-shadow",
+    "variant": "with-rules",
+    "category": "hover",
+    "description": "Hover — card lift with shadow",
+    "inputTokens": 3794,
+    "outputTokens": 110,
+    "chars": 578,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"translateY\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"boxShadow\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "06-hover-hover-card-lift-with-shadow",
+    "variant": "no-context",
+    "category": "hover",
+    "description": "Hover — card lift with shadow",
+    "inputTokens": 102,
+    "outputTokens": 68,
+    "chars": 303,
+    "score": 0.59,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'keyframeEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.16666666666666666,
+        "reason": "FAIL: has hover trigger; FAIL: uses keyframeEffect; FAIL: has fill: both; FAIL: has duration; FAIL: uses transform",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"translateY\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"boxShadow\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "07-hover-hover-button-scale",
+    "variant": "with-rules",
+    "category": "hover",
+    "description": "Hover — button scale",
+    "inputTokens": 3768,
+    "outputTokens": 79,
+    "chars": 468,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"scale\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "07-hover-hover-button-scale",
+    "variant": "no-context",
+    "category": "hover",
+    "description": "Hover — button scale",
+    "inputTokens": 76,
+    "outputTokens": 44,
+    "chars": 216,
+    "score": 0.65,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.5,
+        "reason": "FAIL: has hover trigger; FAIL: uses transform",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"scale\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "08-hover-hover-image-zoom-on-hover",
+    "variant": "with-rules",
+    "category": "hover",
+    "description": "Hover — image zoom on hover",
+    "inputTokens": 3783,
+    "outputTokens": 82,
+    "chars": 480,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 5 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"scale(1.15)\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "08-hover-hover-image-zoom-on-hover",
+    "variant": "no-context",
+    "category": "hover",
+    "description": "Hover — image zoom on hover",
+    "inputTokens": 91,
+    "outputTokens": 59,
+    "chars": 269,
+    "score": 0.56,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2,
+        "reason": "FAIL: has hover trigger; FAIL: has fill: both; FAIL: has duration; FAIL: uses transform",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"1.15\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "09-hover-hover-multi-target-hover",
+    "variant": "with-rules",
+    "category": "hover",
+    "description": "Hover — multi-target hover (card + icon)",
+    "inputTokens": 3785,
+    "outputTokens": 152,
+    "chars": 906,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "09-hover-hover-multi-target-hover",
+    "variant": "no-context",
+    "category": "hover",
+    "description": "Hover — multi-target hover (card + icon)",
+    "inputTokens": 93,
+    "outputTokens": 97,
+    "chars": 390,
+    "score": 0.53,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.25,
+        "reason": "FAIL: has hover trigger; FAIL: has duration; FAIL: source and target keys differ",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "10-hover-hover-color-change",
+    "variant": "with-rules",
+    "category": "hover",
+    "description": "Hover — color change with named effect",
+    "inputTokens": 3795,
+    "outputTokens": 94,
+    "chars": 522,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 3 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"backgroundColor\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "10-hover-hover-color-change",
+    "variant": "no-context",
+    "category": "hover",
+    "description": "Hover — color change with named effect",
+    "inputTokens": 103,
+    "outputTokens": 53,
+    "chars": 246,
+    "score": 0.6,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.3333333333333333,
+        "reason": "FAIL: has hover trigger; FAIL: has duration",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"backgroundColor\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "11-integration-integration-full-web-setup-with-html-config",
+    "variant": "with-rules",
+    "category": "integration",
+    "description": "Integration — full web setup with HTML + config",
+    "inputTokens": 2589,
+    "outputTokens": 140,
+    "chars": 638,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 2 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "setup",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"@wix/interact/web\"",
+        "weight": 2
+      },
+      {
+        "name": "setup",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"Interact.create\"",
+        "weight": 2
+      },
+      {
+        "name": "html",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"interact-element\"",
+        "weight": 2
+      },
+      {
+        "name": "html",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"data-interact-key\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "11-integration-integration-full-web-setup-with-html-config",
+    "variant": "no-context",
+    "category": "integration",
+    "description": "Integration — full web setup with HTML + config",
+    "inputTokens": 104,
+    "outputTokens": 160,
+    "chars": 659,
+    "score": 0.56,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0.25,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses direct DOM queries outside customEffect — should use declarative key-based targeting",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.5,
+        "reason": "FAIL: has hover trigger",
+        "weight": 3
+      },
+      {
+        "name": "setup",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"@wix/interact\"",
+        "weight": 2
+      },
+      {
+        "name": "setup",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"Interact.create\"",
+        "weight": 2
+      },
+      {
+        "name": "html",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"interact-element\"",
+        "weight": 2
+      },
+      {
+        "name": "html",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"data-interact-key\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "12-integration-integration-reusable-effects-registry",
+    "variant": "with-rules",
+    "category": "integration",
+    "description": "Integration — reusable effects registry",
+    "inputTokens": 2596,
+    "outputTokens": 186,
+    "chars": 855,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 2 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "registry",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"effects:\"",
+        "weight": 2
+      },
+      {
+        "name": "registry",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"effectId\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "12-integration-integration-reusable-effects-registry",
+    "variant": "no-context",
+    "category": "integration",
+    "description": "Integration — reusable effects registry",
+    "inputTokens": 111,
+    "outputTokens": 202,
+    "chars": 813,
+    "score": 0.77,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0.5,
+        "reason": "Wrong or missing trigger value (expected 'hover'); Missing interaction 'key' field",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses direct DOM queries outside customEffect — should use declarative key-based targeting",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.5,
+        "reason": "FAIL: has hover trigger",
+        "weight": 3
+      },
+      {
+        "name": "registry",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"effects:\"",
+        "weight": 2
+      },
+      {
+        "name": "registry",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"effectId\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "13-integration-integration-conditions-with-media-queries",
+    "variant": "with-rules",
+    "category": "integration",
+    "description": "Integration — conditions with media queries",
+    "inputTokens": 2602,
+    "outputTokens": 171,
+    "chars": 709,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 2 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "conditions",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"conditions\"",
+        "weight": 2
+      },
+      {
+        "name": "conditions",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"min-width\"",
+        "weight": 2
+      },
+      {
+        "name": "trigger",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"viewEnter\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "13-integration-integration-conditions-with-media-queries",
+    "variant": "no-context",
+    "category": "integration",
+    "description": "Integration — conditions with media queries",
+    "inputTokens": 117,
+    "outputTokens": 205,
+    "chars": 866,
+    "score": 0.75,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0.25,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses direct DOM queries outside customEffect — should use declarative key-based targeting",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.5,
+        "reason": "FAIL: has viewEnter trigger",
+        "weight": 3
+      },
+      {
+        "name": "conditions",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"conditions\"",
+        "weight": 2
+      },
+      {
+        "name": "conditions",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"min-width\"",
+        "weight": 2
+      },
+      {
+        "name": "trigger",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"viewEnter\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "14-integration-integration-react-setup-with-interaction-component",
+    "variant": "with-rules",
+    "category": "integration",
+    "description": "Integration — React setup with Interaction component",
+    "inputTokens": 2588,
+    "outputTokens": 250,
+    "chars": 1086,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 1 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "setup",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"@wix/interact/react\"",
+        "weight": 2
+      },
+      {
+        "name": "component",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"Interaction\"",
+        "weight": 2
+      },
+      {
+        "name": "component",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"interactKey\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "14-integration-integration-react-setup-with-interaction-component",
+    "variant": "no-context",
+    "category": "integration",
+    "description": "Integration — React setup with Interaction component",
+    "inputTokens": 103,
+    "outputTokens": 148,
+    "chars": 771,
+    "score": 0.53,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'click'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0,
+        "reason": "FAIL: has click trigger",
+        "weight": 3
+      },
+      {
+        "name": "setup",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"@wix/interact/react\"",
+        "weight": 2
+      },
+      {
+        "name": "component",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"Interaction\"",
+        "weight": 2
+      },
+      {
+        "name": "component",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"interactKey\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "15-pointermove-pointermove-3d-tilt-card",
+    "variant": "with-rules",
+    "category": "pointermove",
+    "description": "PointerMove — 3D tilt card (namedEffect)",
+    "inputTokens": 10090,
+    "outputTokens": 68,
+    "chars": 376,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "15-pointermove-pointermove-3d-tilt-card",
+    "variant": "no-context",
+    "category": "pointermove",
+    "description": "PointerMove — 3D tilt card (namedEffect)",
+    "inputTokens": 87,
+    "outputTokens": 74,
+    "chars": 320,
+    "score": 0.44,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'pointerMove'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'namedEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses keyframeEffect with pointerMove without axis param — should use namedEffect mouse presets or customEffect for 2D",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.16666666666666666,
+        "reason": "FAIL: has pointerMove trigger; FAIL: has hitArea 'self'; FAIL: uses namedEffect (correct for pointerMove); FAIL: does NOT use keyframeEffect for 2D pointer (anti-pattern); FAIL: uses Tilt3DMouse preset",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "16-pointermove-pointermove-global-cursor-follower",
+    "variant": "with-rules",
+    "category": "pointermove",
+    "description": "PointerMove — global cursor follower",
+    "inputTokens": 10093,
+    "outputTokens": 79,
+    "chars": 410,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"AiryMouse\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "16-pointermove-pointermove-global-cursor-follower",
+    "variant": "no-context",
+    "category": "pointermove",
+    "description": "PointerMove — global cursor follower",
+    "inputTokens": 90,
+    "outputTokens": 151,
+    "chars": 635,
+    "score": 0.5,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'pointerMove'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'namedEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.3333333333333333,
+        "reason": "FAIL: has pointerMove trigger; FAIL: has hitArea 'root'; FAIL: uses namedEffect (correct for pointerMove); FAIL: centeredToTarget is false",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing any of: TrackMouse, AiryMouse",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "17-pointermove-pointermove-multi-layer-parallax",
+    "variant": "with-rules",
+    "category": "pointermove",
+    "description": "PointerMove — multi-layer parallax",
+    "inputTokens": 10122,
+    "outputTokens": 152,
+    "chars": 840,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "17-pointermove-pointermove-multi-layer-parallax",
+    "variant": "no-context",
+    "category": "pointermove",
+    "description": "PointerMove — multi-layer parallax",
+    "inputTokens": 119,
+    "outputTokens": 342,
+    "chars": 1285,
+    "score": 0.44,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'pointerMove'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'namedEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses keyframeEffect with pointerMove without axis param — should use namedEffect mouse presets or customEffect for 2D",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.16666666666666666,
+        "reason": "FAIL: has pointerMove trigger; FAIL: has hitArea 'self'; FAIL: uses namedEffect (correct for pointerMove); FAIL: does NOT use keyframeEffect for 2D pointer (anti-pattern); FAIL: has multiple effects (multi-layer)",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "18-pointermove-pointermove-custom-magnetic-button-effect",
+    "variant": "with-rules",
+    "category": "pointermove",
+    "description": "PointerMove — custom magnetic button effect",
+    "inputTokens": 10105,
+    "outputTokens": 130,
+    "chars": 601,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "18-pointermove-pointermove-custom-magnetic-button-effect",
+    "variant": "no-context",
+    "category": "pointermove",
+    "description": "PointerMove — custom magnetic button effect",
+    "inputTokens": 102,
+    "outputTokens": 232,
+    "chars": 927,
+    "score": 0.53,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'pointerMove'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'customEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.25,
+        "reason": "FAIL: has pointerMove trigger; FAIL: has hitArea 'self'; FAIL: uses customEffect",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "19-pointermove-pointermove-horizontal-slider",
+    "variant": "with-rules",
+    "category": "pointermove",
+    "description": "PointerMove — horizontal slider with keyframeEffect",
+    "inputTokens": 10119,
+    "outputTokens": 106,
+    "chars": 500,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "axis_config",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"axis: 'x'\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "19-pointermove-pointermove-horizontal-slider",
+    "variant": "no-context",
+    "category": "pointermove",
+    "description": "PointerMove — horizontal slider with keyframeEffect",
+    "inputTokens": 116,
+    "outputTokens": 60,
+    "chars": 256,
+    "score": 0.39,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'pointerMove'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'keyframeEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 0.75,
+        "reason": "Uses keyframeEffect with pointerMove without axis param — should use namedEffect mouse presets or customEffect for 2D",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.25,
+        "reason": "FAIL: has pointerMove trigger; FAIL: uses keyframeEffect; FAIL: has axis param for keyframeEffect",
+        "weight": 3
+      },
+      {
+        "name": "axis_config",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing any of: axis: 'x', axis: \"x\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "20-viewenter-viewenter-hero-fade-in-once",
+    "variant": "with-rules",
+    "category": "viewenter",
+    "description": "ViewEnter — hero fade-in once",
+    "inputTokens": 5971,
+    "outputTokens": 64,
+    "chars": 284,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 7 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "20-viewenter-viewenter-hero-fade-in-once",
+    "variant": "no-context",
+    "category": "viewenter",
+    "description": "ViewEnter — hero fade-in once",
+    "inputTokens": 86,
+    "outputTokens": 40,
+    "chars": 159,
+    "score": 0.49,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'namedEffect' not found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.14285714285714285,
+        "reason": "FAIL: has viewEnter trigger; FAIL: has params type 'once'; FAIL: params block exists; FAIL: uses namedEffect; FAIL: uses FadeIn preset; FAIL: has duration",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "21-viewenter-viewenter-staggered-card-grid-entrance",
+    "variant": "with-rules",
+    "category": "viewenter",
+    "description": "ViewEnter — staggered card grid entrance",
+    "inputTokens": 5991,
+    "outputTokens": 209,
+    "chars": 1092,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 7 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"SlideIn\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "21-viewenter-viewenter-staggered-card-grid-entrance",
+    "variant": "no-context",
+    "category": "viewenter",
+    "description": "ViewEnter — staggered card grid entrance",
+    "inputTokens": 106,
+    "outputTokens": 53,
+    "chars": 244,
+    "score": 0.54,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.14285714285714285,
+        "reason": "FAIL: has viewEnter trigger; FAIL: has params type 'once'; FAIL: params block exists; FAIL: has duration; FAIL: has staggered delays; FAIL: delays increase progressively",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"translateY\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "22-viewenter-viewenter-repeating-counter-animation",
+    "variant": "with-rules",
+    "category": "viewenter",
+    "description": "ViewEnter — repeating counter animation",
+    "inputTokens": 5981,
+    "outputTokens": 116,
+    "chars": 464,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 5 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "22-viewenter-viewenter-repeating-counter-animation",
+    "variant": "no-context",
+    "category": "viewenter",
+    "description": "ViewEnter — repeating counter animation",
+    "inputTokens": 96,
+    "outputTokens": 49,
+    "chars": 220,
+    "score": 0.51,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2,
+        "reason": "FAIL: has viewEnter trigger; FAIL: has params type 'repeat'; FAIL: params block exists; FAIL: source and target keys differ",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "23-viewenter-viewenter-ambient-floating-loop",
+    "variant": "with-rules",
+    "category": "viewenter",
+    "description": "ViewEnter — ambient floating loop (state)",
+    "inputTokens": 6001,
+    "outputTokens": 119,
+    "chars": 524,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 5 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"Infinity\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "23-viewenter-viewenter-ambient-floating-loop",
+    "variant": "no-context",
+    "category": "viewenter",
+    "description": "ViewEnter — ambient floating loop (state)",
+    "inputTokens": 116,
+    "outputTokens": 49,
+    "chars": 210,
+    "score": 0.46,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2,
+        "reason": "FAIL: has viewEnter trigger; FAIL: has params type 'state'; FAIL: params block exists; FAIL: has duration",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing any of: Infinity, iterations",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "24-viewenter-viewenter-chained-entrance",
+    "variant": "with-rules",
+    "category": "viewenter",
+    "description": "ViewEnter — chained entrance (title then content)",
+    "inputTokens": 5984,
+    "outputTokens": 133,
+    "chars": 656,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "chaining",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"animationEnd\"",
+        "weight": 2
+      },
+      {
+        "name": "chaining",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"effectId\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "24-viewenter-viewenter-chained-entrance",
+    "variant": "no-context",
+    "category": "viewenter",
+    "description": "ViewEnter — chained entrance (title then content)",
+    "inputTokens": 99,
+    "outputTokens": 67,
+    "chars": 268,
+    "score": 0.4,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Wrong or missing trigger value (expected 'viewEnter'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.25,
+        "reason": "FAIL: has viewEnter trigger; FAIL: has params type 'once'; FAIL: params block exists",
+        "weight": 3
+      },
+      {
+        "name": "chaining",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"animationEnd\"",
+        "weight": 2
+      },
+      {
+        "name": "chaining",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing \"effectId\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "25-viewprogress-viewprogress-background-parallax",
+    "variant": "with-rules",
+    "category": "viewprogress",
+    "description": "ViewProgress — background parallax",
+    "inputTokens": 8384,
+    "outputTokens": 90,
+    "chars": 414,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 9 checks passed",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "25-viewprogress-viewprogress-background-parallax",
+    "variant": "no-context",
+    "category": "viewprogress",
+    "description": "ViewProgress — background parallax",
+    "inputTokens": 94,
+    "outputTokens": 52,
+    "chars": 260,
+    "score": 0.52,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'viewProgress'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'namedEffect' not found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2222222222222222,
+        "reason": "FAIL: has viewProgress trigger; FAIL: has rangeStart; FAIL: has rangeEnd; FAIL: uses 'cover' range; FAIL: uses namedEffect; FAIL: uses linear easing; FAIL: source and target keys differ",
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "id": "26-viewprogress-viewprogress-content-fade-on-entry-range",
+    "variant": "with-rules",
+    "category": "viewprogress",
+    "description": "ViewProgress — content fade on entry range",
+    "inputTokens": 8386,
+    "outputTokens": 89,
+    "chars": 410,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 5 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"FadeScroll\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "26-viewprogress-viewprogress-content-fade-on-entry-range",
+    "variant": "no-context",
+    "category": "viewprogress",
+    "description": "ViewProgress — content fade on entry range",
+    "inputTokens": 96,
+    "outputTokens": 60,
+    "chars": 299,
+    "score": 0.56,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'viewProgress'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2,
+        "reason": "FAIL: has viewProgress trigger; FAIL: has rangeStart; FAIL: has rangeEnd; FAIL: uses 'entry' range",
+        "weight": 3
+      },
+      {
+        "name": "effect_choice",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"opacity\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "27-viewprogress-viewprogress-custom-keyframe-scroll",
+    "variant": "with-rules",
+    "category": "viewprogress",
+    "description": "ViewProgress — custom keyframe scroll (entry + exit)",
+    "inputTokens": 8402,
+    "outputTokens": 125,
+    "chars": 614,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 6 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"translateY\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"opacity\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "27-viewprogress-viewprogress-custom-keyframe-scroll",
+    "variant": "no-context",
+    "category": "viewprogress",
+    "description": "ViewProgress — custom keyframe scroll (entry + exit)",
+    "inputTokens": 112,
+    "outputTokens": 76,
+    "chars": 354,
+    "score": 0.59,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'viewProgress'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Expected effect type 'keyframeEffect' not found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.16666666666666666,
+        "reason": "FAIL: has viewProgress trigger; FAIL: has rangeStart; FAIL: has rangeEnd; FAIL: uses 'entry' range; FAIL: uses keyframeEffect",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"translateY\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"opacity\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "28-viewprogress-viewprogress-multi-range",
+    "variant": "with-rules",
+    "category": "viewprogress",
+    "description": "ViewProgress — multi-range (entry + exit phases)",
+    "inputTokens": 8397,
+    "outputTokens": 239,
+    "chars": 1175,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 4 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"entry\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"exit\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "28-viewprogress-viewprogress-multi-range",
+    "variant": "no-context",
+    "category": "viewprogress",
+    "description": "ViewProgress — multi-range (entry + exit phases)",
+    "inputTokens": 107,
+    "outputTokens": 104,
+    "chars": 532,
+    "score": 0.61,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'viewProgress'); Missing interaction 'key' field; Missing 'effects' array; No valid effect type found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.25,
+        "reason": "FAIL: has viewProgress trigger; FAIL: has rangeStart; FAIL: has rangeEnd",
+        "weight": 3
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"entry\"",
+        "weight": 1
+      },
+      {
+        "name": "completeness",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"exit\"",
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "id": "29-viewprogress-viewprogress-scroll-counter",
+    "variant": "with-rules",
+    "category": "viewprogress",
+    "description": "ViewProgress — scroll counter with customEffect",
+    "inputTokens": 8388,
+    "outputTokens": 128,
+    "chars": 562,
+    "score": 1,
+    "pass": true,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": true,
+        "score": 1,
+        "reason": "Valid config structure",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": true,
+        "score": 1,
+        "reason": "All 5 checks passed",
+        "weight": 3
+      },
+      {
+        "name": "effect_type",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"customEffect\"",
+        "weight": 2
+      }
+    ]
+  },
+  {
+    "id": "29-viewprogress-viewprogress-scroll-counter",
+    "variant": "no-context",
+    "category": "viewprogress",
+    "description": "ViewProgress — scroll counter with customEffect",
+    "inputTokens": 98,
+    "outputTokens": 108,
+    "chars": 487,
+    "score": 0.6,
+    "pass": false,
+    "checks": [
+      {
+        "name": "structure",
+        "pass": false,
+        "score": 0,
+        "reason": "Missing 'trigger' field; Wrong or missing trigger value (expected 'viewProgress'); Missing interaction 'key' field; Missing 'effects' array; Expected effect type 'customEffect' not found; Missing 'interactions' array or inline interaction",
+        "weight": 2
+      },
+      {
+        "name": "anti_patterns",
+        "pass": true,
+        "score": 1,
+        "reason": "No anti-patterns detected",
+        "weight": 2
+      },
+      {
+        "name": "compliance",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I can't\"",
+        "weight": 1
+      },
+      {
+        "name": "compliance_2",
+        "pass": true,
+        "score": 1,
+        "reason": "Does not contain \"I cannot\"",
+        "weight": 1
+      },
+      {
+        "name": "semantic",
+        "pass": false,
+        "score": 0.2,
+        "reason": "FAIL: has viewProgress trigger; FAIL: has rangeStart; FAIL: has rangeEnd; FAIL: uses customEffect",
+        "weight": 3
+      },
+      {
+        "name": "effect_type",
+        "pass": true,
+        "score": 1,
+        "reason": "Contains \"customEffect\"",
+        "weight": 2
+      }
+    ]
+  }
+];
+
+const categories = [...new Set(data.map(d => d.category))].sort();
+const variants = [...new Set(data.map(d => d.variant))];
+
+// Summary
+const totalTests = data.length;
+const totalPass = data.filter(d => d.pass).length;
+const totalFail = totalTests - totalPass;
+const rulesData = data.filter(d => d.variant === 'with-rules');
+const noCtxData = data.filter(d => d.variant === 'no-context');
+const rulesPass = rulesData.filter(d => d.pass).length;
+const noCtxPass = noCtxData.filter(d => d.pass).length;
+const avgInputRules = Math.round(rulesData.reduce((s,d) => s + d.inputTokens, 0) / rulesData.length);
+const avgInputNoCtx = Math.round(noCtxData.reduce((s,d) => s + d.inputTokens, 0) / noCtxData.length);
+const totalInputRules = rulesData.reduce((s,d) => s + d.inputTokens, 0);
+const totalInputNoCtx = noCtxData.reduce((s,d) => s + d.inputTokens, 0);
+
+document.getElementById('meta').textContent = `${totalTests} tests across ${categories.length} categories`;
+
+const fmt = n => n.toLocaleString();
+
+document.getElementById('summary-cards').innerHTML = `
+  <div class="card">
+    <div class="label">Overall Pass Rate</div>
+    <div class="value ${totalPass === totalTests ? 'pass' : 'fail'}">${Math.round(totalPass/totalTests*100)}%</div>
+    <div class="sub">${totalPass}/${totalTests} passed</div>
+  </div>
+  <div class="card">
+    <div class="label">With Rules</div>
+    <div class="value ${rulesPass === rulesData.length ? 'pass' : 'fail'}">${Math.round(rulesPass/rulesData.length*100)}%</div>
+    <div class="sub">${rulesPass}/${rulesData.length} passed</div>
+  </div>
+  <div class="card">
+    <div class="label">No Context</div>
+    <div class="value ${noCtxPass === noCtxData.length ? 'pass' : 'fail'}">${Math.round(noCtxPass/noCtxData.length*100)}%</div>
+    <div class="sub">${noCtxPass}/${noCtxData.length} passed</div>
+  </div>
+  <div class="card">
+    <div class="label">Avg Input Tokens</div>
+    <div class="value neutral">${fmt(avgInputRules)}</div>
+    <div class="sub">vs ${fmt(avgInputNoCtx)} no-context (${Math.round(avgInputRules/avgInputNoCtx)}x)</div>
+  </div>
+  <div class="card">
+    <div class="label">Total Input Tokens</div>
+    <div class="value neutral">${fmt(totalInputRules + totalInputNoCtx)}</div>
+    <div class="sub">rules: ${fmt(totalInputRules)} / no-ctx: ${fmt(totalInputNoCtx)}</div>
+  </div>
+`;
+
+// Pass rate chart
+function passRate(arr) { return arr.length ? Math.round(arr.filter(d=>d.pass).length / arr.length * 100) : 0; }
+
+const passChart = document.getElementById('pass-chart');
+categories.forEach(cat => {
+  const rr = passRate(rulesData.filter(d => d.category === cat));
+  const nr = passRate(noCtxData.filter(d => d.category === cat));
+  passChart.innerHTML += `
+    <div class="bar-group">
+      <div class="bar-label">${cat}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        <div class="bar-track"><div class="bar-fill rules" style="width:${rr}%">${rr}%</div></div>
+        <div class="bar-track"><div class="bar-fill nocontext" style="width:${nr}%">${nr}%</div></div>
+      </div>
+    </div>
+  `;
+});
+
+// Token charts
+function avgTokens(arr, key) { return arr.length ? Math.round(arr.reduce((s,d)=>s+d[key],0)/arr.length) : 0; }
+
+const inputChart = document.getElementById('input-token-chart');
+const outputChart = document.getElementById('output-token-chart');
+const maxInput = Math.max(...categories.map(c => avgTokens(rulesData.filter(d=>d.category===c), 'inputTokens')));
+const maxOutput = Math.max(...categories.map(c => Math.max(
+  avgTokens(rulesData.filter(d=>d.category===c), 'outputTokens'),
+  avgTokens(noCtxData.filter(d=>d.category===c), 'outputTokens')
+)));
+
+categories.forEach(cat => {
+  const ri = avgTokens(rulesData.filter(d=>d.category===cat), 'inputTokens');
+  const ni = avgTokens(noCtxData.filter(d=>d.category===cat), 'inputTokens');
+  const ro = avgTokens(rulesData.filter(d=>d.category===cat), 'outputTokens');
+  const no_ = avgTokens(noCtxData.filter(d=>d.category===cat), 'outputTokens');
+
+  inputChart.innerHTML += `
+    <div class="bar-group">
+      <div class="bar-label">${cat}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        <div class="bar-track"><div class="bar-fill rules" style="width:${ri/maxInput*100}%">${fmt(ri)}</div></div>
+        <div class="bar-track"><div class="bar-fill nocontext" style="width:${Math.max(ni/maxInput*100, 3)}%">${fmt(ni)}</div></div>
+      </div>
+    </div>
+  `;
+
+  outputChart.innerHTML += `
+    <div class="bar-group">
+      <div class="bar-label">${cat}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        <div class="bar-track"><div class="bar-fill rules" style="width:${ro/maxOutput*100}%">${fmt(ro)}</div></div>
+        <div class="bar-track"><div class="bar-fill nocontext" style="width:${no_/maxOutput*100}%">${fmt(no_)}</div></div>
+      </div>
+    </div>
+  `;
+});
+
+// Filters
+let activeFilter = 'all';
+const filtersEl = document.getElementById('filters');
+filtersEl.innerHTML = `<button class="active" data-filter="all">All</button>` +
+  categories.map(c => `<button data-filter="${c}">${c}</button>`).join('') +
+  `<button data-filter="failed">Failed Only</button>`;
+
+filtersEl.addEventListener('click', e => {
+  if (!e.target.matches('button')) return;
+  filtersEl.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeFilter = e.target.dataset.filter;
+  renderTable();
+});
+
+// Table
+const tbody = document.getElementById('results-body');
+
+function renderTable() {
+  let filtered = data;
+  if (activeFilter === 'failed') filtered = data.filter(d => !d.pass);
+  else if (activeFilter !== 'all') filtered = data.filter(d => d.category === activeFilter);
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No results match the filter</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((d, i) => {
+    const checksHtml = d.checks.map(c =>
+      `<div class="check-item">
+        <span class="check-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '\u2713' : '\u2717'}</span>
+        <span><strong>${c.name}</strong> &mdash; ${c.reason}</span>
+        <span class="check-weight">w:${c.weight}</span>
+      </div>`
+    ).join('');
+
+    return `
+      <tr data-idx="${i}" onclick="toggleChecks(this)">
+        <td style="max-width:280px">${d.description}</td>
+        <td><span class="badge cat">${d.category}</span></td>
+        <td><span class="badge variant-${d.variant === 'with-rules' ? 'rules' : 'nocontext'}">${d.variant}</span></td>
+        <td class="score-cell" style="color:${d.score >= 1 ? 'var(--green)' : d.score > 0 ? 'var(--orange)' : 'var(--red)'}">${(d.score * 100).toFixed(0)}%</td>
+        <td><span class="badge ${d.pass ? 'pass' : 'fail'}">${d.pass ? 'PASS' : 'FAIL'}</span></td>
+        <td class="token-cell">${fmt(d.inputTokens)}</td>
+        <td class="token-cell">${fmt(d.outputTokens)}</td>
+        <td class="token-cell">${d.checks.filter(c=>c.pass).length}/${d.checks.length}</td>
+      </tr>
+      <tr class="checks-row">
+        <td colspan="8">
+          <div class="checks-container" id="checks-${i}">${checksHtml}</div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function toggleChecks(row) {
+  const idx = row.dataset.idx;
+  const el = document.getElementById('checks-' + idx);
+  el.classList.toggle('open');
+}
+
+renderTable();
+</script>
+
+</body>
+</html>
