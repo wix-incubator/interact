@@ -1,0 +1,92 @@
+- description: 'PointerMove — 3D tilt card (namedEffect)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/pointermove.md
+    prompt: >
+      Create an interactive product card that tilts in 3D following the mouse
+      cursor when hovering over it.
+    expected_trigger: pointerMove
+    expected:
+      hit_area: self
+      effect_type: namedEffect
+      named_effect: Tilt3DMouse
+  assert:
+    - type: javascript
+      value: file://assertions/pointermove-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'PointerMove — global cursor follower'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/pointermove.md
+    prompt: >
+      Create a decorative dot element that follows the mouse cursor anywhere
+      on the page with a slight lag/floaty feel.
+    expected_trigger: pointerMove
+    expected:
+      hit_area: root
+      effect_type: namedEffect
+      has_centeredToTarget: false
+  assert:
+    - type: javascript
+      value: file://assertions/pointermove-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['TrackMouse', 'AiryMouse']
+      weight: 1
+      metric: effect_choice
+
+- description: 'PointerMove — multi-layer parallax'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/pointermove.md
+    prompt: >
+      Create a multi-layer pointer parallax effect on a hero section with
+      3 layers (background, midground, foreground) that move at different
+      speeds following the mouse. Each layer should use a different distance.
+    expected_trigger: pointerMove
+    expected:
+      hit_area: self
+      effect_type: namedEffect
+      multi_layer: true
+  assert:
+    - type: javascript
+      value: file://assertions/pointermove-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'PointerMove — custom magnetic button effect'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/pointermove.md
+    prompt: >
+      Create a magnetic button effect where the button subtly moves toward
+      the mouse cursor when hovering over it. Use a customEffect with
+      distance calculations.
+    expected_trigger: pointerMove
+    expected:
+      hit_area: self
+      effect_type: customEffect
+  assert:
+    - type: javascript
+      value: file://assertions/pointermove-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'PointerMove — horizontal slider with keyframeEffect'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/pointermove.md
+    prompt: >
+      Create a horizontal slider-like interaction where moving the mouse
+      left to right over a container moves a slider element from 0px to
+      220px along the x axis. Use keyframeEffect with axis mapping.
+    expected_trigger: pointerMove
+    expected:
+      effect_type: keyframeEffect
+  assert:
+    - type: javascript
+      value: file://assertions/pointermove-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ["axis: 'x'", 'axis: "x"']
+      weight: 2
+      metric: axis_config

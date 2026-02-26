@@ -1373,6 +1373,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@wix/interact-evals@workspace:packages/interact-evals":
+  version: 0.0.0-use.local
+  resolution: "@wix/interact-evals@workspace:packages/interact-evals"
+  dependencies:
+    yaml: "npm:^2.7.0"
+  languageName: unknown
+  linkType: soft
+
 "@wix/interact@npm:^2.0.1, @wix/interact@workspace:packages/interact":
   version: 0.0.0-use.local
   resolution: "@wix/interact@workspace:packages/interact"
@@ -6252,6 +6260,15 @@ __metadata:
   version: 5.0.0
   resolution: "yallist@npm:5.0.0"
   checksum: 10/1884d272d485845ad04759a255c71775db0fac56308764b4c77ea56a20d56679fad340213054c8c9c9c26fcfd4c4b2a90df993b7e0aaf3cdb73c618d1d1a802a
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.7.0":
+  version: 2.8.2
+  resolution: "yaml@npm:2.8.2"
+  bin:
+    yaml: bin.mjs
+  checksum: 10/4eab0074da6bc5a5bffd25b9b359cf7061b771b95d1b3b571852098380db3b1b8f96e0f1f354b56cc7216aa97cea25163377ccbc33a2e9ce00316fe8d02f4539
   languageName: node
   linkType: hard
 
