@@ -109,7 +109,7 @@ Parameters:
 
 ### GrowScroll
 
-Visual: Element scales up from a direction as it scrolls into view.
+Visual: Element scales up from a direction as it scrolls into or out of view.
 
 Parameters:
 
@@ -142,7 +142,7 @@ Parameters:
 
 ### PanScroll
 
-Visual: Element pans horizontally across the viewport as it scrolls.
+Visual: Horizontal panning tied to scroll.
 
 Parameters:
 
@@ -205,7 +205,7 @@ Parameters:
 
 ### ShrinkScroll
 
-Visual: Element shrinks toward a direction as it scrolls, the inverse of GrowScroll.
+Visual: Element shrinks toward a direction as it scrolls into or out of view, the inverse of GrowScroll.
 
 Parameters:
 
@@ -222,7 +222,7 @@ Parameters:
 
 ### ShuttersScroll
 
-Visual: Element is revealed through shutter-like strips that open on scroll.
+Visual: Element is revealed through staggered shutter-like strips that open on scroll in. When scrolling out, the element disappears with the same animation in reverse.
 
 Parameters:
 
@@ -319,7 +319,7 @@ Parameters:
 
 ### TiltScroll
 
-Visual: Element tilts in 3D with optional parallax vertical movement as it scrolls.
+Visual: Element tilts in 3D and perspective, with optional parallax vertical movement as it scrolls into or out of view.
 
 Parameters:
 
@@ -357,6 +357,7 @@ Parameters:
 
 | Preset       | Parameter     | Default | Range    |
 | ------------ | ------------- | ------- | -------- |
+| ArcScroll    | `perspective` | 500     | 200-2000 |
 | FlipScroll   | `perspective` | 800     | 200-2000 |
 | TiltScroll   | `perspective` | 400     | 200-2000 |
 | Spin3dScroll | `perspective` | 1000    | 200-2000 |

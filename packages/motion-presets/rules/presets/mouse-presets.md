@@ -1,11 +1,11 @@
 ---
 name: mouse-presets
-description: Full parameter reference for mouse motion presets. Read when configuring AiryMouse, BlobMouse, BlurMouse, BounceMouse, CustomMouse, ScaleMouse, SkewMouse, SpinMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, or TrackMouse pointer-driven animations.
+description: Full parameter reference for mouse motion presets. Read when configuring AiryMouse, BlobMouse, BlurMouse, ScaleMouse, SkewMouse, SwivelMouse, Tilt3DMouse, Track3DMouse, or TrackMouse pointer-driven animations.
 ---
 
 # Mouse Presets
 
-Mouse presets drive element transforms in real-time based on pointer position. The element responds to cursor movement with translation, rotation, scale, or other effects. All mouse presets (except CustomMouse) share the `inverted` base parameter.
+Mouse presets drive element transforms in real-time based on pointer position. The element responds to cursor movement with translation, rotation, scale, or other effects. All mouse presets share the `inverted` base parameter.
 
 **Mobile note:** Mouse presets respond to pointer events. On touch devices, behavior may differ — the element responds to touch position rather than a persistent cursor, so effects may only activate during active touch. Consider this when designing for cross-device experiences.
 
@@ -15,11 +15,8 @@ Mouse presets drive element transforms in real-time based on pointer position. T
 - [AiryMouse](#airymouse)
 - [BlobMouse](#blobmouse)
 - [BlurMouse](#blurmouse)
-- [BounceMouse](#bouncemouse)
-- [CustomMouse](#custommouse)
 - [ScaleMouse](#scalemouse)
 - [SkewMouse](#skewmouse)
-- [SpinMouse](#spinmouse)
 - [SwivelMouse](#swivelmouse)
 - [Tilt3DMouse](#tilt3dmouse)
 - [Track3DMouse](#track3dmouse)
@@ -30,7 +27,7 @@ Mouse presets drive element transforms in real-time based on pointer position. T
 
 ## Shared Parameters
 
-These parameters are available on all mouse presets (except CustomMouse):
+These parameters are available on all mouse presets:
 
 - `inverted`: boolean — reverses the movement/effect direction (default: `false`)
 
@@ -61,7 +58,7 @@ Parameters:
 
 ### BlobMouse
 
-Visual: Element translates and scales non-uniformly following the cursor, creating a blob-like deformation.
+Visual: Element translates and scales non-uniformly following the cursor, creating a heavy liquid-like deformation.
 
 Parameters:
 
@@ -77,7 +74,7 @@ Parameters:
 
 ### BlurMouse
 
-Visual: Element translates, tilts in 3D, scales, and blurs based on distance from the cursor — the farther away, the stronger the blur and tilt.
+Visual: Element translates, tilts in 3D, scales, and blurs based on distance from the cursor.
 
 Parameters:
 
@@ -90,38 +87,6 @@ Parameters:
 
 ```typescript
 { type: 'BlurMouse', blur: 30, angle: 10 }
-```
-
----
-
-### BounceMouse
-
-Visual: Element follows the cursor with an elastic, bouncy motion.
-
-Parameters:
-
-- `inverted`: boolean (default: `false`)
-- `distance`: UnitLengthPercentage — max translate distance (default: `{ value: 80, unit: 'px' }`)
-- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
-
-```typescript
-{ type: 'BounceMouse', distance: { value: 120, type: 'px' } }
-```
-
----
-
-### CustomMouse
-
-Visual: Fully custom effect — behavior is defined by a provided callback function.
-
-Parameters:
-
-- `customEffect`: (target: HTMLElement, progress: Progress) => void — custom function receiving the target element and normalized cursor progress `{ x, y, v: { x, y }, active }`
-
-```typescript
-{
-  type: 'CustomMouse';
-}
 ```
 
 ---
@@ -156,21 +121,6 @@ Parameters:
 
 ```typescript
 { type: 'SkewMouse', angle: 15, axis: 'horizontal' }
-```
-
----
-
-### SpinMouse
-
-Visual: Element rotates toward the cursor position.
-
-Parameters:
-
-- `inverted`: boolean (default: `false`)
-- `axis`: 'both' | 'horizontal' | 'vertical' (default: `'both'`)
-
-```typescript
-{ type: 'SpinMouse', axis: 'horizontal' }
 ```
 
 ---

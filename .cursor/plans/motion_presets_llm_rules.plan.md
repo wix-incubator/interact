@@ -107,91 +107,99 @@ A preset is a named effect. "Preset" is used when talking about selection and co
 
 A list of the presets present in the project. Before continuing, make sure this list is aligned with `packages/motion-presets/src/library` and update accordingly.
 
-*Note:* the descriptions should be verified by a designer
+Descriptions marked with **(designer)** are approved by design and should be used as-is in generated files. All other descriptions are derived and should follow the same style.
+
+### Excluded Presets
+
+The following presets exist in the library but should **not** be documented in the generated rules:
+
+- `CustomMouse` — fully custom callback, not a configurable preset
+- `SpinMouse` — excluded by design
+- `BounceMouse` — excluded by design
 
 ### Entrance Presets
 
-| Preset     | Notes                                                    |
-| ---------- | -------------------------------------------------------- |
-| FadeIn     | Simple opacity transition                                |
-| ArcIn      | 3D arc rotation entry                                    |
-| BlurIn     | Blur-to-clear transition                                 |
-| BounceIn   | Bouncy entrance with overshoot                           |
-| CurveIn    | Curved path entry                                        |
-| DropIn     | Drop from above with scale                               |
-| ExpandIn   | Scale + translate entry from edge                        |
-| FlipIn     | 3D flip rotation                                         |
-| FloatIn    | Gentle floating entry                                    |
-| FoldIn     | 3D fold unfold                                           |
-| GlideIn    | Smooth directional slide (default: from left, angle 270) |
-| RevealIn   | Directional clip-path reveal                             |
-| ShapeIn    | Geometric shape clip-path reveal                         |
-| ShuttersIn | Multi-segment reveal                                     |
-| SlideIn    | Directional slide with clip                              |
-| SpinIn     | Rotation entry                                           |
-| TiltIn     | 3D tilt entry                                            |
-| TurnIn     | Corner-pivot rotation                                    |
-| WinkIn     | Axis-based scale reveal                                  |
+| Preset     | Description                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| FadeIn     | Element fades in smoothly from fully transparent to fully opaque.                                                                  |
+| ArcIn      | **(designer)** Element enters along a 3D arc path, rotating into view with depth motion.                                           |
+| BlurIn     | **(designer)** Element transitions from blurred to sharp while fading in.                                                          |
+| BounceIn   | Element bounces into place from a direction with an elastic multi-step curve.                                                      |
+| CurveIn    | **(designer)** Element curves in with a 180° rotation and depth motion in a 3D space, creating a swinging arc entrance.            |
+| DropIn     | **(designer)** Element shrinks down from a larger size to its final scale.                                                         |
+| ExpandIn   | Element expands from a point in a given direction, scaling from small to full size with a fade-in.                                 |
+| FlipIn     | Element flips into view with a 3D rotation around the X or Y axis.                                                                 |
+| FloatIn    | Element drifts gently into place from a direction with a fade-in.                                                                  |
+| FoldIn     | Element unfolds from an edge, rotating around an axis at the edge as if hinged.                                                    |
+| GlideIn    | **(designer)** Element glides in smoothly from off-screen along a direction.                                                       |
+| RevealIn   | Element is progressively revealed by an expanding clip-path from one edge.                                                         |
+| ShapeIn    | Element appears through an expanding geometric clip-path shape.                                                                    |
+| ShuttersIn | Element is revealed through multiple shutter-like strips that open in sequence.                                                    |
+| SlideIn    | Element slides in from one side while being revealed with a clip-path mask.                                                        |
+| SpinIn     | Element spins into view while scaling from small to full size.                                                                     |
+| TiltIn     | Element tilts in from the side with 3D rotation and a clip-path reveal.                                                            |
+| TurnIn     | Element rotates into view around a corner pivot point.                                                                             |
+| WinkIn     | **(designer)** Element winks into view by expanding from its horizontal or vertical center, while being revealed with a clip-path. |
 
 ### Scroll Presets
 
-| Preset         | Notes                         |
-| -------------- | ----------------------------- |
-| ArcScroll      | 3D arc on scroll              |
-| BlurScroll     | Blur based on scroll          |
-| FadeScroll     | Opacity on scroll             |
-| FlipScroll     | 3D flip on scroll             |
-| GrowScroll     | Scale up on scroll            |
-| MoveScroll     | Translate on scroll           |
-| PanScroll      | Horizontal pan on scroll      |
-| ParallaxScroll | Depth-based parallax          |
-| RevealScroll   | Clip-path reveal on scroll    |
-| ShapeScroll    | Shape clip-path on scroll     |
-| ShrinkScroll   | Scale down on scroll          |
-| ShuttersScroll | Multi-segment on scroll       |
-| SkewPanScroll  | Skew + pan on scroll          |
-| SlideScroll    | Slide on scroll               |
-| Spin3dScroll   | 3D spin on scroll             |
-| SpinScroll     | 2D spin on scroll             |
-| StretchScroll  | Stretch deformation on scroll |
-| TiltScroll     | 3D tilt on scroll             |
-| TurnScroll     | Turn rotation on scroll       |
+| Preset         | Description                                                                                                                                                                     |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ArcScroll      | Element rotates along a 3D arc as it scrolls into or out of view.                                                                                                               |
+| BlurScroll     | Element blurs or unblurs as it scrolls through the viewport.                                                                                                                    |
+| FadeScroll     | Element fades in or out based on scroll position.                                                                                                                               |
+| FlipScroll     | Element performs a 3D flip rotation as it scrolls.                                                                                                                              |
+| GrowScroll     | **(designer)** Element scales up from a direction as it scrolls into or out of view.                                                                                            |
+| MoveScroll     | Element translates along an angle for a given distance as it scrolls.                                                                                                           |
+| PanScroll      | **(designer)** Horizontal panning tied to scroll.                                                                                                                               |
+| ParallaxScroll | Element moves at a different speed than the scroll, creating a depth illusion.                                                                                                  |
+| RevealScroll   | Element is progressively revealed from an edge via clip-path as it scrolls.                                                                                                     |
+| ShapeScroll    | Element is revealed through an expanding geometric clip-path shape on scroll.                                                                                                   |
+| ShrinkScroll   | **(designer)** Element shrinks toward a direction as it scrolls into or out of view, the inverse of GrowScroll.                                                                 |
+| ShuttersScroll | **(designer)** Element is revealed through staggered shutter-like strips that open on scroll in. When scrolling out, the element disappears with the same animation in reverse. |
+| SkewPanScroll  | Element pans horizontally with a skew distortion as it scrolls.                                                                                                                 |
+| SlideScroll    | Element slides in from an edge with a clip-path reveal as it scrolls.                                                                                                           |
+| Spin3dScroll   | Element performs a 3D spin with rotation on multiple axes as it scrolls.                                                                                                        |
+| SpinScroll     | Element spins (2D rotation) with optional scale change as it scrolls.                                                                                                           |
+| StretchScroll  | Element stretches vertically with scaleY increasing while scaleX decreases, with an opacity transition.                                                                         |
+| TiltScroll     | **(designer)** Element tilts in 3D and perspective, with optional parallax vertical movement as it scrolls into or out of view.                                                 |
+| TurnScroll     | Element pans in from off-screen while turning (rotating) as it scrolls.                                                                                                         |
 
 ### Ongoing Presets
 
-| Preset  | Notes                  |
-| ------- | ---------------------- |
-| Bounce  | Continuous bounce      |
-| Breathe | Gentle scale pulse     |
-| Cross   | Cross-pattern movement |
-| DVD     | DVD screensaver bounce |
-| Flash   | Opacity flash          |
-| Flip    | Continuous flip        |
-| Fold    | Continuous fold        |
-| Jello   | Jello wobble           |
-| Poke    | Directional poke       |
-| Pulse   | Scale pulse            |
-| Rubber  | Rubber stretch         |
-| Spin    | Continuous rotation    |
-| Swing   | Pendulum swing         |
-| Wiggle  | Shake wiggle           |
+| Preset  | Description                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bounce  | Element bounces up and down with a natural multi-step curve, like a ball settling.                                                                                             |
+| Breathe | Element gently moves back and forth along an axis, like a breathing motion.                                                                                                    |
+| Cross   | **(designer)** Element moves across the screen from side to side, horizontally or vertically, until reaching the edge of the view and repeats.                                 |
+| DVD     | **(designer)** Element bounces diagonally off the viewport edges like a DVD screensaver logo. No configurable parameters — uses viewport dimensions to calculate bounce paths. |
+| Flash   | Element blinks by rapidly cycling opacity from visible to invisible and back.                                                                                                  |
+| Flip    | Element continuously flips with a full 360° 3D rotation.                                                                                                                       |
+| Fold    | Element folds at an edge using 3D rotation, like a page turning back and forth.                                                                                                |
+| Jello   | Element wobbles with a skew-based jello-like deformation.                                                                                                                      |
+| Poke    | **(designer)** Element makes two short, sharp translates in a direction back and forth, like being poked.                                                                      |
+| Pulse   | **(designer)** Element pulses by subtly scaling up and down.                                                                                                                   |
+| Rubber  | Element stretches non-uniformly on X and Y axes, creating a rubber-band wobble.                                                                                                |
+| Spin    | Element rotates continuously around its center.                                                                                                                                |
+| Swing   | Element swings like a pendulum from a pivot at one edge.                                                                                                                       |
+| Wiggle  | Element shakes with combined rotation and vertical translation.                                                                                                                |
 
 ### Mouse Presets
 
-| Preset       | Notes                    |
-| ------------ | ------------------------ |
-| AiryMouse    | Light floating follow    |
-| BlobMouse    | Blob-like scale response |
-| BlurMouse    | Blur on distance         |
-| BounceMouse  | Bouncy follow            |
-| CustomMouse  | Custom mouse effect      |
-| ScaleMouse   | Scale on mouse           |
-| SkewMouse    | Skew on mouse            |
-| SpinMouse    | Spin on mouse            |
-| SwivelMouse  | 3D swivel on mouse       |
-| Tilt3DMouse  | 3D tilt on mouse         |
-| Track3DMouse | 3D tracking on mouse     |
-| TrackMouse   | Direct mouse tracking    |
+| Preset       | Description                                                                                                                |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| AiryMouse    | Element floats and rotates gently following the cursor, creating an airy, weightless feel.                                 |
+| BlobMouse    | **(designer)** Element translates and scales non-uniformly following the cursor, creating a heavy liquid-like deformation. |
+| BlurMouse    | Element translates, tilts in 3D, scales, and blurs based on distance from the cursor.                                      |
+| BounceMouse  | *(excluded from generated rules)* Element follows the cursor with an elastic, bouncy motion.                               |
+| CustomMouse  | *(excluded from generated rules)* Fully custom callback effect.                                                            |
+| ScaleMouse   | Element translates and scales uniformly following the cursor.                                                              |
+| SkewMouse    | Element translates and skews following the cursor, creating a directional distortion.                                      |
+| SpinMouse    | *(excluded from generated rules)* Element rotates toward the cursor position.                                              |
+| SwivelMouse  | Element tilts in 3D around a chosen pivot axis following the cursor.                                                       |
+| Tilt3DMouse  | Element tilts in 3D based on cursor position, rotating on X and Y axes from center.                                        |
+| Track3DMouse | Element translates and tilts in 3D following the cursor, combining movement with perspective rotation.                     |
+| TrackMouse   | Element follows the cursor with direct translation, no rotation.                                                           |
 
 ---
 
@@ -253,12 +261,19 @@ These are set on the effect configuration level, not on the preset itself:
 
 The `direction` parameter accepts different values depending on the preset:
 
-| Meaning            | Accepted Values                                        | Presets                          |
-| ------------------ | ------------------------------------------------------ | -------------------------------- |
-| Cardinal direction | 'top', 'right', 'bottom', 'left'                       | FlipIn, FoldIn, SlideIn, FloatIn |
-| Cardinal + center  | 'top', 'right', 'bottom', 'left', 'center'             | BounceIn                         |
-| Corner direction   | 'top-left', 'top-right', 'bottom-left', 'bottom-right' | TurnIn                           |
-| Rotation direction | 'clockwise', 'counter-clockwise'                       | SpinIn, SpinScroll, Spin         |
+| Meaning            | Accepted Values                                           | Presets                                                                                                              |
+| ------------------ | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Cardinal           | 'top', 'right', 'bottom', 'left'                          | FlipIn, FoldIn, SlideIn, FloatIn, RevealIn, ShuttersIn, Poke, Swing, Fold, RevealScroll, ShuttersScroll, SlideScroll |
+| Cardinal + center  | 'top', 'right', 'bottom', 'left', 'center'                | BounceIn                                                                                                             |
+| Two sides          | 'left', 'right'                                           | TiltIn, PanScroll, SkewPanScroll, TiltScroll, TurnScroll                                                             |
+| Two sides + pseudo | 'left', 'right', 'pseudoLeft', 'pseudoRight'              | CurveIn                                                                                                              |
+| Corner             | 'top-left', 'top-right', 'bottom-left', 'bottom-right'    | TurnIn                                                                                                               |
+| Eight directions   | 4 cardinal + 4 diagonal                                   | Cross                                                                                                                |
+| Nine directions    | 4 cardinal + 4 diagonal + 'center'                        | GrowScroll, ShrinkScroll                                                                                             |
+| Axis               | 'horizontal', 'vertical'                                  | WinkIn, ArcScroll, FlipScroll, Flip                                                                                  |
+| Axis + center      | 'horizontal', 'vertical', 'center'                        | Breathe                                                                                                              |
+| Rotation           | 'clockwise', 'counter-clockwise'                          | SpinIn, SpinScroll, Spin                                                                                             |
+| Angle (number)     | 0–360 (0° = right, 90° = top, 180° = left, 270° = bottom) | GlideIn, ExpandIn, MoveScroll                                                                                        |
 
 ### Using Units
 
@@ -307,6 +322,7 @@ Some preset parameters are exposed, but their defaults have been tuned for good 
 | FlipIn            | `perspective` | 800     | 200-2000 |
 | CurveIn           | `perspective` | 200     | 100-1000 |
 | BounceIn (center) | `perspective` | 800     | 200-2000 |
+| ArcScroll         | `perspective` | 500     | 200-2000 |
 | FlipScroll        | `perspective` | 800     | 200-2000 |
 | TiltScroll        | `perspective` | 400     | 200-2000 |
 | Spin3dScroll      | `perspective` | 1000    | 200-2000 |
@@ -339,8 +355,8 @@ If it is known that the host handles accessibility globally (e.g., disabling all
 
 **High risk** (vestibular triggers, seizure risk if motion is fast and repetitive):
 
-- Spinning: SpinIn, Spin, SpinScroll, SpinMouse, Spin3dScroll
-- Bouncing: BounceIn, Bounce, BounceMouse
+- Spinning: SpinIn, Spin, SpinScroll, Spin3dScroll
+- Bouncing: BounceIn, Bounce
 - 3D rotations: ArcIn, FlipIn, ArcScroll, FlipScroll, Tilt3DMouse
 - Continuous motion: Flash, DVD, Jello, Wiggle
 
@@ -379,46 +395,198 @@ If it is known that the host handles accessibility globally (e.g., disabling all
 
 ## Selection Tables
 
-### Preset Selection By Tone
+### Selection by Atmosphere
 
-*Note:* the descriptions should be verified by a designer
+#### Playful / Fun / Whimsical
 
-| Tone                | Entrance                                 | Scroll                                    | Ongoing                    | Mouse                            |
-| ------------------- | ---------------------------------------- | ----------------------------------------- | -------------------------- | -------------------------------- |
-| Subtle/Professional | FadeIn, BlurIn, SlideIn, GlideIn, TiltIn | FadeScroll, BlurScroll                    | Pulse (subtle), Breathe    | Tilt3DMouse (subtle), TrackMouse |
-| Dramatic/Cinematic  | ArcIn, FlipIn, TurnIn, FoldIn            | ArcScroll, FlipScroll, TiltScroll         | Flip, Fold                 | Track3DMouse                     |
-| Playful/Energetic   | BounceIn, SpinIn                         | SpinScroll, Spin3dScroll                  | Bounce, Wiggle, Jello, DVD | BounceMouse, BlobMouse           |
-| Geometric/Modern    | ShapeIn, RevealIn, ShuttersIn, WinkIn    | ShapeScroll, RevealScroll, ShuttersScroll | Cross                      | -                                |
+Keywords: playful, fun, quirky, whimsical, lighthearted, bouncy, cheerful, cute, charming, goofy, jiggly, cheeky, springy, joyful, upbeat, poppy, friendly, casual, funky, groovy, surprising
 
-### Preset Selection By Use Case
+| Effect | Trigger  | Preset      |
+| ------ | -------- | ----------- |
+| Wink   | entrance | WinkIn      |
+| Wiggle | loop     | Wiggle      |
+| Jello  | loop     | Jello       |
+| Poke   | loop     | Poke        |
+| DVD    | loop     | DVD         |
+| Cross  | loop     | Cross       |
+| Spin   | entrance | SpinIn      |
+| Spin   | scroll   | SpinScroll  |
+| Spin   | loop     | Spin        |
+| Flip   | entrance | FlipIn      |
+| Flip   | scroll   | FlipScroll  |
+| Flip   | loop     | Flip        |
+| Bounce | entrance | BounceIn    |
+| Bounce | loop     | Bounce      |
+| Swing  | loop     | Swing       |
+| Blob   | mouse    | BlobMouse   |
+| Rubber | loop     | Rubber      |
+| Track  | mouse    | TrackMouse  |
+| Swivel | mouse    | SwivelMouse |
 
-| Use Case               | Recommended Presets                            |
-| ---------------------- | ---------------------------------------------- |
-| Hero sections          | ArcIn, FloatIn, RevealIn                       |
-| Modals/Popups          | FadeIn, DropIn, ExpandIn, SlideIn              |
-| List items (staggered) | FadeIn, SlideIn, GlideIn with increasing delay |
-| Cards                  | FlipIn, ArcIn, TiltIn + FadeScroll (in/out)    |
-| Notifications/Badges   | BounceIn, DropIn + Pulse                       |
-| CTAs/Buttons           | BounceIn, ExpandIn + Pulse                     |
-| Loading indicators     | Spin, Pulse                                    |
-| Product images         | Tilt3DMouse, ScaleMouse                        |
-| Background depth       | ParallaxScroll, TrackMouse (layered)           |
+#### Smooth / Elegant / Refined
+
+Keywords: smooth, elegant, graceful, flowing, refined, sophisticated, polished, seamless, effortless, silky, controlled, classic, curved, rhythmic, continuous, circular, pendular, mesmerizing
+
+| Effect | Trigger  | Preset       |
+| ------ | -------- | ------------ |
+| Glide  | entrance | GlideIn      |
+| Swivel | mouse    | SwivelMouse  |
+| Turn   | entrance | TurnIn       |
+| Turn   | scroll   | TurnScroll   |
+| Arc    | entrance | ArcIn        |
+| Arc    | scroll   | ArcScroll    |
+| Slide  | entrance | SlideIn      |
+| Slide  | scroll   | SlideScroll  |
+| Move   | scroll   | MoveScroll   |
+| Fold   | entrance | FoldIn       |
+| Fold   | loop     | Fold         |
+| Shape  | entrance | ShapeIn      |
+| Shape  | scroll   | ShapeScroll  |
+| Fade   | entrance | FadeIn       |
+| Fade   | scroll   | FadeScroll   |
+| Blur   | entrance | BlurIn       |
+| Blur   | scroll   | BlurScroll   |
+| Blur   | mouse    | BlurMouse    |
+| Float  | entrance | FloatIn      |
+| Airy   | mouse    | AiryMouse    |
+| Pulse  | loop     | Pulse        |
+| Swing  | loop     | Swing        |
+| Shrink | entrance | DropIn       |
+| Shrink | scroll   | ShrinkScroll |
+
+#### Bold / Energetic / Dynamic
+
+Keywords: bold, dynamic, energetic, fast, impactful, attention-grabbing, eye-catching, striking, lively, electric, bright, sharp, snappy, quick, welcoming, opening, confident, blooming, emerging
+
+| Effect   | Trigger  | Preset         |
+| -------- | -------- | -------------- |
+| 3D spin  | scroll   | Spin3dScroll   |
+| Tilt     | entrance | TiltIn         |
+| Tilt     | scroll   | TiltScroll     |
+| Resize   | mouse    | ScaleMouse     |
+| Spin     | entrance | SpinIn         |
+| Spin     | scroll   | SpinScroll     |
+| Spin     | loop     | Spin           |
+| Flip     | entrance | FlipIn         |
+| Flip     | scroll   | FlipScroll     |
+| Flip     | loop     | Flip           |
+| Shutters | entrance | ShuttersIn     |
+| Shutters | scroll   | ShuttersScroll |
+| Bounce   | entrance | BounceIn       |
+| Bounce   | loop     | Bounce         |
+| Grow     | scroll   | GrowScroll     |
+| Flash    | loop     | Flash          |
+| Expand   | entrance | ExpandIn       |
+| Stretch  | scroll   | StretchScroll  |
+
+#### Soft / Gentle / Organic
+
+Keywords: soft, gentle, delicate, light, airy, breezy, wispy, floating, ethereal, dreamy, cloudy, hazy, atmospheric, gradual, subtle, calm, soothing, natural, zen, meditative, serene, relaxed, breathing, alive, organic
+
+| Effect  | Trigger  | Preset       |
+| ------- | -------- | ------------ |
+| Breathe | loop     | Breathe      |
+| Float   | entrance | FloatIn      |
+| Airy    | mouse    | AiryMouse    |
+| Blur    | entrance | BlurIn       |
+| Blur    | scroll   | BlurScroll   |
+| Blur    | mouse    | BlurMouse    |
+| Fade    | entrance | FadeIn       |
+| Fade    | scroll   | FadeScroll   |
+| Pulse   | loop     | Pulse        |
+| Shrink  | entrance | DropIn       |
+| Shrink  | scroll   | ShrinkScroll |
+| Expand  | entrance | ExpandIn     |
+
+#### Dramatic / Cinematic / Theatrical
+
+Keywords: dramatic, cinematic, theatrical, staged, sweeping, intimate, focused, detailed, revealing
+
+| Effect   | Trigger  | Preset         |
+| -------- | -------- | -------------- |
+| Shutters | entrance | ShuttersIn     |
+| Shutters | scroll   | ShuttersScroll |
+| Parallax | scroll   | ParallaxScroll |
+| Expand   | entrance | ExpandIn       |
+| Reveal   | entrance | RevealIn       |
+| Reveal   | scroll   | RevealScroll   |
+
+#### Modern / Tech / Immersive
+
+Keywords: modern, tech, immersive, dimensional, spatial, 3d, depth, layered, innovative, interactive, responsive, engaging, following
+
+| Effect   | Trigger  | Preset         |
+| -------- | -------- | -------------- |
+| Tilt 3D  | mouse    | Tilt3DMouse    |
+| Track3D  | mouse    | Track3DMouse   |
+| Track    | mouse    | TrackMouse     |
+| Skew     | mouse    | SkewMouse      |
+| 3D spin  | scroll   | Spin3dScroll   |
+| Parallax | scroll   | ParallaxScroll |
+| Resize   | mouse    | ScaleMouse     |
+| Blur     | entrance | BlurIn         |
+| Blur     | scroll   | BlurScroll     |
+| Blur     | mouse    | BlurMouse      |
+| Fold     | entrance | FoldIn         |
+| Fold     | loop     | Fold           |
+
+#### Creative / Experimental / Edgy
+
+Keywords: creative, artistic, experimental, unconventional, edgy, distorted, unique, expressive, graphic, transformative, fluid, liquid, elastic, flexible, stretchy
+
+| Effect  | Trigger  | Preset        |
+| ------- | -------- | ------------- |
+| Skew    | mouse    | SkewMouse     |
+| Tilt    | entrance | TiltIn        |
+| Tilt    | scroll   | TiltScroll    |
+| Shape   | entrance | ShapeIn       |
+| Shape   | scroll   | ShapeScroll   |
+| Blob    | mouse    | BlobMouse     |
+| Cross   | loop     | Cross         |
+| Stretch | scroll   | StretchScroll |
+| Rubber  | loop     | Rubber        |
+
+#### Clean / Professional / Minimal
+
+Keywords: clean, structured, organized, directional, purposeful, direct, simple, straightforward, progressive, minimalist, precise, understated, professional
+
+| Effect | Trigger  | Preset       |
+| ------ | -------- | ------------ |
+| Slide  | entrance | SlideIn      |
+| Slide  | scroll   | SlideScroll  |
+| Move   | scroll   | MoveScroll   |
+| Fold   | entrance | FoldIn       |
+| Fold   | loop     | Fold         |
+| Reveal | entrance | RevealIn     |
+| Reveal | scroll   | RevealScroll |
+| Shrink | entrance | DropIn       |
+| Shrink | scroll   | ShrinkScroll |
+
+### Preset Selection Recommendations
+
+1. Do not add entrance presets (or any animation that starts with opacity 0) to `<h1>` elements in the first fold
+2. Do not add scroll-in animations in the first fold
+3. Do not add scroll-out animations in the last fold
 
 ### Cross-Category Parallels
 
-| Entrance | Scroll         | Ongoing | Mouse       |
-| -------- | -------------- | ------- | ----------- |
-| FadeIn   | FadeScroll     | Flash   | -           |
-| ArcIn    | ArcScroll      | -       | -           |
-| SpinIn   | SpinScroll     | Spin    | SpinMouse   |
-| BounceIn | -              | Bounce  | BounceMouse |
-| TiltIn   | TiltScroll     | -       | Tilt3DMouse |
-| FlipIn   | FlipScroll     | Flip    | -           |
-| ExpandIn | GrowScroll     | Pulse   | ScaleMouse  |
-| SlideIn  | SlideScroll    | -       | TrackMouse  |
-| BlurIn   | BlurScroll     | -       | BlurMouse   |
-| RevealIn | RevealScroll   | -       | -           |
-| -        | ParallaxScroll | -       | TrackMouse  |
+| Entrance   | Scroll         | Ongoing | Mouse       |
+| ---------- | -------------- | ------- | ----------- |
+| FadeIn     | FadeScroll     | Flash   | -           |
+| ArcIn      | ArcScroll      | -       | -           |
+| SpinIn     | SpinScroll     | Spin    | -           |
+| BounceIn   | -              | Bounce  | -           |
+| TiltIn     | TiltScroll     | -       | Tilt3DMouse |
+| FlipIn     | FlipScroll     | Flip    | -           |
+| FoldIn     | -              | Fold    | -           |
+| ExpandIn   | GrowScroll     | Pulse   | ScaleMouse  |
+| SlideIn    | SlideScroll    | -       | TrackMouse  |
+| BlurIn     | BlurScroll     | -       | BlurMouse   |
+| RevealIn   | RevealScroll   | -       | -           |
+| ShapeIn    | ShapeScroll    | -       | -           |
+| ShuttersIn | ShuttersScroll | -       | -           |
+| TurnIn     | TurnScroll     | -       | -           |
+| -          | ParallaxScroll | -       | TrackMouse  |
 
 ---
 
@@ -430,11 +598,11 @@ Tested values for different intensity levels of effects. When a user asks for "s
 
 | Preset   | Parameter        | Subtle/Soft | Medium     | Dramatic/Hard |
 | -------- | ---------------- | ----------- | ---------- | ------------- |
-| ArcIn    | easing           | cubicInOut  | quintInOut | backOut       |
+| ArcIn    | easing           | sineOut     | cubicInOut | quintInOut    |
 | BlurIn   | blur             | 6px         | 25px       | 50px          |
 | BounceIn | distanceFactor   | 1           | 2          | 3             |
 | DropIn   | initialScale     | 1.2         | 1.6        | 2             |
-| FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
+| FlipIn   | initialRotate    | 35°         | 60°        | 90°           |
 | FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
 | ExpandIn | initialScale     | 0.8         | 0.6        | 0             |
 | SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
@@ -487,7 +655,7 @@ Tested values for different intensity levels of effects. When a user asks for "s
 
 When a user asks: "I want a subtle flip entrance"
 
-Suggest: `{ type: 'FlipIn', initialRotate: 45 }`
+Suggest: `{ type: 'FlipIn', initialRotate: 35 }`
 
 ---
 
@@ -498,7 +666,7 @@ For each preset in the per-category reference files (`{category}-presets.md`):
 ```markdown
 ### PresetName
 
-Visual: [1-2 sentences describing what user SEES, (should later be verified by a designer)]
+Visual: [Use the description from the Preset Registry. Designer-approved descriptions must be used as-is.]
 
 Parameters:
 
@@ -534,7 +702,7 @@ Build from these sections of this file:
 - **Terminology** → Terminology section
 - **Key Constraints** (categories table, trigger binding, combining effects) → Categories + Decision Flow + Combining Effects
 - **Parameter Standards** (all subsections) → Parameter Standards section
-- **Selection Tables** (by tone, by use case, cross-category parallels) → Selection Tables section
+- **Selection Tables** (by atmosphere, recommendations, cross-category parallels) → Selection Tables section
 - **Accessibility** (all subsections) → Accessibility section
 - **Preset Registry** → Available preset lists per category
 - Add progressive disclosure links to each `{category}-presets.md`

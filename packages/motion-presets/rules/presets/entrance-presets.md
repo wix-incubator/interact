@@ -49,7 +49,7 @@ Parameters: None — this preset has no configurable parameters.
 
 ### ArcIn
 
-Visual: Element enters along a 3D arc path, rotating into view with depth motion and a fade-in.
+Visual: Element enters along a 3D arc path, rotating into view with depth motion.
 
 Parameters:
 
@@ -65,7 +65,7 @@ Parameters:
 
 ### BlurIn
 
-Visual: Element transitions from blurred to clear while fading in.
+Visual: Element transitions from blurred to sharp while fading in.
 
 Parameters:
 
@@ -95,7 +95,7 @@ Parameters:
 
 ### CurveIn
 
-Visual: Element curves in with a 180° rotation and depth motion, creating a swinging arc entrance.
+Visual: Element curves in with a 180° rotation and depth motion in a 3D space, creating a swinging arc entrance.
 
 Parameters:
 
@@ -111,7 +111,7 @@ Parameters:
 
 ### DropIn
 
-Visual: Element drops in from above, scaling down from a larger size to its final scale.
+Visual: Element shrinks down from a larger size to its final scale.
 
 Parameters:
 
@@ -187,7 +187,7 @@ Parameters:
 
 ### GlideIn
 
-Visual: Element glides in smoothly from off-screen along a direction with a fade-in.
+Visual: Element glides in smoothly from off-screen along a direction.
 
 Parameters:
 
@@ -307,7 +307,7 @@ Parameters:
 
 ### WinkIn
 
-Visual: Element winks into view by scaling along one axis while being revealed with a clip-path.
+Visual: Element winks into view by expanding from its horizontal or vertical center, while being revealed with a clip-path.
 
 Parameters:
 
@@ -348,11 +348,11 @@ Tested values for different intensity levels. When a user asks for "soft", "subt
 
 | Preset   | Parameter        | Subtle/Soft | Medium     | Dramatic/Hard |
 | -------- | ---------------- | ----------- | ---------- | ------------- |
-| ArcIn    | easing           | cubicInOut  | quintInOut | backOut       |
+| ArcIn    | easing           | sineOut     | cubicInOut | quintInOut    |
 | BlurIn   | blur             | 6px         | 25px       | 50px          |
 | BounceIn | distanceFactor   | 1           | 2          | 3             |
 | DropIn   | initialScale     | 1.2         | 1.6        | 2             |
-| FlipIn   | initialRotate    | 45°         | 90°        | 270°          |
+| FlipIn   | initialRotate    | 35°         | 60°        | 90°           |
 | FoldIn   | initialRotate    | 35°         | 60°        | 90°           |
 | ExpandIn | initialScale     | 0.8         | 0.6        | 0             |
 | SlideIn  | initialTranslate | 0.2         | 0.8        | 1             |
@@ -362,4 +362,4 @@ Tested values for different intensity levels. When a user asks for "soft", "subt
 
 When a user asks: "I want a subtle flip entrance"
 
-Suggest: `{ type: 'FlipIn', initialRotate: 45 }`
+Suggest: `{ type: 'FlipIn', initialRotate: 35 }`

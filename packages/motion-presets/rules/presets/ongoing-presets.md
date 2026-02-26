@@ -59,7 +59,7 @@ Parameters:
 
 ### Cross
 
-Visual: Element moves in a cross-pattern to the edge of its container and back.
+Visual: Element moves across the screen from side to side, horizontally or vertically, until reaching the edge of the view and repeats.
 
 Parameters:
 
@@ -73,7 +73,7 @@ Parameters:
 
 ### DVD
 
-Visual: Element bounces diagonally off its container edges like a DVD screensaver logo. No configurable parameters — uses container dimensions to calculate bounce paths.
+Visual: Element bounces diagonally off the viewport edges like a DVD screensaver logo. No configurable parameters — uses viewport dimensions to calculate bounce paths.
 
 Parameters: None.
 
@@ -145,7 +145,7 @@ Parameters:
 
 ### Poke
 
-Visual: Element makes a short, sharp translate in a direction, like being poked.
+Visual: Element makes two short, sharp translates in a direction back and forth, like being poked.
 
 Parameters:
 
@@ -160,7 +160,7 @@ Parameters:
 
 ### Pulse
 
-Visual: Element pulses by subtly scaling up and down, drawing attention.
+Visual: Element pulses by subtly scaling up and down.
 
 Parameters:
 
