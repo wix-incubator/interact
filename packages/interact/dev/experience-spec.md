@@ -14,15 +14,15 @@ We need a **declarative, JSON-serializable data structure** that:
 
 ## Goals
 
-| # | Goal | Rationale |
-|---|------|-----------|
-| G1 | Selector-driven | Elements are referenced by CSS selectors, not created. The experience applies to existing DOM. |
-| G2 | Serializable | No functions, class instances, or DOM references — pure data. |
-| G3 | LLM-safe | Constrained vocabulary, closed enums, clear defaults, no code generation. |
-| G4 | Editable via controls | High-level knobs that map to multiple low-level properties. |
-| G5 | Built on Interact | The animation layer uses `InteractConfig` types directly. |
-| G6 | Versionable | An explicit schema version enables forward-compatible evolution. |
-| G7 | Conditionally disableable | The entire experience can be disabled under specific media conditions. |
+| #   | Goal                      | Rationale                                                                                      |
+| --- | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| G1  | Selector-driven           | Elements are referenced by CSS selectors, not created. The experience applies to existing DOM. |
+| G2  | Serializable              | No functions, class instances, or DOM references — pure data.                                  |
+| G3  | LLM-safe                  | Constrained vocabulary, closed enums, clear defaults, no code generation.                      |
+| G4  | Editable via controls     | High-level knobs that map to multiple low-level properties.                                    |
+| G5  | Built on Interact         | The animation layer uses `InteractConfig` types directly.                                      |
+| G6  | Versionable               | An explicit schema version enables forward-compatible evolution.                               |
+| G7  | Conditionally disableable | The entire experience can be disabled under specific media conditions.                         |
 
 ## Non-Goals
 
@@ -54,18 +54,18 @@ type Experience = {
 };
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `$schema` | Schema version identifier for forward compatibility. |
-| `id` | Globally unique identifier for this experience. |
-| `name` | Human-readable name (shown in galleries / pickers). |
-| `description` | Optional prose description of what the experience does. |
-| `elements` | Map of logical names to selectors and base styles (see [Elements](#elements)). |
-| `styles` | Optional additional CSS rules — responsive overrides, pseudo-elements, complex selectors (see [Styles](#styles)). |
-| `interact` | A serializable `InteractConfig` subset (see [Interact Config](#interact-config)). |
-| `controls` | User-facing editing controls (see [Controls](#controls-system)). |
+| Field         | Purpose                                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `$schema`     | Schema version identifier for forward compatibility.                                                                  |
+| `id`          | Globally unique identifier for this experience.                                                                       |
+| `name`        | Human-readable name (shown in galleries / pickers).                                                                   |
+| `description` | Optional prose description of what the experience does.                                                               |
+| `elements`    | Map of logical names to selectors and base styles (see [Elements](#elements)).                                        |
+| `styles`      | Optional additional CSS rules — responsive overrides, pseudo-elements, complex selectors (see [Styles](#styles)).     |
+| `interact`    | A serializable `InteractConfig` subset (see [Interact Config](#interact-config)).                                     |
+| `controls`    | User-facing editing controls (see [Controls](#controls-system)).                                                      |
 | `disableWhen` | Media conditions under which the entire experience is disabled (see [Experience Conditions](#experience-conditions)). |
-| `meta` | Optional metadata for categorization and discovery. |
+| `meta`        | Optional metadata for categorization and discovery.                                                                   |
 
 ---
 
@@ -80,10 +80,10 @@ type ElementEntry = {
 };
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `selector` | CSS selector used to find the element in the DOM. |
-| `styles` | Base CSS properties applied to the matched element. |
+| Field      | Purpose                                             |
+| ---------- | --------------------------------------------------- |
+| `selector` | CSS selector used to find the element in the DOM.   |
+| `styles`   | Base CSS properties applied to the matched element. |
 
 The keys in the `elements` map serve as the **logical names** for the experience's elements. These keys are used:
 
@@ -129,10 +129,10 @@ type StyleRule = {
 };
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `selector` | A CSS selector. Scoped to the experience's root at render time. |
-| `properties` | CSS property-value pairs (e.g. `{ "border-radius": "12px" }`). |
+| Field        | Purpose                                                                |
+| ------------ | ---------------------------------------------------------------------- |
+| `selector`   | A CSS selector. Scoped to the experience's root at render time.        |
+| `properties` | CSS property-value pairs (e.g. `{ "border-radius": "12px" }`).         |
 | `mediaQuery` | Optional media query that wraps this rule (e.g. `(min-width: 768px)`). |
 
 Per-element styles in `elements[key].styles` are applied first. Rules in the `styles` array are applied after and can override them, following standard CSS specificity.
@@ -209,13 +209,13 @@ type ExperienceInteraction = {
 
 All existing named effect types from `@wix/motion-presets` are available:
 
-| Category | Types |
-|----------|-------|
-| **Entrance** | `FadeIn`, `SlideIn`, `GlideIn`, `FloatIn`, `FlipIn`, `FoldIn`, `SpinIn`, `BounceIn`, `DropIn`, `ArcIn`, `CurveIn`, `TurnIn`, `WinkIn`, `TiltIn`, `ShapeIn`, `ShuttersIn`, `RevealIn`, `BlurIn`, `ExpandIn` |
-| **Ongoing** | `Pulse`, `Spin`, `Breathe`, `Poke`, `Flash`, `Swing`, `Flip`, `Rubber`, `Fold`, `Jello`, `Wiggle`, `Bounce`, `Cross`, `DVD`, `Blink` |
-| **Scroll** | `ParallaxScroll`, `FadeScroll`, `BlurScroll`, `GrowScroll`, `ShrinkScroll`, `MoveScroll`, `PanScroll`, `SlideScroll`, `SpinScroll`, `Spin3dScroll`, `FlipScroll`, `ArcScroll`, `RevealScroll`, `ShapeScroll`, `ShuttersScroll`, `SkewPanScroll`, `StretchScroll`, `TiltScroll`, `TurnScroll` |
-| **Mouse** | `TrackMouse`, `AiryMouse`, `BlobMouse`, `BlurMouse`, `BounceMouse`, `ScaleMouse`, `SkewMouse`, `SpinMouse`, `SwivelMouse`, `Tilt3DMouse`, `Track3DMouse` |
-| **Background Scroll** | `BgParallax`, `BgZoom`, `BgPan`, `BgFade`, `BgRotate`, `BgSkew`, `BgCloseUp`, `BgFadeBack`, `BgFake3D`, `BgPullBack`, `BgReveal`, `ImageParallax` |
+| Category              | Types                                                                                                                                                                                                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Entrance**          | `FadeIn`, `SlideIn`, `GlideIn`, `FloatIn`, `FlipIn`, `FoldIn`, `SpinIn`, `BounceIn`, `DropIn`, `ArcIn`, `CurveIn`, `TurnIn`, `WinkIn`, `TiltIn`, `ShapeIn`, `ShuttersIn`, `RevealIn`, `BlurIn`, `ExpandIn`                                                                                   |
+| **Ongoing**           | `Pulse`, `Spin`, `Breathe`, `Poke`, `Flash`, `Swing`, `Flip`, `Rubber`, `Fold`, `Jello`, `Wiggle`, `Bounce`, `Cross`, `DVD`, `Blink`                                                                                                                                                         |
+| **Scroll**            | `ParallaxScroll`, `FadeScroll`, `BlurScroll`, `GrowScroll`, `ShrinkScroll`, `MoveScroll`, `PanScroll`, `SlideScroll`, `SpinScroll`, `Spin3dScroll`, `FlipScroll`, `ArcScroll`, `RevealScroll`, `ShapeScroll`, `ShuttersScroll`, `SkewPanScroll`, `StretchScroll`, `TiltScroll`, `TurnScroll` |
+| **Mouse**             | `TrackMouse`, `AiryMouse`, `BlobMouse`, `BlurMouse`, `BounceMouse`, `ScaleMouse`, `SkewMouse`, `SpinMouse`, `SwivelMouse`, `Tilt3DMouse`, `Track3DMouse`                                                                                                                                     |
+| **Background Scroll** | `BgParallax`, `BgZoom`, `BgPan`, `BgFade`, `BgRotate`, `BgSkew`, `BgCloseUp`, `BgFadeBack`, `BgFake3D`, `BgPullBack`, `BgReveal`, `ImageParallax`                                                                                                                                            |
 
 Each named effect type has its own set of parameters (direction, speed, intensity, etc.) that can be driven by controls.
 
@@ -232,10 +232,10 @@ type MediaCondition = {
 };
 ```
 
-| Field | Purpose |
-|-------|---------|
+| Field        | Purpose                                                                      |
+| ------------ | ---------------------------------------------------------------------------- |
 | `mediaQuery` | A valid CSS media query string. When it matches, the experience is disabled. |
-| `label` | Optional human-readable label for tooling (e.g. `"Mobile devices"`). |
+| `label`      | Optional human-readable label for tooling (e.g. `"Mobile devices"`).         |
 
 #### Example
 
@@ -255,6 +255,7 @@ type MediaCondition = {
 ```
 
 When **any** condition in `disableWhen` matches, the renderer must:
+
 1. Skip injecting the experience's styles.
 2. Skip initializing Interact and registering interactions.
 3. If the experience was already active, tear it down and remove applied styles.
@@ -289,20 +290,20 @@ type Control = {
 };
 
 type ControlType =
-  | 'range'      // numeric slider
-  | 'select'     // dropdown / segmented picker
-  | 'color'      // color picker
-  | 'toggle'     // boolean switch
-  | 'text';      // short text input
+  | 'range' // numeric slider
+  | 'select' // dropdown / segmented picker
+  | 'color' // color picker
+  | 'toggle' // boolean switch
+  | 'text'; // short text input
 
 type ControlValue = number | string | boolean;
 
 type ControlConstraints = {
-  min?: number;           // for 'range'
-  max?: number;           // for 'range'
-  step?: number;          // for 'range'
-  unit?: string;          // display unit label ('px', 'ms', '%', 'x', '°')
-  options?: ControlOption[];  // for 'select'
+  min?: number; // for 'range'
+  max?: number; // for 'range'
+  step?: number; // for 'range'
+  unit?: string; // display unit label ('px', 'ms', '%', 'x', '°')
+  options?: ControlOption[]; // for 'select'
 };
 
 type ControlOption = {
@@ -324,19 +325,19 @@ type ControlBinding = {
 };
 
 type BindingTarget =
-  | 'effect'       // targets an entry in interact.effects by effect key
-  | 'style'        // targets a StyleRule in the styles array by selector
-  | 'element'      // targets an ElementEntry in the elements map by key
-  | 'interaction'  // targets an ExperienceInteraction by id
-  | 'variable';    // sets a CSS custom property on the experience scope
+  | 'effect' // targets an entry in interact.effects by effect key
+  | 'style' // targets a StyleRule in the styles array by selector
+  | 'element' // targets an ElementEntry in the elements map by key
+  | 'interaction' // targets an ExperienceInteraction by id
+  | 'variable'; // sets a CSS custom property on the experience scope
 ```
 
-| Field | Description |
-|-------|-------------|
-| `target` | Which part of the experience this binding writes to. |
-| `targetId` | The key/id/selector that identifies the specific target. For `effect`, this is the effect key in the `effects` map. For `style`, this is the CSS selector string matching a rule in `styles`. For `element`, this is the element's key in the `elements` map. For `interaction`, this is the interaction's `id`. For `variable`, this is the CSS custom property name (e.g. `--exp-spacing`). |
-| `property` | Dot-path to the property within the target. For `element` bindings, paths are relative to the element's `styles` (e.g. `styles.border-radius`). For `effect` bindings, paths address the effect object (e.g. `duration`, `namedEffect.speed`). For `style` bindings, paths address the style rule (e.g. `properties.min-height`). Not used for `variable` bindings. |
-| `transform` | How to derive the final property value from the control value. Defaults to `{ type: 'direct' }`. |
+| Field       | Description                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target`    | Which part of the experience this binding writes to.                                                                                                                                                                                                                                                                                                                                          |
+| `targetId`  | The key/id/selector that identifies the specific target. For `effect`, this is the effect key in the `effects` map. For `style`, this is the CSS selector string matching a rule in `styles`. For `element`, this is the element's key in the `elements` map. For `interaction`, this is the interaction's `id`. For `variable`, this is the CSS custom property name (e.g. `--exp-spacing`). |
+| `property`  | Dot-path to the property within the target. For `element` bindings, paths are relative to the element's `styles` (e.g. `styles.border-radius`). For `effect` bindings, paths address the effect object (e.g. `duration`, `namedEffect.speed`). For `style` bindings, paths address the style rule (e.g. `properties.min-height`). Not used for `variable` bindings.                           |
+| `transform` | How to derive the final property value from the control value. Defaults to `{ type: 'direct' }`.                                                                                                                                                                                                                                                                                              |
 
 ### Value Transforms
 
@@ -351,13 +352,13 @@ type ValueTransform =
   | { type: 'template'; template: string };
 ```
 
-| Transform | Formula | Example Use |
-|-----------|---------|-------------|
-| `direct` | `output = value` | Toggle → `reversed` boolean |
-| `linear` | `output = factor × value + offset` | Slider 1–10 → duration 100–1000 |
-| `inverse` | `output = numerator / value` | Speed multiplier → duration |
-| `map` | `output = entries[value]` | "slow"/"medium"/"fast" → 1200/800/400 |
-| `template` | `output = template.replace('${value}', value)` | Slider 12 → `"12px"` |
+| Transform  | Formula                                        | Example Use                           |
+| ---------- | ---------------------------------------------- | ------------------------------------- |
+| `direct`   | `output = value`                               | Toggle → `reversed` boolean           |
+| `linear`   | `output = factor × value + offset`             | Slider 1–10 → duration 100–1000       |
+| `inverse`  | `output = numerator / value`                   | Speed multiplier → duration           |
+| `map`      | `output = entries[value]`                      | "slow"/"medium"/"fast" → 1200/800/400 |
+| `template` | `output = template.replace('${value}', value)` | Slider 12 → `"12px"`                  |
 
 ### Applying Controls
 
@@ -530,11 +531,11 @@ When the user moves the slider to `32`, the renderer sets `--exp-spacing: 32` on
 
 This pattern is powerful for properties that scale proportionally. Common use cases:
 
-| Variable | Drives |
-|----------|--------|
-| `--exp-spacing` | `gap`, `padding`, `margin` — proportional layout spacing |
-| `--exp-radius` | `border-radius` on multiple elements at different scales |
-| `--exp-hue` | `hsl()` color values across backgrounds, borders, text |
+| Variable                | Drives                                                      |
+| ----------------------- | ----------------------------------------------------------- |
+| `--exp-spacing`         | `gap`, `padding`, `margin` — proportional layout spacing    |
+| `--exp-radius`          | `border-radius` on multiple elements at different scales    |
+| `--exp-hue`             | `hsl()` color values across backgrounds, borders, text      |
 | `--exp-parallax-factor` | `translateY` offset in multiple keyframe `var()` references |
 
 The two patterns can be **combined**. A `select` control can set a CSS custom property via a `variable` binding while also setting effect properties via `effect` bindings:
@@ -609,25 +610,25 @@ This section defines the rules that LLMs must follow when generating experiences
 
 ### Naming Conventions
 
-| Item | Convention | Example |
-|------|-----------|---------|
-| Experience ID | kebab-case | `floating-card-gallery` |
-| Element keys | kebab-case | `hero-title`, `bg-image` |
-| Effect keys | kebab-case | `entrance-fade`, `hover-zoom` |
-| Control IDs | kebab-case | `entrance-speed`, `bg-intensity` |
-| Condition keys | kebab-case | `desktop`, `reduced-motion` |
+| Item           | Convention | Example                          |
+| -------------- | ---------- | -------------------------------- |
+| Experience ID  | kebab-case | `floating-card-gallery`          |
+| Element keys   | kebab-case | `hero-title`, `bg-image`         |
+| Effect keys    | kebab-case | `entrance-fade`, `hover-zoom`    |
+| Control IDs    | kebab-case | `entrance-speed`, `bg-intensity` |
+| Condition keys | kebab-case | `desktop`, `reduced-motion`      |
 
 ### Effect Selection Guidelines
 
-| Intent | Recommended Approach |
-|--------|---------------------|
-| Simple opacity entrance | `namedEffect: { type: 'FadeIn' }` |
-| Directional entrance | `namedEffect: { type: 'SlideIn', direction: '...' }` or `GlideIn` |
-| Scroll-driven parallax | `namedEffect: { type: 'ParallaxScroll', parallaxFactor: ... }` |
-| Hover micro-interaction | `keyframeEffect` with `transform: scale(...)` or named `Pulse` |
-| Background scroll effect | `namedEffect: { type: 'BgParallax', speed: ... }` |
-| Custom keyframe motion | `keyframeEffect: { name: '...', keyframes: [...] }` |
-| Pointer-tracking | `namedEffect: { type: 'TrackMouse', distance: ... }` |
+| Intent                   | Recommended Approach                                              |
+| ------------------------ | ----------------------------------------------------------------- |
+| Simple opacity entrance  | `namedEffect: { type: 'FadeIn' }`                                 |
+| Directional entrance     | `namedEffect: { type: 'SlideIn', direction: '...' }` or `GlideIn` |
+| Scroll-driven parallax   | `namedEffect: { type: 'ParallaxScroll', parallaxFactor: ... }`    |
+| Hover micro-interaction  | `keyframeEffect` with `transform: scale(...)` or named `Pulse`    |
+| Background scroll effect | `namedEffect: { type: 'BgParallax', speed: ... }`                 |
+| Custom keyframe motion   | `keyframeEffect: { name: '...', keyframes: [...] }`               |
+| Pointer-tracking         | `namedEffect: { type: 'TrackMouse', distance: ... }`              |
 
 Prefer `namedEffect` over `keyframeEffect` when a suitable preset exists. Named effects are more concise, better tested, and expose semantically meaningful parameters.
 
@@ -783,9 +784,7 @@ A card that fades in when scrolled into view. Demonstrates the minimal element-t
     }
   ],
 
-  "disableWhen": [
-    { "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }
-  ],
+  "disableWhen": [{ "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }],
 
   "meta": {
     "category": "cards",
@@ -942,30 +941,22 @@ A section that sticks to the viewport while content layers reveal progressively 
       {
         "key": "scroll-track",
         "trigger": "viewProgress",
-        "effects": [
-          { "key": "background", "effectId": "bg-zoom" }
-        ]
+        "effects": [{ "key": "background", "effectId": "bg-zoom" }]
       },
       {
         "key": "scroll-track",
         "trigger": "viewProgress",
-        "effects": [
-          { "key": "layer-headline", "effectId": "headline-reveal" }
-        ]
+        "effects": [{ "key": "layer-headline", "effectId": "headline-reveal" }]
       },
       {
         "key": "scroll-track",
         "trigger": "viewProgress",
-        "effects": [
-          { "key": "layer-details", "effectId": "details-reveal" }
-        ]
+        "effects": [{ "key": "layer-details", "effectId": "details-reveal" }]
       },
       {
         "key": "scroll-track",
         "trigger": "viewProgress",
-        "effects": [
-          { "key": "layer-cta", "effectId": "cta-reveal" }
-        ]
+        "effects": [{ "key": "layer-cta", "effectId": "cta-reveal" }]
       }
     ]
   },
@@ -1175,7 +1166,12 @@ A horizontally scrolling gallery with CSS scroll snapping and scroll-driven entr
         "fill": "both"
       },
       "item-scale": {
-        "namedEffect": { "type": "GrowScroll", "scale": 0.95, "direction": "center", "range": "in" },
+        "namedEffect": {
+          "type": "GrowScroll",
+          "scale": 0.95,
+          "direction": "center",
+          "range": "in"
+        },
         "fill": "both"
       }
     },
@@ -1298,9 +1294,7 @@ A horizontally scrolling gallery with CSS scroll snapping and scroll-driven entr
     }
   ],
 
-  "disableWhen": [
-    { "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }
-  ],
+  "disableWhen": [{ "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }],
 
   "meta": {
     "category": "galleries",
@@ -1553,9 +1547,7 @@ A full-width hero with a parallax background image, staggered text entrance, and
     }
   ],
 
-  "disableWhen": [
-    { "mediaQuery": "(max-width: 480px)", "label": "Small mobile screens" }
-  ],
+  "disableWhen": [{ "mediaQuery": "(max-width: 480px)", "label": "Small mobile screens" }],
 
   "meta": {
     "category": "hero",
@@ -1625,10 +1617,7 @@ A product card with pointer-tracking 3D tilt, scroll-driven entrance, and hover 
       "image-zoom": {
         "keyframeEffect": {
           "name": "product-image-zoom",
-          "keyframes": [
-            { "transform": "scale(1)" },
-            { "transform": "scale(1.08)" }
-          ]
+          "keyframes": [{ "transform": "scale(1)" }, { "transform": "scale(1.08)" }]
         },
         "duration": 400,
         "easing": "ease-out"
@@ -1739,9 +1728,7 @@ A product card with pointer-tracking 3D tilt, scroll-driven entrance, and hover 
     }
   ],
 
-  "disableWhen": [
-    { "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }
-  ],
+  "disableWhen": [{ "mediaQuery": "(prefers-reduced-motion: reduce)", "label": "Reduced motion" }],
 
   "meta": {
     "category": "e-commerce",
@@ -1758,41 +1745,41 @@ An experience must pass the following checks before it is considered valid:
 
 ### Structural Validation
 
-| Rule | Check |
-|------|-------|
-| Schema | `$schema` is `'interact-experience/1.0'`. |
-| Required fields | `id`, `name`, `elements`, `interact`, `controls` are present. |
-| Unique element keys | No duplicate keys in the `elements` map. |
-| Selectors present | Every `ElementEntry` has a non-empty `selector`. |
-| No `customEffect` | No effect uses the `customEffect` property. |
+| Rule                | Check                                                         |
+| ------------------- | ------------------------------------------------------------- |
+| Schema              | `$schema` is `'interact-experience/1.0'`.                     |
+| Required fields     | `id`, `name`, `elements`, `interact`, `controls` are present. |
+| Unique element keys | No duplicate keys in the `elements` map.                      |
+| Selectors present   | Every `ElementEntry` has a non-empty `selector`.              |
+| No `customEffect`   | No effect uses the `customEffect` property.                   |
 
 ### Referential Integrity
 
-| Rule | Check |
-|------|-------|
-| Interaction keys | Every `key` in an interaction exists in the `elements` map. |
-| Effect IDs | Every `effectId` referenced in an interaction exists in `interact.effects`. |
-| Conditions | Every condition name referenced exists in `interact.conditions`. |
-| Control targets | Every `targetId` in a control binding resolves to an existing target (element key, effect key, style selector, or interaction id). Does not apply to `variable` bindings. |
-| Style selectors | Every `targetId` with `target: 'style'` matches a `selector` in the `styles` array. |
-| Variable names | Every `targetId` with `target: 'variable'` is a valid CSS custom property name (starts with `--`). |
-| Property required | `property` is required for `effect`, `style`, `element`, and `interaction` bindings. |
+| Rule              | Check                                                                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interaction keys  | Every `key` in an interaction exists in the `elements` map.                                                                                                               |
+| Effect IDs        | Every `effectId` referenced in an interaction exists in `interact.effects`.                                                                                               |
+| Conditions        | Every condition name referenced exists in `interact.conditions`.                                                                                                          |
+| Control targets   | Every `targetId` in a control binding resolves to an existing target (element key, effect key, style selector, or interaction id). Does not apply to `variable` bindings. |
+| Style selectors   | Every `targetId` with `target: 'style'` matches a `selector` in the `styles` array.                                                                                       |
+| Variable names    | Every `targetId` with `target: 'variable'` is a valid CSS custom property name (starts with `--`).                                                                        |
+| Property required | `property` is required for `effect`, `style`, `element`, and `interaction` bindings.                                                                                      |
 
 ### Control Validation
 
-| Rule | Check |
-|------|-------|
-| Default in range | For `range` controls, `defaultValue` is within `[min, max]`. |
-| Default in options | For `select` controls, `defaultValue` matches one of the option values. |
-| Unique IDs | No two controls share the same `id`. |
-| Valid transform type | Every `transform.type` is one of `direct`, `linear`, `inverse`, `map`, `template`. |
-| Map coverage | For `map` transforms on `select` controls, every option value has an entry. |
-| Variable usage | Every CSS custom property set via a `variable` binding should be referenced by at least one `var()` in element styles or the `styles` array. |
+| Rule                 | Check                                                                                                                                        |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Default in range     | For `range` controls, `defaultValue` is within `[min, max]`.                                                                                 |
+| Default in options   | For `select` controls, `defaultValue` matches one of the option values.                                                                      |
+| Unique IDs           | No two controls share the same `id`.                                                                                                         |
+| Valid transform type | Every `transform.type` is one of `direct`, `linear`, `inverse`, `map`, `template`.                                                           |
+| Map coverage         | For `map` transforms on `select` controls, every option value has an entry.                                                                  |
+| Variable usage       | Every CSS custom property set via a `variable` binding should be referenced by at least one `var()` in element styles or the `styles` array. |
 
 ### Condition Validation
 
-| Rule | Check |
-|------|-------|
+| Rule                | Check                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------ |
 | Valid media queries | Every `mediaQuery` in `disableWhen` is a syntactically valid CSS media query string. |
 
 ---
@@ -1831,12 +1818,12 @@ This section sketches how a renderer would consume an experience. It is not norm
 
 ## Open Questions
 
-| # | Question | Options |
-|---|----------|---------|
-| 1 | Should experiences support **nested composition** (embedding one experience inside another)? | Could add a `children` field that references other experience IDs. |
-| 2 | Should controls support **conditional visibility** (show control B only when control A is set to X)? | Could add a `visibleWhen` field to controls. |
-| 3 | Should the `styles` array support **CSS animations and transitions** directly, or should all animation go through Interact? | Keeping all motion in Interact is cleaner, but CSS transitions for simple hover states may be more practical. |
-| 4 | How should **sequences/staggering** (per the existing sequences-spec) integrate with this model? | Could be expressed through the existing `sequences` proposal on `InteractConfig`. |
-| 5 | Should there be a **compact binary format** for storage/transfer alongside the JSON format? | JSON is fine for v1; binary can be added later if size becomes an issue. |
-| 6 | Should `disableWhen` support non-media conditions (e.g. feature detection, user preference flags)? | Could extend `MediaCondition` to a union with other condition types. |
-| 7 | Should element entries support **multiple selectors** (e.g. for selecting the same logical element across layout variants)? | Could allow `selector` to be `string | string[]`. |
+| #   | Question                                                                                                                    | Options                                                                                                       |
+| --- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1   | Should experiences support **nested composition** (embedding one experience inside another)?                                | Could add a `children` field that references other experience IDs.                                            |
+| 2   | Should controls support **conditional visibility** (show control B only when control A is set to X)?                        | Could add a `visibleWhen` field to controls.                                                                  |
+| 3   | Should the `styles` array support **CSS animations and transitions** directly, or should all animation go through Interact? | Keeping all motion in Interact is cleaner, but CSS transitions for simple hover states may be more practical. |
+| 4   | How should **sequences/staggering** (per the existing sequences-spec) integrate with this model?                            | Could be expressed through the existing `sequences` proposal on `InteractConfig`.                             |
+| 5   | Should there be a **compact binary format** for storage/transfer alongside the JSON format?                                 | JSON is fine for v1; binary can be added later if size becomes an issue.                                      |
+| 6   | Should `disableWhen` support non-media conditions (e.g. feature detection, user preference flags)?                          | Could extend `MediaCondition` to a union with other condition types.                                          |
+| 7   | Should element entries support **multiple selectors** (e.g. for selecting the same logical element across layout variants)? | Could allow `selector` to be `string                                                                          | string[]`. |
