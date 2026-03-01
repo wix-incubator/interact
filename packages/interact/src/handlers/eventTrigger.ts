@@ -149,12 +149,10 @@ function addEventTriggerHandler(
 
   const resolvedHandler = handler;
   const controller = new AbortController();
-  const listeners: { element: HTMLElement; event: string; fn: EventListener }[] = [];
 
   function addListener(element: HTMLElement, event: string, options?: AddEventListenerOptions) {
     const fn = getListenerForEventType(event, source, resolvedHandler);
     element.addEventListener(event, fn, { ...options, signal: controller.signal });
-    listeners.push({ element, event, fn });
   }
 
   const cleanup = () => {
