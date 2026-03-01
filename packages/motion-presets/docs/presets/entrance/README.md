@@ -2,60 +2,52 @@
 
 Time-based animations designed to reveal elements with visual impact. These animations bring elements into view with style and are perfect for page loads, modal openings, and progressive disclosure patterns.
 
-## Complete Preset List (24 presets)
+## Complete Preset List (19 presets)
 
 ### 🌟 Simple Fades
 
-| Animation                | Complexity | Power Levels | Directions | Description              |
-| ------------------------ | ---------- | ------------ | ---------- | ------------------------ |
-| **[FadeIn](fade-in.md)** | Simple     | -            | -          | Clean opacity transition |
-| **[BlurIn](blur-in.md)** | Simple     | ✓            | -          | Blur-to-focus transition |
+| Animation                | Complexity | Directions | Description              |
+| ------------------------ | ---------- | ---------- | ------------------------ |
+| **[FadeIn](fade-in.md)** | Simple     | -          | Clean opacity transition |
+| **[BlurIn](blur-in.md)** | Simple     | -          | Blur-to-focus transition |
 
 ### 🎯 Directional Movement
 
-| Animation                    | Complexity | Power Levels | Directions | Description                      |
-| ---------------------------- | ---------- | ------------ | ---------- | -------------------------------- |
-| **[SlideIn](slide-in.md)**   | Medium     | ✓            | 4-way      | Slide from edge with clip reveal |
-| **[GlideIn](glide-in.md)**   | Medium     | ✓            | 360°       | Smooth directional movement      |
-| **[FloatIn](float-in.md)**   | Simple     | -            | 4-way      | Gentle floating movement         |
-| **[ExpandIn](expand-in.md)** | Medium     | ✓            | 360°       | Directional scale growth         |
+| Animation                    | Complexity | Directions | Description                      |
+| ---------------------------- | ---------- | ---------- | -------------------------------- |
+| **[SlideIn](slide-in.md)**   | Medium     | 4-way      | Slide from edge with clip reveal |
+| **[GlideIn](glide-in.md)**   | Medium     | 360°       | Smooth directional movement      |
+| **[FloatIn](float-in.md)**   | Simple     | 4-way      | Gentle floating movement         |
+| **[ExpandIn](expand-in.md)** | Medium     | 360°       | Directional scale growth         |
 
 ### 🔄 3D Transforms
 
-| Animation                  | Complexity | Power Levels | Directions | Description                    |
-| -------------------------- | ---------- | ------------ | ---------- | ------------------------------ |
-| **[ArcIn](arc-in.md)**     | Complex    | ✓            | 4-way      | Curved motion with 3D rotation |
-| **[FlipIn](flip-in.md)**   | Medium     | ✓            | 4-way      | 3D flip rotation entrance      |
-| **[FoldIn](fold-in.md)**   | Complex    | ✓            | 4-way      | 3D fold with perspective       |
-| **[TurnIn](turn-in.md)**   | Complex    | ✓            | 4-corner   | Complex 3D corner rotation     |
-| **[CurveIn](curve-in.md)** | Complex    | -            | 4-way      | Curved 3D perspective entrance |
-| **[TiltIn](tilt-in.md)**   | Complex    | -            | 2-way      | 3D tilt with clip reveal       |
+| Animation                  | Complexity | Directions | Description                    |
+| -------------------------- | ---------- | ---------- | ------------------------------ |
+| **[ArcIn](arc-in.md)**     | Complex    | 4-way      | Curved motion with 3D rotation |
+| **[FlipIn](flip-in.md)**   | Medium     | 4-way      | 3D flip rotation entrance      |
+| **[FoldIn](fold-in.md)**   | Complex    | 4-way      | 3D fold with perspective       |
+| **[TurnIn](turn-in.md)**   | Complex    | 4-corner   | Complex 3D corner rotation     |
+| **[CurveIn](curve-in.md)** | Complex    | 4-way      | Curved 3D perspective entrance |
+| **[TiltIn](tilt-in.md)**   | Complex    | 2-way      | 3D tilt with clip reveal       |
 
 ### ⚡ Dynamic & Bouncy
 
-| Animation                    | Complexity | Power Levels | Directions     | Description                       |
-| ---------------------------- | ---------- | ------------ | -------------- | --------------------------------- |
-| **[BounceIn](bounce-in.md)** | Medium     | ✓            | 5-way + center | Spring-based entrance with bounce |
-| **[DropIn](drop-in.md)**     | Simple     | ✓            | -              | Scale-based drop with easing      |
-| **[ExpandIn](expand-in.md)** | Medium     | ✓            | 9-way          | Scale from specific origin points |
-| **[SpinIn](spin-in.md)**     | Medium     | ✓            | 2-way          | Rotation with scale entrance      |
-| **[PunchIn](punch-in.md)**   | Complex    | ✓            | 5-way          | Multi-stage bouncing animation    |
+| Animation                    | Complexity | Directions     | Description                       |
+| ---------------------------- | ---------- | -------------- | --------------------------------- |
+| **[BounceIn](bounce-in.md)** | Medium     | 5-way + center | Spring-based entrance with bounce |
+| **[DropIn](drop-in.md)**     | Simple     | -              | Scale-based drop with easing      |
+| **[ExpandIn](expand-in.md)** | Medium     | 9-way          | Scale from specific origin points |
+| **[SpinIn](spin-in.md)**     | Medium     | 2-way          | Rotation with scale entrance      |
 
 ### 🎨 Shape & Clip
 
-| Animation                        | Complexity | Power Levels | Directions | Description                  |
-| -------------------------------- | ---------- | ------------ | ---------- | ---------------------------- |
-| **[RevealIn](reveal-in.md)**     | Medium     | -            | 4-way      | Clean clip-path reveal       |
-| **[ShapeIn](shape-in.md)**       | Medium     | -            | 5 shapes   | Morphing shape reveals       |
-| **[ShuttersIn](shutters-in.md)** | Complex    | ✓            | 4-way      | Multi-segment shutter effect |
-| **[WinkIn](wink-in.md)**         | Medium     | -            | 2-way      | Accordion-style reveal       |
-
-### 🎪 Special Effects
-
-| Animation                    | Complexity | Power Levels | Directions | Description                     |
-| ---------------------------- | ---------- | ------------ | ---------- | ------------------------------- |
-| **[CircleIn](circle-in.md)** | Complex    | -            | 2-way      | Circular arc movement           |
-| **[GlitchIn](glitch-in.md)** | Medium     | ✓            | 360°       | Modified glide with glitch feel |
+| Animation                        | Complexity | Directions | Description                  |
+| -------------------------------- | ---------- | ---------- | ---------------------------- |
+| **[RevealIn](reveal-in.md)**     | Medium     | 4-way      | Clean clip-path reveal       |
+| **[ShapeIn](shape-in.md)**       | Medium     | 5 shapes   | Morphing shape reveals       |
+| **[ShuttersIn](shutters-in.md)** | Complex    | 4-way      | Multi-segment shutter effect |
+| **[WinkIn](wink-in.md)**         | Medium     | 2-way      | Accordion-style reveal       |
 
 ## Quick Reference
 
@@ -73,7 +65,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 
 #### Hero & Featured Content
 
-**Best**: ArcIn, PunchIn, TurnIn  
+**Best**: ArcIn, TurnIn  
 **Alternative**: CurveIn, FlipIn
 
 #### Button & Interactive Elements
@@ -98,7 +90,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 
 #### Complex (Advanced 3D effects)
 
-- ArcIn, FoldIn, TurnIn, CurveIn, TiltIn, PunchIn, CircleIn
+- ArcIn, FoldIn, TurnIn, CurveIn, TiltIn
 
 ### By Performance
 
@@ -112,7 +104,7 @@ Time-based animations designed to reveal elements with visual impact. These anim
 
 #### Resource Intensive
 
-- TurnIn, FoldIn, PunchIn, ShuttersIn, TiltIn
+- TurnIn, FoldIn, ShuttersIn, TiltIn
 
 ## Common Patterns
 
@@ -139,7 +131,6 @@ const heroAnimation = getWebAnimation(heroElement, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'bottom',
-    power: 'hard',
   },
   duration: 1200,
   easing: 'quintOut',
@@ -154,7 +145,6 @@ const modalAnimation = getWebAnimation(modal, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'DropIn',
-    power: 'medium',
   },
   duration: 400,
   easing: 'backOut',
@@ -203,7 +193,6 @@ if (isReducedMotion) {
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'soft', // Gentler on mobile
     },
     duration: 700, // Faster completion
   };
@@ -214,7 +203,6 @@ if (isReducedMotion) {
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'medium',
     },
     duration: 1000,
   };
@@ -252,7 +240,6 @@ import { getWebAnimation } from '@wix/motion';
 interface ArcInProps {
   children: React.ReactNode;
   direction?: 'top' | 'right' | 'bottom' | 'left';
-  power?: 'soft' | 'medium' | 'hard';
   duration?: number;
   delay?: number;
   onComplete?: () => void;
@@ -261,7 +248,6 @@ interface ArcInProps {
 function ArcIn({
   children,
   direction = 'bottom',
-  power = 'medium',
   duration = 1000,
   delay = 0,
   onComplete
@@ -276,8 +262,7 @@ function ArcIn({
       type: 'TimeAnimationOptions',
       namedEffect: {
         type: 'ArcIn',
-        direction,
-        power
+        direction
       },
       duration,
       delay,
@@ -290,7 +275,7 @@ function ArcIn({
     });
 
     return () => animation.cancel();
-  }, [direction, power, duration, delay, onComplete]);
+  }, [direction, duration, delay, onComplete]);
 
   return (
     <div
@@ -318,7 +303,6 @@ import { getWebAnimation } from '@wix/motion';
 export default {
   props: {
     direction: { type: String, default: 'bottom' },
-    power: { type: String, default: 'medium' },
     duration: { type: Number, default: 1000 },
     trigger: { type: String, default: 'immediate' }, // 'immediate' or 'scroll'
   },
@@ -367,7 +351,6 @@ export default {
         namedEffect: {
           type: 'ArcIn',
           direction: this.direction,
-          power: this.power,
         },
         duration: this.duration,
         easing: 'quintOut',

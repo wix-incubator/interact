@@ -87,7 +87,7 @@ Controls how the progress range is calculated:
 - `[TARGET_KEY]`: Unique identifier for target element to animate (can be same as source or different)
 - `[HIT_AREA]`: 'self' (mouse within source element) or 'root' (mouse anywhere in viewport)
 - `[3D_EFFECT_TYPE]`: 'Tilt3DMouse', 'Track3DMouse', 'SwivelMouse'
-- `[EFFECT_PROPERTIES]`: Named effect specific properties (angle, perspective, power, etc.)
+- `[EFFECT_PROPERTIES]`: Named effect specific properties (angle, perspective, direction, etc.)
 - `[CENTERED_TO_TARGET]`: true (center range at target) or false (use source element bounds)
 - `[UNIQUE_EFFECT_ID]`: Optional unique identifier
 
@@ -106,8 +106,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'Tilt3DMouse',
                 angle: 15,
-                perspective: 1000,
-                power: 'medium'
+                perspective: 1000
             }
         }
     ]
@@ -142,8 +141,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: '[MOVEMENT_EFFECT_TYPE]',
                 distance: { value: [DISTANCE_VALUE], unit: '[DISTANCE_UNIT]' },
-                axis: '[AXIS_CONSTRAINT]',
-                power: '[POWER_LEVEL]'
+                axis: '[AXIS_CONSTRAINT]'
             },
             centeredToTarget: [CENTERED_TO_TARGET],
             effectId: '[UNIQUE_EFFECT_ID]'
@@ -158,7 +156,6 @@ Controls how the progress range is calculated:
 - `[DISTANCE_VALUE]`: Numeric value for movement distance
 - `[DISTANCE_UNIT]`: 'px', 'percentage', 'vw', 'vh'
 - `[AXIS_CONSTRAINT]`: 'both', 'horizontal', 'vertical'
-- `[POWER_LEVEL]`: 'soft', 'medium', 'hard'
 - Other variables same as Rule 1
 
 **Example - Cursor Follower Element**:
@@ -175,8 +172,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 50, unit: 'percentage' },
-                axis: 'both',
-                power: 'medium'
+                axis: 'both'
             },
             centeredToTarget: false
         }
@@ -199,8 +195,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'AiryMouse',
                 distance: { value: 30, unit: 'px' },
-                axis: 'both',
-                power: 'soft'
+                axis: 'both'
             },
             centeredToTarget: true,
             effectId: 'hero-float'
@@ -248,7 +243,7 @@ Controls how the progress range is calculated:
 **Variables**:
 
 - `[SCALE_EFFECT_TYPE]`: 'ScaleMouse', 'BlobMouse', 'SkewMouse'
-- `[SCALE_PROPERTIES]`: Effect-specific properties (scale, distance, axis, power)
+- `[SCALE_PROPERTIES]`: Effect-specific properties (scale, distance, axis)
 - Other variables same as Rule 1
 
 **Example - Interactive Scale Button**:
@@ -267,8 +262,7 @@ Controls how the progress range is calculated:
                 type: 'ScaleMouse',
                 scale: 1.1,
                 distance: { value: 100, unit: 'px' },
-                axis: 'both',
-                power: 'medium'
+                axis: 'both'
             },
             centeredToTarget: true
         }
@@ -291,8 +285,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'BlobMouse',
                 intensity: 0.8,
-                smoothness: 0.6,
-                power: 'medium'
+                smoothness: 0.6
             },
             effectId: 'blob-morph'
         }
@@ -339,7 +332,7 @@ Controls how the progress range is calculated:
 **Variables**:
 
 - `[VISUAL_EFFECT_TYPE]`: 'BlurMouse', 'SpinMouse'
-- `[VISUAL_PROPERTIES]`: Effect-specific properties (blur amount, rotation speed, power)
+- `[VISUAL_PROPERTIES]`: Effect-specific properties (blur amount, rotation speed)
 - Other variables same as Rule 1
 
 **Example - Motion Blur Card**:
@@ -357,8 +350,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'BlurMouse',
                 blurAmount: 5,
-                motionIntensity: 0.7,
-                power: 'medium'
+                motionIntensity: 0.7
             },
             centeredToTarget: true
         }
@@ -381,8 +373,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'SpinMouse',
                 rotationSpeed: 0.5,
-                direction: 'clockwise',
-                power: 'soft'
+                direction: 'clockwise'
             },
             centeredToTarget: false,
             effectId: 'icon-spin'
@@ -418,8 +409,7 @@ Controls how the progress range is calculated:
             key: '[BACKGROUND_LAYER_KEY]',
             namedEffect: {
                 type: '[BACKGROUND_EFFECT_TYPE]',
-                distance: { value: [BACKGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' },
-                power: '[BACKGROUND_POWER]'
+                distance: { value: [BACKGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' }
             },
             centeredToTarget: [CENTERED_TO_TARGET]
         },
@@ -427,8 +417,7 @@ Controls how the progress range is calculated:
             key: '[MIDGROUND_LAYER_KEY]',
             namedEffect: {
                 type: '[MIDGROUND_EFFECT_TYPE]',
-                distance: { value: [MIDGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' },
-                power: '[MIDGROUND_POWER]'
+                distance: { value: [MIDGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' }
             },
             centeredToTarget: [CENTERED_TO_TARGET]
         },
@@ -436,8 +425,7 @@ Controls how the progress range is calculated:
             key: '[FOREGROUND_LAYER_KEY]',
             namedEffect: {
                 type: '[FOREGROUND_EFFECT_TYPE]',
-                distance: { value: [FOREGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' },
-                power: '[FOREGROUND_POWER]'
+                distance: { value: [FOREGROUND_DISTANCE], unit: '[DISTANCE_UNIT]' }
             },
             centeredToTarget: [CENTERED_TO_TARGET]
         }
@@ -451,7 +439,6 @@ Controls how the progress range is calculated:
 - `[*_LAYER_KEY]`: Unique identifier for different layer elements
 - `[*_EFFECT_TYPE]`: Named effects for each layer (typically movement effects)
 - `[*_DISTANCE]`: Movement distance for each layer (creating depth)
-- `[*_POWER]`: Power level for each layer response
 - Other variables same as previous rules
 
 **Example - Parallax Card Layers**:
@@ -469,8 +456,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'AiryMouse',
                 distance: { value: 15, unit: 'px' },
-                axis: 'both',
-                power: 'soft'
+                axis: 'both'
             },
             centeredToTarget: true
         },
@@ -479,8 +465,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 25, unit: 'px' },
-                axis: 'both',
-                power: 'medium'
+                axis: 'both'
             },
             centeredToTarget: true
         },
@@ -489,8 +474,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'BounceMouse',
                 distance: { value: 35, unit: 'px' },
-                axis: 'both',
-                power: 'medium'
+                axis: 'both'
             },
             centeredToTarget: true
         }
@@ -513,8 +497,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'AiryMouse',
                 distance: { value: 20, unit: 'px' },
-                axis: 'both',
-                power: 'soft'
+                axis: 'both'
             },
             centeredToTarget: true
         },
@@ -523,8 +506,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 40, unit: 'px' },
-                axis: 'horizontal',
-                power: 'medium'
+                axis: 'horizontal'
             },
             centeredToTarget: true
         },
@@ -533,8 +515,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'ScaleMouse',
                 scale: 1.05,
-                distance: { value: 60, unit: 'px' },
-                power: 'medium'
+                distance: { value: 60, unit: 'px' }
             },
             centeredToTarget: true
         }
@@ -610,8 +591,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'Tilt3DMouse',
                 angle: 12,
-                perspective: 1000,
-                power: 'soft'
+                perspective: 1000
             },
             centeredToTarget: true
         },
@@ -620,8 +600,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'AiryMouse',
                 distance: { value: 20, unit: 'px' },
-                axis: 'both',
-                power: 'soft'
+                axis: 'both'
             },
             centeredToTarget: true
         }
@@ -644,8 +623,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'ScaleMouse',
                 scale: 1.05,
-                distance: { value: 80, unit: 'px' },
-                power: 'medium'
+                distance: { value: 80, unit: 'px' }
             },
             centeredToTarget: true
         },
@@ -654,8 +632,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 15, unit: 'px' },
-                axis: 'horizontal',
-                power: 'hard'
+                axis: 'horizontal'
             },
             centeredToTarget: false
         }
@@ -722,8 +699,7 @@ Controls how the progress range is calculated:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 0, unit: 'px' },
-                axis: 'both',
-                power: 'hard'
+                axis: 'both'
             },
             centeredToTarget: false,
             effectId: 'global-cursor'
@@ -745,9 +721,8 @@ Controls how the progress range is calculated:
         {
             namedEffect: {
                 type: 'AiryMouse',
-                distance: { value: 50, type: 'px' },
-                axis: 'both',
-                power: 'soft'
+                distance: { value: 50, unit: 'px' },
+                axis: 'both'
             },
             centeredToTarget: false,
             effectId: 'decoration-follower'
@@ -1264,8 +1239,7 @@ Adjusting pointer sensitivity based on device capabilities:
             namedEffect: {
                 type: 'Tilt3DMouse',
                 angle: 20,
-                perspective: 800,
-                power: 'medium'
+                perspective: 800
             },
             centeredToTarget: true
         }
@@ -1284,8 +1258,7 @@ Adjusting pointer sensitivity based on device capabilities:
             key: 'responsive-element',
             namedEffect: {
                 type: 'ScaleMouse',
-                scale: 1.02,
-                power: 'soft'
+                scale: 1.02
             },
             centeredToTarget: true
         }
@@ -1310,8 +1283,7 @@ Different hit areas for different interaction contexts:
             key: 'local-card',
             namedEffect: {
                 type: 'Tilt3DMouse',
-                angle: 15,
-                power: 'medium'
+                angle: 15
             },
             centeredToTarget: true
         }
@@ -1329,8 +1301,7 @@ Different hit areas for different interaction contexts:
             key: 'ambient-element',
             namedEffect: {
                 type: 'AiryMouse',
-                distance: { value: 30, unit: 'px' },
-                power: 'soft'
+                distance: { value: 30, unit: 'px' }
             },
             centeredToTarget: false
         }
@@ -1355,8 +1326,7 @@ Controlling movement direction for specific design needs:
             namedEffect: {
                 type: 'TrackMouse',
                 distance: { value: 100, unit: 'px' },
-                axis: 'horizontal',
-                power: 'medium'
+                axis: 'horizontal'
             },
             centeredToTarget: true
         },
@@ -1366,8 +1336,7 @@ Controlling movement direction for specific design needs:
                 type: 'ScaleMouse',
                 scale: 1.2,
                 distance: { value: 150, unit: 'px' },
-                axis: 'vertical',
-                power: 'medium'
+                axis: 'vertical'
             },
             centeredToTarget: true
         }
@@ -1527,7 +1496,6 @@ Controlling movement direction for specific design needs:
 
 **Poor pointer responsiveness**:
 
-- Check `power` settings (soft/medium/hard) for namedEffect
 - Verify `hitArea` configuration
 - Test `centeredToTarget` settings
 - Ensure target elements are properly positioned

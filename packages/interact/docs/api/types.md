@@ -604,8 +604,8 @@ type ScrubEffect = {
 // Parallax background
 const parallaxEffect: ScrubEffect = {
   easing: 'linear',
-  rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-  rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+  rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+  rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
   keyframeEffect: {
     name: 'parallax',
     keyframes: [{ transform: 'translateY(0)' }, { transform: 'translateY(-50px)' }],

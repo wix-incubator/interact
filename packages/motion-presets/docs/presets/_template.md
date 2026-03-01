@@ -40,12 +40,6 @@ export type [AnimationName] = BaseDataItemLike<'[AnimationName]'> & {
 | `[param1]` | `[type]` | `[default]` | [Description] | `[example values]` |
 | `[param2]` | `[type]` | `[default]` | [Description] | `[example values]` |
 
-### Power Levels (if applicable)
-
-- **`soft`** - [Description of soft power level]
-- **`medium`** - [Description of medium power level]
-- **`hard`** - [Description of hard power level]
-
 ### Directional Support (if applicable)
 
 - **Four directions**: `top`, `right`, `bottom`, `left`

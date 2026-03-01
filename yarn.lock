@@ -186,7 +186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.26.0":
+"@babel/runtime@npm:^7.12.5":
   version: 7.28.6
   resolution: "@babel/runtime@npm:7.28.6"
   checksum: 10/fbcd439cb74d4a681958eb064c509829e3f46d8a4bfaaf441baa81bb6733d1e680bccc676c813883d7741bcaada1d0d04b15aa320ef280b5734e2192b50decf9
@@ -1346,7 +1346,7 @@ __metadata:
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@wix/interact": "npm:*"
+    "@wix/interact": "npm:^2.0.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     typescript: "npm:^5.9.3"
@@ -1361,7 +1361,7 @@ __metadata:
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@wix/interact": "npm:*"
+    "@wix/interact": "npm:^2.0.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-markdown: "npm:^9.0.1"
@@ -1373,20 +1373,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wix/interact@npm:*":
-  version: 1.97.0
-  resolution: "@wix/interact@npm:1.97.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-    "@wix/motion": "npm:1.665.0"
-    fastdom: "npm:^1.0.12"
-    fizban: "npm:^0.7.0"
-    kuliso: "npm:^0.4.13"
-  checksum: 10/f5b54c5c5c63323ccc8ab85efe84922d0875dd497704e4f704589bd3ab23142e0b6addf2028eb87b9d32543d82c5db4f43eeb75641b47472b2f631c7603c0be4
-  languageName: node
-  linkType: hard
-
-"@wix/interact@workspace:packages/interact":
+"@wix/interact@npm:^2.0.2, @wix/interact@workspace:packages/interact":
   version: 0.0.0-use.local
   resolution: "@wix/interact@workspace:packages/interact"
   dependencies:
@@ -1430,16 +1417,6 @@ __metadata:
     vitest: "npm:^4.0.14"
   languageName: unknown
   linkType: soft
-
-"@wix/motion@npm:1.665.0":
-  version: 1.665.0
-  resolution: "@wix/motion@npm:1.665.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.26.0"
-    fastdom: "npm:^1.0.12"
-  checksum: 10/1aafd147288411ffa28d4055fd028251742e8beaef5b06500a53f528852f3c114e16689dd28e71a2616d4f032857e7e540cdbe8fb982812d287b74532791626e
-  languageName: node
-  linkType: hard
 
 "@wix/motion@npm:^2.0.0, @wix/motion@workspace:packages/motion":
   version: 0.0.0-use.local
@@ -2533,7 +2510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.39.2":
+"eslint@npm:9.39.2":
   version: 9.39.2
   resolution: "eslint@npm:9.39.2"
   dependencies:
@@ -2723,7 +2700,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fizban@npm:^0.7.0, fizban@npm:^0.7.2":
+"fizban@npm:^0.7.2":
   version: 0.7.2
   resolution: "fizban@npm:0.7.2"
   checksum: 10/ff7f96df55968bdccc132dec82de4aa2edfe87e92a6b3f19e0b8e8ef8e37f7d83617939bc643d38b57beb18e4b3e53765f497508c96aba6b8f037a000765ab77
@@ -3168,7 +3145,7 @@ __metadata:
   dependencies:
     "@typescript-eslint/eslint-plugin": "npm:8.51.0"
     "@typescript-eslint/parser": "npm:8.51.0"
-    eslint: "npm:^9.39.2"
+    eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:^10.1.1"
     eslint-plugin-jsx-a11y: "npm:^6.10.2"
     eslint-plugin-react: "npm:^7.37.5"

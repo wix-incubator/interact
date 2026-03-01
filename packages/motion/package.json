@@ -40,12 +40,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/interact.git"
+    "url": "git+https://github.com/wix/interact.git"
   },
   "bugs": {
-    "url": "https://github.com/wix-incubator/interact/issues"
+    "url": "https://github.com/wix/interact/issues"
   },
-  "homepage": "https://github.com/wix-incubator/interact#readme",
+  "homepage": "https://github.com/wix/interact#readme",
   "engines": {
     "node": ">=18"
   },
