@@ -1278,13 +1278,20 @@ describe('interact (web)', () => {
       const div = document.createElement('div');
       element.append(div);
 
-      const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
+      const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
 
       add(element, key);
+
+      const signals = addEventListenerSpy.mock.calls
+        .map((call) => (call[2] as AddEventListenerOptions)?.signal)
+        .filter(Boolean) as AbortSignal[];
+
+      expect(signals.length).toBe(2);
+      expect(signals.filter((signal) => signal.aborted)).toHaveLength(0);
+
       remove(key);
 
-      expect(removeEventListenerSpy).toHaveBeenCalledTimes(2);
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+      expect(signals.filter((signal) => signal.aborted)).toHaveLength(2);
     });
 
     it('should do nothing if key does not exist', () => {
@@ -2351,15 +2358,18 @@ describe('interact (web)', () => {
         Interact.create(config, { useCutsomElement: true });
 
         const triggerButton = sourceElement.querySelector('.trigger-button') as HTMLElement;
-        const removeEventListenerSpy = vi.spyOn(triggerButton, 'removeEventListener');
+        const addEventListenerSpy = vi.spyOn(triggerButton, 'addEventListener');
 
         add(sourceElement, 'cleanup-source');
         add(targetElement, 'cleanup-target');
 
         remove('cleanup-source');
 
-        // Should remove event listeners from the selected element
-        expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+        expect(
+          addEventListenerSpy.mock.calls
+            .map((call) => (call[2] as AddEventListenerOptions)?.signal)
+            .filter((signal): signal is AbortSignal => !!signal?.aborted),
+        ).toHaveLength(1);
       });
     });
   });
@@ -2647,7 +2657,6 @@ describe('interact (web)', () => {
       });
 
       const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
-      const removeEventListenerSpy = vi.spyOn(div, 'removeEventListener');
 
       add(testElement, 'responsive-element');
 
@@ -2663,9 +2672,13 @@ describe('interact (web)', () => {
         expect.any(Object),
       );
 
-      // Clear spies for next assertions
+      // Capture signals from the initial (desktop/click) listeners
+      const clickSignals = addEventListenerSpy.mock.calls
+        .map((call) => (call[2] as AddEventListenerOptions)?.signal)
+        .filter(Boolean) as AbortSignal[];
+
+      // Clear spy for next assertions
       addEventListenerSpy.mockClear();
-      removeEventListenerSpy.mockClear();
 
       // Now simulate media query change to mobile
       const desktopMql = mockMQLs.get('(min-width: 1024px)');
@@ -2683,8 +2696,8 @@ describe('interact (web)', () => {
       const mockEvent = { matches: false, media: '(min-width: 1024px)' } as MediaQueryListEvent;
       listenerEntry!.handler(mockEvent);
 
-      // The old click handler should be removed (this will fail due to isConnected check)
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+      // The old click signals should be aborted
+      expect(clickSignals.filter((signal) => signal.aborted)).toHaveLength(1);
 
       // The new hover handler should be added
       expect(addEventListenerSpy).toHaveBeenCalledWith(
