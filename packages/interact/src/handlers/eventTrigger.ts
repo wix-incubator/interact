@@ -111,7 +111,7 @@ function addEventTriggerHandler(
   target: HTMLElement,
   effect: (TimeEffect | TransitionEffect) & EffectBase,
   options: EventTriggerParams,
-  { reducedMotion, targetController, selectorCondition }: InteractOptions,
+  { reducedMotion, targetController, selectorCondition, animation: preCreatedAnimation }: InteractOptions,
 ) {
   const genericConfig = createGenericEventConfig(options.eventConfig);
   const isTransition =
@@ -139,6 +139,7 @@ function addEventTriggerHandler(
       reducedMotion,
       selectorCondition,
       enterLeave,
+      preCreatedAnimation,
     );
     once = (options as PointerTriggerParams).type === 'once';
   }

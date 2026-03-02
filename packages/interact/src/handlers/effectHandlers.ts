@@ -19,8 +19,9 @@ export function createTimeEffectHandler(
   reducedMotion: boolean = false,
   selectorCondition?: string,
   enterLeave?: EventTriggerConfigEnterLeave,
+  preCreatedAnimation?: AnimationGroup,
 ): ((event: Event) => void) | null {
-  const animation = getAnimation(
+  const animation = preCreatedAnimation || getAnimation(
     element,
     effectToAnimationOptions(effect),
     undefined,
