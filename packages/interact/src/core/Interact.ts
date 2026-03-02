@@ -141,6 +141,14 @@ export class Interact {
       const interactionId = getInterpolatedKey(interactionId_, key);
       delete this.addedInteractions[interactionId];
     });
+
+    const seqPrefix = `${key}::seq::`;
+    for (const cacheKey of Interact.sequenceCache.keys()) {
+      if (cacheKey.startsWith(seqPrefix)) {
+        Interact.sequenceCache.delete(cacheKey);
+        delete this.addedInteractions[cacheKey];
+      }
+    }
   }
 
   setupMediaQueryListener(id: string, mql: MediaQueryList, key: string, handler: () => void) {
@@ -233,6 +241,7 @@ export class Interact {
 
     const sequence = getSequence(sequenceOptions, animationGroupArgs, context);
     Interact.sequenceCache.set(cacheKey, sequence);
+
     return sequence;
   }
 }
