@@ -21,12 +21,14 @@ export function createTimeEffectHandler(
   enterLeave?: EventTriggerConfigEnterLeave,
   preCreatedAnimation?: AnimationGroup,
 ): ((event: Event) => void) | null {
-  const animation = preCreatedAnimation || getAnimation(
-    element,
-    effectToAnimationOptions(effect),
-    undefined,
-    reducedMotion,
-  ) as AnimationGroup | null;
+  const animation =
+    preCreatedAnimation ||
+    (getAnimation(
+      element,
+      effectToAnimationOptions(effect),
+      undefined,
+      reducedMotion,
+    ) as AnimationGroup | null);
 
   if (!animation) {
     return null;

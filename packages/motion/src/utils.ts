@@ -80,10 +80,10 @@ function parseCssLinear(str: string): ((t: number) => number) | undefined {
 
   const parts = m[1]
     .split(',')
-    .map(s => s.trim())
+    .map((s) => s.trim())
     .filter(Boolean);
 
-    if (parts.length === 0) return undefined;
+  if (parts.length === 0) return undefined;
 
   type Stop = { output: number; pos: number | null };
   const stops: Stop[] = [];
@@ -178,10 +178,10 @@ export function getJsEasing(
   easing?: keyof typeof jsEasings | string,
 ): ((t: number) => number) | undefined {
   if (!easing) return undefined;
- 
+
   const named = jsEasings[easing as keyof typeof jsEasings];
- 
+
   if (named) return named;
- 
+
   return parseCubicBezier(easing) ?? parseCssLinear(easing) ?? jsEasings.linear;
 }
