@@ -92,19 +92,13 @@ type MotionKeyframeEffect = {
 
 type EffectEffectProperty =
   | {
-      namedEffect: never;
-      customEffect: never;
       keyframeEffect: MotionKeyframeEffect;
     }
   | {
       namedEffect: NamedEffect;
-      customEffect: never;
-      keyframeEffect: never;
     }
   | {
       customEffect: (element: Element, progress: any) => void;
-      namedEffect: never;
-      keyframeEffect: never;
     };
 
 export type TimeEffect = {
