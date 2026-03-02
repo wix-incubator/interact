@@ -79,13 +79,19 @@ type MotionKeyframeEffect = {
 
 type EffectEffectProperty =
   | {
+      namedEffect: never;
+      customEffect: never;
       keyframeEffect: MotionKeyframeEffect;
     }
   | {
       namedEffect: NamedEffect;
+      customEffect: never;
+      keyframeEffect: never;
     }
   | {
       customEffect: (element: Element, progress: any) => void;
+      namedEffect: never;
+      keyframeEffect: never;
     };
 
 export type TimeEffect = {
@@ -161,15 +167,9 @@ export type SequenceOptionsConfig = {
   conditions?: string[];
 };
 
-export type SequenceConfig = SequenceOptionsConfig &
-  (
-    | {
-        effect: Effect | EffectRef;
-      }
-    | {
-        effects: (Effect | EffectRef)[];
-      }
-  );
+export type SequenceConfig = SequenceOptionsConfig & {
+  effects: (Effect | EffectRef)[];
+};
 
 export type SequenceConfigRef = {
   sequenceId: string;

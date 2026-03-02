@@ -251,7 +251,7 @@ function _addInteraction(
 function _isSequenceConfigRef(
   config: SequenceConfig | SequenceConfigRef,
 ): config is SequenceConfigRef {
-  return 'sequenceId' in config && !('effect' in config) && !('effects' in config);
+  return 'sequenceId' in config && !('effects' in config);
 }
 
 /**
@@ -275,13 +275,7 @@ function _buildAnimationGroupArgsFromSequence(
 
   if (seqMql && !seqMql.matches) return null;
 
-  const seqEffects: (Effect | EffectRef)[] =
-    'effects' in sequenceConfig
-      ? sequenceConfig.effects
-      : 'effect' in sequenceConfig
-        ? [sequenceConfig.effect]
-        : [];
-
+  const seqEffects: (Effect | EffectRef)[] = sequenceConfig.effects || [];
   const animationGroupArgs: AnimationGroupArgs[] = [];
 
   for (const effect of seqEffects) {
@@ -366,7 +360,7 @@ function _processSequences(
 
     if (!animationGroupArgs) return;
 
-    const sequence = Interact.getEffect(cacheKey, sequenceConfig, animationGroupArgs, {
+    const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
       reducedMotion: Interact.forceReducedMotion,
     });
 
@@ -438,7 +432,7 @@ function _processSequencesForTarget(
 
       if (!animationGroupArgs) return true;
 
-      const sequence = Interact.getEffect(cacheKey, sequenceConfig, animationGroupArgs, {
+      const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
         reducedMotion: Interact.forceReducedMotion,
       });
 

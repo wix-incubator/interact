@@ -222,7 +222,7 @@ export class Interact {
 
   static registerEffects = registerEffects;
 
-  static getEffect(
+  static getSequence(
     cacheKey: string,
     sequenceOptions: SequenceOptions,
     animationGroupArgs: AnimationGroupArgs[],
@@ -269,14 +269,7 @@ export function getSelector(
 function _isSequenceConfigRef(
   config: SequenceConfig | SequenceConfigRef,
 ): config is SequenceConfigRef {
-  return 'sequenceId' in config && !('effect' in config) && !('effects' in config);
-}
-
-function _getSequenceEffects(sequenceConfig: SequenceConfig): (Effect | EffectRef)[] {
-  if ('effects' in sequenceConfig) return sequenceConfig.effects;
-  if ('effect' in sequenceConfig) return [sequenceConfig.effect];
-
-  return [];
+  return 'sequenceId' in config && !('effects' in config);
 }
 
 function _ensureInteractionEntry(
@@ -410,7 +403,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
 
       const sequenceConfig = seqConfig as SequenceConfig;
       const sequenceId = sequenceConfig.sequenceId || generateId();
-      const seqEffects = _getSequenceEffects(sequenceConfig);
+      const seqEffects = sequenceConfig.effects;
 
       for (const effect of seqEffects) {
         if (!(effect as EffectRef).effectId) {

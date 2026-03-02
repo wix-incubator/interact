@@ -273,4 +273,4 @@ export {
   getEasing,
 };
 
-export type { AnimationGroup };
+export type { AnimationGroup, Sequence };

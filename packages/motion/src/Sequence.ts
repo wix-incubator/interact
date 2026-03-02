@@ -58,17 +58,7 @@ export class Sequence extends AnimationGroup {
 
       if (additionalDelay === 0) return;
 
-      for (const animation of group.animations) {
-        const effect = animation.effect;
-
-        if (effect) {
-          const timing = effect.getTiming();
-
-          effect.updateTiming({
-            delay: (timing.delay || 0) + additionalDelay,
-          });
-        }
-      }
+      group.applyOffset(additionalDelay);
     });
   }
 

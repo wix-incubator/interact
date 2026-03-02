@@ -114,4 +114,18 @@ export class AnimationGroup {
   get playState() {
     return this.animations[0]?.playState;
   }
+
+  applyOffset(offset: number) {
+    for (const animation of this.animations) {
+      const effect = animation.effect;
+
+      if (effect) {
+        const timing = effect.getTiming();
+
+        effect.updateTiming({
+          delay: (timing.delay || 0) + offset,
+        });
+      }
+    }
+  }
 }

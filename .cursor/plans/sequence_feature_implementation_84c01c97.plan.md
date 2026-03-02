@@ -165,10 +165,8 @@ type getSequence = (
 ) => Sequence;
 ```
 
-The `getSequence()` funciton has 2 flows:
-
-- If passed `animations: AnimationGroupArgs` it creates a `Sequence` from a single effect definition applied to multiple targets.
-- If passed `animations: AnimationGroupArgs[]` it creates a `Sequence` from a each effect definition in the array.
+The `getSequence()` funciton is passed `animations: AnimationGroupArgs[]` it creates a `Sequence` from a each effect definition in the array.
+If an `Effect` in the array resolves to multiple elements, each resulting instance becomes an effect in the array.
 
 ## Part 2: @wix/interact Package Changes
 
@@ -186,15 +184,9 @@ export type SequenceOptionsConfig = {
 };
 
 // New SequenceConfig type
-export type SequenceConfig = SequenceOptionsConfig &
-  (
-    | {
-        effect: Effect | EffectRef;
-      }
-    | {
-        effects: (Effect | EffectRef)[];
-      }
-  );
+export type SequenceConfig = SequenceOptionsConfig & {
+  effects: (Effect | EffectRef)[];
+};
 
 // New SequenceConfigRef type
 export type SequenceConfigRef = {
@@ -260,9 +252,7 @@ Modify `packages/interact/src/core/Interact.ts`:
 2. Process `interaction.sequences` array:
 
 - Resolve `sequenceId` references from `config.sequences`
-- Process each effect within the sequence:
-  - Either as list of multiple effects as `effects: Effect[]`
-  - Or a single `effect: Effect` declaration, generating a list of effects on multiple target elements
+- Process each effect within the sequence
 - Generate unique IDs for sequence effects
 
 1. Track sequence membership for effects (needed for delay calculation)
