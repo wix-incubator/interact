@@ -34,8 +34,10 @@ test.describe('AnimationGroup API', () => {
     test('should reverse animation direction', async () => {
       await animationGroupPage.play();
       await animationGroupPage.reverse();
+      const playbackRate = await animationGroupPage.getPlaybackRate();
 
       const events = await animationGroupPage.getLifecycleEvents();
+      expect(playbackRate).toBe(-1);
       expect(events).toContain('reverse:ready');
     });
 

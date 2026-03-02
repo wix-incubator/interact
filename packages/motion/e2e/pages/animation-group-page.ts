@@ -64,6 +64,16 @@ export class AnimationGroupPage extends BaseFixturePage {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).animationGroup.playState);
   }
 
+  getPlaybackRate() {
+    return this.page.evaluate(() => {
+      const fixtureWindow = window as unknown as {
+        animationGroup: { animations: Array<{ playbackRate: number }> };
+      };
+
+      return fixtureWindow.animationGroup.animations[0]?.playbackRate;
+    });
+  }
+
   getLifecycleEvents() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).lifecycleEvents);
   }
