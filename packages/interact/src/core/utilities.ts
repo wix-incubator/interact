@@ -81,15 +81,15 @@ function keyframePropertyToCSS(key: string): string {
   return key.replace(/([A-Z])/g, '-$1').toLowerCase();
 }
 
-function keyframeObjectToKeyframeCSS(keyframeObj: Keyframe, offsetString: string): string {
+export function keyframeObjectToKeyframeCSS(keyframeObj: Keyframe, offsetString: string): string {
   const props = Object.entries(keyframeObj)
     .filter(([key, value]) => key !== 'offset' && value !== undefined && value !== null)
     .map(([key, value]) => {
       const cssKey = keyframePropertyToCSS(key);
       return `${cssKey}: ${value};`;
     })
-    .join(' ');
-  return `${offsetString} { ${props} }`;
+    .join('\n');
+  return `${offsetString} {\n${props}\n}`;
 }
 
 export function keyframesToCSS(name: string, keyframes: Keyframe[], initial?: any): string {
@@ -103,12 +103,12 @@ export function keyframesToCSS(name: string, keyframes: Keyframe[], initial?: an
 
       return keyframeObjectToKeyframeCSS(kf, `${percentage}%`);
     })
-    .join(' ');
+    .join('\n');
 
   if (initial) {
     const fromFrame = keyframeObjectToKeyframeCSS(initial, 'from');
-    keyframeBlocks = `${fromFrame} ${keyframeBlocks}`;
+    keyframeBlocks = `${fromFrame}\n${keyframeBlocks}`;
   }
 
-  return `@keyframes ${name} { ${keyframeBlocks} }`;
+  return `@keyframes ${name} {\n${keyframeBlocks}\n}`;
 }

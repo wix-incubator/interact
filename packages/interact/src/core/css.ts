@@ -22,7 +22,7 @@ import {
   getSelectorCondition,
 } from '../utils';
 import { getSelector } from './Interact';
-import { keyframesToCSS } from './utilities';
+import { keyframeObjectToKeyframeCSS, keyframesToCSS } from './utilities';
 import { effectToAnimationOptions } from '../handlers/utilities';
 import { getCSSAnimation, MotionKeyframeEffect } from '@wix/motion';
 
@@ -34,7 +34,12 @@ const DEFAULT_INITIAL = {
   rotate: 'none',
 };
 
-function getTransitionData(effect: Effect & { key: string }, childSelector: string) {
+// update when more triggers are supported
+function isCSSSupported(interaction: Interaction) {
+  return isTimeTrigger(interaction.trigger);
+}
+
+function getTransitionData(effect: Effect & { key: string }, childSelector: string, selectorCondition?: string) {
   const args: CreateTransitionCSSParams = {
     key: effect.key,
     effectId: (effect as Effect).effectId!,
@@ -61,12 +66,67 @@ function getAnimationData(effect: Effect): MotionCSSAnimationResult[] {
     }));
 }
 
+function haveSameSelectorConditions(
+  conditionsArray1: string[] | undefined,
+  conditionsArray2: string[] | undefined,
+  conditionDefinitions: Record<string, Condition>,
+): boolean {
+  const set1: Set<string> = new Set(...(conditionsArray1 || []).filter((condition) => conditionDefinitions[condition]?.type === 'selector'));
+  const set2: Set<string> = new Set(...(conditionsArray2 || []).filter((condition) => conditionDefinitions[condition]?.type === 'selector'));
+  if (set1.size !== set2.size) {
+    return false;
+  }
+  return [...set1].every((condition) => set2.has(condition))
+}
+
+function shouldUseInitial(
+  resolvedEffect: Effect & { key: string, conditions: string[] },
+  interaction: Interaction,
+  conditionDefinitions: Record<string, Condition>
+): boolean {
+  const { 
+    initial,
+    key: effectKey,
+    selector: effectSelector,
+    listContainer: effectListContainer,
+    listItemSelector: effectlistItemSelector,
+    conditions: effectConditions,
+  } = resolvedEffect;
+
+  const {
+    trigger,
+    params,
+    key: interactionKey,
+    selector: interactionSelector,
+    listContainer: interactionListContainer,
+    listItemSelector: interactionlistItemSelector,
+    conditions: interactionConditions,
+  } = interaction;
+
+  const { type } = params as ViewEnterParams;
+
+  return !(
+    // initial is not disabled and trigger is entrance-once
+    initial === false || trigger !== 'viewEnter' || (type && type !== 'once') ||
+    // key is the same
+    effectKey !== interactionKey ||
+    // selector is the same or falsy in both
+    effectSelector !== interactionSelector || !(effectSelector || interactionSelector) ||
+    // listContainer is the same or falsy in both
+    effectListContainer !== interactionListContainer || !(effectListContainer || interactionListContainer) ||
+    // listItemSelector is the same or falsy in both
+    effectlistItemSelector !== interactionlistItemSelector || !(effectlistItemSelector || interactionlistItemSelector) ||
+    // selectors of type condition are the same
+    haveSameSelectorConditions(effectConditions, interactionConditions, conditionDefinitions)
+  );
+}
+
 function resolveEffect(
   effectRef: Effect | EffectRef,
   effectsMap: Record<string, Effect>,
   interaction: Interaction,
   conditionDefinitions: Record<string, Condition>,
-): (Effect & { key: string }) {
+): (Effect & { key: string; conditions: string[] }) {
   const fullEffect: any = effectRef.effectId
     ? { ...effectsMap[effectRef.effectId], ...effectRef }
     : { ...effectRef };
@@ -76,8 +136,8 @@ function resolveEffect(
   }
 
   fullEffect.conditions = [
-    ...new Set(...(fullEffect.conditions as string[] || [])),
-  ].filter((condition) => conditionDefinitions[condition]);
+    ...new Set(...(fullEffect.conditions || [])),
+  ].filter((condition) => conditionDefinitions[condition as string]);
 
   const { keyframeEffect } = fullEffect;
   if (keyframeEffect && !keyframeEffect.name) {
@@ -87,12 +147,9 @@ function resolveEffect(
     keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
   }
 
-  const { trigger, params } = interaction;
-  const { type } = params as ViewEnterParams;
-  fullEffect.initial =
-    fullEffect.initial === false || trigger !== 'viewEnter' || (type && type !== 'once')
-      ? undefined
-      : fullEffect.initial || DEFAULT_INITIAL;
+  fullEffect.initial = shouldUseInitial(fullEffect, interaction, conditionDefinitions)
+      ? fullEffect.initial || DEFAULT_INITIAL
+      : undefined;
 
   return fullEffect;
 }
@@ -100,8 +157,8 @@ function resolveEffect(
 const buildSelector = (
   key: string,
   effect: Effect,
-  conditionSelector: string | undefined,
   useFirstChild: boolean,
+  configConditions: Record<string, Condition>,
 ): string => {
   const escapedKey = key.replace(/"/g, "'");
 
@@ -113,6 +170,11 @@ const buildSelector = (
     baseSelector = `${baseSelector} ${elementSelector}`;
   }
 
+  const conditionSelector = getSelectorCondition(
+    effect.conditions,
+    configConditions,
+  );
+
   if (conditionSelector) {
     baseSelector = applySelectorCondition(baseSelector, conditionSelector);
   }
@@ -120,21 +182,21 @@ const buildSelector = (
   return baseSelector;
 };
 
-export function generate(_config: InteractConfig, useFirstChild: boolean = false): string {
+export function generateInitialStates(_config: InteractConfig, useFirstChild: boolean = false): string {
   const css: string[] = [];
   const processedSelectors = new Set<string>();
 
   _config.interactions.forEach(
-    ({
-      key: interactionKey,
-      selector: interactionSelector,
-      listContainer: interactionListContainer,
-      listItemSelector: interactionListItemSelector,
-      trigger,
-      params,
-      effects,
-      conditions: interactionConditions,
-    }) => {
+    (interaction) => {
+      const {
+        key,
+        trigger,
+        params,
+        effects,
+      } = interaction;
+
+      const configConditions = _config.conditions || {};
+
       const isViewEnter = trigger === 'viewEnter';
       if (isViewEnter) {
         const interactionParams = params as ViewEnterParams;
@@ -142,66 +204,23 @@ export function generate(_config: InteractConfig, useFirstChild: boolean = false
 
         if (isOnce) {
           effects.forEach((effect) => {
-            const effectData = effect?.effectId
-              ? _config.effects[effect.effectId] || effect
-              : effect;
-            const {
-              key: effectKey,
-              selector: effectSelector,
-              listContainer: effectListContainer,
-              listItemSelector: effectListItemSelector,
-              conditions: effectConditions,
-            } = effectData;
+            const resolvedEffect = resolveEffect(effect, _config.effects, interaction, configConditions);
+            const { initial } = resolvedEffect;
 
-            const sameKey = !effectKey || effectKey === interactionKey;
-            if (!sameKey) return;
-
-            const sameSelector =
-              (!effectSelector && !interactionSelector) || effectSelector === interactionSelector;
-            if (!sameSelector) return;
-
-            const sameListcontainer =
-              (!effectListContainer && !interactionListContainer) ||
-              effectListContainer === interactionListContainer;
-            if (!sameListcontainer) return;
-
-            const sameListItemSelector =
-              (!effectListItemSelector && !interactionListItemSelector) ||
-              effectListItemSelector === interactionListItemSelector;
-            if (!sameListItemSelector) return;
-
-            const configConditions = _config.conditions || {};
-            const effectConditionSelector = getSelectorCondition(
-              effectConditions,
-              configConditions,
-            );
-            const interactionConditionSelector = getSelectorCondition(
-              interactionConditions,
-              configConditions,
-            );
-            const sameConditionSelector =
-              (!effectConditionSelector && !interactionConditionSelector) ||
-              effectConditionSelector === interactionConditionSelector;
-            if (!sameConditionSelector) return;
+            if (!initial) {
+              return;
+            }
 
             const selector = buildSelector(
-              interactionKey,
-              effectData,
-              interactionConditionSelector,
+              key,
+              resolvedEffect,
               useFirstChild,
+              configConditions
             );
 
             if (!processedSelectors.has(selector)) {
               processedSelectors.add(selector);
-              css.push(`@media (prefers-reduced-motion: no-preference) {
-              ${selector}:not([data-interact-enter]) {
-                visibility: hidden;
-                transform: none;
-                translate: none;
-                scale: none;
-                rotate: none;
-              }
-            }`);
+              css.push(`@media (prefers-reduced-motion: no-preference) {\n${selector}:not([data-interact-enter])${keyframeObjectToKeyframeCSS(initial, '')}\n}`);
             }
           });
         }
@@ -384,19 +403,19 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
 
   const configConditions = config.conditions || {};
 
-  config.interactions.forEach((interaction, interactionIdx) => {
-    if (!isTimeTrigger(interaction.trigger)) {
-      return;
-    }
+  config.interactions.filter(isCSSSupported).forEach((interaction, interactionIdx) => {
+    const resolvedEffcts = interaction.effects.map(
+      (effectRef) => resolveEffect(effectRef, config.effects, interaction, configConditions)
+    ).filter(
+      ({key}) => !(/\[]/g.test(key))
+    );
 
-    for (const effectRef of interaction.effects) {
-      const effect = resolveEffect(effectRef, config.effects, interaction, configConditions);
-      if (/\[]/g.test(effect.key)) {
-        continue;
-      }
-
-      const escapedKey = CSS.escape(effect.key);
-      const keyWithNoSpecialChars = effect.key.replace(/[^\w-]/g, '');
+    for (const effect of resolvedEffcts) {
+      const {key, conditions} = effect;
+      const {transition, transitionProperties} = effect as TransitionEffect;
+      const {namedEffect, keyframeEffect} = effect as TimeEffect;
+      const escapedKey = CSS.escape(key);
+      const keyWithNoSpecialChars = key.replace(/[^\w-]/g, '');
       const customPropName = `--interaction-${interactionIdx}-${keyWithNoSpecialChars}`;      
 
       const childSelector = getSelector(effect, {
@@ -404,13 +423,17 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
         addItemFilter: true,
         useFirstChild: true,
       });
-      const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
-      const conditions = effect.conditions || [];
 
-      const isTransition = (effect as TransitionEffect).transition ||
-      (effect as TransitionEffect).transitionProperties;
+      const selectorCondition = getSelectorCondition(
+        conditions,
+        configConditions,
+      );
+      const isTransition = transition || transitionProperties;
+
+      const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+
       if (isTransition) {
-        const { stateRule, transitions } = getTransitionData(effect, childSelector);
+        const { stateRule, transitions } = getTransitionData(effect, childSelector, selectorCondition);
         transitionRules.push(stateRule);
         if (transitions.length === 0) {
           continue;
@@ -421,7 +444,7 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
           conditions,
           configConditions,
         ));  
-      } else if ((effect as any).namedEffect || (effect as any).keyframeEffect) {
+      } else if (namedEffect || keyframeEffect) {
         const animationDataList = getAnimationData(effect);
         if (animationDataList.length === 0) {
           continue;
