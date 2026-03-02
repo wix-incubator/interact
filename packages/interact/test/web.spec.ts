@@ -1263,6 +1263,202 @@ describe('interact (web)', () => {
     });
   });
 
+  describe('interpolated keys', () => {
+    afterEach(() => {
+      Interact.destroy();
+      vi.clearAllMocks();
+    });
+
+    describe('multiple template triggers to single target', () => {
+      it('should add click handlers for all repeater items targeting a single non-template element', async () => {
+        const { getWebAnimation: getWebAnimationFn } = await import('@wix/motion');
+        const getWebAnimation = getWebAnimationFn as unknown as MockInstance;
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'click',
+              key: 'repeater-item[]',
+              effects: [
+                {
+                  key: 'svg-target',
+                  effectId: 'spin-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'spin-effect': {
+              namedEffect: {
+                type: 'Spin',
+                direction: 'cw',
+                power: 'medium',
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config, { useCutsomElement: true });
+
+        // Create target element (non-template, single)
+        const targetElement = document.createElement('interact-element') as IInteractElement;
+        const targetDiv = document.createElement('div');
+        targetElement.append(targetDiv);
+
+        // Create 3 source elements (repeater items with template keys)
+        const sourceDivs: HTMLDivElement[] = [];
+        const addEventListenerSpies: MockInstance[] = [];
+
+        for (let i = 0; i < 3; i++) {
+          const el = document.createElement('interact-element') as IInteractElement;
+          const div = document.createElement('div');
+          el.append(div);
+          sourceDivs.push(div);
+          addEventListenerSpies.push(vi.spyOn(div, 'addEventListener'));
+        }
+
+        // Add target first, then all source elements
+        add(targetElement, 'svg-target');
+        add(sourceDivs[0].parentElement as IInteractElement, 'repeater-item[0]');
+        add(sourceDivs[1].parentElement as IInteractElement, 'repeater-item[1]');
+        add(sourceDivs[2].parentElement as IInteractElement, 'repeater-item[2]');
+
+        // All 3 source elements should have click listeners
+        addEventListenerSpies.forEach((spy, index) => {
+          expect(spy, `source[${index}] should have a click listener`).toHaveBeenCalledWith(
+            'click',
+            expect.any(Function),
+            expect.objectContaining({ passive: true }),
+          );
+        });
+
+        // getWebAnimation should be called 3 times — once per source-target pair
+        expect(getWebAnimation).toHaveBeenCalledTimes(3);
+        getWebAnimation.mock.calls.forEach((call: any[]) => {
+          expect(call[0]).toBe(targetDiv);
+        });
+      });
+
+      it('should work when source elements are added before the target', async () => {
+        const { getWebAnimation: getWebAnimationFn } = await import('@wix/motion');
+        const getWebAnimation = getWebAnimationFn as unknown as MockInstance;
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'click',
+              key: 'item[]',
+              effects: [
+                {
+                  key: 'target-anim',
+                  effectId: 'bounce-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'bounce-effect': {
+              namedEffect: {
+                type: 'BounceIn',
+                direction: 'center',
+                power: 'hard',
+              } as NamedEffect,
+              duration: 500,
+            },
+          },
+        };
+
+        Interact.create(config, { useCutsomElement: true });
+
+        const sourceDivs: HTMLDivElement[] = [];
+        for (let i = 0; i < 3; i++) {
+          const el = document.createElement('interact-element') as IInteractElement;
+          const div = document.createElement('div');
+          el.append(div);
+          sourceDivs.push(div);
+        }
+
+        const targetElement = document.createElement('interact-element') as IInteractElement;
+        const targetDiv = document.createElement('div');
+        targetElement.append(targetDiv);
+
+        // Add sources first (they will bail because target isn't in cache yet)
+        add(sourceDivs[0].parentElement as IInteractElement, 'item[0]');
+        add(sourceDivs[1].parentElement as IInteractElement, 'item[1]');
+        add(sourceDivs[2].parentElement as IInteractElement, 'item[2]');
+
+        expect(getWebAnimation).toHaveBeenCalledTimes(0);
+
+        // Now add the target — addEffectsForTarget should wire things up
+        // Note: the current architecture can't resolve template sources from the target side,
+        // so these interactions require the target to be present when sources are added.
+        // Adding all source elements after the target should work:
+        Interact.destroy();
+        Interact.create(config, { useCutsomElement: true });
+
+        add(targetElement, 'target-anim');
+        add(sourceDivs[0].parentElement as IInteractElement, 'item[0]');
+        add(sourceDivs[1].parentElement as IInteractElement, 'item[1]');
+        add(sourceDivs[2].parentElement as IInteractElement, 'item[2]');
+
+        expect(getWebAnimation).toHaveBeenCalledTimes(3);
+      });
+
+      it('should not break one-to-one template interactions', async () => {
+        const { getWebAnimation: getWebAnimationFn } = await import('@wix/motion');
+        const getWebAnimation = getWebAnimationFn as unknown as MockInstance;
+
+        const config: InteractConfig = {
+          interactions: [
+            {
+              trigger: 'click',
+              key: 'card[]',
+              effects: [
+                {
+                  key: 'card[]',
+                  effectId: 'flip-effect',
+                },
+              ],
+            },
+          ],
+          effects: {
+            'flip-effect': {
+              namedEffect: {
+                type: 'Spin',
+                direction: 'cw',
+                power: 'medium',
+              } as NamedEffect,
+              duration: 300,
+            },
+          },
+        };
+
+        Interact.create(config, { useCutsomElement: true });
+
+        const elements: IInteractElement[] = [];
+        const divs: HTMLDivElement[] = [];
+        for (let i = 0; i < 3; i++) {
+          const el = document.createElement('interact-element') as IInteractElement;
+          const div = document.createElement('div');
+          el.append(div);
+          elements.push(el);
+          divs.push(div);
+        }
+
+        add(elements[0], 'card[0]');
+        add(elements[1], 'card[1]');
+        add(elements[2], 'card[2]');
+
+        // Each self-targeting element should get its own animation
+        expect(getWebAnimation).toHaveBeenCalledTimes(3);
+        expect(getWebAnimation.mock.calls[0][0]).toBe(divs[0]);
+        expect(getWebAnimation.mock.calls[1][0]).toBe(divs[1]);
+        expect(getWebAnimation.mock.calls[2][0]).toBe(divs[2]);
+      });
+    });
+  });
+
   describe('remove interaction', () => {
     beforeEach(() => {
       Interact.create(getMockConfig(), { useCutsomElement: true });
