@@ -35,6 +35,15 @@ export type TriggerType =
   | 'activate'
   | 'interest';
 
+export type EventTriggerKind = 'toggle' | 'enterLeave';
+export type EventTriggerConfigToggle = readonly string[] | string[];
+export type EventTriggerConfigEnterLeave = {
+  enter?: readonly string[];
+  leave?: readonly string[];
+};
+
+export type EventTriggerConfig = string | EventTriggerConfigToggle | EventTriggerConfigEnterLeave;
+
 export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 
 export type TransitionMethod = 'add' | 'remove' | 'toggle' | 'clear';
@@ -45,6 +54,10 @@ export type StateParams = {
 
 export type PointerTriggerParams = {
   type?: ViewEnterType | 'state';
+};
+
+export type EventTriggerParams = (StateParams | PointerTriggerParams) & {
+  eventConfig: EventTriggerConfig;
 };
 
 export type ViewEnterParams = {
