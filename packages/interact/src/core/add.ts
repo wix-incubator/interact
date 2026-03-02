@@ -243,9 +243,7 @@ function _addInteraction(
     _applyInteraction(...interaction);
   });
 
-  if (!elements) {
-    _processSequences(sourceKey, sourceController, instance, interaction);
-  }
+  _processSequences(sourceKey, sourceController, instance, interaction, elements);
 }
 
 function _isSequenceConfigRef(
@@ -254,10 +252,20 @@ function _isSequenceConfigRef(
   return 'sequenceId' in config && !('effects' in config);
 }
 
+type ListElements = {
+  controllerKey: string;
+  listContainer: string;
+  elements: HTMLElement[];
+};
+
 /**
  * Shared logic for building animation group args from a sequence config.
  * Handles sequence-level and effect-level media conditions, target resolution, and element lookup.
  * Returns null when the sequence should be skipped (conditions not met, missing targets, etc.).
+ *
+ * When `listElements` is provided (from addListItems), effects matching the specified controller
+ * and listContainer will resolve targets from the provided elements instead of querying the DOM.
+ * Returns null if listElements was provided but no effects matched it (avoids duplicate sequences).
  */
 function _buildAnimationGroupArgsFromSequence(
   sequenceConfig: SequenceConfig,
@@ -266,6 +274,7 @@ function _buildAnimationGroupArgsFromSequence(
   sourceController: IInteractionController,
   instance: Interact,
   options: { updateKey: string; onUpdate: () => void },
+  listElements?: ListElements,
 ): AnimationGroupArgs[] | null {
   const seqMql = getMediaQuery(sequenceConfig.conditions || [], instance.dataCache.conditions);
 
@@ -277,6 +286,7 @@ function _buildAnimationGroupArgsFromSequence(
 
   const seqEffects: (Effect | EffectRef)[] = sequenceConfig.effects || [];
   const animationGroupArgs: AnimationGroupArgs[] = [];
+  let usedListElements = false;
 
   for (const effect of seqEffects) {
     const effectId = (effect as EffectRef).effectId;
@@ -310,17 +320,33 @@ function _buildAnimationGroupArgsFromSequence(
       targetController = sourceController;
     }
 
-    const targetElement = _getElementsFromData(
-      effectOptions,
-      targetController.element,
-      targetController.useFirstChild,
-    );
+    const resolvedTargetKey = target || sourceKey;
+    let targetElement: HTMLElement | HTMLElement[] | null;
 
-    if (!targetElement) return null;
+    if (
+      listElements &&
+      resolvedTargetKey === listElements.controllerKey &&
+      effectOptions.listContainer === listElements.listContainer
+    ) {
+      targetElement = _queryItemElement(effectOptions, listElements.elements);
+      if ((targetElement as HTMLElement[]).length > 0) {
+        usedListElements = true;
+      }
+    } else {
+      targetElement = _getElementsFromData(
+        effectOptions,
+        targetController.element,
+        targetController.useFirstChild,
+      );
+    }
+
+    if (!targetElement || (Array.isArray(targetElement) && targetElement.length === 0)) return null;
 
     const animOptions = effectToAnimationOptions(effectOptions as TimeEffect);
     animationGroupArgs.push({ target: targetElement, options: animOptions });
   }
+
+  if (listElements && !usedListElements) return null;
 
   return animationGroupArgs.length > 0 ? animationGroupArgs : null;
 }
@@ -330,6 +356,7 @@ function _processSequences(
   sourceController: IInteractionController,
   instance: Interact,
   interaction: Interaction,
+  elements?: HTMLElement[],
 ) {
   interaction.sequences?.forEach((seqOrRef) => {
     let sequenceConfig: SequenceConfig;
@@ -347,7 +374,12 @@ function _processSequences(
     const sequenceId = sequenceConfig.sequenceId || generateId();
     const cacheKey = getInterpolatedKey(`${sourceKey}::seq::${sequenceId}`, sourceKey);
 
-    if (instance.addedInteractions[cacheKey]) return;
+    if (instance.addedInteractions[cacheKey] && !elements) return;
+
+    const listElements: ListElements | undefined =
+      elements && interaction.listContainer
+        ? { controllerKey: sourceKey, listContainer: interaction.listContainer, elements }
+        : undefined;
 
     const animationGroupArgs = _buildAnimationGroupArgsFromSequence(
       sequenceConfig,
@@ -356,11 +388,14 @@ function _processSequences(
       sourceController,
       instance,
       { updateKey: sourceKey, onUpdate: () => sourceController.update() },
+      listElements,
     );
 
     if (!animationGroupArgs) return;
 
-    const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
+    const seqCacheKey = elements ? `${cacheKey}::${generateId()}` : cacheKey;
+
+    const sequence = Interact.getSequence(seqCacheKey, sequenceConfig, animationGroupArgs, {
       reducedMotion: Interact.forceReducedMotion,
     });
 
@@ -390,6 +425,8 @@ function _processSequencesForTarget(
   targetKey: string,
   targetController: IInteractionController,
   instance: Interact,
+  listContainer?: string,
+  elements?: HTMLElement[],
 ) {
   const sequences = instance.get(targetKey)?.sequences || {};
   const seqInteractionIds = Object.keys(sequences);
@@ -417,9 +454,14 @@ function _processSequencesForTarget(
       const sequenceId = sequenceConfig.sequenceId || generateId();
       const cacheKey = getInterpolatedKey(`${sourceKey}::seq::${sequenceId}`, sourceKey!);
 
-      if (instance.addedInteractions[cacheKey]) {
+      if (instance.addedInteractions[cacheKey] && !elements) {
         return true;
       }
+
+      const listElements: ListElements | undefined =
+        elements && listContainer
+          ? { controllerKey: targetKey, listContainer, elements }
+          : undefined;
 
       const animationGroupArgs = _buildAnimationGroupArgsFromSequence(
         sequenceConfig,
@@ -428,11 +470,14 @@ function _processSequencesForTarget(
         sourceController,
         instance,
         { updateKey: targetKey, onUpdate: () => targetController.update() },
+        listElements,
       );
 
       if (!animationGroupArgs) return true;
 
-      const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
+      const seqCacheKey = elements ? `${cacheKey}::${generateId()}` : cacheKey;
+
+      const sequence = Interact.getSequence(seqCacheKey, sequenceConfig, animationGroupArgs, {
         reducedMotion: Interact.forceReducedMotion,
       });
 
@@ -576,9 +621,7 @@ function addEffectsForTarget(
     _applyInteraction(...interaction);
   });
 
-  if (!elements) {
-    _processSequencesForTarget(targetKey, targetController, instance);
-  }
+  _processSequencesForTarget(targetKey, targetController, instance, listContainer, elements);
 
   const hasSequences = Object.keys(targetData?.sequences || {}).length > 0;
   return interactionIds.length > 0 || hasSequences;
