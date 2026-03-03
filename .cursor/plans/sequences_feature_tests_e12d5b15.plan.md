@@ -31,13 +31,13 @@ todos:
     status: completed
   - id: impl-interact-cleanup
     content: 'Implement sequences.spec.ts Suite E: removal and cleanup tests'
-    status: pending
+    status: completed
   - id: impl-interact-cache
     content: 'Implement sequences.spec.ts Suite F: Interact.getSequence caching tests'
-    status: pending
+    status: completed
   - id: impl-interact-mql
     content: 'Implement sequences.spec.ts Suite G: media query condition tests on sequences'
-    status: pending
+    status: completed
 isProject: false
 ---
 

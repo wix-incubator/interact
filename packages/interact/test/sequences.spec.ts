@@ -1402,22 +1402,356 @@ describe('interact sequences', () => {
   });
 
   describe('Sequence removal and cleanup', () => {
-    test.todo('remove() cleans up sequence cache entries for the removed key');
-    test.todo('Interact.destroy() clears sequenceCache');
-    test.todo('deleteController() removes sequence-related addedInteractions entries');
-    test.todo('clearInteractionStateForKey removes sequenceCache entries by key prefix');
+    test('remove() cleans up sequence cache entries for the removed key', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const config = createBaseConfig();
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [{ sequenceId: 'cleanup-seq', effects: [{ effectId: 'effect-source' }] }],
+        },
+      ];
+
+      Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+
+      const cacheKeysBefore = Array.from(Interact.sequenceCache.keys());
+      expect(cacheKeysBefore.some((k) => k.startsWith('source-key::seq::'))).toBe(true);
+
+      const controller = Interact.getController('source-key')!;
+      controller.disconnect({ removeFromCache: true });
+
+      const cacheKeysAfter = Array.from(Interact.sequenceCache.keys());
+      expect(cacheKeysAfter.some((k) => k.startsWith('source-key::seq::'))).toBe(false);
+    });
+
+    test('Interact.destroy() clears sequenceCache', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const config = createBaseConfig();
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [{ sequenceId: 'destroy-seq', effects: [{ effectId: 'effect-source' }] }],
+        },
+      ];
+
+      Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(Interact.sequenceCache.size).toBeGreaterThan(0);
+
+      Interact.destroy();
+
+      expect(Interact.sequenceCache.size).toBe(0);
+    });
+
+    test('deleteController() removes sequence-related addedInteractions entries', () => {
+      const config = createBaseConfig();
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [{ sequenceId: 'delete-ctrl-seq', effects: [{ effectId: 'effect-source' }] }],
+        },
+      ];
+
+      const instance = Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      const hadSeqEntry = Object.keys(instance.addedInteractions).some((k) =>
+        k.startsWith('source-key::seq::'),
+      );
+      expect(hadSeqEntry).toBe(true);
+
+      instance.deleteController('source-key');
+
+      const hasSeqEntry = Object.keys(instance.addedInteractions).some((k) =>
+        k.startsWith('source-key::seq::'),
+      );
+      expect(hasSeqEntry).toBe(false);
+    });
+
+    test('clearInteractionStateForKey removes sequenceCache entries by key prefix', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const config = createBaseConfig();
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [{ sequenceId: 'clear-state-seq', effects: [{ effectId: 'effect-source' }] }],
+        },
+      ];
+
+      const instance = Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(
+        Array.from(Interact.sequenceCache.keys()).some((k) => k.startsWith('source-key::seq::')),
+      ).toBe(true);
+      expect(
+        Object.keys(instance.addedInteractions).some((k) => k.startsWith('source-key::seq::')),
+      ).toBe(true);
+
+      instance.clearInteractionStateForKey('source-key');
+
+      expect(
+        Array.from(Interact.sequenceCache.keys()).some((k) => k.startsWith('source-key::seq::')),
+      ).toBe(false);
+      expect(
+        Object.keys(instance.addedInteractions).some((k) => k.startsWith('source-key::seq::')),
+      ).toBe(false);
+    });
   });
 
   describe('Interact.getSequence caching', () => {
-    test.todo('returns cached Sequence for same cacheKey');
-    test.todo('creates new Sequence for different cacheKey');
-    test.todo('passes sequenceOptions and animationGroupArgs to motion getSequence');
+    test('returns cached Sequence for same cacheKey', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const sequenceOptions = { sequenceId: 'cache-hit', delay: 0, offset: 100 };
+      const animationGroupArgs: any[] = [{ target: null, options: {} }];
+
+      const first = Interact.getSequence('key-A', sequenceOptions, animationGroupArgs);
+      const second = Interact.getSequence('key-A', sequenceOptions, animationGroupArgs);
+
+      expect(first).toBe(second);
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+    });
+
+    test('creates new Sequence for different cacheKey', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const mockSeqA = { play: vi.fn(), animations: [] } as any;
+      const mockSeqB = { play: vi.fn(), animations: [] } as any;
+      getSequenceMock.mockReturnValueOnce(mockSeqA).mockReturnValueOnce(mockSeqB);
+      const sequenceOptions = { sequenceId: 'cache-miss', delay: 0, offset: 50 };
+      const animationGroupArgs: any[] = [{ target: null, options: {} }];
+
+      const first = Interact.getSequence('key-B', sequenceOptions, animationGroupArgs);
+      const second = Interact.getSequence('key-C', sequenceOptions, animationGroupArgs);
+
+      expect(first).toBe(mockSeqA);
+      expect(second).toBe(mockSeqB);
+      expect(first).not.toBe(second);
+      expect(getSequenceMock).toHaveBeenCalledTimes(2);
+    });
+
+    test('passes sequenceOptions and animationGroupArgs to motion getSequence', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const sequenceOptions = { sequenceId: 'fwd-args', delay: 15, offset: 200 };
+      const target = {} as HTMLElement;
+      const animationGroupArgs: any[] = [
+        { target, options: { duration: 300, keyframeEffect: { name: 'fade' } } },
+      ];
+      const context = { reducedMotion: true };
+
+      Interact.getSequence('key-D', sequenceOptions, animationGroupArgs, context);
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(getSequenceMock).toHaveBeenCalledWith(sequenceOptions, animationGroupArgs, context);
+    });
   });
 
   describe('Media query conditions on sequences', () => {
-    test.todo('skips sequence when sequence-level condition does not match');
-    test.todo('skips individual effect within sequence when effect-level condition does not match');
-    test.todo('sets up media query listener for sequence conditions');
-    test.todo('sets up media query listener for effect-level conditions within sequence');
+    let mockMQLs: Map<string, MediaQueryList>;
+
+    function mockMatchMedia(matchingQueries: string[] = []) {
+      mockMQLs = new Map();
+
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        configurable: true,
+        value: vi.fn((query: string) => {
+          const matches = matchingQueries.includes(query);
+          const mql = {
+            matches,
+            media: query,
+            onchange: null,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+          } as unknown as MediaQueryList;
+
+          mockMQLs.set(query, mql);
+          return mql;
+        }),
+      });
+    }
+
+    test('skips sequence when sequence-level condition does not match', () => {
+      mockMatchMedia([]);
+      const getSequenceMock = vi.mocked(getSequence);
+      const config = createBaseConfig();
+      config.conditions = {
+        wideOnly: { type: 'media', predicate: 'min-width: 1024px' },
+      };
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [
+            {
+              sequenceId: 'mql-seq',
+              conditions: ['wideOnly'],
+              effects: [{ effectId: 'effect-source' }],
+            },
+          ],
+        },
+      ];
+
+      Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      expect(getSequenceMock).not.toHaveBeenCalled();
+    });
+
+    test('skips individual effect within sequence when effect-level condition does not match', () => {
+      mockMatchMedia(['(min-width: 1px)']);
+      const getSequenceMock = vi.mocked(getSequence);
+      const config: InteractConfig = {
+        effects: {
+          'always-effect': {
+            keyframeEffect: {
+              name: 'always',
+              keyframes: [{ opacity: 0 }, { opacity: 1 }],
+            },
+            duration: 300,
+          },
+          'conditional-effect': {
+            keyframeEffect: {
+              name: 'conditional',
+              keyframes: [{ transform: 'scale(0)' }, { transform: 'scale(1)' }],
+            },
+            duration: 400,
+            conditions: ['wideOnly'],
+          },
+        },
+        conditions: {
+          wideOnly: { type: 'media', predicate: 'min-width: 99999px' },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'source-key',
+            sequences: [
+              {
+                sequenceId: 'partial-mql-seq',
+                effects: [
+                  { effectId: 'always-effect', key: 'source-key' },
+                  { effectId: 'conditional-effect', key: 'source-key', conditions: ['wideOnly'] },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      const [, animationGroupArgs] = getSequenceMock.mock.calls[0];
+      const groupArgs = Array.isArray(animationGroupArgs)
+        ? animationGroupArgs
+        : [animationGroupArgs];
+      expect(groupArgs).toHaveLength(1);
+      expect(groupArgs[0].options).toEqual(
+        expect.objectContaining({
+          duration: 300,
+          keyframeEffect: expect.objectContaining({ name: 'always' }),
+        }),
+      );
+    });
+
+    test('sets up media query listener for sequence conditions', () => {
+      mockMatchMedia(['(min-width: 1024px)']);
+      const config = createBaseConfig();
+      config.conditions = {
+        wideOnly: { type: 'media', predicate: 'min-width: 1024px' },
+      };
+      config.interactions = [
+        {
+          trigger: 'click',
+          key: 'source-key',
+          sequences: [
+            {
+              sequenceId: 'listener-seq',
+              conditions: ['wideOnly'],
+              effects: [{ effectId: 'effect-source' }],
+            },
+          ],
+        },
+      ];
+
+      const instance = Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      const listenerKeys = Array.from(instance.mediaQueryListeners.keys());
+      const seqListenerKey = listenerKeys.find(
+        (k) => k.includes('seq') && k.includes('listener-seq'),
+      );
+      expect(seqListenerKey).toBeDefined();
+
+      const listener = instance.mediaQueryListeners.get(seqListenerKey!);
+      expect(listener).toBeDefined();
+      expect(listener!.mql.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    });
+
+    test('sets up media query listener for effect-level conditions within sequence', () => {
+      mockMatchMedia(['(min-width: 768px)']);
+      const config: InteractConfig = {
+        effects: {
+          'cond-effect': {
+            keyframeEffect: {
+              name: 'condEffect',
+              keyframes: [{ opacity: 0 }, { opacity: 1 }],
+            },
+            duration: 300,
+            conditions: ['tabletUp'],
+          },
+        },
+        conditions: {
+          tabletUp: { type: 'media', predicate: 'min-width: 768px' },
+        },
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'source-key',
+            sequences: [
+              {
+                sequenceId: 'eff-listener-seq',
+                effects: [{ effectId: 'cond-effect', key: 'source-key', conditions: ['tabletUp'] }],
+              },
+            ],
+          },
+        ],
+      };
+
+      const instance = Interact.create(config, { useCutsomElement: false });
+      const source = createInteractElement();
+      addElement(source.element, 'source-key');
+
+      const listenerKeys = Array.from(instance.mediaQueryListeners.keys());
+      const effectListenerKey = listenerKeys.find(
+        (k) => k.includes('eff-listener-seq') && k.includes('cond-effect'),
+      );
+      expect(effectListenerKey).toBeDefined();
+
+      const listener = instance.mediaQueryListeners.get(effectListenerKey!);
+      expect(listener).toBeDefined();
+      expect(listener!.mql.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+    });
   });
 });
