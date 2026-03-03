@@ -384,7 +384,7 @@ function parseConfig(config: InteractConfig, useCutsomElement: boolean = false):
         }
       }
 
-      const interactionId = `${target}::${effectId}::${interactionIdx}`;
+      const interactionId = `${source}::${target}::${effectId}::${interactionIdx}`;
       effect.interactionId = interactionId;
       interactions[source].interactionIds.add(interactionId);
 
