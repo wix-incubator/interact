@@ -228,20 +228,15 @@ function resolveTargets(
 
 /**
  * Creates a Sequence that coordinates multiple AnimationGroups with staggered delays.
- *
- * Two flows:
- * - Single AnimationGroupArgs: creates a Sequence from one effect applied to each resolved target.
- * - Array of AnimationGroupArgs: creates a Sequence with one entry per definition.
  */
 function getSequence(
   options: SequenceOptions,
-  animationGroups: AnimationGroupArgs | AnimationGroupArgs[],
+  animationGroups: AnimationGroupArgs[],
   context?: Record<string, any>,
 ): Sequence {
-  const animationGroupList = Array.isArray(animationGroups) ? animationGroups : [animationGroups];
   const groups: AnimationGroup[] = [];
 
-  for (const { target, options: animationGroupOptions } of animationGroupList) {
+  for (const { target, options: animationGroupOptions } of animationGroups) {
     const elements = resolveTargets(target);
 
     for (const element of elements) {

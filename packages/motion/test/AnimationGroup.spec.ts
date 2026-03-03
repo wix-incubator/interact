@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { AnimationGroupOptions, RangeOffset } from '../src/types';
 
-global.CSSAnimation = class CSSAnimation {};
+(globalThis as any).CSSAnimation = class CSSAnimation {};
 
 // Mock Web Animation API
 const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
@@ -755,6 +755,67 @@ describe('AnimationGroup', () => {
 
       // Should not throw when setting playback rate on empty array
       expect(() => animationGroup.setPlaybackRate(2.0)).not.toThrow();
+    });
+  });
+
+  describe('applyOffset()', () => {
+    test('adds offset to each animation effect delay via updateTiming', () => {
+      const updateTiming1 = vi.fn();
+      const updateTiming2 = vi.fn();
+      const mockAnimation1 = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
+          updateTiming: updateTiming1,
+        } as any,
+      });
+      const mockAnimation2 = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({ delay: 10 }),
+          updateTiming: updateTiming2,
+        } as any,
+      });
+      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
+
+      animationGroup.applyOffset(25);
+
+      expect(updateTiming1).toHaveBeenCalledWith({ delay: 25 });
+      expect(updateTiming2).toHaveBeenCalledWith({ delay: 35 });
+    });
+
+    test('accumulates with existing delay value', () => {
+      const updateTiming = vi.fn();
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({ delay: 120 }),
+          updateTiming,
+        } as any,
+      });
+      const animationGroup = new AnimationGroup([mockAnimation]);
+
+      animationGroup.applyOffset(30);
+
+      expect(updateTiming).toHaveBeenCalledWith({ delay: 150 });
+    });
+
+    test('skips animations with no effect', () => {
+      const updateTiming = vi.fn();
+      const withEffect = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({ delay: 5 }),
+          updateTiming,
+        } as any,
+      });
+      const withoutEffect = createMockAnimation({ effect: null as any });
+      const animationGroup = new AnimationGroup([withEffect, withoutEffect]);
+
+      expect(() => animationGroup.applyOffset(20)).not.toThrow();
+      expect(updateTiming).toHaveBeenCalledWith({ delay: 25 });
+    });
+
+    test('handles empty animations array', () => {
+      const animationGroup = new AnimationGroup([]);
+
+      expect(() => animationGroup.applyOffset(20)).not.toThrow();
     });
   });
 
