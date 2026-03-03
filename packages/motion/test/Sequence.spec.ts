@@ -26,13 +26,18 @@ const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
     ...overrides,
   }) as Animation;
 
-function createGroup(options: {
-  animations?: Animation[];
-  ready?: Promise<void>;
-  finished?: Promise<unknown>;
-} = {}) {
+function createGroup(
+  options: {
+    animations?: Animation[];
+    ready?: Promise<void>;
+    finished?: Promise<unknown>;
+  } = {},
+) {
   const animations = options.animations ?? [createMockAnimation()];
-  const group = new AnimationGroup(animations, options.ready ? { measured: options.ready } : undefined);
+  const group = new AnimationGroup(
+    animations,
+    options.ready ? { measured: options.ready } : undefined,
+  );
 
   if (options.finished) {
     Object.defineProperty(group, 'finished', {
@@ -182,15 +187,21 @@ describe('Sequence', () => {
     test('ready resolves after all group ready promises settle', async () => {
       let resolveFirst!: () => void;
       let resolveSecond!: () => void;
-      const firstReady = new Promise<void>((r) => { resolveFirst = r; });
-      const secondReady = new Promise<void>((r) => { resolveSecond = r; });
+      const firstReady = new Promise<void>((r) => {
+        resolveFirst = r;
+      });
+      const secondReady = new Promise<void>((r) => {
+        resolveSecond = r;
+      });
 
       const group1 = createGroup({ ready: firstReady });
       const group2 = createGroup({ ready: secondReady });
       const sequence = new Sequence([group1, group2], { delay: 10 });
 
       let resolved = false;
-      const readyPromise = sequence.ready.then(() => { resolved = true; });
+      const readyPromise = sequence.ready.then(() => {
+        resolved = true;
+      });
 
       await Promise.resolve();
       expect(resolved).toBe(false);

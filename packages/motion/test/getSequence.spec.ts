@@ -85,7 +85,9 @@ describe('getSequence()', () => {
       const group = createGroup();
       mockedGetWebAnimation.mockReturnValueOnce(group);
 
-      const sequence = getSequence({}, [createAnimationGroupArgs(element, 'single-element-effect')]);
+      const sequence = getSequence({}, [
+        createAnimationGroupArgs(element, 'single-element-effect'),
+      ]);
 
       expect(sequence.animationGroups).toEqual([group]);
       expect(mockedGetWebAnimation).toHaveBeenCalledOnce();
@@ -252,7 +254,9 @@ describe('getSequence()', () => {
         .mockReturnValueOnce({ play: vi.fn() } as any)
         .mockReturnValueOnce(validGroup);
 
-      const sequence = getSequence({}, [createAnimationGroupArgs([el1, el2], 'mixed-results-effect')]);
+      const sequence = getSequence({}, [
+        createAnimationGroupArgs([el1, el2], 'mixed-results-effect'),
+      ]);
 
       expect(sequence.animationGroups).toEqual([validGroup]);
       expect(mockedGetWebAnimation).toHaveBeenCalledTimes(2);

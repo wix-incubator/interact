@@ -8,8 +8,12 @@ describe('interact sequences', () => {
     test.todo('auto-generates sequenceId when not provided');
     test.todo('warns when referencing unknown sequenceId');
     test.todo('caches sequences in dataCache.sequences');
-    test.todo('stores sequence effects in interactions[target].sequences for cross-element targets');
-    test.todo('does not create cross-element entry when sequence effect targets same key as source');
+    test.todo(
+      'stores sequence effects in interactions[target].sequences for cross-element targets',
+    );
+    test.todo(
+      'does not create cross-element entry when sequence effect targets same key as source',
+    );
     test.todo('handles interaction with sequences but no effects');
   });
 
@@ -30,7 +34,9 @@ describe('interact sequences', () => {
     test.todo('creates Sequence when target element is added after source');
     test.todo('creates Sequence when source element is added after target');
     test.todo('handles sequences where effects target different keys');
-    test.todo('skips variation when interaction-level MQL does not match and falls through to next');
+    test.todo(
+      'skips variation when interaction-level MQL does not match and falls through to next',
+    );
     test.todo('skips when source controller is not yet registered');
     test.todo('returns true from addEffectsForTarget when sequences exist even without effects');
   });
@@ -42,7 +48,9 @@ describe('interact sequences', () => {
     test.todo('processes sequence effects from listContainer elements');
     test.todo('does not create duplicate sequence when list items overlap with existing');
     test.todo('skips sequence when listElements provided but no effects matched the listContainer');
-    test.todo('cross-element target: creates new Sequence per addListItems call for target sequences');
+    test.todo(
+      'cross-element target: creates new Sequence per addListItems call for target sequences',
+    );
   });
 
   describe('Sequence removal and cleanup', () => {

@@ -3,40 +3,40 @@ name: Sequences Feature Tests
 overview: Create comprehensive test suites for the Sequences feature across both `@wix/motion` and `@wix/interact` packages, covering the Sequence class, getSequence function, AnimationGroup.applyOffset, config parsing, add/remove flows, listContainer interactions, and sequence caching.
 todos:
   - id: skeleton-motion
-    content: "Create test file skeletons with describe/test titles for motion package: Sequence.spec.ts, applyOffset tests in AnimationGroup.spec.ts, getSequence.spec.ts"
+    content: 'Create test file skeletons with describe/test titles for motion package: Sequence.spec.ts, applyOffset tests in AnimationGroup.spec.ts, getSequence.spec.ts'
     status: completed
   - id: skeleton-interact
-    content: "Create test file skeleton with describe/test titles for interact package: sequences.spec.ts (suites A-G)"
+    content: 'Create test file skeleton with describe/test titles for interact package: sequences.spec.ts (suites A-G)'
     status: completed
   - id: impl-sequence-class
-    content: "Implement Sequence.spec.ts tests: constructor, offset calculation, applyOffsets, inherited playback API, onFinish"
+    content: 'Implement Sequence.spec.ts tests: constructor, offset calculation, applyOffsets, inherited playback API, onFinish'
     status: completed
   - id: impl-apply-offset
     content: Implement applyOffset() tests in AnimationGroup.spec.ts
     status: completed
   - id: impl-get-sequence
-    content: "Implement getSequence.spec.ts tests: AnimationGroupArgs[] flow, options forwarding, edge cases"
+    content: 'Implement getSequence.spec.ts tests: AnimationGroupArgs[] flow, options forwarding, edge cases'
     status: completed
   - id: impl-interact-config
-    content: "Implement sequences.spec.ts Suite A: config parsing tests"
+    content: 'Implement sequences.spec.ts Suite A: config parsing tests'
     status: pending
   - id: impl-interact-source
-    content: "Implement sequences.spec.ts Suite B: sequence processing from source element via add()"
+    content: 'Implement sequences.spec.ts Suite B: sequence processing from source element via add()'
     status: pending
   - id: impl-interact-target
-    content: "Implement sequences.spec.ts Suite C: cross-element sequence processing via addEffectsForTarget"
+    content: 'Implement sequences.spec.ts Suite C: cross-element sequence processing via addEffectsForTarget'
     status: pending
   - id: impl-interact-list
-    content: "Implement sequences.spec.ts Suite D: sequence with listContainer -- add, addListItems, remove flows"
+    content: 'Implement sequences.spec.ts Suite D: sequence with listContainer -- add, addListItems, remove flows'
     status: pending
   - id: impl-interact-cleanup
-    content: "Implement sequences.spec.ts Suite E: removal and cleanup tests"
+    content: 'Implement sequences.spec.ts Suite E: removal and cleanup tests'
     status: pending
   - id: impl-interact-cache
-    content: "Implement sequences.spec.ts Suite F: Interact.getSequence caching tests"
+    content: 'Implement sequences.spec.ts Suite F: Interact.getSequence caching tests'
     status: pending
   - id: impl-interact-mql
-    content: "Implement sequences.spec.ts Suite G: media query condition tests on sequences"
+    content: 'Implement sequences.spec.ts Suite G: media query condition tests on sequences'
     status: pending
 isProject: false
 ---
@@ -209,4 +209,3 @@ Each phase above will be implemented in order:
 - `vi.mock('@wix/motion', ...)` from `web.spec.ts` for interact tests, extended with `getSequence`
 - `InteractionController` + `add()` helper for interact element setup
 - `addListItems` import for list container tests
-
