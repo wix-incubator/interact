@@ -1076,7 +1076,7 @@ describe('interact (mini)', () => {
 
           add(element, 'logo-scroll');
 
-          expect((global as any).ViewTimeline).toBeUndefined();
+          expect((globalThis as any).ViewTimeline).toBeUndefined();
 
           expect(getScrubScene).toHaveBeenCalledTimes(1);
           expect(getScrubScene).toHaveBeenCalledWith(
