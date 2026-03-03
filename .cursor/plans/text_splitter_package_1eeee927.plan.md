@@ -71,7 +71,7 @@ isProject: false
 
 Create a new `@wix/splittext` package within the `packages/` directory that exports a functional API for splitting text into animatable parts (characters, words, lines, sentences). The package will be framework-agnostic with optional React bindings.
 
-**Browser requirement:** This package requires `Intl.Segmenter` support for locale-aware text segmentation (Chrome 87+, Safari 14.1+, Firefox 125+). Environments without native support must load a polyfill such as `@formatjs/intl-segmenter` before using this package.
+**Browser requirement:** This package uses `Intl.Segmenter` for locale-aware text segmentation (95%+ global support: Chrome 87+, Safari 14.1+, Firefox 125+). For environments without native support, a polyfill can be provided via the `segmenter` option (see **Segmenter Polyfill API** section).
 
 ## Key Design Decisions
 
@@ -82,7 +82,6 @@ The API will have:
 - **Customizable `<span>` wrappers**: All split items wrapped in `<span>` tags with configurable classes, styles, and attributes for styling and animation
 - **Lazy evaluation with caching**: Split types are computed on-demand when accessed, not eagerly on invocation
 - **Eager split when `type` provided**: If `type` option is specified, only those types are split immediately
-- **Lines are opt-in**: Line detection is expensive (layout queries); lines are only computed when explicitly requested via `type: 'lines'` or `type: [..., 'lines']`. Accessing `.lines` without having requested it always returns an empty array (`[]`).
 - **Accessibility by default**: Split content wrapped in an inner `aria-hidden` div; original text preserved via visually-hidden span (see Accessibility and SEO sections)
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
@@ -160,6 +159,9 @@ interface SplitTextOptions {
   // DOM structure
   nested?: 'flatten' | 'preserve' | number;  // default: 'flatten'
 
+  // Text segmentation polyfill (optional — see "Segmenter Polyfill API" section)
+  segmenter?: Intl.Segmenter | { new(locale: string, options: { granularity: string }): Intl.Segmenter };
+
   // BiDi (optional external plugin — see "BiDi Plugin API" section)
   bidiResolver?: (text: string) => Array<{ text: string; direction: 'ltr' | 'rtl' }>;
 
@@ -194,11 +196,11 @@ interface WrapperAttrsConfig {
 }
 
 interface SplitTextResult {
-  // Lazy getters - split on first access, return cached on subsequent access (except lines, which are opt-in)
+  // Lazy getters - split on first access, return cached on subsequent access
   // Each element is a <span> wrapper that can be styled/animated
   get chars: HTMLSpanElement[];      // Splits into characters on first access
   get words: HTMLSpanElement[];      // Splits into words on first access
-  get lines: HTMLSpanElement[];      // Only computed when type included 'lines'; otherwise returns []
+  get lines: HTMLSpanElement[];      // Splits into lines on first access (note: triggers layout queries)
   get sentences: HTMLSpanElement[];  // Splits into sentences on first access
 
   // Methods
@@ -232,7 +234,7 @@ function useSplitText(
 - Dual CJS/ESM exports
 - React as optional peer dependency
 
-3. Configure TypeScript, Vite, and Vitest matching [interact package](packages/interact/package.json)
+1. Configure TypeScript, Vite, and Vitest matching [interact package](packages/interact/package.json)
 
 ### Phase 2: Core Splitting Logic
 
@@ -246,20 +248,20 @@ Key files to implement:
 - Use `Intl.Segmenter` API for locale-sensitive text splitting on meaningful items (chars, words, sentences)
 - Create wrapper spans with appropriate classes after detection
 
-2. `src/lineDetection.ts` - Range-based line detection:
+1. `src/lineDetection.ts` - Range-based line detection:
 
 - `detectLines(element)` - Main detection function using Range API
 - `detectLinesFromTextNode(textNode)` - Per-node detection with `getClientRects()`
 - Handle Safari whitespace normalization
 - Support for nested elements via TreeWalker
 
-3. `src/accessibility.ts`:
+1. `src/accessibility.ts`:
 
-- When `aria: 'auto'` and `preserveText` is true: insert a visually-hidden `<span>` with the original text as a direct child of the container (exposed to AT and crawlers). Wrap all split content in an inner `<div aria-hidden="true">` so assistive tech ignores the visual split spans while the original text remains accessible.
-- When `aria: 'auto'` and `preserveText` is false: set `aria-label` with the original text on the container and wrap split content in an inner `<div aria-hidden="true">`.
+- When `aria: 'auto'` and `preserveText` is true: insert a visually-hidden `<span>` with the original text as a direct child of the container (exposed to AT and crawlers). Wrap all split content in an inner `<div aria-hidden="true" data-splittext-wrapper>` with `display: contents` (via base CSS) so it doesn't affect layout. Assistive tech ignores the visual split spans while the original text remains accessible.
+- When `aria: 'auto'` and `preserveText` is false: set `aria-label` with the original text on the container and wrap split content in an inner `<div aria-hidden="true" data-splittext-wrapper>` with `display: contents`.
 - When `aria: 'none'`: no ARIA changes, no wrapper div.
 
-4. `src/utils.ts`:
+1. `src/utils.ts`:
 
 - Text segmentation (handle emoji, unicode)
 - DOM manipulation helpers
@@ -287,7 +289,6 @@ Test coverage for:
 - **Lazy evaluation**: Verify no DOM changes until getter accessed
 - **Caching**: Verify same array reference returned on repeated access
 - **Eager split with `type`**: Verify immediate DOM changes when type provided
-- **Lines opt-in**: Verify `.lines` returns `[]` when `type` did not include `'lines'`; verify line detection runs only when `type: 'lines'` or `type: [..., 'lines']` was passed
 - **Cache invalidation**: Verify cache cleared on `revert()` and `autoSplit` resize
 - Use Playwright for E2E testing all APIs that depend on DOM APIs
 
@@ -306,7 +307,7 @@ Test coverage for:
 - **Revert cleans wrappers**: Verify all span wrappers removed on revert()
 - **Re-split preserves options**: Verify wrapper options reapplied on autoSplit resize
 
-**E2E wrapper animation tests (Playwright):**
+**E2E wrapper animation tests** → `test/splitText.e2e.ts` (Playwright):
 
 ```typescript
 test('wrapper spans are animatable with CSS transitions', async ({ page }) => {
@@ -377,7 +378,7 @@ test('data-index attributes enable staggered animations', async ({ page }) => {
 });
 ```
 
-**Safari whitespace normalization test (Playwright, run on WebKit):**
+**Safari whitespace normalization test** → `test/splitText.e2e.ts` (Playwright, run on WebKit):
 
 ```typescript
 test('Safari: getClientRects line detection requires whitespace normalization', async ({
@@ -418,9 +419,9 @@ test('Safari: getClientRects line detection requires whitespace normalization', 
     return { withoutNorm, withNorm };
   });
 
-  // After normalization both browsers should detect the same (correct) line count.
-  // Without normalization, Safari detects one "line" per whitespace-separated word.
+  // Without normalization, Safari detects one "line" per whitespace-separated word (9 words = 9 "lines").
   // This test documents the quirk; the implementation must always normalize.
+  expect(withoutNorm).toBe(9);
   expect(withNorm).toBe(2);
 });
 ```
@@ -443,7 +444,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - `WrapperAttrsConfig` interface documentation
 - Explanation of global vs per-type configuration
 
-2. `docs/guides/styling-wrappers.md` - New guide covering:
+1. `docs/guides/styling-wrappers.md` - New guide covering:
 
 - Default CSS classes (`split-c`, `split-w`, etc.)
 - Customizing wrapper classes
@@ -452,7 +453,7 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - Best practices for `display: inline-block` with transforms
 - CSS custom properties for staggered animations
 
-3. `docs/examples/animations.md` - Expanded with wrapper examples:
+1. `docs/examples/animations.md` - Expanded with wrapper examples:
 
 - **Fade-in character animation** using wrapperClass + CSS
 - **Slide-up word reveal** using wrapperStyle initial state
@@ -461,23 +462,15 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 - **CSS-only animations** using @keyframes and animation-delay
 - **Intersection Observer** trigger with wrapper data attributes
 
-4. `docs/examples/css-animations.md` - New CSS-focused examples:
+1. `docs/examples/css-animations.md` - New CSS-focused examples:
 
 ```css
-/* Example: Typewriter effect */
+/* Typewriter effect using staggered animation-delay via --index custom property */
 .split-c {
-  display: inline-block;
   opacity: 0;
   animation: typewriter 0.1s ease forwards;
+  animation-delay: calc(var(--index) * 0.1s);
 }
-
-.split-c:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.split-c:nth-child(2) {
-  animation-delay: 0.2s;
-}
-/* ... or use CSS custom property --index */
 
 @keyframes typewriter {
   to {
@@ -486,28 +479,16 @@ Following the [interact docs structure](packages/interact/docs/README.md):
 }
 ```
 
-5. `README.md` - Quick start section update:
+1. `README.md` - Quick start section update:
 
 ```typescript
-import { splitText } from '@wix/splittext';
-
-// Split with custom styling for animations
+// Split with wrapper options, then animate
 const { chars } = splitText('.headline', {
   type: 'chars',
   wrapperClass: 'animate-char',
-  wrapperStyle: {
-    display: 'inline-block',
-    opacity: '0',
-    transform: 'translateY(10px)',
-  },
+  wrapperStyle: { opacity: '0', transform: 'translateY(10px)' },
 });
-
-// Animate with any library or CSS
-animate(chars, {
-  opacity: 1,
-  transform: 'translateY(0)',
-  stagger: 0.03,
-});
+animate(chars, { opacity: 1, transform: 'translateY(0)', stagger: 0.03 });
 ```
 
 ## Integration Example
@@ -515,82 +496,12 @@ animate(chars, {
 ```typescript
 import { splitText } from '@wix/splittext';
 
-// Example 1: Lazy evaluation - no splitting happens yet
-const result = splitText('.headline');
-
-// Splitting happens on first access, result is cached
-const chars = result.chars; // Splits into chars NOW, caches result
-const chars2 = result.chars; // Returns cached result (no re-split)
-
-// Lines are opt-in and expensive; only computed when type included 'lines'
-const lines = result.lines; // Returns [] unless type included 'lines' (e.g. type: 'lines' or type: ['chars', 'lines'])
-
-// Example 2: Eager split with type option
-const eagerResult = splitText('.headline', { type: 'words' });
-// Words are split immediately on invocation
-
-// Other types still use lazy evaluation; .lines returns [] unless type included 'lines'
-const lines2 = eagerResult.lines; // [] here since only 'words' was in type
-
-// Example 3: Multiple types eager
-const multiResult = splitText('.headline', { type: ['chars', 'words'] });
-// Both chars and words split immediately
-
-// Example 4: With animation library
+// Split and animate
 const { chars } = splitText('.title', { type: 'chars' });
 animate(chars, { opacity: [0, 1], stagger: 0.05 });
-
-// Example 5: Custom wrapper classes for styling
-const { words } = splitText('.title', {
-  type: 'words',
-  wrapperClass: 'split-word animate-fade-in',
-});
-// Each word wrapped in: <span class="split-word animate-fade-in">word</span>
-
-// Example 6: Per-type wrapper classes
-const result2 = splitText('.paragraph', {
-  type: ['chars', 'words', 'lines'],
-  wrapperClass: {
-    chars: 'char-wrapper',
-    words: 'word-wrapper',
-    lines: 'line-wrapper',
-  },
-});
-
-// Example 7: Custom inline styles for animation setup
-const { chars: styledChars } = splitText('.hero-text', {
-  type: 'chars',
-  wrapperStyle: {
-    display: 'inline-block', // Required for transforms
-    opacity: '0', // Initial state for fade-in
-    transform: 'translateY(20px)', // Initial state for slide-up
-  },
-});
-// Now animate with CSS transitions or JS animation library
-
-// Example 8: Custom data attributes for animation sequencing
-const { words: indexedWords } = splitText('.stagger-text', {
-  type: 'words',
-  wrapperAttrs: {
-    'data-animate': 'fade-up',
-    'data-stagger': 'true',
-  },
-});
-// Each wrapper has data attributes for CSS or JS animation hooks
-
-// Example 9: Combined wrapper configuration
-const { lines: maskedLines } = splitText('.reveal-text', {
-  type: 'lines',
-  wrapperClass: 'line-mask overflow-hidden',
-  wrapperStyle: {
-    display: 'block',
-    position: 'relative',
-  },
-  wrapperAttrs: {
-    'data-reveal': 'slide-up',
-  },
-});
 ```
+
+See **Lazy Evaluation & Caching Strategy** for lazy vs eager behavior, and **Span Wrapper Creation & Customization** for wrapper class/style/attrs configuration.
 
 ## Key Implementation Details
 
@@ -601,7 +512,7 @@ All split items are wrapped in `<span>` elements to enable styling and animation
 **Default wrapper structure:**
 
 ```html
-<!-- Characters (space-only wrappers get .split-space for width preservation) -->
+<!-- Characters -->
 <span class="split-c">H</span>
 <span class="split-c">e</span>
 <span class="split-c">l</span>
@@ -621,7 +532,7 @@ All split items are wrapped in `<span>` elements to enable styling and animation
 <span class="split-s">This is another sentence.</span>
 ```
 
-**Wrapper creation implementation:**
+**Wrapper creation implementation** → `src/wrappers.ts`:
 
 ```typescript
 type SplitType = 'chars' | 'words' | 'lines' | 'sentences';
@@ -636,11 +547,6 @@ function createWrapper(
 
   // Apply default class
   span.classList.add(`split-${type[0]}`); // 'chars' -> 'split-c'
-
-  // Mark space-only wrappers so they can be styled for width (e.g. white-space: pre)
-  if (type === 'chars' && typeof content === 'string' && content === ' ') {
-    span.classList.add('split-space');
-  }
 
   // Apply custom classes
   const customClass = resolveWrapperOption(options.wrapperClass, type);
@@ -688,68 +594,16 @@ function resolveWrapperOption<T>(
 }
 ```
 
-**Animation-ready inline-block:**
-
-For transforms to work correctly on spans, `display: inline-block` is often required. Users can set this via `wrapperStyle`:
-
-```typescript
-const { chars } = splitText('.title', {
-  type: 'chars',
-  wrapperStyle: {
-    display: 'inline-block', // Enables transform animations
-  },
-});
-```
-
-**CSS class-based styling example:**
-
-```css
-/* Base styles */
-.split-c,
-.split-w {
-  display: inline-block;
-}
-
-.split-l {
-  display: block;
-}
-
-/* Animation classes */
-.fade-in {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
-  animation-delay: calc(var(--index) * 0.05s);
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-```
-
-```typescript
-// Set CSS variable for stagger delay
-const { chars } = splitText('.title', {
-  type: 'chars',
-  wrapperClass: 'fade-in',
-});
-
-chars.forEach((char, i) => {
-  char.style.setProperty('--index', String(i));
-});
-```
-
 ### Base CSS Strategy
 
 When `injectStyles` is true (default), the package injects a minimal base stylesheet once per document via a `<style data-splittext>` tag (deduplicated). This ensures transforms and spacing work without requiring users to add CSS manually.
 
 **Injected base CSS:**
 
-- `.split-c`, `.split-w`: `display: inline-block; white-space: pre;` — enables transforms and preserves space width (a space alone in an inline-block has no width unless `white-space: pre` or an explicit width is set).
-- `.split-space`: same as above; space-only character wrappers get this class so they retain width.
+- `.split-c`, `.split-w`: `display: inline-block; white-space: pre;` — enables transforms and preserves space width. Without `white-space: pre`, a space character inside an `inline-block` span collapses to zero width; the base CSS ensures spaces are always preserved without needing a separate option or class.
 - `.split-l`: `display: block;`
 - `.split-s`: same inline-block treatment as chars/words if needed for animation.
+- `[aria-hidden="true"][data-splittext-wrapper]`: `display: contents;` — the inner aria-hidden wrapper must not introduce a new box in the layout (e.g. inside inline or flex containers).
 
 **Documentation note (shaped languages):** Connected scripts (Arabic, Devanagari, etc.) lose shaping when split per-character — each letter loses its positional form (initial/medial/final/isolated). This is a fundamental limitation of character-level text splitting and should be clearly documented. Recommend per-word splitting for these scripts. Font-level shaping (e.g. via HarfBuzz) is out of scope for this library.
 
@@ -760,7 +614,7 @@ DOM structure when `aria: 'auto'` and `preserveText: true` (defaults):
 ```html
 <container>
   <span class="sr-only">Original text (visually hidden, exposed to AT & crawlers)</span>
-  <div aria-hidden="true">
+  <div aria-hidden="true" data-splittext-wrapper style="display: contents;">
     <span class="split-c">H</span>
     <span class="split-c">e</span>
     <!-- ...split wrapper spans... -->
@@ -768,7 +622,7 @@ DOM structure when `aria: 'auto'` and `preserveText: true` (defaults):
 </container>
 ```
 
-- `aria: 'auto'` (default): Wrap all split content in an inner `<div aria-hidden="true">` so assistive tech ignores the visual split spans. The container itself remains accessible. When `preserveText` is true, the visually-hidden `<span>` with the original text sits as a sibling alongside the inner div, exposed to screen readers and crawlers. When `preserveText` is false, set `aria-label` with the original text on the container instead (the inner `<div aria-hidden="true">` still wraps the split spans).
+- `aria: 'auto'` (default): Wrap all split content in an inner `<div aria-hidden="true" data-splittext-wrapper>` with `display: contents` (via base CSS) so it doesn't affect layout. The container itself remains accessible. When `preserveText` is true, the visually-hidden `<span>` with the original text sits as a sibling alongside the inner div, exposed to screen readers and crawlers. When `preserveText` is false, set `aria-label` with the original text on the container instead.
 - `aria: 'none'`: No ARIA changes, no inner wrapper div.
 
 ### SEO Considerations
@@ -779,6 +633,40 @@ When `preserveText` is true (default), create a visually-hidden duplicate of the
 - Insert this span as a direct child of the container, alongside the `<div aria-hidden="true">` that wraps the split content.
 - The container remains accessible (no `aria-hidden` on it), so the visually-hidden span is exposed to assistive tech and crawlers.
 - When `preserveText` is false, do not create the hidden block; use `aria-label` with the original text on the container instead (ARIA is not used by crawlers, so SEO is weaker in this mode).
+
+### Segmenter Polyfill API
+
+The package uses `Intl.Segmenter` for locale-aware text segmentation. When native support is missing, users can provide a polyfill via the `segmenter` option. If neither native `Intl.Segmenter` nor the `segmenter` option is available, throw a clear error with instructions.
+
+**Contract — required API surface:**
+
+The polyfill must implement the `Intl.Segmenter` constructor and instance API. Specifically, the package relies on:
+
+- `new Intl.Segmenter(locale, { granularity })` — constructor accepting a locale string and an options object with `granularity` set to `'grapheme'`, `'word'`, or `'sentence'`.
+- `segmenter.segment(text)` — returns an iterable of segments.
+- Each segment must have:
+  - `segment: string` — the segmented text.
+  - `isWordLike: boolean` — (only needed for `granularity: 'word'`) used to filter out whitespace/punctuation-only segments.
+
+**Usage:**
+
+```typescript
+// Option A: pass a constructor (used to create segmenters for each granularity)
+import { createIntlSegmenterPolyfill } from 'intl-segmenter-polyfill';
+const Segmenter = await createIntlSegmenterPolyfill();
+splitText('.title', { type: 'chars', segmenter: Segmenter });
+
+// Option B: polyfill the global before calling splitText (no option needed)
+import '@formatjs/intl-segmenter/polyfill';
+splitText('.title', { type: 'chars' });
+```
+
+**Compatible polyfills:**
+
+| Package                    | Approach            | Bundle impact                | Notes                                                        |
+| -------------------------- | ------------------- | ---------------------------- | ------------------------------------------------------------ |
+| `@formatjs/intl-segmenter` | Pure JS, CLDR rules | ~274 KB (IIFE)               | Patches global `Intl.Segmenter`; zero-config                 |
+| `intl-segmenter-polyfill`  | WASM (icu4c)        | Small JS shim + lazy `.wasm` | Smallest runtime cost; returns constructor via async factory |
 
 ### BiDi Plugin API
 
@@ -804,15 +692,15 @@ Document the plugin API with examples (e.g. using `bidi-js`) in the guides.
 
 ### Lazy Evaluation & Caching Strategy
 
-The `SplitTextResult` object uses lazy getters with internal caching to avoid unnecessary DOM operations:
+The `SplitTextResult` object uses lazy getters with internal caching to avoid unnecessary DOM operations.
+
+`**SplitTextResultImpl`\*\* → `src/splitText.ts`:
 
 ```typescript
 class SplitTextResultImpl implements SplitTextResult {
   private _element: HTMLElement;
   private _originalHTML: string;
   private _options?: SplitTextOptions;
-  private _linesRequested: boolean; // true only when type explicitly included 'lines'
-
   // Internal cache for split results
   private _cache: {
     chars?: HTMLSpanElement[];
@@ -826,11 +714,9 @@ class SplitTextResultImpl implements SplitTextResult {
     this._originalHTML = element.innerHTML;
     this._options = options;
 
-    // Eager split if type is provided; track whether 'lines' was explicitly requested in the type option
-    this._linesRequested = false;
+    // Eager split if type is provided
     if (options?.type) {
       const types = Array.isArray(options.type) ? options.type : [options.type];
-      this._linesRequested = types.includes('lines');
       for (const type of types) {
         this._performSplit(type);
       }
@@ -853,7 +739,6 @@ class SplitTextResultImpl implements SplitTextResult {
   }
 
   get lines(): HTMLSpanElement[] {
-    if (!this._linesRequested) return [];
     if (!this._cache.lines) {
       this._cache.lines = this._performSplit('lines');
     }
@@ -881,17 +766,17 @@ class SplitTextResultImpl implements SplitTextResult {
 
 **Cache invalidation:**
 
-- `revert()` clears the cache (and resets `_linesRequested` if applicable)
-- `autoSplit` on resize clears and re-populates cache for accessed types; only re-run line detection if lines were previously requested
+- `revert()` clears the cache
+- `autoSplit` on resize clears and re-populates cache for previously accessed types
 - Manual `split()` call can force re-split with new options
 
 ### Line Detection Algorithm
 
-Line detection is **opt-in**: it runs only when `type` includes `'lines'`. It is inherently expensive because it requires layout-triggering DOM queries (`getClientRects()`). For long text, prefer word-level splitting or rely on `autoSplit` rather than frequent re-detection.
+Line detection is lazy like all other split types — it runs on first access of `.lines` (or eagerly if `type` includes `'lines'`). It is inherently expensive because it requires layout-triggering DOM queries (`getClientRects()`). For very long texts, prefer the lazy approach (omit `'lines'` from `type`) so line detection only runs if and when `.lines` is actually accessed, rather than paying the cost upfront. Alternatively, prefer word-level splitting or rely on `autoSplit` rather than frequent re-detection.
 
 Note: the detection functions below return `string[]` (line text content). The core `_performSplit('lines')` method uses these results to create `HTMLSpanElement[]` wrappers via `createWrapper()`, which is what the cache and public getters expose.
 
-#### Preferred approach: Binary search for line breakpoints
+#### Preferred approach: Binary search for line breakpoints → `src/lineDetection.ts`
 
 Avoid calling `getClientRects()` inside a per-character loop. Instead, use a two-phase approach that reduces layout queries from O(n) to O(k × log n) where k is the number of lines:
 
@@ -961,7 +846,7 @@ function detectLinesBinarySearch(element: HTMLElement): string[] {
 }
 ```
 
-#### Naive approach (for reference; avoid for long text)
+#### Naive approach (for reference/benchmarking; avoid for long text) → `src/lineDetection.ts`
 
 Iterate character-by-character, expanding the range and calling `getClientRects()` each time to see when the rect count increases. This is O(n) layout queries and should be replaced by the binary-search approach above for any non-trivial text length.
 
@@ -996,7 +881,7 @@ function detectLinesNaive(element: HTMLElement): string[] {
 }
 ```
 
-#### Alternative: Height-tracking approach (more efficient than naive, still O(n) queries)
+#### Alternative: Height-tracking approach (for reference/benchmarking; more efficient than naive, still O(n) queries) → `src/lineDetection.ts`
 
 ```typescript
 function detectLinesOptimized(element: HTMLElement): string[] {
@@ -1038,7 +923,7 @@ function detectLinesOptimized(element: HTMLElement): string[] {
 3. **Simpler code path** - Measure first, wrap second
 4. **Works before any DOM mutation** - Original text stays intact during detection
 
-**For nested elements**: Use `TreeWalker` to iterate child text nodes, applying Range detection to each:
+**For nested elements** → `src/lineDetection.ts`: Use `TreeWalker` to iterate child text nodes, applying Range detection to each:
 
 ```typescript
 const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
@@ -1048,7 +933,7 @@ while ((node = walker.nextNode() as Text)) {
 }
 ```
 
-**Re-splitting on resize**: If `autoSplit` is enabled:
+**Re-splitting on resize** → `src/splitText.ts` (`SplitTextResultImpl`): If `autoSplit` is enabled:
 
 1. Track which types have been accessed (are in cache)
 2. On resize/font-load, clear cache and re-split only those types
@@ -1070,7 +955,9 @@ private _handleResize(): void {
 
 ### Unicode/Emoji Handling & Text Segmentation
 
-Use `Intl.Segmenter` for all text segmentation — characters, words, and sentences. This provides locale-aware splitting that correctly handles emoji, multi-codepoint grapheme clusters, CJK text without spaces, and language-specific word/sentence boundaries. Because `Intl.Segmenter` handles these concerns natively, custom `splitBy` or whitespace-handling options are unnecessary.
+Use `Intl.Segmenter` (native or via the `segmenter` option — see **Segmenter Polyfill API**) for all text segmentation — characters, words, and sentences. This provides locale-aware splitting that correctly handles emoji, multi-codepoint grapheme clusters, CJK text without spaces, and language-specific word/sentence boundaries. Because `Intl.Segmenter` handles these concerns natively, custom `splitBy` or whitespace-handling options are unnecessary.
+
+**Segmentation helpers** → `src/utils.ts`:
 
 ```typescript
 // Characters (grapheme clusters — handles emoji, combining marks, etc.)
@@ -1104,7 +991,7 @@ The Range API approach has O(n) character iteration complexity, but:
 2. **No layout thrashing** - Detection happens before any DOM mutation
 3. **Efficient for repeated splits** - `autoSplit` re-detection is fast since original structure is preserved
 4. **Consider chunking for very long text** - For 10k+ character blocks, batch processing may help
-5. **Line detection is opt-in and expensive** - Use the binary-search algorithm (see Line Detection); for long text prefer word-level splitting or `autoSplit` rather than frequent line re-detection
+5. **Line detection is expensive** - Use the binary-search algorithm (see Line Detection); for long text prefer word-level splitting or `autoSplit` rather than frequent line re-detection
 
 ### Browser Compatibility
 
