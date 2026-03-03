@@ -3,17 +3,12 @@ import { Interact } from '../src/web';
 import { InteractionController } from '../src/core/InteractionController';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../src/handlers';
 import type { InteractConfig, SequenceConfig } from '../src/types';
-import { getSequence } from '@wix/motion';
+import { getSequence, createAnimationGroups } from '@wix/motion';
 import { addListItems } from '../src/core/add';
 import { removeListItems } from '../src/core/remove';
 
-vi.mock('@wix/motion', () => ({
-  getWebAnimation: vi.fn(),
-  getScrubScene: vi.fn(),
-  getEasing: vi.fn((v) => v),
-  getAnimation: vi.fn(),
-  registerEffects: vi.fn(),
-  getSequence: vi.fn().mockReturnValue({
+vi.mock('@wix/motion', () => {
+  const mockSequence = {
     play: vi.fn(),
     cancel: vi.fn(),
     onFinish: vi.fn(),
@@ -26,8 +21,19 @@ vi.mock('@wix/motion', () => ({
     ready: Promise.resolve(),
     animations: [],
     animationGroups: [],
-  }),
-}));
+    addGroups: vi.fn(),
+  };
+
+  return {
+    getWebAnimation: vi.fn(),
+    getScrubScene: vi.fn(),
+    getEasing: vi.fn((v: string) => v),
+    getAnimation: vi.fn(),
+    registerEffects: vi.fn(),
+    getSequence: vi.fn().mockReturnValue(mockSequence),
+    createAnimationGroups: vi.fn().mockReturnValue([]),
+  };
+});
 
 function createBaseConfig(): InteractConfig {
   return {
@@ -1054,8 +1060,9 @@ describe('interact sequences', () => {
       expect(groupArgs[0].target).toEqual(items);
     });
 
-    test('creates new Sequence per addListItems call with unique cache key', () => {
+    test('addListItems inserts groups into existing cached Sequence', () => {
       const getSequenceMock = vi.mocked(getSequence);
+      const createAnimationGroupsMock = vi.mocked(createAnimationGroups);
       const config = createListConfig({
         interactions: [
           {
@@ -1078,28 +1085,30 @@ describe('interact sequences', () => {
       initialItems.forEach((li) => list.append(li));
 
       const controller = addElement(element, 'list-key');
-
       expect(getSequenceMock).toHaveBeenCalledTimes(1);
+
+      const cachedSequence = getSequenceMock.mock.results[0].value;
 
       const newItems1 = createListItems(1);
       newItems1.forEach((li) => list.append(li));
       addListItems(controller, '#my-list', newItems1);
-      expect(getSequenceMock).toHaveBeenCalledTimes(2);
 
-      const newItems2 = createListItems(1);
-      newItems2.forEach((li) => list.append(li));
-      addListItems(controller, '#my-list', newItems2);
-      expect(getSequenceMock).toHaveBeenCalledTimes(3);
+      // Should NOT create a new Sequence
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      // Should call createAnimationGroups for the new items
+      expect(createAnimationGroupsMock).toHaveBeenCalled();
+      // Should call addGroups on the cached Sequence
+      expect(cachedSequence.addGroups).toHaveBeenCalled();
 
+      // Only 1 entry in cache
       const cacheKeys = Array.from(Interact.sequenceCache.keys());
       const seqCacheKeys = cacheKeys.filter((k) => k.includes('list-add-seq'));
-      expect(seqCacheKeys.length).toBe(3);
-      const uniqueKeys = new Set(seqCacheKeys);
-      expect(uniqueKeys.size).toBe(3);
+      expect(seqCacheKeys.length).toBe(1);
     });
 
     test('handles removing list items via removeListItems and subsequent re-add', () => {
       const getSequenceMock = vi.mocked(getSequence);
+      const createAnimationGroupsMock = vi.mocked(createAnimationGroups);
       const clickRemoveSpy = vi.spyOn(TRIGGER_TO_HANDLER_MODULE_MAP.click, 'remove');
       const config = createListConfig({
         interactions: [
@@ -1125,13 +1134,20 @@ describe('interact sequences', () => {
       const controller = addElement(element, 'list-key');
       expect(getSequenceMock).toHaveBeenCalledTimes(1);
 
+      const cachedSequence = getSequenceMock.mock.results[0].value;
+
       removeListItems([items[0]]);
       expect(clickRemoveSpy).toHaveBeenCalledWith(items[0]);
 
       const newItems = createListItems(1);
       newItems.forEach((li) => list.append(li));
+      createAnimationGroupsMock.mockClear();
       addListItems(controller, '#my-list', newItems);
-      expect(getSequenceMock).toHaveBeenCalledTimes(2);
+
+      // Re-add should use addGroups, not create a new Sequence
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(createAnimationGroupsMock).toHaveBeenCalled();
+      expect(cachedSequence.addGroups).toHaveBeenCalled();
     });
 
     test('processes sequence effects from listContainer elements', () => {
@@ -1237,8 +1253,9 @@ describe('interact sequences', () => {
       expect(getSequenceMock).not.toHaveBeenCalled();
     });
 
-    test('cross-element target: creates new Sequence per addListItems call for target sequences', () => {
+    test('cross-element target: addListItems inserts groups into existing cached Sequence', () => {
       const getSequenceMock = vi.mocked(getSequence);
+      const createAnimationGroupsMock = vi.mocked(createAnimationGroups);
       const config: InteractConfig = {
         effects: {
           'cross-list-effect': {
@@ -1283,15 +1300,104 @@ describe('interact sequences', () => {
       const targetController = addElement(targetEl, 'target-list-key');
       expect(getSequenceMock).toHaveBeenCalledTimes(1);
 
+      const cachedSequence = getSequenceMock.mock.results[0].value;
+      createAnimationGroupsMock.mockClear();
+
       const newItems = createListItems(1);
       newItems.forEach((li) => targetList.append(li));
       addListItems(targetController, '#target-list', newItems);
-      expect(getSequenceMock).toHaveBeenCalledTimes(2);
 
+      // Should NOT create a new Sequence
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      // Should call addGroups on the cached Sequence
+      expect(cachedSequence.addGroups).toHaveBeenCalled();
+      expect(createAnimationGroupsMock).toHaveBeenCalled();
+
+      // Only 1 entry in cache
       const cacheKeys = Array.from(Interact.sequenceCache.keys());
       const crossSeqKeys = cacheKeys.filter((k) => k.includes('cross-list-seq'));
-      expect(crossSeqKeys.length).toBe(2);
-      expect(new Set(crossSeqKeys).size).toBe(2);
+      expect(crossSeqKeys.length).toBe(1);
+    });
+
+    test('addListItems inserts groups at correct DOM indices when items are added in the middle', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const createAnimationGroupsMock = vi.mocked(createAnimationGroups);
+      const config = createListConfig({
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'list-key',
+            listContainer: '#my-list',
+            sequences: [
+              {
+                sequenceId: 'idx-seq',
+                effects: [{ effectId: 'list-effect', key: 'list-key', listContainer: '#my-list' }],
+              },
+            ],
+          },
+        ],
+      });
+
+      Interact.create(config, { useCutsomElement: false });
+      const { element, list } = createListElement('#my-list');
+      const initialItems = createListItems(3);
+      initialItems.forEach((li) => list.append(li));
+
+      const controller = addElement(element, 'list-key');
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+
+      const cachedSequence = getSequenceMock.mock.results[0].value;
+      createAnimationGroupsMock.mockClear();
+
+      const newItem = createListItems(1)[0];
+      // Insert at DOM position 1 (between existing items 0 and 1)
+      list.insertBefore(newItem, initialItems[1]);
+      addListItems(controller, '#my-list', [newItem]);
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(cachedSequence.addGroups).toHaveBeenCalled();
+    });
+
+    test('addListItems inserts multiple groups at correct indices when adding multiple items at different positions', () => {
+      const getSequenceMock = vi.mocked(getSequence);
+      const createAnimationGroupsMock = vi.mocked(createAnimationGroups);
+      const config = createListConfig({
+        interactions: [
+          {
+            trigger: 'click',
+            key: 'list-key',
+            listContainer: '#my-list',
+            sequences: [
+              {
+                sequenceId: 'multi-idx-seq',
+                effects: [{ effectId: 'list-effect', key: 'list-key', listContainer: '#my-list' }],
+              },
+            ],
+          },
+        ],
+      });
+
+      Interact.create(config, { useCutsomElement: false });
+      const { element, list } = createListElement('#my-list');
+      const initialItems = createListItems(3);
+      initialItems.forEach((li) => list.append(li));
+
+      const controller = addElement(element, 'list-key');
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+
+      const cachedSequence = getSequenceMock.mock.results[0].value;
+      createAnimationGroupsMock.mockClear();
+
+      const newItemA = createListItems(1)[0];
+      const newItemB = createListItems(1)[0];
+      // Insert newItemA at position 0, newItemB at the end
+      list.insertBefore(newItemA, initialItems[0]);
+      list.append(newItemB);
+      addListItems(controller, '#my-list', [newItemA, newItemB]);
+
+      expect(getSequenceMock).toHaveBeenCalledTimes(1);
+      expect(cachedSequence.addGroups).toHaveBeenCalled();
+      expect(createAnimationGroupsMock).toHaveBeenCalled();
     });
   });
 

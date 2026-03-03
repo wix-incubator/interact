@@ -31,6 +31,12 @@ type InteractionsToApply = Array<
   ]
 >;
 
+type ListElements = {
+  controllerKey: string;
+  listContainer: string;
+  elements: HTMLElement[];
+};
+
 function _getElementsFromData(
   data: Interaction | Effect,
   root: HTMLElement,
@@ -252,12 +258,6 @@ function _isSequenceConfigRef(
   return 'sequenceId' in config && !('effects' in config);
 }
 
-type ListElements = {
-  controllerKey: string;
-  listContainer: string;
-  elements: HTMLElement[];
-};
-
 /**
  * Shared logic for building animation group args from a sequence config.
  * Handles sequence-level and effect-level media conditions, target resolution, and element lookup.
@@ -351,6 +351,27 @@ function _buildAnimationGroupArgsFromSequence(
   return animationGroupArgs.length > 0 ? animationGroupArgs : null;
 }
 
+function _resolveListItemIndices(
+  controller: IInteractionController,
+  listContainer: string,
+  elements: HTMLElement[],
+): number[] {
+  const useFirstChild = controller.useFirstChild;
+  const root = useFirstChild
+    ? (controller.element.firstElementChild as HTMLElement)
+    : controller.element;
+  const container = root?.querySelector(listContainer);
+
+  if (!container) return elements.map((_, i) => i);
+
+  const allChildren = Array.from(container.children);
+
+  return elements.map((el) => {
+    const idx = allChildren.indexOf(el);
+    return idx >= 0 ? idx : allChildren.length;
+  });
+}
+
 function _processSequences(
   sourceKey: string,
   sourceController: IInteractionController,
@@ -393,9 +414,21 @@ function _processSequences(
 
     if (!animationGroupArgs) return;
 
-    const seqCacheKey = elements ? `${cacheKey}::${generateId()}` : cacheKey;
+    if (elements && instance.addedInteractions[cacheKey]) {
+      const indices = _resolveListItemIndices(
+        sourceController,
+        interaction.listContainer!,
+        elements,
+      );
 
-    const sequence = Interact.getSequence(seqCacheKey, sequenceConfig, animationGroupArgs, {
+      Interact.addToSequence(cacheKey, animationGroupArgs, indices, {
+        reducedMotion: Interact.forceReducedMotion,
+      });
+
+      return;
+    }
+
+    const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
       reducedMotion: Interact.forceReducedMotion,
     });
 
@@ -475,9 +508,17 @@ function _processSequencesForTarget(
 
       if (!animationGroupArgs) return true;
 
-      const seqCacheKey = elements ? `${cacheKey}::${generateId()}` : cacheKey;
+      if (elements && instance.addedInteractions[cacheKey]) {
+        const indices = _resolveListItemIndices(targetController, listContainer!, elements);
 
-      const sequence = Interact.getSequence(seqCacheKey, sequenceConfig, animationGroupArgs, {
+        Interact.addToSequence(cacheKey, animationGroupArgs, indices, {
+          reducedMotion: Interact.forceReducedMotion,
+        });
+
+        return true;
+      }
+
+      const sequence = Interact.getSequence(cacheKey, sequenceConfig, animationGroupArgs, {
         reducedMotion: Interact.forceReducedMotion,
       });
 

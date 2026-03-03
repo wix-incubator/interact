@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { AnimationGroup } from '../src/AnimationGroup';
-import { getSequence } from '../src/motion';
+import { getSequence, createAnimationGroups } from '../src/motion';
 import type { AnimationGroupArgs, SequenceOptions } from '../src/types';
 
 vi.mock('../src/api/webAnimations', () => ({
@@ -272,6 +272,34 @@ describe('getSequence()', () => {
       expect(sequence.animationGroups).toEqual([]);
       expect(sequence.animations).toEqual([]);
       expect(mockedGetWebAnimation).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('createAnimationGroups()', () => {
+    test('creates AnimationGroup array from AnimationGroupArgs without creating Sequence', () => {
+      const el1 = document.createElement('div');
+      const el2 = document.createElement('div');
+      const group1 = createGroup();
+      const group2 = createGroup();
+      mockedGetWebAnimation.mockReturnValueOnce(group1).mockReturnValueOnce(group2);
+
+      const groups = createAnimationGroups([
+        createAnimationGroupArgs(el1, 'effect-a'),
+        createAnimationGroupArgs(el2, 'effect-b'),
+      ]);
+
+      expect(groups).toEqual([group1, group2]);
+      expect(groups).toBeInstanceOf(Array);
+      expect(mockedGetWebAnimation).toHaveBeenCalledTimes(2);
+    });
+
+    test('returns empty array when all entries produce non-AnimationGroup results', () => {
+      const el1 = document.createElement('div');
+      mockedGetWebAnimation.mockReturnValue(null);
+
+      const groups = createAnimationGroups([createAnimationGroupArgs(el1, 'fail-effect')]);
+
+      expect(groups).toEqual([]);
     });
   });
 });

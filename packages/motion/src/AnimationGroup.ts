@@ -128,4 +128,14 @@ export class AnimationGroup {
       }
     }
   }
+
+  setDelay(delay: number) {
+    for (const animation of this.animations) {
+      const effect = animation.effect;
+
+      if (effect) {
+        effect.updateTiming({ delay });
+      }
+    }
+  }
 }

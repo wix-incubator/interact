@@ -227,16 +227,15 @@ function resolveTargets(
 }
 
 /**
- * Creates a Sequence that coordinates multiple AnimationGroups with staggered delays.
+ * Creates AnimationGroup instances from AnimationGroupArgs without wrapping them in a Sequence.
  */
-function getSequence(
-  options: SequenceOptions,
-  animationGroups: AnimationGroupArgs[],
+function createAnimationGroups(
+  animationGroupArgs: AnimationGroupArgs[],
   context?: Record<string, any>,
-): Sequence {
+): AnimationGroup[] {
   const groups: AnimationGroup[] = [];
 
-  for (const { target, options: animationGroupOptions } of animationGroups) {
+  for (const { target, options: animationGroupOptions } of animationGroupArgs) {
     const elements = resolveTargets(target);
 
     for (const element of elements) {
@@ -253,6 +252,18 @@ function getSequence(
     }
   }
 
+  return groups;
+}
+
+/**
+ * Creates a Sequence that coordinates multiple AnimationGroups with staggered delays.
+ */
+function getSequence(
+  options: SequenceOptions,
+  animationGroups: AnimationGroupArgs[],
+  context?: Record<string, any>,
+): Sequence {
+  const groups = createAnimationGroups(animationGroups, context);
   return new Sequence(groups, options);
 }
 
@@ -265,6 +276,7 @@ export {
   prepareAnimation,
   getAnimation,
   getSequence,
+  createAnimationGroups,
   getEasing,
 };
 

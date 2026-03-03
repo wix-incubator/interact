@@ -1161,4 +1161,49 @@ describe('AnimationGroup', () => {
       expect(mockAnimation2.currentTime).toBe(1000);
     });
   });
+
+  describe('setDelay()', () => {
+    const createAnimationWithUpdateTiming = (overrides: Partial<Animation> = {}): Animation =>
+      createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
+          updateTiming: vi.fn(),
+        } as any,
+        ...overrides,
+      });
+
+    test('sets absolute delay on all animations', () => {
+      const mockAnimation1 = createAnimationWithUpdateTiming();
+      const mockAnimation2 = createAnimationWithUpdateTiming();
+      const group = new AnimationGroup([mockAnimation1, mockAnimation2]);
+
+      group.setDelay(300);
+
+      expect(mockAnimation1.effect!.updateTiming).toHaveBeenCalledWith({ delay: 300 });
+      expect(mockAnimation2.effect!.updateTiming).toHaveBeenCalledWith({ delay: 300 });
+    });
+
+    test('overwrites any previously set delay', () => {
+      const mockAnimation = createAnimationWithUpdateTiming();
+      const group = new AnimationGroup([mockAnimation]);
+
+      group.setDelay(100);
+      group.setDelay(500);
+
+      expect(mockAnimation.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 500 });
+    });
+
+    test('is idempotent (calling twice with same value produces same result)', () => {
+      const mockAnimation = createAnimationWithUpdateTiming();
+      const group = new AnimationGroup([mockAnimation]);
+
+      group.setDelay(200);
+      group.setDelay(200);
+
+      const calls = (mockAnimation.effect!.updateTiming as ReturnType<typeof vi.fn>).mock.calls;
+      expect(calls[calls.length - 1]).toEqual([{ delay: 200 }]);
+      expect(calls[calls.length - 2]).toEqual([{ delay: 200 }]);
+    });
+  });
 });

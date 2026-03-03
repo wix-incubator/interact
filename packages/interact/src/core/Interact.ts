@@ -14,8 +14,8 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects, getSequence, Sequence } from '@wix/motion';
-import type { SequenceOptions, AnimationGroupArgs } from '@wix/motion';
+import { registerEffects, getSequence, createAnimationGroups, Sequence } from '@wix/motion';
+import type { SequenceOptions, AnimationGroupArgs, IndexedGroup } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
   return key.replace(/\[([-\w]+)]/g, '[]');
@@ -243,6 +243,27 @@ export class Interact {
     Interact.sequenceCache.set(cacheKey, sequence);
 
     return sequence;
+  }
+
+  static addToSequence(
+    cacheKey: string,
+    animationGroupArgs: AnimationGroupArgs[],
+    indices: number[],
+    context?: { reducedMotion?: boolean },
+  ): boolean {
+    const cached = Interact.sequenceCache.get(cacheKey);
+
+    if (!cached) return false;
+
+    const newGroups = createAnimationGroups(animationGroupArgs, context);
+    const entries: IndexedGroup[] = newGroups.map((group, i) => ({
+      index: indices[i] ?? cached.animationGroups.length,
+      group,
+    }));
+
+    cached.addGroups(entries);
+
+    return true;
   }
 }
 

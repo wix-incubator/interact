@@ -276,3 +276,8 @@ export type AnimationGroupArgs = {
   options: AnimationOptions;
   context?: Record<string, any>;
 };
+
+export type IndexedGroup = {
+  index: number;
+  group: import('./AnimationGroup').AnimationGroup;
+};

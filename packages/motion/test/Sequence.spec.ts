@@ -165,9 +165,9 @@ describe('Sequence', () => {
   });
 
   describe('applyOffsets (synchronous in constructor)', () => {
-    test('applies delay plus calculated offset to each group via group.applyOffset', () => {
+    test('applies absolute delay (baseDelay + delay + offset) to each group via setDelay', () => {
       const groups = [createGroup(), createGroup(), createGroup()];
-      const spies = groups.map((group) => vi.spyOn(group, 'applyOffset'));
+      const spies = groups.map((group) => vi.spyOn(group, 'setDelay'));
       new Sequence(groups, { delay: 100, offset: 50, offsetEasing: 'linear' });
 
       expect(spies[0]).toHaveBeenCalledWith(100);
@@ -175,13 +175,26 @@ describe('Sequence', () => {
       expect(spies[2]).toHaveBeenCalledWith(200);
     });
 
-    test('skips applyOffset when additionalDelay is 0', () => {
+    test('sets delay 0 on all groups when delay and offset are both 0', () => {
       const groups = [createGroup(), createGroup()];
-      const spies = groups.map((group) => vi.spyOn(group, 'applyOffset'));
+      const spies = groups.map((group) => vi.spyOn(group, 'setDelay'));
       new Sequence(groups, { delay: 0, offset: 0 });
 
-      expect(spies[0]).not.toHaveBeenCalled();
-      expect(spies[1]).not.toHaveBeenCalled();
+      expect(spies[0]).toHaveBeenCalledWith(0);
+      expect(spies[1]).toHaveBeenCalledWith(0);
+    });
+
+    test('applyOffsets is idempotent (calling twice produces same result)', () => {
+      const groups = [createGroup(), createGroup(), createGroup()];
+      const sequence = new Sequence(groups, { delay: 50, offset: 100, offsetEasing: 'linear' });
+
+      const getDelays = () => groups.map((g) => g.animations[0]?.effect?.getTiming().delay);
+      const delaysAfterFirst = getDelays();
+
+      (sequence as any).applyOffsets();
+      const delaysAfterSecond = getDelays();
+
+      expect(delaysAfterFirst).toEqual(delaysAfterSecond);
     });
 
     test('ready resolves after all group ready promises settle', async () => {
@@ -213,6 +226,167 @@ describe('Sequence', () => {
       resolveSecond();
       await readyPromise;
       expect(resolved).toBe(true);
+    });
+  });
+
+  describe('addGroups', () => {
+    test('inserts groups at specified indices', () => {
+      const g1 = createGroup();
+      const g2 = createGroup();
+      const sequence = new Sequence([g1, g2]);
+
+      const gNew = createGroup();
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      expect(sequence.animationGroups).toEqual([g1, gNew, g2]);
+    });
+
+    test('appends groups when index equals length (end of sequence)', () => {
+      const g1 = createGroup();
+      const sequence = new Sequence([g1]);
+
+      const gNew = createGroup();
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      expect(sequence.animationGroups).toEqual([g1, gNew]);
+    });
+
+    test('inserts flattened animations at correct position in animations array', () => {
+      const a1 = createMockAnimation();
+      const a2 = createMockAnimation();
+      const g1 = createGroup({ animations: [a1] });
+      const g2 = createGroup({ animations: [a2] });
+      const sequence = new Sequence([g1, g2]);
+
+      const aNew = createMockAnimation();
+      const gNew = createGroup({ animations: [aNew] });
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      expect(sequence.animations).toEqual([a1, aNew, a2]);
+    });
+
+    test('recalculates offsets for all groups (existing + new) using setDelay', () => {
+      const createStatefulMockAnimation = (): Animation => {
+        let currentDelay = 0;
+        return {
+          id: '',
+          currentTime: 0,
+          playState: 'idle' as AnimationPlayState,
+          ready: Promise.resolve(undefined as any),
+          finished: Promise.resolve(undefined as any),
+          effect: {
+            getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+            getTiming: vi.fn(() => ({ delay: currentDelay, duration: 1000, iterations: 1 })),
+            updateTiming: vi.fn((opts: { delay?: number }) => {
+              if (opts.delay !== undefined) currentDelay = opts.delay;
+            }),
+          } as any,
+          play: vi.fn(),
+          pause: vi.fn(),
+          cancel: vi.fn(),
+          reverse: vi.fn(),
+          playbackRate: 1,
+        } as unknown as Animation;
+      };
+
+      const createStatefulGroup = () => {
+        const anim = createStatefulMockAnimation();
+        return new AnimationGroup([anim]);
+      };
+
+      const groups = [createStatefulGroup(), createStatefulGroup()];
+      const sequence = new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      const gNew = createStatefulGroup();
+      const setDelaySpy = vi.spyOn(gNew, 'setDelay');
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      // 3 groups, linear, offset=100: [0, 100, 200]
+      expect(setDelaySpy).toHaveBeenCalledWith(100);
+
+      const allDelays = sequence.animationGroups.map(
+        (g) => (g.animations[0]?.effect?.getTiming().delay as number) || 0,
+      );
+      expect(allDelays).toEqual([0, 100, 200]);
+    });
+
+    test('updates ready promise to include new groups', async () => {
+      const g1 = createGroup();
+      const sequence = new Sequence([g1]);
+
+      let newReady = false;
+      const newReadyPromise = new Promise<void>((r) => {
+        setTimeout(() => {
+          newReady = true;
+          r();
+        }, 0);
+      });
+      const gNew = createGroup({ ready: newReadyPromise });
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      await sequence.ready;
+      expect(newReady).toBe(true);
+    });
+
+    test('with empty array is a no-op', () => {
+      const g1 = createGroup();
+      const sequence = new Sequence([g1], { offset: 100 });
+      const groupsBefore = [...sequence.animationGroups];
+      const animsBefore = [...sequence.animations];
+
+      sequence.addGroups([]);
+
+      expect(sequence.animationGroups).toEqual(groupsBefore);
+      expect(sequence.animations).toEqual(animsBefore);
+    });
+
+    test('preserves existing base delays when recalculating after insertion', () => {
+      const a1 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 50, duration: 1000, iterations: 1 }),
+          updateTiming: vi.fn(),
+        } as any,
+      });
+      const g1 = createGroup({ animations: [a1] });
+      const g2 = createGroup();
+      const sequence = new Sequence([g1, g2], { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      // g1 baseDelay=50, g2 baseDelay=0. Offsets: [0, 100]. Delays: [50, 100]
+      expect(a1.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 50 });
+
+      const gNew = createGroup();
+      sequence.addGroups([{ index: 2, group: gNew }]);
+
+      // 3 groups. Offsets: [0, 100, 200]. Delays: [50, 100, 200]
+      expect(a1.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 50 });
+    });
+
+    test('handles multiple insertions at different indices in correct order', () => {
+      const g1 = createGroup();
+      const g2 = createGroup();
+      const g3 = createGroup();
+      const sequence = new Sequence([g1, g2, g3]);
+
+      const gA = createGroup();
+      const gB = createGroup();
+      sequence.addGroups([
+        { index: 0, group: gA },
+        { index: 2, group: gB },
+      ]);
+
+      // Sorted descending: insert gB at 2 first -> [g1, g2, gB, g3], then gA at 0 -> [gA, g1, g2, gB, g3]
+      expect(sequence.animationGroups).toEqual([gA, g1, g2, gB, g3]);
+    });
+
+    test('clamps index to animationGroups.length when index exceeds bounds', () => {
+      const g1 = createGroup();
+      const sequence = new Sequence([g1]);
+
+      const gNew = createGroup();
+      sequence.addGroups([{ index: 999, group: gNew }]);
+
+      expect(sequence.animationGroups).toEqual([g1, gNew]);
     });
   });
 
