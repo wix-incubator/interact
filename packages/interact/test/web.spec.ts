@@ -350,7 +350,7 @@ describe('interact (web)', () => {
 
     // Mock PointerEvent if not available (jsdom doesn't have it)
     if (typeof PointerEvent === 'undefined') {
-      (global as any).PointerEvent = class PointerEvent extends MouseEvent {
+      (globalThis as any).PointerEvent = class PointerEvent extends MouseEvent {
         pointerType: string;
         constructor(type: string, eventInit?: PointerEventInit) {
           super(type, eventInit);
@@ -1067,7 +1067,7 @@ describe('interact (web)', () => {
 
           add(element, 'logo-scroll');
 
-          expect((global as any).ViewTimeline).toBeUndefined();
+          expect((globalThis as any).ViewTimeline).toBeUndefined();
 
           expect(getScrubScene).toHaveBeenCalledTimes(1);
           expect(getScrubScene).toHaveBeenCalledWith(
