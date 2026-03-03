@@ -19,16 +19,16 @@ todos:
     status: completed
   - id: impl-interact-config
     content: 'Implement sequences.spec.ts Suite A: config parsing tests'
-    status: pending
+    status: completed
   - id: impl-interact-source
     content: 'Implement sequences.spec.ts Suite B: sequence processing from source element via add()'
-    status: pending
+    status: completed
   - id: impl-interact-target
     content: 'Implement sequences.spec.ts Suite C: cross-element sequence processing via addEffectsForTarget'
-    status: pending
+    status: completed
   - id: impl-interact-list
     content: 'Implement sequences.spec.ts Suite D: sequence with listContainer -- add, addListItems, remove flows'
-    status: pending
+    status: completed
   - id: impl-interact-cleanup
     content: 'Implement sequences.spec.ts Suite E: removal and cleanup tests'
     status: pending
