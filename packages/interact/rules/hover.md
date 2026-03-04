@@ -511,10 +511,6 @@ This document contains rules for generating hover trigger interactions in `@wix/
 - **Attention effects**: 'ease-in-out' (natural feel)
 - **Continuous motion**: 'linear' (consistent speed)
 
-### State Management Methods
-
-When using `params.method` (for CSS state toggles rather than animation types), the available values are `'toggle'`, `'add'`, `'remove'`, and `'clear'`. Use `'add'`/`'remove'` for explicit state control, `'toggle'` for bilateral toggling, and `'clear'` to remove all active states at once.
-
 ## Accessibility
 
 Use `@wix/interact`'s `conditions` API to skip hover animations for users who prefer reduced motion. Define a `prefers-motion` condition and reference it on any interaction that should be suppressed:

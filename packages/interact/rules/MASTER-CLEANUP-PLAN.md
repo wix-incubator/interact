@@ -102,11 +102,10 @@ Because the MCP loads one file at a time, the "canonical" column means "most com
 
 ### 2.2 Reduce `integration.md`
 
-Currently duplicates ~60% of `full-lean.md`. After this phase, `integration.md` is a developer-facing onboarding guide only:
+`integration.md` is a developer-facing onboarding guide — not a schema reference. Effect type syntax belongs in `full-lean.md`; the 3 end-to-end examples at the bottom of `integration.md` already demonstrate effect types in context, which is more useful for onboarding than standalone snippets.
 
-- **Keep:** install steps, web/react setup snippets, `Interact.create` usage, HTML/JSX element wrappers, 3 working examples (hover, viewEnter, click), `registerEffects` usage, trigger overview table
-- **Delete:** full config schema prose, full effect type taxonomy, trigger param details, FOUC code block (keep one-line mention with constraints)
-- Target: ~150 lines max
+- **Keep:** install steps, web/react setup snippets, `Interact.create` usage, HTML/JSX element wrappers, `registerEffects` setup, trigger overview table, 3 working examples (hover, viewEnter, click), FOUC rules
+- **Delete:** full effect type taxonomy (`keyframeEffect`, `TransitionEffect`, scroll/mouse effect snippets) — covered by `full-lean.md` and shown contextually in the examples
 
 ### 2.3 Strip generic best-practices content from all trigger docs
 
@@ -124,7 +123,7 @@ Do **not** create a shared `best-practices.md`. Instead, apply this filter to ev
 
 **Keep (interact-specific, non-obvious):**
 
-- `@wix/interact` conditions API for `prefers-reduced-motion`: how to wire it via `conditions` field
+- `@wix/interact` conditions API for `prefers-reduced-motion`: how to wire it via `conditions` field. **Clarification:** condition IDs are user-defined strings — examples must always show the full `conditions` config map (with `type` and `predicate`) alongside the interaction that references them, not just the ID strings in isolation
 - Trigger-specific timing constraints (e.g. click: 100–500ms, hover: 100–400ms)
 - Trigger-specific gotchas (e.g. viewEnter: don't animate source and target as the same element with `repeat` type)
 - `pointermove`: cache DOM queries outside `customEffect` callbacks
@@ -229,7 +228,7 @@ Minor but important for model consistency. Models that see consistent structure 
 - `hover.md` has no Accessibility section (the only trigger doc missing it entirely) — add the interact-specific `conditions`-based reduced motion guidance
 - Variable placeholder naming is inconsistent: `[SOURCE_KEY]` (viewprogress, pointermove) vs `[SOURCE_IDENTIFIER]` (click, hover) for the same concept
 - `hover.md` Rules 2 and 3 overlap heavily (both are `alternate` pattern, one with `namedEffect`, one with `keyframeEffect`) — collapse into one rule with two examples
-- `click.md` and `hover.md` show only `method: 'toggle'` for `TransitionEffect` — add brief mention that `add`, `remove`, `clear` also exist (already defined in `full-lean.md`, but models reading only the trigger doc will miss it)
+- `click.md` shows only `method: 'toggle'` for `TransitionEffect` — add brief mention that `add`, `remove`, `clear` also exist (already defined in `full-lean.md`, but models reading only the trigger doc will miss it)
 
 ### Fixes
 
@@ -237,7 +236,7 @@ Minor but important for model consistency. Models that see consistent structure 
 - Add Accessibility section to `hover.md` (interact-specific content only)
 - Standardize placeholder names across all trigger docs: use `[SOURCE_KEY]` / `[TARGET_KEY]` everywhere
 - Collapse `hover.md` Rules 2+3 into one rule with two examples
-- Add one-line mention of `add`/`remove`/`clear` methods to `click.md` and `hover.md` TransitionEffect rules
+- Add one-line mention of `add`/`remove`/`clear` methods to `click.md` TransitionEffect rule
 - Remove trailing "These rules provide comprehensive coverage..." footers from `click.md`, `viewenter.md`, `viewprogress.md`, `pointermove.md`
 
 ---

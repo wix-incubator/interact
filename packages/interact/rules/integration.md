@@ -183,15 +183,9 @@ const html = `
 | `pointerMove`  | Mouse movement                                  | `hitArea`: 'self' (default) or 'root'; `axis`: 'x' or 'y' for keyframeEffect                                              | `./pointermove.md`  |
 | `animationEnd` | Chaining animations                             | `effectId`: ID of the previous effect                                                                                     | --                  |
 
-## 6. Effects & Animations
+## 6. Named Effects & `registerEffects`
 
-Effects define _what_ happens. They can be inline or referenced by ID.
-
-### Effect Types
-
-#### 1. Named Effects (Pre-built effect library)
-
-Use the @wix/motion-presets library for consistency.
+To use `namedEffect` presets from `@wix/motion-presets`, register them before calling `Interact.create`. For full effect type syntax (`keyframeEffect`, `customEffect`, `TransitionEffect`, `ScrubEffect`), see `full-lean.md`.
 
 **Install:**
 

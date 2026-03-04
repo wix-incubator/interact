@@ -1233,44 +1233,29 @@ X axis controls `scaleX`, Y axis controls `scaleY`.
 
 ### Responsive Pointer Effects
 
-Adjusting pointer sensitivity based on device capabilities:
+`pointerMove` only fires on pointer-capable devices, but touch users still visit the page. Use the `conditions` config map to define device/motion guards — condition IDs are arbitrary strings you define, matched against the media query predicates you provide.
 
 ```typescript
 {
-    key: 'responsive-element',
-    trigger: 'pointerMove',
-    conditions: ['supports-hover', 'desktop-only'],
-    params: {
-        hitArea: 'self'
+    conditions: {
+        // Only run pointer effects on devices that support hover (non-touch)
+        'supports-hover': { type: 'media', predicate: '(hover: hover)' },
+        // Suppress animations for users who prefer reduced motion
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
     },
-    effects: [
+    interactions: [
         {
             key: 'responsive-element',
-            namedEffect: {
-                type: 'Tilt3DMouse',
-                angle: 20,
-                perspective: 800
-            },
-            centeredToTarget: true
-        }
-    ]
-},
-// Simplified version for touch devices
-{
-    key: 'responsive-element',
-    trigger: 'pointerMove',
-    conditions: ['touch-device'],
-    params: {
-        hitArea: 'self'
-    },
-    effects: [
-        {
-            key: 'responsive-element',
-            namedEffect: {
-                type: 'ScaleMouse',
-                scale: 1.02
-            },
-            centeredToTarget: true
+            trigger: 'pointerMove',
+            conditions: ['supports-hover', 'prefers-motion'],
+            params: { hitArea: 'self' },
+            effects: [
+                {
+                    key: 'responsive-element',
+                    namedEffect: { type: 'Tilt3DMouse', angle: 20, perspective: 800 },
+                    centeredToTarget: true
+                }
+            ]
         }
     ]
 }
@@ -1405,10 +1390,6 @@ Controlling movement direction for specific design needs:
 3. **Test centering behavior** with different element sizes
 4. **Consider responsive design** when setting centering
 5. **Centering affects how progress.x/y map to element position**
-
-### Accessibility via Conditions API
-
-Use the `conditions` field to provide touch-device alternatives: e.g. `conditions: ['supports-hover']` for pointer effects, `conditions: ['touch-device']` for simplified versions. Wire `prefers-reduced-motion` via conditions for reduced-motion users.
 
 ### Common Use Cases by Pattern
 
