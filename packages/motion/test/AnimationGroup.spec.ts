@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { AnimationGroupOptions, RangeOffset } from '../src/types';
 
-global.CSSAnimation = class CSSAnimation {};
+(globalThis as any).CSSAnimation = class CSSAnimation {};
 
 // Mock Web Animation API
 const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
