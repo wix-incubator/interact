@@ -14,7 +14,12 @@ import {
 import { getInterpolatedKey } from './utilities';
 import { generateId } from '../utils';
 import TRIGGER_TO_HANDLER_MODULE_MAP from '../handlers';
-import { registerEffects, getSequence, createAnimationGroups, Sequence } from '@wix/motion';
+import {
+  registerEffects,
+  getSequence as getMotionSequence,
+  createAnimationGroups,
+  Sequence,
+} from '@wix/motion';
 import type { SequenceOptions, AnimationGroupArgs, IndexedGroup } from '@wix/motion';
 
 function _convertToKeyTemplate(key: string) {
@@ -239,7 +244,7 @@ export class Interact {
     const cached = Interact.sequenceCache.get(cacheKey);
     if (cached) return cached;
 
-    const sequence = getSequence(sequenceOptions, animationGroupArgs, context);
+    const sequence = getMotionSequence(sequenceOptions, animationGroupArgs, context);
     Interact.sequenceCache.set(cacheKey, sequence);
 
     return sequence;

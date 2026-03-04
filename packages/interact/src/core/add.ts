@@ -290,8 +290,9 @@ function _buildAnimationGroupArgsFromSequence(
 
   for (const effect of seqEffects) {
     const effectId = (effect as EffectRef).effectId;
+    const resolvedEffect = effectId ? instance.dataCache.effects[effectId] || {} : {};
     const effectOptions = {
-      ...(effectId ? instance.dataCache.effects[effectId] || {} : {}),
+      ...resolvedEffect,
       ...effect,
     };
 
@@ -385,7 +386,10 @@ function _processSequences(
     if (_isSequenceConfigRef(seqOrRef)) {
       const resolved = instance.dataCache.sequences[seqOrRef.sequenceId];
 
-      if (!resolved) return;
+      if (!resolved) {
+        console.warn(`Interact: Sequence "${seqOrRef.sequenceId}" not found in cache`);
+        return;
+      }
 
       sequenceConfig = { ...resolved, ...seqOrRef };
     } else {
