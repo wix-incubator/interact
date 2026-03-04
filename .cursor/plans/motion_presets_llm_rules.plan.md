@@ -191,11 +191,11 @@ The following presets exist in the library but should **not** be documented in t
 | AiryMouse    | Element floats and rotates gently following the cursor, creating an airy, weightless feel.                                 |
 | BlobMouse    | **(designer)** Element translates and scales non-uniformly following the cursor, creating a heavy liquid-like deformation. |
 | BlurMouse    | Element translates, tilts in 3D, scales, and blurs based on distance from the cursor.                                      |
-| BounceMouse  | *(excluded from generated rules)* Element follows the cursor with an elastic, bouncy motion.                               |
-| CustomMouse  | *(excluded from generated rules)* Fully custom callback effect.                                                            |
+| BounceMouse  | _(excluded from generated rules)_ Element follows the cursor with an elastic, bouncy motion.                               |
+| CustomMouse  | _(excluded from generated rules)_ Fully custom callback effect.                                                            |
 | ScaleMouse   | Element translates and scales uniformly following the cursor.                                                              |
 | SkewMouse    | Element translates and skews following the cursor, creating a directional distortion.                                      |
-| SpinMouse    | *(excluded from generated rules)* Element rotates toward the cursor position.                                              |
+| SpinMouse    | _(excluded from generated rules)_ Element rotates toward the cursor position.                                              |
 | SwivelMouse  | Element tilts in 3D around a chosen pivot axis following the cursor.                                                       |
 | Tilt3DMouse  | Element tilts in 3D based on cursor position, rotating on X and Y axes from center.                                        |
 | Track3DMouse | Element translates and tilts in 3D following the cursor, combining movement with perspective rotation.                     |
@@ -351,7 +351,7 @@ If it is known that the host handles accessibility globally (e.g., disabling all
 
 ### Preset Risk Levels
 
-*Note:* this section should be confirmed by an a11y expert
+_Note:_ this section should be confirmed by an a11y expert
 
 **High risk** (vestibular triggers, seizure risk if motion is fast and repetitive):
 
