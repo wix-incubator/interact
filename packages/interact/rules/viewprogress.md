@@ -15,7 +15,7 @@
         {
             key: '[TARGET_KEY]',
             // Effect block — use exactly one of: namedEffect | keyframeEffect | customEffect
-            namedEffect: { type: '[NAMED_EFFECT]', direction: '[DIRECTION]' },  // OR
+            namedEffect: { type: '[NAMED_EFFECT]', /* preset-specific options only if documented */ },  // OR
             keyframeEffect: { name: '[EFFECT_NAME]', keyframes: [EFFECT_KEYFRAMES] },  // OR
             customEffect: (element, progress) => { [CUSTOM_LOGIC] },
             rangeStart: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
@@ -34,8 +34,7 @@
 |-------------|----------------------|
 | `[SOURCE_KEY]` | Unique identifier for element that tracks scroll progress |
 | `[TARGET_KEY]` | Unique identifier for element to animate (can equal source) |
-| `[NAMED_EFFECT]` | Preset from @wix/motion-presets (see Named Scroll Effects below) |
-| `[DIRECTION]` | For directional presets: 'left', 'right', 'up', 'down' |
+| `[NAMED_EFFECT]` | Preset from @wix/motion-presets (see Named Scroll Effects below). Some presets accept options (e.g. `direction`) — only use options you have documentation for; omit and rely on defaults otherwise |
 | `[EFFECT_NAME]` | Unique name for keyframe effect |
 | `[EFFECT_KEYFRAMES]` | Array of keyframe objects, e.g. `[{ opacity: '0' }, { opacity: '1' }]` |
 | `[CUSTOM_LOGIC]` | JS: `progress` is 0–1 within range; mutate `element.style` or DOM |
@@ -45,7 +44,7 @@
 | `[EASING_FUNCTION]` | 'linear', 'ease-in', 'ease-out', 'ease-in-out', or cubic-bezier string |
 | `[FILL_MODE]` | 'both', 'backwards', 'forwards', 'none' |
 | `[UNIQUE_EFFECT_ID]` | Optional unique identifier |
-| `[CONDITION_NAME]` | Interact condition: 'prefers-motion', 'desktop-only', 'mobile-only', etc. |
+| `[CONDITION_NAME]` | User-defined condition ID declared in the top-level `conditions` map (e.g. `'prefers-motion'`, `'desktop-only'`) |
 
 **Offset semantics:** Positive offset values move the effective range forward along the scroll axis. 0 = start of range, 100 = end.
 
@@ -145,6 +144,49 @@ From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeSc
 }
 ```
 
+### Example 4: Multi-Range (Entry + Exit on the same element)
+
+Animating the same element in on scroll entry and out on scroll exit requires two separate effects within the same interaction — one scoped to the `entry` range, one to `exit`. This pattern is non-obvious because both effects share the same `key` but have different ranges.
+
+```typescript
+{
+    key: 'feature-card',
+    trigger: 'viewProgress',
+    effects: [
+        // Animate IN as element enters viewport
+        {
+            key: 'feature-card',
+            keyframeEffect: {
+                name: 'card-in',
+                keyframes: [
+                    { opacity: '0', transform: 'translateY(40px)' },
+                    { opacity: '1', transform: 'translateY(0)' }
+                ]
+            },
+            rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+            rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 60 } },
+            easing: 'ease-out',
+            fill: 'both'
+        },
+        // Animate OUT as element exits viewport
+        {
+            key: 'feature-card',
+            keyframeEffect: {
+                name: 'card-out',
+                keyframes: [
+                    { opacity: '1', transform: 'translateY(0)' },
+                    { opacity: '0', transform: 'translateY(-40px)' }
+                ]
+            },
+            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 40 } },
+            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } },
+            easing: 'ease-in',
+            fill: 'both'
+        }
+    ]
+}
+```
+
 ## Advanced Patterns
 
 ### Multi-Range ViewProgress Effects
@@ -207,49 +249,58 @@ Combining different ranges for complex scroll animations:
 
 ### ViewProgress with Conditional Behavior
 
-Use interact `conditions` for responsive scroll animations and `prefers-reduced-motion`:
+Use interact `conditions` for responsive scroll animations and `prefers-reduced-motion`. Condition IDs are user-defined strings — they must be declared in the top-level `conditions` map before being referenced in an interaction.
 
 ```typescript
 {
-    key: 'responsive-parallax',
-    trigger: 'viewProgress',
-    conditions: ['desktop-only', 'prefers-motion'],
-    effects: [
+    conditions: {
+        'desktop-only':   { type: 'media', predicate: '(min-width: 768px)' },
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+        'mobile-only':    { type: 'media', predicate: '(max-width: 767px)' },
+    },
+    interactions: [
         {
-            key: 'parallax-bg',
-            keyframeEffect: {
-                name: 'parallax-bg',
-                keyframes: [
-                    { transform: 'translateY(0)' },
-                    { transform: 'translateY(-300px)' }
-                ]
-            },
-            rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
-            rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } },
-            easing: 'linear',
-            fill: 'both'
-        }
-    ]
-},
-// Simplified version for mobile
-{
-    key: 'responsive-parallax',
-    trigger: 'viewProgress',
-    conditions: ['mobile-only'],
-    effects: [
+            key: 'responsive-parallax',
+            trigger: 'viewProgress',
+            conditions: ['desktop-only', 'prefers-motion'],
+            effects: [
+                {
+                    key: 'parallax-bg',
+                    keyframeEffect: {
+                        name: 'parallax-bg',
+                        keyframes: [
+                            { transform: 'translateY(0)' },
+                            { transform: 'translateY(-300px)' }
+                        ]
+                    },
+                    rangeStart: { name: 'cover', offset: { unit: 'percentage', value: 0 } },
+                    rangeEnd: { name: 'cover', offset: { unit: 'percentage', value: 100 } },
+                    easing: 'linear',
+                    fill: 'both'
+                }
+            ]
+        },
+        // Simplified fallback for mobile
         {
-            key: 'parallax-bg',
-            keyframeEffect: {
-                name: 'fade-out-bg',
-                keyframes: [
-                    { opacity: '1' },
-                    { opacity: '0.7' }
-                ]
-            },
-            rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
-            rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } },
-            easing: 'linear',
-            fill: 'both'
+            key: 'responsive-parallax',
+            trigger: 'viewProgress',
+            conditions: ['mobile-only'],
+            effects: [
+                {
+                    key: 'parallax-bg',
+                    keyframeEffect: {
+                        name: 'fade-out-bg',
+                        keyframes: [
+                            { opacity: '1' },
+                            { opacity: '0.7' }
+                        ]
+                    },
+                    rangeStart: { name: 'exit', offset: { unit: 'percentage', value: 0 } },
+                    rangeEnd: { name: 'exit', offset: { unit: 'percentage', value: 100 } },
+                    easing: 'linear',
+                    fill: 'both'
+                }
+            ]
         }
     ]
 }

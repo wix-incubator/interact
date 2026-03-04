@@ -147,6 +147,16 @@ This is the single largest structural problem. 9 rules are a 3×3 matrix with ne
 
 Every rule repeats the same config skeleton. Variable lists from Rule 5 onward explicitly say "Other variables same as Rule 1" — a direct admission of duplication.
 
+**Why tables outperform the 9-rule format for LLM consumption:**
+
+The 9-rule matrix looks comprehensive to humans but is inefficient for models. Once a model has seen the config pattern once, repeating it 8 more times with minor substitutions adds no information — it just consumes context tokens. The replacement structure (1 template + 2 lookup tables + 4 examples) performs better because:
+
+- **Decision tables are scannable.** A model resolving "I need an entry animation" can map scenario → effect type → range names in one pass through the table, rather than pattern-matching a natural-language rule description to its task.
+- **Fewer examples, correctly chosen, generalize better.** 4 curated examples (one per effect type + one non-obvious multi-range pattern) teach the model to compose, rather than encouraging copy-paste from the closest-matching rule.
+- **Token efficiency directly affects output quality.** Fewer tokens spent on redundant patterns means more context budget for the actual user task.
+
+The trade-off: the old format had a safer floor for weaker models that benefit from rote examples. The new format has a higher ceiling for capable models (Claude, GPT-4, Gemini) that generalize well from clean, structured docs — which is the target audience for this library.
+
 ### Target structure for `viewprogress.md`
 
 **Section 1: Core Concept** (~5 lines)
@@ -183,9 +193,10 @@ The scroll preset names currently buried in Rule 1 variables — one list, not r
 
 **Section 6: Examples** (3 only, one per effect type)
 
-- `namedEffect` parallax — pick the best existing example
-- `keyframeEffect` custom entrance — pick the best existing example
-- `customEffect` scroll counter — pick the best existing example
+- `namedEffect` parallax — one per effect type covers common cases
+- `keyframeEffect` custom entrance
+- `customEffect` scroll counter
+- **Multi-range (entry + exit)** — added because this pattern is non-obvious: two effects on the same key with different range scopes. Without a dedicated example, capable models can infer it from the tables but may get the fill/easing direction wrong. The cost (~40 lines) is worth the reliability gain.
 
 **Section 7: Advanced Patterns** — keep existing section as-is (genuinely unique content)
 

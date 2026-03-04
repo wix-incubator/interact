@@ -499,21 +499,27 @@ Same as Rule 2
 
 ```typescript
 {
-    key: 'responsive-element',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.3,    // Good for mobile
-        inset: '-100px'     // Extra space for desktop
+    conditions: {
+        // Condition IDs are user-defined strings matched against these media predicates
+        'desktop-only': { type: 'media', predicate: '(min-width: 768px)' },
     },
-    conditions: ['desktop-only'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-element',
-            namedEffect: {
-                type: 'FadeIn'
+            trigger: 'viewEnter',
+            params: {
+                type: 'once',
+                threshold: 0.3,
+                inset: '-100px'
             },
-            duration: 800
+            conditions: ['desktop-only'],
+            effects: [
+                {
+                    key: 'responsive-element',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 800
+                }
+            ]
         }
     ]
 }
@@ -836,43 +842,42 @@ Animating multiple targets from single viewport trigger:
 
 ### Conditional ViewEnter Animations
 
-Combining with conditions for responsive behavior:
+Use the `conditions` config map to guard interactions by device or motion preference. Condition IDs are user-defined strings — they must be declared in the top-level `conditions` map before being referenced in an interaction.
 
 ```typescript
 {
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.5
+    conditions: {
+        'desktop-only':   { type: 'media', predicate: '(min-width: 768px)' },
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+        'mobile-only':    { type: 'media', predicate: '(max-width: 767px)' },
     },
-    conditions: ['desktop-only', 'prefers-motion'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'ComplexEntrance'
-            },
-            duration: 1000
-        }
-    ]
-},
-// Simplified version for mobile/reduced motion
-{
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.7
-    },
-    conditions: ['mobile-only'],
-    effects: [
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.5 },
+            conditions: ['desktop-only', 'prefers-motion'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'SlideIn' },
+                    duration: 1000
+                }
+            ]
+        },
+        // Simplified fallback for mobile or reduced-motion users
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'FadeIn'
-            },
-            duration: 400
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.7 },
+            conditions: ['mobile-only'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 400
+                }
+            ]
         }
     ]
 }
@@ -882,7 +887,43 @@ Combining with conditions for responsive behavior:
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-Use `generate(config)` from `@wix/interact/web` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays. Set `data-interact-initial="true"` on the `<interact-element>`. Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element. Do NOT use for `hover`, `click`, or `viewEnter` with `repeat`/`alternate`/`state` types.
+Use `generate(config)` from `@wix/interact/web` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays.
+
+**Constraints:**
+- MUST be called server-side or at build time — not client-side
+- MUST set `data-interact-initial="true"` on the `<interact-element>` whose first child should be hidden
+- Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element
+- Do NOT use for `hover`, `click`, or `viewEnter` with `repeat`/`alternate`/`state` types
+
+```typescript
+import { generate } from '@wix/interact/web';
+
+const config: InteractConfig = {
+  interactions: [
+    {
+      key: 'hero',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.2 },
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 800 }],
+    },
+  ],
+};
+
+// Called at build time or on the server
+const css = generate(config);
+
+// Inject into <head> before the page renders
+const html = `
+<head>
+  <style>${css}</style>
+</head>
+<body>
+  <interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">...</section>
+  </interact-element>
+</body>
+`;
+```
 
 ---
 
@@ -905,10 +946,6 @@ Use `generate(config)` from `@wix/interact/web` server-side or at build time to 
 3. **Provide adequate inset margins** for mobile viewports
 4. **Keep entrance animations moderate** (500-1200ms)
 5. **Use staggered delays thoughtfully** (50-200ms intervals)
-
-### Accessibility via Conditions API
-
-Use the `conditions` field in the config to wire `prefers-reduced-motion`: e.g. `conditions: ['prefers-motion']` for the animated version, with a fallback config for reduced-motion users.
 
 ### Threshold and Timing Reference
 
