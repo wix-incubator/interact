@@ -1346,7 +1346,7 @@ __metadata:
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@wix/interact": "npm:^2.0.1"
+    "@wix/interact": "npm:^2.0.3"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     typescript: "npm:^5.9.3"
@@ -1361,7 +1361,7 @@ __metadata:
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.3.0"
     "@vitejs/plugin-react": "npm:^4.3.1"
-    "@wix/interact": "npm:^2.0.1"
+    "@wix/interact": "npm:^2.0.3"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-markdown: "npm:^9.0.1"
@@ -1373,7 +1373,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@wix/interact@npm:^2.0.1, @wix/interact@workspace:packages/interact":
+"@wix/interact@npm:^2.0.3, @wix/interact@workspace:packages/interact":
   version: 0.0.0-use.local
   resolution: "@wix/interact@workspace:packages/interact"
   dependencies:
@@ -2510,7 +2510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.39.2":
+"eslint@npm:9.39.2":
   version: 9.39.2
   resolution: "eslint@npm:9.39.2"
   dependencies:
@@ -3145,7 +3145,7 @@ __metadata:
   dependencies:
     "@typescript-eslint/eslint-plugin": "npm:8.51.0"
     "@typescript-eslint/parser": "npm:8.51.0"
-    eslint: "npm:^9.39.2"
+    eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:^10.1.1"
     eslint-plugin-jsx-a11y: "npm:^6.10.2"
     eslint-plugin-react: "npm:^7.37.5"
