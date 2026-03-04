@@ -56,12 +56,12 @@ todos:
       - interact-add
   - id: tests-unit
     content: Write unit tests for Sequence class offset calculations and easing integration
-    status: pending
+    status: completed
     dependencies:
       - motion-sequence-class
   - id: tests-integration
     content: Write integration tests for sequence parsing in Interact
-    status: pending
+    status: completed
     dependencies:
       - interact-parse-config
   - id: tests-e2e
