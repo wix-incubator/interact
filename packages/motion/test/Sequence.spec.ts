@@ -49,6 +49,41 @@ function createGroup(
   return group;
 }
 
+function createStatefulMockAnimation(duration = 1000, initialDelay = 0): Animation {
+  let currentDelay = initialDelay;
+  let currentEndDelay = 0;
+  return {
+    id: '',
+    currentTime: 0,
+    playState: 'idle' as AnimationPlayState,
+    ready: Promise.resolve(undefined as any),
+    finished: Promise.resolve(undefined as any),
+    effect: {
+      getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+      getTiming: vi.fn(() => ({
+        delay: currentDelay,
+        endDelay: currentEndDelay,
+        duration,
+        iterations: 1,
+      })),
+      updateTiming: vi.fn((opts: { delay?: number; endDelay?: number }) => {
+        if (opts.delay !== undefined) currentDelay = opts.delay;
+        if (opts.endDelay !== undefined) currentEndDelay = opts.endDelay;
+      }),
+    } as any,
+    play: vi.fn(),
+    pause: vi.fn(),
+    cancel: vi.fn(),
+    reverse: vi.fn(),
+    playbackRate: 1,
+  } as unknown as Animation;
+}
+
+function createStatefulGroup(duration = 1000, initialDelay = 0) {
+  const anim = createStatefulMockAnimation(duration, initialDelay);
+  return new AnimationGroup([anim]);
+}
+
 describe('Sequence', () => {
   describe('Constructor', () => {
     test('creates Sequence with empty groups array', () => {
@@ -165,36 +200,45 @@ describe('Sequence', () => {
   });
 
   describe('applyOffsets (synchronous in constructor)', () => {
-    test('applies absolute delay (baseDelay + delay + offset) to each group via setDelay', () => {
-      const groups = [createGroup(), createGroup(), createGroup()];
-      const spies = groups.map((group) => vi.spyOn(group, 'setDelay'));
+    test('sets correct delay and endDelay on each animation', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup(), createStatefulGroup()];
       new Sequence(groups, { delay: 100, offset: 50, offsetEasing: 'linear' });
 
-      expect(spies[0]).toHaveBeenCalledWith(100);
-      expect(spies[1]).toHaveBeenCalledWith(150);
-      expect(spies[2]).toHaveBeenCalledWith(200);
+      // offsets: [0, 50, 100], this.delay=100, all durations=1000
+      // stagger delays (before this.delay): [0, 50, 100]
+      // sequenceDuration = max(0+1000, 50+1000, 100+1000) = 1100
+      // endDelays: 1100-1000=100, 1100-1050=50, 1100-1100=0
+      // final delays: stagger + this.delay = [100, 150, 200]
+      const timings = groups.map((g) => g.animations[0].effect!.getTiming());
+      expect(timings[0]).toEqual(expect.objectContaining({ delay: 100, endDelay: 100 }));
+      expect(timings[1]).toEqual(expect.objectContaining({ delay: 150, endDelay: 50 }));
+      expect(timings[2]).toEqual(expect.objectContaining({ delay: 200, endDelay: 0 }));
     });
 
-    test('sets delay 0 on all groups when delay and offset are both 0', () => {
-      const groups = [createGroup(), createGroup()];
-      const spies = groups.map((group) => vi.spyOn(group, 'setDelay'));
+    test('sets delay 0 and endDelay 0 when delay and offset are both 0', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup()];
       new Sequence(groups, { delay: 0, offset: 0 });
 
-      expect(spies[0]).toHaveBeenCalledWith(0);
-      expect(spies[1]).toHaveBeenCalledWith(0);
+      const timings = groups.map((g) => g.animations[0].effect!.getTiming());
+      expect(timings[0]).toEqual(expect.objectContaining({ delay: 0, endDelay: 0 }));
+      expect(timings[1]).toEqual(expect.objectContaining({ delay: 0, endDelay: 0 }));
     });
 
     test('applyOffsets is idempotent (calling twice produces same result)', () => {
-      const groups = [createGroup(), createGroup(), createGroup()];
+      const groups = [createStatefulGroup(), createStatefulGroup(), createStatefulGroup()];
       const sequence = new Sequence(groups, { delay: 50, offset: 100, offsetEasing: 'linear' });
 
-      const getDelays = () => groups.map((g) => g.animations[0]?.effect?.getTiming().delay);
-      const delaysAfterFirst = getDelays();
+      const getTimings = () =>
+        groups.map((g) => {
+          const t = g.animations[0]?.effect?.getTiming();
+          return { delay: t?.delay, endDelay: t?.endDelay };
+        });
+      const timingsAfterFirst = getTimings();
 
       (sequence as any).applyOffsets();
-      const delaysAfterSecond = getDelays();
+      const timingsAfterSecond = getTimings();
 
-      expect(delaysAfterFirst).toEqual(delaysAfterSecond);
+      expect(timingsAfterFirst).toEqual(timingsAfterSecond);
     });
 
     test('ready resolves after all group ready promises settle', async () => {
@@ -226,6 +270,125 @@ describe('Sequence', () => {
       resolveSecond();
       await readyPromise;
       expect(resolved).toBe(true);
+    });
+  });
+
+  describe('endDelay for reverse playback', () => {
+    test('computes endDelay so all animations share the same total timeline', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup(), createStatefulGroup()];
+      new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      // absoluteDelays: [0, 100, 200], all durations=1000
+      // sequenceDuration = 200 + 1000 = 1200
+      // endDelays: 1200-0-1000=200, 1200-100-1000=100, 1200-200-1000=0
+      const timings = groups.map((g) => g.animations[0].effect!.getTiming());
+      expect(timings[0].endDelay).toBe(200);
+      expect(timings[1].endDelay).toBe(100);
+      expect(timings[2].endDelay).toBe(0);
+
+      // Verify all total times are equal
+      timings.forEach((t) => {
+        expect((t.delay as number) + (t.duration as number) + (t.endDelay as number)).toBe(1200);
+      });
+    });
+
+    test('sets endDelay 0 on all groups when offset is 0', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup()];
+      new Sequence(groups, { delay: 0, offset: 0 });
+
+      // sequenceDuration = 1000, all delays = 0
+      // endDelay = 1000 - 0 - 1000 = 0
+      expect(groups[0].animations[0].effect!.getTiming().endDelay).toBe(0);
+      expect(groups[1].animations[0].effect!.getTiming().endDelay).toBe(0);
+    });
+
+    test('single group gets endDelay 0', () => {
+      const groups = [createStatefulGroup()];
+      new Sequence(groups, { offset: 200 });
+
+      expect(groups[0].animations[0].effect!.getTiming().endDelay).toBe(0);
+    });
+
+    test('computes correct endDelay with varying durations across groups', () => {
+      // G0: duration=500, G1: duration=200, G2: duration=300
+      const groups = [createStatefulGroup(500), createStatefulGroup(200), createStatefulGroup(300)];
+      new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      // absoluteDelays: [0, 100, 200]
+      // sequenceDuration = max(0+500, 100+200, 200+300) = max(500, 300, 500) = 500
+      // endDelays: 500-0-500=0, 500-100-200=200, 500-200-300=0
+      const timings = groups.map((g) => g.animations[0].effect!.getTiming());
+      expect(timings[0].endDelay).toBe(0);
+      expect(timings[1].endDelay).toBe(200);
+      expect(timings[2].endDelay).toBe(0);
+
+      // Verify all total times are equal
+      timings.forEach((t) => {
+        expect((t.delay as number) + (t.duration as number) + (t.endDelay as number)).toBe(500);
+      });
+    });
+
+    test('handles varying durations within a single group', () => {
+      const anim1 = createStatefulMockAnimation(800);
+      const anim2 = createStatefulMockAnimation(400);
+      const group = new AnimationGroup([anim1, anim2]);
+      const groups = [group, createStatefulGroup(600)];
+      new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      // absoluteDelays: [0, 100]
+      // sequenceDuration = max(0+800, 0+400, 100+600) = max(800, 400, 700) = 800
+      // G0 anim1: endDelay = 800 - 0 - 800 = 0
+      // G0 anim2: endDelay = 800 - 0 - 400 = 400
+      // G1 anim:  endDelay = 800 - 100 - 600 = 100
+      expect(anim1.effect!.getTiming().endDelay).toBe(0);
+      expect(anim2.effect!.getTiming().endDelay).toBe(400);
+      expect(groups[1].animations[0].effect!.getTiming().endDelay).toBe(100);
+    });
+
+    test('endDelay is recalculated after addGroups', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup()];
+      const sequence = new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
+
+      // 2 groups: sequenceDuration = 100+1000 = 1100
+      // endDelays: 1100-0-1000=100, 1100-100-1000=0
+      expect(groups[0].animations[0].effect!.getTiming().endDelay).toBe(100);
+      expect(groups[1].animations[0].effect!.getTiming().endDelay).toBe(0);
+
+      const gNew = createStatefulGroup();
+      sequence.addGroups([{ index: 1, group: gNew }]);
+
+      // 3 groups: sequenceDuration = 200+1000 = 1200
+      // endDelays: 1200-0-1000=200, 1200-100-1000=100, 1200-200-1000=0
+      const allEndDelays = sequence.animationGroups.map(
+        (g) => g.animations[0]?.effect?.getTiming().endDelay as number,
+      );
+      expect(allEndDelays).toEqual([200, 100, 0]);
+    });
+
+    test('with non-linear easing, endDelays account for both offsets and durations', () => {
+      const groups = Array.from({ length: 5 }, () => createStatefulGroup());
+      new Sequence(groups, { offset: 200, offsetEasing: 'quadIn' });
+
+      // quadIn offsets: [0, 50, 200, 450, 800], all durations=1000
+      // sequenceDuration = 800 + 1000 = 1800
+      // endDelays: 1800-0-1000=800, 1800-50-1000=750, 1800-200-1000=600, 1800-450-1000=350, 1800-800-1000=0
+      const endDelays = groups.map((g) => g.animations[0].effect!.getTiming().endDelay as number);
+      expect(endDelays).toEqual([800, 750, 600, 350, 0]);
+    });
+
+    test('sequence delay shifts all animation delays without affecting endDelays', () => {
+      const groups = [createStatefulGroup(), createStatefulGroup(), createStatefulGroup()];
+      new Sequence(groups, { delay: 500, offset: 100, offsetEasing: 'linear' });
+
+      // offsets: [0, 100, 200], this.delay=500, all durations=1000
+      // stagger delays: [0, 100, 200]
+      // sequenceDuration = max(0+1000, 100+1000, 200+1000) = 1200
+      // endDelays: [1200-1000, 1200-1100, 1200-1200] = [200, 100, 0]
+      // final delays: stagger + this.delay = [500, 600, 700]
+      const delays = groups.map((g) => g.animations[0].effect!.getTiming().delay as number);
+      const endDelays = groups.map((g) => g.animations[0].effect!.getTiming().endDelay as number);
+      expect(delays).toEqual([500, 600, 700]);
+      expect(endDelays).toEqual([200, 100, 0]);
     });
   });
 
@@ -265,49 +428,23 @@ describe('Sequence', () => {
       expect(sequence.animations).toEqual([a1, aNew, a2]);
     });
 
-    test('recalculates offsets for all groups (existing + new) using setDelay', () => {
-      const createStatefulMockAnimation = (): Animation => {
-        let currentDelay = 0;
-        return {
-          id: '',
-          currentTime: 0,
-          playState: 'idle' as AnimationPlayState,
-          ready: Promise.resolve(undefined as any),
-          finished: Promise.resolve(undefined as any),
-          effect: {
-            getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
-            getTiming: vi.fn(() => ({ delay: currentDelay, duration: 1000, iterations: 1 })),
-            updateTiming: vi.fn((opts: { delay?: number }) => {
-              if (opts.delay !== undefined) currentDelay = opts.delay;
-            }),
-          } as any,
-          play: vi.fn(),
-          pause: vi.fn(),
-          cancel: vi.fn(),
-          reverse: vi.fn(),
-          playbackRate: 1,
-        } as unknown as Animation;
-      };
-
-      const createStatefulGroup = () => {
-        const anim = createStatefulMockAnimation();
-        return new AnimationGroup([anim]);
-      };
-
+    test('recalculates delays and endDelays for all groups after insertion', () => {
       const groups = [createStatefulGroup(), createStatefulGroup()];
       const sequence = new Sequence(groups, { delay: 0, offset: 100, offsetEasing: 'linear' });
 
       const gNew = createStatefulGroup();
-      const setDelaySpy = vi.spyOn(gNew, 'setDelay');
       sequence.addGroups([{ index: 1, group: gNew }]);
 
-      // 3 groups, linear, offset=100: [0, 100, 200]
-      expect(setDelaySpy).toHaveBeenCalledWith(100);
-
+      // 3 groups, linear, offset=100: delays [0, 100, 200]
+      // sequenceDuration = 200+1000 = 1200, endDelays [200, 100, 0]
       const allDelays = sequence.animationGroups.map(
-        (g) => (g.animations[0]?.effect?.getTiming().delay as number) || 0,
+        (g) => g.animations[0]?.effect?.getTiming().delay as number,
+      );
+      const allEndDelays = sequence.animationGroups.map(
+        (g) => g.animations[0]?.effect?.getTiming().endDelay as number,
       );
       expect(allDelays).toEqual([0, 100, 200]);
+      expect(allEndDelays).toEqual([200, 100, 0]);
     });
 
     test('updates ready promise to include new groups', async () => {
@@ -341,25 +478,26 @@ describe('Sequence', () => {
     });
 
     test('preserves existing base delays when recalculating after insertion', () => {
-      const a1 = createMockAnimation({
-        effect: {
-          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
-          getTiming: vi.fn().mockReturnValue({ delay: 50, duration: 1000, iterations: 1 }),
-          updateTiming: vi.fn(),
-        } as any,
-      });
+      const a1 = createStatefulMockAnimation(1000, 50);
       const g1 = createGroup({ animations: [a1] });
-      const g2 = createGroup();
-      const sequence = new Sequence([g1, g2], { delay: 0, offset: 100, offsetEasing: 'linear' });
+      const g2 = createStatefulGroup();
+      const sequence = new Sequence([g1, g2], { offset: 100, offsetEasing: 'linear' });
 
-      // g1 baseDelay=50, g2 baseDelay=0. Offsets: [0, 100]. Delays: [50, 100]
-      expect(a1.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 50 });
+      // g1 baseDelay=50, g2 baseDelay=0. offsets: [0, 100]
+      // delays: [50+0, 0+100] = [50, 100]
+      // activeDurations: [0+1050, 100+1000] = [1050, 1100]
+      // sequenceDuration = 1100
+      expect(a1.effect!.getTiming().delay).toBe(50);
 
-      const gNew = createGroup();
+      const gNew = createStatefulGroup();
       sequence.addGroups([{ index: 2, group: gNew }]);
 
-      // 3 groups. Offsets: [0, 100, 200]. Delays: [50, 100, 200]
-      expect(a1.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 50 });
+      // 3 groups. offsets: [0, 100, 200], delays: [50, 100, 200]
+      // activeDurations: [1050, 1100, 1200]
+      // sequenceDuration = 1200
+      // g1 endDelay = 1200 - (50 + 1000) = 150
+      expect(a1.effect!.getTiming().delay).toBe(50);
+      expect(a1.effect!.getTiming().endDelay).toBe(150);
     });
 
     test('handles multiple insertions at different indices in correct order', () => {

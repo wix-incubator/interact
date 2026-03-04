@@ -115,27 +115,18 @@ export class AnimationGroup {
     return this.animations[0]?.playState;
   }
 
-  applyOffset(offset: number) {
-    for (const animation of this.animations) {
-      const effect = animation.effect;
+  getTimingOptions() {
+    return this.animations.map((a) => {
+      const timing = a.effect?.getTiming();
+      const delay = timing?.delay ?? 0;
+      const duration = Number(timing?.duration) || 0;
+      const iterations = timing?.iterations ?? 1;
 
-      if (effect) {
-        const timing = effect.getTiming();
-
-        effect.updateTiming({
-          delay: (timing.delay || 0) + offset,
-        });
-      }
-    }
-  }
-
-  setDelay(delay: number) {
-    for (const animation of this.animations) {
-      const effect = animation.effect;
-
-      if (effect) {
-        effect.updateTiming({ delay });
-      }
-    }
+      return {
+        delay,
+        duration,
+        iterations,
+      };
+    });
   }
 }

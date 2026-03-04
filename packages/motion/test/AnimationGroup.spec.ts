@@ -650,6 +650,44 @@ describe('AnimationGroup', () => {
       expect(mockAnimation.currentTime).toBe(100);
     });
 
+    test('should account for iterations in currentTime calculation', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 100,
+            duration: 500,
+            iterations: 3,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // time = duration * iterations = 500 * 3 = 1500
+      // currentTime = (100 + 1500) * 0.5 = 800
+      expect(mockAnimation.currentTime).toBe(800);
+    });
+
+    test('should treat Infinity iterations as 1', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 0,
+            duration: 1000,
+            iterations: Infinity,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // Infinity iterations falls back to 1: time = 1000 * 1 = 1000
+      // currentTime = (0 + 1000) * 0.5 = 500
+      expect(mockAnimation.currentTime).toBe(500);
+    });
+
     test('should handle empty animations array', () => {
       const animationGroup = new AnimationGroup([]);
 
@@ -755,67 +793,6 @@ describe('AnimationGroup', () => {
 
       // Should not throw when setting playback rate on empty array
       expect(() => animationGroup.setPlaybackRate(2.0)).not.toThrow();
-    });
-  });
-
-  describe('applyOffset()', () => {
-    test('adds offset to each animation effect delay via updateTiming', () => {
-      const updateTiming1 = vi.fn();
-      const updateTiming2 = vi.fn();
-      const mockAnimation1 = createMockAnimation({
-        effect: {
-          getTiming: vi.fn().mockReturnValue({ delay: 0 }),
-          updateTiming: updateTiming1,
-        } as any,
-      });
-      const mockAnimation2 = createMockAnimation({
-        effect: {
-          getTiming: vi.fn().mockReturnValue({ delay: 10 }),
-          updateTiming: updateTiming2,
-        } as any,
-      });
-      const animationGroup = new AnimationGroup([mockAnimation1, mockAnimation2]);
-
-      animationGroup.applyOffset(25);
-
-      expect(updateTiming1).toHaveBeenCalledWith({ delay: 25 });
-      expect(updateTiming2).toHaveBeenCalledWith({ delay: 35 });
-    });
-
-    test('accumulates with existing delay value', () => {
-      const updateTiming = vi.fn();
-      const mockAnimation = createMockAnimation({
-        effect: {
-          getTiming: vi.fn().mockReturnValue({ delay: 120 }),
-          updateTiming,
-        } as any,
-      });
-      const animationGroup = new AnimationGroup([mockAnimation]);
-
-      animationGroup.applyOffset(30);
-
-      expect(updateTiming).toHaveBeenCalledWith({ delay: 150 });
-    });
-
-    test('skips animations with no effect', () => {
-      const updateTiming = vi.fn();
-      const withEffect = createMockAnimation({
-        effect: {
-          getTiming: vi.fn().mockReturnValue({ delay: 5 }),
-          updateTiming,
-        } as any,
-      });
-      const withoutEffect = createMockAnimation({ effect: null as any });
-      const animationGroup = new AnimationGroup([withEffect, withoutEffect]);
-
-      expect(() => animationGroup.applyOffset(20)).not.toThrow();
-      expect(updateTiming).toHaveBeenCalledWith({ delay: 25 });
-    });
-
-    test('handles empty animations array', () => {
-      const animationGroup = new AnimationGroup([]);
-
-      expect(() => animationGroup.applyOffset(20)).not.toThrow();
     });
   });
 
@@ -989,6 +966,75 @@ describe('AnimationGroup', () => {
     });
   });
 
+  describe('getTimingOptions()', () => {
+    test('returns delay, duration, and iterations for each animation', () => {
+      const mockAnimation1 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 100, duration: 500, iterations: 2 }),
+        } as any,
+      });
+      const mockAnimation2 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation1, mockAnimation2]);
+
+      expect(group.getTimingOptions()).toEqual([
+        { delay: 100, duration: 500, iterations: 2 },
+        { delay: 0, duration: 1000, iterations: 1 },
+      ]);
+    });
+
+    test('defaults delay to 0 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ duration: 800, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].delay).toBe(0);
+    });
+
+    test('defaults duration to 0 for non-numeric values', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 'auto', iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].duration).toBe(0);
+    });
+
+    test('defaults iterations to 1 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].iterations).toBe(1);
+    });
+
+    test('returns empty array for empty animations', () => {
+      const group = new AnimationGroup([]);
+
+      expect(group.getTimingOptions()).toEqual([]);
+    });
+  });
+
   describe('Integration Tests', () => {
     test('should coordinate multiple animations with different timings', () => {
       const mockAnimation1 = createMockAnimation({
@@ -1159,51 +1205,6 @@ describe('AnimationGroup', () => {
       expect(mockAnimation2.playbackRate).toBe(0.5);
       expect(mockAnimation1.currentTime).toBe(1000);
       expect(mockAnimation2.currentTime).toBe(1000);
-    });
-  });
-
-  describe('setDelay()', () => {
-    const createAnimationWithUpdateTiming = (overrides: Partial<Animation> = {}): Animation =>
-      createMockAnimation({
-        effect: {
-          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
-          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
-          updateTiming: vi.fn(),
-        } as any,
-        ...overrides,
-      });
-
-    test('sets absolute delay on all animations', () => {
-      const mockAnimation1 = createAnimationWithUpdateTiming();
-      const mockAnimation2 = createAnimationWithUpdateTiming();
-      const group = new AnimationGroup([mockAnimation1, mockAnimation2]);
-
-      group.setDelay(300);
-
-      expect(mockAnimation1.effect!.updateTiming).toHaveBeenCalledWith({ delay: 300 });
-      expect(mockAnimation2.effect!.updateTiming).toHaveBeenCalledWith({ delay: 300 });
-    });
-
-    test('overwrites any previously set delay', () => {
-      const mockAnimation = createAnimationWithUpdateTiming();
-      const group = new AnimationGroup([mockAnimation]);
-
-      group.setDelay(100);
-      group.setDelay(500);
-
-      expect(mockAnimation.effect!.updateTiming).toHaveBeenLastCalledWith({ delay: 500 });
-    });
-
-    test('is idempotent (calling twice with same value produces same result)', () => {
-      const mockAnimation = createAnimationWithUpdateTiming();
-      const group = new AnimationGroup([mockAnimation]);
-
-      group.setDelay(200);
-      group.setDelay(200);
-
-      const calls = (mockAnimation.effect!.updateTiming as ReturnType<typeof vi.fn>).mock.calls;
-      expect(calls[calls.length - 1]).toEqual([{ delay: 200 }]);
-      expect(calls[calls.length - 2]).toEqual([{ delay: 200 }]);
     });
   });
 });

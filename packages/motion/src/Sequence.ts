@@ -15,7 +15,7 @@ export class Sequence extends AnimationGroup {
   delay: number;
   offset: number;
   offsetEasing: (p: number) => number;
-  private baseDelays: number[];
+  private timingOptions: { delay: number; duration: number; iterations: number }[][];
 
   constructor(animationGroups: AnimationGroup[], options: SequenceOptions = {}) {
     const allAnimations = animationGroups.flatMap((group) => [...group.animations]);
@@ -29,8 +29,18 @@ export class Sequence extends AnimationGroup {
         ? options.offsetEasing
         : (getJsEasing(options.offsetEasing) ?? linear);
 
-    this.baseDelays = animationGroups.map((g) => this.getGroupBaseDelay(g));
+    this.timingOptions = this.animationGroups.map((g) => {
+      return g.getTimingOptions().map(({ delay, duration, iterations }) => {
+        return {
+          delay,
+          duration: Number.isFinite(duration) ? duration : 0,
+          iterations: Number.isFinite(iterations) ? iterations : 1,
+        };
+      });
+    });
+
     this.applyOffsets();
+
     this.ready = Promise.all(animationGroups.map((g) => g.ready)).then(() => {});
   }
 
@@ -51,17 +61,42 @@ export class Sequence extends AnimationGroup {
     );
   }
 
-  private getGroupBaseDelay(group: AnimationGroup): number {
-    return (group.animations[0]?.effect?.getTiming().delay as number) || 0;
-  }
-
   private applyOffsets(): void {
     const offsets = this.calculateOffsets();
+    const sequenceDuration = this.getSequenceActiveDuration(offsets);
 
-    this.animationGroups.forEach((group, index) => {
-      const absoluteDelay = (this.baseDelays[index] || 0) + this.delay + offsets[index];
-      group.setDelay(absoluteDelay);
+    this.animationGroups.forEach((group, groupIdx) => {
+      group.animations.forEach((animation, animIdx) => {
+        const effect = animation.effect;
+
+        if (!effect) return;
+
+        const { delay: baseDelay, duration, iterations } = this.timingOptions[groupIdx][animIdx];
+        const delay = baseDelay + offsets[groupIdx];
+        const endDelay = sequenceDuration - (delay + duration * iterations);
+
+        // add the sequence delay to the animation delay at the end - it doesn't need to affect the endDelay
+        effect.updateTiming({ delay: delay + this.delay, endDelay });
+      });
     });
+  }
+
+  private getSequenceActiveDuration(offsets: number[]): number {
+    const result: number[] = [];
+
+    for (let i = 0; i < this.timingOptions.length; i++) {
+      const activeDuration = this.timingOptions[i].reduce((max, options) => {
+        if (!options) return max;
+
+        const { delay, duration, iterations } = options;
+
+        return Math.max(max, delay + duration * iterations);
+      }, 0);
+
+      result.push(offsets[i] + activeDuration);
+    }
+
+    return Math.max(...result);
   }
 
   /**
@@ -77,7 +112,7 @@ export class Sequence extends AnimationGroup {
     for (const { index, group } of sorted) {
       const clampedIndex = Math.min(index, this.animationGroups.length);
       this.animationGroups.splice(clampedIndex, 0, group);
-      this.baseDelays.splice(clampedIndex, 0, this.getGroupBaseDelay(group));
+      this.timingOptions.splice(clampedIndex, 0, group.getTimingOptions());
 
       const flatAnimations = [...group.animations];
       const insertAt = this.animationGroups
