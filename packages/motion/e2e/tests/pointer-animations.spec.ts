@@ -76,6 +76,78 @@ test.describe('Pointer-Driven Animations', () => {
     });
   });
 
+  test.describe('Effect Types Via getScrubScene', () => {
+    test('should drive namedEffect pointer animation on x-axis', async ({ page }) => {
+      await pointerPage.movePointerWithinElement(POINTER_SELECTORS.namedArea, 0.05, 0.5);
+      await page.waitForTimeout(80);
+      const leftState = await page.evaluate(
+        (targetId) => {
+          const element = document.getElementById(targetId);
+          const style = element ? getComputedStyle(element) : null;
+          return {
+            transform: style?.transform ?? null,
+            opacity: style?.opacity ?? null,
+          };
+        },
+        POINTER_IDS.namedTarget,
+      );
+
+      await pointerPage.movePointerWithinElement(POINTER_SELECTORS.namedArea, 0.95, 0.5);
+      await page.waitForTimeout(80);
+      const rightState = await page.evaluate(
+        (targetId) => {
+          const element = document.getElementById(targetId);
+          const style = element ? getComputedStyle(element) : null;
+          return {
+            transform: style?.transform ?? null,
+            opacity: style?.opacity ?? null,
+          };
+        },
+        POINTER_IDS.namedTarget,
+      );
+
+      expect(leftState.transform).not.toBe(rightState.transform);
+      expect(leftState.opacity).not.toBe(rightState.opacity);
+    });
+
+    test('should drive customEffect pointer animation on y-axis', async ({ page }) => {
+      await pointerPage.movePointerWithinElement(POINTER_SELECTORS.customArea, 0.5, 0.05);
+      await page.waitForTimeout(80);
+      const topState = await page.evaluate((targetId) => {
+        const element = document.getElementById(targetId);
+        if (!element) {
+          return null;
+        }
+
+        const style = getComputedStyle(element);
+        return {
+          opacityVar: style.getPropertyValue('--custom-opacity').trim(),
+          scaleVar: style.getPropertyValue('--custom-scale').trim(),
+        };
+      }, POINTER_IDS.customTarget);
+
+      await pointerPage.movePointerWithinElement(POINTER_SELECTORS.customArea, 0.5, 0.95);
+      await page.waitForTimeout(80);
+      const bottomState = await page.evaluate((targetId) => {
+        const element = document.getElementById(targetId);
+        if (!element) {
+          return null;
+        }
+
+        const style = getComputedStyle(element);
+        return {
+          opacityVar: style.getPropertyValue('--custom-opacity').trim(),
+          scaleVar: style.getPropertyValue('--custom-scale').trim(),
+        };
+      }, POINTER_IDS.customTarget);
+
+      expect(topState).not.toBeNull();
+      expect(bottomState).not.toBeNull();
+      expect(topState?.opacityVar).not.toBe(bottomState?.opacityVar);
+      expect(topState?.scaleVar).not.toBe(bottomState?.scaleVar);
+    });
+  });
+
   test.describe('Cleanup', () => {
     test('should move AnimationGroup to idle state after cancel', async () => {
       await pointerPage.cancelPointerScene();

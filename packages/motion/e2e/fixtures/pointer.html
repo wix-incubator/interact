@@ -73,6 +73,26 @@
         opacity: 0.7;
       }
 
+      #named-target {
+        width: 80px;
+        height: 80px;
+        background: #8e44ad;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.6;
+      }
+
+      #custom-target {
+        width: 80px;
+        height: 80px;
+        background: #f39c12;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0.6;
+      }
+
       .progress-readout {
         font-family: monospace;
         font-size: 12px;
@@ -136,6 +156,44 @@
         "
       >
         <div id="composite-target" class="axis-target" data-testid="composite-target">XY</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Named Effect via getScrubScene (x-axis)</h2>
+      <div
+        id="named-area"
+        data-testid="named-area"
+        style="
+          width: 400px;
+          height: 200px;
+          background: #f0f4f8;
+          border: 2px solid #cbd5e0;
+          border-radius: 12px;
+          position: relative;
+          overflow: hidden;
+        "
+      >
+        <div id="named-target" class="axis-target" data-testid="named-target">N</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Custom Effect via getScrubScene (y-axis)</h2>
+      <div
+        id="custom-area"
+        data-testid="custom-area"
+        style="
+          width: 400px;
+          height: 200px;
+          background: #f0f4f8;
+          border: 2px solid #cbd5e0;
+          border-radius: 12px;
+          position: relative;
+          overflow: hidden;
+        "
+      >
+        <div id="custom-target" class="axis-target" data-testid="custom-target">C</div>
       </div>
     </div>
 
