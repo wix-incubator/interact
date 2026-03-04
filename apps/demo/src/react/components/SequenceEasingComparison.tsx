@@ -10,8 +10,7 @@ const easingFns: Record<string, (p: number) => number> = {
   linear: (p) => p,
   quadIn: (p) => p * p,
   sineOut: (p) => Math.sin((p * Math.PI) / 2),
-  cubicInOut: (p) =>
-    p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2,
+  cubicInOut: (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2),
 };
 
 const easingRows = [

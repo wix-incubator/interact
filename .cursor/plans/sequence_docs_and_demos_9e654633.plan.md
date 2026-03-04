@@ -9,13 +9,13 @@ todos:
     content: Create packages/motion/docs/api/get-sequence.md -- getSequence() function reference
     status: pending
   - id: motion-docs-updates
-    content: "Update motion docs: api/README.md index, api/types.md with new types, core-concepts.md with Sequences section"
+    content: 'Update motion docs: api/README.md index, api/types.md with new types, core-concepts.md with Sequences section'
     status: pending
   - id: interact-guide-sequences
     content: Create packages/interact/docs/guides/sequences.md -- comprehensive sequences guide
     status: pending
   - id: interact-docs-updates
-    content: "Update interact docs: api/types.md, api/interact-class.md, guides/README.md, examples/README.md, examples/list-patterns.md"
+    content: 'Update interact docs: api/types.md, api/interact-class.md, guides/README.md, examples/README.md, examples/list-patterns.md'
     status: pending
   - id: demo-sequence-playground
     content: Create SequencePlayground.tsx in both web/ and react/ -- interactive stagger controls
@@ -45,9 +45,9 @@ API reference for the `Sequence` class, mirroring the style of [animation-group.
 
 - **Overview** -- Sequence extends AnimationGroup to coordinate multiple AnimationGroups with staggered delays
 - **Class definition** -- constructor signature, properties (`animationGroups`, `delay`, `offset`, `offsetEasing`), inherited methods (`play`, `pause`, `reverse`, `cancel`, `onFinish`, `setPlaybackRate`, `playState`)
-- `**addGroups(entries)`** -- inserts new groups at specified indices and recalculates offsets
+- `**addGroups(entries)`\*\* -- inserts new groups at specified indices and recalculates offsets
 - **Offset calculation** -- the formula `easing(i / last) * last * offset | 0` with examples for linear, quadIn, sineOut (from the spec)
-- `**SequenceOptions` type** -- `delay`, `offset`, `offsetEasing`
+- `**SequenceOptions` type\*\* -- `delay`, `offset`, `offsetEasing`
 - **Usage examples** -- creating a Sequence manually, controlling playback, using different easing functions
 
 ### 1.2 New file: `api/get-sequence.md`
@@ -55,8 +55,8 @@ API reference for the `Sequence` class, mirroring the style of [animation-group.
 API reference for the `getSequence()` function (in `packages/motion/src/motion.ts`). Contents:
 
 - **Signature** -- `getSequence(options, animationGroupArgs[], context?) => Sequence`
-- `**AnimationGroupArgs` type** -- `target`, `options`, `context`
-- `**createAnimationGroups()` helper** (also exported)
+- `**AnimationGroupArgs` type\*\* -- `target`, `options`, `context`
+- `**createAnimationGroups()` helper\*\* (also exported)
 - **Examples** -- creating a staggered entrance for a list of elements, using different offset easings
 
 ### 1.3 Update `api/README.md`
@@ -156,7 +156,6 @@ Add styles for the new sequence demo components (card grids, easing comparison r
 
 ## File Summary
 
-
 | Action | Path                                                          |
 | ------ | ------------------------------------------------------------- |
 | Create | `packages/motion/docs/api/sequence.md`                        |
@@ -181,5 +180,3 @@ Add styles for the new sequence demo components (card grids, easing comparison r
 | Edit   | `apps/demo/src/web/App.tsx`                                   |
 | Edit   | `apps/demo/src/react/App.tsx`                                 |
 | Edit   | `apps/demo/src/styles.css`                                    |
-
-

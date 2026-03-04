@@ -96,8 +96,8 @@ export const SequenceClickDemo = () => {
 
         <Interaction tagName="p" interactKey="seq-body" className="seq-click-body">
           Orchestrate multiple elements with precisely timed stagger offsets. Each piece of content
-          enters on its own schedule, creating a natural flow that guides the viewer&apos;s attention
-          through the composition.
+          enters on its own schedule, creating a natural flow that guides the viewer&apos;s
+          attention through the composition.
         </Interaction>
       </div>
     </section>

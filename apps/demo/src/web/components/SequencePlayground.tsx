@@ -65,10 +65,9 @@ export const SequencePlayground = () => {
 
   useInteractInstance(config);
 
-  const handleRange =
-    (setter: (v: number) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-      setter(Number(e.target.value));
-    };
+  const handleRange = (setter: (v: number) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+    setter(Number(e.target.value));
+  };
 
   return (
     <section className="panel seq-playground-section">
@@ -91,10 +90,7 @@ export const SequencePlayground = () => {
               Trigger
               <span>{trigger}</span>
             </label>
-            <select
-              value={trigger}
-              onChange={(e) => setTrigger(e.target.value as TriggerType)}
-            >
+            <select value={trigger} onChange={(e) => setTrigger(e.target.value as TriggerType)}>
               {triggerOptions.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}

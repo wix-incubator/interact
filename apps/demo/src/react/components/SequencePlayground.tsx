@@ -66,10 +66,9 @@ export const SequencePlayground = () => {
 
   useInteractInstance(config);
 
-  const handleRange =
-    (setter: (v: number) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-      setter(Number(e.target.value));
-    };
+  const handleRange = (setter: (v: number) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+    setter(Number(e.target.value));
+  };
 
   return (
     <section className="panel seq-playground-section">
@@ -92,10 +91,7 @@ export const SequencePlayground = () => {
               Trigger
               <span>{trigger}</span>
             </label>
-            <select
-              value={trigger}
-              onChange={(e) => setTrigger(e.target.value as TriggerType)}
-            >
+            <select value={trigger} onChange={(e) => setTrigger(e.target.value as TriggerType)}>
               {triggerOptions.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
@@ -168,7 +164,12 @@ export const SequencePlayground = () => {
           <Interaction tagName="div" interactKey="seq-playground">
             <div className="seq-card-grid">
               {cardIndices.map((i) => (
-                <Interaction tagName="div" interactKey={`seq-card-${i}`} key={i} className="seq-card">
+                <Interaction
+                  tagName="div"
+                  interactKey={`seq-card-${i}`}
+                  key={i}
+                  className="seq-card"
+                >
                   <span className="seq-card-index">{i + 1}</span>
                   <span className="seq-card-label">Card</span>
                 </Interaction>
