@@ -91,8 +91,8 @@ Because the MCP loads one file at a time, the "canonical" column means "most com
 | ----------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | Full type/schema spec (`InteractConfig`, triggers, effects, conditions) | `full-lean.md`                     | Delete duplicated schema prose from `integration.md`            | All trigger docs: keep brief summaries of params they use                         |
 | Developer setup (install, web, react, CDN, `Interact.create`)           | `integration.md`                   | —                                                               | —                                                                                 |
-| FOUC / `generate(config)`                                               | `full-lean.md`                     | Delete full code block from `integration.md` and `viewenter.md` | `viewenter.md`: one-line mention with constraints                                 |
-| `StateParams.method` (`add`/`remove`/`toggle`/`clear`)                  | `full-lean.md`                     | —                                                               | `click.md`, `hover.md`: brief inline summary of all 4 values                      |
+| FOUC / `generate(config)`                                               | `full-lean.md` + `viewenter.md`    | Delete full code block from `integration.md` only               | `viewenter.md`: full working example with constraints — it is the most likely file fetched for entrance animations and must be self-contained |
+| `StateParams.method` (`add`/`remove`/`toggle`/`clear`)                  | `full-lean.md`                     | —                                                               | `click.md`: inline comment on TransitionEffect rule only (`hover.md` has no TransitionEffect rule so no mention needed there) |
 | Target cascade resolution                                               | `full-lean.md`                     | —                                                               | Any trigger doc showing cross-targeting examples                                  |
 | `Progress` type for `customEffect` with `pointerMove`                   | `pointermove.md`                   | Delete duplicate definition from `full-lean.md`                 | —                                                                                 |
 | `fill: 'both'` for `viewProgress`                                       | `full-lean.md`                     | —                                                               | `viewprogress.md`: keep inline (model fetching viewprogress won't have full-lean) |
@@ -191,12 +191,15 @@ Include the offset semantics note (positive = forward along scroll axis) — onc
 **Section 5: Named Scroll Effects Reference** (condensed list)
 The scroll preset names currently buried in Rule 1 variables — one list, not repeated across rules.
 
-**Section 6: Examples** (3 only, one per effect type)
+**Section 2 note: Config Template placeholders**
+Do not include a `direction` placeholder. `direction` is a preset-specific option (not a standard field), its valid values differ per preset, and listing generic values would be incomplete and misleading. The template uses `[NAMED_EFFECT]` with a note: only use preset-specific options you have documentation for; omit and rely on defaults otherwise.
 
-- `namedEffect` parallax — one per effect type covers common cases
+**Section 6: Examples** (4 total)
+
+- `namedEffect` parallax
 - `keyframeEffect` custom entrance
 - `customEffect` scroll counter
-- **Multi-range (entry + exit)** — added because this pattern is non-obvious: two effects on the same key with different range scopes. Without a dedicated example, capable models can infer it from the tables but may get the fill/easing direction wrong. The cost (~40 lines) is worth the reliability gain.
+- **Multi-range (entry + exit on the same element)** — non-obvious pattern requiring two effects with the same `key` but different range scopes. Without a dedicated example, models can infer it from the tables but may get the fill/easing direction wrong. The cost (~40 lines) is worth the reliability gain.
 
 **Section 7: Advanced Patterns** — keep existing section as-is (genuinely unique content)
 
@@ -217,6 +220,7 @@ This file's genuine value is its list-specific patterns. Everything else repeats
 - Why `contain` range fits sticky container animations specifically
 - Stagger pattern using shared `effectId` in the effects registry
 - `customEffect` pattern for per-item dynamic content
+- Responsive list animations section with a full `conditions` config map example (same pattern as other trigger docs — condition IDs are user-defined, must always be shown alongside their `type`/`predicate` definition)
 
 ### Delete (generic, already in `viewprogress.md` or model already knows it)
 
@@ -240,6 +244,7 @@ Minor but important for model consistency. Models that see consistent structure 
 - Variable placeholder naming is inconsistent: `[SOURCE_KEY]` (viewprogress, pointermove) vs `[SOURCE_IDENTIFIER]` (click, hover) for the same concept
 - `hover.md` Rules 2 and 3 overlap heavily (both are `alternate` pattern, one with `namedEffect`, one with `keyframeEffect`) — collapse into one rule with two examples
 - `click.md` shows only `method: 'toggle'` for `TransitionEffect` — add brief mention that `add`, `remove`, `clear` also exist (already defined in `full-lean.md`, but models reading only the trigger doc will miss it)
+- `hover.md` does **not** get a `method` mention — `hover.md` has no `TransitionEffect` rule, so adding a method summary there would be orphaned with no anchor
 
 ### Fixes
 
@@ -262,9 +267,9 @@ packages/interact/rules/
 │                         changes: reduce from ~370 → ~150 lines by deleting schema/effect prose
 ├── click.md           ← trigger patterns + examples + interact-specific best practices
 ├── hover.md           ← trigger patterns + examples; add a11y section; collapse rules 2+3
-├── viewenter.md       ← trigger patterns + examples; remove FOUC re-explanation
-├── viewprogress.md    ← 1 template + 2 tables + 3 examples + advanced patterns
-│                         changes: remove 9-rule matrix (~600 lines)
+├── viewenter.md       ← trigger patterns + examples; full FOUC example with constraints
+├── viewprogress.md    ← 1 template + 2 tables + 4 examples + advanced patterns
+│                         changes: remove 9-rule matrix (~600 lines); no direction placeholder in template
 ├── scroll-list.md     ← list-specific only (sticky hierarchy, stagger, list context)
 │                         changes: delete generic scroll/range/effect content (~200 lines)
 └── pointermove.md     ← keep Core Concepts (genuine unique value); trim best practices
@@ -282,7 +287,7 @@ packages/interact/rules/
 | 3   | Fix correctness: FOUC constraints alignment                                                                   | `integration.md`                 | —                  | High if skipped    |
 | 4   | Fix 6 typos + undefined `pointermove.md` reference                                                            | all                              | —                  | Low effort, do now |
 | 5   | Delete generic best-practices content from all trigger docs                                                   | all trigger docs                 | ~250               | Low                |
-| 6   | Refactor `viewprogress.md`: 1 template + 2 tables + 3 examples                                                | `viewprogress.md`                | ~600               | Medium             |
+| 6   | Refactor `viewprogress.md`: 1 template + 2 tables + 4 examples (added multi-range)                           | `viewprogress.md`                | ~600               | Medium             |
 | 7   | Reduce `scroll-list.md`: delete generic scroll/range/effect content                                           | `scroll-list.md`                 | ~200               | Low                |
 | 8   | Reduce `integration.md`: delete schema/effect prose                                                           | `integration.md`                 | ~150               | Low                |
 | 9   | Add `registerEffects` to `full-lean.md`; remove duplicate `Progress` type                                     | `full-lean.md`                   | —                  | Low                |
@@ -291,7 +296,5 @@ packages/interact/rules/
 
 **Estimated total reduction: ~~1,250 lines (~~15% of corpus), with zero loss of `@wix/interact`-specific information.**
 The remaining content will be denser, more accurate, and cheaper for models to consume.
-
----
 
 

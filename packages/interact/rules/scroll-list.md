@@ -677,7 +677,62 @@ Container, items, and content: use `cover` for background/foreground layers (ful
 
 ### Responsive List Animations
 
-Use `conditions` for list-specific responsive behavior (e.g. `conditions: ['desktop-only', 'prefers-motion']` or `conditions: ['mobile-only']`). Define separate interactions for the same `key` with different conditions and effects.
+Condition IDs are user-defined strings declared in the top-level `conditions` map. Define separate interactions for the same `key` with different conditions and effects.
+
+```typescript
+{
+    conditions: {
+        'desktop-only':   { type: 'media', predicate: '(min-width: 768px)' },
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+        'mobile-only':    { type: 'media', predicate: '(max-width: 767px)' },
+    },
+    interactions: [
+        {
+            key: 'list-item',
+            trigger: 'viewProgress',
+            conditions: ['desktop-only', 'prefers-motion'],
+            effects: [
+                {
+                    key: 'list-item',
+                    keyframeEffect: {
+                        name: 'item-complex',
+                        keyframes: [
+                            { opacity: '0', transform: 'translateY(-20px) rotateY(5deg)' },
+                            { opacity: '1', transform: 'translateY(0) rotateY(0deg)' }
+                        ]
+                    },
+                    rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+                    rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 80 } },
+                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    fill: 'both'
+                }
+            ]
+        },
+        // Simplified fallback for mobile or reduced-motion users
+        {
+            key: 'list-item',
+            trigger: 'viewProgress',
+            conditions: ['mobile-only'],
+            effects: [
+                {
+                    key: 'list-item',
+                    keyframeEffect: {
+                        name: 'item-simple',
+                        keyframes: [
+                            { opacity: '0', transform: 'translateY(30px)' },
+                            { opacity: '1', transform: 'translateY(0)' }
+                        ]
+                    },
+                    rangeStart: { name: 'entry', offset: { unit: 'percentage', value: 0 } },
+                    rangeEnd: { name: 'entry', offset: { unit: 'percentage', value: 60 } },
+                    easing: 'ease-out',
+                    fill: 'both'
+                }
+            ]
+        }
+    ]
+}
+```
 
 ---
 
