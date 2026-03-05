@@ -116,7 +116,7 @@ This configuration declares what user/system triggers occur on which source elem
 
 ### Global rules
 
-- **Required/Optional**: You MUST provide an `interactions` array. You SHOULD provide an `effects` registry when you want to reference reusable effects by id. `conditions` are OPTIONAL.
+- **Required/Optional**: You MUST provide an `interactions` array. You SHOULD provide an `effects` registry when you want to reference reusable effects by id. `conditions` and `sequences` are OPTIONAL.
 - **Cross-references**: All cross-references (by id) MUST point to existing entries (e.g., an `EffectRef.effectId` MUST exist in `effects`).
 - **Element keys**: All element keys (`key` fields) refer to the element path string (e.g., the value used in `data-interact-key`) and MUST be stable for the lifetime of the configuration.
 - **List context**: Where both a list container and list item selector are provided, they MUST describe the same list context across an interaction and its effects. Mismatched list contexts will be ignored by the system.
@@ -129,6 +129,11 @@ This configuration declares what user/system triggers occur on which source elem
   - **Purpose**: A registry of reusable, named effect definitions that can be referenced from interactions via `EffectRef`.
   - **Key (string)**: The effect id. MUST be unique across the registry.
   - **Value (Effect)**: A full effect definition. See Effect rules below.
+
+- **sequences?: Record<string, SequenceConfig>**
+  - **Purpose**: A registry of reusable sequence definitions that can be referenced from interactions via `SequenceConfigRef`.
+  - **Key (string)**: The sequence id. MUST be unique across the registry.
+  - **Value (SequenceConfig)**: A full sequence definition. See Sequences section below.
 
 - **conditions?: Record<string, Condition>**
   - **Purpose**: Named predicates that gate interactions/effects by runtime context.
@@ -214,8 +219,68 @@ This configuration declares what user/system triggers occur on which source elem
       - OPTIONAL. Additional CSS selector to refine element selection:
         - Without `listContainer`: Uses `querySelectorAll` to match all elements within the root element as separate items.
         - With `listContainer`: Uses `querySelectorAll` within the container to find matching elements as list items. For dynamically added list items, uses `querySelector` within each item to find a single matching element.
-    - **effects: Array<Effect | EffectRef>**
-      - REQUIRED. The effects to apply when the trigger fires. Ordering is significant: the first array entry is applied first. The system may reverse internal storage to preserve this application order.
+    - **effects?: Array<Effect | EffectRef>**
+      - The effects to apply when the trigger fires. Ordering is significant: the first array entry is applied first. The system may reverse internal storage to preserve this application order.
+      - At least one of `effects` or `sequences` MUST be provided.
+    - **sequences?: Array<SequenceConfig | SequenceConfigRef>**
+      - OPTIONAL. Sequences to play when the trigger fires. Each sequence coordinates multiple effects with staggered timing. See Sequences section below.
+
+### Sequences (coordinated multi-effect stagger)
+
+Sequences let you group multiple effects into a single coordinated timeline with staggered delays. Instead of manually setting `delay` on each effect, you define `offset` (ms between items) and `offsetEasing` (how that offset is distributed).
+
+**Prefer sequences over manual delay stagger** for any multi-element entrance or orchestration pattern.
+
+- **SequenceConfig** type:
+  - `effects: (Effect | EffectRef)[]` — REQUIRED. The effects in this sequence, applied in array order.
+  - `delay?: number` — Base delay (ms) before the entire sequence starts. Default `0`.
+  - `offset?: number` — Stagger offset (ms) between consecutive effects. Default `0`.
+  - `offsetEasing?: string | ((p: number) => number)` — Easing function for stagger distribution. Named easings: `'linear'`, `'quadIn'`, `'quadOut'`, `'sineOut'`, `'cubicIn'`, `'cubicOut'`, `'cubicInOut'`. Also accepts `'cubic-bezier(...)'` strings or a JS function `(p: number) => number`. Default `'linear'`.
+  - `sequenceId?: string` — Id for caching and referencing. Auto-generated if omitted.
+  - `conditions?: string[]` — Condition ids that MUST all pass for this sequence to be active.
+
+- **SequenceConfigRef** type (referencing a reusable sequence):
+  - `sequenceId: string` — REQUIRED. MUST match a key in `InteractConfig.sequences`.
+  - `delay?`, `offset?`, `offsetEasing?`, `conditions?` — OPTIONAL overrides merged on top of the referenced sequence.
+
+- Effects within a sequence follow the same rules as standalone effects. Each effect can:
+  - Target a different element via `key` (cross-element sequences).
+  - Use `listContainer` to target list children (each child becomes a separate effect in the sequence).
+  - Reference the effects registry via `effectId`.
+
+- A sequence is treated as a single animation unit by the trigger handler—it plays, reverses, and alternates as one.
+
+**Example — viewEnter staggered list using `listContainer`**:
+
+```typescript
+{
+  interactions: [
+    {
+      key: 'card-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.3 },
+      sequences: [
+        {
+          offset: 100,
+          offsetEasing: 'quadIn',
+          effects: [
+            {
+              effectId: 'card-entrance',
+              listContainer: '.card-grid',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  effects: {
+    'card-entrance': {
+      // ...
+    },
+  },
+}
+```
+
 
 ### Working with elements
 

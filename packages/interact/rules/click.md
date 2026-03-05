@@ -416,11 +416,122 @@ These rules help generate click-based interactions using the `@wix/interact` lib
 
 ---
 
+## Rule 5: Click with Sequence (Staggered Multi-Element Orchestration)
+
+**Use Case**: Click-triggered coordinated animations across multiple elements with staggered timing (e.g., page section reveals, multi-element toggles, orchestrated content entrances)
+
+**When to Apply**:
+
+- When a click should animate multiple elements with staggered timing
+- For orchestrated content reveals (heading, body, image in sequence)
+- When you want easing-controlled stagger instead of manual delays
+- For toggle-able multi-element sequences
+
+**Pattern**:
+
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'click',
+    params: {
+        type: 'alternate'
+    },
+    sequences: [
+        {
+            offset: [OFFSET_MS],
+            offsetEasing: '[OFFSET_EASING]',
+            effects: [
+                { effectId: '[EFFECT_ID_1]', key: '[TARGET_KEY_1]' },
+                { effectId: '[EFFECT_ID_2]', key: '[TARGET_KEY_2]' },
+                { effectId: '[EFFECT_ID_3]', key: '[TARGET_KEY_3]' }
+            ]
+        }
+    ]
+}
+```
+
+**Variables**:
+
+- `[OFFSET_MS]`: Stagger offset in ms between consecutive effects (typically 100-200ms)
+- `[OFFSET_EASING]`: Easing for stagger distribution — `'linear'`, `'quadIn'`, `'sineOut'`, etc.
+- `[EFFECT_ID_N]`: Effect id from the effects registry for each element
+- `[TARGET_KEY_N]`: Element key for each target
+- Other variables same as Rule 1
+
+**Example - Orchestrated Content Reveal**:
+
+```typescript
+{
+    key: 'reveal-button',
+    trigger: 'click',
+    params: {
+        type: 'alternate'
+    },
+    sequences: [
+        {
+            offset: 150,
+            offsetEasing: 'sineOut',
+            effects: [
+                { effectId: 'heading-entrance', key: 'content-heading' },
+                { effectId: 'body-entrance', key: 'content-body' },
+                { effectId: 'image-entrance', key: 'content-image' }
+            ]
+        }
+    ]
+}
+```
+
+```typescript
+effects: {
+    'heading-entrance': {
+        key: 'content-heading',
+        duration: 600,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        keyframeEffect: {
+            name: 'heading-in',
+            keyframes: [
+                { transform: 'translateX(-40px)', opacity: 0 },
+                { transform: 'translateX(0)', opacity: 1 }
+            ]
+        },
+        fill: 'both'
+    },
+    'body-entrance': {
+        key: 'content-body',
+        duration: 500,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        keyframeEffect: {
+            name: 'body-in',
+            keyframes: [
+                { transform: 'translateY(20px)', opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+            ]
+        },
+        fill: 'both'
+    },
+    'image-entrance': {
+        key: 'content-image',
+        duration: 700,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        keyframeEffect: {
+            name: 'image-in',
+            keyframes: [
+                { transform: 'scale(0.8) rotate(-5deg)', opacity: 0 },
+                { transform: 'scale(1) rotate(0deg)', opacity: 1 }
+            ]
+        },
+        fill: 'both'
+    }
+}
+```
+
+---
+
 ## Advanced Patterns and Combinations
 
 ### Multi-Target Click Effects
 
-When one click should animate multiple elements:
+When one click should animate multiple elements (without stagger, use `effects`; with stagger, prefer `sequences` above):
 
 ```typescript
 {
