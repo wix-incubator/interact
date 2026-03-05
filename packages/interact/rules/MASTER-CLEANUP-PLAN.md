@@ -67,7 +67,6 @@ These are the highest-risk problems. A model following a contradictory rule prod
 
 ### 1.5 Fix all confirmed typos
 
-
 | File              | Line | Fix                                               |
 | ----------------- | ---- | ------------------------------------------------- |
 | `viewenter.md`    | 946  | `Guildelines` → `Guidelines`                      |
@@ -77,7 +76,6 @@ These are the highest-risk problems. A model following a contradictory rule prod
 | `integration.md`  | 195  | `(Pre-built effect library)>` → remove stray `>`  |
 | `scroll-list.md`  | 272  | `selector: ' .hero-image'` → remove leading space |
 
-
 ---
 
 ## Phase 2 — Establish Single Source of Truth (via deletion, not links)
@@ -86,19 +84,17 @@ These are the highest-risk problems. A model following a contradictory rule prod
 
 Because the MCP loads one file at a time, the "canonical" column means "most complete definition lives here." The "inline mention needed" column means trigger docs that depend on this concept must include a brief self-contained summary — not a link, not a full re-explanation.
 
-
-| Content                                                                 | Canonical file                     | Action in other files                                           | Inline mention needed in                                                          |
-| ----------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Full type/schema spec (`InteractConfig`, triggers, effects, conditions) | `full-lean.md`                     | Delete duplicated schema prose from `integration.md`            | All trigger docs: keep brief summaries of params they use                         |
-| Developer setup (install, web, react, CDN, `Interact.create`)           | `integration.md`                   | —                                                               | —                                                                                 |
-| FOUC / `generate(config)`                                               | `full-lean.md` + `viewenter.md`    | Delete full code block from `integration.md` only               | `viewenter.md`: full working example with constraints — it is the most likely file fetched for entrance animations and must be self-contained |
-| `StateParams.method` (`add`/`remove`/`toggle`/`clear`)                  | `full-lean.md`                     | —                                                               | `click.md`: inline comment on TransitionEffect rule only (`hover.md` has no TransitionEffect rule so no mention needed there) |
-| Target cascade resolution                                               | `full-lean.md`                     | —                                                               | Any trigger doc showing cross-targeting examples                                  |
-| `Progress` type for `customEffect` with `pointerMove`                   | `pointermove.md`                   | Delete duplicate definition from `full-lean.md`                 | —                                                                                 |
-| `fill: 'both'` for `viewProgress`                                       | `full-lean.md`                     | —                                                               | `viewprogress.md`: keep inline (model fetching viewprogress won't have full-lean) |
-| `registerEffects`                                                       | currently only in `integration.md` | Add to `full-lean.md`                                           | —                                                                                 |
-| Generic perf/UX/a11y advice                                             | nowhere — delete entirely          | Remove from all trigger docs                                    | —                                                                                 |
-
+| Content                                                                 | Canonical file                     | Action in other files                                | Inline mention needed in                                                                                                                      |
+| ----------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full type/schema spec (`InteractConfig`, triggers, effects, conditions) | `full-lean.md`                     | Delete duplicated schema prose from `integration.md` | All trigger docs: keep brief summaries of params they use                                                                                     |
+| Developer setup (install, web, react, CDN, `Interact.create`)           | `integration.md`                   | —                                                    | —                                                                                                                                             |
+| FOUC / `generate(config)`                                               | `full-lean.md` + `viewenter.md`    | Delete full code block from `integration.md` only    | `viewenter.md`: full working example with constraints — it is the most likely file fetched for entrance animations and must be self-contained |
+| `StateParams.method` (`add`/`remove`/`toggle`/`clear`)                  | `full-lean.md`                     | —                                                    | `click.md`: inline comment on TransitionEffect rule only (`hover.md` has no TransitionEffect rule so no mention needed there)                 |
+| Target cascade resolution                                               | `full-lean.md`                     | —                                                    | Any trigger doc showing cross-targeting examples                                                                                              |
+| `Progress` type for `customEffect` with `pointerMove`                   | `pointermove.md`                   | Delete duplicate definition from `full-lean.md`      | —                                                                                                                                             |
+| `fill: 'both'` for `viewProgress`                                       | `full-lean.md`                     | —                                                    | `viewprogress.md`: keep inline (model fetching viewprogress won't have full-lean)                                                             |
+| `registerEffects`                                                       | currently only in `integration.md` | Add to `full-lean.md`                                | —                                                                                                                                             |
+| Generic perf/UX/a11y advice                                             | nowhere — delete entirely          | Remove from all trigger docs                         | —                                                                                                                                             |
 
 ### 2.2 Reduce `integration.md`
 
@@ -137,13 +133,11 @@ Do **not** create a shared `best-practices.md`. Instead, apply this filter to ev
 
 This is the single largest structural problem. 9 rules are a 3×3 matrix with near-identical patterns:
 
-
 |                     | `namedEffect` | `keyframeEffect` | `customEffect` |
 | ------------------- | ------------- | ---------------- | -------------- |
 | Parallax/Continuous | Rule 1        | Rule 4           | Rule 7         |
 | Entry               | Rule 2        | Rule 5           | Rule 8         |
 | Exit                | Rule 3        | Rule 6           | Rule 9         |
-
 
 Every rule repeats the same config skeleton. Variable lists from Rule 5 onward explicitly say "Other variables same as Rule 1" — a direct admission of duplication.
 
@@ -167,16 +161,13 @@ Single pattern showing all `viewProgress`-relevant fields with placeholders.
 
 **Section 3: Effect Type Selection** (table)
 
-
-| Scenario                   | Effect type      | Notes                                                           |
-| -------------------------- | ---------------- | --------------------------------------------------------------- |
+| Scenario                   | Effect type      | Notes                            |
+| -------------------------- | ---------------- | -------------------------------- | ----- | -------------------- |
 | Use a scroll preset        | `namedEffect`    | Preferred; requires `range: 'in' | 'out' | 'continuous'` option |
-| Custom CSS animation       | `keyframeEffect` | Full keyframe control                                           |
-| DOM/canvas/dynamic content | `customEffect`   | Last resort; keep callback lean                                 |
-
+| Custom CSS animation       | `keyframeEffect` | Full keyframe control            |
+| DOM/canvas/dynamic content | `customEffect`   | Last resort; keep callback lean  |
 
 **Section 4: Range Reference** (table)
-
 
 | Intent                    | `rangeStart.name` | `rangeEnd.name` | Typical offsets |
 | ------------------------- | ----------------- | --------------- | --------------- |
@@ -184,7 +175,6 @@ Single pattern showing all `viewProgress`-relevant fields with placeholders.
 | Element exiting viewport  | `exit`            | `exit`          | 0–60%           |
 | Full element traversal    | `cover`           | `cover`         | 0–100%          |
 | While fully in viewport   | `contain`         | `contain`       | 0–100%          |
-
 
 Include the offset semantics note (positive = forward along scroll axis) — once, here only.
 
@@ -279,7 +269,6 @@ packages/interact/rules/
 
 ## Execution Order
 
-
 | #   | Action                                                                                                        | Files affected                   | Est. lines removed | Risk               |
 | --- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------ | ------------------ |
 | 1   | Fix correctness: `keyframeEffect`/`pointerMove` conflict                                                      | `full-lean.md`                   | —                  | High if skipped    |
@@ -287,14 +276,11 @@ packages/interact/rules/
 | 3   | Fix correctness: FOUC constraints alignment                                                                   | `integration.md`                 | —                  | High if skipped    |
 | 4   | Fix 6 typos + undefined `pointermove.md` reference                                                            | all                              | —                  | Low effort, do now |
 | 5   | Delete generic best-practices content from all trigger docs                                                   | all trigger docs                 | ~250               | Low                |
-| 6   | Refactor `viewprogress.md`: 1 template + 2 tables + 4 examples (added multi-range)                           | `viewprogress.md`                | ~600               | Medium             |
+| 6   | Refactor `viewprogress.md`: 1 template + 2 tables + 4 examples (added multi-range)                            | `viewprogress.md`                | ~600               | Medium             |
 | 7   | Reduce `scroll-list.md`: delete generic scroll/range/effect content                                           | `scroll-list.md`                 | ~200               | Low                |
 | 8   | Reduce `integration.md`: delete schema/effect prose                                                           | `integration.md`                 | ~150               | Low                |
 | 9   | Add `registerEffects` to `full-lean.md`; remove duplicate `Progress` type                                     | `full-lean.md`                   | —                  | Low                |
 | 10  | Standardize titles, placeholders, collapse `hover.md` rules 2+3, add missing `method` mention, remove footers | all                              | ~50                | Very low           |
 
-
 **Estimated total reduction: ~~1,250 lines (~~15% of corpus), with zero loss of `@wix/interact`-specific information.**
 The remaining content will be denser, more accurate, and cheaper for models to consume.
-
-

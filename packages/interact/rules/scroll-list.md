@@ -103,6 +103,7 @@ Scroll-driven list animations using `@wix/interact`. Sticky hierarchy: **contain
 ```
 
 **Variables**:
+
 - `[ITEM_KEY]`: Individual list item identifier
 - `[ITEM_NAMED_EFFECT]`: Item-level scroll effects from @wix/motion-presets:
   - **Reveal/Fade**: 'FadeScroll', 'BlurScroll', 'RevealScroll', 'ShapeScroll', 'ShuttersScroll'
@@ -187,6 +188,7 @@ Scroll-driven list animations using `@wix/interact`. Sticky hierarchy: **contain
 ```
 
 **Variables**:
+
 - `[ITEM_CONTAINER_KEY]` / `[CONTENT_KEY]`: Item and content identifiers. Use `selector` (e.g. `selector: '.content-text'`) for content within the item.
 - `[CONTENT_NAMED_EFFECT]`: Content-level scroll effects from @wix/motion-presets:
   - **Opacity/Visibility**: 'FadeScroll', 'BlurScroll'
@@ -744,4 +746,3 @@ Condition IDs are user-defined strings declared in the top-level `conditions` ma
 2. **Content coordination**: Use same timeline with `cover`/`contain` range and staggered offsets, or use a different timeline per item with same range and offsets.
 3. **Use position:sticky**: Animate elements while they're stuck in position and not scrolling with the page.
 4. **@wix/interact conditions**: Include `prefers-motion` in conditions for reduced-motion users (e.g. `conditions: ['prefers-motion']`).
-

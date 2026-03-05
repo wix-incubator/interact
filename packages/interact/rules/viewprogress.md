@@ -30,41 +30,41 @@
 
 ## Variable Key
 
-| Placeholder | Valid Values / Notes |
-|-------------|----------------------|
-| `[SOURCE_KEY]` | Unique identifier for element that tracks scroll progress |
-| `[TARGET_KEY]` | Unique identifier for element to animate (can equal source) |
-| `[NAMED_EFFECT]` | Preset from @wix/motion-presets (see Named Scroll Effects below). Some presets accept options (e.g. `direction`) — only use options you have documentation for; omit and rely on defaults otherwise |
-| `[EFFECT_NAME]` | Unique name for keyframe effect |
-| `[EFFECT_KEYFRAMES]` | Array of keyframe objects, e.g. `[{ opacity: '0' }, { opacity: '1' }]` |
-| `[CUSTOM_LOGIC]` | JS: `progress` is 0–1 within range; mutate `element.style` or DOM |
-| `[RANGE_NAME]` | 'cover', 'contain', 'entry', 'exit', 'entry-crossing', 'exit-crossing' |
-| `[START_PERCENTAGE]` | 0–100 |
-| `[END_PERCENTAGE]` | 0–100 |
-| `[EASING_FUNCTION]` | 'linear', 'ease-in', 'ease-out', 'ease-in-out', or cubic-bezier string |
-| `[FILL_MODE]` | 'both', 'backwards', 'forwards', 'none' |
-| `[UNIQUE_EFFECT_ID]` | Optional unique identifier |
-| `[CONDITION_NAME]` | User-defined condition ID declared in the top-level `conditions` map (e.g. `'prefers-motion'`, `'desktop-only'`) |
+| Placeholder          | Valid Values / Notes                                                                                                                                                                                |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `[SOURCE_KEY]`       | Unique identifier for element that tracks scroll progress                                                                                                                                           |
+| `[TARGET_KEY]`       | Unique identifier for element to animate (can equal source)                                                                                                                                         |
+| `[NAMED_EFFECT]`     | Preset from @wix/motion-presets (see Named Scroll Effects below). Some presets accept options (e.g. `direction`) — only use options you have documentation for; omit and rely on defaults otherwise |
+| `[EFFECT_NAME]`      | Unique name for keyframe effect                                                                                                                                                                     |
+| `[EFFECT_KEYFRAMES]` | Array of keyframe objects, e.g. `[{ opacity: '0' }, { opacity: '1' }]`                                                                                                                              |
+| `[CUSTOM_LOGIC]`     | JS: `progress` is 0–1 within range; mutate `element.style` or DOM                                                                                                                                   |
+| `[RANGE_NAME]`       | 'cover', 'contain', 'entry', 'exit', 'entry-crossing', 'exit-crossing'                                                                                                                              |
+| `[START_PERCENTAGE]` | 0–100                                                                                                                                                                                               |
+| `[END_PERCENTAGE]`   | 0–100                                                                                                                                                                                               |
+| `[EASING_FUNCTION]`  | 'linear', 'ease-in', 'ease-out', 'ease-in-out', or cubic-bezier string                                                                                                                              |
+| `[FILL_MODE]`        | 'both', 'backwards', 'forwards', 'none'                                                                                                                                                             |
+| `[UNIQUE_EFFECT_ID]` | Optional unique identifier                                                                                                                                                                          |
+| `[CONDITION_NAME]`   | User-defined condition ID declared in the top-level `conditions` map (e.g. `'prefers-motion'`, `'desktop-only'`)                                                                                    |
 
 **Offset semantics:** Positive offset values move the effective range forward along the scroll axis. 0 = start of range, 100 = end.
 
 ## Effect Type Selection
 
-| Scenario | Effect Type | Notes |
-|----------|-------------|-------|
-| Parallax, scroll-responsive decorations, floating elements | `namedEffect` | Use presets; fastest to implement |
-| Custom multi-property animations, brand-specific reveals | `keyframeEffect` | Full control over CSS keyframes |
-| Dynamic content (counters, text reveal, canvas, calculations) | `customEffect` | JS callback; `progress` 0–1 |
+| Scenario                                                      | Effect Type      | Notes                             |
+| ------------------------------------------------------------- | ---------------- | --------------------------------- |
+| Parallax, scroll-responsive decorations, floating elements    | `namedEffect`    | Use presets; fastest to implement |
+| Custom multi-property animations, brand-specific reveals      | `keyframeEffect` | Full control over CSS keyframes   |
+| Dynamic content (counters, text reveal, canvas, calculations) | `customEffect`   | JS callback; `progress` 0–1       |
 
 ## Range Reference
 
-| Intent | rangeStart.name | rangeEnd.name | Typical Offsets |
-|--------|-----------------|---------------|-----------------|
-| Parallax / continuous while visible | cover | cover | 0–100 |
-| Entry animation (element entering view) | entry | entry | 0–30 start, 70–100 end |
-| Exit animation (element leaving view) | exit | exit | 0–30 start, 70–100 end |
-| Cross-range (entry to exit) | entry | exit | 0–100 |
-| Contained phase | contain | contain | 0–100 |
+| Intent                                  | rangeStart.name | rangeEnd.name | Typical Offsets        |
+| --------------------------------------- | --------------- | ------------- | ---------------------- |
+| Parallax / continuous while visible     | cover           | cover         | 0–100                  |
+| Entry animation (element entering view) | entry           | entry         | 0–30 start, 70–100 end |
+| Exit animation (element leaving view)   | exit            | exit          | 0–30 start, 70–100 end |
+| Cross-range (entry to exit)             | entry           | exit          | 0–100                  |
+| Contained phase                         | contain         | contain       | 0–100                  |
 
 ## Named Scroll Effects
 

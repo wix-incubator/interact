@@ -890,6 +890,7 @@ Use the `conditions` config map to guard interactions by device or motion prefer
 Use `generate(config)` from `@wix/interact/web` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays.
 
 **Constraints:**
+
 - MUST be called server-side or at build time — not client-side
 - MUST set `data-interact-initial="true"` on the `<interact-element>` whose first child should be hidden
 - Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element
@@ -1026,4 +1027,3 @@ const html = `
 - Use hardware-accelerated properties
 - Avoid animating layout properties
 - Consider using `will-change` for complex animations
-
