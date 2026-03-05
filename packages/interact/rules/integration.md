@@ -100,6 +100,7 @@ The `InteractConfig` object defines the behavior.
 type InteractConfig = {
   interactions: Interaction[]; // Required: Array of interaction definitions
   effects?: Record<string, Effect>; // Optional: Reusable named effects
+  sequences?: Record<string, SequenceConfig>; // Optional: Reusable sequence definitions
   conditions?: Record<string, Condition>; // Optional: Reusable conditions (media queries)
 };
 ```
@@ -115,7 +116,8 @@ type InteractConfig = {
   listItemSelector?: '.item',      // Optional: CSS selector for items within listContainer
   params?: { ... },                // Trigger-specific parameters
   conditions?: ['cond-id'],        // Array of condition IDs
-  effects: [ ... ]                 // Array of effects to apply
+  effects?: [ ... ],               // Array of effects to apply
+  sequences?: [ ... ]              // Array of sequences (coordinated staggered effects)
 }
 ```
 
@@ -182,6 +184,38 @@ const html = `
 | `viewProgress` | Scroll-driven using ViewTimeline                | (No specific params, uses effect ranges)                                                                                  | `./viewprogress.md` |
 | `pointerMove`  | Mouse movement                                  | `hitArea`: 'self' (default) or 'root'; `axis`: 'x' or 'y' for keyframeEffect                                              | `./pointermove.md`  |
 | `animationEnd` | Chaining animations                             | `effectId`: ID of the previous effect                                                                                     | --                  |
+
+## 5b. Sequences (Coordinated Stagger)
+
+Sequences group multiple effects into a coordinated timeline with staggered timing. Instead of setting `delay` on each effect manually, define `offset` (ms between items) and `offsetEasing` (how offset is distributed).
+
+### Sequence Config
+
+```typescript
+{
+  offset: 100,            // ms between consecutive effects
+  offsetEasing: 'quadIn', // easing for stagger distribution (linear, quadIn, sineOut, etc.)
+  delay: 0,               // base delay before the sequence starts
+  effects: [              // effects in the sequence, applied in order
+    { effectId: 'card-entrance', listContainer: '.card-grid' },
+  ],
+}
+```
+
+Effects in a sequence can target different elements via `key`, use `listContainer` to target list children, or reference the effects registry via `effectId`.
+
+Reusable sequences can be defined in `InteractConfig.sequences` and referenced by `sequenceId`:
+
+```typescript
+{
+  sequences: {
+    'stagger-entrance': { offset: 80, offsetEasing: 'quadIn', effects: [{ effectId: 'fade-up', listContainer: '.items' }] },
+  },
+  interactions: [
+    { key: 'section', trigger: 'viewEnter', params: { type: 'once' }, sequences: [{ sequenceId: 'stagger-entrance' }] },
+  ],
+}
+```
 
 ## 6. Named Effects & `registerEffects`
 
@@ -269,6 +303,43 @@ const config = {
       ],
     },
   ],
+};
+```
+
+### Staggered List Entrance (Sequence)
+
+```typescript
+const config = {
+  interactions: [
+    {
+      key: 'card-grid',
+      trigger: 'viewEnter',
+      params: { type: 'once', threshold: 0.3 },
+      sequences: [
+        {
+          offset: 100,
+          offsetEasing: 'quadIn',
+          effects: [
+            { effectId: 'card-entrance', listContainer: '.card-grid' },
+          ],
+        },
+      ],
+    },
+  ],
+  effects: {
+    'card-entrance': {
+      duration: 500,
+      easing: 'ease-out',
+      keyframeEffect: {
+        name: 'card-fade-up',
+        keyframes: [
+          { transform: 'translateY(40px)', opacity: 0 },
+          { transform: 'translateY(0)', opacity: 1 },
+        ],
+      },
+      fill: 'both',
+    },
+  },
 };
 ```
 
