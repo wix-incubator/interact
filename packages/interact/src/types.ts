@@ -3,6 +3,7 @@ import type {
   RangeOffset,
   ScrubTransitionEasing,
   MotionAnimationOptions,
+  AnimationGroup,
 } from '@wix/motion';
 
 export type { RangeOffset };
@@ -34,6 +35,15 @@ export type TriggerType =
   | 'activate'
   | 'interest';
 
+export type EventTriggerKind = 'toggle' | 'enterLeave';
+export type EventTriggerConfigToggle = readonly string[] | string[];
+export type EventTriggerConfigEnterLeave = {
+  enter?: readonly string[];
+  leave?: readonly string[];
+};
+
+export type EventTriggerConfig = string | EventTriggerConfigToggle | EventTriggerConfigEnterLeave;
+
 export type ViewEnterType = 'once' | 'repeat' | 'alternate' | 'state';
 
 export type TransitionMethod = 'add' | 'remove' | 'toggle' | 'clear';
@@ -44,6 +54,10 @@ export type StateParams = {
 
 export type PointerTriggerParams = {
   type?: ViewEnterType | 'state';
+};
+
+export type EventTriggerParams = (StateParams | PointerTriggerParams) & {
+  eventConfig: EventTriggerConfig;
 };
 
 export type ViewEnterParams = {
@@ -152,6 +166,27 @@ export type Condition = {
   predicate?: string;
 };
 
+export type SequenceOptionsConfig = {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((p: number) => number);
+  sequenceId?: string;
+  conditions?: string[];
+};
+
+export type SequenceConfig = SequenceOptionsConfig & {
+  effects: (Effect | EffectRef)[];
+};
+
+export type SequenceConfigRef = {
+  sequenceId: string;
+} & {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((p: number) => number);
+  conditions?: string[];
+};
+
 export type InteractionTrigger = {
   key: string;
   listContainer?: string;
@@ -163,11 +198,13 @@ export type InteractionTrigger = {
 };
 
 export type Interaction = InteractionTrigger & {
-  effects: ((Effect | EffectRef) & { interactionId?: string })[];
+  effects?: ((Effect | EffectRef) & { interactionId?: string })[];
+  sequences?: (SequenceConfig | SequenceConfigRef)[];
 };
 
 export type InteractConfig = {
   effects: Record<string, Effect>;
+  sequences?: Record<string, SequenceConfig>;
   conditions?: Record<string, Condition>;
   interactions: Interaction[];
 };
@@ -229,6 +266,7 @@ export type InteractOptions = {
   targetController?: IInteractionController;
   selectorCondition?: string;
   allowA11yTriggers?: boolean;
+  animation?: AnimationGroup;
 };
 
 export type InteractionHandlerModule<T extends TriggerType> = {
@@ -264,6 +302,9 @@ export type InteractCache = {
   effects: {
     [effectId: string]: Effect;
   };
+  sequences: {
+    [sequenceId: string]: SequenceConfig;
+  };
   conditions: {
     [conditionId: string]: Condition;
   };
@@ -271,6 +312,7 @@ export type InteractCache = {
     [path: string]: {
       triggers: Interaction[];
       effects: Record<string, (InteractionTrigger & { effect: Effect | EffectRef })[]>;
+      sequences: Record<string, (InteractionTrigger & { sequence: SequenceConfig })[]>;
       interactionIds: Set<string>;
       selectors: Set<string>;
     };

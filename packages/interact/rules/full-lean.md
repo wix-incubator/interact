@@ -30,6 +30,25 @@ const config: InteractConfig = {
 Interact.create(config);
 ```
 
+### Using `namedEffect` presets (`registerEffects`)
+
+Before using `namedEffect`, you must register the presets with the `Interact` instance. Without this, `namedEffect` types will not resolve.
+
+```ts
+import { Interact } from '@wix/interact/web'; // or /react
+import * as presets from '@wix/motion-presets';
+
+Interact.registerEffects(presets);
+Interact.create(config);
+```
+
+Or register only what you need:
+
+```ts
+import { FadeIn, ParallaxScroll } from '@wix/motion-presets';
+Interact.registerEffects({ FadeIn, ParallaxScroll });
+```
+
 - Without Node/build tools: add a `<script type="module">` and import from the CDN.
 
 ```html
@@ -363,7 +382,7 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
      - `transitionDelay?`: number
      - `transitionEasing?`: `ScrubTransitionEasing`
      - One of `keyframeEffect | namedEffect | customEffect` (see above)
-     - For mouse-effects driven by the `pointerMove` trigger, do NOT use `keyframeEffect` (pointer progress is two‑dimensional and cannot be mapped to linear keyframes). Use `namedEffect` mouse presets instead, or `customEffect` for custom‑made animations.
+     - For mouse-effects driven by the `pointerMove` trigger, avoid `keyframeEffect` unless using `params: { axis: 'x' | 'y' }` to map a single pointer axis to linear 0–1 progress. For 2D effects, use `namedEffect` mouse presets or `customEffect` instead.
      - For scroll `namedEffect` presets (e.g., `*Scroll`) used with a `viewProgress` trigger, include `range: 'in' | 'out' | 'continuous'` in the `namedEffect` options; prefer `'continuous'` for simplicity.
      - RangeOffset (used by `rangeStart`/`rangeEnd`):
        - Type: `{ name: 'entry' | 'exit' | 'contain' | 'cover' | 'entry-crossing' | 'exit-crossing'; offset: LengthPercentage }`
@@ -396,11 +415,14 @@ The config remains the same for both integrations—only the HTML/JSX setup diff
 
 - **namedEffect (Preferred)**: Use first for best performance. These are pre-built presets from `@wix/motion-presets` that are GPU-friendly and tuned.
   - Structure: `namedEffect: { type: '<PresetName>', /* optional preset options like direction (bottom|top|left|right), etc. do not use those without having proper documentation of which options exist and of what types. */ }`
-  - Short list of common preset names: - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `F
-lipIn`, `ArcIn` - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce` - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll` - For scroll-effects used with the `viewProgress` trigger, the `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`. Prefer `range: 'continuous'` for simplicity. - Mouse: For `pointerMove` (mouse-effects), prefer `namedEffect` presets (e.g., `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`); avoid `keyframeEffect` with `pointerMove` since progress is two‑dimensional. - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse`
+  - Short list of common preset names:
+    - Entrance: `FadeIn`, `BounceIn`, `SlideIn`, `FlipIn`, `ArcIn`
+    - Ongoing: `Pulse`, `Spin`, `Wiggle`, `Bounce`
+    - Scroll: `ParallaxScroll`, `FadeScroll`, `RevealScroll`, `TiltScroll` — for `viewProgress`, `namedEffect` options MUST include `range: 'in' | 'out' | 'continuous'`; prefer `'continuous'`
+    - Mouse: `TrackMouse`, `Tilt3DMouse`, `ScaleMouse`, `BlurMouse` — for `pointerMove`; prefer over `keyframeEffect` for 2D pointer effects
 - **keyframeEffect (Default for custom animations)**: Prefer this when you need a custom-made animation.
   - Structure: `keyframeEffect: { name: string; keyframes: Keyframe[] }` (keyframes use standard CSS/WAAPI properties).
-  - Not compatible with `pointerMove` (mouse-effects) because pointer progress is two‑dimensional; use `customEffect` for custom pointer‑driven animations.
+  - When used with `pointerMove`, requires `params: { axis: 'x' | 'y' }` to select which pointer coordinate maps to linear progress. Without `axis`, pointer progress is two-dimensional and cannot drive keyframe animations. For 2D pointer effects, use `namedEffect` or `customEffect`.
 - **customEffect (Last resort)**: Use only when you must perform DOM manipulation or produce randomized/non-deterministic visuals that cannot be expressed as keyframes or presets.
   - Structure: `customEffect: (element: Element, progress: any) => void`
 

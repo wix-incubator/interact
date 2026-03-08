@@ -10,6 +10,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/interact
 
+### [2.0.3] - 2026-03-03
+
+#### Fixed
+
+- Fix interpolated keys multi-trigger bug (#139)
+
+#### Changed
+
+- Refactor event triggers: more generic eventTriggers, allow adding triggers more easily (#129)
+
+### [2.0.2] - 2026-02-26
+
+#### Fixed
+
+- Move to wix org on GH (#126)
+
+## @wix/interact
+
 ### [2.0.1] - 2026-02-16
 
 #### Fixed

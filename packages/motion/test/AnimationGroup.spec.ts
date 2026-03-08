@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { AnimationGroupOptions, RangeOffset } from '../src/types';
 
-global.CSSAnimation = class CSSAnimation {};
+(globalThis as any).CSSAnimation = class CSSAnimation {};
 
 // Mock Web Animation API
 const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
@@ -650,6 +650,44 @@ describe('AnimationGroup', () => {
       expect(mockAnimation.currentTime).toBe(100);
     });
 
+    test('should account for iterations in currentTime calculation', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 100,
+            duration: 500,
+            iterations: 3,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // time = duration * iterations = 500 * 3 = 1500
+      // currentTime = (100 + 1500) * 0.5 = 800
+      expect(mockAnimation.currentTime).toBe(800);
+    });
+
+    test('should treat Infinity iterations as 1', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 0,
+            duration: 1000,
+            iterations: Infinity,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // Infinity iterations falls back to 1: time = 1000 * 1 = 1000
+      // currentTime = (0 + 1000) * 0.5 = 500
+      expect(mockAnimation.currentTime).toBe(500);
+    });
+
     test('should handle empty animations array', () => {
       const animationGroup = new AnimationGroup([]);
 
@@ -925,6 +963,75 @@ describe('AnimationGroup', () => {
 
         expect(animationGroup.playState).toBe(state);
       });
+    });
+  });
+
+  describe('getTimingOptions()', () => {
+    test('returns delay, duration, and iterations for each animation', () => {
+      const mockAnimation1 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 100, duration: 500, iterations: 2 }),
+        } as any,
+      });
+      const mockAnimation2 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation1, mockAnimation2]);
+
+      expect(group.getTimingOptions()).toEqual([
+        { delay: 100, duration: 500, iterations: 2 },
+        { delay: 0, duration: 1000, iterations: 1 },
+      ]);
+    });
+
+    test('defaults delay to 0 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ duration: 800, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].delay).toBe(0);
+    });
+
+    test('defaults duration to 0 for non-numeric values', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 'auto', iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].duration).toBe(0);
+    });
+
+    test('defaults iterations to 1 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].iterations).toBe(1);
+    });
+
+    test('returns empty array for empty animations', () => {
+      const group = new AnimationGroup([]);
+
+      expect(group.getTimingOptions()).toEqual([]);
     });
   });
 
