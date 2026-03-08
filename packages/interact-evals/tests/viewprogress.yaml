@@ -1,0 +1,104 @@
+- description: 'ViewProgress — background parallax'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewprogress.md
+    prompt: >
+      Create a parallax effect on a hero section background that moves slower
+      than the page scroll using ParallaxScroll named effect.
+    expected_trigger: viewProgress
+    expected:
+      effect_type: namedEffect
+      named_effect: ParallaxScroll
+      range_name: cover
+      has_easing_linear: true
+      cross_target: true
+  assert:
+    - type: javascript
+      value: file://assertions/viewprogress-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'ViewProgress — content fade on entry range'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewprogress.md
+    prompt: >
+      Create a scroll-driven fade effect on a content block that gradually
+      fades in as it enters the viewport. Use the entry range.
+    expected_trigger: viewProgress
+    expected:
+      range_name: entry
+  assert:
+    - type: javascript
+      value: file://assertions/viewprogress-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['FadeScroll', 'opacity']
+      weight: 1
+      metric: effect_choice
+
+- description: 'ViewProgress — custom keyframe scroll (entry + exit)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewprogress.md
+    prompt: >
+      Create a scroll-driven animation that fades in and slides up a card as
+      it enters the viewport, using custom keyframes (translateY and opacity).
+      Use the entry range from 0% to 70%.
+    expected_trigger: viewProgress
+    expected:
+      effect_type: keyframeEffect
+      range_name: entry
+  assert:
+    - type: javascript
+      value: file://assertions/viewprogress-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'translateY'
+      weight: 1
+      metric: completeness
+    - type: contains
+      value: 'opacity'
+      weight: 1
+      metric: completeness
+
+- description: 'ViewProgress — multi-range (entry + exit phases)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewprogress.md
+    prompt: >
+      Create a complex scroll animation for a section: content fades in
+      during entry, and fades out + scales down during exit. Use two separate
+      effects with entry and exit ranges.
+    expected_trigger: viewProgress
+    expected: {}
+  assert:
+    - type: javascript
+      value: file://assertions/viewprogress-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'entry'
+      weight: 1
+      metric: completeness
+    - type: contains
+      value: 'exit'
+      weight: 1
+      metric: completeness
+
+- description: 'ViewProgress — scroll counter with customEffect'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewprogress.md
+    prompt: >
+      Create a scroll-driven counter that updates a percentage display from
+      0% to 100% as you scroll through the stats section. Use a customEffect.
+    expected_trigger: viewProgress
+    expected:
+      effect_type: customEffect
+  assert:
+    - type: javascript
+      value: file://assertions/viewprogress-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'customEffect'
+      weight: 2
+      metric: effect_type

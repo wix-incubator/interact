@@ -1,0 +1,100 @@
+- description: 'ViewEnter — hero fade-in once'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewenter.md
+    prompt: >
+      Make a hero section fade in when it scrolls into view. The animation
+      should play once and never repeat.
+    expected_trigger: viewEnter
+    expected:
+      params_type: once
+      effect_type: namedEffect
+      named_effect: FadeIn
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/viewenter-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'ViewEnter — staggered card grid entrance'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewenter.md
+    prompt: >
+      Create a staggered entrance for a grid of 3 cards. Each card should
+      slide in from the bottom with increasing delays (0ms, 150ms, 300ms)
+      when the section scrolls into view.
+    expected_trigger: viewEnter
+    expected:
+      params_type: once
+      has_duration: true
+      staggered: true
+  assert:
+    - type: javascript
+      value: file://assertions/viewenter-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['SlideIn', 'translateY']
+      weight: 1
+      metric: effect_choice
+
+- description: 'ViewEnter — repeating counter animation'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewenter.md
+    prompt: >
+      Create a counter animation that replays each time the stats section
+      scrolls into view. Use a separate observer element from the animated
+      counter.
+    expected_trigger: viewEnter
+    expected:
+      params_type: repeat
+      cross_target: true
+  assert:
+    - type: javascript
+      value: file://assertions/viewenter-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'ViewEnter — ambient floating loop (state)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewenter.md
+    prompt: >
+      Start a continuously floating animation (translateY up and down) on
+      decorative icons when they enter the viewport. The animation should loop
+      infinitely and pause when the element leaves the viewport.
+    expected_trigger: viewEnter
+    expected:
+      params_type: state
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/viewenter-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['Infinity', 'iterations']
+      weight: 1
+      metric: effect_choice
+
+- description: 'ViewEnter — chained entrance (title then content)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/viewenter.md
+    prompt: >
+      When a section enters the viewport, first fade in the title, then after
+      it finishes, slide in the content paragraph. Use animation chaining.
+    expected_trigger: viewEnter
+    expected:
+      params_type: once
+  assert:
+    - type: javascript
+      value: file://assertions/viewenter-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'animationEnd'
+      weight: 2
+      metric: chaining
+    - type: contains
+      value: 'effectId'
+      weight: 1
+      metric: chaining

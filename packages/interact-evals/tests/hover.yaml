@@ -1,0 +1,101 @@
+- description: 'Hover — card lift with shadow'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/hover.md
+    prompt: >
+      Create a hover effect on a product card: when the mouse enters, the card
+      lifts up (translateY) and gains a deeper box-shadow. Reverse on leave.
+    expected_trigger: hover
+    expected:
+      effect_type: keyframeEffect
+      has_fill_both: true
+      has_duration: true
+      has_transform: true
+  assert:
+    - type: javascript
+      value: file://assertions/hover-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'translateY'
+      weight: 1
+      metric: completeness
+    - type: contains-any
+      value: ['boxShadow', 'box-shadow']
+      weight: 1
+      metric: completeness
+
+- description: 'Hover — button scale'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/hover.md
+    prompt: >
+      Make a button scale up to 1.1x on hover. 300ms ease-out.
+    expected_trigger: hover
+    expected:
+      has_duration: true
+      has_transform: true
+  assert:
+    - type: javascript
+      value: file://assertions/hover-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains
+      value: 'scale'
+      weight: 1
+      metric: completeness
+
+- description: 'Hover — image zoom on hover'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/hover.md
+    prompt: >
+      When hovering over a gallery card, zoom the image inside it to 1.15x
+      scale. The image is a child of the card.
+    expected_trigger: hover
+    expected:
+      has_fill_both: true
+      has_duration: true
+      has_transform: true
+  assert:
+    - type: javascript
+      value: file://assertions/hover-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['scale(1.15)', 'scale(1.1', '1.15']
+      weight: 1
+      metric: completeness
+
+- description: 'Hover — multi-target hover (card + icon)'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/hover.md
+    prompt: >
+      On hovering over a navigation item, simultaneously scale the item's icon
+      and change the background color of the item itself.
+    expected_trigger: hover
+    expected:
+      cross_target: true
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/hover-checks.js
+      weight: 3
+      metric: semantic
+
+- description: 'Hover — color change with named effect'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/hover.md
+    prompt: >
+      Create a hover interaction on a CTA button that changes its background
+      color to blue (#2563eb) and text color to white on hover, reverting on
+      leave.
+    expected_trigger: hover
+    expected:
+      has_duration: true
+  assert:
+    - type: javascript
+      value: file://assertions/hover-checks.js
+      weight: 3
+      metric: semantic
+    - type: contains-any
+      value: ['background-color', 'backgroundColor', '#2563eb']
+      weight: 1
+      metric: completeness

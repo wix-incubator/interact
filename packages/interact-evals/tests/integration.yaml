@@ -1,0 +1,91 @@
+- description: 'Integration — full web setup with HTML + config'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/integration.md
+    prompt: >
+      Generate a complete @wix/interact web setup: import statements, a config
+      with a hover scale effect on a button, and the matching HTML with
+      interact-element wrapping.
+    expected_trigger: hover
+    expected: {}
+  assert:
+    - type: contains-any
+      value: ["@wix/interact/web", "@wix/interact"]
+      weight: 2
+      metric: setup
+    - type: contains
+      value: 'Interact.create'
+      weight: 2
+      metric: setup
+    - type: contains
+      value: 'interact-element'
+      weight: 2
+      metric: html
+    - type: contains
+      value: 'data-interact-key'
+      weight: 2
+      metric: html
+
+- description: 'Integration — reusable effects registry'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/integration.md
+    prompt: >
+      Create an InteractConfig that defines a reusable "scale-up" effect in
+      the effects registry, then references it from two different interactions
+      (a button hover and a card hover) using effectId.
+    expected_trigger: hover
+    expected: {}
+  assert:
+    - type: contains
+      value: 'effects:'
+      weight: 2
+      metric: registry
+    - type: contains
+      value: 'effectId'
+      weight: 2
+      metric: registry
+
+- description: 'Integration — conditions with media queries'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/integration.md
+    prompt: >
+      Create an InteractConfig with a conditions section that includes a
+      desktop-only media query (min-width: 1024px) and a prefers-reduced-motion
+      condition. Apply both conditions to a viewEnter entrance animation.
+    expected_trigger: viewEnter
+    expected: {}
+  assert:
+    - type: contains
+      value: 'conditions'
+      weight: 2
+      metric: conditions
+    - type: contains-any
+      value: ['min-width', 'prefers-reduced-motion']
+      weight: 2
+      metric: conditions
+    - type: contains
+      value: 'viewEnter'
+      weight: 1
+      metric: trigger
+
+- description: 'Integration — React setup with Interaction component'
+  vars:
+    rules: https://raw.githubusercontent.com/wix/interact/master/packages/interact/rules/integration.md
+    prompt: >
+      Generate a React component that uses @wix/interact/react. It should
+      render an Interaction component with a click toggle interaction that
+      slides in a sidebar.
+    expected_trigger: click
+    expected: {}
+  assert:
+    - type: contains-any
+      value: ["@wix/interact/react", "interact/react"]
+      weight: 2
+      metric: setup
+    - type: contains
+      value: 'Interaction'
+      weight: 2
+      metric: component
+    - type: contains
+      value: 'interactKey'
+      weight: 2
+      metric: component

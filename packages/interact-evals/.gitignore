@@ -1,0 +1,9 @@
+.rules-cache/
+
+# Generated eval results (keep only dashboard template and .gitkeep)
+results/cursor-batch-*.md
+results/outputs/
+results/prompts/
+results/manifest.json
+results/scores.json
+results/latest.json

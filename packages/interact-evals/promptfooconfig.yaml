@@ -1,0 +1,71 @@
+# @wix/interact Rules Evaluation Pipeline
+#
+# Two prompts are compared side-by-side:
+#   1. "with-rules"    — SKILL.md + trigger-specific rule file
+#   2. "without-rules" — SKILL.md only (baseline, no detailed rules)
+#
+# Run:  npx promptfoo eval
+# View: npx promptfoo view
+
+description: '@wix/interact rules evaluation'
+
+prompts:
+  - id: with-rules
+    label: 'With Rules'
+    raw: file://prompts/with-rules.json
+  - id: without-rules
+    label: 'Without Rules'
+    raw: file://prompts/without-rules.json
+
+providers:
+  - id: anthropic:messages:claude-sonnet-4-20250514
+    config:
+      max_tokens: 4096
+      temperature: 0
+
+# To compare models, uncomment additional providers:
+# - id: openai:gpt-4o
+#   config:
+#     max_tokens: 4096
+#     temperature: 0
+
+# Default assertions applied to EVERY test case
+defaultTest:
+  vars:
+    skill: file://context/skill.md
+  assert:
+    - type: javascript
+      value: file://assertions/valid-config.js
+      weight: 2
+      metric: structure
+    - type: javascript
+      value: file://assertions/anti-patterns.js
+      weight: 2
+      metric: anti_patterns
+    - type: not-icontains
+      value: "I can't"
+      weight: 1
+      metric: compliance
+    - type: not-icontains
+      value: 'I cannot'
+      weight: 1
+      metric: compliance
+
+# Test cases by trigger type
+tests:
+  - file://tests/click.yaml
+  - file://tests/hover.yaml
+  - file://tests/viewenter.yaml
+  - file://tests/viewprogress.yaml
+  - file://tests/pointermove.yaml
+  - file://tests/integration.yaml
+
+# Aggregate scoring across named metrics
+derivedMetrics:
+  - name: overall_quality
+    value: '(structure + semantic + anti_patterns + compliance) / 4'
+  - name: rules_effectiveness
+    value: '(semantic + effect_choice + completeness) / 3'
+
+# Output results
+outputPath: results/latest.json
