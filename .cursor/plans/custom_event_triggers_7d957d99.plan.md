@@ -118,7 +118,12 @@ export type InteractionParamsTypes = {
   hover: StateTriggerParams | AnimationTriggerParams;
   click: StateTriggerParams | AnimationTriggerParams;
   // ... existing entries ...
-  [key: string]: StateTriggerParams | AnimationTriggerParams | ViewEnterParams | PointerMoveParams | AnimationEndParams;
+  [key: string]:
+    | StateTriggerParams
+    | AnimationTriggerParams
+    | ViewEnterParams
+    | PointerMoveParams
+    | AnimationEndParams;
 };
 ```
 
@@ -133,7 +138,9 @@ Export a `getHandlerForTrigger(trigger)` function that:
 - All dynamic handlers share `eventTrigger.remove` for cleanup
 
 ```typescript
-const KNOWN_HANDLERS = { /* existing map */ };
+const KNOWN_HANDLERS = {
+  /* existing map */
+};
 
 export function getHandlerForTrigger(trigger: string) {
   if (trigger in KNOWN_HANDLERS) {
@@ -143,7 +150,13 @@ export function getHandlerForTrigger(trigger: string) {
   return {
     add: (source, target, effect, options, interactOptions) => {
       // eventConfig is internal-only -- derived from the trigger name, never from user params
-      eventTrigger.add(source, target, effect, { ...options, eventConfig: trigger }, interactOptions ?? {});
+      eventTrigger.add(
+        source,
+        target,
+        effect,
+        { ...options, eventConfig: trigger },
+        interactOptions ?? {},
+      );
     },
     remove: eventTrigger.remove,
   };

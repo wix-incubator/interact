@@ -191,7 +191,10 @@ export type InteractionTrigger = {
   key: string;
   listContainer?: string;
   listItemSelector?: string;
-  trigger: TriggerType | TriggerType[] | { enter?: TriggerType | TriggerType[] ; leave?: TriggerType | TriggerType[] } ;
+  trigger:
+    | TriggerType
+    | TriggerType[]
+    | { enter?: TriggerType | TriggerType[]; leave?: TriggerType | TriggerType[] };
   params?: TriggerParams;
   conditions?: string[];
   selector?: string;
