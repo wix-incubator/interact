@@ -114,4 +114,19 @@ export class AnimationGroup {
   get playState() {
     return this.animations[0]?.playState;
   }
+
+  getTimingOptions() {
+    return this.animations.map((a) => {
+      const timing = a.effect?.getTiming();
+      const delay = timing?.delay ?? 0;
+      const duration = Number(timing?.duration) || 0;
+      const iterations = timing?.iterations ?? 1;
+
+      return {
+        delay,
+        duration,
+        iterations,
+      };
+    });
+  }
 }
