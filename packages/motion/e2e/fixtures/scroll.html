@@ -39,6 +39,29 @@
         font-weight: bold;
       }
 
+      #scrub-scene-target,
+      #native-custom-target {
+        width: 220px;
+        height: 80px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      #scrub-scene-target {
+        background: #f39c12;
+      }
+
+      #native-custom-target {
+        background: #16a085;
+        transform: translateX(var(--native-custom-shift, 0px));
+        opacity: var(--native-custom-progress, 0.35);
+      }
+
       .scrub-card {
         width: 160px;
         height: 100px;
@@ -77,6 +100,8 @@
       <!-- View-progress target: fades + slides in as it enters the viewport -->
       <div class="scroll-section">
         <div id="view-progress-target" data-testid="view-progress-target">View Progress</div>
+        <div id="scrub-scene-target" data-testid="scrub-scene-target">getScrubScene Target</div>
+        <div id="native-custom-target" data-testid="native-custom-target">Native Custom Effect</div>
         <span class="fixture-label" data-testid="progress-display">progress: 0</span>
       </div>
 

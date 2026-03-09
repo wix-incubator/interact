@@ -5,14 +5,20 @@ import { SCROLL_IDS, SCROLL_TEST_IDS } from '../constants/scroll';
 type ScrollFixtureWindow = typeof window & {
   scrubScene: AnimationGroup;
   getScrollProgress: () => number;
+  getScrubSceneMode: () => 'native' | 'polyfill';
+  supportsViewTimeline: boolean;
+  getNativeCustomValues: () => { progress: number; shift: number };
   rangeScene: ScrubScrollScene | null;
   rangeConfig: { startOffset: RangeOffset; endOffset: RangeOffset };
 };
 
 const target = document.getElementById(SCROLL_IDS.viewProgressTarget) as HTMLElement;
+const scrubSceneTarget = document.getElementById(SCROLL_IDS.scrubSceneTarget) as HTMLElement;
+const nativeCustomTarget = document.getElementById(SCROLL_IDS.nativeCustomTarget) as HTMLElement;
 const progressDisplay = document.querySelector(
   `[data-testid="${SCROLL_TEST_IDS.progressDisplay}"]`,
 ) as HTMLElement;
+const supportsViewTimeline = typeof window.ViewTimeline !== 'undefined';
 
 function calculateProgress(el: HTMLElement): number {
   const rect = el.getBoundingClientRect();
@@ -85,20 +91,20 @@ const RANGE_START: RangeOffset = { name: 'entry' };
 const RANGE_END: RangeOffset = { name: 'exit' };
 
 const rangeSceneResult = getScrubScene(
-  target,
+  scrubSceneTarget,
   {
     keyframeEffect: {
       name: 'scroll-range-test',
       keyframes: [
-        { offset: 0, opacity: 0 },
-        { offset: 1, opacity: 1 },
+        { offset: 0, opacity: 0.2, transform: 'translateX(-60px)' },
+        { offset: 1, opacity: 1, transform: 'translateX(0px)' },
       ],
     },
     startOffset: RANGE_START,
     endOffset: RANGE_END,
     fill: 'both',
   },
-  { trigger: 'view-progress', element: target },
+  { trigger: 'view-progress', element: scrubSceneTarget },
 );
 
 // getScrubScene returns ScrubScrollScene[] in the fallback path (no native ViewTimeline)
@@ -106,5 +112,61 @@ const rangeScene = Array.isArray(rangeSceneResult)
   ? (rangeSceneResult[0] as ScrubScrollScene)
   : null;
 
+if (Array.isArray(rangeSceneResult)) {
+  const abortController = new AbortController();
+  const applyPolyfilledScrub = () => {
+    const progress = calculateProgress(scrubSceneTarget);
+    rangeSceneResult.forEach((scene) => scene.effect({}, progress as never));
+  };
+
+  window.addEventListener('scroll', applyPolyfilledScrub, {
+    passive: true,
+    signal: abortController.signal,
+  });
+  applyPolyfilledScrub();
+}
+
+const nativeCustomEffectGroup = getWebAnimation(
+  nativeCustomTarget,
+  {
+    customEffect: (element: Element | null, progress: number | null) => {
+      const htmlElement = element as HTMLElement | null;
+      if (!htmlElement) {
+        return;
+      }
+
+      if (progress === null) {
+        htmlElement.style.removeProperty('--native-custom-progress');
+        htmlElement.style.removeProperty('--native-custom-shift');
+        return;
+      }
+
+      htmlElement.style.setProperty('--native-custom-progress', progress.toFixed(3));
+      htmlElement.style.setProperty('--native-custom-shift', `${(progress * 80).toFixed(1)}px`);
+    },
+    startOffset: RANGE_START,
+    endOffset: RANGE_END,
+    fill: 'both',
+    easing: 'linear',
+  },
+  { trigger: 'view-progress', element: nativeCustomTarget },
+) as AnimationGroup;
+
+(window as ScrollFixtureWindow).supportsViewTimeline = supportsViewTimeline;
+(window as ScrollFixtureWindow).getScrubSceneMode = () =>
+  Array.isArray(rangeSceneResult) ? 'polyfill' : 'native';
+(window as ScrollFixtureWindow).getNativeCustomValues = () => {
+  const style = getComputedStyle(nativeCustomTarget);
+  return {
+    progress: Number.parseFloat(style.getPropertyValue('--native-custom-progress')) || 0,
+    shift: Number.parseFloat(style.getPropertyValue('--native-custom-shift')) || 0,
+  };
+};
 (window as ScrollFixtureWindow).rangeScene = rangeScene;
 (window as ScrollFixtureWindow).rangeConfig = { startOffset: RANGE_START, endOffset: RANGE_END };
+
+nativeCustomEffectGroup.ready.then(() => {
+  if (supportsViewTimeline) {
+    nativeCustomEffectGroup.play();
+  }
+});
