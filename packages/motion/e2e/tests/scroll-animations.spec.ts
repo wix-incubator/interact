@@ -88,12 +88,16 @@ test.describe('Scroll-Driven Animations', () => {
       const sceneMode = await scrollPage.getScrubSceneMode();
       expect(sceneMode).toBe('polyfill');
 
-      const initialState = await scrollPage.getElementVisualState(SCROLL_SELECTORS.scrubSceneTarget);
+      const initialState = await scrollPage.getElementVisualState(
+        SCROLL_SELECTORS.scrubSceneTarget,
+      );
 
       await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.scrubSceneTarget);
       await scrollPage.wait(120);
 
-      const scrolledState = await scrollPage.getElementVisualState(SCROLL_SELECTORS.scrubSceneTarget);
+      const scrolledState = await scrollPage.getElementVisualState(
+        SCROLL_SELECTORS.scrubSceneTarget,
+      );
 
       expect(initialState).not.toBeNull();
       expect(scrolledState).not.toBeNull();
