@@ -1866,7 +1866,9 @@ describe('interact sequences', () => {
 
     test('removeFromSequences calls removeGroups on the correct Sequence', () => {
       const getSequenceMock = vi.mocked(getSequence);
-      const mockSeq = getSequenceMock.mock.results[0]?.value ?? getSequenceMock({ delay: 0, offset: 100 }, [{ target: null, options: {} }]);
+      const mockSeq =
+        getSequenceMock.mock.results[0]?.value ??
+        getSequenceMock({ delay: 0, offset: 100 }, [{ target: null, options: {} }]);
       const removeGroupsSpy = mockSeq.removeGroups;
       if (!removeGroupsSpy) {
         (mockSeq as any).removeGroups = vi.fn().mockReturnValue([]);
@@ -1899,7 +1901,8 @@ describe('interact sequences', () => {
 
       expect(getSequenceMock).toHaveBeenCalled();
 
-      const cachedSequence = getSequenceMock.mock.results[getSequenceMock.mock.results.length - 1].value;
+      const cachedSequence =
+        getSequenceMock.mock.results[getSequenceMock.mock.results.length - 1].value;
 
       removeListItems([items[1]]);
 
@@ -1971,7 +1974,8 @@ describe('interact sequences', () => {
       addElement(element, 'seq-list-key');
       expect(getSequenceMock).toHaveBeenCalled();
 
-      const cachedSequence = getSequenceMock.mock.results[getSequenceMock.mock.results.length - 1].value;
+      const cachedSequence =
+        getSequenceMock.mock.results[getSequenceMock.mock.results.length - 1].value;
 
       removeListItems([items[0], items[2]]);
 

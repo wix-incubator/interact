@@ -302,11 +302,8 @@ export class Interact {
       if (!sequences) continue;
 
       for (const sequence of sequences) {
-        sequence.removeGroups(
-          (group) =>
-            group.animations.some(
-              (a) => (a.effect as KeyframeEffect)?.target === element,
-            ),
+        sequence.removeGroups((group) =>
+          group.animations.some((a) => (a.effect as KeyframeEffect)?.target === element),
         );
       }
 

@@ -4,22 +4,22 @@ overview: Add a `removeGroups` method to the Sequence class and an element-to-Se
 todos:
   - id: tests-motion-removeGroups
     content: Write failing tests for `Sequence.removeGroups()` in `packages/motion/test/Sequence.spec.ts`
-    status: pending
+    status: completed
   - id: tests-interact-removeFromSequence
     content: Write failing tests for `removeListItems` sequence cleanup and elementSequenceMap in `packages/interact/test/sequences.spec.ts`
-    status: pending
+    status: completed
   - id: impl-motion-removeGroups
     content: Implement `Sequence.removeGroups(predicate)` in `packages/motion/src/Sequence.ts`
-    status: pending
+    status: completed
   - id: impl-interact-elementSequenceMap
     content: Add `Interact.elementSequenceMap` WeakMap, populate it in `getSequence`/`addToSequence`, add `removeFromSequences`
-    status: pending
+    status: completed
   - id: impl-interact-wire-removal
     content: Call `Interact.removeFromSequences(elements)` from `removeListItems` and clean map in `clearInteractionStateForKey`
-    status: pending
+    status: completed
   - id: verify-tests-pass
     content: Run all tests to verify new tests pass and no regressions
-    status: pending
+    status: completed
 isProject: false
 ---
 
