@@ -9,13 +9,13 @@ todos:
     content: Create packages/motion/docs/api/get-sequence.md -- getSequence() function reference
     status: pending
   - id: motion-docs-updates
-    content: "Update motion docs: api/README.md index, api/types.md with new types, core-concepts.md with Sequences section"
+    content: 'Update motion docs: api/README.md index, api/types.md with new types, core-concepts.md with Sequences section'
     status: pending
   - id: interact-guide-sequences
     content: Create packages/interact/docs/guides/sequences.md -- comprehensive sequences guide
     status: pending
   - id: interact-docs-updates
-    content: "Update interact docs: api/types.md, api/interact-class.md, guides/README.md, examples/README.md, examples/list-patterns.md"
+    content: 'Update interact docs: api/types.md, api/interact-class.md, guides/README.md, examples/README.md, examples/list-patterns.md'
     status: pending
   - id: demo-sequence-playground
     content: Create SequencePlayground.tsx in both web/ and react/ -- interactive stagger controls
@@ -156,7 +156,6 @@ Add styles for the new sequence demo components (card grids, easing comparison r
 
 ## File Summary
 
-
 | Action | Path                                                          |
 | ------ | ------------------------------------------------------------- |
 | Create | `packages/motion/docs/api/sequence.md`                        |
@@ -181,5 +180,3 @@ Add styles for the new sequence demo components (card grids, easing comparison r
 | Edit   | `apps/demo/src/web/App.tsx`                                   |
 | Edit   | `apps/demo/src/react/App.tsx`                                 |
 | Edit   | `apps/demo/src/styles.css`                                    |
-
-

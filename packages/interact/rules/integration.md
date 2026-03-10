@@ -319,9 +319,7 @@ const config = {
         {
           offset: 100,
           offsetEasing: 'quadIn',
-          effects: [
-            { effectId: 'card-entrance', listContainer: '.card-grid' },
-          ],
+          effects: [{ effectId: 'card-entrance', listContainer: '.card-grid' }],
         },
       ],
     },

@@ -281,7 +281,6 @@ Sequences let you group multiple effects into a single coordinated timeline with
 }
 ```
 
-
 ### Working with elements
 
 #### Web: `<interact-element>` custom element
