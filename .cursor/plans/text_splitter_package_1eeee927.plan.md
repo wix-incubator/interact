@@ -826,18 +826,5 @@ The Range API approach has O(n) character iteration complexity, but:
 
 ### Browser Compatibility
 
-- **Safari whitespace quirk (confirmed still present in Safari 26.2 / WebKit 605.1.15, Feb 2025):** Safari's `Range.getClientRects()` returns rects based on the physical markup structure, not the rendered layout. When a text node contains raw markup whitespace (multiple spaces, newlines that visually collapse), Safari treats each whitespace-separated chunk as a separate "line" rect. Chrome and Firefox correctly return rects based on the visual line breaks regardless of raw whitespace. Whitespace normalization (`textNode.textContent = text.trim().replace(/\s+/g, ' ')`) is required before any `getClientRects()` line detection on Safari. This must be done in the `lineDetection.ts` implementation, not left to consumers. Originally documented by Ben Nadel (blog #4310), confirmed with the test below.
-- `Range.getClientRects()`: Widely supported (all modern browsers)
-- `Range.getBoundingClientRect()`: Not yet standard but widely supported
-- **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback
-
-#### Safari whitespace test results (Feb 2025, test case described in this plan test section)
-
-Tested with a paragraph containing extra markup whitespace (multiple spaces, newlines that visually collapse). Ran `Range.getClientRects()`-based line detection with and without `textNode.textContent = text.trim().replace(/\s+/g, ' ')`:
-
-| Browser     | Without normalization                       | With normalization | Verdict                                      |
-| ----------- | ------------------------------------------- | ------------------ | -------------------------------------------- |
-| Chrome 145  | 2 lines                                     | 2 lines            | Line count matches; normalization not needed |
-| Safari 26.2 | 9 lines (one per whitespace-separated word) | 2 lines            | Line count differs; normalization required   |
-
-Conclusion: whitespace normalization before `getClientRects()` is mandatory for Safari and must be applied unconditionally in `lineDetection.ts` (harmless on other browsers). A Playwright test for this is included in the Phase 4 test section.
+- `Range.getClientRects()` and `Range.getBoundingClientRect()`: Widely supported (all modern browsers).
+- **Safari whitespace quirk (confirmed present in Safari 26.2, Feb 2025):** Safari's `getClientRects()` returns rects based on markup whitespace rather than rendered layout — raw spaces/newlines that visually collapse produce extra rects. Whitespace normalization (`text.trim().replace(/\s+/g, ' ')`) must be applied unconditionally in `lineDetection.ts` before any rect-based detection (harmless on other browsers). Originally documented by Ben Nadel (blog #4310); a Playwright regression test is included in Phase 4.
