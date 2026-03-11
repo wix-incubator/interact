@@ -828,3 +828,4 @@ The Range API approach has O(n) character iteration complexity, but:
 
 - `Range.getClientRects()` and `Range.getBoundingClientRect()`: Widely supported (all modern browsers).
 - **Safari whitespace quirk (confirmed present in Safari 26.2, Feb 2025):** Safari's `getClientRects()` returns rects based on markup whitespace rather than rendered layout — raw spaces/newlines that visually collapse produce extra rects. Whitespace normalization (`text.trim().replace(/\s+/g, ' ')`) must be applied unconditionally in `lineDetection.ts` before any rect-based detection (harmless on other browsers). Originally documented by Ben Nadel (blog #4310); a Playwright regression test is included in Phase 4.
+- **Fallback**: For edge cases, the offsetTop-based measurement can serve as fallback.
