@@ -499,21 +499,27 @@ Same as Rule 2
 
 ```typescript
 {
-    key: 'responsive-element',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.3,    // Good for mobile
-        inset: '-100px'     // Extra space for desktop
+    conditions: {
+        // Condition IDs are user-defined strings matched against these media predicates
+        'desktop-only': { type: 'media', predicate: '(min-width: 768px)' },
     },
-    conditions: ['desktop-only'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-element',
-            namedEffect: {
-                type: 'FadeIn'
+            trigger: 'viewEnter',
+            params: {
+                type: 'once',
+                threshold: 0.3,
+                inset: '-100px'
             },
-            duration: 800
+            conditions: ['desktop-only'],
+            effects: [
+                {
+                    key: 'responsive-element',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 800
+                }
+            ]
         }
     ]
 }
@@ -836,43 +842,42 @@ Animating multiple targets from single viewport trigger:
 
 ### Conditional ViewEnter Animations
 
-Combining with conditions for responsive behavior:
+Use the `conditions` config map to guard interactions by device or motion preference. Condition IDs are user-defined strings — they must be declared in the top-level `conditions` map before being referenced in an interaction.
 
 ```typescript
 {
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.5
+    conditions: {
+        'desktop-only':   { type: 'media', predicate: '(min-width: 768px)' },
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+        'mobile-only':    { type: 'media', predicate: '(max-width: 767px)' },
     },
-    conditions: ['desktop-only', 'prefers-motion'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'ComplexEntrance'
-            },
-            duration: 1000
-        }
-    ]
-},
-// Simplified version for mobile/reduced motion
-{
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.7
-    },
-    conditions: ['mobile-only'],
-    effects: [
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.5 },
+            conditions: ['desktop-only', 'prefers-motion'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'SlideIn' },
+                    duration: 1000
+                }
+            ]
+        },
+        // Simplified fallback for mobile or reduced-motion users
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'FadeIn'
-            },
-            duration: 400
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.7 },
+            conditions: ['mobile-only'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 400
+                }
+            ]
         }
     ]
 }
@@ -882,11 +887,14 @@ Combining with conditions for responsive behavior:
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-When using `viewEnter` for entrance animations, elements may briefly appear in their final state before the animation plays. Use the `generate` function to create critical CSS that prevents this.
+Use `generate(config)` from `@wix/interact/web` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays.
 
-### Using the `generate` Function
+**Constraints:**
 
-**Import and generate CSS:**
+- MUST be called server-side or at build time — not client-side
+- MUST set `data-interact-initial="true"` on the `<interact-element>` whose first child should be hidden
+- Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element
+- Do NOT use for `hover`, `click`, or `viewEnter` with `repeat`/`alternate`/`state` types
 
 ```typescript
 import { generate } from '@wix/interact/web';
@@ -894,56 +902,35 @@ import { generate } from '@wix/interact/web';
 const config: InteractConfig = {
   interactions: [
     {
-      key: 'hero-section',
+      key: 'hero',
       trigger: 'viewEnter',
-      params: { type: 'once', threshold: 0.3 },
-      effects: [
-        {
-          namedEffect: { type: 'FadeIn' },
-          duration: 800,
-          fill: 'backwards',
-        },
-      ],
+      params: { type: 'once', threshold: 0.2 },
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 800 }],
     },
   ],
 };
 
-// Generate CSS at build time or on server
+// Called at build time or on the server
 const css = generate(config);
 
-// Include in your HTML template
+// Inject into <head> before the page renders
 const html = `
-<!DOCTYPE html>
-<html>
 <head>
-    <style>${css}</style>
+  <style>${css}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero" data-interact-initial="true">
-        <section class="hero">
-            <h1>Welcome to Our Site</h1>
-            <p>This content fades in smoothly without flash</p>
-        </section>
-    </interact-element>
-    <script type="module" src="./main.js"></script>
+  <interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">...</section>
+  </interact-element>
 </body>
-</html>
 `;
 ```
-
-### Generated CSS Behavior
-
-The `generate` function produces CSS that:
-
-1. **Hides marked elements** until their entrance animation completes
-2. **Resets transforms** to allow `IntersectionObserver` to trigger entrance using the element's original layout and position
-3. **Respects reduced motion preferences** - users with `prefers-reduced-motion: reduce` see elements immediately
 
 ---
 
 ## Best Practices for ViewEnter Interactions
 
-### Behavior Guildelines
+### Behavior Guidelines
 
 1. **Use `alternate` and `repeat` types only with a separate source `key` and target `key`** to avoid re-triggering when animation starts or not triggering at all if animated target is out of viewport or clipped
 
@@ -953,23 +940,15 @@ The `generate` function produces CSS that:
 2. **Be careful with separate source/target patterns** - ensure source doesn't get clipped
 3. **Use appropriate thresholds** - avoid triggering too early or too late
 
-### User Experience Guidelines
+### Threshold and Timing Guidelines
 
 1. **Use realistic thresholds** (0.1-0.5) for natural timing
-2. **Use tiny thresholds for huge elements** 0.01-0.05 for elements much larger than viewport
+2. **Use tiny thresholds for huge elements** (0.01-0.05) for elements much larger than viewport
 3. **Provide adequate inset margins** for mobile viewports
 4. **Keep entrance animations moderate** (500-1200ms)
 5. **Use staggered delays thoughtfully** (50-200ms intervals)
-6. **Ensure content is readable** during animations
 
-### Accessibility Considerations
-
-1. **Respect `prefers-reduced-motion`** for all entrance animations
-2. **Don't rely solely on animations** to convey important information
-3. **Ensure sufficient contrast** during fade-in effects
-4. **Provide alternative content loading** for users who disable animations
-
-### Threshold and Timing Guidelines
+### Threshold and Timing Reference
 
 **Recommended Thresholds by Content Type**:
 
@@ -977,7 +956,7 @@ The `generate` function produces CSS that:
 - **Content blocks**: 0.3-0.5 (balanced trigger)
 - **Small elements**: 0.5-0.8 (late trigger)
 - **Tall sections**: 0.1-0.2 (early trigger)
-- **HUge sections**: 0.01-0.05 (ensure trigger)
+- **Huge sections**: 0.01-0.05 (ensure trigger)
 
 **Recommended Insets by Device**:
 
@@ -1048,7 +1027,3 @@ The `generate` function produces CSS that:
 - Use hardware-accelerated properties
 - Avoid animating layout properties
 - Consider using `will-change` for complex animations
-
----
-
-These rules provide comprehensive coverage for ViewEnter trigger interactions in `@wix/interact`, supporting all four behavior types and various intersection observer configurations as outlined in the development plan.
