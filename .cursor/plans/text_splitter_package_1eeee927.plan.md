@@ -32,12 +32,6 @@ todos:
     status: pending
     dependencies:
       - types
-  - id: masking
-    content: Implement mask wrapper functionality for reveal animations
-    status: pending
-    dependencies:
-      - core-split
-      - wrapper-spans
   - id: autosplit
     content: Add responsive autoSplit with resize/font-load observers
     status: pending
@@ -54,7 +48,6 @@ todos:
     dependencies:
       - core-split
       - accessibility
-      - masking
       - autosplit
       - react-hook
   - id: docs
@@ -86,7 +79,7 @@ The API will have:
 - **Revertible**: Include a `revert()` method to restore original content
 - **Responsive support**: Optional `autoSplit` mode that re-splits on resize/font-load
 - `Intl.Segmenter` API for locale-sensitive text segmentation to split on meaningful items (graphemes, words or sentences) in a string
-- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes _before_ DOM manipulation, avoiding unnecessary wrapper creation during measurement
+- **Range API for line detection**: Use `Range.getClientRects()` to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement
 
 ## Package Structure
 
@@ -501,8 +494,6 @@ const { chars } = splitText('.title', { type: 'chars' });
 animate(chars, { opacity: [0, 1], stagger: 0.05 });
 ```
 
-See **Lazy Evaluation & Caching Strategy** for lazy vs eager behavior, and **Span Wrapper Creation & Customization** for wrapper class/style/attrs configuration.
-
 ## Key Implementation Details
 
 ### Span Wrapper Creation & Customization
@@ -596,14 +587,15 @@ function resolveWrapperOption<T>(
 
 ### Base CSS Strategy
 
-When `injectStyles` is true (default), the package injects a minimal base stylesheet once per document via a `<style data-splittext>` tag (deduplicated). This ensures transforms and spacing work without requiring users to add CSS manually.
+When `injectStyles` is true (default), the package injects a static, predefined CSS stylesheet once per document (deduplicated), based on the wrapper structure defined in this plan. This ensures transforms and spacing work without requiring users to add CSS manually.
 
-**Injected base CSS:**
+**Required base styles:**
 
-- `.split-c`, `.split-w`: `display: inline-block; white-space: pre;` — enables transforms and preserves space width. Without `white-space: pre`, a space character inside an `inline-block` span collapses to zero width; the base CSS ensures spaces are always preserved without needing a separate option or class.
+- `.split-c`, `.split-w`: `display: inline-block; white-space: pre;` — enables transforms and preserves space width.
 - `.split-l`: `display: block;`
 - `.split-s`: same inline-block treatment as chars/words if needed for animation.
-- `[aria-hidden="true"][data-splittext-wrapper]`: `display: contents;` — the inner aria-hidden wrapper must not introduce a new box in the layout (e.g. inside inline or flex containers).
+- `[aria-hidden="true"][data-splittext-wrapper]`: `display: contents;` — the inner aria-hidden wrapper must not introduce a new box in the layout.
+- `.sr-only`: `position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);` — visually-hidden pattern for the preserved original text (used when `preserveText: true`).
 
 **Documentation note (shaped languages):** Connected scripts (Arabic, Devanagari, etc.) lose shaping when split per-character — each letter loses its positional form (initial/medial/final/isolated). This is a fundamental limitation of character-level text splitting and should be clearly documented. Recommend per-word splitting for these scripts. Font-level shaping (e.g. via HarfBuzz) is out of scope for this library.
 
@@ -694,7 +686,7 @@ Document the plugin API with examples (e.g. using `bidi-js`) in the guides.
 
 The `SplitTextResult` object uses lazy getters with internal caching to avoid unnecessary DOM operations.
 
-`**SplitTextResultImpl`\*\* → `src/splitText.ts`:
+`SplitTextResultImpl` → `src/splitText.ts`:
 
 ```typescript
 class SplitTextResultImpl implements SplitTextResult {
@@ -772,186 +764,25 @@ class SplitTextResultImpl implements SplitTextResult {
 
 ### Line Detection Algorithm
 
-Line detection is lazy like all other split types — it runs on first access of `.lines` (or eagerly if `type` includes `'lines'`). It is inherently expensive because it requires layout-triggering DOM queries (`getClientRects()`). For very long texts, prefer the lazy approach (omit `'lines'` from `type`) so line detection only runs if and when `.lines` is actually accessed, rather than paying the cost upfront. Alternatively, prefer word-level splitting or rely on `autoSplit` rather than frequent re-detection.
+Line detection is lazy like all other split types — it runs on first access of `.lines` (or eagerly if `type` includes `'lines'`). It uses the DOM `Range` API to detect line breaks from text nodes *before* DOM manipulation, avoiding unnecessary wrapper creation during measurement.
 
-Note: the detection functions below return `string[]` (line text content). The core `_performSplit('lines')` method uses these results to create `HTMLSpanElement[]` wrappers via `createWrapper()`, which is what the cache and public getters expose.
+**Primary approach: Range API with `getClientRects()`** → `src/lineDetection.ts`
 
-#### Preferred approach: Binary search for line breakpoints → `src/lineDetection.ts`
+Incrementally expand a `Range` one character at a time through the text node. At each position, `getClientRects()` returns one rect per visual line the range spans — so `getClientRects().length - 1` gives the line index of the last character. Group characters by their line index to extract rendered lines. (Technique from Ben Nadel, blog #4310; tested across Chrome, Firefox, Edge, Safari.)
 
-Avoid calling `getClientRects()` inside a per-character loop. Instead, use a two-phase approach that reduces layout queries from O(n) to O(k × log n) where k is the number of lines:
+Whitespace must be normalized before detection (`textNode.textContent = text.trim().replace(/\s+/g, ' ')`) — Safari returns rects based on markup structure rather than rendered layout when raw whitespace is present (see Browser Compatibility section).
 
-**Phase 1 — Determine line count and Y positions:**
-Create a `Range` spanning the full text node and call `getClientRects()` once. Each returned `DOMRect` corresponds to a visual line. Collect the unique `top` Y values (deduped with a small tolerance for sub-pixel differences) — this gives the total line count and the Y coordinate of each line.
+**Alternative: Height-tracking approach** → `src/lineDetection.ts`
 
-**Phase 2 — Binary search for each line break index:**
-For each consecutive pair of Y positions `(Y_current, Y_next)`, binary-search the character index range to find the exact character where the line wraps. The search predicate: create a `Range` from the start of the current line's first character to the candidate midpoint, call `getClientRects()`, and check whether the last rect's `top` is still `Y_current` or has moved to `Y_next`.
-
-```typescript
-function detectLinesBinarySearch(element: HTMLElement): string[] {
-  const textNode = element.firstChild as Text;
-  const text = textNode.textContent ?? '';
-  if (!text) return [];
-
-  // Phase 1: get all line rects in one layout query
-  const fullRange = document.createRange();
-  fullRange.selectNodeContents(textNode);
-  const allRects = Array.from(fullRange.getClientRects());
-  if (allRects.length <= 1) return [text.trim()];
-
-  // Collect unique Y positions (line tops) with sub-pixel tolerance
-  const lineTops: number[] = [];
-  for (const rect of allRects) {
-    if (lineTops.length === 0 || Math.abs(rect.top - lineTops[lineTops.length - 1]) > 1) {
-      lineTops.push(rect.top);
-    }
-  }
-  if (lineTops.length <= 1) return [text.trim()];
-
-  // Phase 2: binary search for each line break character index
-  const breakIndices: number[] = [0];
-  const probe = document.createRange();
-
-  for (let lineIdx = 1; lineIdx < lineTops.length; lineIdx++) {
-    const targetY = lineTops[lineIdx];
-    let lo = breakIndices[breakIndices.length - 1];
-    let hi = text.length;
-
-    while (lo < hi) {
-      const mid = (lo + hi) >>> 1;
-      probe.setStart(textNode, breakIndices[breakIndices.length - 1]);
-      probe.setEnd(textNode, mid + 1);
-      const rects = probe.getClientRects();
-      const lastRect = rects[rects.length - 1];
-
-      if (lastRect && Math.abs(lastRect.top - targetY) < 1) {
-        // mid is already on the next line — search left
-        hi = mid;
-      } else {
-        // mid is still on the current line — search right
-        lo = mid + 1;
-      }
-    }
-    breakIndices.push(lo);
-  }
-
-  // Extract line strings from break indices
-  const lines: string[] = [];
-  for (let i = 0; i < breakIndices.length; i++) {
-    const start = breakIndices[i];
-    const end = i < breakIndices.length - 1 ? breakIndices[i + 1] : text.length;
-    const line = text.slice(start, end).trim();
-    if (line) lines.push(line);
-  }
-  return lines;
-}
-```
-
-#### Naive approach (for reference/benchmarking; avoid for long text) → `src/lineDetection.ts`
-
-Iterate character-by-character, expanding the range and calling `getClientRects()` each time to see when the rect count increases. This is O(n) layout queries and should be replaced by the binary-search approach above for any non-trivial text length.
-
-```typescript
-function detectLinesNaive(element: HTMLElement): string[] {
-  const textNode = element.firstChild as Text;
-  const text = textNode.textContent ?? '';
-  if (!text) return [];
-
-  const range = document.createRange();
-  range.setStart(textNode, 0);
-  const lines: string[] = [];
-  let lineStart = 0;
-  let prevRectCount = 0;
-
-  for (let i = 1; i <= text.length; i++) {
-    range.setEnd(textNode, i);
-    const rectCount = range.getClientRects().length;
-
-    if (rectCount > prevRectCount && prevRectCount > 0) {
-      // New line detected — extract previous line
-      lines.push(text.slice(lineStart, i - 1).trim());
-      lineStart = i - 1;
-    }
-    prevRectCount = rectCount;
-  }
-
-  // Last line
-  const lastLine = text.slice(lineStart).trim();
-  if (lastLine) lines.push(lastLine);
-  return lines;
-}
-```
-
-#### Alternative: Height-tracking approach (for reference/benchmarking; more efficient than naive, still O(n) queries) → `src/lineDetection.ts`
-
-```typescript
-function detectLinesOptimized(element: HTMLElement): string[] {
-  const textNode = element.firstChild as Text;
-  const range = document.createRange();
-  const heightTracker = document.createRange();
-  const lines: string[] = [];
-  let prevHeight = 0;
-
-  range.selectNodeContents(element);
-  range.collapse(true); // Collapse to start
-  heightTracker.setStart(textNode, 0); // Anchor start at text node beginning
-
-  for (let i = 0; i < textNode.length; i++) {
-    heightTracker.setEnd(textNode, i + 1);
-    const currentHeight = heightTracker.getBoundingClientRect().height;
-
-    if (currentHeight > prevHeight && i > 0) {
-      // Line break detected - extract previous line text
-      range.setEnd(textNode, i);
-      lines.push(range.toString().trim());
-      range.setStart(textNode, i);
-      prevHeight = currentHeight;
-    }
-  }
-
-  // Don't forget the last line
-  range.setEnd(textNode, textNode.length);
-  lines.push(range.toString().trim());
-
-  return lines;
-}
-```
+Instead of tracking rect count, track `getBoundingClientRect().height` on a range anchored at the text node start. When height increases, a new line has been reached. Same O(n) iteration but uses a single bounding rect per step instead of a rect array, which may be cheaper for long text.
 
 **Why Range API over offsetTop measurement:**
 
-1. **No pre-wrapping required** - Detect lines from original text nodes
-2. **Accurate to browser rendering** - Uses actual layout, not approximated positions
-3. **Simpler code path** - Measure first, wrap second
-4. **Works before any DOM mutation** - Original text stays intact during detection
+1. **No pre-wrapping required** — detect lines from original text nodes
+2. **Accurate to browser rendering** — uses actual layout, not approximated positions
+3. **Measure first, wrap second** — original text stays intact during detection
 
-**For nested elements** → `src/lineDetection.ts`: Use `TreeWalker` to iterate child text nodes, applying Range detection to each:
-
-```typescript
-const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-let node: Text | null;
-while ((node = walker.nextNode() as Text)) {
-  // Apply Range-based line detection to each text node
-}
-```
-
-**Re-splitting on resize** → `src/splitText.ts` (`SplitTextResultImpl`): If `autoSplit` is enabled:
-
-1. Track which types have been accessed (are in cache)
-2. On resize/font-load, clear cache and re-split only those types
-3. Call `onSplit` callback with updated result
-
-```typescript
-private _handleResize(): void {
-  const accessedTypes = Object.keys(this._cache) as SplitType[];
-  this._cache = {}; // Clear cache
-
-  // Re-split only previously accessed types
-  for (const type of accessedTypes) {
-    this._performSplit(type);
-  }
-
-  this._options.onSplit?.(this);
-}
-```
+**For nested elements** → `src/lineDetection.ts`: Use `TreeWalker` to iterate child text nodes, applying Range detection to each.
 
 ### Unicode/Emoji Handling & Text Segmentation
 
@@ -991,7 +822,7 @@ The Range API approach has O(n) character iteration complexity, but:
 2. **No layout thrashing** - Detection happens before any DOM mutation
 3. **Efficient for repeated splits** - `autoSplit` re-detection is fast since original structure is preserved
 4. **Consider chunking for very long text** - For 10k+ character blocks, batch processing may help
-5. **Line detection is expensive** - Use the binary-search algorithm (see Line Detection); for long text prefer word-level splitting or `autoSplit` rather than frequent line re-detection
+5. **Line detection is expensive** - Requires O(n) layout queries (see Line Detection); for long text prefer word-level splitting or `autoSplit` rather than frequent line re-detection
 
 ### Browser Compatibility
 
