@@ -168,7 +168,7 @@ Given 5 groups with `offset: 200`:
 | --------- | ------------------------- | ------------------------ |
 | `linear`  | `[0, 200, 400, 600, 800]` | Even spacing             |
 | `quadIn`  | `[0, 50, 200, 450, 800]`  | Slow start, accelerating |
-| `sineOut` | `[0, 312, 566, 756, 800]` | Fast start, decelerating |
+| `sineOut` | `[0, 306, 565, 739, 800]` | Fast start, decelerating |
 
 Single-group sequences always produce `[0]` regardless of offset or easing.
 

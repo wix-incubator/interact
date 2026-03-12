@@ -386,8 +386,8 @@ offset[i] = easing(i / last) * last * offsetMs
 Where `i` is the group index, `last` is the final group's index, and `offsetMs` is the configured stagger interval. This produces:
 
 - **Linear** — even spacing (0, 200, 400, 600, 800)
-- **quadIn** — fast start then gradual (0, 50, 200, 450, 800)
-- **sineOut** — slow start then rapid (0, 312, 566, 756, 800)
+- **quadIn** — slow start then rapid (0, 50, 200, 450, 800)
+- **sineOut** — fast start then gradual (0, 306, 565, 739, 800)
 
 ```typescript
 import { getSequence } from '@wix/motion';

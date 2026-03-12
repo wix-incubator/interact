@@ -62,6 +62,8 @@ export class Sequence extends AnimationGroup {
   }
 
   private applyOffsets(): void {
+    if (this.animationGroups.length === 0 || this.animations.length === 0) return;
+
     const offsets = this.calculateOffsets();
     const sequenceDuration = this.getSequenceActiveDuration(offsets);
 
