@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/interact
 
+### [2.1.1] - 2026-03-12
+
+#### Fixed
+
+- Fix leave event listeners are not added when using transition effects with `hover` or `interest` triggers without explicit `params: { method: 'toggle' }`
+
 ### [2.1.0] - 2026-03-12
 
 #### Added
