@@ -47,8 +47,6 @@ flowchart LR
     EventTrigger --> Presets["EVENT_TRIGGER_PRESETS\nhover/click/activate/interest"]
 ```
 
-
-
 The key insight: `hover`, `click`, `activate`, and `interest` are all thin wrappers around `eventTrigger.ts`. They just inject a preset event config (e.g., hover -> `{ enter: ['mouseenter'], leave: ['mouseleave'] }`). For custom triggers, we do the same -- the trigger name itself becomes the event config.
 
 **After the change**, unknown trigger names will be automatically routed through `eventTrigger` using the trigger name as the DOM event:
@@ -61,8 +59,6 @@ flowchart LR
     GetHandler -->|unknown| DynHandler["Dynamic handler\neventConfig = trigger name"]
     DynHandler --> EventTrigger["eventTrigger.add()"]
 ```
-
-
 
 ## Part 0: Rename `StateParams` and `PointerTriggerParams`
 
@@ -171,7 +167,7 @@ export default KNOWN_HANDLERS;
 
 - Import `getHandlerForTrigger` from `../handlers`
 - In `addInteraction()` (line 715), replace:
-`TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(...)` with `getHandlerForTrigger(trigger).add(...)`
+  `TRIGGER_TO_HANDLER_MODULE_MAP[trigger]?.add(...)` with `getHandlerForTrigger(trigger).add(...)`
 - In `_processSequences()` (line 446) and `_processSequencesForTarget()` (line 536), apply the same replacement for the sequence handler dispatch
 
 ## Part 4: Core `remove.ts` -- No Changes Needed
@@ -235,4 +231,3 @@ Add a succinct rule file for custom event triggers:
 
 - Update `TriggerType` documentation to reflect it now accepts any string
 - Note that custom triggers accept `StateTriggerParams | AnimationTriggerParams` (same as click/hover)
-
