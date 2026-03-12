@@ -280,6 +280,9 @@ export class Interact {
     sequence: Sequence,
   ): void {
     for (const { target } of animationGroupArgs) {
+      // String selector targets are resolved to HTMLElements before reaching here
+      // (see _buildAnimationGroupArgsFromSequence in add.ts), so only HTMLElement
+      // and HTMLElement[] need handling.
       const elements = Array.isArray(target)
         ? target
         : target instanceof HTMLElement
@@ -302,6 +305,9 @@ export class Interact {
       if (!sequences) continue;
 
       for (const sequence of sequences) {
+        // Optional chaining on `.effect` handles cases where animations were
+        // already cancelled (e.g. by a prior removeGroups call in this loop),
+        // which may null out the effect reference.
         sequence.removeGroups((group) =>
           group.animations.some((a) => (a.effect as KeyframeEffect)?.target === element),
         );

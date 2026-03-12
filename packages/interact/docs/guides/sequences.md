@@ -16,7 +16,7 @@ For example, with 5 effects and `offset: 200`:
 | --------- | --------------------- | ------------------------ |
 | `linear`  | 0, 200, 400, 600, 800 | Even spacing             |
 | `quadIn`  | 0, 50, 200, 450, 800  | Slow start, then rapid   |
-| `sineOut` | 0, 312, 566, 756, 800 | Fast start, then gradual |
+| `sineOut` | 0, 306, 565, 739, 800 | Fast start, then gradual |
 
 ## Config Structure
 

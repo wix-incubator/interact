@@ -794,6 +794,28 @@ describe('Sequence', () => {
       expect(sequence.animations).toEqual([]);
     });
 
+    test('addGroups after removing all groups works correctly', () => {
+      const g1 = createStatefulGroup();
+      const g2 = createStatefulGroup();
+      const sequence = new Sequence([g1, g2], { offset: 100, offsetEasing: 'linear' });
+
+      sequence.removeGroups(() => true);
+      expect(sequence.animationGroups).toEqual([]);
+
+      const gNew1 = createStatefulGroup();
+      const gNew2 = createStatefulGroup();
+      sequence.addGroups([
+        { index: 0, group: gNew1 },
+        { index: 1, group: gNew2 },
+      ]);
+
+      expect(sequence.animationGroups).toEqual([gNew1, gNew2]);
+      const delays = sequence.animationGroups.map(
+        (g) => g.animations[0]?.effect?.getTiming().delay as number,
+      );
+      expect(delays).toEqual([0, 100]);
+    });
+
     test('handles removing from single-group sequence', () => {
       const g1 = createGroup();
       const sequence = new Sequence([g1], { offset: 200 });
