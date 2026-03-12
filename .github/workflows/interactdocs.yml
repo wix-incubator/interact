@@ -16,11 +16,10 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -80,6 +79,8 @@ jobs:
           path: _site
 
   deploy:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
