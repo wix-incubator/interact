@@ -15,7 +15,7 @@ To avoid this, use a **separate source and target**:
 
 ## Rule 1: keyframeEffect / namedEffect with PointerTriggerParams
 
-Use `keyframeEffect` or `namedEffect` when the hover should play a an animation (CSS or WAAPI). Pair with `PointerTriggerParams` to control playback behavior.
+Use `keyframeEffect` or `namedEffect` when the hover should play an animation (CSS or WAAPI). Pair with `PointerTriggerParams` to control playback behavior.
 
 Always include `fill: 'forwards'` or `fill: 'both'` so the effect remains applied while hovering.
 
@@ -61,7 +61,7 @@ Always include `fill: 'forwards'` or `fill: 'both'` so the effect remains applie
 - `[KEYFRAMES]` - WAAPI-style keyframes format as array of keyframe objects or object of properties to arrays of values.
 - `[EFFECT_NAME]` — arbitrary string identifier for a `keyframeEffect`.
 - `[NAMED_EFFECT_TYPE]` — pre-built effect from `@wix/motion-presets` (e.g. `'FadeIn'`, `'SlideIn'`, `'Pulse'`, `'Breathe'`).
-- `[FILL_MODE]` — usually `'both'`. Keeps the final state applied while hovering, and prevents GC of animation when finished.
+- `[FILL_MODE]` — usually `'both'`. Keeps the final state applied while hovering, and prevents garbage-collection of animation when finished.
 - `[DURATION_MS]` — animation duration in milliseconds. Typical hover range: 150–400.
 - `[EASING_FUNCTION]` — CSS easing string (e.g. `'ease-out'`, `'ease-in-out'`, `'cubic-bezier(0.4, 0, 0.2, 1)'`), or named easing from `@wix/motion`.
 - `[DELAY_MS]` — optional delay before the effect starts, in milliseconds.

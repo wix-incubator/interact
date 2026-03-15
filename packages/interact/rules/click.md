@@ -31,7 +31,7 @@ Always include `fill: 'both'` so the effect remains applied while finished and i
             // OR
             namedEffect: { type: '[NAMED_EFFECT_TYPE]' },
 
-            fill: 'both',
+            fill: '[FILL_MODE]',
             reversed: [INITIAL_REVERSED_BOOL],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]',
@@ -57,6 +57,7 @@ Always include `fill: 'both'` so the effect remains applied while finished and i
 - `[EFFECT_NAME]` — arbitrary string identifier for a `keyframeEffect`.
 - `[NAMED_EFFECT_TYPE]` — pre-built effect from `@wix/motion-presets` (e.g. `'FadeIn'`, `'SlideIn'`, `'Pulse'`, `'Breathe'`).
 - `[INITIAL_REVERSED_BOOL]` — optional. `true` to start in the "played" state so the first click reverses the animation.
+- `[FILL_MODE]` — usually `'both'`. Keeps the final state applied while hovering, and prevents garbage-collection of animation when finished.
 - `[DURATION_MS]` — animation duration in milliseconds. Typical click range: 100–500.
 - `[EASING_FUNCTION]` — CSS easing string (e.g. `'ease-out'`, `'ease-in-out'`, `'cubic-bezier(0.4, 0, 0.2, 1)'`), or named easing from `@wix/motion`.
 - `[DELAY_MS]` — optional delay before the effect starts, in milliseconds.
