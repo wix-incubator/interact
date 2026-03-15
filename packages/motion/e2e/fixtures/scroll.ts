@@ -4,6 +4,7 @@ import { SCROLL_IDS, SCROLL_TEST_IDS } from '../constants/scroll';
 
 type ScrollFixtureWindow = typeof window & {
   scrubScene: AnimationGroup;
+  destroyScrubScene: () => void;
   getScrollProgress: () => number;
   getScrubSceneMode: () => 'native' | 'polyfill';
   supportsViewTimeline: boolean;
@@ -39,8 +40,13 @@ const animationGroup = getWebAnimation(target, {
   easing: 'linear',
 }) as AnimationGroup;
 
+let scrubSceneDestroyed = false;
+
 animationGroup.ready.then(() => {
+  if (scrubSceneDestroyed) return;
+
   function onScroll() {
+    if (scrubSceneDestroyed) return;
     const p = calculateProgress(target);
     animationGroup.progress(p);
     if (progressDisplay) {
@@ -81,6 +87,10 @@ cards.forEach((id, i) => {
 });
 
 (window as ScrollFixtureWindow).scrubScene = animationGroup;
+(window as ScrollFixtureWindow).destroyScrubScene = () => {
+  scrubSceneDestroyed = true;
+  animationGroup.cancel();
+};
 (window as ScrollFixtureWindow).getScrollProgress = () => calculateProgress(target);
 
 // ---------------------------------------------------------------------------
@@ -154,7 +164,7 @@ const nativeCustomEffectGroup = getWebAnimation(
 
 (window as ScrollFixtureWindow).supportsViewTimeline = supportsViewTimeline;
 (window as ScrollFixtureWindow).getScrubSceneMode = () =>
-  Array.isArray(rangeSceneResult) ? 'polyfill' : 'native';
+  rangeScene && !supportsViewTimeline ? 'polyfill' : 'native';
 (window as ScrollFixtureWindow).getNativeCustomValues = () => {
   const style = getComputedStyle(nativeCustomTarget);
   return {

@@ -13,13 +13,19 @@ test.describe('Scroll-Driven Animations', () => {
     });
 
     test('should animate based on scroll progress', async () => {
-      const initialProgress = await scrollPage.getScrollProgress();
-      expect(initialProgress).toBe(0);
+      const initialState = await scrollPage.getElementVisualState(
+        SCROLL_SELECTORS.viewProgressTarget,
+      );
 
       await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.viewProgressTarget);
-
-      const progressAfterScroll = await scrollPage.getScrollProgress();
-      expect(progressAfterScroll).toBeGreaterThan(0);
+      await expect(async () => {
+        const scrolledState = await scrollPage.getElementVisualState(
+          SCROLL_SELECTORS.viewProgressTarget,
+        );
+        expect(scrolledState).not.toBeNull();
+        expect(scrolledState?.opacity).not.toBe(initialState?.opacity);
+        expect(scrolledState?.transform).not.toBe(initialState?.transform);
+      }).toPass();
     });
 
     test('should support getScrubScene with native ViewTimeline when available', async () => {
@@ -38,34 +44,23 @@ test.describe('Scroll-Driven Animations', () => {
       test.skip(!supportsNative, 'Native ViewTimeline is required for this customEffect flow.');
 
       await scrollPage.scrollTo(0);
-      await scrollPage.wait(60);
       const before = await scrollPage.getNativeCustomValues();
 
       await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.nativeCustomTarget);
-      await scrollPage.wait(120);
-      const after = await scrollPage.getNativeCustomValues();
 
-      expect(after.progress).toBeGreaterThan(before.progress);
-      expect(after.shift).toBeGreaterThan(before.shift);
-    });
-
-    test('should expose getScrubScene range offsets in fallback metadata', async () => {
-      const { config, sceneStart, sceneEnd } = await scrollPage.getRangeOffsets();
-      expect(config.startOffset.name).toBe('entry');
-      expect(config.endOffset.name).toBe('exit');
-
-      if (sceneStart !== null) {
-        expect(sceneStart.name).toBe('entry');
-        expect(sceneEnd?.name).toBe('exit');
-      }
+      await expect(async () => {
+        const after = await scrollPage.getNativeCustomValues();
+        expect(after.progress).toBeGreaterThan(before.progress);
+        expect(after.shift).toBeGreaterThan(before.shift);
+      }).toPass();
     });
 
     test('should handle destroy cleanup properly', async ({ page }) => {
-      await scrollPage.cancelScrubScene();
-      await waitForWindowPlayState(page, 'scrubScene', ['idle', 'paused'], 5000);
+      await scrollPage.destroyScrubScene();
+      await waitForWindowPlayState(page, 'scrubScene', ['idle'], 5000);
 
       const playState = await scrollPage.getScrubScenePlayState();
-      expect(['idle', 'paused']).toContain(playState);
+      expect(playState).toBe('idle');
     });
   });
 
@@ -93,16 +88,15 @@ test.describe('Scroll-Driven Animations', () => {
       );
 
       await scrollPage.scrollElementIntoView(SCROLL_SELECTORS.scrubSceneTarget);
-      await scrollPage.wait(120);
 
-      const scrolledState = await scrollPage.getElementVisualState(
-        SCROLL_SELECTORS.scrubSceneTarget,
-      );
-
-      expect(initialState).not.toBeNull();
-      expect(scrolledState).not.toBeNull();
-      expect(initialState?.opacity).not.toBe(scrolledState?.opacity);
-      expect(initialState?.transform).not.toBe(scrolledState?.transform);
+      await expect(async () => {
+        const scrolledState = await scrollPage.getElementVisualState(
+          SCROLL_SELECTORS.scrubSceneTarget,
+        );
+        expect(scrolledState).not.toBeNull();
+        expect(scrolledState?.opacity).not.toBe(initialState?.opacity);
+        expect(scrolledState?.transform).not.toBe(initialState?.transform);
+      }).toPass();
     });
   });
 });

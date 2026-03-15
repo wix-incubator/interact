@@ -11,6 +11,7 @@ type RangeOffset = { name?: string; offset?: number };
 
 type FixtureWindow = {
   scrubScene: { cancel(): void; playState: string };
+  destroyScrubScene(): void;
   rangeScene: { start?: RangeOffset; end?: RangeOffset } | null;
   rangeConfig: { startOffset: RangeOffset; endOffset: RangeOffset };
   supportsViewTimeline: boolean;
@@ -44,8 +45,8 @@ export class ScrollPage extends BaseFixturePage {
     return getScrollY(this.page);
   }
 
-  cancelScrubScene() {
-    return this.page.evaluate(() => (window as unknown as FixtureWindow).scrubScene.cancel());
+  destroyScrubScene() {
+    return this.page.evaluate(() => (window as unknown as FixtureWindow).destroyScrubScene());
   }
 
   getScrubScenePlayState() {
