@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/interact
 
+### [2.1.2] - 2026-03-15
+
+#### Changed
+
+- Add `build:landing` script and improve `viewEnter` example (#158)
+- Bump `@wix/motion` dependency to `^2.1.0`
+
 ### [2.1.1] - 2026-03-12
 
 #### Fixed
@@ -67,6 +74,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## @wix/motion
+
+### [2.1.1] - 2026-03-15
+
+#### Fixed
+
+- Fix `Sequence.applyOffsets()` crash when called with empty animation groups (#152)
 
 ### [2.1.0] - 2026-03-12
 
