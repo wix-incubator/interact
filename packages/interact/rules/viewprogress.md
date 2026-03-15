@@ -26,9 +26,11 @@ From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeSc
     effects: [
         {
             key: '[TARGET_KEY]',
-            // Use exactly one of namedEffect or keyframeEffect:
-            namedEffect: { type: '[NAMED_EFFECT]' },  // OR
+            // --- pick ONE of the two effect types ---
+            namedEffect: { type: '[NAMED_EFFECT]' },
+            // OR
             keyframeEffect: { name: '[EFFECT_NAME]', keyframes: [EFFECT_KEYFRAMES] },
+
             rangeStart: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
             rangeEnd: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             easing: '[EASING_FUNCTION]',
@@ -68,7 +70,7 @@ From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeSc
     effects: [
         {
             key: '[TARGET_KEY]',
-            customEffect: (element, progress) => {
+            customEffect: (element: Element, progress: number) => {
                 // progress is 0–1 within the specified range
                 [CUSTOM_LOGIC]
             },
