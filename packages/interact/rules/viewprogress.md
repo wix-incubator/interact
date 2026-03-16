@@ -93,7 +93,6 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 **Use Case**: Scroll-driven animations inside a sticky-positioned container, where the source element is a tall wrapper and the effect applies during the "stuck" phase using `position: sticky` to lock a container and `contain` range to animate only during the stuck phase. Good for heavy effects on large media elements or scrolly-telling effects
 
-
 **Layout Structure**:
 
 - **Tall wrapper** (`[SOURCE_KEY]`): An element with enough height to create scroll distance (e.g., `height: 300vh`). This is the ViewTimeline source.
