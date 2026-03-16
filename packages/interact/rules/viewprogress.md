@@ -6,10 +6,6 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 **Offset semantics:** Values can be as a `string` representing CSS value, or `number` representing percentages. Positive offset values move the effective range forward along the scroll axis. 0 = start of range, 100 = end.
 
-## Named Scroll Effects
-
-From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeScroll, RevealScroll, GrowScroll, SlideScroll, SpinScroll, PanScroll, BlurScroll, ArcScroll, FlipScroll, Spin3dScroll, TiltScroll, TurnScroll, ShapeScroll, ShuttersScroll, ShrinkScroll, SkewPanScroll, StretchScroll.
-
 ---
 
 ## Rule 1: ViewProgress with keyframeEffect or namedEffect
@@ -27,7 +23,7 @@ From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeSc
         {
             key: '[TARGET_KEY]',
             // --- pick ONE of the two effect types ---
-            namedEffect: { type: '[NAMED_EFFECT]' },
+            namedEffect: [NAMED_EFFECT_DEFINITION],
             // OR
             keyframeEffect: { name: '[EFFECT_NAME]', keyframes: [EFFECT_KEYFRAMES] },
 
@@ -45,7 +41,7 @@ From `@wix/motion-presets` scroll animations: ParallaxScroll, MoveScroll, FadeSc
 
 - `[SOURCE_KEY]`: Unique identifier for element that triggers when scrolled through viewport
 - `[TARGET_KEY]`: Unique identifier for element to animate (can be same as source or different)
-- `[NAMED_EFFECT]`: Preset name from Named Scroll Effects list above
+- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`.
 - `[EFFECT_NAME]`: Unique name for custom keyframe effect
 - `[EFFECT_KEYFRAMES]`: Array of keyframe objects defining CSS property transitions
 - `[RANGE_NAME]`: Scroll range name — `'cover'` for full visibility span, `'entry'`/`'exit'` for partial phases, `'contain'` while contained in viewport - typically while in a stuck `position: stikcy` container

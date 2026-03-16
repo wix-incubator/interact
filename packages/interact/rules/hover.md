@@ -36,7 +36,7 @@ Always include `fill: 'forwards'` or `fill: 'both'` so the effect remains applie
                 keyframes: [KEYFRAMES],
             },
             // OR
-            namedEffect: { type: '[NAMED_EFFECT_TYPE]' },
+            namedEffect: [NAMED_EFFECT_DEFINITINO],
 
             fill: '[FILL_MODE]',
             duration: [DURATION_MS],
@@ -60,7 +60,7 @@ Always include `fill: 'forwards'` or `fill: 'both'` so the effect remains applie
   - `'state'` — pauses/resumes the animation on enter/leave. Useful for continuous loops (`iterations: Infinity`).
 - `[KEYFRAMES]` - WAAPI-style keyframes format as array of keyframe objects or object of properties to arrays of values.
 - `[EFFECT_NAME]` — arbitrary string identifier for a `keyframeEffect`.
-- `[NAMED_EFFECT_TYPE]` — pre-built effect from `@wix/motion-presets` (e.g. `'FadeIn'`, `'SlideIn'`, `'Pulse'`, `'Breathe'`).
+- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`.
 - `[FILL_MODE]` — usually `'both'`. Keeps the final state applied while hovering, and prevents garbage-collection of animation when finished.
 - `[DURATION_MS]` — animation duration in milliseconds. Typical hover range: 150–400.
 - `[EASING_FUNCTION]` — CSS easing string (e.g. `'ease-out'`, `'ease-in-out'`, `'cubic-bezier(0.4, 0, 0.2, 1)'`), or named easing from `@wix/motion`.
@@ -127,7 +127,39 @@ Use `transition` when all properties share timing. Use `transitionProperties` wh
 
 ---
 
-## Rule 3: Sequences
+## Rule 3: customEffect with PointerTriggerParams
+
+Use `customEffect` when you need imperative control over the animation (e.g. counters, canvas drawing, custom DOM manipulation). The callback receives the element and a `progress` value (0–1) driven by the animation timeline.
+
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'hover',
+    params: {
+        type: '[POINTER_TYPE]'
+    },
+    effects: [
+        {
+            key: '[TARGET_KEY]',
+            customEffect: [CUSTOM_EFFECT_CALLBACK],
+            duration: [DURATION_MS],
+            easing: '[EASING_FUNCTION]'
+        }
+    ]
+}
+```
+
+### Variables
+
+- `[SOURCE_KEY]` / `[TARGET_KEY]` — same as Rule 1.
+- `[POINTER_TYPE]` — same as Rule 1.
+- `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with `progress` from 0 to 1.
+- `[DURATION_MS]` — animation duration in milliseconds.
+- `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
+
+---
+
+## Rule 4: Sequences
 
 Use sequences when a hover should sync/stagger animations across multiple elements.
 
