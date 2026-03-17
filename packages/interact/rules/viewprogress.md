@@ -6,6 +6,12 @@ These rules help generate scroll-driven interactions using the `@wix/interact` l
 
 **Offset semantics:** Values can be as a `string` representing CSS value, or `number` representing percentages. Positive offset values move the effective range forward along the scroll axis. 0 = start of range, 100 = end.
 
+## Table of Contents
+
+- [Rule 1: ViewProgress with keyframeEffect or namedEffect](#rule-1-viewprogress-with-keyframeeffect-or-namedeffect)
+- [Rule 2: ViewProgress with customEffect](#rule-2-viewprogress-with-customeffect)
+- [Rule 3: ViewProgress with Tall Wrapper + Sticky Container (contain range)](#rule-3-viewprogress-with-tall-wrapper--sticky-container-contain-range)
+
 ---
 
 ## Rule 1: ViewProgress with keyframeEffect or namedEffect

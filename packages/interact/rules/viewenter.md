@@ -6,6 +6,13 @@ This document contains rules for generating viewport-based interactions using th
 
 > **Important:** When the source (trigger) and target (effect) elements are the **same element** use ONLY `type: 'once'`. For all other types (`'repeat'`, `'alternate'`, `'state'`), MUST use **separate** source and target elements — animating the observed element itself can cause it to leave/re-enter the viewport, leading to rapid re-triggers or the animation never firing.
 
+## Table of Contents
+
+- [Preventing Flash of Unstyled Content (FOUC)](#preventing-flash-of-unstyled-content-fouc)
+- [Rule 1: keyframeEffect / namedEffect with ViewEnterParams](#rule-1-keyframeeffect--namedeffect-with-viewenterparams)
+- [Rule 2: customEffect with ViewEnterParams](#rule-2-customeffect-with-viewenterparams)
+- [Rule 3: Sequences with ViewEnterParams](#rule-3-sequences-with-viewenterparams)
+
 ---
 
 ## Preventing Flash of Unstyled Content (FOUC)

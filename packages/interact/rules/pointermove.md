@@ -2,6 +2,18 @@
 
 These rules help generate pointer-driven interactions using the `@wix/interact` library. PointerMove triggers create real-time animations that respond to pointer movement over elements or the entire viewport.
 
+## Table of Contents
+
+- [Trigger Source Elements with `hitArea: 'self'`](#trigger-source-elements-with-hitarea-self)
+- [PointerMoveParams](#pointermoveparams)
+- [Progress Object Structure](#progress-object-structure)
+- [Centering with `centeredToTarget`](#centering-with-centeredtotarget)
+- [Device Conditions](#device-conditions)
+- [Rule 1: namedEffect](#rule-1-namedeffect)
+- [Rule 2: keyframeEffect with Single Axis](#rule-2-keyframeeffect-with-single-axis)
+- [Rule 3: Two keyframeEffects with Two Axes and `composite`](#rule-3-two-keyframeeffects-with-two-axes-and-composite)
+- [Rule 4: customEffect](#rule-4-customeffect)
+
 ## Trigger Source Elements with `hitArea: 'self'`
 
 When using `hitArea: 'self'`, the source element is the hit area for pointer tracking:

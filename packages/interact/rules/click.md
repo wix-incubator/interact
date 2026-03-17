@@ -4,6 +4,13 @@ This document contains rules for generating click-triggered interactions in `@wi
 
 **Accessible click**: Use `trigger: 'activate'` instead of `trigger: 'click'` to also respond to keyboard activation (Enter / Space).
 
+## Table of Contents
+
+- [Rule 1: keyframeEffect / namedEffect with PointerTriggerParams](#rule-1-keyframeeffect--namedeffect-with-pointertriggerparams)
+- [Rule 2: transition / transitionProperties with StateParams](#rule-2-transition--transitionproperties-with-stateparams)
+- [Rule 3: customEffect with PointerTriggerParams](#rule-3-customeffect-with-pointertriggerparams)
+- [Rule 4: Sequences](#rule-4-sequences)
+
 ---
 
 ## Rule 1: keyframeEffect / namedEffect with PointerTriggerParams
