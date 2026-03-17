@@ -593,4 +593,78 @@ describe('viewEnter handler', () => {
       expect(observeSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('CSS animation abort handling', () => {
+    it('should set interactEnter to done when CSS animation is aborted', async () => {
+      let rejectFinished: (error: DOMException) => void;
+      const finishedPromise = new Promise((_resolve, reject) => {
+        rejectFinished = reject;
+      });
+
+      const cssAnimation = {
+        play: vi.fn(),
+        ready: Promise.resolve(),
+        finished: finishedPromise,
+        cancel: vi.fn(() => {
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
+        }),
+      };
+
+      const mockAnimationGroup = {
+        animations: [cssAnimation],
+        isCSS: true,
+        ready: Promise.resolve(),
+        async play(callback?: () => void) {
+          for (const a of this.animations) {
+            a.play();
+          }
+          await Promise.all(this.animations.map((a: any) => a.ready));
+          callback?.();
+        },
+        async onFinish(callback: () => void) {
+          try {
+            await Promise.all(this.animations.map((a: any) => a.finished));
+            callback();
+          } catch (_error) { /* empty */ }
+        },
+        async onAbort(callback: () => void) {
+          try {
+            await Promise.all(this.animations.map((a: any) => a.finished));
+          } catch (error: any) {
+            if (error.name === 'AbortError') {
+              callback();
+            }
+          }
+        },
+        cancel: vi.fn(),
+        pause: vi.fn(),
+        reverse: vi.fn(),
+        progress: vi.fn(),
+        persist: vi.fn(),
+        playState: 'idle',
+      };
+
+      viewEnterHandler.add(
+        element,
+        target,
+        { duration: 1000, namedEffect: { type: 'FadeIn' } },
+        { type: 'once' },
+        { animation: mockAnimationGroup as any },
+      );
+
+      const entry = createEntry({ isIntersecting: true });
+      getMainObserverCallback()([entry]);
+
+      // Wait for play's async callback to be invoked
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      // Cancel the CSSAnimation directly, simulating the browser aborting the animation
+      cssAnimation.cancel();
+
+      // Wait for onAbort to process the AbortError and set interactEnter
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(target.dataset.interactEnter).toBe('done');
+    });
+  });
 });
