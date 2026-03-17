@@ -58,7 +58,7 @@ import { Interaction } from '@wix/interact/react';
 
 <Interaction tagName="div" interactKey="hero" className="hero">
   ...
-</Interaction>
+</Interaction>;
 ```
 
 **Rules:**
@@ -72,7 +72,7 @@ Alternatively, use `createInteractRef` to attach interactions to an existing ele
 import { createInteractRef } from '@wix/interact/react';
 
 const ref = createInteractRef('hero');
-<div ref={ref}>...</div>
+<div ref={ref}>...</div>;
 ```
 
 ### Vanilla JS
@@ -104,12 +104,12 @@ type InteractConfig = {
 };
 ```
 
-| Field | Description |
-|:------|:------------|
+| Field          | Description                                                             |
+| :------------- | :---------------------------------------------------------------------- |
 | `interactions` | Required. Array of interaction definitions binding triggers to effects. |
-| `effects` | Required. Reusable named effects, referenced by `effectId`. |
-| `sequences` | Optional. Reusable sequence definitions, referenced by `sequenceId`. |
-| `conditions` | Optional. Named conditions (media/container queries), referenced by ID. |
+| `effects`      | Required. Reusable named effects, referenced by `effectId`.             |
+| `sequences`    | Optional. Reusable sequence definitions, referenced by `sequenceId`.    |
+| `conditions`   | Optional. Named conditions (media/container queries), referenced by ID. |
 
 Each call `Interact.create(config)` creates a new `Interact` instance.
 
@@ -135,7 +135,7 @@ Resolved in order of priority:
 
 1. **`listContainer` + `listItemSelector`** — matches items within the container.
 2. **`listContainer` only** — targets immediate children of the container.
-3. **`listContainer` + `selector`** - matches via `querySelector` within  each immediate child of the container.
+3. **`listContainer` + `selector`** - matches via `querySelector` within each immediate child of the container.
 4. **`selector` only** — matches via `querySelectorAll` within the root element.
 5. **Fallback** — first child of `<interact-element>` (web) or the root element (react/vanilla).
 
@@ -143,16 +143,16 @@ Resolved in order of priority:
 
 ## Triggers
 
-| Trigger | Description | Key Parameters | Rules |
-|:--------|:------------|:---------------|:------|
-| `hover` | Mouse enter/leave | `type`: `'once'` \| `'alternate'` \| `'repeat'` \| `'state'` — or `method`: `'add'` \| `'remove'` \| `'toggle'` \| `'clear'` | [hover.md](./hover.md) |
-| `click` | Mouse click | Same as `hover` | [click.md](./click.md) |
-| `interest` | Accessible hover (hover + focus) | Same as `hover` | [hover.md](./hover.md) |
-| `activate` | Accessible click (click + Enter/Space) | Same as `click` | [click.md](./click.md) |
-| `viewEnter` | Element enters viewport | `type`, `threshold` (0–1), `inset` | [viewenter.md](./viewenter.md) |
-| `viewProgress` | Scroll-driven (ViewTimeline) | Uses effect `rangeStart`/`rangeEnd` | [viewprogress.md](./viewprogress.md) |
-| `pointerMove` | Mouse movement | `hitArea`: `'self'` \| `'root'`; `axis`: `'x'` \| `'y'` | [pointermove.md](./pointermove.md) |
-| `animationEnd` | Chain after another effect | `effectId`: ID of the preceding effect | — |
+| Trigger        | Description                            | Key Parameters                                                                                                               | Rules                                |
+| :------------- | :------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- | :----------------------------------- |
+| `hover`        | Mouse enter/leave                      | `type`: `'once'` \| `'alternate'` \| `'repeat'` \| `'state'` — or `method`: `'add'` \| `'remove'` \| `'toggle'` \| `'clear'` | [hover.md](./hover.md)               |
+| `click`        | Mouse click                            | Same as `hover`                                                                                                              | [click.md](./click.md)               |
+| `interest`     | Accessible hover (hover + focus)       | Same as `hover`                                                                                                              | [hover.md](./hover.md)               |
+| `activate`     | Accessible click (click + Enter/Space) | Same as `click`                                                                                                              | [click.md](./click.md)               |
+| `viewEnter`    | Element enters viewport                | `type`, `threshold` (0–1), `inset`                                                                                           | [viewenter.md](./viewenter.md)       |
+| `viewProgress` | Scroll-driven (ViewTimeline)           | Uses effect `rangeStart`/`rangeEnd`                                                                                          | [viewprogress.md](./viewprogress.md) |
+| `pointerMove`  | Mouse movement                         | `hitArea`: `'self'` \| `'root'`; `axis`: `'x'` \| `'y'`                                                                      | [pointermove.md](./pointermove.md)   |
+| `animationEnd` | Chain after another effect             | `effectId`: ID of the preceding effect                                                                                       | —                                    |
 
 Use `type` (via `PointerTriggerParams`) for keyframe/named effects, `method` (via `StateParams`) for transition effects.
 
@@ -233,19 +233,22 @@ const css = generate(config);
 ```
 
 Inside `<head>`:
+
 ```html
-<style>{css}</style>
+<style>
+  {css}
+</style>
 ```
 
 ---
 
 ## Static API
 
-| Method / Property | Description |
-|:------------------|:------------|
-| `Interact.create(config)` | Initialize with a config. Returns the instance. |
-| `Interact.registerEffects(presets)` | Register named effect presets before `create`. |
-| `Interact.destroy()` | Tear down all instances. |
-| `Interact.forceReducedMotion` | `boolean` — force reduced-motion behavior regardless of OS setting. |
-| `Interact.allowA11yTriggers` | `boolean` — enable accessibility triggers. |
-| `Interact.setup(options)` | Configure global scroll/pointer/viewEnter options. |
+| Method / Property                   | Description                                                         |
+| :---------------------------------- | :------------------------------------------------------------------ |
+| `Interact.create(config)`           | Initialize with a config. Returns the instance.                     |
+| `Interact.registerEffects(presets)` | Register named effect presets before `create`.                      |
+| `Interact.destroy()`                | Tear down all instances.                                            |
+| `Interact.forceReducedMotion`       | `boolean` — force reduced-motion behavior regardless of OS setting. |
+| `Interact.allowA11yTriggers`        | `boolean` — enable accessibility triggers.                          |
+| `Interact.setup(options)`           | Configure global scroll/pointer/viewEnter options.                  |
