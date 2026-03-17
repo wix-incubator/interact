@@ -107,6 +107,16 @@ export class AnimationGroup {
     }
   }
 
+  async onAbort(callback: () => void): Promise<void> {
+    try {
+      await Promise.all(this.animations.map((animation) => animation.finished));
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        callback();
+      }
+    }
+  }
+
   get finished() {
     return Promise.all(this.animations.map((animation) => animation.finished));
   }
