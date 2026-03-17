@@ -941,9 +941,7 @@ describe('AnimationGroup', () => {
       const mockAnimation = createMockAnimation({
         finished: finishedPromise,
         cancel: vi.fn(() => {
-          rejectFinished(
-            new DOMException('The animation was aborted.', 'AbortError'),
-          );
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
         }),
       });
 
@@ -970,9 +968,7 @@ describe('AnimationGroup', () => {
           rejectFinished = reject;
         }),
         cancel: vi.fn(() => {
-          rejectFinished(
-            new DOMException('The animation was aborted.', 'AbortError'),
-          );
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
         }),
       });
 
@@ -980,10 +976,7 @@ describe('AnimationGroup', () => {
         finished: new Promise<Animation>(() => {}),
       });
 
-      const animationGroup = new AnimationGroup([
-        normalAnimation,
-        cancelledAnimation,
-      ]);
+      const animationGroup = new AnimationGroup([normalAnimation, cancelledAnimation]);
       const abortPromise = animationGroup.onAbort(callback);
 
       cancelledAnimation.cancel();

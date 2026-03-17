@@ -625,7 +625,9 @@ describe('viewEnter handler', () => {
           try {
             await Promise.all(this.animations.map((a: any) => a.finished));
             callback();
-          } catch (_error) { /* empty */ }
+          } catch (_error) {
+            /* empty */
+          }
         },
         async onAbort(callback: () => void) {
           try {
