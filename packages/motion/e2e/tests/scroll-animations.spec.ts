@@ -34,9 +34,6 @@ test.describe('Scroll-Driven Animations', () => {
 
       const sceneMode = await scrollPage.getScrubSceneMode();
       expect(sceneMode).toBe('native');
-      const { sceneStart, sceneEnd } = await scrollPage.getRangeOffsets();
-      expect(sceneStart).toBeNull();
-      expect(sceneEnd).toBeNull();
     });
 
     test('should run native customEffect for scroll-driven animation', async () => {

@@ -7,13 +7,9 @@ import {
   getScrollY,
 } from '../utils/scroll-helpers';
 
-type RangeOffset = { name?: string; offset?: number };
-
 type FixtureWindow = {
   scrubScene: { cancel(): void; playState: string };
   destroyScrubScene(): void;
-  rangeScene: { start?: RangeOffset; end?: RangeOffset } | null;
-  rangeConfig: { startOffset: RangeOffset; endOffset: RangeOffset };
   supportsViewTimeline: boolean;
   getScrollProgress(): number;
   getScrubSceneMode(): 'native' | 'polyfill';
@@ -51,18 +47,6 @@ export class ScrollPage extends BaseFixturePage {
 
   getScrubScenePlayState() {
     return this.page.evaluate(() => (window as unknown as FixtureWindow).scrubScene.playState);
-  }
-
-  getRangeOffsets() {
-    return this.page.evaluate(() => {
-      const win = window as unknown as FixtureWindow;
-      return {
-        config: win.rangeConfig,
-        // only populated in the non-ViewTimeline fallback path
-        sceneStart: win.rangeScene?.start ?? null,
-        sceneEnd: win.rangeScene?.end ?? null,
-      };
-    });
   }
 
   supportsNativeViewTimeline() {

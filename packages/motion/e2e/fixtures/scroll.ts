@@ -9,8 +9,6 @@ type ScrollFixtureWindow = typeof window & {
   getScrubSceneMode: () => 'native' | 'polyfill';
   supportsViewTimeline: boolean;
   getNativeCustomValues: () => { progress: number; shift: number };
-  rangeScene: ScrubScrollScene | null;
-  rangeConfig: { startOffset: RangeOffset; endOffset: RangeOffset };
 };
 
 const target = document.getElementById(SCROLL_IDS.viewProgressTarget) as HTMLElement;
@@ -172,8 +170,6 @@ const nativeCustomEffectGroup = getWebAnimation(
     shift: Number.parseFloat(style.getPropertyValue('--native-custom-shift')) || 0,
   };
 };
-(window as ScrollFixtureWindow).rangeScene = rangeScene;
-(window as ScrollFixtureWindow).rangeConfig = { startOffset: RANGE_START, endOffset: RANGE_END };
 
 nativeCustomEffectGroup.ready.then(() => {
   if (supportsViewTimeline) {
