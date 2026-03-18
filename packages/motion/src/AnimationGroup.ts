@@ -107,6 +107,27 @@ export class AnimationGroup {
     }
   }
 
+  async onAbort(callback: () => void): Promise<void> {
+    try {
+      await Promise.all(this.animations.map((animation) => animation.finished));
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        const a = this.animations[0];
+
+        if (a && !this.isCSS) {
+          const target = (a.effect as KeyframeEffect)?.target;
+
+          if (target) {
+            const cancelEvent = new Event('animationcancel');
+            target.dispatchEvent(cancelEvent);
+          }
+        }
+
+        callback();
+      }
+    }
+  }
+
   get finished() {
     return Promise.all(this.animations.map((animation) => animation.finished));
   }

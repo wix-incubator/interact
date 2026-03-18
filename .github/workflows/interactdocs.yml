@@ -43,6 +43,9 @@ jobs:
         run: |
           NPQ_PKG_MGR=yarn npx npq install
 
+      - name: Build packages and landing page libs
+        run: ./scripts/build-landing.sh
+
       - name: Build docs app
         run: yarn workspace @wix/interact-docs build
         env:
@@ -63,7 +66,7 @@ jobs:
           mkdir -p _site/rules
           mkdir -p _site/assets
 
-          # Copy root landing page and assets
+          # Copy root landing page and assets (includes assets/lib/ from build-landing.sh)
           cp index.html _site/
           cp -r assets/* _site/assets/
 

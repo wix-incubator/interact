@@ -929,6 +929,90 @@ describe('AnimationGroup', () => {
     });
   });
 
+  describe('onAbort()', () => {
+    test('should execute callback when a CSSAnimation is cancelled externally (not via AnimationGroup.cancel)', async () => {
+      const callback = vi.fn();
+      let rejectFinished: (error: any) => void;
+
+      const finishedPromise = new Promise<Animation>((_resolve, reject) => {
+        rejectFinished = reject;
+      });
+
+      const mockAnimation = createMockAnimation({
+        finished: finishedPromise,
+        cancel: vi.fn(() => {
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
+        }),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      const abortPromise = animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+
+      // Cancel the inner CSSAnimation directly, simulating the browser
+      // removing the animation (e.g. a viewEnter effect going out of range)
+      mockAnimation.cancel();
+
+      await abortPromise;
+
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    test('should execute callback when one of multiple animations is cancelled externally', async () => {
+      const callback = vi.fn();
+      let rejectFinished: (error: any) => void;
+
+      const cancelledAnimation = createMockAnimation({
+        finished: new Promise<Animation>((_resolve, reject) => {
+          rejectFinished = reject;
+        }),
+        cancel: vi.fn(() => {
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
+        }),
+      });
+
+      const normalAnimation = createMockAnimation({
+        finished: new Promise<Animation>(() => {}),
+      });
+
+      const animationGroup = new AnimationGroup([normalAnimation, cancelledAnimation]);
+      const abortPromise = animationGroup.onAbort(callback);
+
+      cancelledAnimation.cancel();
+
+      await abortPromise;
+
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not execute callback for non-AbortError rejections', async () => {
+      const callback = vi.fn();
+
+      const mockAnimation = createMockAnimation({
+        finished: Promise.reject(new Error('Some other error')),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      await animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('should not execute callback when animations finish successfully', async () => {
+      const callback = vi.fn();
+
+      const mockAnimation = createMockAnimation({
+        finished: Promise.resolve(undefined as any),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      await animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
   describe('playState getter', () => {
     test('should return playState from first animation', () => {
       const mockAnimation1 = createMockAnimation({
