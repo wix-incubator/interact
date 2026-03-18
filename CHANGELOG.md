@@ -10,6 +10,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/interact
 
+### [2.1.2] - 2026-03-15
+
+#### Changed
+
+- Add `build:landing` script and improve `viewEnter` example (#158)
+- Bump `@wix/motion` dependency to `^2.1.0`
+
+### [2.1.1] - 2026-03-12
+
+#### Fixed
+
+- Fix leave event listeners are not added when using transition effects with `hover` or `interest` triggers without explicit `params: { method: 'toggle' }`
+
+### [2.1.0] - 2026-03-12
+
+#### Added
+
+- Sequences: coordinated multi-element animation sequences with staggered delays (#133)
+- New `SequenceConfig` and `SequenceConfigRef` types for declarative sequence configuration (#133)
+- New `sequences` property on interactions and top-level config for reusable sequence definitions (#133)
+- Dynamic add/remove of sequence groups for list item support (#133)
+- Sequence documentation, guides, and demos (#133)
+
+#### Changed
+
+- Rules rewrite for all interaction types (#135)
+- Bump `@wix/motion` dependency to `^2.1.0`
+
 ### [2.0.3] - 2026-03-03
 
 #### Fixed
@@ -47,7 +75,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/motion
 
-### [Unreleased]
+### [2.1.1] - 2026-03-15
+
+#### Fixed
+
+- Fix `Sequence.applyOffsets()` crash when called with empty animation groups (#152)
+
+### [2.1.0] - 2026-03-12
+
+#### Added
+
+- `Sequence` class: coordinated animation timeline with stagger offsets, add/remove groups (#133)
+- `getSequence()` function to create `Sequence` instances from `AnimationGroupArgs` (#133)
+- `createAnimationGroups()` function for building `AnimationGroup` arrays (#133)
+- `AnimationGroup.getTimingOptions()` method for extracting timing data (#133)
+- New types: `SequenceOptions`, `AnimationGroupArgs`, `IndexedGroup` (#133)
+- `getJsEasing()` now supports parsing CSS `cubic-bezier()` and `linear()` easing strings (#133)
 
 #### Fixed
 

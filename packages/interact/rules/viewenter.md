@@ -527,9 +527,9 @@ Same as Rule 2
 
 ---
 
-## Rule 6: Staggered Entrance Animations
+## Rule 6: Staggered Entrance Animations (Sequences)
 
-**Use Case**: Sequential entrance animations where multiple elements animate with delays (e.g., card grids, list items, team member cards, feature sections)
+**Use Case**: Sequential entrance animations where multiple elements animate with staggered timing (e.g., card grids, list items, team member cards, feature sections)
 
 **When to Apply**:
 
@@ -538,196 +538,126 @@ Same as Rule 2
 - When animating lists, grids, or collections
 - For progressive content revelation
 
-**Pattern**:
+**Preferred approach: use `sequences`** on the interaction instead of manually setting `delay` on individual effects. Sequences automatically calculate stagger delays using `offset` and `offsetEasing`.
+
+**Pattern (with `listContainer`)**:
 
 ```typescript
-[
-  {
-    key: '[ELEMENT_1_SELECTOR]',
+{
+    key: '[CONTAINER_KEY]',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: [SHARED_THRESHOLD],
-      inset: '[SHARED_INSET]',
+        type: '[BEHAVIOR_TYPE]',
+        threshold: [VISIBILITY_THRESHOLD]
     },
-    effects: [
-      {
-        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-        duration: [SHARED_DURATION],
-        easing: '[SHARED_EASING]',
-        delay: [DELAY_1],
-      },
-    ],
-  },
-  {
-    key: '[ELEMENT_2_SELECTOR]',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: [SHARED_THRESHOLD],
-      inset: '[SHARED_INSET]',
-    },
-    effects: [
-      {
-        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-        duration: [SHARED_DURATION],
-        easing: '[SHARED_EASING]',
-        delay: [DELAY_2],
-      },
-    ],
-  },
-  // ... additional elements with increasing delays
-];
+    sequences: [
+        {
+            offset: [OFFSET_MS],
+            offsetEasing: '[OFFSET_EASING]',
+            effects: [
+                {
+                    effectId: '[EFFECT_ID]',
+                    listContainer: '[LIST_CONTAINER_SELECTOR]'
+                }
+            ]
+        }
+    ]
+}
 ```
 
 **Variables**:
 
-- `[ELEMENT_N_KEY]`: Unique identifier for each individual element in sequence
-- `[DELAY_N]`: Progressive delay values (e.g., 0, 100, 200, 300ms)
-- `[SHARED_*]`: Common values used across all elements in the sequence
+- `[CONTAINER_KEY]`: Unique identifier for the container element
+- `[OFFSET_MS]`: Stagger offset in ms between consecutive items (e.g., 80, 100, 120)
+- `[OFFSET_EASING]`: How the offset is distributed — `'linear'` (equal spacing), `'quadIn'` (accelerating), `'sineOut'` (decelerating), etc.
+- `[LIST_CONTAINER_SELECTOR]`: CSS selector for the list container whose children become sequence items
 - Other variables same as Rule 1
 
-**Example - Card Grid Stagger**:
+**Example - Card Grid Stagger (listContainer)**:
 
 ```typescript
-[
-  {
-    key: 'card-1',
+{
+    key: 'card-grid-container',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: 0.3,
+        type: 'once',
+        threshold: 0.3
     },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 0,
-      },
-    ],
-  },
-  {
-    key: 'card-2',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.3,
-    },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 150,
-      },
-    ],
-  },
-  {
-    key: 'card-3',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.3,
-    },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 300,
-      },
-    ],
-  },
-];
+    sequences: [
+        {
+            offset: 100,
+            offsetEasing: 'quadIn',
+            effects: [
+                {
+                    effectId: 'card-entrance',
+                    listContainer: '.card-grid'
+                }
+            ]
+        }
+    ]
+}
 ```
 
-**Example - Feature List Cascade**:
+With effect in the registry:
 
 ```typescript
-[
-  {
-    key: 'feature-item:nth-child(1)',
+effects: {
+    'card-entrance': {
+        duration: 500,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        keyframeEffect: {
+            name: 'card-fade-up',
+            keyframes: [
+                { transform: 'translateY(40px)', opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+            ]
+        },
+        fill: 'both'
+    }
+}
+```
+
+**Example - Feature List Cascade (per-key effects)**:
+
+When items have individual keys rather than a shared container, list each as a separate effect in the sequence:
+
+```typescript
+{
+    key: 'features-section',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: 0.4,
+        type: 'once',
+        threshold: 0.4
     },
-    effects: [
-      {
-        keyframeEffect: {
-          name: 'item-kf-1',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
-        },
+    sequences: [
+        {
+            offset: 100,
+            offsetEasing: 'linear',
+            effects: [
+                { effectId: 'feature-slide', key: 'feature-1' },
+                { effectId: 'feature-slide', key: 'feature-2' },
+                { effectId: 'feature-slide', key: 'feature-3' }
+            ]
+        }
+    ]
+}
+```
+
+```typescript
+effects: {
+    'feature-slide': {
         duration: 500,
         easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 0,
-      },
-    ],
-  },
-  {
-    key: 'feature-item:nth-child(2)',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.4,
-    },
-    effects: [
-      {
         keyframeEffect: {
-          name: 'item-kf-2',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
+            name: 'feature-slide-in',
+            keyframes: [
+                { opacity: '0', transform: 'translateX(-30px)' },
+                { opacity: '1', transform: 'translateX(0)' }
+            ]
         },
-        duration: 500,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 100,
-      },
-    ],
-  },
-  {
-    key: 'feature-item:nth-child(3)',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.4,
-    },
-    effects: [
-      {
-        keyframeEffect: {
-          name: 'item-kf-3',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
-        },
-        duration: 500,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 200,
-      },
-    ],
-  },
-];
+        fill: 'backwards'
+    }
+}
 ```
 
 ---

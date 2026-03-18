@@ -3,20 +3,20 @@ name: Sequence docs and demos
 overview: Add documentation for the new Sequence/staggering feature to both the motion and interact docs, and create interactive demo components showcasing sequences with various triggers, easing functions, and configuration patterns.
 todos:
   - id: motion-api-sequence
-    content: Create packages/motion/docs/api/sequence.md -- Sequence class API reference
-    status: pending
+    content: Create packages/motion/docs/api/sequence.md -- Sequence class API reference (constructor, addGroups, removeGroups, onFinish, offset calculation, inherited playback)
+    status: completed
   - id: motion-api-get-sequence
-    content: Create packages/motion/docs/api/get-sequence.md -- getSequence() function reference
-    status: pending
+    content: Create packages/motion/docs/api/get-sequence.md -- getSequence() and createAnimationGroups() function reference
+    status: completed
   - id: motion-docs-updates
-    content: 'Update motion docs: api/README.md index, api/types.md with new types, core-concepts.md with Sequences section'
-    status: pending
+    content: 'Update motion docs: api/README.md index (add Sequence + getSequence entries), api/types.md (SequenceOptions, AnimationGroupArgs, IndexedGroup), core-concepts.md (Sequences & Staggering section)'
+    status: completed
   - id: interact-guide-sequences
-    content: Create packages/interact/docs/guides/sequences.md -- comprehensive sequences guide
-    status: pending
+    content: Create packages/interact/docs/guides/sequences.md -- comprehensive sequences guide covering config, cross-element, listContainer, removal, conditions
+    status: completed
   - id: interact-docs-updates
-    content: 'Update interact docs: api/types.md, api/interact-class.md, guides/README.md, examples/README.md, examples/list-patterns.md'
-    status: pending
+    content: 'Update interact docs: api/types.md (SequenceOptionsConfig, SequenceConfig, SequenceConfigRef, InteractConfig.sequences, Interaction.sequences, InteractCache.sequences), api/interact-class.md (getSequence, addToSequence, removeFromSequences, sequenceCache, elementSequenceMap), guides/README.md, examples/README.md, examples/list-patterns.md'
+    status: completed
   - id: demo-sequence-playground
     content: Create SequencePlayground.tsx in both web/ and react/ -- interactive stagger controls
     status: completed
@@ -44,32 +44,122 @@ isProject: false
 API reference for the `Sequence` class, mirroring the style of [animation-group.md](packages/motion/docs/api/animation-group.md). Contents:
 
 - **Overview** -- Sequence extends AnimationGroup to coordinate multiple AnimationGroups with staggered delays
-- **Class definition** -- constructor signature, properties (`animationGroups`, `delay`, `offset`, `offsetEasing`), inherited methods (`play`, `pause`, `reverse`, `cancel`, `onFinish`, `setPlaybackRate`, `playState`)
-- `**addGroups(entries)`\*\* -- inserts new groups at specified indices and recalculates offsets
-- **Offset calculation** -- the formula `easing(i / last) * last * offset | 0` with examples for linear, quadIn, sineOut (from the spec)
-- `**SequenceOptions` type\*\* -- `delay`, `offset`, `offsetEasing`
-- **Usage examples** -- creating a Sequence manually, controlling playback, using different easing functions
+- **Class definition** -- constructor signature and properties:
+
+```typescript
+constructor(animationGroups: AnimationGroup[], options?: SequenceOptions)
+```
+
+| Property          | Type                    | Default | Description                                         |
+| ----------------- | ----------------------- | ------- | --------------------------------------------------- |
+| `animationGroups` | `AnimationGroup[]`      |         | Child groups managed by this Sequence               |
+| `delay`           | `number`                | `0`     | Base delay applied to all groups                    |
+| `offset`          | `number`                | `0`     | Stagger offset (ms) between consecutive groups      |
+| `offsetEasing`    | `(p: number) => number` | linear  | Easing function for stagger distribution            |
+| `animations`      | `Animation[]`           |         | Flattened array of all child animations (inherited) |
+| `ready`           | `Promise<void>`         |         | Resolves when all offsets have been applied         |
+| `isCSS`           | `boolean`               | `false` | Whether animations use CSS mode (inherited)         |
+
+- `**addGroups(entries: IndexedGroup[])**` -- inserts new groups at specified indices, recalculates offsets via `applyOffsets()`, and resets `ready`. Each `IndexedGroup` has `{ index: number, group: AnimationGroup }`.
+- `**removeGroups(predicate: (group: AnimationGroup) => boolean): AnimationGroup[]**` -- removes groups matching the predicate, cancels their animations, recalculates offsets for remaining groups, resets `ready`, and returns the removed groups. Used when list items are dynamically removed.
+- `**onFinish(callback: () => void): Promise<void>**` -- overrides AnimationGroup's `onFinish` to await all child group `finished` promises before invoking the callback. Logs a warning for interrupted animations.
+- **Offset calculation** -- the formula `easing(i / last) * last * offset | 0` with examples for linear, quadIn, sineOut (from the spec). Single-group sequences always return `[0]`.
+- **Inherited playback API** from AnimationGroup: `play()`, `pause()`, `reverse()`, `cancel()`, `progress(p)`, `setPlaybackRate(rate)`, `getProgress()`, `getTimingOptions()`; getters: `playState`, `finished`
+- **Usage examples** -- creating a Sequence manually, controlling playback, using `addGroups`/`removeGroups`, using different easing functions
 
 ### 1.2 New file: `api/get-sequence.md`
 
-API reference for the `getSequence()` function (in `packages/motion/src/motion.ts`). Contents:
+API reference for the `getSequence()` and `createAnimationGroups()` functions (in `packages/motion/src/motion.ts`). Contents:
 
-- **Signature** -- `getSequence(options, animationGroupArgs[], context?) => Sequence`
-- `**AnimationGroupArgs` type\*\* -- `target`, `options`, `context`
-- `**createAnimationGroups()` helper\*\* (also exported)
-- **Examples** -- creating a staggered entrance for a list of elements, using different offset easings
+- `**getSequence` signature:\*\*
+
+```typescript
+function getSequence(
+  options: SequenceOptions,
+  animationGroups: AnimationGroupArgs[],
+  context?: Record<string, any>,
+): Sequence;
+```
+
+Each `AnimationGroupArgs` entry is resolved into one or more `AnimationGroup` instances. If a target resolves to multiple elements (e.g. `HTMLElement[]` or a CSS selector string), each element becomes a separate group in the Sequence.
+
+- `**createAnimationGroups` signature:\*\*
+
+```typescript
+function createAnimationGroups(
+  animationGroupArgs: AnimationGroupArgs[],
+  context?: Record<string, any>,
+): AnimationGroup[];
+```
+
+Builds `AnimationGroup[]` from args without wrapping in a Sequence. Used internally by `getSequence` and by `Interact.addToSequence()` when adding groups to an existing Sequence.
+
+- `**AnimationGroupArgs` type:\*\*
+
+```typescript
+type AnimationGroupArgs = {
+  target: HTMLElement | HTMLElement[] | string | null;
+  options: AnimationOptions;
+  context?: Record<string, any>;
+};
+```
+
+- **Examples** -- creating a staggered entrance for a list of elements, using different offset easings, building groups independently with `createAnimationGroups`
 
 ### 1.3 Update `api/README.md`
 
-Add entries for `Sequence` and `getSequence` to the API index, with short descriptions and links.
+Add entries to the API index under "Core Functions":
+
+- `### [Sequence](sequence.md)` -- Coordinates multiple AnimationGroups with staggered delay offsets
+- `### [Sequence Creation](get-sequence.md)` -- `getSequence()` and `createAnimationGroups()` factory functions
+
+Add to "Quick Reference" section:
+
+```typescript
+// Sequence creation
+const sequence = getSequence(
+  { offset: 200, offsetEasing: 'quadIn' },
+  items.map((el) => ({ target: el, options: { name: 'FadeIn' } })),
+);
+sequence.play();
+```
+
+Add to "Types Overview": `SequenceOptions`, `AnimationGroupArgs`, `IndexedGroup`
 
 ### 1.4 Update `api/types.md`
 
-Add `SequenceOptions`, `AnimationGroupArgs`, and `IndexedGroup` type documentation.
+Add new section `## Sequence Types` with:
+
+```typescript
+type SequenceOptions = {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((p: number) => number);
+};
+
+type AnimationGroupArgs = {
+  target: HTMLElement | HTMLElement[] | string | null;
+  options: AnimationOptions;
+  context?: Record<string, any>;
+};
+
+type IndexedGroup = {
+  index: number;
+  group: AnimationGroup;
+};
+```
+
+Include property descriptions and usage examples for each type.
 
 ### 1.5 Update `core-concepts.md`
 
-Add a "Sequences & Staggering" section explaining the concept of coordinated multi-group animations with easing-driven delay offsets.
+Add a "Sequences & Staggering" section under "Advanced Concepts" explaining:
+
+- **Concept** -- Sequences coordinate multiple AnimationGroups as a single timeline with easing-driven stagger delays
+- **Offset model** -- how `offset` distributes delay across groups using the formula `easing(i / last) * last * offset | 0`
+- **Easing curves** -- visual explanation of how `linear`, `quadIn`, `sineOut`, and custom `cubic-bezier` affect stagger timing (quadIn = slow start then rapid, sineOut = fast start then gradual)
+- **Dynamic groups** -- `addGroups` for adding elements (e.g. new list items) and `removeGroups` for cleanup when elements are removed, both triggering automatic offset recalculation
+- **Relationship to AnimationGroup** -- Sequence inherits all playback controls; child groups are stored in `animationGroups` while `animations` contains the flattened array
 
 ---
 
@@ -79,31 +169,105 @@ Add a "Sequences & Staggering" section explaining the concept of coordinated mul
 
 Comprehensive guide for using sequences in Interact configs. Contents:
 
-- **What is a Sequence** -- a list of Effects managed as a coordinated timeline with staggered delays
-- **Config structure** -- `InteractConfig.sequences` (reusable map), `Interaction.sequences` (per-interaction list)
-- **SequenceConfig type** -- `effects`, `delay`, `offset`, `offsetEasing`, `sequenceId`, `conditions`
-- **SequenceConfigRef** -- referencing reusable sequences by `sequenceId` with inline overrides
-- **Offset and easing** -- how offset distributes delay across effects, easing curves (linear, quadIn, sineOut), visual formula
-- **Cross-element sequences** -- effects targeting different keys, resolved at add-time
-- **Sequences with listContainer** -- staggering list items, dynamic additions via `addListItems`
-- **Conditions on sequences** -- sequence-level and effect-level media conditions
-- **Examples** -- staggered card grid entrance, multi-element orchestration, click-triggered sequence
+- **What is a Sequence** -- a list of Effects managed as a coordinated timeline with staggered delays, built on top of the Motion `Sequence` class
+- **Config structure** -- two levels of sequence definition:
+  - `InteractConfig.sequences` -- reusable named sequences (keyed map, resolved by `sequenceId`)
+  - `Interaction.sequences` -- per-interaction sequence list (inline `SequenceConfig` or `SequenceConfigRef` references)
+  - An interaction can have both `effects` and `sequences`, or either alone
+- **SequenceConfig** -- inline sequence definition:
+
+```typescript
+type SequenceConfig = SequenceOptionsConfig & {
+  effects: (Effect | EffectRef)[];
+};
+```
+
+- **SequenceConfigRef** -- referencing a reusable sequence by ID with optional inline overrides:
+
+```typescript
+type SequenceConfigRef = {
+  sequenceId: string;
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((p: number) => number);
+  conditions?: string[];
+};
+```
+
+- **SequenceOptionsConfig** -- shared options (includes `conditions` for media-query gating):
+
+```typescript
+type SequenceOptionsConfig = {
+  delay?: number;
+  offset?: number;
+  offsetEasing?: string | ((p: number) => number);
+  sequenceId?: string;
+  conditions?: string[];
+};
+```
+
+- **Offset and easing** -- how offset distributes delay across effects, easing curves (linear, quadIn, sineOut), visual formula `easing(i / last) * last * offset | 0`
+- **Cross-element sequences** -- effects targeting different `key` values within a single sequence, resolved at add-time via `_processSequencesForTarget`. When a sequence effect targets a different key than the source interaction, Interact waits for both elements to be registered before creating the Sequence.
+- **Sequences with listContainer** -- staggering list items:
+  - Initial `add()` creates the Sequence with all existing list items
+  - `addListItems()` calls `Interact.addToSequence()` with `IndexedGroup` entries at the correct indices, triggering offset recalculation
+  - `removeListItems()` calls `Interact.removeFromSequences()` which uses the `elementSequenceMap` WeakMap for O(1) lookup and calls `sequence.removeGroups()` with a predicate matching the removed element's animations
+  - Each `addListItems` call uses a unique cache key (`${cacheKey}::${generateId()}`) for its Sequence
+- **Element removal and cleanup** -- how `Interact.removeFromSequences(elements)` uses `elementSequenceMap` (a `WeakMap<HTMLElement, Set<Sequence>>`) for efficient element-to-sequence lookup, calls `removeGroups` on each associated Sequence, and deletes the element from the map. Called automatically from `removeListItems`.
+- **Conditions on sequences** -- sequence-level `conditions` array gates the entire sequence; individual effect-level conditions within `effects` can gate specific effects. Both set up `matchMedia` listeners for dynamic add/remove.
+- **Sequence caching** -- `Interact.sequenceCache` (`Map<string, Sequence>`) prevents duplicate Sequences for the same interaction/key combination. `Interact.destroy()` and `clearInteractionStateForKey()` clean up cache entries.
+- **Examples** -- staggered card grid entrance (viewEnter + listContainer), multi-element orchestration (cross-key sequence), click-triggered alternate sequence, sequence with media-query conditions
 
 ### 2.2 Update `api/types.md`
 
-Add type definitions for `SequenceOptionsConfig`, `SequenceConfig`, `SequenceConfigRef`, and the updated `Interaction` and `InteractConfig` types (showing the new `sequences` fields).
+Add new section `## Sequence Types` with type definitions:
+
+- `SequenceOptionsConfig` -- with all properties including `conditions?: string[]`
+- `SequenceConfig` -- `SequenceOptionsConfig & { effects: (Effect | EffectRef)[] }`
+- `SequenceConfigRef` -- reference type with `sequenceId` and optional overrides + `conditions`
+- Updated `InteractConfig` showing `sequences?: Record<string, SequenceConfig>`
+- Updated `Interaction` showing `sequences?: (SequenceConfig | SequenceConfigRef)[]` with note on mutual exclusivity branches (effects-only, sequences-only, or both)
+- Updated `InteractCache` showing `sequences: { [sequenceId: string]: SequenceConfig }` and `interactions[path].sequences: Record<string, (InteractionTrigger & { sequence: SequenceConfig })[]>`
 
 ### 2.3 Update `api/interact-class.md`
 
-Document the new `Interact.getSequence()` static method, `Interact.addToSequence()`, and `Interact.sequenceCache`.
+Add new static methods and properties under "Static Methods":
+
+- `**Interact.getSequence(cacheKey, sequenceOptions, animationGroupArgs, context?)`\*\*
+  - Parameters: `cacheKey: string`, `sequenceOptions: SequenceOptions`, `animationGroupArgs: AnimationGroupArgs[]`, `context?: { reducedMotion?: boolean }`
+  - Returns: `Sequence`
+  - Details: Returns cached Sequence if one exists for `cacheKey`, otherwise creates via `getSequence()` from `@wix/motion`, caches it, and registers target elements in `elementSequenceMap`
+- `**Interact.addToSequence(cacheKey, animationGroupArgs, indices, context?)**`
+  - Parameters: `cacheKey: string`, `animationGroupArgs: AnimationGroupArgs[]`, `indices: number[]`, `context?: { reducedMotion?: boolean }`
+  - Returns: `boolean` (false if no cached Sequence found for `cacheKey`)
+  - Details: Builds new `AnimationGroup` instances via `createAnimationGroups()`, maps them to `IndexedGroup[]` using `indices`, calls `cached.addGroups(entries)`, and registers new elements in `elementSequenceMap`
+- `**Interact.removeFromSequences(elements)**`
+  - Parameters: `elements: HTMLElement[]`
+  - Returns: `void`
+  - Details: For each element, looks up associated Sequences via `elementSequenceMap`, calls `sequence.removeGroups()` with a predicate matching animations targeting that element, and deletes the element from the map
+- `**Interact.sequenceCache**` -- `Map<string, Sequence>` static property, cleared on `destroy()`
+- `**Interact.elementSequenceMap**` -- `WeakMap<HTMLElement, Set<Sequence>>` static property, reset on `destroy()`. Provides O(1) element-to-Sequence lookup for efficient removal.
 
 ### 2.4 Update `guides/README.md`
 
-Add "Sequences & Staggering" entry to the guides index.
+Add entry under guide list:
+
+- `### 🎼 Sequences & Staggering` -- Coordinate multiple effects with staggered timing, offset easing, and dynamic list management. Link to `guides/sequences.md`.
 
 ### 2.5 Update `examples/README.md` and `examples/list-patterns.md`
 
-Add sequence-based examples alongside existing list/stagger patterns, showing the new `sequences` config syntax as the preferred approach.
+`**examples/README.md`:\*\*
+
+- Add "Sequence Animations" category under "Example Categories" with sub-items: Staggered List Entrance, Cross-Element Orchestration, Click-Triggered Sequence, Easing Comparison
+- Update "Advanced Patterns > Animation Sequences" to reference the new `sequences` config syntax as the preferred approach
+
+`**examples/list-patterns.md`:\*\*
+
+- Add new section `## Sequence-Based Staggering` with examples showing:
+  - Staggered list entrance using `Interaction.sequences` with `listContainer`
+  - Dynamic list items with `addListItems` triggering `addToSequence`
+  - Different `offsetEasing` values (linear vs quadIn vs sineOut) for list stagger
+  - Sequence with removal: how removing list items automatically cleans up via `removeFromSequences`
 
 ---
 

@@ -484,6 +484,80 @@ This document contains rules for generating hover trigger interactions in `@wix/
 }
 ```
 
+## Rule 6: Hover with Sequence (Staggered Multi-Target)
+
+**Purpose**: Hover interactions that stagger animations across multiple targets using a sequence instead of manual delays.
+
+**When to Apply**:
+
+- When hovering a container should stagger-animate its children
+- For list item hover effects with coordinated timing
+- When you want easing-controlled stagger on hover
+
+**Pattern**:
+
+```typescript
+{
+    key: '[SOURCE_KEY]',
+    trigger: 'hover',
+    params: {
+        type: 'repeat'
+    },
+    sequences: [
+        {
+            offset: [OFFSET_MS],
+            offsetEasing: '[OFFSET_EASING]',
+            effects: [
+                {
+                    effectId: '[EFFECT_ID]',
+                    listContainer: '[LIST_CONTAINER_SELECTOR]'
+                }
+            ]
+        }
+    ]
+}
+```
+
+**Example - Hover Card Grid Stagger**:
+
+```typescript
+{
+    key: 'card-grid',
+    trigger: 'hover',
+    params: { type: 'repeat' },
+    sequences: [
+        {
+            offset: 80,
+            offsetEasing: 'sineOut',
+            effects: [
+                {
+                    effectId: 'item-pop',
+                    listContainer: '.card-grid-items'
+                }
+            ]
+        }
+    ]
+}
+```
+
+```typescript
+effects: {
+    'item-pop': {
+        duration: 400,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        keyframeEffect: {
+            name: 'item-pop',
+            keyframes: [
+                { transform: 'translateY(16px) scale(0.95)', opacity: 0 },
+                { transform: 'translateY(0) scale(1)', opacity: 1 }
+            ]
+        }
+    }
+}
+```
+
+---
+
 ## Best Practices for Hover Rules
 
 ### Timing and Pattern Guidelines

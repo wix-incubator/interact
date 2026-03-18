@@ -47,6 +47,7 @@ export class Interact {
   static instances: Interact[] = [];
   static controllerCache = new Map<string, IInteractionController>();
   static sequenceCache = new Map<string, Sequence>();
+  static elementSequenceMap = new WeakMap<HTMLElement, Set<Sequence>>();
 
   constructor() {
     this.dataCache = { effects: {}, sequences: {}, conditions: {}, interactions: {} };
@@ -186,6 +187,7 @@ export class Interact {
     Interact.instances.length = 0;
     Interact.controllerCache.clear();
     Interact.sequenceCache.clear();
+    Interact.elementSequenceMap = new WeakMap();
   }
 
   static setup(options: {
@@ -246,6 +248,7 @@ export class Interact {
 
     const sequence = getMotionSequence(sequenceOptions, animationGroupArgs, context);
     Interact.sequenceCache.set(cacheKey, sequence);
+    Interact._registerSequenceElements(animationGroupArgs, sequence);
 
     return sequence;
   }
@@ -267,8 +270,51 @@ export class Interact {
     }));
 
     cached.addGroups(entries);
+    Interact._registerSequenceElements(animationGroupArgs, cached);
 
     return true;
+  }
+
+  private static _registerSequenceElements(
+    animationGroupArgs: AnimationGroupArgs[],
+    sequence: Sequence,
+  ): void {
+    for (const { target } of animationGroupArgs) {
+      // String selector targets are resolved to HTMLElements before reaching here
+      // (see _buildAnimationGroupArgsFromSequence in add.ts), so only HTMLElement
+      // and HTMLElement[] need handling.
+      const elements = Array.isArray(target)
+        ? target
+        : target instanceof HTMLElement
+          ? [target]
+          : [];
+      for (const el of elements) {
+        let seqs = Interact.elementSequenceMap.get(el);
+        if (!seqs) {
+          seqs = new Set();
+          Interact.elementSequenceMap.set(el, seqs);
+        }
+        seqs.add(sequence);
+      }
+    }
+  }
+
+  static removeFromSequences(elements: HTMLElement[]): void {
+    for (const element of elements) {
+      const sequences = Interact.elementSequenceMap.get(element);
+      if (!sequences) continue;
+
+      for (const sequence of sequences) {
+        // Optional chaining on `.effect` handles cases where animations were
+        // already cancelled (e.g. by a prior removeGroups call in this loop),
+        // which may null out the effect reference.
+        sequence.removeGroups((group) =>
+          group.animations.some((a) => (a.effect as KeyframeEffect)?.target === element),
+        );
+      }
+
+      Interact.elementSequenceMap.delete(element);
+    }
   }
 }
 

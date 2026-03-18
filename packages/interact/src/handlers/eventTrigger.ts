@@ -179,8 +179,11 @@ function addEventTriggerHandler(
       }
       addListener(source, eventType, { passive: true, once });
     });
+
+    const isToggle =
+      !(options as StateParams).method || (options as StateParams).method === 'toggle';
     const addLeaveListeners = isTransition
-      ? (options as StateParams).method === 'toggle'
+      ? isToggle
       : (options as PointerTriggerParams).type !== 'once';
 
     if (addLeaveListeners) {

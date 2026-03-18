@@ -692,6 +692,104 @@ describe('interact (web)', () => {
           { reducedMotion: false },
         );
       });
+
+      it('should add mouseleave listener for hover trigger with transition effect and no explicit method', () => {
+        Interact.destroy();
+        Interact.create(
+          {
+            interactions: [
+              {
+                trigger: 'hover',
+                key: 'hover-transition-default',
+                effects: [{ key: 'hover-transition-default', effectId: 'hover-transition-fx' }],
+              },
+            ],
+            effects: {
+              'hover-transition-fx': {
+                transition: {
+                  duration: 300,
+                  styleProperties: [{ name: 'opacity', value: '0' }],
+                },
+              },
+            },
+          },
+          { useCutsomElement: true },
+        );
+
+        const el = document.createElement('interact-element') as IInteractElement;
+        const div = document.createElement('div');
+        el.append(div);
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(el, 'hover-transition-default');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.objectContaining({ passive: true }),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseleave',
+          expect.any(Function),
+          expect.objectContaining({ passive: true }),
+        );
+      });
+    });
+
+    describe('interest', () => {
+      it('should add leave listeners for interest trigger with transition effect and no explicit method', () => {
+        Interact.destroy();
+        Interact.create(
+          {
+            interactions: [
+              {
+                trigger: 'interest',
+                key: 'interest-transition-default',
+                effects: [
+                  { key: 'interest-transition-default', effectId: 'interest-transition-fx' },
+                ],
+              },
+            ],
+            effects: {
+              'interest-transition-fx': {
+                transition: {
+                  duration: 300,
+                  styleProperties: [{ name: 'opacity', value: '0' }],
+                },
+              },
+            },
+          },
+          { useCutsomElement: true },
+        );
+
+        const el = document.createElement('interact-element') as IInteractElement;
+        const div = document.createElement('div');
+        el.append(div);
+        const addEventListenerSpy = vi.spyOn(div, 'addEventListener');
+
+        add(el, 'interest-transition-default');
+
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseenter',
+          expect.any(Function),
+          expect.objectContaining({ passive: true }),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'mouseleave',
+          expect.any(Function),
+          expect.objectContaining({ passive: true }),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusin',
+          expect.any(Function),
+          expect.any(Object),
+        );
+        expect(addEventListenerSpy).toHaveBeenCalledWith(
+          'focusout',
+          expect.any(Function),
+          expect.any(Object),
+        );
+      });
     });
 
     describe('click', () => {

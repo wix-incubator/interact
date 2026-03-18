@@ -62,11 +62,14 @@ export function createTimeEffectHandler(
         animation.progress(0);
         delete element.dataset.interactEnter;
         if (animation.isCSS) {
-          animation.onFinish(() => {
+          const setEnterDone = () => {
             fastdom.mutate(() => {
               element.dataset.interactEnter = 'done';
             });
-          });
+          };
+
+          animation.onFinish(setEnterDone);
+          animation.onAbort(setEnterDone);
         }
         animation.play();
       }
