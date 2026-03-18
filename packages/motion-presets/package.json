@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/wix/interact#readme",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "dependencies": {
     "@wix/motion": "^2.1.2"
