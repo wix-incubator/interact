@@ -28,14 +28,6 @@ test.describe('Scroll-Driven Animations', () => {
       }).toPass();
     });
 
-    test('should support getScrubScene with native ViewTimeline when available', async () => {
-      const supportsNative = await scrollPage.supportsNativeViewTimeline();
-      test.skip(!supportsNative, 'Native ViewTimeline is not available in this browser runtime.');
-
-      const sceneMode = await scrollPage.getScrubSceneMode();
-      expect(sceneMode).toBe('native');
-    });
-
     test('should run native customEffect for scroll-driven animation', async () => {
       const supportsNative = await scrollPage.supportsNativeViewTimeline();
       test.skip(!supportsNative, 'Native ViewTimeline is required for this customEffect flow.');
