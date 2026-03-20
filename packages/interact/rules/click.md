@@ -2,7 +2,7 @@
 
 This document contains rules for generating click-triggered interactions in `@wix/interact`.
 
-**Accessible click**: Use `trigger: 'activate'` instead of `trigger: 'click'` to also respond to keyboard activation (Enter / Space).
+**CRITICAL — Accessible click**: Use `trigger: 'activate'` instead of `trigger: 'click'` to also respond to keyboard activation (Enter / Space).
 
 ## Table of Contents
 
@@ -17,14 +17,14 @@ This document contains rules for generating click-triggered interactions in `@wi
 
 Use `keyframeEffect` or `namedEffect` when the click should play an animation (CSS or WAAPI). Pair with `PointerTriggerParams` to control playback behavior.
 
-Always include `fill: 'both'` so the effect remains applied while finished and is not garbage-collected, allowing it to be efficiently toggled.
+**CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'` or `'repeat'` — keeps the effect applied while finished and prevents garbage-collection, allowing efficient toggling. For `type: 'once'`, use `fill: 'backwards'` or `fill: 'none'`.
 
 ```typescript
 {
     key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
-        type: '[POINTER_TYPE]'
+        type: '[EVENT_TRIGGER_TYPE]'
     },
     effects: [
         {
@@ -53,30 +53,32 @@ Always include `fill: 'both'` so the effect remains applied while finished and i
 
 ### Variables
 
-- `[SOURCE_KEY]` — identifier matching the `data-interact-key` attribute on the element that listens for clicks.
-- `[TARGET_KEY]` — identifier matching the `data-interact-key` attribute on the element that animates. Same as `[SOURCE_KEY]` for self-targeting, or different for cross-targeting.
-- `[POINTER_TYPE]` — `PointerTriggerParams.type`. One of:
+- `[SOURCE_KEY]` — identifier matching the element's key (`data-interact-key` for web, `interactKey` for React). The element that listens for clicks.
+- `[TARGET_KEY]` — identifier matching the element's key on the element that animates. Same as `[SOURCE_KEY]` for self-targeting, or different for cross-targeting.
+- `[EVENT_TRIGGER_TYPE]` — `PointerTriggerParams.type`. One of:
   - `'alternate'` — plays forward on first click, reverses on next click. Most common for toggles.
   - `'repeat'` — restarts the animation from the beginning on each click.
   - `'once'` — plays once on the first click and never again.
-  - `'state'` — pauses/resumes the animation on each click. Useful for continuous loops (`iterations: Infinity`).
-- `[KEYFRAMES]` — WAAPI-style keyframes format as array of keyframe objects or object of properties to arrays of values.
-- `[EFFECT_NAME]` — arbitrary string identifier for a `keyframeEffect`.
-- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`.
-- `[INITIAL_REVERSED_BOOL]` — optional. `true` to start in the "played" state so the first click reverses the animation.
-- `[FILL_MODE]` — usually `'both'`. Keeps the final state applied while hovering, and prevents garbage-collection of animation when finished.
-- `[DURATION_MS]` — animation duration in milliseconds. Typical click range: 100–500.
-- `[EASING_FUNCTION]` — CSS easing string (e.g. `'ease-out'`, `'ease-in-out'`, `'cubic-bezier(0.4, 0, 0.2, 1)'`), or named easing from `@wix/motion`.
+  - `'state'` — resumes/pauses the animation on each click. Useful for continuous loops (`iterations: Infinity`).
+- `[KEYFRAMES]` — array of keyframe objects (e.g. `[{ opacity: 0 }, { opacity: 1 }]`). Property names in camelCase.
+- `[EFFECT_NAME]` — unique string identifier for a `keyframeEffect`.
+- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`. Refer to motion-presets rules for available presets and their options.
+- `[FILL_MODE]` - optional. Always `'both'` with `type: 'alternate'` or `'repeat'`, otherwise depends on the effect.
+- `[INITIAL_REVERSED_BOOL]` — optional. `true` to start in the finished state so the entire effect is reversed.
+- `[DURATION_MS]` — animation duration in milliseconds.
+- `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
 - `[DELAY_MS]` — optional delay before the effect starts, in milliseconds.
-- `[ITERATIONS]` — optional. Number of iterations, or `Infinity` for continuous loops (pair with `type: 'state'`).
-- `[ALTERNATE_BOOL]` — optional. `true` to alternate direction on every other iteration.
-- `[UNIQUE_EFFECT_ID]` — optional. String identifier used for animation chaining or sequence references.
+- `[ITERATIONS]` — optional. Number of iterations, or `Infinity` for continuous loops.
+- `[ALTERNATE_BOOL]` — optional. `true` to alternate direction on every other iteration (within a single playback). Different from `type: 'alternate'` which alternates per click.
+- `[UNIQUE_EFFECT_ID]` — optional. String identifier used by `animationEnd` triggers for chaining, and by sequences for referencing effects from the top-level `effects` map.
 
 ---
 
 ## Rule 2: transition / transitionProperties with StateParams
 
-Use `transition` or `transitionProperties` when the click should toggle CSS property values via CSS transitions rather than keyframe animations. Pair with `StateParams` to control how the style is applied.
+Use `transition` or `transitionProperties` when the click should toggle styles via DOM attribute change and CSS transitions rather than keyframe animations. Uses the `transition` CSS property. Pair with `StateParams` to control how the style is applied.
+
+Use `transition` when all properties share timing. Use `transitionProperties` when each property needs independent `duration`, `delay`, or `easing`.
 
 ```typescript
 {
@@ -95,7 +97,8 @@ Use `transition` or `transitionProperties` when the click should toggle CSS prop
                 delay: [DELAY_MS],
                 easing: '[EASING_FUNCTION]',
                 styleProperties: [
-                    { name: '[CSS_PROP]', value: '[VALUE]' }
+                    { name: '[CSS_PROP]', value: '[VALUE]' },
+                    // ... more properties
                 ]
             },
             // OR (when each property needs its own timing)
@@ -106,7 +109,8 @@ Use `transition` or `transitionProperties` when the click should toggle CSS prop
                     duration: [DURATION_MS],
                     delay: [DELAY_MS],
                     easing: '[EASING_FUNCTION]'
-                }
+                },
+                // ... more properties
             ]
         }
     ]
@@ -117,30 +121,28 @@ Use `transition` or `transitionProperties` when the click should toggle CSS prop
 
 - `[SOURCE_KEY]` / `[TARGET_KEY]` — same as Rule 1.
 - `[TRANSITION_METHOD]` — `StateParams.method`. One of:
-  - `'add'` — adds the state on click.
-  - `'remove'` — removes the state on click.
-  - `'toggle'` — toggles the state on each click. Default.
-  - `'clear'` — clears all previously applied states on click.
+  - `'toggle'` — applies the style state, removes it on next click. Default.
+  - `'add'` — applies the style state. Does not remove on subsequent clicks.
+  - `'remove'` — removes a previously applied style state.
+  - `'clear'` — clears all previously applied style states. Useful for resetting multiple stacked style states at once.
 - `[CSS_PROP]` — CSS property name as a string in camelCase format (e.g. `'backgroundColor'`, `'borderRadius'`, `'opacity'`).
 - `[VALUE]` — target CSS value for the property.
 - `[DURATION_MS]` — transition duration in milliseconds.
 - `[DELAY_MS]` — optional transition delay in milliseconds.
 - `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
 
-Use `transition` when all properties share timing. Use `transitionProperties` when each property needs independent `duration`, `delay`, or `easing`.
-
 ---
 
 ## Rule 3: customEffect with PointerTriggerParams
 
-Use `customEffect` when you need imperative control over the animation (e.g. counters, canvas drawing, custom DOM manipulation). The callback receives the element and a `progress` value (0–1) driven by the animation timeline.
+Use `customEffect` when you need imperative control over the animation (e.g. counters, canvas drawing, custom DOM manipulation, randomized behavior). The callback receives the target element and a `progress` value (0–1) driven by the animation timeline.
 
 ```typescript
 {
     key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
-        type: '[POINTER_TYPE]'
+        type: '[EVENT_TRIGGER_TYPE]'
     },
     effects: [
         {
@@ -155,8 +157,7 @@ Use `customEffect` when you need imperative control over the animation (e.g. cou
 
 ### Variables
 
-- `[SOURCE_KEY]` / `[TARGET_KEY]` — same as Rule 1.
-- `[POINTER_TYPE]` — same as Rule 1.
+- `[SOURCE_KEY]` / `[TARGET_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
 - `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with `progress` from 0 to 1.
 - `[DURATION_MS]` — animation duration in milliseconds.
 - `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
@@ -172,14 +173,16 @@ Use sequences when a click should sync/stagger animations across multiple elemen
     key: '[SOURCE_KEY]',
     trigger: 'click',
     params: {
-        type: '[POINTER_TYPE]'
+        type: '[EVENT_TRIGGER_TYPE]'
     },
     sequences: [
         {
             offset: [OFFSET_MS],
             offsetEasing: '[OFFSET_EASING]',
             effects: [
+                // can be `selector` or `listContainer` for multiple effects, or a separate effect definitions with 
                 {
+                    // can be an inline Effect, or a reference to an effect defined in top level `effects` map
                     effectId: '[EFFECT_ID]',
                     listContainer: '[LIST_CONTAINER_SELECTOR]'
                 }
@@ -189,7 +192,7 @@ Use sequences when a click should sync/stagger animations across multiple elemen
 }
 ```
 
-The referenced `effectId` must be defined in the top-level `effects` map of the `InteractConfig`:
+Each `[EFFECT_ID]` must be defined in the top-level `effects` map of the `InteractConfig`:
 
 ```typescript
 effects: {
@@ -197,6 +200,7 @@ effects: {
         duration: [DURATION_MS],
         easing: '[EASING_FUNCTION]',
         fill: 'both',
+        // keyframeEffect or namedEffect
         keyframeEffect: {
             name: '[EFFECT_NAME]',
             keyframes: [KEYFRAMES]
@@ -207,10 +211,9 @@ effects: {
 
 ### Variables
 
-- `[SOURCE_KEY]` — same as Rule 1.
-- `[POINTER_TYPE]` — same as Rule 1.
+- `[SOURCE_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
 - `[OFFSET_MS]` — time offset between each child's animation start, in milliseconds.
-- `[OFFSET_EASING]` — easing curve for the stagger distribution (e.g. `'sineOut'`, `'linear'`).
-- `[EFFECT_ID]` — string key referencing an entry in the top-level `effects` map.
+- `[OFFSET_EASING]` — easing curve for the stagger distribution.
+- `[EFFECT_ID]` — string key referencing an entry in the top-level `effects` map. Same concept as `[UNIQUE_EFFECT_ID]` in Rule 1.
 - `[LIST_CONTAINER_SELECTOR]` — CSS selector for the container whose direct children will be staggered.
 - Effect definition variables (`[DURATION_MS]`, `[EASING_FUNCTION]`, `[EFFECT_NAME]`, `[KEYFRAMES]`) — same as Rule 1.
