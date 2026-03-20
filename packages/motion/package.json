@@ -52,7 +52,7 @@
   },
   "homepage": "https://github.com/wix/interact#readme",
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   },
   "dependencies": {
     "fastdom": "^1.0.11"
