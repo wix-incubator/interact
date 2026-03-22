@@ -131,12 +131,12 @@ type InteractConfig = {
 };
 ```
 
-| Field            | Description                                                             |
-| :--------------- | :---------------------------------------------------------------------- |
-| `interactions`   | Required. Array of interaction definitions binding triggers to effects. |
-| `effects?`       | Reusable effects referenced by `effectId` from interactions.            |
-| `sequences?`     | Reusable sequence definitions, referenced by `sequenceId`.              |
-| `conditions?`    | Named conditions (media/container/selector queries), referenced by ID.  |
+| Field          | Description                                                             |
+| :------------- | :---------------------------------------------------------------------- |
+| `interactions` | Required. Array of interaction definitions binding triggers to effects. |
+| `effects?`     | Reusable effects referenced by `effectId` from interactions.            |
+| `sequences?`   | Reusable sequence definitions, referenced by `sequenceId`.              |
+| `conditions?`  | Named conditions (media/container/selector queries), referenced by ID.  |
 
 Each call to `Interact.create(config)` creates a new `Interact` instance. A single config can define multiple interactions.
 
@@ -244,7 +244,9 @@ const css = generate(config);
 
 ```html
 <head>
-  <style>${css}</style>
+  <style>
+    ${css}
+  </style>
 </head>
 <body>
   <interact-element data-interact-key="hero" data-interact-initial="true">
@@ -259,11 +261,11 @@ const css = generate(config);
 
 Each `Interact.create(config)` call returns an instance. Keep a reference if you need to add/remove elements dynamically (vanilla JS) or to destroy a specific instance. Call `Interact.destroy()` to tear down all instances at once (e.g. on page navigation).
 
-| Method / Property                   | Description                                                                                                      |
-| :---------------------------------- | :--------------------------------------------------------------------------------------------------------------- |
-| `Interact.create(config)`           | Initialize with a config. Returns the instance. Multiple configs create separate instances.                       |
-| `Interact.registerEffects(presets)` | Register named effect presets before `create`. Required for `namedEffect` usage.                                 |
-| `Interact.destroy()`                | Tear down all instances.                                                                                         |
-| `Interact.forceReducedMotion`       | `boolean` — force reduced-motion behavior regardless of OS setting. Default: `false`.                            |
-| `Interact.allowA11yTriggers`        | `boolean` — enable accessibility triggers (`interest`, `activate`). Default: `false`.                            |
-| `Interact.setup(options)`           | Configure global defaults for scroll/pointer/viewEnter trigger params. Call before `create`.                                          |
+| Method / Property                   | Description                                                                                  |
+| :---------------------------------- | :------------------------------------------------------------------------------------------- |
+| `Interact.create(config)`           | Initialize with a config. Returns the instance. Multiple configs create separate instances.  |
+| `Interact.registerEffects(presets)` | Register named effect presets before `create`. Required for `namedEffect` usage.             |
+| `Interact.destroy()`                | Tear down all instances.                                                                     |
+| `Interact.forceReducedMotion`       | `boolean` — force reduced-motion behavior regardless of OS setting. Default: `false`.        |
+| `Interact.allowA11yTriggers`        | `boolean` — enable accessibility triggers (`interest`, `activate`). Default: `false`.        |
+| `Interact.setup(options)`           | Configure global defaults for scroll/pointer/viewEnter trigger params. Call before `create`. |

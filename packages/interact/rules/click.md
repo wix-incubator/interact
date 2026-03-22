@@ -180,7 +180,7 @@ Use sequences when a click should sync/stagger animations across multiple elemen
             offset: [OFFSET_MS],
             offsetEasing: '[OFFSET_EASING]',
             effects: [
-                // can be `selector` or `listContainer` for multiple effects, or a separate effect definitions with 
+                // can be `selector` or `listContainer` for multiple effects, or a separate effect definitions with
                 {
                     // can be an inline Effect, or a reference to an effect defined in top level `effects` map
                     effectId: '[EFFECT_ID]',
