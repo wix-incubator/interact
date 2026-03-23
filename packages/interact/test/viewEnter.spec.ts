@@ -30,7 +30,6 @@ describe('viewEnter handler', () => {
   let element: HTMLElement;
   let target: HTMLElement;
   let observerCallbacks: Array<(entries: Partial<IntersectionObserverEntry>[]) => void>;
-  let observerMock: any;
   let observeSpy: MockInstance;
   let unobserveSpy: MockInstance;
   let IntersectionObserverMock: MockInstance;
@@ -57,11 +56,6 @@ describe('viewEnter handler', () => {
     observeSpy = vi.fn();
     unobserveSpy = vi.fn();
     observerCallbacks = [];
-    observerMock = {
-      observe: observeSpy,
-      unobserve: unobserveSpy,
-      disconnect: vi.fn(),
-    };
 
     IntersectionObserverMock = vi.fn(function (this: any, cb: any, _options: any) {
       observerCallbacks.push(cb);
@@ -573,6 +567,129 @@ describe('viewEnter handler', () => {
       );
 
       expect(mockAnimation.persist).toHaveBeenCalled();
+    });
+  });
+
+  describe('Observer configuration', () => {
+    describe('inset to rootMargin mapping', () => {
+      it('should negate a single inset value for both top and bottom', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { inset: '20%' },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('-20% 0px -20%');
+      });
+
+      it('should negate two inset values independently for top and bottom', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { inset: '10% 30%' },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('-10% 0px -30%');
+      });
+
+      it('should handle pixel inset values', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { inset: '50px' },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('-50px 0px -50px');
+      });
+
+      it('should handle a mix of pixel and percent inset values', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { inset: '50px 10%' },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('-50px 0px -10%');
+      });
+
+      it('should handle a negative inset value by removing the minus sign', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { inset: '-20%' },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('20% 0px 20%');
+      });
+
+      it('should use "0px" rootMargin when no inset is provided', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          {},
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.rootMargin).toBe('0px');
+      });
+    });
+
+    describe('default threshold', () => {
+      it('should use 0.2 as the default threshold when not explicitly set', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          {},
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.threshold).toBe(0.2);
+      });
+
+      it('should use the explicitly provided threshold when set', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { threshold: 0.5 },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.threshold).toBe(0.5);
+      });
+
+      it('should respect threshold of 0 when explicitly set', () => {
+        viewEnterHandler.add(
+          element,
+          target,
+          { duration: 1000, namedEffect: { type: 'FadeIn' } },
+          { threshold: 0 },
+          {},
+        );
+
+        const config = IntersectionObserverMock.mock.calls[0][1];
+        expect(config.threshold).toBe(0);
+      });
     });
   });
 
