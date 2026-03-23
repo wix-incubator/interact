@@ -1,9 +1,6 @@
 name: Interact E2E Tests
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       branch:
