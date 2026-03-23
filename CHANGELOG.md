@@ -90,7 +90,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 #### Added
 
-- Add  `onAbort` method to `AnimationGroup` for invoking callback when animation is aborted (#163)
+- Add `onAbort` method to `AnimationGroup` for invoking callback when animation is aborted (#163)
 - Add Playwright e2e test suite covering animation groups, effects, pointer, and scroll animations (#131)
 
 ### [2.1.1] - 2026-03-15
