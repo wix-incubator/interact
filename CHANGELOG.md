@@ -10,6 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## @wix/interact
 
+### [2.1.3] - 2026-03-23
+
+#### Added
+
+- Add support to `onAbort` to fire correctly when an animation is aborted mid-play (#163)
+
+#### Fixed
+
+- Fix `viewEnter` inset value to be negated when applied as `rootMargin` (#166)
+- Add default `threshold: 0.2` for `viewEnter` intersection observer (#166)
+
 ### [2.1.2] - 2026-03-15
 
 #### Changed
@@ -74,6 +85,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## @wix/motion
+
+### [2.1.2] - 2026-03-23
+
+#### Added
+
+- Add `onAbort` method to `AnimationGroup` for invoking callback when animation is aborted (#163)
+- Add Playwright e2e test suite covering animation groups, effects, pointer, and scroll animations (#131)
 
 ### [2.1.1] - 2026-03-15
 
