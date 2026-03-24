@@ -149,17 +149,19 @@ All cross-references (by id) MUST point to existing entries. Element keys MUST b
 
 Each interaction maps a source element + trigger to one or more effects.
 
+**Multiple effects per interaction:** A single interaction can contain multiple effects in its `effects` array. All effects in the same interaction share the same trigger — they all fire together when the trigger activates. Use this to apply different animations to different targets from the same trigger event, rather than creating separate interactions with duplicate trigger configs.
+
 ```ts
 {
   key: string;                   // REQUIRED — matches data-interact-key / interactKey
   trigger: TriggerType;          // REQUIRED
   params?: TriggerParams;        // trigger-specific options
-  effects?: (Effect | EffectRef)[];
-  sequences?: (SequenceConfig | SequenceConfigRef)[];
+  effects?: (Effect | EffectRef)[]; // possible to add multiple effects for same trigger
+  sequences?: (SequenceConfig | SequenceConfigRef)[]; // possible to add multiple sequences for same trigger
   conditions?: string[];         // ids referencing the top-level conditions map; all must pass
   selector?: string;             // CSS selector to refine element selection
-  listContainer?: string;        // CSS selector for list container
-  listItemSelector?: string;     // CSS selector for items within listContainer
+  listContainer?: string;        // optional — CSS selector for list container
+  listItemSelector?: string;     // optional — CSS selector to filter which children of listContainer are selected
 }
 ```
 
@@ -273,7 +275,7 @@ Each effect applies a visual change to a target element. An effect is either inl
   conditions?: string[];     // ids referencing the top-level conditions map; all must pass
   selector?: string;         // CSS selector to refine target
   listContainer?: string;
-  listItemSelector?: string;
+  listItemSelector?: string; // optional — filter which children of listContainer are selected
   composite?: 'replace' | 'add' | 'accumulate';
   fill?: 'none' | 'forwards' | 'backwards' | 'both';
 }
@@ -516,22 +518,31 @@ conditions: {
 
 ## FOUC Prevention
 
-Use `generate(config)` to create critical CSS that hides elements with `viewEnter` + `type: 'once'` interactions until their entrance animation plays.
+**Problem:** Elements with entrance animations (e.g. `viewEnter` + `type: 'once'` with `FadeIn`) start in their final visible state. Before the animation framework initializes and applies the starting keyframe (e.g. `opacity: 0`), the element is briefly visible at full opacity — causing a flash of unstyled/un-animated content (FOUC).
+
+**Solution:** Two things are required — both MUST be present:
+
+1. **Generate critical CSS** using `generate(config)` — produces CSS rules that hide entrance-animated elements from the moment the page renders.
+2. **Mark elements with `initial`** — tells the runtime which elements have critical CSS applied so it can coordinate with the generated styles.
+
+### Step 1: Generate CSS
+
+Call `generate(config)` server-side or at build time and inject the result into the `<head>` (preferred), or insert to beginning of `<body>`, so it loads before the page content is painted:
 
 ```ts
 import { generate } from '@wix/interact/web';
 const css = generate(config);
 ```
 
-Include the output in the `<head>`:
+**Append to `<head>` or beginning of `<body>`:**
 
 ```html
-<style>
-  ${css}
-</style>
+<style>${css}</style>
 ```
 
-And set `initial="true"` on target elements:
+### Step 2: Mark elements
+
+**Web (Custom Elements):**
 
 ```html
 <interact-element data-interact-key="hero" data-interact-initial="true">
@@ -539,14 +550,26 @@ And set `initial="true"` on target elements:
 </interact-element>
 ```
 
-For React, set `initial={true}` on the `<Interaction>` component.
+**React:**
 
-**Rules:**
+```tsx
+<Interaction tagName="section" interactKey="hero" initial={true} className="hero">
+  ...
+</Interaction>
+```
 
-- Should be called server-side or at build time. Can also be called on client-side if page content is initially hidden (e.g. behind a loader/splash screen).
-- MUST set `data-interact-initial="true"` on the `<interact-element>` (or `initial={true}` on `<Interaction>`).
+**Vanilla:**
+
+```html
+<section data-interact-key="hero" data-interact-initial="true" class="hero">...</section>
+```
+
+### Rules
+
+- `generate()` should be called server-side or at build time. Can also be called on client-side if page content is initially hidden (e.g. behind a loader/splash screen).
+- **Both** `generate(config)` CSS **and** `initial` on the element are required. Using only one has no effect.
 - Only valid for `viewEnter` + `type: 'once'` where source and target are the same element.
-- For `repeat`/`alternate`/`state`, manually apply the initial keyframe as inline styles and use `fill: 'both'`.
+- For `repeat`/`alternate`/`state`, do NOT use `generate()`/`initial`. Instead, manually apply the initial keyframe as inline styles on the target element and use `fill: 'both'`.
 
 ---
 
@@ -558,8 +581,8 @@ For simple use cases, `key` on the interaction matches the element, and the same
 
 The source element is what the trigger attaches to. Resolved in priority order:
 
-1. **`listContainer` + `listItemSelector`** — trigger attaches to each element matching `listItemSelector` within the `listContainer`.
-2. **`listContainer` only** — trigger attaches to each immediate child of the container.
+1. **`listContainer` + `listItemSelector`** — trigger attaches to each element matching `listItemSelector` within the `listContainer`. Use `listItemSelector` only when you need to **filter** which children participate (e.g. select only `.active` items). If all immediate children should participate, omit `listItemSelector`.
+2. **`listContainer` only** — trigger attaches to each immediate child of the container. This is the common case for lists.
 3. **`listContainer` + `selector`** — trigger attaches to the element found via `querySelector` within each immediate child of the container.
 4. **`selector` only** — trigger attaches to all elements matching `querySelectorAll` within the root `<interact-element>`.
 5. **Fallback** — first child of `<interact-element>` (web) or the root element (react/vanilla).

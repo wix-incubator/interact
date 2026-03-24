@@ -18,6 +18,8 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 
 **Use Case**: Scroll-driven CSS-based effects.
 
+**Multiple effects:** The `effects` array can contain multiple effects — all are driven by the same scroll progress. Use this to animate different targets or properties in sync with the same scroll position.
+
 ### Template
 
 ```typescript
@@ -37,7 +39,8 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
             easing: '[EASING_FUNCTION]',
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -82,7 +85,8 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
             rangeEnd: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -123,7 +127,8 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
             easing: '[EASING_FUNCTION]',
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```

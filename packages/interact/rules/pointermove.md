@@ -109,6 +109,8 @@ For devices with dynamic viewport sizes (e.g. mobile browsers where the address 
 
 Use pre-built mouse presets from `@wix/motion-presets` that handle 2D mouse tracking internally. Mouse presets are preferred over `keyframeEffect` for 2D effects.
 
+**Multiple effects:** The `effects` array can contain multiple effects — all share the same pointer tracking and fire together. Use this to animate different targets from the same pointer movement.
+
 ```typescript
 {
     key: '[SOURCE_KEY]',
@@ -126,7 +128,8 @@ Use pre-built mouse presets from `@wix/motion-presets` that handle 2D mouse trac
             centeredToTarget: [CENTERED_TO_TARGET],
             transitionDuration: [TRANSITION_DURATION_MS],
             transitionEasing: '[TRANSITION_EASING]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -181,7 +184,8 @@ Use `keyframeEffect` when the pointer position along a single axis should drive 
             transitionDuration: [TRANSITION_DURATION_MS],
             transitionEasing: '[TRANSITION_EASING]',
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -292,7 +296,8 @@ Use `customEffect` when you need full imperative control over pointer-driven ani
             centeredToTarget: [CENTERED_TO_TARGET],
             transitionDuration: [TRANSITION_DURATION_MS],
             transitionEasing: '[TRANSITION_EASING]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```

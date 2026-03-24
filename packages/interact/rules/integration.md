@@ -149,7 +149,7 @@ Each call to `Interact.create(config)` creates a new `Interact` instance. A sing
   params?: TriggerParams;          // trigger-specific parameters
   selector?: string;               // CSS selector to refine target within the element
   listContainer?: string;          // CSS selector for a list container
-  listItemSelector?: string;       // CSS selector for items within listContainer
+  listItemSelector?: string;       // optional — CSS selector to filter which children of listContainer are selected
   conditions?: string[];           // array of condition IDs; all must pass
   effects?: Effect[];              // effects to apply
   sequences?: SequenceConfig[];    // sequences to apply
@@ -158,14 +158,18 @@ Each call to `Interact.create(config)` creates a new `Interact` instance. A sing
 
 At least one of `effects` or `sequences` MUST be provided.
 
+**Multiple effects per interaction:** A single interaction can contain multiple effects in its `effects` array. All effects share the same trigger — they fire together when the trigger activates. Use this to animate different targets from the same trigger event instead of duplicating interactions.
+
 ### Element Selection
 
 **Most common**: Omit `selector`/`listContainer`/`listItemSelector` entirely — the element with the matching key is used as both source and target. Use `selector` to target a child element within the keyed element. Use `listContainer` for staggered sequences across list items.
 
+`listItemSelector` is **optional** — only use it when you need to **filter** which children of `listContainer` participate (e.g. select only `.active` items). When omitted, all immediate children of the `listContainer` are selected.
+
 Resolved in order of priority:
 
-1. **`listContainer` + `listItemSelector`** — matches items within the container.
-2. **`listContainer` only** — targets immediate children of the container.
+1. **`listContainer` + `listItemSelector`** — matches only the elements matching `listItemSelector` within the container (filtering).
+2. **`listContainer` only** — targets all immediate children of the container (common case).
 3. **`listContainer` + `selector`** — matches via `querySelector` within each immediate child of the container.
 4. **`selector` only** — matches via `querySelectorAll` within the root element.
 5. **Fallback** — first child of `<interact-element>` (web) or the root element (react/vanilla).
@@ -228,31 +232,53 @@ Define reusable sequences in `InteractConfig.sequences` and reference by `sequen
 
 ## Critical CSS (FOUC Prevention)
 
-`generate(config)` produces CSS that hides elements with `viewEnter` + `type: 'once'` animations until their animation plays, preventing a flash of the un-animated state. See [viewenter.md](./viewenter.md) for full details.
+**Problem:** Elements with entrance animations (e.g. `FadeIn` on `viewEnter`) are initially visible in their final state. Before the animation framework applies the starting keyframe, the content flashes visibly — a flash of un-animated content (FOUC).
+
+**Solution:** Two things are required — both MUST be present:
+
+1. **Generate critical CSS** with `generate(config)` — produces CSS that hides entrance-animated elements until the animation plays.
+2. **Mark elements with `initial`** — `data-interact-initial="true"` on `<interact-element>`, or `initial={true}` on `<Interaction>` in React.
+
+Using only one of these has no effect — both are required.
+
+See [viewenter.md](./viewenter.md) for full details.
 
 **Rules:**
 
-- Should be called server-side or at build time.
-- Set `data-interact-initial="true"` on the `<interact-element>` (or `initial={true}` on `<Interaction>` in React).
+- `generate()` should be called server-side or at build time. Can also be called on the client if page content is initially hidden (e.g. behind a loader).
 - Only valid for `viewEnter` + `type: 'once'` where source and target are the same element.
 
 ```javascript
 import { generate } from '@wix/interact/web';
-
 const css = generate(config);
 ```
 
+**Append to `<head>` or beginning of `<body>`:**
+
 ```html
-<head>
-  <style>
-    ${css}
-  </style>
-</head>
-<body>
-  <interact-element data-interact-key="hero" data-interact-initial="true">
-    <section id="hero">...</section>
-  </interact-element>
-</body>
+<style>${css}</style>
+```
+
+**Web:**
+
+```html
+<interact-element data-interact-key="hero" data-interact-initial="true">
+  <section id="hero">...</section>
+</interact-element>
+```
+
+**React:**
+
+```tsx
+<Interaction tagName="section" interactKey="hero" initial={true} className="hero">
+  ...
+</Interaction>
+```
+
+**Vanilla:**
+
+```html
+<section data-interact-key="hero" data-interact-initial="true" class="hero">...</section>
 ```
 
 ---

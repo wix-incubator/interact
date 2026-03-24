@@ -24,6 +24,8 @@ Use `keyframeEffect` or `namedEffect` when the hover should play an animation (C
 
 **CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'`, `'repeat'` — keeps the effect applied while hovering and prevents garbage-collection. For `type: 'once'`, use `fill: 'backwards'` or `fill: 'none'`.
 
+**Multiple effects:** The `effects` array can contain multiple effects — all share the same hover trigger and fire together. Use this to animate different targets from a single hover event.
+
 ```typescript
 {
     key: '[SOURCE_KEY]',
@@ -49,7 +51,8 @@ Use `keyframeEffect` or `namedEffect` when the hover should play an animation (C
             delay: [DELAY_MS],
             iterations: [ITERATIONS],
             alternate: [ALTERNATE_BOOL]
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -113,7 +116,8 @@ Use `transition` when all properties share timing. Use `transitionProperties` wh
                 },
                 // ... more properties
             ]
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
@@ -151,7 +155,8 @@ Use `customEffect` when you need imperative control over the animation (e.g. cou
             customEffect: [CUSTOM_EFFECT_CALLBACK],
             duration: [DURATION_MS],
             easing: '[EASING_FUNCTION]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```

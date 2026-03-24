@@ -19,6 +19,8 @@ Use `keyframeEffect` or `namedEffect` when the click should play an animation (C
 
 **CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'` or `'repeat'` — keeps the effect applied while finished and prevents garbage-collection, allowing efficient toggling. For `type: 'once'`, use `fill: 'backwards'` or `fill: 'none'`.
 
+**Multiple effects:** The `effects` array can contain multiple effects — all share the same click trigger and fire together. Use this to animate different targets from a single click event.
+
 ```typescript
 {
     key: '[SOURCE_KEY]',
@@ -46,7 +48,8 @@ Use `keyframeEffect` or `namedEffect` when the click should play an animation (C
             iterations: [ITERATIONS],
             alternate: [ALTERNATE_BOOL],
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```

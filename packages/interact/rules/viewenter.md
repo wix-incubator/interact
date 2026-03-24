@@ -17,15 +17,18 @@ This document contains rules for generating viewport-based interactions using th
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-Use `generate(config)` from `@wix/interact` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays.
+**Problem:** Elements with entrance animations (e.g. `FadeIn`) start in their final visible state (e.g. `opacity: 1`). Before the animation framework initializes and applies the starting keyframe (e.g. `opacity: 0`), the element is briefly visible at full opacity — a flash of un-animated content.
 
-**Usage:**
+**Solution:** Two things are required — **both** MUST be present for FOUC prevention to work:
 
-- Should be called server-side or at build time. Can also be called on the client if the page content is initially hidden (e.g. behind a loader/splash screen).
-- MUST set `data-interact-initial="true"` on the root element (the one with `data-interact-key`), or `<Interaction initial={true}>` for React.
-- Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element.
-- Do NOT use for `viewEnter` with `repeat`/`alternate`/`state` types. For those, MUST manually apply the initial keyframe as style on the target element and use `fill: 'both'`.
-- `generate(config)` should still be called if other interactions in the config need it; set `initial` only on the relevant `viewEnter` + `type: 'once'` elements.
+1. **Generate critical CSS** using `generate(config)` — produces CSS rules that hide entrance-animated elements from the moment the page renders, before JavaScript runs.
+2. **Mark elements with `initial`** — set `data-interact-initial="true"` on `<interact-element>`, or `initial={true}` on the `<Interaction>` React component. This tells the runtime which elements have critical CSS applied.
+
+If only one of these is present, FOUC prevention will **not** work. Both the CSS and the `initial` attribute are required.
+
+### Step 1: Generate CSS and inject into `<head>` (preferred), or beginning of `<body>`
+
+Call `generate(config)` server-side or at build time. Inject the resulting CSS into the document `<head>` (or in `<body>` before your content) so it loads before the page content is painted:
 
 ```typescript
 import { generate } from '@wix/interact';
@@ -42,13 +45,17 @@ const config: InteractConfig = {
 };
 
 const css = generate(config);
-
-/* then add the styles to the document's <head>
- * <style>${css}</style>
- */
 ```
 
-**Web integration:**
+**Append to `<head>` or beginning of `<body>`:**
+
+```html
+<style>${css}</style>
+```
+
+### Step 2: Mark elements with `initial`
+
+**Web (Custom Elements):**
 
 ```html
 <interact-element data-interact-key="hero" data-interact-initial="true">
@@ -56,7 +63,7 @@ const css = generate(config);
 </interact-element>
 ```
 
-**React integration:**
+**React:**
 
 ```tsx
 <Interaction tagName="section" interactKey="hero" initial={true} className="hero">
@@ -64,9 +71,24 @@ const css = generate(config);
 </Interaction>
 ```
 
+**Vanilla:**
+
+```html
+<section data-interact-key="hero" data-interact-initial="true" class="hero">...</section>
+```
+
+### Rules
+
+- `generate()` should be called server-side or at build time. Can also be called on the client if the page content is initially hidden (e.g. behind a loader/splash screen).
+- Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element.
+- Do NOT use for `viewEnter` with `repeat`/`alternate`/`state` types. For those, manually apply the initial keyframe as inline styles on the target element and use `fill: 'both'`.
+- If other interactions in the config also need FOUC prevention, `generate(config)` covers them all — set `initial` only on the relevant `viewEnter` + `type: 'once'` elements.
+
 ## Rule 1: keyframeEffect / namedEffect with ViewEnterParams
 
 Use `keyframeEffect` or `namedEffect` when the viewEnter should play an animation (CSS or WAAPI). Pair with `params: ViewEnterParams` to configure the IntersectionObserver trigger.
+
+**Multiple effects:** The `effects` array can contain multiple effects — all share the same viewEnter trigger and fire together when the element enters the viewport. Use this to animate different targets from a single viewport entry event.
 
 ```typescript
 {
@@ -97,7 +119,8 @@ Use `keyframeEffect` or `namedEffect` when the viewEnter should play an animatio
             iterations: [ITERATIONS],
             alternate: [ALTERNATE_BOOL],
             effectId: '[UNIQUE_EFFECT_ID]'
-        }
+        },
+        // additional effects targeting other elements can be added here
     ]
 }
 ```
