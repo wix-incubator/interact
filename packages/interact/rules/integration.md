@@ -256,7 +256,9 @@ const css = generate(config);
 **Append to `<head>` or beginning of `<body>`:**
 
 ```html
-<style>${css}</style>
+<style>
+  ${css}
+</style>
 ```
 
 **Web:**
