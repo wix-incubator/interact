@@ -166,13 +166,24 @@ At least one of `effects` or `sequences` MUST be provided.
 
 `listItemSelector` is **optional** — only use it when you need to **filter** which children of `listContainer` participate (e.g. select only `.active` items). When omitted, all immediate children of the `listContainer` are selected.
 
-Resolved in order of priority:
+#### Source element resolution (Interaction level)
 
-1. **`listContainer` + `listItemSelector`** — matches only the elements matching `listItemSelector` within the container (filtering).
-2. **`listContainer` only** — targets all immediate children of the container (common case).
+The source element is what the trigger attaches to. Resolved in priority order:
+
+1. **`listContainer` + `listItemSelector`** — matches only the elements matching `listItemSelector` within the the `listContainer`.
+2. **`listContainer` only** — trigger attaches to all immediate children of the container (common case).
 3. **`listContainer` + `selector`** — matches via `querySelector` within each immediate child of the container.
 4. **`selector` only** — matches via `querySelectorAll` within the root element.
 5. **Fallback** — first child of `<interact-element>` (web) or the root element (react/vanilla).
+
+#### Target element resolution (Effect level)
+
+The target element is what the effect animates. Resolved in priority order:
+
+1. **`Effect.key`** — the root with matching `data-interact-key`.
+2. **Registry Effect's `key`** — if the effect is an `EffectRef`, the `key` from the referenced registry entry is used.
+3. **Fallback to `Interaction.key`** — the source element acts as the target's root.
+4. After resolving the target's root, `selector`, `listContainer`, and `listItemSelector` on the effect further refine which child elements within that target are animated (same priority order as source resolution).
 
 ---
 
@@ -184,7 +195,7 @@ Resolved in order of priority:
 | `click`        | Mouse click                            | Same as `hover`                                                                                                                | [click.md](./click.md)               |
 | `interest`     | Accessible hover (hover + focus)       | Same as `hover`                                                                                                                | [hover.md](./hover.md)               |
 | `activate`     | Accessible click (click + Enter/Space) | Same as `click`                                                                                                                | [click.md](./click.md)               |
-| `viewEnter`    | Element enters viewport                | `type?`: same values as hover; `threshold?`: 0–1; `inset?`: CSS length as strin for viewport margin                            | [viewenter.md](./viewenter.md)       |
+| `viewEnter`    | Element enters viewport                | `type?`: same values as hover; `threshold?`: 0–1; `inset?`: CSS length as string for viewport inset                            | [viewenter.md](./viewenter.md)       |
 | `viewProgress` | Scroll-driven (ViewTimeline)           | No trigger params. Configure `rangeStart`/`rangeEnd` on the **effect**, not on `params`.                                       | [viewprogress.md](./viewprogress.md) |
 | `pointerMove`  | Mouse movement                         | `hitArea?`: `'self'` \| `'root'`; `axis?`: `'x'` \| `'y'`                                                                      | [pointermove.md](./pointermove.md)   |
 | `animationEnd` | Chain after another effect             | `effectId`: ID of the preceding effect                                                                                         | —                                    |
@@ -214,7 +225,7 @@ Define reusable sequences in `InteractConfig.sequences` and reference by `sequen
 {
   sequences: {
     'stagger-fade': {
-      /* ... sequence defintiion */
+      /* ... sequence definition */
     },
   },
   interactions: [

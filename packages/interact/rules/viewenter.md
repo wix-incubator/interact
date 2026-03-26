@@ -1,6 +1,6 @@
 # ViewEnter Trigger Rules for @wix/interact
 
-This document contains rules for generating viewport-based interactions using the `@wix/interact`. ViewEnter triggers use IntersectionObserver to detect when elements enter the viewport and are ideal for entrance animations, scroll-triggered content reveals, and lazy-loading effects.
+This document contains rules for generating interactions that respond to elements entering the viewport using the `@wix/interact`. ViewEnter triggers use IntersectionObserver to detect when elements become visible and are ideal for entrance animations, content reveals, and lazy-loading effects.
 
 ---
 
@@ -36,10 +36,12 @@ import { generate } from '@wix/interact';
 const config: InteractConfig = {
   interactions: [
     {
-      key: 'hero',
+      key: '[SOURCE_KEY]',
       trigger: 'viewEnter',
-      params: { type: 'once', threshold: 0.2 },
-      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 800 }],
+      params: { type: [VIEW_TRIGGER_TYPE], threshold: [VIEW_TRIGGER_THRESHOLD], inset: [VIEW_TRIGGER_INSET] },
+      effects: [EFFECT_DEFINITIONS],
+      // and/or
+      sequences: [SEQUENCE_DEFINITIONS]
     },
   ],
 };
@@ -60,15 +62,15 @@ const css = generate(config);
 **Web (Custom Elements):**
 
 ```html
-<interact-element data-interact-key="hero" data-interact-initial="true">
-  <section class="hero">...</section>
+<interact-element data-interact-key="[SOURCE_KEY]" data-interact-initial="true">
+  <section>...</section>
 </interact-element>
 ```
 
 **React:**
 
 ```tsx
-<Interaction tagName="section" interactKey="hero" initial={true} className="hero">
+<Interaction tagName="section" interactKey="[SOURCE_KEY]" initial={true}>
   ...
 </Interaction>
 ```
@@ -76,7 +78,7 @@ const css = generate(config);
 **Vanilla:**
 
 ```html
-<section data-interact-key="hero" data-interact-initial="true" class="hero">...</section>
+<section data-interact-key="[SOURCE_KEY]" data-interact-initial="true">...</section>
 ```
 
 ### Rules
@@ -142,9 +144,9 @@ Use `keyframeEffect` or `namedEffect` when the viewEnter should play an animatio
 - `[KEYFRAMES]` — array of keyframe objects (e.g. `[{ opacity: 0 }, { opacity: 1 }]`). Property names in camelCase.
 - `[EFFECT_NAME]` — unique string identifier for a `keyframeEffect`.
 - `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`. Refer to motion-presets rules for available presets and their options.
-- `[FILL_MODE]` — `'backwards'` for entrance animations with `type: 'once'` (applies initial keyframe before playing). `'both'` for `'alternate'`, `'repeat'`, or `'state'` types.
+- `[FILL_MODE]` — `'both'` for `'alternate'`, `'repeat'`, or `'state'` types. For `type: 'once'`: use `'backwards'` when the animation's final keyframe has no additional effect (over element's base style); use `'both'` otherwise.
 - `[DURATION_MS]` — animation duration in milliseconds.
-- `[EASING_FUNCTION]` — CSS easing string (e.g. `'ease-out'`, `'ease-in-out'`, `'cubic-bezier(0.16, 1, 0.3, 1)'`), or named easing from `@wix/motion`.
+- `[EASING_FUNCTION]` — CSS easing string or named easing from `@wix/motion`.
 - `[DELAY_MS]` — optional delay before the effect starts, in milliseconds.
 - `[ITERATIONS]` — optional. Number of iterations, or `Infinity` for continuous loops. Primarily useful with `type: 'state'`.
 - `[ALTERNATE_BOOL]` — optional. `true` to alternate direction on every other iteration (within a single playback).
@@ -179,11 +181,8 @@ Use `customEffect` when you need imperative control over the animation (e.g. cou
 
 ### Variables
 
-- `[SOURCE_KEY]` / `[TARGET_KEY]` / `[VIEW_ENTER_TYPE]` / `[VISIBILITY_THRESHOLD]` / `[VIEWPORT_INSETS]` — same as Rule 1.
+- `[SOURCE_KEY]` / `[TARGET_KEY]` / `[VIEW_ENTER_TYPE]` / `[VISIBILITY_THRESHOLD]` / `[VIEWPORT_INSETS]` / `[DURATION_MS]` / `[EASING_FUNCTION]` / `[UNIQUE_EFFECT_ID]` — same as Rule 1.
 - `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with `progress` from 0 to 1.
-- `[DURATION_MS]` — animation duration in milliseconds.
-- `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
-- `[UNIQUE_EFFECT_ID]` — optional. String identifier used for animation chaining.
 
 ---
 
@@ -205,31 +204,11 @@ Use sequences when a viewEnter should sync/stagger animations across multiple el
             offset: [OFFSET_MS],
             offsetEasing: '[OFFSET_EASING]',
             effects: [
-                // can be an inline Effect, or a reference to an effect defined in top level `effects` map
-                {
-                    effectId: '[EFFECT_ID]',
-                    listContainer: '[LIST_CONTAINER_SELECTOR]'
-                }
+                [EFFECT_DEFINTION],
+                // .. more effects as necessary
             ]
         }
     ]
-}
-```
-
-Each `[EFFECT_ID]` must be defined in the top-level `effects` map of the `InteractConfig`:
-
-```typescript
-effects: {
-    '[EFFECT_ID]': {
-        duration: [DURATION_MS],
-        easing: '[EASING_FUNCTION]',
-        fill: '[FILL_MODE]',
-        // keyframeEffect or namedEffect
-        keyframeEffect: {
-            name: '[EFFECT_NAME]',
-            keyframes: [KEYFRAMES]
-        }
-    }
 }
 ```
 
@@ -237,7 +216,5 @@ effects: {
 
 - `[SOURCE_KEY]` / `[VIEW_ENTER_TYPE]` / `[VISIBILITY_THRESHOLD]` / `[VIEWPORT_INSETS]` — same as Rule 1.
 - `[OFFSET_MS]` — time offset between each child's animation start, in milliseconds.
-- `[OFFSET_EASING]` — easing curve for the stagger distribution (e.g. `'sineOut'`, `'linear'`, `'quadIn'`).
-- `[EFFECT_ID]` — string key referencing an entry in the top-level `effects` map. Same concept as `[UNIQUE_EFFECT_ID]` in Rule 1.
-- `[LIST_CONTAINER_SELECTOR]` — CSS selector for the container whose direct children will be staggered.
-- Effect definition variables (`[DURATION_MS]`, `[EASING_FUNCTION]`, `[FILL_MODE]`, `[EFFECT_NAME]`, `[KEYFRAMES]`) — same as Rule 1.
+- `[OFFSET_EASING]` — CSS easing or named easing from `@wix/motion`, for the stagger distribution. Defaults to `'linear'`.
+- `[EFFECT_DEFINTION]` — a definition of or a reference to a time-based animation effect.

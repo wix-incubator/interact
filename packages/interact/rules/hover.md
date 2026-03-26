@@ -4,10 +4,10 @@ This document contains rules for generating hover-triggered interactions in `@wi
 
 **CRITICAL — Accessible hover**: Use `trigger: 'interest'` instead of `trigger: 'hover'` to also respond to keyboard focus.
 
-**CRITICAL — Hit-area shift**: To avoid flickering, use a **separate `[SOURCE_KEY]` and `[TARGET_KEY]`** when the effect changes size or position:
+**CRITICAL — Hit-area shift**: To avoid flickering, use a **separate source and target elements** when the effect changes size or position:
 
-- `[SOURCE_KEY]` (interaction `key`) — a stable wrapper element that receives the mouse events.
-- `[TARGET_KEY]` (effect `key` or `selector`) — the inner element that actually animates.
+- source element: the element that triggering event is attached to.
+- target element: — the inner element that actually animates.
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ This document contains rules for generating hover-triggered interactions in `@wi
 
 Use `keyframeEffect` or `namedEffect` when the hover should play an animation (CSS or WAAPI). Pair with `PointerTriggerParams` to control playback behavior.
 
-**CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'`, `'repeat'` — keeps the effect applied while hovering and prevents garbage-collection. For `type: 'once'`, use `fill: 'backwards'` or `fill: 'none'`.
+**CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'`, `'repeat'` — keeps the effect applied while hovering and prevents garbage-collection. For `type: 'once'` use `fill: 'backwards'`.
 
 **Multiple effects:** The `effects` array can contain multiple effects — all share the same hover trigger and fire together. Use this to animate different targets from a single hover event.
 
@@ -128,8 +128,8 @@ Use `transition` when all properties share timing. Use `transitionProperties` wh
 - `[TRANSITION_METHOD]` — `StateParams.method`. One of:
   - `'toggle'` — applies the style state on enter, removes on leave. Default.
   - `'add'` — applies the style state on enter. Leave does NOT remove it.
-  - `'remove'` — removes a previously applied style state on enter.
-  - `'clear'` — clears all previously applied style states on enter. Useful for resetting multiple stacked style state changes at once.
+  - `'remove'` — removes a previously applied style state on enter. Use with provided `effectId` to map to a matching interaction with `add` and effect with same `effectId`.
+  - `'clear'` — clears all previously applied style states on enter. Use to reset multiple stacked `'add'` style changes at once (e.g. a "reset" hover area that undoes several accumulated states).
 - `[CSS_PROP]` — CSS property name as a string in camelCase format (e.g. `'backgroundColor'`, `'borderRadius'`, `'opacity'`).
 - `[VALUE]` — target CSS value for the property.
 - `[DURATION_MS]` — transition duration in milliseconds.
@@ -164,7 +164,7 @@ Use `customEffect` when you need imperative control over the animation (e.g. cou
 ### Variables
 
 - `[SOURCE_KEY]` / `[TARGET_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
-- `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with `progress` from 0 to 1.
+- `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(target: HTMLElement, progress: number) => void`. Called on each animation frame with the target element and `progress` from 0 to 1.
 - `[DURATION_MS]` — animation duration in milliseconds.
 - `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
 
@@ -186,39 +186,17 @@ Use sequences when a hover should sync/stagger animations across multiple elemen
             offset: [OFFSET_MS],
             offsetEasing: '[OFFSET_EASING]',
             effects: [
-                {
-                    // can be an inline Effect, or a reference to an effect defined in top level `effects` map
-                    effectId: '[EFFECT_ID]',
-                    listContainer: '[LIST_CONTAINER_SELECTOR]'
-                }
+                [EFFECT_DEFINTION],
+                // .. more effects as necessary
             ]
         }
     ]
 }
 ```
 
-Each `[EFFECT_ID]` must be defined in the top-level `effects` map of the `InteractConfig`:
-
-```typescript
-effects: {
-    '[EFFECT_ID]': {
-        duration: [DURATION_MS],
-        easing: '[EASING_FUNCTION]',
-        fill: '[FILL_MODE]',
-        // keyframeEffect or namedEffect
-        keyframeEffect: {
-            name: '[EFFECT_NAME]',
-            keyframes: [KEYFRAMES]
-        }
-    }
-}
-```
-
 ### Variables
 
 - `[SOURCE_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
-- `[OFFSET_MS]` — time offset between each child's animation start, in milliseconds.
-- `[OFFSET_EASING]` — easing curve for the stagger distribution (e.g. `'sineOut'`, `'linear'`).
-- `[EFFECT_ID]` — string key referencing an entry in the top-level `effects` map. Same concept as `[UNIQUE_EFFECT_ID]` in Rule 1.
-- `[LIST_CONTAINER_SELECTOR]` — CSS selector for the container whose direct children will be staggered.
-- Effect definition variables (`[DURATION_MS]`, `[EASING_FUNCTION]`, `[FILL_MODE]`, `[EFFECT_NAME]`, `[KEYFRAMES]`) — same as Rule 1.
+- `[OFFSET_MS]` — time offset for staggering each child's animation start, in milliseconds.
+- `[OFFSET_EASING]` — easing curve for the offset staggering distribution. Defaults to `'linear'`.
+- `[EFFECT_DEFINTION]` — a definition of or a reference to a time-based animation effect.

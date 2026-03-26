@@ -32,12 +32,14 @@ Declarative configuration-driven interaction library. Binds animations to trigge
 
 Each item here is CRITICAL — ignoring any of them will break animations.
 
-- **CRITICAL — `overflow: hidden` breaks `viewProgress`** — replace with `overflow: clip` on all ancestors between source and scroll container. In Tailwind, replace `overflow-hidden` with `overflow-clip`.
-- **Perspective**: Prefer `transform: perspective(...)` inside keyframes. Use the CSS `perspective` property only when multiple children share the same `perspective-origin`.
-- **CRITICAL — Do NOT guess preset options**: If you don't know the expected type/structure for a `namedEffect` param, omit it — rely on defaults rather than guessing.
+- **CRITICAL — `overflow: hidden` breaks `viewProgress`**: Replace with `overflow: clip` on all ancestors between source and scroll container. In Tailwind, replace `overflow-hidden` with `overflow-clip`.
+- **CRITICAL**: When using `viewEnter` trigger and source (trigger) and target (effect) elements are the **same element**, use ONLY `type: 'once'`. For all other types (`'repeat'`, `'alternate'`, `'state'`) MUST use **separate** source and target elements — animating the observed element itself can cause it to leave/re-enter the viewport, leading to rapid re-triggers or the animation never firing.
 - **CRITICAL - Hit-area shift**: When a hover effect changes the size or position of the hovered element (e.g., `transform: scale(…)`), MUST use a separate source and target elements. Otherwise the hit-area shifts, causing rapid enter/leave.
   events and flickering. Use `selector` to target a child element, or set the effect's `key` to a different element.
+- **CRITICAL**: For `pointerMove` trigger MUST AVOID using the same element as both source and target with `hitArea: 'self'` and effects that change size or position (e.g. `transform: translate(…)`, `scale(…)`). The transform shifts the hit area, causing jittery re-entry cycles. Instead, use `selector` to target a child element for the animation.
+- **CRITICAL — Do NOT guess preset options**: If you don't know the expected type/structure for a `namedEffect` param, omit it — rely on defaults rather than guessing.
 - **Reduced motion**: Use conditions to provide gentler alternatives (shorter durations, fewer transforms, no perpetual motion) for users who prefer reduced motion. You can also set `Interact.forceReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches` to force a global reduced-motion behavior programmatically.
+- **Perspective**: Prefer `transform: perspective(...)` inside keyframes. Use the CSS `perspective` property only when multiple children share the same `perspective-origin`.
 
 ---
 
@@ -83,7 +85,7 @@ instance.remove('hero'); // unregister
 </script>
 ```
 
-**Registering presets** — MUST be called before using calling `Interact.create()` with usage of `namedEffect`:
+**Registering presets** — MUST be called before calling `Interact.create()` with usage of `namedEffect`:
 
 ```ts
 import * as presets from '@wix/motion-presets';
@@ -153,15 +155,15 @@ Each interaction maps a source element + trigger to one or more effects.
 
 ```ts
 {
-  key: string;                   // REQUIRED — matches data-interact-key / interactKey
+  key: string;                   // REQUIRED — matches data-interact-key / interactKey - the root element
   trigger: TriggerType;          // REQUIRED
   params?: TriggerParams;        // trigger-specific options
   effects?: (Effect | EffectRef)[]; // possible to add multiple effects for same trigger
   sequences?: (SequenceConfig | SequenceConfigRef)[]; // possible to add multiple sequences for same trigger
   conditions?: string[];         // ids referencing the top-level conditions map; all must pass
-  selector?: string;             // CSS selector to refine element selection
+  selector?: string;             // optional - CSS selector to refine source element selection within the root element
   listContainer?: string;        // optional — CSS selector for list container
-  listItemSelector?: string;     // optional — CSS selector to filter which children of listContainer are selected
+  listItemSelector?: string;     // optional — CSS selector to filter which children of listContainer are observed as sources
 }
 ```
 
@@ -241,13 +243,15 @@ params: {
 - For 2D effects, use `namedEffect` mouse presets or `customEffect`. `keyframeEffect` only supports a single axis.
 - For independent 2-axis control with keyframes, use two separate interactions (one `axis: 'x'`, one `axis: 'y'`) with `composite: 'add'` or `'accumulate'` on the second effect.
 
-**`centeredToTarget`** — set `true` when source and target are different elements, or when using `hitArea: 'root'` with a specific target, so the coordinate origin is centered on the target.
+**`centeredToTarget`** — set `true` to remap the `0–1` progress range so that `0.5` progress corresponds to the center of the target element. Use when source and target are different elements, or when `hitArea: 'root'` is used, so that the pointer resting over the target center produces 50% progress regardless of position in viewport.
 
 **Progress object** (for `customEffect`):
 
 ```ts
 { x: number; y: number; v?: { x: number; y: number }; active?: boolean }
-// x, y: 0–1 normalized position; v: velocity; active: whether in active range
+// x, y: 0–1 normalized position within hit area
+// v: velocity vector (unbounded, typically -1 to 1 range at moderate speed; 0 = stationary)
+// active: whether pointer is within the active hit area
 ```
 
 ### animationEnd
@@ -264,7 +268,7 @@ Fires when the specified effect completes on the source element. Useful for chai
 
 ## Effects
 
-Each effect applies a visual change to a target element. An effect is either inline or referenced by `effectId` from the top-level `effects` registry. See [Element Resolution](#element-resolution) for how the target is determined.
+Each effect applies a visual change to a target element. An effect is either inline or referenced by `effectId` from the top-level `effects` registry (`EffectRef`). An `EffectRef` inherits all properties from the registry entry, and can override any of them (e.g. `key`, `duration`, `easing`, `fill`, etc.) — not just the target. See [Element Resolution](#element-resolution) for how the target is determined.
 
 ### Common fields
 
@@ -286,7 +290,7 @@ Each effect applies a visual change to a target element. An effect is either inl
 - `'both'` — use for scroll-driven (`viewProgress`), pointer-driven (`pointerMove`), and toggling effects (`hover`/`click` with `alternate`, `repeat`, or `state` type).
 - `'backwards'` — use for entrance animations with `type: 'once'` when the element's own CSS already matches the final keyframe (applies the initial keyframe during any `delay`).
 
-**`composite`** — controls how this effect combines with others on the same property (transforms & filters):
+**`composite`** — same as CSS's `animation-composition`. Controls how this effect combines with others on the same property (transforms & filters):
 
 - `'replace'` (default): fully replaces prior values.
 - `'add'`: concatenates transform/filter functions after any existing ones (e.g. existing `translateX(10px)` + added `translateY(20px)` → both apply).
@@ -336,7 +340,7 @@ Used with `viewProgress` and `pointerMove` triggers.
 }
 ```
 
-**RangeOffset**:
+**RangeOffset** — works like CSS's `animation-range`:
 
 ```ts
 {
@@ -345,12 +349,14 @@ Used with `viewProgress` and `pointerMove` triggers.
 }
 ```
 
-| Range name | Meaning                                              |
-| :--------- | :--------------------------------------------------- |
-| `entry`    | Element entering viewport                            |
-| `exit`     | Element exiting viewport                             |
-| `contain`  | Element fully within view                            |
-| `cover`    | Full range from `entry` through `contain` and `exit` |
+| Range name       | Meaning                                              |
+| :--------------- | :--------------------------------------------------- |
+| `entry`          | Element entering viewport                            |
+| `exit`           | Element exiting viewport                             |
+| `contain`        | After `entry` range and before `exit` range          |
+| `cover`          | Full range from `entry` through `contain` and `exit` |
+| `entry-crossing` | From element's leading edge entering to trailing edge entering |
+| `exit-crossing`  | From element's leading edge exiting to trailing edge exiting   |
 
 **Sticky container pattern** — for scroll-driven animations inside a stuck `position: sticky` container:
 
@@ -389,12 +395,13 @@ Exactly one MUST be provided per time-based or scroll/pointer-driven effect:
 
    ```ts
    namedEffect: {
-     type: ('[PRESET_NAME]', [PRESET_OPTIONS]);
+     type: '[PRESET_NAME]',
+     // ...optional [PRESET_OPTIONS] as additional properties
    }
    ```
 
    - `[PRESET_NAME]` — one of the registered preset names (see table below).
-   - `[PRESET_OPTIONS]` — optional preset-specific properties. **CRITICAL:** Do NOT guess option names/types. Omit unknown options and rely on defaults.
+   - `[PRESET_OPTIONS]` — optional preset-specific properties spread as additional keys on the object. **CRITICAL:** Do NOT guess option names/types. Omit unknown options and rely on defaults.
 
    Available presets:
 
@@ -454,9 +461,9 @@ Coordinate multiple effects with staggered timing. Prefer sequences over manual 
       params: [TRIGGER_PARAMS],
       sequences: [
         {
-          offset: [OFFSET_MS],
-          offsetEasing: '[OFFSET_EASING]',
-          delay: [DELAY_MS],
+          offset: [OFFSET_MS],           // optional
+          offsetEasing: '[OFFSET_EASING]', // optional
+          delay: [DELAY_MS],             // optional
           effects: [
             // if used `listContainer` each item in the list is a target of a child effect
             {
@@ -480,7 +487,7 @@ Coordinate multiple effects with staggered timing. Prefer sequences over manual 
 ### Variables
 
 - `[SOURCE_KEY]` — identifier matching the element's key (`data-interact-key` for /vanilla, `interactKey` for React).
-- `[TRIGGER]` — any timeb-based trigger type (e.g., `'viewEnter'`, `'activate'`, `'interest'`).
+- `[TRIGGER]` — any trigger for time-based animation effects (e.g., `'viewEnter'`, `'activate'`, `'interest'`).
 - `[TRIGGER_PARAMS]` — trigger-specific parameters (e.g., `{ type: 'once', threshold: 0.3 }`).
 - `[OFFSET_MS]` — ms between each child's animation start.
 - `[OFFSET_EASING]` — easing curve for staggering offsets. One of: `'linear'`, `'quadIn'`, `'quadOut'`, `'sineOut'`, `'cubicIn'`, `'cubicOut'`, `'cubicInOut'`, `'cubic-bezier(...)'`, or `'linear(...)'`.
@@ -570,8 +577,8 @@ const css = generate(config);
 
 - `generate()` should be called server-side or at build time. Can also be called on client-side if page content is initially hidden (e.g. behind a loader/splash screen).
 - **Both** `generate(config)` CSS **and** `initial` on the element are required. Using only one has no effect.
-- Only valid for `viewEnter` + `type: 'once'` where source and target are the same element.
-- For `repeat`/`alternate`/`state`, do NOT use `generate()`/`initial`. Instead, manually apply the initial keyframe as inline styles on the target element and use `fill: 'both'`.
+- `initial` is only valid for `viewEnter` + `type: 'once'` where source and target are the same element.
+- For `repeat`/`alternate`/`state`, do NOT use `initial`. Instead, manually apply the initial keyframe as inline styles on the target element and use `fill: 'both'`.
 
 ---
 
@@ -579,7 +586,7 @@ const css = generate(config);
 
 For simple use cases, `key` on the interaction matches the element, and the same element is both trigger source and animation target. The fields below are only needed for advanced patterns (lists, delegated triggers, child targeting).
 
-### Source element resolution (Interaction)
+### Source element resolution (Interaction level)
 
 The source element is what the trigger attaches to. Resolved in priority order:
 
@@ -589,7 +596,7 @@ The source element is what the trigger attaches to. Resolved in priority order:
 4. **`selector` only** — trigger attaches to all elements matching `querySelectorAll` within the root `<interact-element>`.
 5. **Fallback** — first child of `<interact-element>` (web) or the root element (react/vanilla).
 
-### Target element resolution (Effect)
+### Target element resolution (Effect level)
 
 The target element is what the effect animates. Resolved in priority order:
 
@@ -609,6 +616,17 @@ The target element is what the effect animates. Resolved in priority order:
 | `Interact.destroy()`                | Tear down all instances. Call on unmount or route change to prevent memory leaks.                                  |
 | `Interact.forceReducedMotion`       | `boolean` (default: `false`) — force reduced-motion behavior regardless of OS setting.                             |
 | `Interact.allowA11yTriggers`        | `boolean` (default: `false`) — enable accessibility trigger variants (`interest`, `activate`).                     |
-| `Interact.setup(options)`           | Configure global thresholds and observer options for scroll, pointer, and viewEnter systems. Call before `create`. |
+| `Interact.setup(options)`           | Configure global options for scroll, pointer, and viewEnter systems. Call before `create`. See options below.      |
+
+**`Interact.setup(options)`** — optional configuration object:
+
+| Option                   | Type                              | Description                                                          |
+| :----------------------- | :-------------------------------- | :------------------------------------------------------------------- |
+| `scrollOptionsGetter`    | `() => Partial<scrollConfig>`     | Function returning defaults for scroll-driven animation configuration|
+| `pointerOptionsGetter`   | `() => Partial<PointerConfig>`    | Function returning defaults for pointer-move animation configuration |
+| `viewEnter`              | `Partial<ViewEnterParams>`        | Defaults for all viewEnter triggers (`threshold`,`inset`)            |
+| `allowA11yTriggers`      | `boolean`                         | Enable accessibility trigger variants (use `interest` and `activate`)|
+
+Use `setup()` when you need to override default observer thresholds or provide global configuration that applies to all interactions of a given trigger type.
 
 Each `Interact.create()` call returns an instance. Store instances and call `instance.destroy()` when no longer needed (e.g. on component unmount) to prevent stale listeners and memory leaks.

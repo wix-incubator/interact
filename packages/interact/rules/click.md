@@ -17,9 +17,7 @@ This document contains rules for generating click-triggered interactions in `@wi
 
 Use `keyframeEffect` or `namedEffect` when the click should play an animation (CSS or WAAPI). Pair with `PointerTriggerParams` to control playback behavior.
 
-**CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'` or `'repeat'` — keeps the effect applied while finished and prevents garbage-collection, allowing efficient toggling. For `type: 'once'`, use `fill: 'backwards'` or `fill: 'none'`.
-
-**Multiple effects:** The `effects` array can contain multiple effects — all share the same click trigger and fire together. Use this to animate different targets from a single click event.
+**CRITICAL:** Always include `fill: 'both'` for `type: 'alternate'` or `'repeat'` — keeps the effect applied while finished and prevents garbage-collection, allowing efficient toggling. For `type: 'once'` use `fill: 'backwards'`.
 
 ```typescript
 {
@@ -57,15 +55,15 @@ Use `keyframeEffect` or `namedEffect` when the click should play an animation (C
 ### Variables
 
 - `[SOURCE_KEY]` — identifier matching the element's key (`data-interact-key` for web, `interactKey` for React). The element that listens for clicks.
-- `[TARGET_KEY]` — identifier matching the element's key on the element that animates. Same as `[SOURCE_KEY]` for self-targeting, or different for cross-targeting.
+- `[TARGET_KEY]` — identifier matching the element's key on the element that animates. If missing it defaults to `[SOURCE_KEY]` for targeting the source element.
 - `[EVENT_TRIGGER_TYPE]` — `PointerTriggerParams.type`. One of:
-  - `'alternate'` — plays forward on first click, reverses on next click. Most common for toggles.
+  - `'alternate'` — plays forward on first click, reverses on next click. Default.
   - `'repeat'` — restarts the animation from the beginning on each click.
   - `'once'` — plays once on the first click and never again.
   - `'state'` — resumes/pauses the animation on each click. Useful for continuous loops (`iterations: Infinity`).
 - `[KEYFRAMES]` — array of keyframe objects (e.g. `[{ opacity: 0 }, { opacity: 1 }]`). Property names in camelCase.
 - `[EFFECT_NAME]` — unique string identifier for a `keyframeEffect`.
-- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built effect from `@wix/motion-presets`. Refer to motion-presets rules for available presets and their options.
+- `[NAMED_EFFECT_DEFINITION]` — object with properties of pre-built, timeb-based animation effect from `@wix/motion-presets`. Refer to motion-presets rules for available presets and their options.
 - `[FILL_MODE]` - optional. Always `'both'` with `type: 'alternate'` or `'repeat'`, otherwise depends on the effect.
 - `[INITIAL_REVERSED_BOOL]` — optional. `true` to start in the finished state so the entire effect is reversed.
 - `[DURATION_MS]` — animation duration in milliseconds.
@@ -161,7 +159,7 @@ Use `customEffect` when you need imperative control over the animation (e.g. cou
 ### Variables
 
 - `[SOURCE_KEY]` / `[TARGET_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
-- `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with `progress` from 0 to 1.
+- `[CUSTOM_EFFECT_CALLBACK]` — function with signature `(element: HTMLElement, progress: number) => void`. Called on each animation frame with target element and `progress` from 0 to 1.
 - `[DURATION_MS]` — animation duration in milliseconds.
 - `[EASING_FUNCTION]` — CSS easing string, or named easing from `@wix/motion`.
 
@@ -183,40 +181,17 @@ Use sequences when a click should sync/stagger animations across multiple elemen
             offset: [OFFSET_MS],
             offsetEasing: '[OFFSET_EASING]',
             effects: [
-                // can be `selector` or `listContainer` for multiple effects, or a separate effect definitions with
-                {
-                    // can be an inline Effect, or a reference to an effect defined in top level `effects` map
-                    effectId: '[EFFECT_ID]',
-                    listContainer: '[LIST_CONTAINER_SELECTOR]'
-                }
+                [EFFECT_DEFINTION],
+                // .. more effects as necessary
             ]
         }
     ]
 }
 ```
 
-Each `[EFFECT_ID]` must be defined in the top-level `effects` map of the `InteractConfig`:
-
-```typescript
-effects: {
-    '[EFFECT_ID]': {
-        duration: [DURATION_MS],
-        easing: '[EASING_FUNCTION]',
-        fill: 'both',
-        // keyframeEffect or namedEffect
-        keyframeEffect: {
-            name: '[EFFECT_NAME]',
-            keyframes: [KEYFRAMES]
-        }
-    }
-}
-```
-
 ### Variables
 
 - `[SOURCE_KEY]` / `[EVENT_TRIGGER_TYPE]` — same as Rule 1.
-- `[OFFSET_MS]` — time offset between each child's animation start, in milliseconds.
-- `[OFFSET_EASING]` — easing curve for the stagger distribution.
-- `[EFFECT_ID]` — string key referencing an entry in the top-level `effects` map. Same concept as `[UNIQUE_EFFECT_ID]` in Rule 1.
-- `[LIST_CONTAINER_SELECTOR]` — CSS selector for the container whose direct children will be staggered.
-- Effect definition variables (`[DURATION_MS]`, `[EASING_FUNCTION]`, `[EFFECT_NAME]`, `[KEYFRAMES]`) — same as Rule 1.
+- `[OFFSET_MS]` — time offset for staggering each child's animation start, in milliseconds.
+- `[OFFSET_EASING]` — easing curve for the offset staggering distribution. Defaults to `'linear'`.
+- `[EFFECT_DEFINTION]` — a definition of or a reference to a time-based animation effect.

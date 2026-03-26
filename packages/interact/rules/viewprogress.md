@@ -4,7 +4,7 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 
 > **CRITICAL:** You MUST replace all usage of `overflow: hidden` with `overflow: clip` on every element between the trigger source element and the scroll container. `overflow: hidden` creates a new scroll context that breaks the ViewTimeline; `overflow: clip` clips overflow visually without affecting scroll ancestry. If using Tailwind, replace all `overflow-hidden` classes with `overflow-clip`.
 
-**Offset semantics:** Offset values can be a `number` representing percentages (0–100) or a `string` representing a CSS length value (e.g. `'100px'`). Positive offset values move the effective range forward along the scroll axis. 0 = start of range, 100 = end.
+**Offset semantics:** The `offset` inside `rangeStart`/`rangeEnd` is an object `{ unit: 'percentage', value: NUMBER }` where value is 0–100. For absolute lengths use `{ unit: 'px', value: NUMBER }` (or other CSS length units). Positive values move the effective range boundary forward along the scroll axis.
 
 ## Table of Contents
 
@@ -36,7 +36,7 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 
             rangeStart: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
             rangeEnd: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
-            easing: '[EASING_FUNCTION]',
+            easing: '[EASING_FUNCTION]', // usually 'linear'
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         },
@@ -57,8 +57,11 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
   - `'entry'` — the phase while the element is entering the viewport.
   - `'exit'` — the phase while the element is exiting the viewport.
   - `'contain'` — while the element is fully contained in the viewport. Typically used with a `position: sticky` container.
-- `[START_PERCENTAGE]` / `[END_PERCENTAGE]` — 0–100, sub-range within the named range.
-- `[EASING_FUNCTION]` — typically `'linear'` for scroll effects; non-linear easing can feel jarring as scroll position changes.
+  - `'entry-crossing'` — from the element's leading edge entering to its leading edge reaching the opposite side.
+  - `'exit-crossing'` — from the element's trailing edge reaching the start to its trailing edge leaving.
+- `[START_PERCENTAGE]` — 0–100, starting point within the named range.
+- `[END_PERCENTAGE]` — 0–100, end point within the named range.
+- `[EASING_FUNCTION]` - typically `'linear'` for scrolling effects.
 - `[UNIQUE_EFFECT_ID]` — optional identifier for referencing the effect externally.
 
 ---
@@ -73,7 +76,6 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 {
     key: '[SOURCE_KEY]',
     trigger: 'viewProgress',
-    conditions: ['[CONDITION_NAME]'],  // optional
     effects: [
         {
             key: '[TARGET_KEY]',
@@ -83,6 +85,7 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
             },
             rangeStart: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
             rangeEnd: { name: '[RANGE_NAME]', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
+            easing: `'[]'`,
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         },
@@ -116,7 +119,6 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 {
     key: '[TALL_WRAPPER_KEY]',
     trigger: 'viewProgress',
-    conditions: ['[CONDITION_NAME]'],  // optional
     effects: [
         {
             key: '[STICKY_CHILD_KEY]',
@@ -124,7 +126,7 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
             keyframeEffect: { name: '[EFFECT_NAME]', keyframes: [EFFECT_KEYFRAMES] },
             rangeStart: { name: 'contain', offset: { unit: 'percentage', value: [START_PERCENTAGE] } },
             rangeEnd: { name: 'contain', offset: { unit: 'percentage', value: [END_PERCENTAGE] } },
-            easing: '[EASING_FUNCTION]',
+            easing: '[EASING_FUNCTION]', // usually 'linear'
             fill: 'both',
             effectId: '[UNIQUE_EFFECT_ID]'
         },
@@ -138,5 +140,6 @@ These rules help generate scroll-driven interactions using `@wix/interact`. View
 - `[TALL_WRAPPER_KEY]` — key for the tall outer element that defines the scroll distance — this is the ViewTimeline source.
 - `[STICKY_CHILD_KEY]` — key for the animated element inside the sticky container.
 - `[EFFECT_NAME]` / `[EFFECT_KEYFRAMES]` — same as Rule 1.
-- `[START_PERCENTAGE]` / `[END_PERCENTAGE]` — 0–100 within the `contain` range, i.e. the phase where the sticky container is fully stuck.
-- `[EASING_FUNCTION]` / `[UNIQUE_EFFECT_ID]` — same as Rule 1.
+- `[START_PERCENTAGE]` — 0–100, starting point within the `contain` range (the stuck phase).
+- `[END_PERCENTAGE]` — 0–100, end point within the `contain` range.
+- `[UNIQUE_EFFECT_ID]` — same as Rule 1.
