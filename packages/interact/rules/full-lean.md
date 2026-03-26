@@ -349,12 +349,12 @@ Used with `viewProgress` and `pointerMove` triggers.
 }
 ```
 
-| Range name       | Meaning                                              |
-| :--------------- | :--------------------------------------------------- |
-| `entry`          | Element entering viewport                            |
-| `exit`           | Element exiting viewport                             |
-| `contain`        | After `entry` range and before `exit` range          |
-| `cover`          | Full range from `entry` through `contain` and `exit` |
+| Range name       | Meaning                                                        |
+| :--------------- | :------------------------------------------------------------- |
+| `entry`          | Element entering viewport                                      |
+| `exit`           | Element exiting viewport                                       |
+| `contain`        | After `entry` range and before `exit` range                    |
+| `cover`          | Full range from `entry` through `contain` and `exit`           |
 | `entry-crossing` | From element's leading edge entering to trailing edge entering |
 | `exit-crossing`  | From element's leading edge exiting to trailing edge exiting   |
 
@@ -609,23 +609,23 @@ The target element is what the effect animates. Resolved in priority order:
 
 ## Static API
 
-| Method / Property                   | Description                                                                                                        |
-| :---------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| `Interact.create(config)`           | Initialize with a config. Returns the instance. Store the instance to manage its lifecycle.                        |
-| `Interact.registerEffects(presets)` | Register named effect presets. MUST be called before `create`.                                                     |
-| `Interact.destroy()`                | Tear down all instances. Call on unmount or route change to prevent memory leaks.                                  |
-| `Interact.forceReducedMotion`       | `boolean` (default: `false`) — force reduced-motion behavior regardless of OS setting.                             |
-| `Interact.allowA11yTriggers`        | `boolean` (default: `false`) — enable accessibility trigger variants (`interest`, `activate`).                     |
-| `Interact.setup(options)`           | Configure global options for scroll, pointer, and viewEnter systems. Call before `create`. See options below.      |
+| Method / Property                   | Description                                                                                                   |
+| :---------------------------------- | :------------------------------------------------------------------------------------------------------------ |
+| `Interact.create(config)`           | Initialize with a config. Returns the instance. Store the instance to manage its lifecycle.                   |
+| `Interact.registerEffects(presets)` | Register named effect presets. MUST be called before `create`.                                                |
+| `Interact.destroy()`                | Tear down all instances. Call on unmount or route change to prevent memory leaks.                             |
+| `Interact.forceReducedMotion`       | `boolean` (default: `false`) — force reduced-motion behavior regardless of OS setting.                        |
+| `Interact.allowA11yTriggers`        | `boolean` (default: `false`) — enable accessibility trigger variants (`interest`, `activate`).                |
+| `Interact.setup(options)`           | Configure global options for scroll, pointer, and viewEnter systems. Call before `create`. See options below. |
 
 **`Interact.setup(options)`** — optional configuration object:
 
-| Option                   | Type                              | Description                                                          |
-| :----------------------- | :-------------------------------- | :------------------------------------------------------------------- |
-| `scrollOptionsGetter`    | `() => Partial<scrollConfig>`     | Function returning defaults for scroll-driven animation configuration|
-| `pointerOptionsGetter`   | `() => Partial<PointerConfig>`    | Function returning defaults for pointer-move animation configuration |
-| `viewEnter`              | `Partial<ViewEnterParams>`        | Defaults for all viewEnter triggers (`threshold`,`inset`)            |
-| `allowA11yTriggers`      | `boolean`                         | Enable accessibility trigger variants (use `interest` and `activate`)|
+| Option                 | Type                           | Description                                                           |
+| :--------------------- | :----------------------------- | :-------------------------------------------------------------------- |
+| `scrollOptionsGetter`  | `() => Partial<scrollConfig>`  | Function returning defaults for scroll-driven animation configuration |
+| `pointerOptionsGetter` | `() => Partial<PointerConfig>` | Function returning defaults for pointer-move animation configuration  |
+| `viewEnter`            | `Partial<ViewEnterParams>`     | Defaults for all viewEnter triggers (`threshold`,`inset`)             |
+| `allowA11yTriggers`    | `boolean`                      | Enable accessibility trigger variants (use `interest` and `activate`) |
 
 Use `setup()` when you need to override default observer thresholds or provide global configuration that applies to all interactions of a given trigger type.
 

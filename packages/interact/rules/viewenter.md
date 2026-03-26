@@ -38,10 +38,14 @@ const config: InteractConfig = {
     {
       key: '[SOURCE_KEY]',
       trigger: 'viewEnter',
-      params: { type: [VIEW_TRIGGER_TYPE], threshold: [VIEW_TRIGGER_THRESHOLD], inset: [VIEW_TRIGGER_INSET] },
+      params: {
+        type: [VIEW_TRIGGER_TYPE],
+        threshold: [VIEW_TRIGGER_THRESHOLD],
+        inset: [VIEW_TRIGGER_INSET],
+      },
       effects: [EFFECT_DEFINITIONS],
       // and/or
-      sequences: [SEQUENCE_DEFINITIONS]
+      sequences: [SEQUENCE_DEFINITIONS],
     },
   ],
 };
