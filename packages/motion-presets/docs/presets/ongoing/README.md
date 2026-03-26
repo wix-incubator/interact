@@ -6,48 +6,48 @@ Time-based looping animations designed to create continuous movement and draw us
 
 ### 💓 Rhythmic Scaling
 
-| Animation                 | Complexity | Power Levels | Description                   |
-| ------------------------- | ---------- | ------------ | ----------------------------- |
-| **[Pulse](pulse.md)**     | Simple     | ✓            | Smooth scale breathing effect |
-| **[Breathe](breathe.md)** | Medium     | -            | Organic movement with scaling |
+| Animation                 | Complexity | Description                   |
+| ------------------------- | ---------- | ----------------------------- |
+| **[Pulse](pulse.md)**     | Simple     | Smooth scale breathing effect |
+| **[Breathe](breathe.md)** | Medium     | Organic movement with scaling |
 
 ### 🏃 Movement & Position
 
-| Animation               | Complexity | Power Levels | Directions | Description                |
-| ----------------------- | ---------- | ------------ | ---------- | -------------------------- |
-| **[Wiggle](wiggle.md)** | Medium     | ✓            | -          | Random shake movement      |
-| **[Poke](poke.md)**     | Medium     | ✓            | 4-way      | Directional poking motion  |
-| **[Cross](cross.md)**   | Complex    | -            | 8-way      | Multi-directional crossing |
+| Animation               | Complexity | Directions | Description                |
+| ----------------------- | ---------- | ---------- | -------------------------- |
+| **[Wiggle](wiggle.md)** | Medium     | -          | Random shake movement      |
+| **[Poke](poke.md)**     | Medium     | 4-way      | Directional poking motion  |
+| **[Cross](cross.md)**   | Complex    | 8-way      | Multi-directional crossing |
 
 ### 🔄 Rotation & Spin
 
-| Animation           | Complexity | Power Levels | Directions | Description          |
-| ------------------- | ---------- | ------------ | ---------- | -------------------- |
-| **[Spin](spin.md)** | Simple     | ✓            | 2-way      | Continuous rotation  |
-| **[Flip](flip.md)** | Medium     | ✓            | 2-way      | 3D flip rotation     |
-| **[Fold](fold.md)** | Complex    | ✓            | 4-way      | 3D folding animation |
+| Animation           | Complexity | Directions | Description          |
+| ------------------- | ---------- | ---------- | -------------------- |
+| **[Spin](spin.md)** | Simple     | 2-way      | Continuous rotation  |
+| **[Flip](flip.md)** | Medium     | 2-way      | 3D flip rotation     |
+| **[Fold](fold.md)** | Complex    | 4-way      | 3D folding animation |
 
 ### ⚡ Dynamic Effects
 
-| Animation               | Complexity | Power Levels | Description              |
-| ----------------------- | ---------- | ------------ | ------------------------ |
-| **[Bounce](bounce.md)** | Medium     | ✓            | Vertical bouncing motion |
-| **[Rubber](rubber.md)** | Medium     | ✓            | Elastic scaling effect   |
-| **[Jello](jello.md)**   | Medium     | ✓            | Gelatinous wobble effect |
-| **[Swing](swing.md)**   | Complex    | ✓            | Pendulum swinging motion |
+| Animation               | Complexity | Description              |
+| ----------------------- | ---------- | ------------------------ |
+| **[Bounce](bounce.md)** | Medium     | Vertical bouncing motion |
+| **[Rubber](rubber.md)** | Medium     | Elastic scaling effect   |
+| **[Jello](jello.md)**   | Medium     | Gelatinous wobble effect |
+| **[Swing](swing.md)**   | Complex    | Pendulum swinging motion |
 
 ### ✨ Visual Effects
 
-| Animation             | Complexity | Power Levels | Description             |
-| --------------------- | ---------- | ------------ | ----------------------- |
-| **[Flash](flash.md)** | Simple     | -            | Opacity blinking effect |
+| Animation             | Complexity | Description             |
+| --------------------- | ---------- | ----------------------- |
+| **[Flash](flash.md)** | Simple     | Opacity blinking effect |
 
 ### 🎪 Special Effects (Experimental)
 
-| Animation             | Complexity | Power Levels | Description               | Status      |
-| --------------------- | ---------- | ------------ | ------------------------- | ----------- |
-| **[Blink](blink.md)** | Complex    | ✓            | Random blinking teleport  | ⚠️ Disabled |
-| **[DVD](dvd.md)**     | Medium     | ✓            | Bouncing corner-to-corner | ⚠️ Disabled |
+| Animation             | Complexity | Description               | Status      |
+| --------------------- | ---------- | ------------------------- | ----------- |
+| **[Blink](blink.md)** | Complex    | Random blinking teleport  | ⚠️ Disabled |
+| **[DVD](dvd.md)**     | Medium     | Bouncing corner-to-corner | ⚠️ Disabled |
 
 _Note: Experimental animations are currently disabled in production but available in development environments._
 
@@ -117,7 +117,6 @@ const animation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'medium',
   },
   duration: 2000,
   iterations: Infinity, // Loop forever
@@ -131,7 +130,7 @@ const animation = getWebAnimation(element, {
 // Run animation 5 times then stop
 const limitedAnimation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
-  namedEffect: { type: 'Bounce', power: 'soft' },
+  namedEffect: { type: 'Bounce' },
   duration: 1000,
   iterations: 5,
   alternate: true,
@@ -147,7 +146,6 @@ function drawAttention(element) {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'Wiggle',
-      power: 'medium',
       intensity: 0.8,
     },
     duration: 500,
@@ -172,7 +170,6 @@ class LoadingSpinner {
       namedEffect: {
         type: 'Spin',
         direction: 'clockwise',
-        power: 'medium',
       },
       duration: 1000,
       iterations: Infinity,
@@ -230,7 +227,7 @@ function useOngoingAnimation(
 
 // Usage
 function PulsingButton({ children }) {
-  const buttonRef = useOngoingAnimation('Pulse', { power: 'soft' }, true);
+  const buttonRef = useOngoingAnimation('Pulse', {}, true);
 
   return (
     <button ref={buttonRef}>
@@ -348,7 +345,6 @@ import { getWebAnimation } from '@wix/motion';
 
 interface PulseProps {
   children: React.ReactNode;
-  power?: 'soft' | 'medium' | 'hard';
   intensity?: number;
   duration?: number;
   enabled?: boolean;
@@ -357,7 +353,6 @@ interface PulseProps {
 
 function Pulse({
   children,
-  power = 'medium',
   intensity = 1.0,
   duration = 1500,
   enabled = true,
@@ -373,7 +368,6 @@ function Pulse({
       type: 'TimeAnimationOptions',
       namedEffect: {
         type: 'Pulse',
-        power,
         intensity
       },
       duration,
@@ -388,7 +382,7 @@ function Pulse({
         animationRef.current.cancel();
       }
     };
-  }, [power, intensity, duration, enabled]);
+  }, [intensity, duration, enabled]);
 
   const handleMouseEnter = () => {
     if (onHover === 'pause' && animationRef.current) {
@@ -430,7 +424,6 @@ import { getWebAnimation } from '@wix/motion';
 
 export default {
   props: {
-    power: { type: String, default: 'medium' },
     intensity: { type: Number, default: 1.0 },
     duration: { type: Number, default: 1500 },
     enabled: { type: Boolean, default: true },
@@ -471,7 +464,6 @@ export default {
         type: 'TimeAnimationOptions',
         namedEffect: {
           type: 'Pulse',
-          power: this.power,
           intensity: this.intensity,
         },
         duration: this.duration,
@@ -520,7 +512,7 @@ import { getCSSAnimation } from '@wix/motion';
 // For simple pulse without JavaScript control
 const cssRules = getCSSAnimation('elementId', {
   type: 'TimeAnimationOptions',
-  namedEffect: { type: 'Pulse', power: 'soft' },
+  namedEffect: { type: 'Pulse' },
   duration: 2000,
   iterations: Infinity,
   alternate: true,

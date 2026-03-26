@@ -21,6 +21,7 @@ export default defineConfig(() => ({
     rollupOptions: {
       external: ['@wix/motion'],
       output: {
+        compact: true,
         globals: {
           '@wix/motion': 'Motion',
         },

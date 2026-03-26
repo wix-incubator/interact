@@ -4,7 +4,7 @@ Complete documentation for all 82+ animation presets in Wix Motion, organized by
 
 ## 📁 Directory Structure
 
-### 🎭 [Entrance Animations](entrance/) (24 presets)
+### 🎭 [Entrance Animations](entrance/) (19 presets)
 
 Perfect for element reveals and page transitions.
 
@@ -148,7 +148,6 @@ const mouseAnimation = getWebAnimation(
       type: 'Tilt3DMouse',
       angle: 15,
       perspective: 800,
-      power: 'medium',
     },
   },
   {

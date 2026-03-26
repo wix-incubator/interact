@@ -4,6 +4,10 @@ import { ResponsiveDemo } from './components/ResponsiveDemo';
 import { SelectorConditionDemo } from './components/SelectorConditionDemo';
 import { CSSGenerationDemo } from './components/CSSGenerationDemo';
 import { PointerMoveDemo } from './components/PointerMoveDemo';
+import { SequencePlayground } from './components/SequencePlayground';
+import { SequenceEntranceDemo } from './components/SequenceEntranceDemo';
+import { SequenceClickDemo } from './components/SequenceClickDemo';
+import { SequenceEasingComparison } from './components/SequenceEasingComparison';
 
 const heroCopy = [
   'Tune triggers, easings, and delays in real time.',
@@ -43,6 +47,15 @@ function App() {
         <ScrollShowcase />
       </div>
       <PointerMoveDemo />
+
+      <div className="seq-section-divider">
+        <h2>Sequences</h2>
+        <p>Coordinated multi-element animations with staggered timing.</p>
+      </div>
+      <SequencePlayground />
+      <SequenceEntranceDemo />
+      <SequenceClickDemo />
+      <SequenceEasingComparison />
     </div>
   );
 }

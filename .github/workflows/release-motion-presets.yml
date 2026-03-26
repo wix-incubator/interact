@@ -25,6 +25,9 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -91,6 +94,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git add .
           git commit -m "chore: bump @wix/motion-presets to ${{ steps.get_version.outputs.version }}"
+          git tag "motion-presets@${{ steps.get_version.outputs.version }}"
           git push --follow-tags origin release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

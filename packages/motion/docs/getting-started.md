@@ -146,7 +146,6 @@ const slideAnimation = getWebAnimation(element, {
   namedEffect: {
     type: 'SlideIn',
     direction: 'left',
-    power: 'medium',
   },
   duration: 800,
 });
@@ -160,7 +159,6 @@ const bounceAnimation = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'hard',
   },
   duration: 1200,
 });
@@ -174,7 +172,6 @@ const spinAnimation = getWebAnimation(element, {
   namedEffect: {
     type: 'Spin',
     direction: 'clockwise',
-    power: 'medium',
   },
   duration: 2000,
   iterations: Infinity, // Loop forever

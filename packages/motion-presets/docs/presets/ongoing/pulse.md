@@ -30,23 +30,15 @@ Smooth scaling animation that creates a rhythmic breathing effect. Perfect for c
 
 ```typescript
 export type Pulse = BaseDataItemLike<'Pulse'> & {
-  power?: EffectPower;
   intensity?: number;
 };
 ```
 
 ### Parameters
 
-| Parameter   | Type     | Default    | Description                 | Examples                       |
-| ----------- | -------- | ---------- | --------------------------- | ------------------------------ |
-| `power`     | `string` | `'medium'` | Scale intensity level       | `'soft'`, `'medium'`, `'hard'` |
-| `intensity` | `number` | `1.0`      | Multiplier for scale amount | `0.5`, `1.0`, `1.5`, `2.0`     |
-
-### Power Levels
-
-- **`soft`** - Gentle 5% scale change (1.0 to 1.05)
-- **`medium`** - Noticeable 10% scale change (1.0 to 1.1)
-- **`hard`** - Prominent 15% scale change (1.0 to 1.15)
+| Parameter   | Type     | Default | Description                 | Examples                   |
+| ----------- | -------- | ------- | --------------------------- | -------------------------- |
+| `intensity` | `number` | `1.0`   | Multiplier for scale amount | `0.5`, `1.0`, `1.5`, `2.0` |
 
 ### Intensity Control
 
@@ -68,7 +60,6 @@ const animation = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'medium',
   },
   duration: 1500,
   iterations: Infinity,
@@ -76,34 +67,6 @@ const animation = getWebAnimation(element, {
 });
 
 await animation.play();
-```
-
-### Power Level Variations
-
-```typescript
-// Subtle pulse for professional interfaces
-const subtlePulse = getWebAnimation(element, {
-  type: 'TimeAnimationOptions',
-  namedEffect: {
-    type: 'Pulse',
-    power: 'soft',
-  },
-  duration: 2000,
-  iterations: Infinity,
-  alternate: true,
-});
-
-// Strong pulse for urgent calls-to-action
-const strongPulse = getWebAnimation(element, {
-  type: 'TimeAnimationOptions',
-  namedEffect: {
-    type: 'Pulse',
-    power: 'hard',
-  },
-  duration: 1000,
-  iterations: Infinity,
-  alternate: true,
-});
 ```
 
 ### Intensity Customization
@@ -114,8 +77,7 @@ const customPulse = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'medium',
-    intensity: 0.7, // 70% of medium power
+    intensity: 0.7,
   },
   duration: 1800,
   iterations: Infinity,
@@ -127,8 +89,7 @@ const dramaticPulse = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'soft',
-    intensity: 2.5, // 250% of soft power
+    intensity: 2.5,
   },
   duration: 1200,
   iterations: Infinity,
@@ -144,7 +105,6 @@ const heartbeat = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'medium',
   },
   duration: 800, // Fast pulse
   iterations: Infinity,
@@ -156,7 +116,6 @@ const breathe = getWebAnimation(element, {
   type: 'TimeAnimationOptions',
   namedEffect: {
     type: 'Pulse',
-    power: 'soft',
   },
   duration: 3000, // Slow, relaxed pulse
   iterations: Infinity,
@@ -175,7 +134,6 @@ function createPulsingCTA(button) {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'Pulse',
-      power: 'medium',
       intensity: 1.2,
     },
     duration: 1500,
@@ -227,7 +185,6 @@ class NotificationBadge {
       type: 'TimeAnimationOptions',
       namedEffect: {
         type: 'Pulse',
-        power: 'hard',
         intensity: 1.3,
       },
       duration: 1000,
@@ -256,7 +213,6 @@ function createLoadingPulse(element) {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'Pulse',
-      power: 'soft',
       intensity: 1.5,
     },
     duration: 1200,
@@ -288,15 +244,15 @@ async function performAsyncOperation() {
 function createStatusIndicator(element, status) {
   const configs = {
     online: {
-      namedEffect: { type: 'Pulse', power: 'soft', intensity: 0.8 },
+      namedEffect: { type: 'Pulse', intensity: 0.8 },
       duration: 2000,
     },
     warning: {
-      namedEffect: { type: 'Pulse', power: 'medium', intensity: 1.2 },
+      namedEffect: { type: 'Pulse', intensity: 1.2 },
       duration: 1000,
     },
     error: {
-      namedEffect: { type: 'Pulse', power: 'hard', intensity: 1.5 },
+      namedEffect: { type: 'Pulse', intensity: 1.5 },
       duration: 600,
     },
   };
@@ -323,7 +279,6 @@ function createHeartbeat(element, bpm = 60) {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'Pulse',
-      power: 'hard',
       intensity: 1.8,
     },
     duration: durationMs / 2, // Each pulse is half the beat duration
@@ -362,7 +317,7 @@ heartbeat.play();
 
 ### Common Issues
 
-- **Pulse too aggressive**: Reduce power level or intensity
+- **Pulse too aggressive**: Reduce intensity
 - **Animation conflicts**: Check for competing CSS transitions
 - **Performance problems**: Limit number of concurrent pulses
 
@@ -376,7 +331,7 @@ heartbeat.play();
 
 ## Interactive Example
 
-▶️ **[Try it in Storybook](../../playground/)** - Experiment with Pulse power levels and timing
+▶️ **[Try it in Storybook](../../playground/)** - Experiment with Pulse intensity and timing
 
 ---
 

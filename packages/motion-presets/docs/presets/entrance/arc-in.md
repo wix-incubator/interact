@@ -31,7 +31,6 @@ Sophisticated 3D entrance animation featuring curved motion paths combined with 
 ```typescript
 export type ArcIn = BaseDataItemLike<'ArcIn'> & {
   direction: EffectFourDirections;
-  power?: EffectPower;
 };
 ```
 
@@ -40,13 +39,6 @@ export type ArcIn = BaseDataItemLike<'ArcIn'> & {
 | Parameter   | Type     | Default    | Description                               | Examples                                 |
 | ----------- | -------- | ---------- | ----------------------------------------- | ---------------------------------------- |
 | `direction` | `string` | `'bottom'` | Direction of arc motion and rotation axis | `'top'`, `'right'`, `'bottom'`, `'left'` |
-| `power`     | `string` | `'medium'` | Intensity of rotation and movement        | `'soft'`, `'medium'`, `'hard'`           |
-
-### Power Levels
-
-- **`soft`** - Gentle 15° rotation with subtle arc movement (30% intensity)
-- **`medium`** - Balanced 30° rotation with noticeable curved path (60% intensity)
-- **`hard`** - Dramatic 45° rotation with pronounced arc motion (100% intensity)
 
 ### Directional Support
 
@@ -75,41 +67,12 @@ const animation = getWebAnimation(element, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'bottom',
-    power: 'medium',
   },
   duration: 1000,
   easing: 'quintOut',
 });
 
 await animation.play();
-```
-
-### Power Level Variations
-
-```typescript
-// Subtle arc for professional interfaces
-const subtleArc = getWebAnimation(element, {
-  type: 'TimeAnimationOptions',
-  namedEffect: {
-    type: 'ArcIn',
-    direction: 'right',
-    power: 'soft',
-  },
-  duration: 800,
-  easing: 'cubicOut',
-});
-
-// Dramatic arc for creative showcases
-const dramaticArc = getWebAnimation(element, {
-  type: 'TimeAnimationOptions',
-  namedEffect: {
-    type: 'ArcIn',
-    direction: 'bottom',
-    power: 'hard',
-  },
-  duration: 1200,
-  easing: 'quartOut',
-});
 ```
 
 ### Directional Examples
@@ -121,7 +84,6 @@ const heroArc = getWebAnimation(heroSection, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'bottom',
-    power: 'hard',
   },
   duration: 1400,
   easing: 'quintOut',
@@ -133,7 +95,6 @@ const panelArc = getWebAnimation(sidePanel, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'left',
-    power: 'medium',
   },
   duration: 900,
   easing: 'cubicOut',
@@ -145,7 +106,6 @@ const cardArc = getWebAnimation(featuredCard, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'top',
-    power: 'medium',
   },
   duration: 1000,
   easing: 'backOut',
@@ -161,7 +121,6 @@ const cinematicArc = getWebAnimation(element, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'bottom',
-    power: 'hard',
   },
   duration: 1600,
   delay: 300,
@@ -182,30 +141,27 @@ async function revealHero() {
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'soft',
     },
     duration: 1200,
   });
 
-  // Title arcs in with more power
+  // Title arcs in
   const titleAnimation = getWebAnimation(heroTitle, {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'hard',
     },
     duration: 1000,
     delay: 200,
   });
 
-  // Subtitle follows with medium power
+  // Subtitle follows
   const subtitleAnimation = getWebAnimation(heroSubtitle, {
     type: 'TimeAnimationOptions',
     namedEffect: {
       type: 'ArcIn',
       direction: 'bottom',
-      power: 'medium',
     },
     duration: 800,
     delay: 400,
@@ -228,7 +184,6 @@ portfolioItems.forEach((item, index) => {
     namedEffect: {
       type: 'ArcIn',
       direction: isEven ? 'left' : 'right',
-      power: 'medium',
     },
     duration: 1000,
     delay: index * 200,
@@ -255,7 +210,6 @@ function showPremiumModal() {
     namedEffect: {
       type: 'ArcIn',
       direction: 'top',
-      power: 'hard',
     },
     duration: 800,
     delay: 200,
@@ -275,7 +229,6 @@ const productShowcase = getWebAnimation(productContainer, {
   namedEffect: {
     type: 'ArcIn',
     direction: 'right',
-    power: 'hard',
   },
   duration: 1400,
   easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', // Elastic feel
@@ -315,7 +268,7 @@ ArcIn involves rotational motion which may trigger vestibular disorders. Always 
 
 ### Common Issues
 
-- **Choppy animation**: Check for other 3D transforms or reduce power level
+- **Choppy animation**: Check for other 3D transforms or reduce intensity
 - **Element disappears**: Verify parent has perspective and overflow settings
 - **Performance issues**: Use performance monitoring and device detection
 
@@ -329,7 +282,7 @@ ArcIn involves rotational motion which may trigger vestibular disorders. Always 
 
 ## Interactive Example
 
-▶️ **[Try it in Storybook](../../playground/)** - Experiment with ArcIn directions and power levels
+▶️ **[Try it in Storybook](../../playground/)** - Experiment with ArcIn directions
 
 ---
 

@@ -1,8 +1,6 @@
 // WIX INTERACT RUNTIME
-import { Interact } from 'https://esm.sh/@wix/interact@latest/dist/es/web.js';
-// import { Interact } from './packages/interact/dist/es/web.js';
-import * as presets from 'https://esm.sh/@wix/motion-presets@latest/dist/es/motion-presets.js';
-// import * as presets from './packages/motion-presets/dist/es/motion-presets.js';
+import { Interact } from './lib/interact/es/web.js';
+import * as presets from './lib/motion-presets/motion-presets.js';
 
 // =============================================================================
 // FUNCTIONS & METHODS
@@ -12,7 +10,7 @@ import * as presets from 'https://esm.sh/@wix/motion-presets@latest/dist/es/moti
 const gridContainer = document.getElementById('grid-container');
 const lineCache = new Map();
 const lineStates = new Map();
-let centerX, centerY, maxDist;
+// let centerX, centerY, maxDist;
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -576,7 +574,7 @@ function generateSpongeGeometry() {
 // =============================================================================
 
 // --- Animation Presets ---
-const FADE_UP_OPTS = { type: 'FadeIn', direction: 'bottom', distance: '60px', power: 'soft' };
+const FADE_UP_OPTS = { type: 'FadeIn', direction: 'bottom', distance: '60px' };
 const CLICK_EASING = 'cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 const ENTRANCE_DURATION = 1000;
 const ENTRANCE_EASING = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
@@ -723,7 +721,6 @@ const config = {
     {
       key: 'hitbox',
       trigger: 'viewEnter',
-
       params: { type: 'alternate' },
       effects: [
         {
@@ -827,10 +824,12 @@ const config = {
 
     // Entrance Interactions (Swirling Plus)
     {
-      key: 'circle-top',
+      key: 'entrance-card',
       trigger: 'viewEnter',
+      params: { type: 'alternate', threshold: 0.8 },
       effects: [
         {
+          key: 'circle-top',
           fill: 'both',
           keyframeEffect: {
             name: 'slideFromLeftToTop',
@@ -842,13 +841,8 @@ const config = {
           duration: ENTRANCE_DURATION,
           easing: ENTRANCE_EASING,
         },
-      ],
-    },
-    {
-      key: 'circle-right',
-      trigger: 'viewEnter',
-      effects: [
         {
+          key: 'circle-right',
           fill: 'both',
           keyframeEffect: {
             name: 'slideFromTopToRight',
@@ -861,13 +855,8 @@ const config = {
           easing: ENTRANCE_EASING,
           delay: 100,
         },
-      ],
-    },
-    {
-      key: 'circle-bottom',
-      trigger: 'viewEnter',
-      effects: [
         {
+          key: 'circle-bottom',
           fill: 'both',
           keyframeEffect: {
             name: 'slideFromRightToBottom',
@@ -880,13 +869,8 @@ const config = {
           easing: ENTRANCE_EASING,
           delay: 200,
         },
-      ],
-    },
-    {
-      key: 'circle-left',
-      trigger: 'viewEnter',
-      effects: [
         {
+          key: 'circle-left',
           fill: 'both',
           keyframeEffect: {
             name: 'slideFromBottomToLeft',
@@ -1042,7 +1026,6 @@ const config = {
             type: 'SlideIn',
             direction: 'bottom',
             distance: '100px',
-            power: 'soft',
           },
           duration: 1000,
           easing: 'ease-out',
@@ -1061,7 +1044,7 @@ const config = {
       effects: [
         {
           fill: 'backwards',
-          namedEffect: { type: 'ScaleIn', power: 'soft' },
+          namedEffect: { type: 'ScaleIn' },
           duration: 1200,
         },
       ],
@@ -1072,8 +1055,8 @@ const config = {
       effects: [
         {
           namedEffect: { type: 'ParallaxScroll', range: 'continuous', speed: -0.05 },
-          rangeStart: { name: 'entry', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'exit', offset: { value: 0, type: 'percentage' } },
+          rangeStart: { name: 'entry', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'exit', offset: { value: 0, unit: 'percentage' } },
           composite: 'add',
         },
       ],
@@ -1105,8 +1088,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 25, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 40, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 25, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 40, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -1117,8 +1100,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 28, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 43, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 28, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 43, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -1129,8 +1112,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 31, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 46, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 31, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 46, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -1141,8 +1124,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 34, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 49, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 34, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 49, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -1153,8 +1136,8 @@ const config = {
               { opacity: 1, transform: 'translateY(0)' },
             ],
           },
-          rangeStart: { name: 'cover', offset: { value: 38, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 53, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 38, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 53, unit: 'percentage' } },
           fill: 'both',
         },
         {
@@ -1195,8 +1178,8 @@ const config = {
           customEffect: animateTunnelMobile,
           fill: 'both',
           conditions: ['Mobile'],
-          rangeStart: { name: 'cover', offset: { value: 10, type: 'percentage' } },
-          rangeEnd: { name: 'cover', offset: { value: 30, type: 'percentage' } },
+          rangeStart: { name: 'cover', offset: { value: 10, unit: 'percentage' } },
+          rangeEnd: { name: 'cover', offset: { value: 30, unit: 'percentage' } },
         },
       ],
     },
@@ -1353,8 +1336,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-0-scaleDown',
             keyframes: [
@@ -1368,8 +1351,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 40, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-1-slideUp-scaleDown',
             keyframes: [
@@ -1384,8 +1367,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 20, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 60, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-2-slideUp-scaleDown',
             keyframes: [
@@ -1400,8 +1383,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 40, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 80, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-3-slideUp-scaleDown',
             keyframes: [
@@ -1416,8 +1399,8 @@ const config = {
           conditions: ['Mobile'],
           fill: 'both',
           easing: mobileEasing,
-          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 60, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'card-4-slideUp-scaleDown',
             keyframes: [
@@ -1452,8 +1435,8 @@ const config = {
           key: 'h-track',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'moveLeftMobile',
             keyframes: [{ transform: 'translateX(0)' }, { transform: 'translateX(-792vw)' }],
@@ -1464,8 +1447,8 @@ const config = {
           key: 'h-card-1',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 12.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter1',
             keyframes: [{ transform: 'scale(1.3)' }, { transform: 'scale(1)' }],
@@ -1475,8 +1458,8 @@ const config = {
           key: 'h-card-2',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter2',
             keyframes: [
@@ -1490,8 +1473,8 @@ const config = {
           key: 'h-card-3',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 12.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 37.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter3',
             keyframes: [
@@ -1505,8 +1488,8 @@ const config = {
           key: 'h-card-4',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 50, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter4',
             keyframes: [
@@ -1520,8 +1503,8 @@ const config = {
           key: 'h-card-5',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 37.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 62.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter5',
             keyframes: [
@@ -1535,8 +1518,8 @@ const config = {
           key: 'h-card-6',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 50, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 75, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter6',
             keyframes: [
@@ -1550,8 +1533,8 @@ const config = {
           key: 'h-card-7',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 62.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 87.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter7',
             keyframes: [
@@ -1565,8 +1548,8 @@ const config = {
           key: 'h-card-8',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 75, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter8',
             keyframes: [
@@ -1580,8 +1563,8 @@ const config = {
           key: 'h-card-9',
           conditions: ['Desktop'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 87.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenter9',
             keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.3)' }],
@@ -1591,8 +1574,8 @@ const config = {
           key: 'h-card-1',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 12.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM1',
             keyframes: [{ transform: 'scale(1.05)' }, { transform: 'scale(1)' }],
@@ -1602,8 +1585,8 @@ const config = {
           key: 'h-card-2',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 0, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 25, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 0, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM2',
             keyframes: [
@@ -1617,8 +1600,8 @@ const config = {
           key: 'h-card-3',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 12.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 12.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 37.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM3',
             keyframes: [
@@ -1632,8 +1615,8 @@ const config = {
           key: 'h-card-4',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 25, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 50, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 25, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 50, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM4',
             keyframes: [
@@ -1647,8 +1630,8 @@ const config = {
           key: 'h-card-5',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 37.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 37.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 62.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM5',
             keyframes: [
@@ -1662,8 +1645,8 @@ const config = {
           key: 'h-card-6',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 50, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 75, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 50, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 75, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM6',
             keyframes: [
@@ -1677,8 +1660,8 @@ const config = {
           key: 'h-card-7',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 62.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 62.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 87.5, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM7',
             keyframes: [
@@ -1692,8 +1675,8 @@ const config = {
           key: 'h-card-8',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 75, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 75, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM8',
             keyframes: [
@@ -1707,8 +1690,8 @@ const config = {
           key: 'h-card-9',
           conditions: ['Mobile'],
           fill: 'both',
-          rangeStart: { name: 'contain', offset: { value: 87.5, type: 'percentage' } },
-          rangeEnd: { name: 'contain', offset: { value: 100, type: 'percentage' } },
+          rangeStart: { name: 'contain', offset: { value: 87.5, unit: 'percentage' } },
+          rangeEnd: { name: 'contain', offset: { value: 100, unit: 'percentage' } },
           keyframeEffect: {
             name: 'scaleCenterM9',
             keyframes: [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }],

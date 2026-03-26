@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { AnimationGroup } from '../src/AnimationGroup';
 import { AnimationGroupOptions, RangeOffset } from '../src/types';
 
-global.CSSAnimation = class CSSAnimation {};
+(globalThis as any).CSSAnimation = class CSSAnimation {};
 
 // Mock Web Animation API
 const createMockAnimation = (overrides: Partial<Animation> = {}): Animation =>
@@ -137,11 +137,11 @@ describe('AnimationGroup', () => {
     test('should handle animations with start and end range offsets', () => {
       const startOffset: RangeOffset = {
         name: 'entry',
-        offset: { type: 'percentage', value: 25 },
+        offset: { unit: 'percentage', value: 25 },
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {
@@ -650,6 +650,44 @@ describe('AnimationGroup', () => {
       expect(mockAnimation.currentTime).toBe(100);
     });
 
+    test('should account for iterations in currentTime calculation', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 100,
+            duration: 500,
+            iterations: 3,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // time = duration * iterations = 500 * 3 = 1500
+      // currentTime = (100 + 1500) * 0.5 = 800
+      expect(mockAnimation.currentTime).toBe(800);
+    });
+
+    test('should treat Infinity iterations as 1', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getTiming: vi.fn().mockReturnValue({
+            delay: 0,
+            duration: 1000,
+            iterations: Infinity,
+          }),
+        } as any,
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      animationGroup.progress(0.5);
+
+      // Infinity iterations falls back to 1: time = 1000 * 1 = 1000
+      // currentTime = (0 + 1000) * 0.5 = 500
+      expect(mockAnimation.currentTime).toBe(500);
+    });
+
     test('should handle empty animations array', () => {
       const animationGroup = new AnimationGroup([]);
 
@@ -891,6 +929,90 @@ describe('AnimationGroup', () => {
     });
   });
 
+  describe('onAbort()', () => {
+    test('should execute callback when a CSSAnimation is cancelled externally (not via AnimationGroup.cancel)', async () => {
+      const callback = vi.fn();
+      let rejectFinished: (error: any) => void;
+
+      const finishedPromise = new Promise<Animation>((_resolve, reject) => {
+        rejectFinished = reject;
+      });
+
+      const mockAnimation = createMockAnimation({
+        finished: finishedPromise,
+        cancel: vi.fn(() => {
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
+        }),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      const abortPromise = animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+
+      // Cancel the inner CSSAnimation directly, simulating the browser
+      // removing the animation (e.g. a viewEnter effect going out of range)
+      mockAnimation.cancel();
+
+      await abortPromise;
+
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    test('should execute callback when one of multiple animations is cancelled externally', async () => {
+      const callback = vi.fn();
+      let rejectFinished: (error: any) => void;
+
+      const cancelledAnimation = createMockAnimation({
+        finished: new Promise<Animation>((_resolve, reject) => {
+          rejectFinished = reject;
+        }),
+        cancel: vi.fn(() => {
+          rejectFinished(new DOMException('The animation was aborted.', 'AbortError'));
+        }),
+      });
+
+      const normalAnimation = createMockAnimation({
+        finished: new Promise<Animation>(() => {}),
+      });
+
+      const animationGroup = new AnimationGroup([normalAnimation, cancelledAnimation]);
+      const abortPromise = animationGroup.onAbort(callback);
+
+      cancelledAnimation.cancel();
+
+      await abortPromise;
+
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not execute callback for non-AbortError rejections', async () => {
+      const callback = vi.fn();
+
+      const mockAnimation = createMockAnimation({
+        finished: Promise.reject(new Error('Some other error')),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      await animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('should not execute callback when animations finish successfully', async () => {
+      const callback = vi.fn();
+
+      const mockAnimation = createMockAnimation({
+        finished: Promise.resolve(undefined as any),
+      });
+
+      const animationGroup = new AnimationGroup([mockAnimation]);
+      await animationGroup.onAbort(callback);
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
   describe('playState getter', () => {
     test('should return playState from first animation', () => {
       const mockAnimation1 = createMockAnimation({
@@ -925,6 +1047,75 @@ describe('AnimationGroup', () => {
 
         expect(animationGroup.playState).toBe(state);
       });
+    });
+  });
+
+  describe('getTimingOptions()', () => {
+    test('returns delay, duration, and iterations for each animation', () => {
+      const mockAnimation1 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 100, duration: 500, iterations: 2 }),
+        } as any,
+      });
+      const mockAnimation2 = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation1, mockAnimation2]);
+
+      expect(group.getTimingOptions()).toEqual([
+        { delay: 100, duration: 500, iterations: 2 },
+        { delay: 0, duration: 1000, iterations: 1 },
+      ]);
+    });
+
+    test('defaults delay to 0 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ duration: 800, iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].delay).toBe(0);
+    });
+
+    test('defaults duration to 0 for non-numeric values', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 'auto', iterations: 1 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].duration).toBe(0);
+    });
+
+    test('defaults iterations to 1 when undefined', () => {
+      const mockAnimation = createMockAnimation({
+        effect: {
+          getComputedTiming: vi.fn().mockReturnValue({ progress: 0.5 }),
+          getTiming: vi.fn().mockReturnValue({ delay: 0, duration: 1000 }),
+        } as any,
+      });
+
+      const group = new AnimationGroup([mockAnimation]);
+
+      expect(group.getTimingOptions()[0].iterations).toBe(1);
+    });
+
+    test('returns empty array for empty animations', () => {
+      const group = new AnimationGroup([]);
+
+      expect(group.getTimingOptions()).toEqual([]);
     });
   });
 
@@ -973,11 +1164,11 @@ describe('AnimationGroup', () => {
     test('should work with animations that have start and end range offsets', () => {
       const startOffset: RangeOffset = {
         name: 'entry',
-        offset: { type: 'percentage', value: 25 },
+        offset: { unit: 'percentage', value: 25 },
       };
       const endOffset: RangeOffset = {
         name: 'exit',
-        offset: { type: 'px', value: 100 },
+        offset: { unit: 'px', value: 100 },
       };
 
       const animationWithRanges = {

@@ -499,21 +499,27 @@ Same as Rule 2
 
 ```typescript
 {
-    key: 'responsive-element',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.3,    // Good for mobile
-        inset: '-100px'     // Extra space for desktop
+    conditions: {
+        // Condition IDs are user-defined strings matched against these media predicates
+        'desktop-only': { type: 'media', predicate: '(min-width: 768px)' },
     },
-    conditions: ['desktop-only'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-element',
-            namedEffect: {
-                type: 'FadeIn'
+            trigger: 'viewEnter',
+            params: {
+                type: 'once',
+                threshold: 0.3,
+                inset: '-100px'
             },
-            duration: 800
+            conditions: ['desktop-only'],
+            effects: [
+                {
+                    key: 'responsive-element',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 800
+                }
+            ]
         }
     ]
 }
@@ -521,9 +527,9 @@ Same as Rule 2
 
 ---
 
-## Rule 6: Staggered Entrance Animations
+## Rule 6: Staggered Entrance Animations (Sequences)
 
-**Use Case**: Sequential entrance animations where multiple elements animate with delays (e.g., card grids, list items, team member cards, feature sections)
+**Use Case**: Sequential entrance animations where multiple elements animate with staggered timing (e.g., card grids, list items, team member cards, feature sections)
 
 **When to Apply**:
 
@@ -532,199 +538,126 @@ Same as Rule 2
 - When animating lists, grids, or collections
 - For progressive content revelation
 
-**Pattern**:
+**Preferred approach: use `sequences`** on the interaction instead of manually setting `delay` on individual effects. Sequences automatically calculate stagger delays using `offset` and `offsetEasing`.
+
+**Pattern (with `listContainer`)**:
 
 ```typescript
-[
-  {
-    key: '[ELEMENT_1_SELECTOR]',
+{
+    key: '[CONTAINER_KEY]',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: [SHARED_THRESHOLD],
-      inset: '[SHARED_INSET]',
+        type: '[BEHAVIOR_TYPE]',
+        threshold: [VISIBILITY_THRESHOLD]
     },
-    effects: [
-      {
-        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-        duration: [SHARED_DURATION],
-        easing: '[SHARED_EASING]',
-        delay: [DELAY_1],
-      },
-    ],
-  },
-  {
-    key: '[ELEMENT_2_SELECTOR]',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: [SHARED_THRESHOLD],
-      inset: '[SHARED_INSET]',
-    },
-    effects: [
-      {
-        [EFFECT_TYPE]: [SHARED_EFFECT_DEFINITION],
-        duration: [SHARED_DURATION],
-        easing: '[SHARED_EASING]',
-        delay: [DELAY_2],
-      },
-    ],
-  },
-  // ... additional elements with increasing delays
-];
+    sequences: [
+        {
+            offset: [OFFSET_MS],
+            offsetEasing: '[OFFSET_EASING]',
+            effects: [
+                {
+                    effectId: '[EFFECT_ID]',
+                    listContainer: '[LIST_CONTAINER_SELECTOR]'
+                }
+            ]
+        }
+    ]
+}
 ```
 
 **Variables**:
 
-- `[ELEMENT_N_KEY]`: Unique identifier for each individual element in sequence
-- `[DELAY_N]`: Progressive delay values (e.g., 0, 100, 200, 300ms)
-- `[SHARED_*]`: Common values used across all elements in the sequence
+- `[CONTAINER_KEY]`: Unique identifier for the container element
+- `[OFFSET_MS]`: Stagger offset in ms between consecutive items (e.g., 80, 100, 120)
+- `[OFFSET_EASING]`: How the offset is distributed — `'linear'` (equal spacing), `'quadIn'` (accelerating), `'sineOut'` (decelerating), etc.
+- `[LIST_CONTAINER_SELECTOR]`: CSS selector for the list container whose children become sequence items
 - Other variables same as Rule 1
 
-**Example - Card Grid Stagger**:
+**Example - Card Grid Stagger (listContainer)**:
 
 ```typescript
-[
-  {
-    key: 'card-1',
+{
+    key: 'card-grid-container',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: 0.3,
+        type: 'once',
+        threshold: 0.3
     },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 0,
-      },
-    ],
-  },
-  {
-    key: 'card-2',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.3,
-    },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 150,
-      },
-    ],
-  },
-  {
-    key: 'card-3',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.3,
-    },
-    effects: [
-      {
-        namedEffect: {
-          type: 'SlideIn',
-          direction: 'bottom',
-          power: 'medium',
-        },
-        duration: 600,
-        easing: 'ease-out',
-        fill: 'backwards',
-        delay: 300,
-      },
-    ],
-  },
-];
+    sequences: [
+        {
+            offset: 100,
+            offsetEasing: 'quadIn',
+            effects: [
+                {
+                    effectId: 'card-entrance',
+                    listContainer: '.card-grid'
+                }
+            ]
+        }
+    ]
+}
 ```
 
-**Example - Feature List Cascade**:
+With effect in the registry:
 
 ```typescript
-[
-  {
-    key: 'feature-item:nth-child(1)',
+effects: {
+    'card-entrance': {
+        duration: 500,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        keyframeEffect: {
+            name: 'card-fade-up',
+            keyframes: [
+                { transform: 'translateY(40px)', opacity: 0 },
+                { transform: 'translateY(0)', opacity: 1 }
+            ]
+        },
+        fill: 'both'
+    }
+}
+```
+
+**Example - Feature List Cascade (per-key effects)**:
+
+When items have individual keys rather than a shared container, list each as a separate effect in the sequence:
+
+```typescript
+{
+    key: 'features-section',
     trigger: 'viewEnter',
     params: {
-      type: 'once',
-      threshold: 0.4,
+        type: 'once',
+        threshold: 0.4
     },
-    effects: [
-      {
-        keyframeEffect: {
-          name: 'item-kf-1',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
-        },
+    sequences: [
+        {
+            offset: 100,
+            offsetEasing: 'linear',
+            effects: [
+                { effectId: 'feature-slide', key: 'feature-1' },
+                { effectId: 'feature-slide', key: 'feature-2' },
+                { effectId: 'feature-slide', key: 'feature-3' }
+            ]
+        }
+    ]
+}
+```
+
+```typescript
+effects: {
+    'feature-slide': {
         duration: 500,
         easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 0,
-      },
-    ],
-  },
-  {
-    key: 'feature-item:nth-child(2)',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.4,
-    },
-    effects: [
-      {
         keyframeEffect: {
-          name: 'item-kf-2',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
+            name: 'feature-slide-in',
+            keyframes: [
+                { opacity: '0', transform: 'translateX(-30px)' },
+                { opacity: '1', transform: 'translateX(0)' }
+            ]
         },
-        duration: 500,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 100,
-      },
-    ],
-  },
-  {
-    key: 'feature-item:nth-child(3)',
-    trigger: 'viewEnter',
-    params: {
-      type: 'once',
-      threshold: 0.4,
-    },
-    effects: [
-      {
-        keyframeEffect: {
-          name: 'item-kf-3',
-          keyframes: [
-            { opacity: '0', transform: 'translateX(-30px)' },
-            { opacity: '1', transform: 'translateX(0)' },
-          ],
-        },
-        duration: 500,
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'backwards',
-        delay: 200,
-      },
-    ],
-  },
-];
+        fill: 'backwards'
+    }
+}
 ```
 
 ---
@@ -839,43 +772,42 @@ Animating multiple targets from single viewport trigger:
 
 ### Conditional ViewEnter Animations
 
-Combining with conditions for responsive behavior:
+Use the `conditions` config map to guard interactions by device or motion preference. Condition IDs are user-defined strings — they must be declared in the top-level `conditions` map before being referenced in an interaction.
 
 ```typescript
 {
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.5
+    conditions: {
+        'desktop-only':   { type: 'media', predicate: '(min-width: 768px)' },
+        'prefers-motion': { type: 'media', predicate: '(prefers-reduced-motion: no-preference)' },
+        'mobile-only':    { type: 'media', predicate: '(max-width: 767px)' },
     },
-    conditions: ['desktop-only', 'prefers-motion'],
-    effects: [
+    interactions: [
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'ComplexEntrance'
-            },
-            duration: 1000
-        }
-    ]
-},
-// Simplified version for mobile/reduced motion
-{
-    key: 'responsive-section',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.7
-    },
-    conditions: ['mobile-only'],
-    effects: [
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.5 },
+            conditions: ['desktop-only', 'prefers-motion'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'SlideIn' },
+                    duration: 1000
+                }
+            ]
+        },
+        // Simplified fallback for mobile or reduced-motion users
         {
             key: 'responsive-section',
-            namedEffect: {
-                type: 'FadeIn'
-            },
-            duration: 400
+            trigger: 'viewEnter',
+            params: { type: 'once', threshold: 0.7 },
+            conditions: ['mobile-only'],
+            effects: [
+                {
+                    key: 'responsive-section',
+                    namedEffect: { type: 'FadeIn' },
+                    duration: 400
+                }
+            ]
         }
     ]
 }
@@ -885,11 +817,14 @@ Combining with conditions for responsive behavior:
 
 ## Preventing Flash of Unstyled Content (FOUC)
 
-When using `viewEnter` for entrance animations, elements may briefly appear in their final state before the animation plays. Use the `generate` function to create critical CSS that prevents this.
+Use `generate(config)` from `@wix/interact/web` server-side or at build time to produce critical CSS that hides entrance elements until their animation plays.
 
-### Using the `generate` Function
+**Constraints:**
 
-**Import and generate CSS:**
+- MUST be called server-side or at build time — not client-side
+- MUST set `data-interact-initial="true"` on the `<interact-element>` whose first child should be hidden
+- Only valid for `viewEnter` + `params.type: 'once'` where source and target are the same element
+- Do NOT use for `hover`, `click`, or `viewEnter` with `repeat`/`alternate`/`state` types
 
 ```typescript
 import { generate } from '@wix/interact/web';
@@ -897,56 +832,35 @@ import { generate } from '@wix/interact/web';
 const config: InteractConfig = {
   interactions: [
     {
-      key: 'hero-section',
+      key: 'hero',
       trigger: 'viewEnter',
-      params: { type: 'once', threshold: 0.3 },
-      effects: [
-        {
-          namedEffect: { type: 'FadeIn' },
-          duration: 800,
-          fill: 'backwards',
-        },
-      ],
+      params: { type: 'once', threshold: 0.2 },
+      effects: [{ namedEffect: { type: 'FadeIn' }, duration: 800 }],
     },
   ],
 };
 
-// Generate CSS at build time or on server
+// Called at build time or on the server
 const css = generate(config);
 
-// Include in your HTML template
+// Inject into <head> before the page renders
 const html = `
-<!DOCTYPE html>
-<html>
 <head>
-    <style>${css}</style>
+  <style>${css}</style>
 </head>
 <body>
-    <interact-element data-interact-key="hero" data-interact-initial="true">
-        <section class="hero">
-            <h1>Welcome to Our Site</h1>
-            <p>This content fades in smoothly without flash</p>
-        </section>
-    </interact-element>
-    <script type="module" src="./main.js"></script>
+  <interact-element data-interact-key="hero" data-interact-initial="true">
+    <section class="hero">...</section>
+  </interact-element>
 </body>
-</html>
 `;
 ```
-
-### Generated CSS Behavior
-
-The `generate` function produces CSS that:
-
-1. **Hides marked elements** until their entrance animation completes
-2. **Resets transforms** to allow `IntersectionObserver` to trigger entrance using the element's original layout and position
-3. **Respects reduced motion preferences** - users with `prefers-reduced-motion: reduce` see elements immediately
 
 ---
 
 ## Best Practices for ViewEnter Interactions
 
-### Behavior Guildelines
+### Behavior Guidelines
 
 1. **Use `alternate` and `repeat` types only with a separate source `key` and target `key`** to avoid re-triggering when animation starts or not triggering at all if animated target is out of viewport or clipped
 
@@ -956,23 +870,15 @@ The `generate` function produces CSS that:
 2. **Be careful with separate source/target patterns** - ensure source doesn't get clipped
 3. **Use appropriate thresholds** - avoid triggering too early or too late
 
-### User Experience Guidelines
+### Threshold and Timing Guidelines
 
 1. **Use realistic thresholds** (0.1-0.5) for natural timing
-2. **Use tiny thresholds for huge elements** 0.01-0.05 for elements much larger than viewport
+2. **Use tiny thresholds for huge elements** (0.01-0.05) for elements much larger than viewport
 3. **Provide adequate inset margins** for mobile viewports
 4. **Keep entrance animations moderate** (500-1200ms)
 5. **Use staggered delays thoughtfully** (50-200ms intervals)
-6. **Ensure content is readable** during animations
 
-### Accessibility Considerations
-
-1. **Respect `prefers-reduced-motion`** for all entrance animations
-2. **Don't rely solely on animations** to convey important information
-3. **Ensure sufficient contrast** during fade-in effects
-4. **Provide alternative content loading** for users who disable animations
-
-### Threshold and Timing Guidelines
+### Threshold and Timing Reference
 
 **Recommended Thresholds by Content Type**:
 
@@ -980,7 +886,7 @@ The `generate` function produces CSS that:
 - **Content blocks**: 0.3-0.5 (balanced trigger)
 - **Small elements**: 0.5-0.8 (late trigger)
 - **Tall sections**: 0.1-0.2 (early trigger)
-- **HUge sections**: 0.01-0.05 (ensure trigger)
+- **Huge sections**: 0.01-0.05 (ensure trigger)
 
 **Recommended Insets by Device**:
 
@@ -1051,323 +957,3 @@ The `generate` function produces CSS that:
 - Use hardware-accelerated properties
 - Avoid animating layout properties
 - Consider using `will-change` for complex animations
-
----
-
-## Rule 7: Using `initial` Property for SSR and CSR
-
-**Use Case**: Defining pre-animation states for entrance animations to prevent flash of content and enable CSS-based rendering
-
-**When to Apply**:
-
-- For viewEnter entrance animations that should be hidden before animating
-- When using `generateCSS()` for SSR or efficient CSR
-- When the element should start in a specific visual state
-
-**Pattern**:
-
-```typescript
-{
-    key: '[SOURCE_SELECTOR]',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: [VISIBILITY_THRESHOLD]
-    },
-    effects: [
-        {
-            key: '[TARGET_SELECTOR]',
-            keyframeEffect: {
-                name: '[EFFECT_NAME]',
-                keyframes: [
-                    { [START_PROPERTIES] },
-                    { [END_PROPERTIES] }
-                ]
-            },
-            duration: [DURATION_MS],
-            easing: '[EASING_FUNCTION]',
-            initial: {
-                [INITIAL_PROPERTIES]
-            }
-        }
-    ]
-}
-```
-
-**Variables**:
-
-- `[INITIAL_PROPERTIES]`: CSS properties matching the first keyframe (e.g., `opacity: 0, transform: 'translateY(40px)'`)
-- `[START_PROPERTIES]`: First keyframe properties (should match initial)
-- `[END_PROPERTIES]`: Final keyframe properties
-- Other variables same as Rule 1
-
-**Initial Property Options**:
-
-1. **Default Initial** (when omitted): Elements are hidden with reset transforms
-
-```typescript
-// Default applied automatically:
-{
-    visibility: 'hidden',
-    transform: 'none',
-    translate: 'none',
-    scale: 'none',
-    rotate: 'none'
-}
-```
-
-2. **Custom Initial**: Match your animation's starting state
-
-```typescript
-{
-    initial: {
-        opacity: 0,
-        transform: 'translateY(40px)',
-        filter: 'blur(10px)'  // for blur effects
-    }
-}
-```
-
-3. **No Initial**: Element always visible (for non-entrance animations)
-
-```typescript
-{
-  initial: false;
-}
-```
-
-**Example - Fade Slide Up with Custom Initial**:
-
-```typescript
-{
-    key: 'hero-content',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.3
-    },
-    effects: [
-        {
-            key: 'hero-content',
-            keyframeEffect: {
-                name: 'hero-fade-slide',
-                keyframes: [
-                    { opacity: 0, transform: 'translateY(60px)' },
-                    { opacity: 1, transform: 'translateY(0)' }
-                ]
-            },
-            duration: 1000,
-            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-            fill: 'backwards',
-            initial: {
-                opacity: 0,
-                transform: 'translateY(60px)'
-            }
-        }
-    ]
-}
-```
-
-**Example - Blur Reveal with Custom Initial**:
-
-```typescript
-{
-    key: 'image-reveal',
-    trigger: 'viewEnter',
-    params: {
-        type: 'once',
-        threshold: 0.2
-    },
-    effects: [
-        {
-            key: 'image-reveal',
-            keyframeEffect: {
-                name: 'blur-reveal',
-                keyframes: [
-                    { filter: 'blur(20px)', opacity: 0, transform: 'scale(1.1)' },
-                    { filter: 'blur(0)', opacity: 1, transform: 'scale(1)' }
-                ]
-            },
-            duration: 1200,
-            easing: 'ease-out',
-            initial: {
-                filter: 'blur(20px)',
-                opacity: 0,
-                transform: 'scale(1.1)'
-            }
-        }
-    ]
-}
-```
-
----
-
-## Rule 8: Using `generateCSS()` for SSR/CSR Optimization
-
-**Use Case**: Pre-generating CSS for entrance animations to enable server-side rendering and faster client-side rendering
-
-**When to Apply**:
-
-- For SSR frameworks (Next.js, Nuxt, etc.)
-- When optimizing initial page load performance
-- When animations should work before JavaScript hydration
-- For static site generation (SSG)
-
-**Pattern**:
-
-```typescript
-import { generateCSS, Interact, InteractConfig } from '@wix/interact';
-
-const config: InteractConfig = {
-    interactions: [
-        {
-            key: '[SOURCE_SELECTOR]',
-            trigger: 'viewEnter',
-            params: { type: 'once', threshold: [THRESHOLD] },
-            effects: [
-                {
-                    key: '[TARGET_SELECTOR]',
-                    [EFFECT_TYPE]: [EFFECT_DEFINITION],
-                    duration: [DURATION_MS],
-                    easing: '[EASING_FUNCTION]',
-                    initial: { [INITIAL_PROPERTIES] }
-                }
-            ]
-        }
-    ],
-    effects: {},
-    conditions: {
-        // Optional: Respect reduced motion
-        'motion-ok': {
-            type: 'media',
-            predicate: '(prefers-reduced-motion: no-preference)'
-        }
-    }
-};
-
-// Generate CSS at build time or on server
-const animationCSS = generateCSS(config);
-
-// Inject into HTML head
-const html = `
-<head>
-    <style id="interact-animations">${animationCSS}</style>
-</head>
-`;
-
-// Initialize Interact for runtime triggers
-Interact.create(config);
-```
-
-**Example - Full SSR Setup**:
-
-```typescript
-import { generateCSS, InteractConfig } from '@wix/interact';
-
-const config: InteractConfig = {
-  conditions: {
-    'motion-ok': {
-      type: 'media',
-      predicate: '(prefers-reduced-motion: no-preference)',
-    },
-  },
-  interactions: [
-    {
-      key: 'hero-section',
-      trigger: 'viewEnter',
-      params: { type: 'once', threshold: 0.2 },
-      effects: [
-        {
-          key: 'hero-section',
-          keyframeEffect: {
-            name: 'hero-entrance',
-            keyframes: [
-              { opacity: 0, transform: 'translateY(40px) scale(0.95)' },
-              { opacity: 1, transform: 'translateY(0) scale(1)' },
-            ],
-          },
-          duration: 800,
-          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-          initial: {
-            opacity: 0,
-            transform: 'translateY(40px) scale(0.95)',
-          },
-          conditions: ['motion-ok'],
-        },
-      ],
-    },
-    {
-      key: 'feature-cards',
-      trigger: 'viewEnter',
-      params: { type: 'once', threshold: 0.3 },
-      listContainer: '.cards-grid',
-      effects: [
-        {
-          key: 'feature-cards',
-          listContainer: '.cards-grid',
-          keyframeEffect: {
-            name: 'card-entrance',
-            keyframes: [
-              { opacity: 0, transform: 'translateY(30px)' },
-              { opacity: 1, transform: 'translateY(0)' },
-            ],
-          },
-          duration: 600,
-          easing: 'ease-out',
-          initial: {
-            opacity: 0,
-            transform: 'translateY(30px)',
-          },
-          conditions: ['motion-ok'],
-        },
-      ],
-    },
-  ],
-  effects: {},
-};
-
-// Server/build-time
-const css = generateCSS(config);
-
-// Output in HTML
-const serverHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-    <style id="interact-animations">${css}</style>
-</head>
-<body>
-    <div data-interact-key="hero-section">
-        <section class="hero">
-            <h1>Welcome</h1>
-        </section>
-    </div>
-    <div data-interact-key="feature-cards">
-        <div class="cards-grid">
-            <div class="card">Feature 1</div>
-            <div class="card">Feature 2</div>
-            <div class="card">Feature 3</div>
-        </div>
-    </div>
-</body>
-</html>
-`;
-```
-
-**Generated CSS Includes**:
-
-1. `@keyframes` rules with `from` block containing initial state
-2. Animation rules targeting `[data-interact-key]` selectors
-3. Media/container query wrappers for conditional animations
-4. Transition rules for transition effects
-
-**Best Practices**:
-
-1. **Match initial to first keyframe**: Ensures seamless animation start
-2. **Use conditions for accessibility**: Wrap in `prefers-reduced-motion` check
-3. **Cache the CSS output**: It's deterministic based on config
-4. **Inject early**: Place in `<head>` before content renders
-
----
-
-These rules provide comprehensive coverage for ViewEnter trigger interactions in `@wix/interact`, supporting all four behavior types and various intersection observer configurations as outlined in the development plan.

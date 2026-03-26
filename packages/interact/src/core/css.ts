@@ -203,7 +203,7 @@ export function generateInitialStates(_config: InteractConfig, useFirstChild: bo
         const isOnce = !interactionParams?.type || interactionParams.type === 'once';
 
         if (isOnce) {
-          effects.forEach((effect) => {
+          effects?.forEach((effect) => {
             const resolvedEffect = resolveEffect(effect, _config.effects, interaction, configConditions);
             const { initial } = resolvedEffect;
 

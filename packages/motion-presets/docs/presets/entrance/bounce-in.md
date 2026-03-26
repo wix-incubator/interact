@@ -7,7 +7,7 @@ Spring-based entrance animation with elastic movement and bouncing effects. Crea
 **Category**: Entrance  
 **Complexity**: Medium  
 **Performance**: GPU Optimized  
-**Mobile Friendly**: Yes (with power adjustment)
+**Mobile Friendly**: Yes
 
 ### Best Use Cases
 
@@ -30,7 +30,6 @@ Spring-based entrance animation with elastic movement and bouncing effects. Crea
 ```typescript
 export type BounceIn = BaseDataItemLike<'BounceIn'> & {
   direction: EffectFourDirections | 'center';
-  power?: EffectPower;
   distanceFactor?: number;
 };
 ```
@@ -40,14 +39,7 @@ export type BounceIn = BaseDataItemLike<'BounceIn'> & {
 | Parameter        | Type     | Default    | Description                          | Examples                                             |
 | ---------------- | -------- | ---------- | ------------------------------------ | ---------------------------------------------------- |
 | `direction`      | `string` | `'bottom'` | Origin direction for bounce movement | `'top'`, `'right'`, `'bottom'`, `'left'`, `'center'` |
-| `power`          | `string` | `'medium'` | Bounce intensity level               | `'soft'`, `'medium'`, `'hard'`                       |
 | `distanceFactor` | `number` | `1`        | Movement distance multiplier         | `0.5`, `1`, `2`                                      |
-
-### Power Levels
-
-- **`soft`** - Gentle bounce with minimal movement (10-30% intensity)
-- **`medium`** - Balanced bounce effect noticeable but not overwhelming (50-70% intensity)
-- **`hard`** - Strong, dramatic bounce with maximum movement (80-100% intensity)
 
 ### Directional Support
 
@@ -67,7 +59,6 @@ const animation = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'medium',
   },
   duration: 800,
   easing: 'easeOut',
@@ -76,7 +67,7 @@ const animation = getWebAnimation(element, {
 await animation.play();
 ```
 
-### Power Level Variations
+### Variations
 
 ```typescript
 // Subtle bounce for professional interfaces
@@ -85,7 +76,7 @@ const subtleBounce = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'bottom',
-    power: 'soft',
+    distanceFactor: 0.5,
   },
   duration: 600,
 });
@@ -96,8 +87,6 @@ const dramaticBounce = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'center',
-    power: 'hard',
-  },
   duration: 1000,
 });
 ```
@@ -111,7 +100,6 @@ const shortBounce = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'left',
-    power: 'medium',
     distanceFactor: 0.5, // Half normal distance
   },
   duration: 700,
@@ -123,7 +111,6 @@ const longBounce = getWebAnimation(element, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'top',
-    power: 'hard',
     distanceFactor: 1.5, // 50% more distance
   },
   duration: 900,
@@ -139,7 +126,6 @@ const buttonBounce = getWebAnimation(button, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'right',
-    power: 'medium',
   },
   duration: 600,
 });
@@ -150,7 +136,6 @@ const modalBounce = getWebAnimation(modal, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'center',
-    power: 'soft',
   },
   duration: 500,
 });
@@ -168,7 +153,6 @@ function showSuccessMessage(element) {
     namedEffect: {
       type: 'BounceIn',
       direction: 'center',
-      power: 'hard',
     },
     duration: 800,
     easing: 'backOut',
@@ -185,7 +169,6 @@ const badgeBounce = getWebAnimation(badge, {
   namedEffect: {
     type: 'BounceIn',
     direction: 'top',
-    power: 'hard',
   },
   duration: 600,
   easing: 'elasticOut',
@@ -203,7 +186,6 @@ actionButtons.forEach((btn, index) => {
     namedEffect: {
       type: 'BounceIn',
       direction: 'bottom',
-      power: 'medium',
     },
     duration: 600,
     delay: index * 150, // 150ms stagger
@@ -230,7 +212,6 @@ async function showModal() {
     namedEffect: {
       type: 'BounceIn',
       direction: 'center',
-      power: 'medium',
     },
     duration: 500,
     delay: 100,
@@ -245,7 +226,6 @@ async function showModal() {
 ### Same Category
 
 - **[DropIn](drop-in.md)** - Simpler scale-based alternative
-- **[PunchIn](punch-in.md)** - More complex multi-stage bouncing
 - **[ExpandIn](expand-in.md)** - Scale-focused without bounce physics
 
 ### Other Categories
@@ -263,21 +243,21 @@ async function showModal() {
 
 ### Common Issues
 
-- **Bounce feels too aggressive**: Reduce power level or distanceFactor
+- **Bounce feels too aggressive**: Reduce distanceFactor
 - **Animation cuts off**: Ensure parent container has sufficient space
 - **Timing feels wrong**: Adjust duration based on element size and context
 
 ### Debug Tips
 
 - Use browser timeline tools to analyze bounce curve
-- Test with different power levels to find the right feel
+- Test with different distanceFactor values to find the right feel
 - Verify initial element positioning for directional bounces
 
 ---
 
 ## Interactive Example
 
-▶️ **[Try it in Storybook](../../playground/)** - Experiment with BounceIn directions and power levels
+▶️ **[Try it in Storybook](../../playground/)** - Experiment with BounceIn directions
 
 ---
 

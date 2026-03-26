@@ -107,11 +107,47 @@ export class AnimationGroup {
     }
   }
 
+  async onAbort(callback: () => void): Promise<void> {
+    try {
+      await Promise.all(this.animations.map((animation) => animation.finished));
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        const a = this.animations[0];
+
+        if (a && !this.isCSS) {
+          const target = (a.effect as KeyframeEffect)?.target;
+
+          if (target) {
+            const cancelEvent = new Event('animationcancel');
+            target.dispatchEvent(cancelEvent);
+          }
+        }
+
+        callback();
+      }
+    }
+  }
+
   get finished() {
     return Promise.all(this.animations.map((animation) => animation.finished));
   }
 
   get playState() {
     return this.animations[0]?.playState;
+  }
+
+  getTimingOptions() {
+    return this.animations.map((a) => {
+      const timing = a.effect?.getTiming();
+      const delay = timing?.delay ?? 0;
+      const duration = Number(timing?.duration) || 0;
+      const iterations = timing?.iterations ?? 1;
+
+      return {
+        delay,
+        duration,
+        iterations,
+      };
+    });
   }
 }
