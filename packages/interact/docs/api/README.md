@@ -18,7 +18,7 @@ Complete reference documentation for all public APIs in `@wix/interact`.
   - [Error handling](functions.md#error-handling) and [performance considerations](functions.md#performance-considerations)
 - [**remove(path)**](functions.md#remove) - Remove interactions from an element
   - [Cleanup behavior](functions.md#behavior-details) and [advanced usage](functions.md#advanced-usage)
-- [**generate(config)**](functions.md#generate) - Generate CSS for hiding elements with entrance animations
+- [**generateCSS(config)**](functions.md#generate) - Generate CSS for hiding elements with entrance animations
   - [SSR usage](functions.md#server-side-rendering-ssr) and [React integration](functions.md#with-react)
   - [HTML setup](functions.md#html-setup) and [accessibility](functions.md#accessibility)
 - [**addListItems(root, key, listContainer, elements)**](functions.md#addlistitems) - Add interactions to new list items
