@@ -1,30 +1,24 @@
 import type {
   InteractConfig,
-  GetCSSResult,
   Effect,
   EffectRef,
-  TimeEffect,
+  EffectBase,
   TransitionEffect,
-  CreateTransitionCSSParams,
   Interaction,
-  Condition,
-  EffectCSSProps,
-  MotionCSSAnimationResult,
-  ViewEnterParams,
+  TransitionOptions,
+  StyleProperty,
+  TransitionProperty,
 } from '../types';
 import {
   createStateRuleAndCSSTransitions,
-  applySelectorCondition,
   generateId,
-  isTimeTrigger,
-  shortestRepeatingPatternLength,
   getFullPredicateByType,
   getSelectorCondition,
 } from '../utils';
 import { getSelector } from './Interact';
-import { keyframeObjectToKeyframeCSS, keyframesToCSS } from './utilities';
+import { keyframesToCSS } from './utilities';
 import { effectToAnimationOptions } from '../handlers/utilities';
-import { getCSSAnimation, MotionKeyframeEffect } from '@wix/motion';
+import { getCSSAnimation, MotionKeyframeEffect, NamedEffect } from '@wix/motion';
 
 const DEFAULT_INITIAL = {
   visibility: 'hidden',
@@ -34,485 +28,398 @@ const DEFAULT_INITIAL = {
   rotate: 'none',
 };
 
-// update when more triggers are supported
-function isCSSSupported(interaction: Interaction) {
-  return isTimeTrigger(interaction.trigger);
+function isTemplatedKey(key: string) {
+  return /\[]/g.test(key);
 }
 
-function getTransitionData(effect: Effect & { key: string }, childSelector: string, selectorCondition?: string) {
-  const args: CreateTransitionCSSParams = {
-    key: effect.key,
-    effectId: (effect as Effect).effectId!,
-    transition: (effect as TransitionEffect).transition,
-    properties: (effect as TransitionEffect).transitionProperties,
-    childSelector,
-  };
-  return createStateRuleAndCSSTransitions(args);
-}
-
-function getAnimationData(effect: Effect): MotionCSSAnimationResult[] {
-  const animationOptions = effectToAnimationOptions(effect as TimeEffect);
-
-  const cssAnimations = getCSSAnimation(null, animationOptions);
-
-  return cssAnimations
-    .filter((anim) => anim.name)
-    .map((anim) => ({
-      animation: anim.animation,
-      composition: anim.composition || 'replace',
-      custom: anim.custom || {},
-      name: anim.name as string,
-      keyframes: anim.keyframes,
-    }));
-}
-
-function haveSameSelectorConditions(
-  conditionsArray1: string[] | undefined,
-  conditionsArray2: string[] | undefined,
-  conditionDefinitions: Record<string, Condition>,
-): boolean {
-  const set1: Set<string> = new Set(...(conditionsArray1 || []).filter((condition) => conditionDefinitions[condition]?.type === 'selector'));
-  const set2: Set<string> = new Set(...(conditionsArray2 || []).filter((condition) => conditionDefinitions[condition]?.type === 'selector'));
-  if (set1.size !== set2.size) {
-    return false;
-  }
-  return [...set1].every((condition) => set2.has(condition))
-}
-
-function shouldUseInitial(
-  resolvedEffect: Effect & { key: string, conditions: string[] },
+function resolveEffectForCSS(
+  effect: Effect | EffectRef,
   interaction: Interaction,
-  conditionDefinitions: Record<string, Condition>
-): boolean {
-  const { 
-    initial,
-    key: effectKey,
-    selector: effectSelector,
-    listContainer: effectListContainer,
-    listItemSelector: effectlistItemSelector,
-    conditions: effectConditions,
-  } = resolvedEffect;
+  config: InteractConfig
+): ({
+  key: string;
+  conditions: string[];
+  effectId: string;
+  listContainer?: string;
+  listItemSelector?: string;
+  selector?: string;
+} & (
+  { namedEffect: NamedEffect;
+    keyframeEffect?: never;
+    transition?: never;
+    transitionProperties?: never;
+  } |
+  { namedEffect?: never;
+    keyframeEffect: MotionKeyframeEffect;
+    transition?: never;
+    transitionProperties?: never;
+  } |
+  { namedEffect?: never;
+    keyframeEffect?: never;
+    transition: TransitionOptions & { styleProperties: StyleProperty[] };
+    transitionProperties?: never;
+  } |
+  { namedEffect?: never;
+    keyframeEffect?: never;
+    transition?: never;
+    transitionProperties: TransitionProperty[];
+  } |
+  { namedEffect?: never;
+    keyframeEffect?: never;
+    transition?: never;
+    transitionProperties?: never;
+  }
+)) | null {
+  const { effects = {}, conditions: configConditions = {} } = config;
+  const { key: interactionKey, trigger } = interaction;
+  const isPointerMove = trigger === 'pointerMove';
+
+  // ensuring the original refernce of the effect has an id (required for states)
+  if (!effect.effectId) {
+    effect.effectId = generateId();
+  }
+  const { effectId } = effect;
+
+  let fullEffect: EffectBase & TransitionEffect & {
+    namedEffect?: NamedEffect,
+    customEffect?: (element: Element, progress: any) => void,
+    keyframeEffect?: MotionKeyframeEffect,
+  } = {...(effects[effectId] || {}), ...effect};
+
+  let { key, conditions } = fullEffect;
+  
+  if (!key) {
+    //
+    // Uncomment code below for safety against empty key
+    //
+    // if (!interactionKey) {
+    //   return null;
+    // }
+    key = interactionKey;
+  }
+  if (!isTemplatedKey(key)) {
+    // should probably find a way to support those
+    return null;
+  }
+  // TODO: handle here any escaping if needed
+
+  if (!conditions) {
+    conditions = [];
+  }
+  // It should be examined if effects should inherit and apply the conditions of the
+  // interaction, e.g. trigger, or whether it is the triggering mechanism that should enforce it.
+  // In case we wish to do so, there is also the question of which of these could be inherited
+  // when source is different than target (currently only media-type).
+  //
+  // Uncomment code below to inherit media-type conditions from interaction
+  //
+  // if (interaction.conditions && interaction.conditions.length) {
+  //   conditions.push(...(interaction.conditions.filter(
+  //     (condition) => configConditions[condition]?.type === 'media')
+  //   ));
+  // }
+  conditions = [...(new Set(
+    ...conditions.filter((condition: string) => configConditions[condition])
+  ))];
+
+  const resolvedEffect = { ...fullEffect, key, conditions, effectId }
 
   const {
-    trigger,
-    params,
-    key: interactionKey,
-    selector: interactionSelector,
-    listContainer: interactionListContainer,
-    listItemSelector: interactionlistItemSelector,
-    conditions: interactionConditions,
-  } = interaction;
+    namedEffect,
+    customEffect,
+    keyframeEffect,
+    transition,
+    transitionProperties,
+    ...rest
+  } = resolvedEffect;
 
-  const { type } = params as ViewEnterParams;
-
-  return !(
-    // initial is not disabled and trigger is entrance-once
-    initial === false || trigger !== 'viewEnter' || (type && type !== 'once') ||
-    // key is the same
-    effectKey !== interactionKey ||
-    // selector is the same or falsy in both
-    effectSelector !== interactionSelector || !(effectSelector || interactionSelector) ||
-    // listContainer is the same or falsy in both
-    effectListContainer !== interactionListContainer || !(effectListContainer || interactionListContainer) ||
-    // listItemSelector is the same or falsy in both
-    effectlistItemSelector !== interactionlistItemSelector || !(effectlistItemSelector || interactionlistItemSelector) ||
-    // selectors of type condition are the same
-    haveSameSelectorConditions(effectConditions, interactionConditions, conditionDefinitions)
-  );
+  if (namedEffect) {
+    // With the 2D nature of pointerMove namedEffects, there is no easy way to mimic the
+    // behavior with CSSAnimations. 
+    return (isPointerMove || !namedEffect.type) ? null : { namedEffect, ...rest };
+  } else if (keyframeEffect) {
+    //
+    // Uncomment code below for safety against empty keyframeEffect name
+    //
+    // if (!keyframeEffect.name) {
+    //   const canUseEffectId = effectId && !(effects[effectId] && ('keyframeEffect' in effect));
+    //   keyframeEffect.name = canUseEffectId ? effectId : generateId();
+    // }
+    return { keyframeEffect, ...rest };
+  } else if (customEffect) {
+    // customEffect does not necessarily have to be bailed out and we could already
+    // create the dummy animation for it using CSS (except for pointerMove trigger).
+    // This will also allow overriding it with an empty effect at another breakpoint.
+    //
+    // Uncomment code below to allow it by replacing customEffect with empty-frames keyframeEffect
+    //
+    // return isPointerMove ? null : {
+    //   keyframeEffect: {name: 'custom-effect-css-anim', keyframes: [{}, {}]}, ...rest
+    // };
+    return null;
+  } else if (transition) {
+    return {transition, ...rest};
+  } else {
+    return transitionProperties ? { transitionProperties, ...rest } : rest;
+  }
 }
 
-function resolveEffect(
-  effectRef: Effect | EffectRef,
-  effectsMap: Record<string, Effect>,
-  interaction: Interaction,
-  conditionDefinitions: Record<string, Condition>,
-): (Effect & { key: string; conditions: string[] }) {
-  const fullEffect: any = effectRef.effectId
-    ? { ...effectsMap[effectRef.effectId], ...effectRef }
-    : { ...effectRef };
-
-  if (!fullEffect.key) {
-    fullEffect.key = interaction.key;
-  }
-
-  fullEffect.conditions = [
-    ...new Set(...(fullEffect.conditions || [])),
-  ].filter((condition) => conditionDefinitions[condition as string]);
-
-  const { keyframeEffect } = fullEffect;
-  if (keyframeEffect && !keyframeEffect.name) {
-    const canUseEffectId =
-      (effectRef.effectId && !effectsMap[effectRef.effectId]) ||
-      !(effectRef as TimeEffect & { keyframeEffect: MotionKeyframeEffect }).keyframeEffect;
-    keyframeEffect.name = canUseEffectId ? effectRef.effectId : generateId();
-  }
-
-  fullEffect.initial = shouldUseInitial(fullEffect, interaction, conditionDefinitions)
-      ? fullEffect.initial || DEFAULT_INITIAL
-      : undefined;
-
-  return fullEffect;
+function getElementHash(
+  elementIdentifier: {
+    key: string;
+    listContainer?: string;
+    listItemSelector?: string;
+    selector?: string;
+  },
+) : string {
+  const { key, listContainer, listItemSelector, selector } = elementIdentifier;
+  return `key-${key}-lc-${listContainer || ''}-lis-${listItemSelector || ''}-s-${selector || ''}`;
 }
 
-const buildSelector = (
-  key: string,
-  effect: Effect,
-  useFirstChild: boolean,
-  configConditions: Record<string, Condition>,
-): string => {
-  const escapedKey = key.replace(/"/g, "'");
-
-  let baseSelector = `[data-interact-key="${escapedKey}"]`;
-
-  const elementSelector = getSelector(effect, { asCombinator: true, useFirstChild });
-
-  if (elementSelector) {
-    baseSelector = `${baseSelector} ${elementSelector}`;
-  }
-
-  const conditionSelector = getSelectorCondition(
-    effect.conditions,
-    configConditions,
-  );
-
-  if (conditionSelector) {
-    baseSelector = applySelectorCondition(baseSelector, conditionSelector);
-  }
-
-  return baseSelector;
+type RuleObj = {
+  key: string;
+  childSelector?: string;
+  declarations: {name: string; value: string | number; }[];
+  media?: string;
+  states?: string[];
+  selectorCondition?: string;
 };
 
-export function generateInitialStates(_config: InteractConfig, useFirstChild: boolean = false): string {
-  const css: string[] = [];
-  const processedSelectors = new Set<string>();
-
-  _config.interactions.forEach(
-    (interaction) => {
-      const {
-        key,
-        trigger,
-        params,
-        effects,
-      } = interaction;
-
-      const configConditions = _config.conditions || {};
-
-      const isViewEnter = trigger === 'viewEnter';
-      if (isViewEnter) {
-        const interactionParams = params as ViewEnterParams;
-        const isOnce = !interactionParams?.type || interactionParams.type === 'once';
-
-        if (isOnce) {
-          effects?.forEach((effect) => {
-            const resolvedEffect = resolveEffect(effect, _config.effects, interaction, configConditions);
-            const { initial } = resolvedEffect;
-
-            if (!initial) {
-              return;
-            }
-
-            const selector = buildSelector(
-              key,
-              resolvedEffect,
-              useFirstChild,
-              configConditions
-            );
-
-            if (!processedSelectors.has(selector)) {
-              processedSelectors.add(selector);
-              css.push(`@media (prefers-reduced-motion: no-preference) {\n${selector}:not([data-interact-enter])${keyframeObjectToKeyframeCSS(initial, '')}\n}`);
-            }
-          });
-        }
-      }
-    },
-  );
-
-  return css.join('\n');
-}
-
-function buildConditionalRule(
-  selector: string,
-  propsToApply: Record<string, string | number | undefined | null>,
-  conditions: string[],
-  configConditions: Record<string, Condition>,
-) {
-  const declarations: string[] = [];
-  for (const [key, val] of Object.entries(propsToApply)) {
-    if (val !== undefined && val !== null) {
-      declarations.push(`${key}: ${val};`);
-    }
-  }
-
-  const selectorCondition = getSelectorCondition(conditions, configConditions);
-  const targetSelector = selectorCondition
-    ? applySelectorCondition(selector, selectorCondition)
-    : selector;
-
-  let rule = `${targetSelector} {\n${declarations.join('\n')}\n}`;
-
-  ['container' as const, 'media' as const].forEach((type) => {
-    const predicate = getFullPredicateByType(conditions, configConditions, type);
-    if (predicate) {
-      rule = `@${type} ${predicate} { ${rule} }`;
-    }
-  });
-
-  return rule;
-}
-
-function buildAnimationCompositionDeclaration(compositions: CompositeOperation[]) {
-  const compositionRepeatLength = shortestRepeatingPatternLength(compositions);
-  let resultCompositions = compositions.slice(0, compositionRepeatLength);
-
-  if (resultCompositions.length === 0) {
+function buildCSSRule(rule: RuleObj) : string {
+  const {
+    key,
+    childSelector,
+    declarations,
+    media,
+    states,
+    selectorCondition,
+  } = rule;
+  if (!declarations.length) {
     return '';
   }
 
-  return `animation-composition: ${resultCompositions.join(', ')};`;
-}
+  let cssRule = declarations.map(({name, value}) => `${name}: ${value};`).join('\n');
 
-function buildUnconditionalRuleFromCustomProps(
-  selector: string,
-  declarationPropName: string,
-  customPropNames: string[],
-  fallback: string,
-) {
-  const declarations: string[] = [];
-
-  const customProps = customPropNames.map((propName) => `var(${propName}, ${fallback})`);
-  declarations.push(`${declarationPropName}: ${customProps.join(', ')};`);
-  if (declarationPropName === 'animation') {
-    const compositionCustomProps = customPropNames.map((propName) => `var(${propName}-composition, replace)`);
-    declarations.push(`${declarationPropName}-composition: ${compositionCustomProps.join(', ')};`);
+  if (selectorCondition) {
+    cssRule = `${selectorCondition} {\n${cssRule}\n}`;
+  }
+  if (childSelector) {
+    cssRule = `${childSelector} {\n${cssRule}\n}`;
   }
 
-  return `${selector} {\n${declarations.join('\n')}\n}`;
+  if (states && states.length) {
+    const statesSelector = states.map(
+      (state) => `:state(${state}), :--${state}, [data-interact-effect~="${state}"]`
+    ).join(', ');
+    cssRule = `&:is(${statesSelector}) {\n${cssRule}\n}`;
+  }
+
+  const keySelector = `[data-interact-key="${key}"]`;
+  cssRule = `${keySelector} {\n${cssRule}\n}`;
+
+  if (media) {
+    cssRule = `@media ${media} {\n${cssRule}\n}`;
+  }
+
+  return cssRule;
 }
 
-function generateTransitions(
-  selectorTransitionPropsMap: Map<string, EffectCSSProps[]>,
-  transitions: string[],
-  selector: string,
-  escapedTargetKey: string,
-  conditions: string[],
-) {
-  if (!selectorTransitionPropsMap.has(selector)) {
-    selectorTransitionPropsMap.set(selector, []);
-  }
-  const transitionPropsArray = selectorTransitionPropsMap.get(selector)!;
-
-  for (const transition of transitions) {
-    const customPropName = `--trans-def-${escapedTargetKey}-${transitionPropsArray.length}`;
-    transitionPropsArray.push({
-      declaration: transition,
-      conditions,
-      customPropName,
-    });
-  }
-}
-
-function generateAnimations(
-  selectorAnimationPropsMap: Map<string, EffectCSSProps[]>,
-  keyframeMap: Map<string, string>,
-  animationDataList: MotionCSSAnimationResult[],
-  initial: Effect['initial'],
-  selector: string,
+function addCustomPropToListDeclaration(
+  declarations: {name: string; value: string | number; }[],
+  propName: string,
   customPropName: string,
-  conditions: string[],
-) {
-  if (!selectorAnimationPropsMap.has(selector)) {
-    selectorAnimationPropsMap.set(selector, []);
-  }
-  const animationPropsArray = selectorAnimationPropsMap.get(selector)!;
+  fallback: string
+) : void {
+  const newValue = `var(${customPropName}, ${fallback})`;
+  const existingDeclaration = declarations.find(({name}) => name === propName);
 
-  for (const data of animationDataList) {
-    const keyframeCSS = keyframesToCSS(data.name, data.keyframes, initial);
-    if (keyframeCSS) {
-      keyframeMap.set(data.name, keyframeCSS);
-    }
-
-    const { animation, composition, custom } = data;
-
-    animationPropsArray.push({
-      declaration: animation,
-      composition,
-      custom,
-      conditions,
-      customPropName,
+  if (!existingDeclaration) {
+    declarations.push({
+      name: propName,
+      value: newValue
     });
+  } else {
+    existingDeclaration.value = `${existingDeclaration.value}, ${newValue}`
   }
 }
 
-function getRulesFromSelectorPropsMap(
-  selectorPropsMap: Map<string, EffectCSSProps[]>,
-  configConditions: Record<string, Condition>,
-  isAnimation: boolean,
-) {
-  const rules: string[] = [];
-
-  for (const [baseSelector, propsArray] of selectorPropsMap) {
-    propsArray.forEach((props) => {
-      const { customPropName, declaration, conditions, custom } = props;
-
-      const propsToApply = {
-        [customPropName]: declaration,
-        ...(isAnimation ? custom : {}),
-      };
-
-      rules.push(buildConditionalRule(baseSelector, propsToApply, conditions, configConditions));
-    });
-
-    const customPropNames = propsArray.map(({ customPropName }) => customPropName);
-
-    const extraDeclarations = [];
-    if (isAnimation) {
-      const compositions = propsArray.map(({ composition }) => composition || 'replace');
-      const compositionDeclaration = buildAnimationCompositionDeclaration(compositions);
-      if (compositionDeclaration) {
-        extraDeclarations.push(buildAnimationCompositionDeclaration(compositions));
-      }
-    }
-
-    rules.push(
-      buildUnconditionalRuleFromCustomProps(
-        baseSelector,
-        isAnimation ? 'animation' : 'transition',
-        customPropNames,
-        isAnimation ? 'none' : '_',
-        extraDeclarations,
-      ),
-    );
-  }
-
-  return rules;
-}
-
-/**
- * Generates CSS for time-based animations from an InteractConfig.
- *
- * @param config - The interact configuration containing effects and interactions
- * @returns GetCSSResult with keyframes and animationRules
- */
-export function _generateCSS(config: InteractConfig): GetCSSResult {
-  const keyframeMap = new Map<string, string>();
-  const selectorTransitionPropsMap = new Map<string, string[]>();
-  const selectorAnimationPropsMap = new Map<string, string[]>();
-  const transitionRules: string[] = [];
-  const animationRules: string[] = [];
-
+export function _generate(
+  config: InteractConfig,
+  useFirstChild: boolean = true
+): {
+  cssRules: RuleObj[];
+  keyframes: MotionKeyframeEffect[]
+} {
   const configConditions = config.conditions || {};
 
-  config.interactions.filter(isCSSSupported).forEach((interaction, interactionIdx) => {
-    const resolvedEffcts = interaction.effects.map(
-      (effectRef) => resolveEffect(effectRef, config.effects, interaction, configConditions)
-    ).filter(
-      ({key}) => !(/\[]/g.test(key))
-    );
+  const keyframesMap = new Map <string, Keyframe[]>();
+  const targetToAccumulatedRule = new Map<string, RuleObj>();
 
-    for (const effect of resolvedEffcts) {
-      const {key, conditions} = effect;
-      const {transition, transitionProperties} = effect as TransitionEffect;
-      const {namedEffect, keyframeEffect} = effect as TimeEffect;
-      const escapedKey = CSS.escape(key);
-      const keyWithNoSpecialChars = key.replace(/[^\w-]/g, '');
-      const customPropName = `--interaction-${interactionIdx}-${keyWithNoSpecialChars}`;      
+  const cssRules: RuleObj[] = [];
 
-      const childSelector = getSelector(effect, {
-        asCombinator: true,
-        addItemFilter: true,
-        useFirstChild: true,
-      });
+  config.interactions.forEach((interaction, interactionIdx) => {
+    const {effects = [], sequences = []} = interaction;
+    const animationTargets = new Map<string, {animationCustomProp: string; compositionCustomProp: string}>();
+    const transitionTargets = new Map<string, {transitionCustomProp: string; cascadingProps: string[]}>();
 
-      const selectorCondition = getSelectorCondition(
+    effects.forEach((effect) => {
+      const resolvedEffect = resolveEffectForCSS(effect, interaction, config);
+      if (!resolvedEffect) {
+        return;
+      }
+
+      const {
+        key,
+        effectId,
         conditions,
-        configConditions,
+        namedEffect,
+        keyframeEffect,
+        transition,
+        transitionProperties
+      } = resolvedEffect;
+
+      // TODO: fix for uniqueness and escaping
+      const targetHash = getElementHash(resolvedEffect);
+
+      const childSelector = getSelector(
+        resolvedEffect,
+        { asCombinator: true, useFirstChild, addItemFilter: true }
       );
-      const isTransition = transition || transitionProperties;
 
-      const selector = `[data-interact-key="${escapedKey}"] ${childSelector}`;
+      if (!targetToAccumulatedRule.has(targetHash)) {
+        targetToAccumulatedRule.set(targetHash, {
+          key,
+          childSelector,
+          declarations: []
+        });
+      }
 
-      if (isTransition) {
-        const { stateRule, transitions } = getTransitionData(effect, childSelector, selectorCondition);
-        transitionRules.push(stateRule);
-        if (transitions.length === 0) {
-          continue;
+      const media = getFullPredicateByType(conditions, configConditions, 'media');
+      // TODO: fix for & if needed
+      const selectorCondition = getSelectorCondition(conditions, configConditions);
+
+      const effectRule: RuleObj = {
+        key,
+        childSelector,
+        declarations: [],
+        media,
+        selectorCondition,
+      };
+      const { declarations } = effectRule;
+
+      const animationCustomProp = `--animation-${interactionIdx}-${targetHash}`;
+      const compositionCustomProp = `--animation-composition-${interactionIdx}-${targetHash}`;
+      const transitionCustomProp = `--transition-${interactionIdx}-${targetHash}`;
+
+      if (namedEffect || keyframeEffect) {
+        // accumulate animation custom-properties to the list
+        if (!animationTargets.has(targetHash)) {
+          animationTargets.set(targetHash, {animationCustomProp, compositionCustomProp});
         }
-        transitionRules.push(buildConditionalRule(
-          selector,
-          { [customPropName]: transitions.join(', ') },
-          conditions,
-          configConditions,
-        ));  
-      } else if (namedEffect || keyframeEffect) {
-        const animationDataList = getAnimationData(effect);
-        if (animationDataList.length === 0) {
-          continue;
-        }
 
-        for (const data of animationDataList) {
-          const keyframeCSS = keyframesToCSS(data.name, data.keyframes, effect.initial);
-          if (keyframeCSS) {
-            keyframeMap.set(data.name, keyframeCSS);
-          }
-        }
-              
-        const custom = animationDataList.reduce((acc, {custom}) => {
-          Object.assign(acc, custom);
-          return acc;
-        }, {})
+        const animationOptions = effectToAnimationOptions(resolvedEffect);
+        const cssAnimations = getCSSAnimation(null, animationOptions).filter((anim) => anim.name);
 
-        animationRules.push(buildConditionalRule(
-          selector,
-          {
-            [customPropName]: animationDataList.map(({ animation }) => animation).join(', '),
-            [`${customPropName}-composition`]: animationDataList.map(({ composition }) => composition).join(', '),
-            ...custom
-          },
-          conditions,
-          configConditions,
-        ));  
+        // accumulate keyframes
+        cssAnimations.forEach(({ name, keyframes }) => {
+          keyframesMap.set(name as string, keyframes);
+        });
+
+        // declare custom parameters
+        declarations.push(...cssAnimations.flatMap(({custom}) => 
+          Object.entries(custom || {})
+            .filter(([_, value]) => value !== undefined)
+            .map(([key, value]) => ({name: key, value: value as string | number}))
+        ))
+
+        // declare animation and composition custom properties
+        declarations.push({
+          name: animationCustomProp,
+          value: cssAnimations.map(({animation}) => animation).join(', '),
+        }, {
+          name: compositionCustomProp,
+          value: cssAnimations.map(({composition}) => composition || 'replace').join(', '),
+        });
+      } else if (transition || transitionProperties) {
+        // Mark as seen to add transition custom-property to the list
+        // cascaded props from earlier transitions in the array of effects on the same target
+        // are passed on for invalidation, effectively turning off earlier same-target transitions
+        // from same interaction.
+        if (!transitionTargets.has(targetHash)) {
+          transitionTargets.set(targetHash, {transitionCustomProp, cascadingProps: []});
+        }
+        const { cascadingProps } = transitionTargets.get(targetHash)!;
+
+        effectRule.states = [effectId];
+
+        const properties = (transition?.styleProperties || transitionProperties || []);
+        const { transitions } = createStateRuleAndCSSTransitions(resolvedEffect);
+
+        // invalidating earlier cascaded custom properties
+        declarations.push(...cascadingProps.map((name) => ({name, value: ' '})));
+        // pushing new custom properties to cascade
+        const newCascadingProps = properties.map(({name}) => `--${name}-${targetHash}`);
+        cascadingProps.push(...newCascadingProps);
+
+        // declaring custom properties and their assignments to the actual properties
+        declarations.push(...newCascadingProps.map((name, index) => ({name, value: properties[index].value})));
+        declarations.push(...newCascadingProps.map((name, index) => ({name: properties[index].name, value: `var(${name}, )`})));
+
+        // declaring transition custom property
+        declarations.push({
+          name: transitionCustomProp,
+          value: transitions.join(', '),
+        });
       } else {
-        animationRules.push(buildConditionalRule(
-          selector,
-          {
-            [customPropName]: 'none',
-            [`${customPropName}-composition`]: 'replace',
-          },
-          conditions,
-          configConditions,
-        ));  
+        // invalidating any earlier cascaded custom properties
+        declarations.push(...(transitionTargets.get(targetHash)!.cascadingProps || []).map(
+          (name) => ({name, value: ' '})
+        ));
+
+        // setting off animation, composition and transition custom properties
+        declarations.push({
+          name: animationCustomProp,
+          value: 'none',
+        }, {
+          name: compositionCustomProp,
+          value: 'replace',
+        }, {
+          name: transitionCustomProp,
+          value: '_',
+        });
       }
 
-      if (isNewInteraction) {
-        const propsMap = isTransition ? selectorTransitionPropsMap : selectorAnimationPropsMap;
-        if (!propsMap.has(selector)) {
-          propsMap.set(selector, []);
-        }
-        const customPropsArray = selectorAnimationPropsMap.get(selector)!;
-        customPropsArray.push(customPropName);
-      }
-    }
-  });
+      cssRules.push(effectRule);
+    });
 
-  [selectorTransitionPropsMap, selectorAnimationPropsMap].forEach((propsMap, isAnimation) => {
-    for (const [selector, customPropsArray] of propsMap) {
-      (isAnimation ? animationRules : transitionRules).push(
-        buildUnconditionalRuleFromCustomProps(
-          selector,
-          isAnimation ? 'animation' : 'transition',
-          customPropsArray,
-          isAnimation ? 'none' : '_',
-        ),
+    // assuming sequences should be prioritized in cascade
+    sequences.forEach((sequence) => {
+    });
+
+    animationTargets.forEach(({animationCustomProp, compositionCustomProp}, hash) => {
+      const { declarations } = targetToAccumulatedRule.get(hash)!;
+      addCustomPropToListDeclaration(
+        declarations, 'animation', animationCustomProp, 'none'
       );
-    }
+      addCustomPropToListDeclaration(
+        declarations, 'animation-composition', compositionCustomProp, 'replace'
+      );
+    });
+    transitionTargets.forEach(({transitionCustomProp}, hash) => {
+      const { declarations } = targetToAccumulatedRule.get(hash)!;
+      addCustomPropToListDeclaration(
+        declarations, 'animation', transitionCustomProp, 'none'
+      );
+    });
   });
 
-  return {
-    keyframes: Array.from(keyframeMap.values()),
-    animationRules,
-    transitionRules,
-  };
+  for (const rule of targetToAccumulatedRule.values()) {
+    cssRules.push(rule);
+  }
+
+  const keyframes = Object.entries(keyframesMap).map(([name, keyframes]) => ({name, keyframes}));
+
+  return {cssRules, keyframes };
 }
 
 /**
@@ -521,8 +428,14 @@ export function _generateCSS(config: InteractConfig): GetCSSResult {
  * @param config - The interact configuration containing effects and interactions
  * @returns string containing all of the CSS rules needed for time-based animations
  */
-export function generateCSS(config: InteractConfig): string {
-  const { keyframes, animationRules, transitionRules } = _generateCSS(config);
-  const css: string[] = [...keyframes, ...animationRules, ...transitionRules];
+export function generate(config: InteractConfig): string {
+  const {cssRules, keyframes} = _generate(config);
+
+  const css = [
+    ...keyframes.map(({name, keyframes}) => keyframesToCSS(name, keyframes)),
+    ...cssRules.map(buildCSSRule)
+  ];
+
   return css.join('\n');
 }
+

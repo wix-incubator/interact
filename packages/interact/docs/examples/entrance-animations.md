@@ -853,15 +853,15 @@ const testimonialConfig = {
 When using entrance animations, elements may briefly appear before their animation starts (a "flash"). There are two approaches to prevent this:
 
 1. **`generate()`** - Simple hiding CSS for elements with `data-interact-initial="true"`
-2. **`generateCSS()`** - Complete CSS animation generation with initial states (recommended)
+2. **`generate()`** - Complete CSS animation generation with initial states (recommended)
 
-### Using `generateCSS()` (Recommended)
+### Using `generate()` (Recommended)
 
-`generateCSS()` pre-generates all animation CSS including initial states, providing the best performance for SSR and CSR:
+`generate()` pre-generates all animation CSS including initial states, providing the best performance for SSR and CSR:
 
 ```typescript
 // server.ts or build script
-import { generateCSS, InteractConfig } from '@wix/interact';
+import { generate, InteractConfig } from '@wix/interact';
 
 const config = {
   interactions: [
@@ -887,7 +887,7 @@ const config = {
 };
 
 // Generate complete animation CSS
-const animationCSS = generateCSS(config);
+const animationCSS = generate(config);
 
 // Include in your HTML template
 const html = `
@@ -938,19 +938,19 @@ The `initial` property defines the pre-animation state of elements. This is what
 }
 ```
 
-### Client-Side Rendering with `generateCSS()`
+### Client-Side Rendering with `generate()`
 
 For CSR applications, inject the CSS before first paint:
 
 ```typescript
-import { Interact, generateCSS } from '@wix/interact';
+import { Interact, generate } from '@wix/interact';
 
 const config = {
   /* your config */
 };
 
 // Generate and inject CSS immediately on load
-const css = generateCSS(config);
+const css = generate(config);
 const style = document.createElement('style');
 style.id = 'interact-animations';
 style.textContent = css;
@@ -980,7 +980,7 @@ const html = `
 
 ### HTML Markup
 
-For `generateCSS()`, use `data-interact-key` on any element:
+For `generate()`, use `data-interact-key` on any element:
 
 ```html
 <div data-interact-key="hero">
@@ -1006,7 +1006,7 @@ For `generate()`, also add `data-interact-initial="true"`:
 
 Both functions respect `prefers-reduced-motion`. The generated CSS conditions ensure users who prefer reduced motion see content immediately.
 
-See the [generateCSS() function documentation](../api/functions.md#generatecss) for complete API details.
+See the [generate() function documentation](../api/functions.md#generate) for complete API details.
 
 ---
 

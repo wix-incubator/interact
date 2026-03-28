@@ -2,7 +2,6 @@ import { Playground } from './components/Playground';
 import { ScrollShowcase } from './components/ScrollShowcase';
 import { ResponsiveDemo } from './components/ResponsiveDemo';
 import { SelectorConditionDemo } from './components/SelectorConditionDemo';
-import { CSSGenerationDemo } from './components/CSSGenerationDemo';
 import { PointerMoveDemo } from './components/PointerMoveDemo';
 import { SequencePlayground } from './components/SequencePlayground';
 import { SequenceEntranceDemo } from './components/SequenceEntranceDemo';
@@ -40,7 +39,6 @@ function App() {
       </header>
 
       <Playground />
-      <CSSGenerationDemo />
       <SelectorConditionDemo />
       <div className="scroll-showcase-wrapper">
         <ResponsiveDemo />

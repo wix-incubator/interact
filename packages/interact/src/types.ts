@@ -93,17 +93,11 @@ type MotionKeyframeEffect = {
 type EffectEffectProperty =
   | {
       keyframeEffect: MotionKeyframeEffect;
-      namedEffect?: never;
-      customEffect?: never;
     }
   | {
-      keyframeEffect?: never;
       namedEffect: NamedEffect;
-      customEffect?: never;
     }
   | {
-      keyframeEffect?: never;
-      namedEffect?: never;
       customEffect: (element: Element, progress: any) => void;
     };
 
@@ -161,7 +155,6 @@ export type EffectBase = {
   conditions?: string[];
   selector?: string;
   effectId?: string;
-  initial?: Record<string, string | number> | false;
 };
 
 export type EffectRef = EffectBase & { effectId: string };
@@ -334,29 +327,4 @@ export type CreateTransitionCSSParams = {
   childSelector?: string;
   selectorCondition?: string;
   useFirstChild?: boolean;
-};
-
-export type EffectCSSProps = {
-  declaration: string;
-  conditions: string[];
-  customPropName: string;
-  composition?: CompositeOperation;
-  custom?: Keyframe;
-};
-
-export type MotionCSSAnimationResult = {
-  animation: string;
-  composition: CompositeOperation;
-  custom: Keyframe;
-  name: string;
-  keyframes: Keyframe[];
-};
-
-export type GetCSSResult = {
-  /** @keyframes rules for the animations */
-  keyframes: string[];
-  /** Full animation property rules per element (animation, composition, custom, etc.) */
-  animationRules: string[];
-  /** Full transition properties rules per element */
-  transitionRules: string[];
 };

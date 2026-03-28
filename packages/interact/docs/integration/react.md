@@ -522,9 +522,9 @@ function ProductList() {
 
 ## Server-Side Rendering (SSR)
 
-For SSR, use `generateCSS()` to pre-render animation styles on the server, preventing flash of unstyled content (FOUC) and enabling animations before JavaScript hydration.
+For SSR, use `generate()` to pre-render animation styles on the server, preventing flash of unstyled content (FOUC) and enabling animations before JavaScript hydration.
 
-### Next.js App Router with `generateCSS()`
+### Next.js App Router with `generate()`
 
 ```tsx
 // lib/interact-config.ts
@@ -562,12 +562,12 @@ export const interactConfig: InteractConfig = {
 
 ```tsx
 // app/layout.tsx
-import { generateCSS } from '@wix/interact/react';
+import { generate } from '@wix/interact/react';
 import { interactConfig } from '@/lib/interact-config';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Generate CSS at build time (called once per build)
-  const animationCSS = generateCSS(interactConfig);
+  const animationCSS = generate(interactConfig);
 
   return (
     <html>
@@ -610,7 +610,7 @@ export function InteractiveCard({ children }: { children: React.ReactNode }) {
 
 ### The `initial` Property for SSR
 
-When using `generateCSS()`, the `initial` property controls the pre-animation state:
+When using `generate()`, the `initial` property controls the pre-animation state:
 
 ```tsx
 // Effect with custom initial state
@@ -643,11 +643,11 @@ When using `generateCSS()`, the `initial` property controls the pre-animation st
 ```tsx
 // pages/_document.tsx
 import { Html, Head, Main, NextScript } from 'next/document';
-import { generateCSS } from '@wix/interact/react';
+import { generate } from '@wix/interact/react';
 import { interactConfig } from '@/lib/interact-config';
 
 export default function Document() {
-  const animationCSS = generateCSS(interactConfig);
+  const animationCSS = generate(interactConfig);
 
   return (
     <Html>
@@ -686,9 +686,9 @@ export default function Home() {
 }
 ```
 
-### Benefits of SSR with `generateCSS()`
+### Benefits of SSR with `generate()`
 
-| Without generateCSS             | With generateCSS                |
+| Without generate             | With generate                |
 | ------------------------------- | ------------------------------- |
 | Elements flash before animation | Elements start in initial state |
 | Animations wait for hydration   | Animations ready immediately    |
@@ -723,7 +723,7 @@ const config: InteractConfig = {
 };
 
 // Generated CSS will be wrapped in @media query
-const css = generateCSS(config);
+const css = generate(config);
 ```
 
 ````
